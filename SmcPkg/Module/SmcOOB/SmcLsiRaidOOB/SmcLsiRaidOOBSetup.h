@@ -58,6 +58,7 @@ struct _SMC_LSI_RAID_OOB_SETUP_PRIVATE_{
 	UINT16			FormID;
 	UINT16			QIdStart;
 	UINT16			FormGoToLabel;
+	UINT16			FormLabel;
 	UINT16			FormIdStart;
 	EFI_GUID		VarGuid;
 	UINT16			VarIdStart;

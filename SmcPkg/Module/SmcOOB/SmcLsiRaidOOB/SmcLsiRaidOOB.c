@@ -471,18 +471,15 @@ EFI_STATUS SmcLsiRaidOOB_InitialFunc(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol)
 	mDetailedDebugMessage = pProtocol->DetailedDebugMessage;
 
 	LsiHiiHandle = pProtocol->SmcLsiCurrHiiHandleTable->RaidCardHiiHandle;
-	SMC_RAID_DETAIL_DEBUG((-1,"LsiHiiHandle[%08x]\n",(UINT32)LsiHiiHandle));
 
 	if(LsiHiiHandle == NULL) return SettingErrorStatus(pProtocol,0x01,Status);
 
 	pProtocol->SmcLsiCurrDriverHandle = NULL;
   	Status = GetHiiDataBase()->GetPackageListHandle(GetHiiDataBase(),LsiHiiHandle,&pProtocol->SmcLsiCurrDriverHandle);
-	SMC_RAID_DETAIL_DEBUG((-1,"pProtocol->SmcLsiCurrDriverHandle[%08x]\n",(UINT32)pProtocol->SmcLsiCurrDriverHandle));
 	if(EFI_ERROR(Status)) return SettingErrorStatus(pProtocol,0x02,Status);
 
 	pProtocol->SmcLsiCurrConfigAccess = NULL;
   	Status = gBS->HandleProtocol(pProtocol->SmcLsiCurrDriverHandle,&gEfiHiiConfigAccessProtocolGuid,&pProtocol->SmcLsiCurrConfigAccess);
-	SMC_RAID_DETAIL_DEBUG((-1,"pProtocol->SmcLsiCurrConfigAccess[%08x]\n",(UINT32)pProtocol->SmcLsiCurrConfigAccess));
 	if(EFI_ERROR(Status)) return SettingErrorStatus(pProtocol,0x03,Status);
 
 	pProtocol->HiiFlags	= 0;
@@ -779,11 +776,11 @@ EFI_STATUS EFIAPI SmcLsiHookBrower2Callback(
 	EFI_STRING			ConfigBufferString	= NULL;
 	EFI_STRING			Progress 			= NULL;
 
-	SMC_RAID_DETAIL_DEBUG((-1,"SmcLsiHookBrower2Callback\n"));
-	SMC_RAID_DETAIL_DEBUG((-1,"VariableName[%s], VariableGuid[%g], RetrieveData[%x]\n",
+	SMC_RAID_DETAIL_DEBUG((-1,"SmcLsiHookBrower2Callback :: \n"));
+	SMC_RAID_DETAIL_DEBUG((-1,"    VariableName[%s], VariableGuid[%g], RetrieveData[%x]\n",
 				VariableName,*VariableGuid,RetrieveData));
 	if(ResultsDataSize != NULL)
-		SMC_RAID_DETAIL_DEBUG((-1,"ResultsDataSize[%x]\n",*ResultsDataSize));
+		SMC_RAID_DETAIL_DEBUG((-1,"    ResultsDataSize[%x]\n",*ResultsDataSize));
 /*
 	if(! (!!RetrieveData))
 		DEBUG((-1,"From Driver Handle ResultsData = \n %s\n",ResultsData));
@@ -800,7 +797,7 @@ EFI_STATUS EFIAPI SmcLsiHookBrower2Callback(
 		LsiVar = SearchLsiVarByName(aVariableName,VariableGuid);
 
 		if(LsiVar == NULL) return EFI_OUT_OF_RESOURCES;
-		SMC_RAID_DETAIL_DEBUG((-1,"Lsi_Name[%a], Lsi_VarId[%x], Lsi_Guid[%g], Lsi_Size[%x]\n",
+		SMC_RAID_DETAIL_DEBUG((-1,"    Lsi_Name[%a], Lsi_VarId[%x], Lsi_Guid[%g], Lsi_Size[%x]\n",
 			   		LsiVar->Lsi_Name,LsiVar->Lsi_VarId,LsiVar->Lsi_Guid,LsiVar->Lsi_Size));
 
 		//GUID=xxxxx&NAME=xxxxx&PATH=xxxxx & OFFSET=xxxxx&WIDTH=xxxx
@@ -822,7 +819,7 @@ EFI_STATUS EFIAPI SmcLsiHookBrower2Callback(
 
 	}else{
 		//Temporary return Out of Resource
-		SMC_RAID_DETAIL_DEBUG((-1,"Sent Buffer Back\n"));
+		SMC_RAID_DETAIL_DEBUG((-1,"    Sent Buffer Back\n"));
 		return EFI_OUT_OF_RESOURCES;
 	}
 
@@ -978,7 +975,7 @@ SMC_LSI_ITEMS_MEM* CopyAndExtMem(SMC_LSI_ITEMS_MEM*	pItems){
 }
 
 
-EFI_IFR_OP_HEADER*	SearchOpCodeInFormData(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol, UINT16 OpCode){
+EFI_IFR_OP_HEADER*	SearchOpCodeInFormData(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol, UINT16 OpCode, UINT16 Label OPTIONAL){
 
 	EFI_STATUS					 Status				= EFI_SUCCESS;
 	UINT8*						 SetupData			= NULL;
@@ -1007,11 +1004,20 @@ EFI_IFR_OP_HEADER*	SearchOpCodeInFormData(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProt
 
 						if(MemCmp(&GuidOp->Guid,&LabelGuid,sizeof(EFI_GUID)) == 0){
 							EFI_IFR_GUID_LABEL*	pIfrGuidLabel = (EFI_IFR_GUID_LABEL*)GuidOp;
-							if(pIfrGuidLabel->ExtendOpCode == EFI_IFR_EXTEND_OP_LABEL &&  pProtocol->SmcLsiGetFormToLabel(pProtocol) == pIfrGuidLabel->Number){
+							if(pIfrGuidLabel->ExtendOpCode == EFI_IFR_EXTEND_OP_LABEL && Label == pIfrGuidLabel->Number){
 								SearchFind = TRUE;
 							}
 						}
 					}	
+					break;
+				case EFI_IFR_FORM_OP:
+				{
+					EFI_IFR_FORM*	pForm = NULL;
+					pForm = (EFI_IFR_FORM*)pEFI_IFR_OP_HEADER;
+
+					if(pForm->FormId == Label)
+						SearchFind = TRUE;
+				}
 					break;
 				default:
 					SearchFind = TRUE;
@@ -1080,7 +1086,7 @@ EFI_STATUS InsertRaidSetupFormItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 
 	UINTN				ItemIndex			= 0;
 
-	EFI_IFR_OP_HEADER*	GuidOp				= NULL;
+	EFI_IFR_OP_HEADER*	pFormOp				= NULL;
 	SMC_LSI_ITEMS_MEM*	FormItemsBuffer		= NULL;
 	SMC_LSI_ITEMS*		RaidItemsTable		= NULL;
 	EFI_HII_HANDLE		SmcLsiSetupHandle	= NULL;
@@ -1088,10 +1094,11 @@ EFI_STATUS InsertRaidSetupFormItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 	EFI_IFR_FORM	FormOp;
 	EFI_IFR_END		EndOp;
 
-	GuidOp = (EFI_IFR_OP_HEADER*)SearchOpCodeInFormData(pProtocol,EFI_IFR_GUID_OP);	
-	if(GuidOp == NULL) return SettingErrorStatus(pProtocol,0x02,EFI_LOAD_ERROR);
-
-	InsertStart 		= ((UINT8*)GuidOp + GuidOp->Length);
+	pFormOp = (EFI_IFR_OP_HEADER*)SearchOpCodeInFormData(pProtocol,EFI_IFR_FORM_OP,pProtocol->SmcLsiGetFormLabel(pProtocol));	
+	if(pFormOp == NULL) return SettingErrorStatus(pProtocol,0x02,EFI_LOAD_ERROR);
+	
+	//FormOp --- EndOp
+	InsertStart 		= (UINT8*)pFormOp;
 	MACRO_CAULBUFFER_INITIAL(PACKAGE_BUFFER);
 
 	SmcLsiSetupHandle 	= pProtocol->SmcLsiGetHiiHandle(pProtocol);
@@ -1160,7 +1167,7 @@ EFI_STATUS InsertRaidSetupFormItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 				{
 					EFI_IFR_ONE_OF*		OriOneOf;
 					EFI_IFR_ONE_OF		CopyOneOf;
-					
+	
 					EFI_IFR_ONE_OF_OPTION* OriOneOfOption;
 					EFI_IFR_ONE_OF_OPTION  CopyOneOfOption;
 
@@ -1177,8 +1184,23 @@ EFI_STATUS InsertRaidSetupFormItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 					CopyOneOf.Question.VarStoreInfo.VarOffset	= OriOneOf->Question.VarStoreInfo.VarOffset;
 					CopyOneOf.Question.Flags		 = OriOneOf->Question.Flags;
 					CopyOneOf.Flags					 = OriOneOf->Flags;
+
 					MemCpy(&CopyOneOf.data,&OriOneOf->data,sizeof(MINMAXSTEP_DATA));
-					
+					switch((CopyOneOf.Flags & EFI_IFR_NUMERIC_SIZE)){
+						case EFI_IFR_NUMERIC_SIZE_1:
+							CopyOneOf.data.u8.Step = 1;
+							break;
+						case EFI_IFR_NUMERIC_SIZE_2:
+							CopyOneOf.data.u16.Step = 1;
+							break;
+						case EFI_IFR_NUMERIC_SIZE_4:
+							CopyOneOf.data.u32.Step = 1;
+							break;
+						case EFI_IFR_NUMERIC_SIZE_8:
+							CopyOneOf.data.u64.Step = 1;
+							break;
+					}
+
 					FormItemsBuffer->ItemsCopyBuffer 		= (UINT8*)&CopyOneOf;
 					FormItemsBuffer->ItemsCopyBufferSize	= CopyOneOf.Header.Length;
 					FormItemsBuffer = CopyAndExtMem(FormItemsBuffer);
@@ -1220,14 +1242,30 @@ EFI_STATUS InsertRaidSetupFormItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 
 					MemCpy(&CopyNumer.Header,&pNumer->Header,sizeof(EFI_IFR_OP_HEADER));
 
+					CopyNumer.Flags								= pNumer->Flags;
 					CopyNumer.Question.Flags					= pNumer->Question.Flags;
 					CopyNumer.Question.Header.Prompt 			= NewHiiString(SmcLsiSetupHandle,RaidItemsTable[ItemIndex].LsiItemName);
-					CopyNumer.Question.Header.Help				= NewHiiString(SmcLsiSetupHandle,RaidItemsTable[ItemIndex].LsiItemName);
+					CopyNumer.Question.Header.Help				= CopyNumer.Question.Header.Prompt;
 					CopyNumer.Question.QuestionId				= pProtocol->SmcLsiGetQIdStart(pProtocol);
 					CopyNumer.Question.VarStoreId				= pItemSet->SmcLsiVarId;
 					CopyNumer.Question.VarStoreInfo.VarOffset	= pNumer->Question.VarStoreInfo.VarOffset;
 
 					MemCpy(&CopyNumer.data,&pNumer->data,sizeof(MINMAXSTEP_DATA));
+					switch((CopyNumer.Flags & EFI_IFR_NUMERIC_SIZE)){
+						case EFI_IFR_NUMERIC_SIZE_1:
+							CopyNumer.data.u8.Step = 1;
+							break;
+						case EFI_IFR_NUMERIC_SIZE_2:
+							CopyNumer.data.u16.Step = 1;
+							break;
+						case EFI_IFR_NUMERIC_SIZE_4:
+							CopyNumer.data.u32.Step = 1;
+							break;
+						case EFI_IFR_NUMERIC_SIZE_8:
+							CopyNumer.data.u64.Step = 1;
+							break;
+					}
+
 					FormItemsBuffer->ItemsCopyBuffer 		= (UINT8*)(&CopyNumer);
 					FormItemsBuffer->ItemsCopyBufferSize	= CopyNumer.Header.Length;
 					FormItemsBuffer = CopyAndExtMem(FormItemsBuffer);
@@ -1279,7 +1317,7 @@ EFI_STATUS InsertRaidSetupFormGoto(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 	UINTN			FormIndex			= 0;
 	EFI_IFR_REF		FormGoto;
 
-	GuidOp = (UINT8*)SearchOpCodeInFormData(pProtocol,EFI_IFR_GUID_OP);	
+	GuidOp = (UINT8*)SearchOpCodeInFormData(pProtocol,EFI_IFR_GUID_OP,pProtocol->SmcLsiGetFormGoToLabel(pProtocol));	
 	if(GuidOp == NULL) return SettingErrorStatus(pProtocol,0x02,EFI_LOAD_ERROR);
 	
 	InsertStart 		= (UINT8*)GuidOp;
@@ -1358,7 +1396,7 @@ EFI_STATUS	InsertRaidSetupVariable(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 	
 	SMC_LSI_VAR*		LocSmcLsiVarTable	= NULL;
 
-	FormSetOp = (EFI_IFR_FORM_SET*)SearchOpCodeInFormData(pProtocol,EFI_IFR_FORM_SET_OP);	
+	FormSetOp = (EFI_IFR_FORM_SET*)SearchOpCodeInFormData(pProtocol,EFI_IFR_FORM_SET_OP,0);	
 	if(FormSetOp == NULL) return SettingErrorStatus(pProtocol,0x02,EFI_LOAD_ERROR);
 
 	LocSmcLsiVarTable = pProtocol->SmcLsiVarTable;
@@ -1499,38 +1537,55 @@ VOID	DEBUG_ADDDYNAMICITEMS_PACKAGE(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 			case EFI_IFR_ONE_OF_OP:
 			{
 				//These two have same structure.
-				EFI_IFR_NUMERIC*		pNumer		= NULL;
-				SMC_LSI_RAID_VAR*		pVariable	= NULL;
-				UINT8*					pBuffer		= NULL;
-				UINT64					DVal		= 0;
+				EFI_IFR_NUMERIC*		pNumer			= NULL;
+				SMC_LSI_RAID_VAR*		pVariable		= NULL;
+				UINT8*					pBuffer			= NULL;
+				UINT64					DVal			= 0;
+				UINT64					MinValue		= 0;
+				UINT64					MaxValue		= 0;
+				UINT64					Step			= 0;
+				CHAR16					NumSize[][5]	= {L"u8", L"u16", L"u32", L"u64"};
 
 				pNumer = (EFI_IFR_NUMERIC*)IfrOpHeader;
 				DEBUG((-1,"%a%s",ScopeBuff,(pNumer->Header.OpCode == EFI_IFR_NUMERIC_OP) ? L"Numeric" : L"OneOf"));
 
-				DEBUG((-1,"[%s], QId[%x], VId[%x], VOffset[%x]\n",
+				DEBUG((-1,"[%s], QId[%x], VId[%x], VOffset[%x], DataSize[%s]\n",
 							GetHiiString(SmcSetupHiiHandle,pNumer->Question.Header.Prompt),
 							pNumer->Question.QuestionId,
 							pNumer->Question.VarStoreId,
-							pNumer->Question.VarStoreInfo.VarOffset));
+							pNumer->Question.VarStoreInfo.VarOffset,
+							NumSize[(pNumer->Flags & EFI_IFR_NUMERIC_SIZE)]));
 
 				pVariable = SearchLsiVarById(pNumer->Question.VarStoreId);
 				if(pVariable != NULL){
 					pBuffer = pVariable->Lsi_Buffer;
 					switch((pNumer->Flags & EFI_IFR_NUMERIC_SIZE)){
 						case EFI_IFR_NUMERIC_SIZE_1:
+							MinValue = pNumer->data.u8.MinValue;
+							MaxValue = pNumer->data.u8.MaxValue;
+							Step	 = pNumer->data.u8.Step;
 							DVal = *((UINT8*)(&pBuffer[pNumer->Question.VarStoreInfo.VarOffset]));
 							break;
 						case EFI_IFR_NUMERIC_SIZE_2:
+							MinValue = pNumer->data.u16.MinValue;
+							MaxValue = pNumer->data.u16.MaxValue;
+							Step	 = pNumer->data.u16.Step;
 							DVal = *((UINT16*)(&pBuffer[pNumer->Question.VarStoreInfo.VarOffset]));
 							break;
 						case EFI_IFR_NUMERIC_SIZE_4:
+							MinValue = pNumer->data.u32.MinValue;
+							MaxValue = pNumer->data.u32.MaxValue;
+							Step	 = pNumer->data.u32.Step;
 							DVal = *((UINT32*)(&pBuffer[pNumer->Question.VarStoreInfo.VarOffset]));
 							break;
 						case EFI_IFR_NUMERIC_SIZE_8:
+							MinValue = pNumer->data.u64.MinValue;
+							MaxValue = pNumer->data.u64.MaxValue;
+							Step	 = pNumer->data.u64.Step;
 							DVal = *((UINT64*)(&pBuffer[pNumer->Question.VarStoreInfo.VarOffset]));
 							break;
 					}
-					DEBUG((-1,"%a Val:\"%x\"\n",ScopeBuff,DVal));
+					DEBUG((-1,"%a Val:\"%x\" Range[%x - %x], Step[%x]\n",ScopeBuff,DVal,MinValue,MaxValue,Step));
 				}else{
 					DEBUG((-1,"Can't find Variable!\n"));
 				}

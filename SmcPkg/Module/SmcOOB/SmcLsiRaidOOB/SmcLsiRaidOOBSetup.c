@@ -100,7 +100,13 @@ UINT16	GetFormGoToLabel(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 
 	return pPrivate->FormGoToLabel;
 }
+UINT16	GetFormLabel(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 
+	SMC_LSI_RAID_OOB_SETUP_PRIVATE*	pPrivate = NULL;
+	pPrivate = STRUCT_START(SMC_LSI_RAID_OOB_SETUP_PRIVATE,SmcLsiRaidOOBSetupProtocol,pProtocol);
+
+	return pPrivate->FormLabel;
+}
 UINT8*	GetSetupData(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 
 	SMC_LSI_RAID_OOB_SETUP_PRIVATE*	pPrivate = NULL;
@@ -245,7 +251,8 @@ EFI_STATUS SmcLsiOOBSetupDriverStart(SMC_LSI_RAID_OOB_SETUP_DRIVER*	pDriver){
 	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetFormId				= GetFormID;
 	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetFormSetGuid			= GetFormSetGuid;
 	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetFormSetNameId			= GetFormSetNameID;
-	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetFormToLabel			= GetFormGoToLabel;
+	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetFormGoToLabel			= GetFormGoToLabel;
+	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetFormLabel				= GetFormLabel;
 	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetHiiHandle				= GetHiiHandle;
 	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetQIdStart				= GetQIdStart;
 	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetQidNow				= GetQIdNow;
@@ -262,9 +269,10 @@ EFI_STATUS SmcLsiOOBSetupDriverStart(SMC_LSI_RAID_OOB_SETUP_DRIVER*	pDriver){
 	pPrivate->FormID						= SMC_LSI_OOB_FORM;
 	pPrivate->QIdStart						= SMC_LSI_OOB_Q_ID_START;
 	pPrivate->FormIdStart					= SMC_LSI_OOB_FORM_START;	
-	pPrivate->FormGoToLabel					= SMC_LSI_OOB_FORM_GOTO_LABEL;
-	pPrivate->FormSetGuid					= lFormSetGuid;
 	pPrivate->VarIdStart					= SMC_LSI_OOB_VAR_ID_START;
+	pPrivate->FormGoToLabel					= SMC_LSI_OOB_FORM_GOTO_LABEL;
+	pPrivate->FormLabel						= SMC_LSI_OOB_FORM_LABEL;
+	pPrivate->FormSetGuid					= lFormSetGuid;
 	pPrivate->VarGuid						= lVarGuid;
 	pPrivate->HaveRaidResource				= TRUE;
 

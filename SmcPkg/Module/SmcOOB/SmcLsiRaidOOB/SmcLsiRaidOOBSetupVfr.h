@@ -26,8 +26,11 @@ extern "C" {
 
 #define LSI_3108_HF003_VAR_GUID    {0x83058311, 0xA423, 0x4997, 0x82, 0x03, 0xDB, 0xCF, 0xFB, 0x75, 0xDD, 0xCC }
 
+#define SMC_LSI_OOB_FORM             	0x5000
+
 #define SMC_LSI_OOB_FORM_GOTO_LABEL		0x1000
-#define SMC_LSI_OOB_FORM             	0x2000
+#define SMC_LSI_OOB_FORM_LABEL			0x1500
+
 #define SMC_LSI_OOB_FORM_START			0x2200
 #define	SMC_LSI_OOB_Q_ID_START			0x3000
 #define SMC_LSI_OOB_VAR_ID_START		0x4000

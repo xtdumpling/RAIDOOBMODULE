@@ -23,15 +23,15 @@ SMC_LSI_RAID_NANE	RaidName[] = {
 };
 //Use the last line to restore FormId, QId, VId, VOff, Flag default. 
 SMC_LSI_RAID_FORM		mSmcLsiRaidFormRefSearchTable[] = {
-	{RAID_3108, L"Main Menu"						, EFI_IFR_REF_OP, 0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFF, FALSE},
-	{RAID_3108, L"Configuration Management"			, EFI_IFR_REF_OP, 0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFF, FALSE},
-	{RAID_3108, L"Create Virtual Drive"				, EFI_IFR_REF_OP, 0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFF, FALSE},
-	{RAID_3108, L"Select Drives"					, EFI_IFR_REF_OP, 0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFF, FALSE},
-	{RAID_3108, L"Controller Management"			, EFI_IFR_REF_OP, 0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFF, FALSE},
-	{RAID_3108, L"Advanced Controller Properties"	, EFI_IFR_REF_OP, 0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFF, FALSE},
-	{RAID_3108, L"Drive Management"					, EFI_IFR_REF_OP, 0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFF, FALSE},
+	{RAID_3108, L"Main Menu"						, EFI_IFR_REF_OP, 0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFF, FALSE, FALSE},
+	{RAID_3108, L"Configuration Management"			, EFI_IFR_REF_OP, 0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFF, FALSE, FALSE},
+	{RAID_3108, L"Create Virtual Drive"				, EFI_IFR_REF_OP, 0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFF, FALSE, FALSE},
+	{RAID_3108, L"Select Drives"					, EFI_IFR_REF_OP, 0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFF, FALSE, TRUE},
+	{RAID_3108, L"Controller Management"			, EFI_IFR_REF_OP, 0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFF, FALSE, FALSE},
+	{RAID_3108, L"Advanced Controller Properties"	, EFI_IFR_REF_OP, 0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFF, FALSE, FALSE},
+	{RAID_3108, L"Drive Management"					, EFI_IFR_REF_OP, 0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFF, FALSE, FALSE},
 
-	{RAID_NULL, L"SMC_LSI_RAID_END"					,			0xFF, 0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFF, FALSE}
+	{RAID_NULL, L"SMC_LSI_RAID_END"					,			0xFF, 0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFF, FALSE, FALSE}
 };
 
 SMC_LSI_ITEMS	mSmcLsiItemsTable[] = {
