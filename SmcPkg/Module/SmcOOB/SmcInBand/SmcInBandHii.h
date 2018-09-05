@@ -58,7 +58,7 @@
 #include <Protocol/HiiPackageList.h>
 #include <Protocol/HiiString.h>
 
-#define MAX_TITLE_SIZE 128
+#define MAX_TITLE_SIZE 512
 
 #pragma pack(1)
 

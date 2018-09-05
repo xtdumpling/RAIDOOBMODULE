@@ -1505,7 +1505,7 @@ VOID	DEBUG_ADDDYNAMICITEMS_PACKAGE(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 				UINT64					DVal		= 0;
 
 				pNumer = (EFI_IFR_NUMERIC*)IfrOpHeader;
-				DEBUG((-1,"%a%s",(ScopeBuff,pNumer->Header.OpCode == EFI_IFR_NUMERIC_OP) ? L"Numeric" : L"OneOf"));
+				DEBUG((-1,"%a%s",ScopeBuff,(pNumer->Header.OpCode == EFI_IFR_NUMERIC_OP) ? L"Numeric" : L"OneOf"));
 
 				DEBUG((-1,"[%s], QId[%x], VId[%x], VOffset[%x]\n",
 							GetHiiString(SmcSetupHiiHandle,pNumer->Question.Header.Prompt),
@@ -1586,7 +1586,6 @@ EFI_STATUS	InitialSmcRaidSetupPageData(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtoco
 	SmcRaidVarTable	  = pProtocol->SmcLsiVarTable;
 	SmcLsiSetupHandle = pProtocol->SmcLsiGetHiiHandle(pProtocol);
 
-	DEBUG((-1,"SmcLsiSetupHandle[%x]\n",(UINT32)SmcLsiSetupHandle));
 	if(! (!!SmcLsiSetupHandle)) return SettingErrorStatus(pProtocol,0x01,EFI_INVALID_PARAMETER);
 
 	pProtocol->SmcLsiCurrRAIDSetupData	= NULL;
@@ -1796,19 +1795,19 @@ EFI_STATUS SmcLsiRaidLib_ParseNvData(
 		Status = gBS->AllocatePool(EfiBootServicesData,sizeof(EFI_GUID),SmcRaidVarGuid);
 		RETURN_IFERROR();
 		MemSet(*SmcRaidVarGuid,sizeof(EFI_GUID),0x00);
-		MemCpy(&pVarSet->SmcLsiVarGuid,*SmcRaidVarGuid,sizeof(EFI_GUID));
+		MemCpy(*SmcRaidVarGuid,&pVarSet->SmcLsiVarGuid,sizeof(EFI_GUID));
 		SMC_RAID_DETAIL_DEBUG((-1,"SmcRaidVarGuid[%g], ",*SmcRaidVarGuid));
 
 		Status = gBS->AllocatePool(EfiBootServicesData,sizeof(UINTN),SmcRaidVarSize);
 		RETURN_IFERROR();
 		MemSet(*SmcRaidVarSize,sizeof(UINTN),0x00);
-		MemCpy(&pVarSet->SmcLsiVarSize,*SmcRaidVarSize,sizeof(UINT16));
-		SMC_RAID_DETAIL_DEBUG((-1,"SmcRaidVarSize[%g]\n",*SmcRaidVarSize));
+		MemCpy(*SmcRaidVarSize,&pVarSet->SmcLsiVarSize,sizeof(UINT16));
+		SMC_RAID_DETAIL_DEBUG((-1,"SmcRaidVarSize[%x]\n",**SmcRaidVarSize));
 
 		Status = gBS->AllocatePool(EfiBootServicesData,pVarSet->SmcLsiVarSize,SmcRaidVarBuffer);
 		RETURN_IFERROR();
 		MemSet(*SmcRaidVarBuffer,pVarSet->SmcLsiVarSize,0x00);
-		MemCpy(pVarSet->SmcLsiVarBuffer,*SmcRaidVarBuffer,pVarSet->SmcLsiVarSize);
+		MemCpy(*SmcRaidVarBuffer,pVarSet->SmcLsiVarBuffer,pVarSet->SmcLsiVarSize);
 
 		pVarSet 	= pVarSet->pNext;
 		ReNewVar 	= FALSE;

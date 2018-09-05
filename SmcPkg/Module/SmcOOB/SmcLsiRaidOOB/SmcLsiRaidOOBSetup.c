@@ -356,7 +356,7 @@ EFI_STATUS	SmcLsiOOBSetupDriverGetNvData(SMC_LSI_RAID_OOB_SETUP_DRIVER*  pDriver
 										   &pNVStruct->SmcRaidVarSize,
 										   &pNVStruct->SmcRaidVarBuffer);
 
-		DEBUG((-1,"SmcLsiRaidLib_ParseNvData Status[%r]\n",Status));
+//		DEBUG((-1,"SmcLsiRaidLib_ParseNvData Status[%r]\n",Status));
 		return Status;
 	}
 	return Status;
