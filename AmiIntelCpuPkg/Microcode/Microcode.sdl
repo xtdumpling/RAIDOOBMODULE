@@ -1,0 +1,204 @@
+TOKEN
+	Name  = "Microcode_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable Microcode support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "NON_PRODUCTION_MICROCODE"
+	Value  = "0"
+	Help  = "Enable Non-production Microcode"
+	TokenType = Boolean
+End
+
+TOKEN
+    Name  = "MPDTable_CREATED"
+    Value  = "1"
+    Help  = "Create MPDT Table."
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+End
+
+TOKEN
+	Name  = "MICROCODE_SPLIT_BB_UPDATE"
+	Value  = "0"
+	Help  = "If enabled, \ a) Microcode added at build time is stored in boot block.\ b) Microcode updates by INT15h are stored in the main firmware volume.\If disabled, all microcode is in the main firmware volume.\\If enabled, microcode is more fault tolerant, but requires more flash space.\"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "MICROCODE_PAD_SIZE"
+	Value  = "0x2000"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Token = "MICROCODE_SPLIT_BB_UPDATE" "=" "0"
+End
+
+TOKEN
+	Name  = "MICROCODE_PAD_SIZE"
+	Value  = "0x5000"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Token = "MICROCODE_SPLIT_BB_UPDATE" "=" "1"
+End
+
+TOKEN
+	Name  = "PACK_MICROCODE"
+	Value  = "1"
+	Help  = "This packs the microcode with no gaps.\If Split microcode is disabled, it is recommended for this to be disabled\for compatibility with earlier CPU modules.\The CPU module must support this. "
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "MICROCODE_ALIGNMENT"
+	Value  = "16"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "MICROCODE_BLOCK_SIZE"
+	Value  = "2048"
+	Help  = "Do not change. This matches the INT15h Microcode update."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "FV_MICROCODE_BASE"
+	Value  = "$(FV_MAIN_BASE)"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "MICROCODE_SPLIT_BB_UPDATE" "=" "0"
+End
+
+TOKEN
+	Name  = "FV_MICROCODE_BASE"
+	Value  = "$(FV_BB_BASE)"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "MICROCODE_SPLIT_BB_UPDATE" "=" "1"
+End
+
+TOKEN
+	Name  = "FV_MICROCODE_UPDATE_BASE"
+	Value  = "$(FV_MAIN_BASE)"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "MICROCODE_SPLIT_BB_UPDATE" "=" "1"
+End
+
+TOKEN
+	Name  = "MPACK_LINUX"
+	Value  = "MicroPack -nologo"
+	TokenType = Expression
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "MPACK_WIN"
+	Value  = "MicroPack.exe -nologo"
+	TokenType = Expression
+	TargetMAK = Yes
+End
+
+TOKEN
+    Name  = "USE_NEW_MPACK"
+    Value  = "0"
+    TokenType = Boolean
+    TargetMAK = Yes
+End
+
+TOKEN
+    Name  = "MICROCODE_FFS_ALIGNMENT"
+    Value  = "Align = 16"
+    Help  = "Defines alignment of the Microcode FFS file\Must have 'Align = X' format.\X must be one of: 8, 16, 32, 64, 128, 512"
+    TokenType = Expression
+    TargetFDF = Yes
+    Range  = "'Align = X', X is one of:8, 16, 32, 64, 128, 512"
+End
+
+PATH
+	Name  = "MICROCODE_DIR"
+End
+
+MODULE
+	Help  = "Includes Microcode.mak to Project"
+	File  = "Microcode.mak"
+End
+
+ELINK
+	Name  = "MICROCODE_FILES"
+	InvokeOrder = ReplaceParent
+End
+
+FFS_FILE
+	Name  = "Microcode"
+	FD_AREA  = "FV_BB"
+	Index  = "1"
+	FILE_Stmt  = "AmiIntelCpuPkg/Microcode/MicrocodeFdfFileStatement.txt"
+	Token = "MICROCODE_SPLIT_BB_UPDATE" "=" "1"
+End
+
+FFS_FILE
+	Name  = "Microcode"
+	FD_AREA  = "FV_MAIN"
+	Index  = "1"
+	FILE_Stmt  = "AmiIntelCpuPkg/Microcode/MicrocodeFdfFileStatement.txt"
+	Token = "NESTED_FV_MAIN" "=" "0"
+	Token = "MICROCODE_SPLIT_BB_UPDATE" "=" "0"
+End
+
+FFS_FILE
+	Name  = "Microcode"
+	FD_AREA  = "FV_MAIN_WRAPPER"
+	Index  = "1"
+	FILE_Stmt  = "AmiIntelCpuPkg/Microcode/MicrocodeFdfFileStatement.txt"
+	Token = "NESTED_FV_MAIN" "=" "1"
+        Token = "MICROCODE_SPLIT_BB_UPDATE" "=" "0"
+End
+
+FFS_FILE
+	Name  = "MicrocodeBlank"
+	FD_AREA  = "FV_MAIN"
+	Index  = "1"
+	FILE_Stmt  = "AmiIntelCpuPkg/Microcode/MicrocodeBlankFdfFileStatement.txt"
+	Token = "NESTED_FV_MAIN" "=" "0"
+	Token = "MICROCODE_SPLIT_BB_UPDATE" "=" "1"
+End
+
+FFS_FILE
+	Name  = "MicrocodeBlank"
+	FD_AREA  = "FV_MAIN_WRAPPER"
+	Index  = "1"
+	FILE_Stmt  = "AmiIntelCpuPkg/Microcode/MicrocodeBlankFdfFileStatement.txt"
+	Token = "NESTED_FV_MAIN" "=" "1"
+        Token = "MICROCODE_SPLIT_BB_UPDATE" "=" "1"
+End
+

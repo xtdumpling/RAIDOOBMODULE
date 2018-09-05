@@ -1,0 +1,77 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2013 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#***************************************************************************
+#
+#  Rev. 1.00
+#       Bug fixed:   Chang logo to SMC's in quiet boot.
+#       Reason:
+#       Auditor:     Hartmann Hsieh
+#       Date:        05/23/13
+#
+#****************************************************************************
+
+TOKEN
+	Name  = "SUPER_M_LOGO_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable Super M Logo support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+        Master = Yes
+End
+
+TOKEN
+	Name  = "TSE_OEM_POSTLOGO_SUPPORT"
+	Value  = "1"
+	Help  = "Enable to support OEMLogo image in postscreen."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetFDF = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "OEMLogo_FILE_PATH"
+	Value  = "SmcPkg\Binary\Logo\SmcSmLogo.bmp"
+	TokenType = Expression
+	TargetMAK = Yes
+	Token = "TSE_OEM_POSTLOGO_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "LOGO_FILE_NAME"
+	Value  = "SmcPkg\Binary\Logo\SuperM1.bmp"
+	TokenType = Expression
+	TargetMAK = Yes
+	TargetFDF = Yes
+End
+
+FFS_FILE
+	Name  = "AmiTseLogoFfsFdfFileStatement"
+	FD_AREA  = "FV_MAIN"
+	FILE_Stmt  = "SmcPkg\Binary\Logo\Logoffs.txt"
+	Token = "TSE_ROMHOLE_SUPPORT" "=" "0"
+	Token = "TSE_OEM_POSTLOGO_SUPPORT" "=" "1"
+End
+
+FFS_FILE
+	Name  = "AmiTseLogoFfsFdfFileStatement"
+	FD_AREA  = "FV_LOGOROMHOLE"
+	FILE_Stmt  = "SmcPkg\Binary\Logo\Logoffs.txt"
+	Token = "TSE_ROMHOLE_SUPPORT" "=" "1"
+	Token = "TSE_OEM_POSTLOGO_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "SmallLogo"
+	File  = "SmallLogo.inf"
+	Package  = "AmiTsePkg"
+	ModuleTypes  = "USER_DEFINED"
+End

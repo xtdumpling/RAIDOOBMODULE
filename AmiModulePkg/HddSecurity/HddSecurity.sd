@@ -1,0 +1,732 @@
+//***********************************************************************
+//***********************************************************************
+//**                                                                   **
+//**        (C)Copyright 1985-2014, American Megatrends, Inc.          **
+//**                                                                   **
+//**                       All Rights Reserved.                        **
+//**                                                                   **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093         **
+//**                                                                   **
+//**                       Phone: (770)-246-8600                       **
+//**                                                                   **
+//***********************************************************************
+//***********************************************************************
+
+/** @file HddSecurity.sd
+    Hdd Security Setup Page. Interactive password implementation.
+
+**/
+
+
+#ifdef FORM_SET_TYPEDEF
+#include "HddSecuritySetupVar.h"
+#endif 
+
+#ifdef SECURITY_FORM_SET
+    #ifdef FORM_SET_VARSTORE
+        varstore HDD_SECURITY_CONFIG,
+        key = AUTO_ID(HDD_SECURITY_CONFIG_KEY_ID),
+        name = HDDSecConfig,
+        guid = HDD_SECURITY_CONFIG_GUID;
+    #endif // end of FORM_SET_VARSTORE
+#endif
+
+#if defined(VFRCOMPILE) && !defined(CONTROLS_ARE_DEFINED)
+#define CONTROL_DEFINITION
+#endif
+
+#ifdef CONTROL_DEFINITION
+
+    #define HDD_SECURITY_DUMMY_DEFINITION\
+        text\
+                help   = STRING_TOKEN(STR_EMPTY),\
+                text   = STRING_TOKEN(STR_IDE_SECURITY_PROMPT),\
+		        text   = STRING_TOKEN(STR_EMPTY),\
+                flags  = 0,\
+                key    = 0;\
+
+    #define HDD_SECURITY_HDD_NAME(HDD_NAME)\
+        text\
+                help   = STRING_TOKEN(STR_EMPTY),\
+                text   = STRING_TOKEN(HDD_NAME),\
+		        text   = STRING_TOKEN(STR_EMPTY),\
+                flags  = 0,\
+                key    = 0;\
+
+    #define HDD_SECURITY_CONFIG_SUPPORTED\
+        text\
+            help   = STRING_TOKEN(STR_EMPTY),\
+            text   = STRING_TOKEN(STR_SEC_SUPPORTED),\
+            text   = STRING_TOKEN(STR_HDDS_YES),\
+            flags  = 0,\
+            key    = 0;\
+
+    #define HDD_SECURITY_CONFIG_NOT_SUPPORTED\
+        text\
+            help   = STRING_TOKEN(STR_EMPTY),\
+            text   = STRING_TOKEN(STR_SEC_SUPPORTED),\
+            text   = STRING_TOKEN(STR_HDDS_NO),\
+            flags  = 0,\
+            key    = 0;\
+    
+
+    #define HDD_SECURITY_CONFIG_ENABLED\
+        text\
+            help   = STRING_TOKEN(STR_EMPTY),\
+            text   = STRING_TOKEN(STR_SEC_ENABLED),\
+            text   = STRING_TOKEN(STR_HDDS_YES),\
+            flags  = 0,\
+            key    = 0;\
+
+    #define HDD_SECURITY_CONFIG_NOT_ENABLED\
+        text\
+            help   = STRING_TOKEN(STR_EMPTY),\
+            text   = STRING_TOKEN(STR_SEC_ENABLED),\
+            text   = STRING_TOKEN(STR_HDDS_NO),\
+            flags  = 0,\
+            key    = 0;\
+    
+  
+    #define HDD_SECURITY_CONFIG_LOCKED\
+        text\
+            help   = STRING_TOKEN(STR_EMPTY),\
+            text   = STRING_TOKEN(STR_SEC_LOCKED),\
+            text   = STRING_TOKEN(STR_HDDS_YES),\
+            flags  = 0,\
+            key    = 0;\
+    
+
+    #define HDD_SECURITY_CONFIG_NOT_LOCKED\
+        text\
+            help   = STRING_TOKEN(STR_EMPTY),\
+            text   = STRING_TOKEN(STR_SEC_LOCKED),\
+            text   = STRING_TOKEN(STR_HDDS_NO),\
+            flags  = 0,\
+            key    = 0;\
+    
+    #define HDD_SECURITY_CONFIG_FROZEN\
+        text\
+            help   = STRING_TOKEN(STR_EMPTY),\
+            text   = STRING_TOKEN(STR_SEC_FROZEN),\
+            text   = STRING_TOKEN(STR_HDDS_YES),\
+            flags  = 0,\
+            key    = 0;\
+    
+    #define HDD_SECURITY_CONFIG_NOT_FROZEN\
+        text\
+            help   = STRING_TOKEN(STR_EMPTY),\
+            text   = STRING_TOKEN(STR_SEC_FROZEN),\
+            text   = STRING_TOKEN(STR_HDDS_NO),\
+            flags  = 0,\
+            key    = 0;\
+    
+    #define HDD_SECURITY_CONFIG_USER_PASSWORD_STATUS\
+        text\
+            help   = STRING_TOKEN(STR_EMPTY),\
+            text   = STRING_TOKEN(STR_IDE_USER_PASSWORD_STS),\
+            text   = STRING_TOKEN(STR_HDDS_INSTALLED),\
+            flags  = 0,\
+            key    = 0;\
+
+    #define HDD_SECURITY_CONFIG_USER_PASSWORD_STATUS_NOT_INSTALLED\
+        text\
+            help   = STRING_TOKEN(STR_EMPTY),\
+            text   = STRING_TOKEN(STR_IDE_USER_PASSWORD_STS),\
+            text   = STRING_TOKEN(STR_NOT_HDDS_INSTALLED),\
+            flags  = 0,\
+            key    = 0;\
+
+    #define HDD_SECURITY_CONFIG_MASTER_PASSWORD_STATUS\
+        text\
+            help   = STRING_TOKEN(STR_EMPTY),\
+            text   = STRING_TOKEN(STR_IDE_MASTER_PASSWORD_STS),\
+            text   = STRING_TOKEN(STR_HDDS_INSTALLED),\
+            flags  = 0,\
+            key    = 0;\
+
+    #define HDD_SECURITY_CONFIG_MASTER_PASSWORD_STATUS_NOT_INSTALLED\
+        text\
+            help   = STRING_TOKEN(STR_EMPTY),\
+            text   = STRING_TOKEN(STR_IDE_MASTER_PASSWORD_STS),\
+            text   = STRING_TOKEN(STR_NOT_HDDS_INSTALLED),\
+            flags  = 0,\
+            key    = 0;\
+
+  
+   #if 0 
+   AUTO_ID(HDD_SECURITY_GET_USERPASSWORD1_KEY)
+   AUTO_ID(HDD_SECURITY_GET_USERPASSWORD2_KEY)
+   AUTO_ID(HDD_SECURITY_GET_USERPASSWORD3_KEY)
+   AUTO_ID(HDD_SECURITY_GET_USERPASSWORD4_KEY)
+   AUTO_ID(HDD_SECURITY_GET_USERPASSWORD5_KEY)
+   AUTO_ID(HDD_SECURITY_GET_USERPASSWORD6_KEY)
+   
+   AUTO_ID(HDD_SECURITY_GET_MASTERPASSWORD1_KEY)
+   AUTO_ID(HDD_SECURITY_GET_MASTERPASSWORD2_KEY)
+   AUTO_ID(HDD_SECURITY_GET_MASTERPASSWORD3_KEY)
+   AUTO_ID(HDD_SECURITY_GET_MASTERPASSWORD4_KEY)
+   AUTO_ID(HDD_SECURITY_GET_MASTERPASSWORD5_KEY)
+   AUTO_ID(HDD_SECURITY_GET_MASTERPASSWORD6_KEY)
+   #endif
+   
+   
+    #define HDD_SECURITY_GET_USERPASSWORD_FEATURES_COMMON(HDD_NUM, VARID_NAME, KEY_VALUE)\
+        suppressif ideqvallist HDD_SECURITY_CONFIG.Frozen[HDD_NUM] == 1;\
+            suppressif ideqvallist HDD_SECURITY_CONFIG.Count == 0;\
+            password varid  = HDD_SECURITY_CONFIG.VARID_NAME,\
+                prompt      = STRING_TOKEN(STR_IDE_USER_PASSWORD),\
+                help        = STRING_TOKEN(STR_IDE_USER_PASSWORD_HELP),\
+                flags       = INTERACTIVE | RESET_REQUIRED,\
+                key         = KEY_VALUE,\
+                minsize     = 0,\
+                maxsize     = IDE_PASSWORD_LENGTH,\
+                encoding    = 1,\
+        endpassword;\
+        SUPPRESS_GRAYOUT_ENDIF
+        
+        #define HDD_SECURITY_GET_MASTERPASSWORD_FEATURES_COMMON(HDD_NUM, VARID_NAME, KEY_VALUE)\
+        suppressif ideqval HDD_SECURITY_CONFIG.Frozen[HDD_NUM] == 1;\
+            grayoutif  ideqval HDD_SECURITY_CONFIG.ShowMaster[HDD_NUM] == 0;\
+                suppressif ideqvallist HDD_SECURITY_CONFIG.Count == 0;\
+        password varid  = HDD_SECURITY_CONFIG.VARID_NAME,\
+                prompt      = STRING_TOKEN(STR_IDE_MASTER_PASSWORD),\
+                help        = STRING_TOKEN(STR_IDE_MASTER_PASSWORD_HELP),\
+                flags       = INTERACTIVE | RESET_REQUIRED,\
+                key         = KEY_VALUE,\
+                minsize     = 0,\
+                maxsize     = IDE_PASSWORD_LENGTH,\
+                encoding    = 1,\
+        endpassword;\
+        SUPPRESS_GRAYOUT_ENDIF\
+        endif;
+        
+    #define HDD_SECURITY_FEATURES(HDD_NUM)\
+        suppressif ideqvallist HDD_SECURITY_CONFIG.Supported[HDD_NUM] == 0;\
+            HDD_SECURITY_CONFIG_SUPPORTED\
+        endif;\
+        suppressif ideqvallist HDD_SECURITY_CONFIG.Supported[HDD_NUM] == 1;\
+            HDD_SECURITY_CONFIG_NOT_SUPPORTED\
+        endif;\
+        suppressif ideqvallist HDD_SECURITY_CONFIG.Enabled[HDD_NUM] == 0;\
+            HDD_SECURITY_CONFIG_ENABLED\
+        endif;\
+        suppressif ideqvallist HDD_SECURITY_CONFIG.Enabled[HDD_NUM] == 1;\
+            HDD_SECURITY_CONFIG_NOT_ENABLED\
+        endif;\
+        suppressif ideqvallist HDD_SECURITY_CONFIG.Locked[HDD_NUM] == 0;\
+            HDD_SECURITY_CONFIG_LOCKED\
+        endif;\
+        suppressif ideqvallist HDD_SECURITY_CONFIG.Locked[HDD_NUM] == 1;\
+            HDD_SECURITY_CONFIG_NOT_LOCKED\
+        endif;\
+        suppressif ideqvallist HDD_SECURITY_CONFIG.Frozen[HDD_NUM] == 0;\
+            HDD_SECURITY_CONFIG_FROZEN\
+        endif;\
+        suppressif ideqvallist HDD_SECURITY_CONFIG.Frozen[HDD_NUM] == 1;\
+            HDD_SECURITY_CONFIG_NOT_FROZEN\
+        endif;\
+        suppressif ideqvallist HDD_SECURITY_CONFIG.UserPasswordStatus[HDD_NUM] == 0;\
+            HDD_SECURITY_CONFIG_USER_PASSWORD_STATUS\
+        endif;\
+        suppressif ideqvallist HDD_SECURITY_CONFIG.UserPasswordStatus[HDD_NUM] == 1;\
+            HDD_SECURITY_CONFIG_USER_PASSWORD_STATUS_NOT_INSTALLED\
+        endif;\
+        suppressif ideqvallist HDD_SECURITY_CONFIG.MasterPasswordStatus[HDD_NUM] == 0;\
+            HDD_SECURITY_CONFIG_MASTER_PASSWORD_STATUS\
+        endif;\
+        suppressif ideqvallist HDD_SECURITY_CONFIG.MasterPasswordStatus[HDD_NUM] == 1;\
+            HDD_SECURITY_CONFIG_MASTER_PASSWORD_STATUS_NOT_INSTALLED\
+        endif;
+        
+#endif
+
+#ifdef CONTROLS_WITH_DEFAULTS
+        HDD_SECURITY_HDD_NAME(STR_SECURITY_HDD_ONE)
+        HDD_SECURITY_FEATURES(0)
+        HDD_SECURITY_GET_USERPASSWORD_FEATURES_COMMON(0, HddUserPassword, HDD_SECURITY_GET_USERPASSWORD1_KEY)
+        HDD_SECURITY_GET_MASTERPASSWORD_FEATURES_COMMON(0, HddMasterPassword, HDD_SECURITY_GET_MASTERPASSWORD1_KEY)
+        HDD_SECURITY_HDD_NAME(STR_SECURITY_HDD_TWO)
+        HDD_SECURITY_FEATURES(1)
+        HDD_SECURITY_GET_USERPASSWORD_FEATURES_COMMON(1, HddUserPassword_HDD2, HDD_SECURITY_GET_USERPASSWORD2_KEY)
+        HDD_SECURITY_GET_MASTERPASSWORD_FEATURES_COMMON(1, HddMasterPassword_HDD2, HDD_SECURITY_GET_MASTERPASSWORD2_KEY)
+        HDD_SECURITY_HDD_NAME(STR_SECURITY_HDD_THREE)
+        HDD_SECURITY_FEATURES(2)
+        HDD_SECURITY_GET_USERPASSWORD_FEATURES_COMMON(2, HddUserPassword_HDD3, HDD_SECURITY_GET_USERPASSWORD3_KEY)
+        HDD_SECURITY_GET_MASTERPASSWORD_FEATURES_COMMON(2, HddMasterPassword_HDD3, HDD_SECURITY_GET_MASTERPASSWORD3_KEY)
+        HDD_SECURITY_HDD_NAME(STR_SECURITY_HDD_FOUR)
+        HDD_SECURITY_FEATURES(3)
+        HDD_SECURITY_GET_USERPASSWORD_FEATURES_COMMON(3, HddUserPassword_HDD4, HDD_SECURITY_GET_USERPASSWORD4_KEY)
+        HDD_SECURITY_GET_MASTERPASSWORD_FEATURES_COMMON(3, HddMasterPassword_HDD4, HDD_SECURITY_GET_MASTERPASSWORD4_KEY)
+        HDD_SECURITY_HDD_NAME(STR_SECURITY_HDD_FIVE)
+        HDD_SECURITY_FEATURES(4)
+        HDD_SECURITY_GET_USERPASSWORD_FEATURES_COMMON(4, HddUserPassword_HDD5, HDD_SECURITY_GET_USERPASSWORD5_KEY)
+        HDD_SECURITY_GET_MASTERPASSWORD_FEATURES_COMMON(4, HddMasterPassword_HDD5, HDD_SECURITY_GET_MASTERPASSWORD5_KEY)
+        HDD_SECURITY_HDD_NAME(STR_SECURITY_HDD_SIX)
+        HDD_SECURITY_FEATURES(5)
+        HDD_SECURITY_GET_USERPASSWORD_FEATURES_COMMON(5, HddUserPassword_HDD6, HDD_SECURITY_GET_USERPASSWORD6_KEY)
+        HDD_SECURITY_GET_MASTERPASSWORD_FEATURES_COMMON(5, HddMasterPassword_HDD6, HDD_SECURITY_GET_MASTERPASSWORD6_KEY)
+
+#endif 
+#if (SETUP_SAME_SYS_HDD_PW != 1)
+#ifdef SECURITY_FORM_SET
+    #ifdef FORM_SET_ITEM
+        suppressif NOT ideqvallist HDD_SECURITY_CONFIG.Count == 1 2 3 4 5 6;
+            SEPARATOR
+            SEPARATOR
+        endif;
+        #if !SECURITY_SETUP_ON_SAME_PAGE
+             #if ALL_HDD_SAME_PW
+             suppressif ideqval HDD_SECURITY_CONFIG.Count == 0;
+                SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_PWD_DESC))
+                SEPARATOR
+                SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_ONE))
+                SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_TWO))
+                SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_THREE))
+                SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_FOUR))
+                SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_FIVE))
+                SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_SIX))
+                SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_SEVEN))
+                SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_EIGHT))
+                SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_NINE))
+                SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_TEN))
+                SEPARATOR
+              endif;
+                HDD_SECURITY_GET_USERPASSWORD_FEATURES_COMMON(0, HddUserPassword, HDD_SECURITY_GET_USERPASSWORD1_KEY)
+                #if DISPLAY_MASTER_PASSWORD
+                    HDD_SECURITY_GET_MASTERPASSWORD_FEATURES_COMMON(0, HddMasterPassword, HDD_SECURITY_GET_MASTERPASSWORD1_KEY)
+                #endif //DISPLAY_MASTER_PASSWORD
+            #endif //ALL_HDD_SAME_PW
+        #endif // !SECURITY_SETUP_ON_SAME_PAGE
+    #endif //FORM_SET_ITEM
+
+
+    #ifdef FORM_SET_GOTO 
+#if SECURITY_SETUP_ON_SAME_PAGE
+    suppressif NOT ideqvallist HDD_SECURITY_CONFIG.Count == 1 2 3 4 5 6;
+            goto HDD_PASSWORD_FORM_ID,
+    		    prompt  = STRING_TOKEN(STR_HDD_SECURITY_CONFIG),
+    		    help    = STRING_TOKEN(STR_IDE_SECURITY_ALL_HELP),
+    		    flags   = INTERACTIVE,
+    		    key     = AUTO_ID(HDD_SECURITY_UPDATE_INFORMATION_KEY);
+    endif;
+#else
+    suppressif ideqvallist HDD_SECURITY_CONFIG.Count == 0;
+        SUBTITLE(STRING_TOKEN(STR_HDD_SECURITY_CONFIG))
+    endif;
+    suppressif NOT ideqvallist HDD_SECURITY_CONFIG.Count == 1 2 3 4 5 6;
+                goto HDD1_PASSWORD_FORM_ID,
+                prompt  = STRING_TOKEN(STR_SECURITY_HDD_ONE),
+                help    = STRING_TOKEN(STR_IDE_SECURITY_HELP),
+                flags   = INTERACTIVE,
+                key     = HDD_SECURITY_UPDATE_INFORMATION_KEY;
+    endif;
+    suppressif NOT ideqvallist HDD_SECURITY_CONFIG.Count == 2 3 4 5 6;
+                goto HDD2_PASSWORD_FORM_ID,
+                prompt  = STRING_TOKEN(STR_SECURITY_HDD_TWO),
+                help    = STRING_TOKEN(STR_IDE_SECURITY_HELP),
+                flags   = INTERACTIVE,
+                key     = AUTO_ID(HDD_SECURITY_UPDATE_INFORMATION2_KEY);
+    endif;
+    suppressif NOT ideqvallist HDD_SECURITY_CONFIG.Count == 3 4 5 6;
+                goto HDD3_PASSWORD_FORM_ID,
+                prompt  = STRING_TOKEN(STR_SECURITY_HDD_THREE),
+                help    = STRING_TOKEN(STR_IDE_SECURITY_HELP),
+                flags   = INTERACTIVE,
+                key     = AUTO_ID(HDD_SECURITY_UPDATE_INFORMATION3_KEY);
+    endif;
+    suppressif NOT ideqvallist HDD_SECURITY_CONFIG.Count == 4 5 6;
+                goto HDD4_PASSWORD_FORM_ID,
+                prompt  = STRING_TOKEN(STR_SECURITY_HDD_FOUR),
+                help    = STRING_TOKEN(STR_IDE_SECURITY_HELP),
+                flags   = INTERACTIVE,
+                key     = AUTO_ID(HDD_SECURITY_UPDATE_INFORMATION4_KEY);
+    endif;
+    suppressif NOT ideqvallist HDD_SECURITY_CONFIG.Count == 5 6;
+                goto HDD5_PASSWORD_FORM_ID,
+                prompt  = STRING_TOKEN(STR_SECURITY_HDD_FIVE),
+                help    = STRING_TOKEN(STR_IDE_SECURITY_HELP),
+                flags   = INTERACTIVE,
+                key     = AUTO_ID(HDD_SECURITY_UPDATE_INFORMATION5_KEY);
+    endif;
+    suppressif NOT ideqvallist HDD_SECURITY_CONFIG.Count == 6;
+                goto HDD6_PASSWORD_FORM_ID,
+                prompt  = STRING_TOKEN(STR_SECURITY_HDD_SIX),
+                help    = STRING_TOKEN(STR_IDE_SECURITY_HELP),
+                flags   = INTERACTIVE,
+                key     = AUTO_ID(HDD_SECURITY_UPDATE_INFORMATION6_KEY);
+    endif;
+#endif //SECURITY_SETUP_ON_SAME_PAGE
+	#endif// end of FORM_SET_GOTO
+
+	#ifdef FORM_SET_FORM
+		//
+		// Define forms
+		//
+#if SECURITY_SETUP_ON_SAME_PAGE
+        form formid = AUTO_ID(HDD_PASSWORD_FORM_ID),
+		title       = STRING_TOKEN(STR_HDD_SECURITY_CONFIG);
+		
+        SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_PWD_DESC))
+        SEPARATOR
+        SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_ONE))
+        SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_TWO))
+        SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_THREE))
+        SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_FOUR))
+        SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_FIVE))
+        SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_SIX))
+        SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_SEVEN))
+        SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_EIGHT))
+        
+         #if ALL_HDD_SAME_PW
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_NINE))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_TEN))
+            SEPARATOR
+            HDD_SECURITY_GET_USERPASSWORD_FEATURES_COMMON(0, HddUserPassword, HDD_SECURITY_GET_USERPASSWORD1_KEY)
+            #if DISPLAY_MASTER_PASSWORD
+                HDD_SECURITY_GET_MASTERPASSWORD_FEATURES_COMMON(0, HddMasterPassword, HDD_SECURITY_GET_MASTERPASSWORD1_KEY)
+            #endif
+        #endif
+        
+		SEPARATOR
+        SUBTITLE(STRING_TOKEN(STR_HDD_PASSWORD_CONFIG))
+        SEPARATOR
+
+            
+        //******************************************
+		//*************** HDD 1nd ******************
+		//******************************************
+        suppressif NOT ideqvallist HDD_SECURITY_CONFIG.Count == 1 2 3 4 5 6;
+            HDD_SECURITY_HDD_NAME(STR_SECURITY_HDD_ONE)
+		endif;
+
+        suppressif NOT ideqvallist HDD_SECURITY_CONFIG.Count == 1 2 3 4 5 6;
+            HDD_SECURITY_FEATURES(0)
+            #if !ALL_HDD_SAME_PW
+                HDD_SECURITY_GET_USERPASSWORD_FEATURES_COMMON(0, HddUserPassword, HDD_SECURITY_GET_USERPASSWORD1_KEY)
+                #if DISPLAY_MASTER_PASSWORD
+                    HDD_SECURITY_GET_MASTERPASSWORD_FEATURES_COMMON(0, HddMasterPassword, HDD_SECURITY_GET_MASTERPASSWORD1_KEY)
+                #endif
+            #endif
+            SEPARATOR
+            SEPARATOR
+        endif;
+
+
+        //******************************************
+		//*************** HDD 2nd ******************
+		//******************************************
+        suppressif NOT ideqvallist HDD_SECURITY_CONFIG.Count == 2 3 4 5 6;
+            HDD_SECURITY_HDD_NAME(STR_SECURITY_HDD_TWO)
+		endif;
+
+        suppressif NOT ideqvallist HDD_SECURITY_CONFIG.Count == 2 3 4 5 6;
+            HDD_SECURITY_FEATURES(1)
+            #if !ALL_HDD_SAME_PW
+                HDD_SECURITY_GET_USERPASSWORD_FEATURES_COMMON(1, HddUserPassword_HDD2, HDD_SECURITY_GET_USERPASSWORD2_KEY)
+                #if DISPLAY_MASTER_PASSWORD
+                    HDD_SECURITY_GET_MASTERPASSWORD_FEATURES_COMMON(1, HddMasterPassword_HDD2, HDD_SECURITY_GET_MASTERPASSWORD2_KEY)
+                #endif
+            #endif
+            SEPARATOR
+            SEPARATOR
+        endif;
+
+        //******************************************
+		//*************** HDD 3rd ******************
+		//******************************************
+        suppressif NOT ideqvallist HDD_SECURITY_CONFIG.Count == 3 4 5 6;
+            HDD_SECURITY_HDD_NAME(STR_SECURITY_HDD_THREE)
+		endif;
+
+        suppressif NOT ideqvallist HDD_SECURITY_CONFIG.Count == 3 4 5 6;
+            HDD_SECURITY_FEATURES(2)
+            #if !ALL_HDD_SAME_PW
+                HDD_SECURITY_GET_USERPASSWORD_FEATURES_COMMON(2, HddUserPassword_HDD3, HDD_SECURITY_GET_USERPASSWORD3_KEY)
+                #if DISPLAY_MASTER_PASSWORD
+                    HDD_SECURITY_GET_MASTERPASSWORD_FEATURES_COMMON(2, HddMasterPassword_HDD3, HDD_SECURITY_GET_MASTERPASSWORD3_KEY)
+                #endif
+            #endif
+            SEPARATOR
+            SEPARATOR
+        endif;
+
+        //******************************************
+		//*************** HDD 4th ******************
+		//******************************************
+        suppressif NOT ideqvallist HDD_SECURITY_CONFIG.Count == 4 5 6;
+            HDD_SECURITY_HDD_NAME(STR_SECURITY_HDD_FOUR)
+		endif;
+
+        suppressif NOT ideqvallist HDD_SECURITY_CONFIG.Count == 4 5 6;
+            HDD_SECURITY_FEATURES(3)
+            #if !ALL_HDD_SAME_PW
+                HDD_SECURITY_GET_USERPASSWORD_FEATURES_COMMON(3, HddUserPassword_HDD4, HDD_SECURITY_GET_USERPASSWORD4_KEY)
+                #if DISPLAY_MASTER_PASSWORD
+                    HDD_SECURITY_GET_MASTERPASSWORD_FEATURES_COMMON(3, HddMasterPassword_HDD4, HDD_SECURITY_GET_MASTERPASSWORD4_KEY)
+                #endif
+            #endif
+            SEPARATOR
+            SEPARATOR
+        endif;
+
+        //******************************************
+		//*************** HDD 5th ******************
+		//******************************************
+        suppressif NOT ideqvallist HDD_SECURITY_CONFIG.Count == 5 6;
+            HDD_SECURITY_HDD_NAME(STR_SECURITY_HDD_FIVE)
+		endif;
+
+        suppressif NOT ideqvallist HDD_SECURITY_CONFIG.Count == 5 6;
+            HDD_SECURITY_FEATURES(4)
+            #if !ALL_HDD_SAME_PW
+                HDD_SECURITY_GET_USERPASSWORD_FEATURES_COMMON(4, HddUserPassword_HDD5, HDD_SECURITY_GET_USERPASSWORD5_KEY)
+                #if DISPLAY_MASTER_PASSWORD
+                    HDD_SECURITY_GET_MASTERPASSWORD_FEATURES_COMMON(4, HddMasterPassword_HDD5, HDD_SECURITY_GET_MASTERPASSWORD5_KEY)
+                #endif
+            #endif
+            SEPARATOR
+            SEPARATOR
+        endif;
+
+        //******************************************
+		//*************** HDD 6th ******************
+		//******************************************
+        suppressif NOT ideqvallist HDD_SECURITY_CONFIG.Count == 6;
+            HDD_SECURITY_HDD_NAME(STR_SECURITY_HDD_SIX)
+		endif;
+
+        suppressif NOT ideqvallist HDD_SECURITY_CONFIG.Count == 6;
+            HDD_SECURITY_FEATURES(5)
+            #if !ALL_HDD_SAME_PW
+                HDD_SECURITY_GET_USERPASSWORD_FEATURES_COMMON(5, HddUserPassword_HDD6, HDD_SECURITY_GET_USERPASSWORD6_KEY)
+                #if DISPLAY_MASTER_PASSWORD
+                    HDD_SECURITY_GET_MASTERPASSWORD_FEATURES_COMMON(5, HddMasterPassword_HDD6, HDD_SECURITY_GET_MASTERPASSWORD6_KEY)
+                #endif
+            #endif
+            SEPARATOR
+            SEPARATOR
+        endif;
+
+        endform;
+#else // if SECURITY_SETUP_ON_SAME_PAGE
+        form formid = AUTO_ID(HDD1_PASSWORD_FORM_ID),
+        title       = STRING_TOKEN(STR_HDD_SECURITY_CONFIG);
+
+        #if !ALL_HDD_SAME_PW
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_PWD_DESC))
+            SEPARATOR
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_ONE))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_TWO))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_THREE))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_FOUR))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_FIVE))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_SIX))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_SEVEN))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_EIGHT))
+        #endif
+
+        SEPARATOR
+        SUBTITLE(STRING_TOKEN(STR_HDD_PASSWORD_CONFIG))
+        SEPARATOR
+        //HDD_SECURITY_HDD_NAME(STR_SECURITY_HDD_ONE)
+
+        HDD_SECURITY_FEATURES(0)
+        SEPARATOR
+        #if !ALL_HDD_SAME_PW
+            HDD_SECURITY_GET_USERPASSWORD_FEATURES_COMMON(0, HddUserPassword, HDD_SECURITY_GET_USERPASSWORD1_KEY)
+            #if DISPLAY_MASTER_PASSWORD
+                HDD_SECURITY_GET_MASTERPASSWORD_FEATURES_COMMON(0, HddMasterPassword, HDD_SECURITY_GET_MASTERPASSWORD1_KEY)
+            #endif
+        #endif
+        SEPARATOR
+        SEPARATOR
+        
+        endform; // end of HDD1_PASSWORD_FORM_ID form
+        
+        form formid = AUTO_ID(HDD2_PASSWORD_FORM_ID),
+        title       = STRING_TOKEN(STR_HDD_SECURITY_CONFIG);
+
+        #if !ALL_HDD_SAME_PW
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_PWD_DESC))
+            SEPARATOR
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_ONE))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_TWO))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_THREE))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_FOUR))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_FIVE))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_SIX))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_SEVEN))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_EIGHT))
+        #endif
+
+        SEPARATOR
+        SUBTITLE(STRING_TOKEN(STR_HDD_PASSWORD_CONFIG))
+        SEPARATOR
+        //HDD_SECURITY_HDD_NAME(STR_SECURITY_HDD_TWO)
+
+        HDD_SECURITY_FEATURES(1)
+        SEPARATOR
+        #if !ALL_HDD_SAME_PW
+            HDD_SECURITY_GET_USERPASSWORD_FEATURES_COMMON(1, HddUserPassword_HDD2, HDD_SECURITY_GET_USERPASSWORD2_KEY)
+            #if DISPLAY_MASTER_PASSWORD
+                HDD_SECURITY_GET_MASTERPASSWORD_FEATURES_COMMON(1, HddMasterPassword_HDD2, HDD_SECURITY_GET_MASTERPASSWORD2_KEY)
+            #endif
+        #endif
+        SEPARATOR
+        SEPARATOR
+        
+        endform; // end of HDD2_PASSWORD_FORM_ID form
+        
+        form formid = AUTO_ID(HDD3_PASSWORD_FORM_ID),
+        title       = STRING_TOKEN(STR_HDD_SECURITY_CONFIG);
+
+        #if !ALL_HDD_SAME_PW
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_PWD_DESC))
+            SEPARATOR
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_ONE))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_TWO))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_THREE))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_FOUR))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_FIVE))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_SIX))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_SEVEN))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_EIGHT))
+        #endif
+
+        SEPARATOR
+        SUBTITLE(STRING_TOKEN(STR_HDD_PASSWORD_CONFIG))
+        SEPARATOR
+        //HDD_SECURITY_HDD_NAME(STR_SECURITY_HDD_THREE)
+
+        HDD_SECURITY_FEATURES(2)
+        SEPARATOR
+        #if !ALL_HDD_SAME_PW
+            HDD_SECURITY_GET_USERPASSWORD_FEATURES_COMMON(2, HddUserPassword_HDD3, HDD_SECURITY_GET_USERPASSWORD3_KEY)
+            #if DISPLAY_MASTER_PASSWORD
+                HDD_SECURITY_GET_MASTERPASSWORD_FEATURES_COMMON(2, HddMasterPassword_HDD3, HDD_SECURITY_GET_MASTERPASSWORD3_KEY)
+            #endif
+        #endif
+        SEPARATOR
+        SEPARATOR
+        
+        endform; // end of HDD3_PASSWORD_FORM_ID form
+                
+        form formid = AUTO_ID(HDD4_PASSWORD_FORM_ID),
+        title       = STRING_TOKEN(STR_HDD_SECURITY_CONFIG);
+
+        #if !ALL_HDD_SAME_PW
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_PWD_DESC))
+            SEPARATOR
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_ONE))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_TWO))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_THREE))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_FOUR))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_FIVE))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_SIX))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_SEVEN))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_EIGHT))
+        #endif
+
+        SEPARATOR
+        SUBTITLE(STRING_TOKEN(STR_HDD_PASSWORD_CONFIG))
+        SEPARATOR
+        //HDD_SECURITY_HDD_NAME(STR_SECURITY_HDD_FOUR)
+
+        HDD_SECURITY_FEATURES(3)
+        SEPARATOR
+        #if !ALL_HDD_SAME_PW
+            HDD_SECURITY_GET_USERPASSWORD_FEATURES_COMMON(3, HddUserPassword_HDD4, HDD_SECURITY_GET_USERPASSWORD4_KEY)
+            #if DISPLAY_MASTER_PASSWORD
+                HDD_SECURITY_GET_MASTERPASSWORD_FEATURES_COMMON(3, HddMasterPassword_HDD4, HDD_SECURITY_GET_MASTERPASSWORD4_KEY)
+            #endif
+        #endif
+        SEPARATOR
+        SEPARATOR
+        
+        endform; // end of HDD4_PASSWORD_FORM_ID form
+        
+        form formid = AUTO_ID(HDD5_PASSWORD_FORM_ID),
+        title       = STRING_TOKEN(STR_HDD_SECURITY_CONFIG);
+
+        #if !ALL_HDD_SAME_PW
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_PWD_DESC))
+            SEPARATOR
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_ONE))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_TWO))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_THREE))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_FOUR))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_FIVE))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_SIX))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_SEVEN))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_EIGHT))
+        #endif
+
+        SEPARATOR
+        SUBTITLE(STRING_TOKEN(STR_HDD_PASSWORD_CONFIG))
+        SEPARATOR
+        //HDD_SECURITY_HDD_NAME(STR_SECURITY_HDD_FIVE)
+
+        HDD_SECURITY_FEATURES(4)
+        SEPARATOR
+        #if !ALL_HDD_SAME_PW
+            HDD_SECURITY_GET_USERPASSWORD_FEATURES_COMMON(4, HddUserPassword_HDD5, HDD_SECURITY_GET_USERPASSWORD5_KEY)
+            #if DISPLAY_MASTER_PASSWORD
+                HDD_SECURITY_GET_MASTERPASSWORD_FEATURES_COMMON(4, HddMasterPassword_HDD5, HDD_SECURITY_GET_MASTERPASSWORD5_KEY)
+            #endif
+        #endif
+        SEPARATOR
+        SEPARATOR
+        
+        endform; // end of HDD5_PASSWORD_FORM_ID form
+        
+        form formid = AUTO_ID(HDD6_PASSWORD_FORM_ID),
+        title       = STRING_TOKEN(STR_HDD_SECURITY_CONFIG);
+
+        #if !ALL_HDD_SAME_PW
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_PWD_DESC))
+            SEPARATOR
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_ONE))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_TWO))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_THREE))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_FOUR))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_FIVE))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_SIX))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_SEVEN))
+            SUBTITLE(STRING_TOKEN(STR_SECURITY_HDD_BANNER_EIGHT))
+        #endif
+
+        SEPARATOR
+        SUBTITLE(STRING_TOKEN(STR_HDD_PASSWORD_CONFIG))
+        SEPARATOR
+        //HDD_SECURITY_HDD_NAME(STR_SECURITY_HDD_SIX)
+
+        HDD_SECURITY_FEATURES(5)
+        SEPARATOR
+        #if !ALL_HDD_SAME_PW
+            HDD_SECURITY_GET_USERPASSWORD_FEATURES_COMMON(5, HddUserPassword_HDD6, HDD_SECURITY_GET_USERPASSWORD6_KEY)
+            #if DISPLAY_MASTER_PASSWORD
+                HDD_SECURITY_GET_MASTERPASSWORD_FEATURES_COMMON(5, HddMasterPassword_HDD6, HDD_SECURITY_GET_MASTERPASSWORD6_KEY)
+            #endif
+        #endif
+        SEPARATOR
+        SEPARATOR
+        
+        endform; // end of HDD6_PASSWORD_FORM_ID form
+#endif // else SECURITY_SETUP_ON_SAME_PAGE        
+    #endif // FORM_SET_FORM
+#endif // SECURITY_FORM_SET
+#endif //SETUP_SAME_SYS_HDD_PW != 1
+
+//***********************************************************************
+//***********************************************************************
+//**                                                                   **
+//**        (C)Copyright 1985-2014, American Megatrends, Inc.          **
+//**                                                                   **
+//**                       All Rights Reserved.                        **
+//**                                                                   **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093         **
+//**                                                                   **
+//**                       Phone: (770)-246-8600                       **
+//**                                                                   **
+//***********************************************************************
+//***********************************************************************

@@ -1,0 +1,117 @@
+## @file
+# Component description file for BIOS Guard module
+#
+# @copyright
+# Copyright (c) 2011 - 2016, Intel Corporation. All rights reserved
+# This software and associated documentation (if any) is furnished
+# under a license and may only be used or copied in accordance
+# with the terms of the license. Except as permitted by the
+# license, no part of this software or documentation may be
+# reproduced, stored in a retrieval system, or transmitted in any
+# form or by any means without the express written consent of
+# Intel Corporation.
+# This file contains an 'Intel Peripheral Driver' and is uniquely
+# identified as "Intel Reference Module" and is licensed for Intel
+# CPUs and chipsets under the terms of your license agreement with
+# Intel or your vendor. This file may be modified by the user, subject
+# to additional terms of the license agreement.
+# 
+# @par Specification Reference:
+#
+##
+
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = BiosGuardServices
+  FILE_GUID                      = 6D4BAA0B-F431-4370-AF19-99D6209239F6
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  VERSION_STRING                 = 1.0
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  ENTRY_POINT                    = InstallBiosGuardProtocol
+
+[Sources]
+  BiosGuardServices.c
+  BiosGuardServices.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  IA32FamilyCpuPkg/IA32FamilyCpuPkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  # APTIOV_SERVER_OVERRIDE_RC_START
+  #BpCommonPkg/BpCommonPkg.dec
+  # APTIOV_SERVER_OVERRIDE_RC_END
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+  # APTIOV_SERVER_OVERRIDE_RC_START
+  #SecurityPkg/SecurityPkg.dec
+  # APTIOV_SERVER_OVERRIDE_RC_END
+  UefiCpuPkg/UefiCpuPkg.dec
+
+[LibraryClasses]
+  BaseLib
+  PcdLib
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  SmmServicesTableLib
+  MemoryAllocationLib
+  BaseMemoryLib
+  DebugLib
+  HobLib
+  IoLib
+  PlatformHooksLib
+  PrintLib
+  PchPciExpressHelpersLib  
+  UefiRuntimeServicesTableLib
+  UefiLib
+  S3BootScriptLib
+  PchPciExpressHelpersLib
+  DxeServicesTableLib
+  RcFviLib
+  PchAslUpdateLib
+  TimerLib
+  SetupLib
+  MmPciLib
+
+[Protocols]
+  gEfiGlobalNvsAreaProtocolGuid
+  gEfiSmmSpiProtocolGuid          # CONSUMES
+  gEfiSmmSwDispatch2ProtocolGuid  # CONSUMES
+  gEfiSmmCpuProtocolGuid          # CONSUMES
+  gEfiSmmFirmwareVolumeBlockProtocolGuid # CONSUMES
+  gEfiSmmBase2ProtocolGuid
+  gEfiFirmwareVolume2ProtocolGuid
+  gSmmBiosGuardProtocolGuid
+  gEfiAcpiTableProtocolGuid
+  gEfiAcpiSupportProtocolGuid
+  gEfiSmmIoTrapDispatch2ProtocolGuid
+  gEfiSmmVariableProtocolGuid
+  gEfiSmmCpuServiceProtocolGuid
+
+[Guids]
+  gEfiPlatformInfoGuid
+  gEfiSetupVariableGuid
+  gBiosGuardModuleGuid
+  gBiosGuardHobGuid
+  gPchPolicyHobGuid
+
+[Pcd]
+  gEfiMdeModulePkgTokenSpaceGuid.PcdMaxSizeNonPopulateCapsule
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableBase
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[Depex]
+  gEfiSmmBase2ProtocolGuid              AND
+  gEfiDprRegsProgrammedGuid             AND
+  # APTIOV_SERVER_OVERRIDE_RC_START
+  gEfiGlobalNvsAreaProtocolGuid         AND
+  # APTIOV_SERVER_OVERRIDE_RC_END
+  gEfiSmmCpuServiceProtocolGuid

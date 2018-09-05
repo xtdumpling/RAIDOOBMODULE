@@ -1,0 +1,40 @@
+
+[Defines]
+INF_VERSION                    = 0x00010005
+BASE_NAME                      = TcoSmi
+FILE_GUID                      = 2B4034AE-8566-412f-9CA5-67FD698FC261
+MODULE_TYPE                    = DXE_SMM_DRIVER
+VERSION_STRING                 = 1.0
+ENTRY_POINT                    = InitializeTcoSmm
+PI_SPECIFICATION_VERSION       = 0x0001000A
+
+
+[Sources]
+TcoSmi.c
+
+
+[Packages]
+MdePkg/MdePkg.dec
+AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+AmiChipsetModulePkg/AmiChipsetModulePkg.dec
+PurleyPlatPkg/PlatPkg.dec
+PurleySktPkg/SocketPkg.dec
+PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+
+
+[LibraryClasses]
+UefiDriverEntryPoint
+AmiDxeLib
+SmmServicesTableLib
+DebugLib
+BaseLib
+
+
+[Protocols]
+gPchTcoSmiDispatchProtocolGuid
+
+
+[Depex]
+gPchTcoSmiDispatchProtocolGuid
+
+

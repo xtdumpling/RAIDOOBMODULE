@@ -1,0 +1,75 @@
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
+
+
+/** @file EventLogsSetupPage.vfr
+    Definition of the Setup Pages under the Event log setup menu.
+
+**/
+//---------------------------------------------------------------------------
+
+#include <EventLogsSetupPage.h>
+
+//---------------------------------------------------------------------------
+
+#define EVENT_LOGS_FORM_SET
+
+formset guid     = EVENT_LOGS_FORM_SET_GUID,
+        title    = STRING_TOKEN(STR_EVENT_LOGS_TITLE),
+        help     = STRING_TOKEN(STR_EMPTY),
+        class    = EVENT_LOGS_FORM_SET_CLASS, 
+        subclass = 0,
+
+        SETUP_DATA_VARSTORE
+
+        SYSTEM_ACCESS_VARSTORE
+
+        varstore ERROR_MANAGER,
+                key = ERROR_MANAGER_KEY_ID,
+                name = ErrorManager,
+                guid = ERROR_MANAGER_GUID;
+
+        form formid = AUTO_ID(EVENT_LOGS_MAIN),
+                title = STRING_TOKEN(STR_EVENT_LOGS_TITLE);
+
+                #define FORM_SET_ITEM
+                #include <EventLogsSetupDefinitions.h>
+                #undef FORM_SET_ITEM
+
+                #define FORM_SET_GOTO
+                #include <EventLogsSetupDefinitions.h>
+                #undef FORM_SET_GOTO
+
+                SEPARATOR
+                 
+        endform;
+
+        #define FORM_SET_FORM
+        #include <EventLogsSetupDefinitions.h>
+        #undef FORM_SET_FORM
+
+endformset;
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**         5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093     **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************

@@ -1,0 +1,93 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.02
+#    Bug Fix:  Change HideItem policy to fix TXT can being enabled.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Feb/07/2017
+#
+#  Rev. 1.01
+#    Bug Fix:  Extend SetupMenuHideItemNumber to 256. 100 is not enough.
+#    Reason:
+#    Auditor:  Hartmann Hsieh
+#    Date:     Nov/17/2016
+#
+#  Rev. 1.00
+#    Bug Fix:  Send HideItem and RiserCard data to sum.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Sep/23/2016
+#
+#****************************************************************************
+#****************************************************************************
+
+TOKEN
+	Name  = "SmcSetupModify_SUPPORT"
+	Value  = "1"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+        Master = Yes
+End
+
+PATH
+	Name  = "SmcSetupModify_DIR"
+End
+
+INFComponent
+	Name  = "SmcSetupModify"
+	File  = "SmcSetupModify.inf"
+	Package  = "SmcPkg"
+	ModuleTypes = "DXE_DRIVER"
+End
+
+TOKEN
+	Name  = "SetupMenuHideItemNumber"
+	Value  = "512"
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+ELINK
+	Name  = "gSetupModifyProtocolGuid"
+	Parent  = "AdditionalSetupProtocols"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+    	Name  = "AmiTsePkg/AmiTsePrivatePkg.dec"
+        Parent  = "ADDITIONAL_AMITSE_Packages"
+    	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "SmcPkg/SmcPkg.dec"
+	Parent  = "ADDITIONAL_AMITSE_Packages"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "gSetupModifyProtocolGuid"
+    Parent  = "ADDITIONAL_AMITSE_Protocols"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(SmcSetupModify_DIR)/SmcHideItem.c"
+	Parent  = "TSE_SOURCE_FILES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "OemMinisetupDriverEntryHook,"
+	Parent  = "MinisetupDriverEntryHookHook,"
+	InvokeOrder = AfterParent
+End
+

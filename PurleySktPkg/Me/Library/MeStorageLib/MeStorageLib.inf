@@ -1,0 +1,55 @@
+## @file
+# Component description file for ME Storage Heci DXE Library.
+#
+# @copyright
+# Copyright (c) 2016 Intel Corporation. All rights reserved
+# This software and associated documentation (if any) is furnished
+# under a license and may only be used or copied in accordance
+# with the terms of the license. Except as permitted by the
+# license, no part of this software or documentation may be
+# reproduced, stored in a retrieval system, or transmitted in any
+# form or by any means without the express written consent of
+# Intel Corporation.
+# This file contains an 'Intel Peripheral Driver' and is uniquely
+# identified as "Intel Reference Module" and is licensed for Intel
+# CPUs and chipsets under the terms of your license agreement with
+# Intel or your vendor. This file may be modified by the user, subject
+# to additional terms of the license agreement.
+#
+# @par Specification Reference:
+#
+##
+
+
+[Defines]
+INF_VERSION = 0x00010017
+BASE_NAME = MeStorageLib
+FILE_GUID = BD0569E0-08B3-4E6E-9071-18C85EFD3E6F
+VERSION_STRING = 1.0
+MODULE_TYPE = DXE_DRIVER
+LIBRARY_CLASS = MeStorageLib|DXE_DRIVER
+CONSTRUCTOR = MeStorageLibConstructor
+
+[LibraryClasses]
+DxeMeLib
+BaseMemoryLib
+UefiRuntimeServicesTableLib
+UefiBootServicesTableLib
+DebugLib
+PostCodeLib
+HobLib
+MeTypeLib
+
+[Packages]
+MdePkg/MdePkg.dec
+PurleySktPkg/Me/MePkg.dec
+ServerCommonPkg/ServerCommonPkg.dec
+
+[Sources]
+MeStorageLib.c
+MeStorageLibInternal.h
+
+[Guids]
+gMeBiosPayloadHobGuid
+gSpsInfoHobGuid
+

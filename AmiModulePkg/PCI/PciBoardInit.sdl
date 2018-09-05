@@ -1,0 +1,25 @@
+TOKEN
+	Name  = "PciBoard_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable PciBoard support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+PATH
+	Name  = "PCIBUS_DIR"
+End
+
+INFComponent
+	Name  = "PciBoardDxeInit"
+	File  = "PciBoardDxeInit.inf"
+	Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "AmiModulePkg.PciBoardDxeInit"
+	Override  = "AmiModulePkg.PciDxeInit"
+End

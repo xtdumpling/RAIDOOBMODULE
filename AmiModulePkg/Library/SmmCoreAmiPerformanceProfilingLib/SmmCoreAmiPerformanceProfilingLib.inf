@@ -1,0 +1,57 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+## @file
+# AmiPerformanceProfilingLibrary instance for the SMM Core 
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SmmCoreAmiPerformanceProfilingLib
+  FILE_GUID                      = 7C609448-E20C-4fb2-8003-0ECF015913F0
+  MODULE_TYPE                    = SMM_CORE
+  VERSION_STRING                 = 1.0
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  LIBRARY_CLASS                  = AmiPerformanceProfilingLib|SMM_CORE
+
+  CONSTRUCTOR                    = SmmCoreAmiPerformanceProfilingLibConstructor
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF EBC
+#
+
+[Sources]
+  SmmCoreAmiPerformanceProfilingLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+
+[LibraryClasses]
+  TimerLib
+  SmmServicesTableLib
+  BaseLib
+  UefiBootServicesTableLib
+
+[Protocols]
+  gEfiSmmBase2ProtocolGuid
+  gEfiSmmAccess2ProtocolGuid
+
+[Guids]
+  gAmiPerformanceProfilingGuid
+
+[Pcd]
+  gAmiModulePkgTokenSpaceGuid.AmiPcdPerformanceProfilingSupport

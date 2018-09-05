@@ -1,0 +1,45 @@
+TOKEN
+	Name  = "IntelFrameworkModulePkg_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable IntelFrameworkModulePkg support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "INTEL_FRAMEWORK_MODULE_PKG_VERSION"
+	Value  = "8"
+	Help  = "IntelFrameworkModulePkg version.\Do not change."
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+	Lock = Yes
+End
+
+INFComponent
+	Name  = "PeiDxeDebugLibReportStatusCode"
+	File  = "Library/PeiDxeDebugLibReportStatusCode/PeiDxeDebugLibReportStatusCode.inf"
+	Package  = "IntelFrameworkModulePkg"
+End
+
+INFComponent
+	Name  = "LzmaCustomDecompressLib"
+	File  = "Library/LzmaCustomDecompressLib/LzmaCustomDecompressLib.inf"
+	Package  = "IntelFrameworkModulePkg"
+	Token = "LZMA_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "LzmaCustomDecompressLib"
+	File  = "Library/LzmaCustomDecompressLib/LzmaArchCustomDecompressLib.inf"
+	Package  = "IntelFrameworkModulePkg"
+	Token = "LZMAF86_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "DebugLib"
+	Instance  = "IntelFrameworkModulePkg.PeiDxeDebugLibReportStatusCode"
+End
+

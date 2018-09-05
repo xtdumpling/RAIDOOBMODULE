@@ -1,0 +1,37 @@
+TOKEN
+    Name  = "ShaLib_SUPPORT"
+    Value  = "1"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    Master = Yes
+    Token = "TCG2Support" "=" "1"
+End
+
+PATH
+    Name  = "SHALIB_DIR"
+End
+
+LibraryMapping
+    Class  = "ShaLib"
+    Instance  = "AmiModulePkg.ShaLib"
+End
+
+INFComponent
+    Name  = "ShaLib"
+    File  = "ShaLib.inf"
+    Package  = "AmiModulePkg"
+End
+
+INFComponent
+    Name  = "TcgHashIntrinsicLib"
+    File  = "TcgHashIntrinsicLib.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "BASE"
+End
+
+LibraryMapping
+    Class  = "TcgHashIntrinsicLib"
+    Instance  = "AmiModulePkg.TcgHashIntrinsicLib"
+    Arch  = "IA32 X64 IPF AARCH64"
+End

@@ -1,0 +1,73 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+## @file
+#
+##
+[Defines]
+INF_VERSION 	               = 0x00010005
+VERSION_STRING 	 		       = 1.0
+BASE_NAME 					   = TcgSmm
+MODULE_TYPE					   = DXE_SMM_DRIVER
+PI_SPECIFICATION_VERSION       = 0x00010014
+FILE_GUID 					   = FD93F9E1-3C73-46e0-B7B8-2BBA3F718F6C
+ENTRY_POINT 				   = TCGSmmInit
+
+[Sources]
+  TCGSmm.c
+  TCGSmm.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  AmiTcgPkg/AmiTcgPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiRuntimeServicesTableLib
+  BaseLib
+  BaseMemoryLib
+  UefiLib
+  IoLib
+  
+[Protocols]
+  gEfiSmmBase2ProtocolGuid
+  gEfiSmmSwDispatch2ProtocolGuid
+  gEfiSmmVariableProtocolGuid
+  gAmiNvramControlProtocolGuid
+
+[Guids]  
+  SmmRsTableGuid
+  FlagsStatusguid
+  gEfiMemoryOverwriteControlDataGuid
+  gSetupVariableGuid
+  AmitcgefiOsVariableGuid
+  
+[Depex]
+  gEfiSmmBase2ProtocolGuid AND
+  gEfiSmmSwDispatch2ProtocolGuid
+
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************

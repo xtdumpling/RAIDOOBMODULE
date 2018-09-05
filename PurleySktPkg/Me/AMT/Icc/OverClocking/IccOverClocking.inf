@@ -1,0 +1,43 @@
+## @file
+# Component description file for EFI Shell module.
+#
+# This is a binary module containing multiple binary shell applications.
+#  All .efi file tagged with "ToolCode="DUMMY"" in following file list are raw EFI application
+#  file, and they are can be run in shell environment.
+# Copyright (c) 2006 - 2010, Intel Corporation. All rights reserved.<BR>
+#
+#  This program and the accompanying materials
+#  are licensed and made available under the terms and conditions of the BSD License
+#  which accompanies this distribution. The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.php
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = IccOverClocking
+  FILE_GUID                      = 5BBA83E5-F027-4ca7-BFD0-16358CC9E123
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF
+#
+
+[Binaries.X64]
+  PE32|IccOverClocking.efi
+  DXE_DEPEX|IccOverClocking.depex
+
+[Packages]
+
+[Depex]
+ gHeciProtocolGuid AND
+ gWdtProtocolGuid
+ 
+
+ 

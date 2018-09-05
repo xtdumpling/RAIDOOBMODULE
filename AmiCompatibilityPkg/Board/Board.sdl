@@ -1,0 +1,172 @@
+
+
+TOKEN
+	Name  = "FLASH_BASE"
+	Value  = "0xFFFFFFFF - $(FLASH_SIZE) + 1"
+	Help  = "Flash part base address"
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FV_MAIN_BASE"
+	Value  = "$(FLASH_BASE) + $(FV_MAIN_OFFSET)"
+	Help  = "Base Address of the FV_MAIN"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Range  = "From: 4G - FLASH_SIZE To: 4G"
+End
+
+TOKEN
+	Name  = "FV_MAIN_BLOCKS"
+	Value  = "$(FV_MAIN_SIZE) / $(FLASH_BLOCK_SIZE)"
+	Help  = "Number of Blocks occupied by the FV_MAIN, , Hardcoded for now until AMISDL support division"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Range  = "From: 1  To :FLASH_SIZE/FLASH_BLOCK_SIZE-1"
+End
+
+TOKEN
+	Name  = "NVRAM_ADDRESS"
+	Value  = "$(FLASH_BASE) + $(NVRAM_OFFSET)"
+	Help  = "Starting address of the NVRAM flash area"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Range  = "From: 4G - FLASH_SIZE To: 4G"
+End
+
+TOKEN
+	Name  = "NVRAM_BACKUP_ADDRESS"
+	Value  = "$(NVRAM_ADDRESS) + $(NVRAM_SIZE)"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "FAULT_TOLERANT_NVRAM_UPDATE" "=" "1"
+End
+
+TOKEN
+	Name  = "NVRAM_BLOCKS"
+	Value  = "$(NVRAM_SIZE) / $(FLASH_BLOCK_SIZE)"
+	Help  = "Number of Blocks occupied by the NVRAM, Hardcoded for now until AMISDL support division"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Range  = "From: 1  To :FLASH_SIZE/FLASH_BLOCK_SIZE-1"
+End
+
+TOKEN
+	Name  = "FV_BB_BASE"
+	Value  = "0xFFFFFFFF - $(FV_BB_SIZE) + 1"
+	Help  = "Base Address of the FV_BB"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Range  = "From: 4G - FLASH_SIZE To: 4G"
+End
+
+TOKEN
+	Name  = "FV_BB_BLOCKS"
+	Value  = "$(FV_BB_SIZE) / $(FLASH_BLOCK_SIZE)"
+	Help  = "Number of Blocks occupied by the FV_BB, Hardcoded for now until AMISDL support division"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Range  = "From: 1  To :FLASH_SIZE/FLASH_BLOCK_SIZE-1"
+End
+
+TOKEN
+	Name  = "DEFAULT_LANGUAGE_CODE"
+	Value  = "$(DEFAULT_LANGUAGE)"
+	Help  = "Name of the default system language in $(<lang-name>) format.\<lang-name> is one of the names defined in Core/Languages.mak.\"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "DEFAULT_BOOT_TIMEOUT"
+	Value  = "1"
+	Help  = "Number of seconds that the firmware will wait before initiating the original default boot selection. \A value of 0 indicates that the default boot selection is to be initiated immediately on boot. \A value of 65535(0xFFFF) indicates that firmware will wait for user input before booting. \This means the default boot selection is not automatically started by the firmware."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0-65535"
+End
+
+TOKEN
+	Name  = "DEFAULT_QUIET_BOOT"
+	Value  = "0"
+	Help  = "Default value of the Quiet Boot option"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SUPPORT_ZERO_BOOT_TIMEOUT"
+	Value  = "0"
+	Help  = "Enables or disables possibility to set boot timeout to 0"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+PATH
+	Name  = "BOARD_DIR"
+End
+
+MODULE
+	Help  = "Includes Board.mak to Project"
+	File  = "Board.mak"
+End
+
+ELINK
+	Name  = "IsRecovery"
+	InvokeOrder = ReplaceParent
+End
+
+#ELINK
+#	Name  = "IsCtrlHomePressed,"
+#	Parent  = "IsRecovery"
+#	Help  = "Ctr+Home detection"
+#	Token = "KBC_SUPPORT" "=" "1"
+#	InvokeOrder = AfterParent
+#End
+
+ELINK
+	Name  = "ForceRecovery,"
+	Parent  = "IsRecovery"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(BOARD_DIR)/OemPort.c"
+	Parent  = "AMI_CSP_PEI_SOURCES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(BOARD_DIR)/OemPort.c"
+	Parent  = "AMI_CSP_DXE_SOURCES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(BUILD_DIR)/OemPortList.c"
+	Parent  = "AMI_CSP_PEI_SOURCES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(BUILD_DIR)/OemPortList.c"
+	Parent  = "AMI_CSP_DXE_SOURCES"
+	InvokeOrder = AfterParent
+End
+

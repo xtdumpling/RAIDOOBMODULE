@@ -1,0 +1,82 @@
+/*++
+  This file contains 'Framework Code' and is licensed as such
+  under the terms of your license agreement with Intel or your
+  vendor.  This file may not be modified, except as allowed by
+  additional terms of your license agreement.
+--*/
+/*++
+  
+  Copyright (c)  2001 - 2015 Intel Corporation.  All rights reserved.
+
+  This software and associated documentation (if any) is furnished under 
+  a license and may only be used or copied in accordance with the terms 
+  of the license.  Except as permitted by such license, no part of this 
+  software or documentation may be reproduced, stored in a retrieval system, 
+  or transmitted in any form or by any means without the express written 
+  consent of Intel Corporation.
+
+  Module Name:
+  
+    PchP2sb.asi
+  
+  Abstract:
+  
+    Legacy resource template for P2SB device
+  
+--*/
+
+
+//
+// High Performance Event Timer (HPET)
+//
+Device (HPET) {
+  Name (_HID, EisaId ("PNP0103"))
+
+  Method (_STA, 0, NotSerialized) {
+    If (\HPTE) {
+      Return (0x0F)
+    } Else {
+      Return (0x00)
+    }
+  }
+
+  Name (CRS0, ResourceTemplate () {
+    Memory32Fixed (ReadWrite, 0xFED00000, 0x00000400)
+  })
+
+  Name (CRS1, ResourceTemplate () {
+    Memory32Fixed (ReadWrite, 0xFED01000, 0x00000400)
+  })
+
+  Name (CRS2, ResourceTemplate () {
+    Memory32Fixed (ReadWrite, 0xFED02000, 0x00000400)
+  })
+
+  Name (CRS3, ResourceTemplate () {
+    Memory32Fixed (ReadWrite, 0xFED03000, 0x00000400)
+  })
+
+  //
+  // Owning control method can't be re-entrant, so _CRS must be Serialized
+  //
+  Method (_CRS, 0, Serialized) {
+    Switch (ToInteger(\HPTB)) {
+      Case (0xFED00000) {
+        Return (CRS0)
+      }
+
+      Case (0xFED01000) {
+        Return (CRS1)
+      }
+
+      Case (0xFED02000) {
+        Return (CRS2)
+      }
+
+      Case (0xFED03000) {
+        Return (CRS3)
+      }
+    }
+    Return (CRS0)
+  }
+}

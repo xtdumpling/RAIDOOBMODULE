@@ -1,0 +1,31 @@
+## @file
+#   This driver is
+##
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = AmiReportFvLibCompatibility
+  FILE_GUID                      = F65ABA32-76FD-49c6-A1C4-CD7FADF96659
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = ReportFVLib
+  
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF EBC
+#
+
+[Sources]
+  AmiReportFvLibCompatibility.c
+
+[Packages]
+  AmiModulePkg/AmiModulePkg.dec
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+
+[Ppis]
+  gAmiReadyToLoadDxeCorePpiGuid
+
+[LibraryClasses]
+  BaseLib
+  

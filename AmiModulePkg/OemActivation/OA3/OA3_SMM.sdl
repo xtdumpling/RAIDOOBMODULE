@@ -1,0 +1,37 @@
+TOKEN
+    Name  = "OA3_SMM_SUPPORT"
+    Value = "1"
+    Help  = "Switch to enable Update ACPI in the OS Runtime through the SW SMI for OEM Activation without rebooting the system."
+    TokenType = Boolean
+    TargetH = Yes
+    Master = Yes
+End
+
+TOKEN
+    Name  = "OemActivation_SUPPORT"
+    Value = "1"
+    Help  = "Compatibility switch to enable Update ACPI in the OS Runtime through the SW SMI for OEM Activation without rebooting the system."
+    TokenType = Boolean
+    TargetH = Yes
+    Token = "OA3_SMM_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "SW_SMI_OA3_FUNCTION_NUMBER"
+    Value = "0xDF"
+    TokenType = Integer
+    TargetH = Yes
+    Token = "OA3_SMM_SUPPORT" "=" "1"
+End
+
+PATH
+    Name  = "OA3_SMM_DIR"
+End
+
+INFComponent
+    Name  = "OA3_SMM"
+    File  = "OA3_SMM.inf"
+    Package = "AmiModulePkg"
+    ModuleTypes = "DXE_SMM_DRIVER"
+End
+

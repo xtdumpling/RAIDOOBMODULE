@@ -1,0 +1,49 @@
+TOKEN
+	Name  = "CryptoPkg_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling CryptoPkg support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+        Name  = "DISABLE_STDLIB_WRAPPER_METHODS"
+        Value  = "0"
+        Help  = "Token for disabling build of wrapper methods related to StdLib in the project. 1 - Remove StdLib wrapper methods from build process, 0 - Add StdLib wrapper methods to build process"
+        TOKEN = "StdLib_SUPPORT" "=" "0"
+        TokenType = Boolean
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "DISABLE_STDLIB_WRAPPER_METHODS"
+        Value  = "1"
+        Help  = "Token for disabling build of wrapper methods related to StdLib in the project. 1 - Remove StdLib wrapper methods from build process, 0 - Add StdLib wrapper methods to build process"
+        TOKEN = "StdLib_SUPPORT" "!=" "0"
+        TokenType = Boolean
+        TargetH = Yes
+End
+
+ELINK
+  Name = "-DOPENSSL_NO_STDIO -DOPENSSL_NO_FP_API -DOPENSSL_NO_SOCK -DOPENSSL_NO_TLS1_1 -DOPENSSL_NO_TLS1 -DOPENSSL_NO_TLS1_METHOD -DOPENSSL_NO_TLS1_1_METHOD"
+  Parent = "*_*_*_CC_FLAGS"
+  Type = "BuildOptions"
+  TOKEN = "DISABLE_STDLIB_WRAPPER_METHODS" "=" "0"	  
+  InvokeOrder = AfterParent
+End
+
+ELINK
+  Name = "-DOPENSSL_NO_TLS1_1 -DOPENSSL_NO_TLS1 -DOPENSSL_NO_TLS1_METHOD -DOPENSSL_NO_TLS1_1_METHOD"
+  Parent = "*_*_*_CC_FLAGS"
+  Type = "BuildOptions"
+  TOKEN = "DISABLE_STDLIB_WRAPPER_METHODS" "=" "1"	  
+  InvokeOrder = AfterParent
+End
+
+ELINK
+  Name = "*_*_*_CC_FLAGS"
+  Type = "BuildOptions"
+  Arch = "COMMON"
+  InvokeOrder = ReplaceParent
+  OutDSC = Yes
+End

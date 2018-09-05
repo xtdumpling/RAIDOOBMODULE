@@ -1,0 +1,107 @@
+//
+// This file contains an 'Intel Peripheral Driver' and is
+// licensed for Intel CPUs and chipsets under the terms of your
+// license agreement with Intel or your vendor.  This file may
+// be modified by the user, subject to additional terms of the
+// license agreement
+//
+// *++
+//
+// Copyright (c) 2015 Intel Corporation. All rights reserved
+// This software and associated documentation (if any) is furnished
+// under a license and may only be used or copied in accordance
+// with the terms of the license. Except as permitted by such
+// license, no part of this software or documentation may be
+// reproduced, stored in a retrieval system, or transmitted in any
+// form or by any means without the express written consent of
+// Intel Corporation.
+//
+//
+// Module Name:
+//
+//   KtiPerLinkSetup.hfr
+//
+// Abstract:
+//
+//   KTI Per link formset.
+//
+// Revision History:
+//
+// --*/
+
+#include <KtiSetupDefinitions.h>
+
+#define PERLINK_KTI_CONFIG(SKT, PRT) \
+form formid = VFR_FID_KTI_CPU ## SKT ## _LINK ## PRT ,                                                                                     \
+    title   = STRING_TOKEN(STR_KTI_CPU ## SKT ## _LINK ## PRT );                                                                           \
+    subtitle text = STRING_TOKEN(STR_KTI_CPU ## SKT ## _LINK ## PRT );                                                                     \
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);                                                                                        \
+                                                                                                                                              \
+    oneof varid = SOCKET_MP_LINK_CONFIGURATION.Cpu ## SKT ## P ## PRT ## KtiPortDisable,                                                      \
+        prompt  = STRING_TOKEN(STR_KTI_LINK_DISABLE),                                                                                         \
+        help    = STRING_TOKEN(STR_KTI_LINK_DISABLE_HELP),                                                                                    \
+        option text = STRING_TOKEN(STR_NO),  value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;                                     \
+        option text = STRING_TOKEN(STR_YES), value = 1, flags = RESET_REQUIRED;                                                               \
+    endoneof;                                                                                                                                 \
+                                                                                                                                              \
+    grayoutif NOT ideqval SOCKET_MP_LINK_CONFIGURATION.KtiLinkVnaOverride == KTI_LL_VNA_SETUP_PER_LINK;                                       \
+        numeric varid = SOCKET_MP_LINK_CONFIGURATION.Cpu ## SKT ## P ## PRT ## KtiLinkVnaOverride,                                            \
+            prompt    = STRING_TOKEN(STR_KTI_VNA_OVERRIDE),                                                                                   \
+            help      = STRING_TOKEN(STR_KTI_VNA_OVERRIDE_PER_LINK_HELP),                                                                     \
+            flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,                                                                                    \
+            minimum   = KTI_LL_VNA_SETUP_MIN,                                                                                                 \
+            maximum   = KTI_LL_VNA_SETUP_MAX,                                                                                                 \
+            step      = 0,                                                                                                                    \
+            default   = KTI_LL_VNA_SETUP_MAX, defaultstore = MyStandardDefault,                                                               \
+            default   = KTI_LL_VNA_SETUP_MAX, defaultstore = MyManufactureDefault,                                                            \
+        endnumeric;                                                                                                                           \
+    endif;                                                                                                                                    \
+                                                                                                                                              \
+    oneof varid = SOCKET_MP_LINK_CONFIGURATION.Cpu ## SKT ## P ## PRT ## KtiLinkSpeed,                                                        \
+        prompt  = STRING_TOKEN(STR_KTI_LINK_SPEED),                                                                                           \
+        help    = STRING_TOKEN(STR_KTI_FREQ_SELECT_HELP),                                                                                     \
+        option text = STRING_TOKEN(STR_LINKSPEED_96G_STRING),   value = SPEED_REC_96GT,     flags = RESET_REQUIRED;                           \
+        option text = STRING_TOKEN(STR_LINKSPEED_104G_STRING),  value = SPEED_REC_104GT,    flags = RESET_REQUIRED;                           \
+        option text = STRING_TOKEN(STR_LINKSPEED_AUTO_STRING),  value = MAX_KTI_LINK_SPEED, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT; \
+    endoneof;                                                                                                                                 \
+endform;
+
+PERLINK_KTI_CONFIG (0, 0)
+PERLINK_KTI_CONFIG (0, 1)
+PERLINK_KTI_CONFIG (0, 2)
+#if MAX_SOCKET > 1
+PERLINK_KTI_CONFIG (1, 0)
+PERLINK_KTI_CONFIG (1, 1)
+PERLINK_KTI_CONFIG (1, 2)
+#endif
+#if MAX_SOCKET > 2
+PERLINK_KTI_CONFIG (2, 0)
+PERLINK_KTI_CONFIG (2, 1)
+PERLINK_KTI_CONFIG (2, 2)
+#endif
+#if MAX_SOCKET > 3
+PERLINK_KTI_CONFIG (3, 0)
+PERLINK_KTI_CONFIG (3, 1)
+PERLINK_KTI_CONFIG (3, 2)
+#endif
+#if MAX_SOCKET > 4
+PERLINK_KTI_CONFIG (4, 0)
+PERLINK_KTI_CONFIG (4, 1)
+PERLINK_KTI_CONFIG (4, 2)
+#endif
+#if MAX_SOCKET > 5
+PERLINK_KTI_CONFIG (5, 0)
+PERLINK_KTI_CONFIG (5, 1)
+PERLINK_KTI_CONFIG (5, 2)
+#endif
+#if MAX_SOCKET > 6
+PERLINK_KTI_CONFIG (6, 0)
+PERLINK_KTI_CONFIG (6, 1)
+PERLINK_KTI_CONFIG (6, 2)
+#endif
+#if MAX_SOCKET > 7
+PERLINK_KTI_CONFIG (7, 0)
+PERLINK_KTI_CONFIG (7, 1)
+PERLINK_KTI_CONFIG (7, 2)
+#endif
+

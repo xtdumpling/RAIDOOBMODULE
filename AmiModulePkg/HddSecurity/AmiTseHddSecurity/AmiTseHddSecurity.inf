@@ -1,0 +1,69 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+## @file AmiTseHddSecurity.inf
+#   AMITSE module part of the HddSecurity 
+##
+
+[Defines]  
+  INF_VERSION                    = 0x00010015
+  BASE_NAME                      = AmiTseHddSecurity
+  FILE_GUID                      = B85C7FEA-AEBF-492b-96C6-42EA133BCF29
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = AmiTseHddPasswordLib
+
+[Sources]
+  AmiTseHddSecurity.c
+  AmiTseHddSecurity.h
+  ForceHddPassword.c
+
+[LibraryClasses]
+  AmiDxeLib
+  UefiBootServicesTableLib
+
+[Protocols]
+  gAmiAhciBusProtocolGuid
+  gEfiDiskInfoProtocolGuid
+  gEfiDevicePathProtocolGuid
+  gAmiHddSecurityEndProtocolGuid
+  gAmiHddSecurityProtocolGuid
+  gAmiHddPasswordVerifiedGuid
+  
+[Packages]
+  MdePkg/MdePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiTsePkg/AmiTsePrivatePkg.dec
+  AmiTsePkg/AmiTsePkg.dec
+
+[BuildOptions]
+  MSFT:*_*_*_CC_FLAGS = /DTSE_FOR_APTIO_4_50  
+  GCC:*_*_*_CC_FLAGS = -DTSE_FOR_APTIO_4_50 
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

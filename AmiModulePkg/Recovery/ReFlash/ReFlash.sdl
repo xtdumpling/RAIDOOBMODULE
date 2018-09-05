@@ -1,0 +1,445 @@
+TOKEN
+	Name  = "ReFlash_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable ReFlash support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "REFLASH_INTERACTIVE"
+	Value  = "1"
+	Help  = "When this switch is enabled, flash update process is interactive.\User can adjust update parameters before the update.\User can also choose not to update the flash.\Once update is completed user has to press a key to reset the system\When this switch is disabled, flash update process is started automatically.\User can only monitor progress of the operation.\Once update is completed system resets."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "REFLASH_UPDATE_NVRAM_CONTROL"
+	Value  = "1"
+	Help  = "Eanbles/Disables Setup option that that controls NVRAM update"
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "REFLASH_INTERACTIVE" "=" "1"
+End
+
+TOKEN
+	Name  = "REFLASH_UPDATE_NVRAM"
+	Value  = "1"
+	Help  = "Enables/Disables update of the NVRAM flash area.\When REFLASH_INTERACTIVE is on and REFLASH_UPDATE_NVRAM_CONTROL is on\this value can be overriden by the user using setup option."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "REFLASH_UPDATE_BOOT_BLOCK_CONTROL"
+	Value  = "1"
+	Help  = "Enables/Disables Setup option that controls boot block update"
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "REFLASH_INTERACTIVE" "=" "1"
+End
+
+TOKEN
+	Name  = "REFLASH_UPDATE_BOOT_BLOCK"
+	Value  = "1"
+	Help  = "Enables/Disables update of the boot block flash area.\When REFLASH_INTERACTIVE is on and REFLASH_UPDATE_BOOT_BLOCK_CONTROL is on\this value can be overriden by the user using setup option."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "REFLASH_UPDATE_MAIN_BLOCK"
+	Value  = "1"
+	Help  = "Enables/Disables update of the Main block flash area.\When REFLASH_INTERACTIVE is on and REFLASH_UPDATE_BOOT_BLOCK_CONTROL is on\this value can be overriden by the user using setup option."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "REFLASH_UPDATE_EC_FIRMWARE_CONTROL"
+	Value  = "0"
+	Help  = "Eanbles/Disables Setup option that controls EC FIRMWARE update"
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "REFLASH_INTERACTIVE" "=" "1"
+	Token = "EC_FIRMWARE_UPDATE_INTERFACE_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "REFLASH_UPDATE_EC_FIRMWARE"
+	Value  = "0"
+	Help  = "Enables/Disables update of the EC FIRMWARE flash area.\When REFLASH_INTERACTIVE is on and REFLASH_UPDATE_EC_FIRMWARE_CONTROL is on\this value can be overriden by the user using setup option."
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "EC_FIRMWARE_UPDATE_INTERFACE_SUPPORT" "=" "1"
+End
+
+PcdMapping
+    Name  = "AmiPcdInstallEsrtTable"
+    GuidSpace  = "gAmiModulePkgTokenSpaceGuid"
+    PcdType  = "PcdsFixedAtBuild"
+    Value  = "TRUE"
+    Offset  = 00h
+    Length  = 00h
+    TargetDSC = Yes
+End
+
+TOKEN
+    Name  = "GetFirmwareVersion"
+    Value  = "GetVersionFromFid"
+    TokenType = Expression
+    TargetH = Yes
+End
+
+#-------------------- Temporary tokens to describe ROM Layout ----------------------
+#-------------------- This is a workaround until VeB ROM Layout wizard is fixed ----
+#--------------- First case - no fault tolerant support ----------------------------
+TOKEN
+    Name  = "AMI_ROM_LAYOUT_FV_BB_ADDRESS"
+    Value  = "0xFFF30000"
+    Help  = "Address of FV_BB area in flash"
+    TokenType = Integer
+    Token = "FtRecovery_SUPPORT" "=" "0"
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AMI_ROM_LAYOUT_FV_BB_OFFSET"
+    Value  = "0x002b0000"
+    Help  = "Offset of FV_BB area in ROM file"
+    TokenType = Integer
+    Token = "FtRecovery_SUPPORT" "=" "0"
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AMI_ROM_LAYOUT_FV_BB_SIZE"
+    Value  = "0x000D0000"
+    Help  = "Size of FV_BB area"
+    TokenType = Integer
+    Token = "FtRecovery_SUPPORT" "=" "0"
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AMI_ROM_LAYOUT_FV_MAIN_ADDRESS"
+    Value  = "0xFFCC0000"
+    Help  = "Address of FV_MAIN area in flash"
+    TokenType = Integer
+    Token = "FtRecovery_SUPPORT" "=" "0"
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AMI_ROM_LAYOUT_FV_MAIN_OFFSET"
+    Value  = "0x00040000"
+    Help  = "Offset of FV_MAIN area in ROM file"
+    TokenType = Integer
+    Token = "FtRecovery_SUPPORT" "=" "0"
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AMI_ROM_LAYOUT_FV_MAIN_SIZE"
+    Value  = "0x00270000"
+    Help  = "Size of FV_MAIN area"
+    TokenType = Integer
+    Token = "FtRecovery_SUPPORT" "=" "0"
+    TargetH = Yes
+End
+#----------------------------------------------------------------------
+#--------------- Second case - Runtime fault tolerant support ---------
+
+TOKEN
+    Name  = "AMI_ROM_LAYOUT_FV_BB_ADDRESS"
+    Value  = "0xFFFC0000"
+    Help  = "Address of FV_BB area in flash"
+    TokenType = Integer
+    Token = "FtRecovery_SUPPORT" "=" "1"
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AMI_ROM_LAYOUT_FV_BB_OFFSET"
+    Value  = "0x00340000"
+    Help  = "Offset of FV_BB area in ROM file"
+    TokenType = Integer
+    Token = "FtRecovery_SUPPORT" "=" "1"
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AMI_ROM_LAYOUT_FV_BB_SIZE"
+    Value  = "0x00040000"
+    Help  = "Size of FV_BB area"
+    TokenType = Integer
+    Token = "FtRecovery_SUPPORT" "=" "1"
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AMI_ROM_LAYOUT_FV_RECOVERY_ADDRESS"
+    Value  = "0xFFCC0000"
+    Help  = "Address of FV_RECOVERY area in flash"
+    TokenType = Integer
+    Token = "FtRecovery_SUPPORT" "=" "1"
+    Token = "BUILD_TIME_BACKUP" "=" "0"
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AMI_ROM_LAYOUT_FV_RECOVERY_OFFSET"
+    Value  = "0x00040000"
+    Help  = "Offset of FV_RECOVERY area in ROM file"
+    TokenType = Integer
+    Token = "FtRecovery_SUPPORT" "=" "1"
+    Token = "BUILD_TIME_BACKUP" "=" "0"
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AMI_ROM_LAYOUT_FV_RECOVERY_SIZE"
+    Value  = "0x00060000"
+    Help  = "Size of FV_RECOVERY area"
+    TokenType = Integer
+    Token = "FtRecovery_SUPPORT" "=" "1"
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AMI_ROM_LAYOUT_FV_MAIN_ADDRESS"
+    Value  = "0xFFD20000"
+    Help  = "Address of FV_MAIN area in flash"
+    TokenType = Integer
+    Token = "FtRecovery_SUPPORT" "=" "1"
+    Token = "BUILD_TIME_BACKUP" "=" "0"
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AMI_ROM_LAYOUT_FV_MAIN_OFFSET"
+    Value  = "0x000A0000"
+    Help  = "Offset of FV_MAIN area in ROM file"
+    TokenType = Integer
+    Token = "FtRecovery_SUPPORT" "=" "1"
+    Token = "BUILD_TIME_BACKUP" "=" "0"
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AMI_ROM_LAYOUT_FV_MAIN_SIZE"
+    Value  = "0x002A0000"
+    Help  = "Size of FV_MAIN area"
+    TokenType = Integer
+    Token = "FtRecovery_SUPPORT" "=" "1"
+    Token = "BUILD_TIME_BACKUP" "=" "0"
+    TargetH = Yes
+End
+
+#-----------------------------------------------------------------------
+#--------------Third case - build time fault tolerant support
+#---- FV_BB parameters are the same as in second case, so we won't copy them here
+#---- FV_RECOVERY_SIZE also remains unchanged from second case
+
+TOKEN
+    Name  = "AMI_ROM_LAYOUT_FV_BB_BACKUP_ADDRESS"
+    Value  = "0xFFF80000"
+    Help  = "Address of FV_BB backup area in flash"
+    TokenType = Integer
+    Token = "FtRecovery_SUPPORT" "=" "1"
+    Token = "BUILD_TIME_BACKUP" "=" "1"
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AMI_ROM_LAYOUT_FV_BB_BACKUP_OFFSET"
+    Value  = "0x00300000"
+    Help  = "Offset of FV_BB backup area in ROM file"
+    TokenType = Integer
+    Token = "FtRecovery_SUPPORT" "=" "1"
+    Token = "BUILD_TIME_BACKUP" "=" "1"
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AMI_ROM_LAYOUT_FV_RECOVERY_ADDRESS"
+    Value  = "0xFFF20000"
+    Help  = "Address of FV_RECOVERY area in flash"
+    TokenType = Integer
+    Token = "FtRecovery_SUPPORT" "=" "1"
+    Token = "BUILD_TIME_BACKUP" "=" "1"
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AMI_ROM_LAYOUT_FV_RECOVERY_OFFSET"
+    Value  = "0x002A0000"
+    Help  = "Offset of FV_RECOVERY area in ROM file"
+    TokenType = Integer
+    Token = "FtRecovery_SUPPORT" "=" "1"
+    Token = "BUILD_TIME_BACKUP" "=" "1"
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AMI_ROM_LAYOUT_FV_RECOVERY_BACKUP_ADDRESS"
+    Value  = "0xFFEC0000"
+    Help  = "Address of FV_RECOVERY backup area in flash"
+    TokenType = Integer
+    Token = "FtRecovery_SUPPORT" "=" "1"
+    Token = "BUILD_TIME_BACKUP" "=" "1"
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AMI_ROM_LAYOUT_FV_RECOVERY_BACKUP_OFFSET"
+    Value  = "0x00240000"
+    Help  = "Offset of FV_RECOVERY backup area in ROM file"
+    TokenType = Integer
+    Token = "FtRecovery_SUPPORT" "=" "1"
+    Token = "BUILD_TIME_BACKUP" "=" "1"
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AMI_ROM_LAYOUT_FV_MAIN_ADDRESS"
+    Value  = "0xFFCC0000"
+    Help  = "Address of FV_MAIN area in flash"
+    TokenType = Integer
+    Token = "FtRecovery_SUPPORT" "=" "1"
+    Token = "BUILD_TIME_BACKUP" "=" "1"
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AMI_ROM_LAYOUT_FV_MAIN_OFFSET"
+    Value  = "0x00040000"
+    Help  = "Offset of FV_MAIN area in ROM file"
+    TokenType = Integer
+    Token = "FtRecovery_SUPPORT" "=" "1"
+    Token = "BUILD_TIME_BACKUP" "=" "1"
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AMI_ROM_LAYOUT_FV_MAIN_SIZE"
+    Value  = "0x00200000"
+    Help  = "Size of FV_MAIN area"
+    TokenType = Integer
+    Token = "FtRecovery_SUPPORT" "=" "1"
+    Token = "BUILD_TIME_BACKUP" "=" "1"
+    TargetH = Yes
+End
+
+#-----------------------------------------------------------------------------------
+#---------- NVRAM FV parameters are the same for all three cases
+
+TOKEN
+    Name  = "AMI_ROM_LAYOUT_NVRAM_ADDRESS"
+    Value  = "0xFFC80000"
+    Help  = "Address of NVRAM area in flash"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AMI_ROM_LAYOUT_NVRAM_OFFSET"
+    Value  = "0x00000000"
+    Help  = "Offset of NVRAM area in ROM file"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AMI_ROM_LAYOUT_NVRAM_SIZE"
+    Value  = "0x00020000"
+    Help  = "Size of NVRAM area"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AMI_ROM_LAYOUT_NVRAM_BACKUP_ADDRESS"
+    Value  = "0xFFCA0000"
+    Help  = "Address of NVRAM area in flash"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AMI_ROM_LAYOUT_NVRAM_BACKUP_OFFSET"
+    Value  = "0x00020000"
+    Help  = "Offset of NVRAM area in ROM file"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+#-----------------------------------------------------------------------------------
+
+PATH
+	Name  = "ReFlash_DIR"
+End
+
+ELINK
+	Name  = "REFLASH_SDBS"
+	Help  = "List of SDB files with the string overrides for the ReFlash component"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "REFLASH_CIFS"
+	Help  = "List of CIF files of the ReFlash plug-ins"
+	InvokeOrder = ReplaceParent
+End
+
+TOKEN
+    Name  = "REFLASH_DEFINITIONS_SUPPORT"
+    Value  = "0"
+    Help  = "Eanbles/Disables List of SD files of the ReFlash plug-ins"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+
+ELINK
+	Name  = "REFLASH_DEFINITIONS"
+	Help  = "List of SD files of the ReFlash plug-ins"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "ReflashFunctions"
+	Help  = "List of callback functions of the ReFlash plug-ins"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "OemBeforeFlashUpdateList"
+	Help  = "List of callback functions to be called before flash update"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "OemAfterFlashUpdateList"
+	Help  = "List of callback functions to be called after flash update"
+	InvokeOrder = ReplaceParent
+End
+
+
+OUTPUTREGISTER
+    Name = "ReflashDefinitions"
+    File = "ReflashDefinitions.h"
+    Path = "Build"    
+    Template = "ReFlash.txt"
+End
+
+INFComponent
+	Name  = "ReFlash"
+	File  = "ReFlash.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "DXE_DRIVER"
+End
+

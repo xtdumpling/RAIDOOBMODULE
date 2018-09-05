@@ -1,0 +1,51 @@
+
+
+[Defines]
+INF_VERSION = 0x00010015
+VERSION_STRING = 1.0
+BASE_NAME = TseLiteBin
+MODULE_TYPE = BASE
+LIBRARY_CLASS = TseLiteBin
+
+ 
+[binaries.IA32]
+ LIB | TseLiteLocal.lib	
+ 
+[binaries.X64]
+ LIB | TseLiteLocalx64.lib
+ 
+[binaries.AARCH64]
+ LIB | TseLiteLocalAarch64.lib  
+
+[Sources]
+ 
+
+[Packages]
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  MdePkg/MdePkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+
+  [Protocols]
+  gEfiUnicodeCollation2ProtocolGuid
+  gEfiUnicodeCollationProtocolGuid
+  gEfiOEMBadgingProtocolGuid
+  gEfiSimpleFileSystemProtocolGuid
+#  gEfiLegacyBiosProtocolGuid
+  gEfiUnicodeCollation2ProtocolGuid
+  gEfiUnicodeCollationProtocolGuid
+  gEfiBlockIoProtocolGuid
+  gEfiFirmwareVolumeProtocolGuid
+  gEfiSimpleTextInProtocolGuid
+  gEfiLoadedImageProtocolGuid
+  gEfiDriverHealthProtocolGuid
+
+[Guids]
+  gEfiConsoleOutDeviceGuid
+  
+  
+[BuildOptions]
+MSFT:*_*_*_CC_FLAGS = /DTSE_FOR_APTIO_4_50
+GCC:*_*_*_CC_FLAGS = -DTSE_FOR_APTIO_4_50 

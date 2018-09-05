@@ -1,0 +1,60 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+## @file
+# AmiUsbGlobalDataValidationLib instance for the SMM drivers
+##
+
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = AmiUsbSmmGlobalDataValidationLib
+  FILE_GUID                      = 57D8BB0D-0A4D-405e-A212-E1EF70E1F7E1
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  VERSION_STRING                 = 1.0
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  LIBRARY_CLASS                  = AmiUsbSmmGlobalDataValidationLib|DXE_SMM_DRIVER SMM_CORE
+  CONSTRUCTOR                    = AmiUsbSmmGlobalDataValidationLibLibConstructor
+
+[Sources]
+  AmiUsbSmmGlobalDataValidationLib.c
+  Crc32.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+
+[LibraryClasses]
+  SmmServicesTableLib
+  UefiBootServicesTableLib
+  BaseMemoryLib
+  DebugLib
+  AmiBufferValidationLib
+
+[Protocols]
+  gAmiUsbSmmProtocolGuid
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

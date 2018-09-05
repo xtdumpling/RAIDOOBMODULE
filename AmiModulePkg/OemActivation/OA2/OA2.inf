@@ -1,0 +1,27 @@
+
+
+[Defines]
+    INF_VERSION = 0x00010005
+    VERSION_STRING = 1.0
+    BASE_NAME = OA2
+    MODULE_TYPE = DXE_DRIVER
+    FILE_GUID = 952821AA-EACD-465b-B478-5429DFC9A747
+    ENTRY_POINT = OA2_EntryPoint
+
+[Sources]
+    OA2.c
+    OA2.h
+
+[Packages]
+    MdePkg/MdePkg.dec
+    IntelFrameworkPkg/IntelFrameworkPkg.dec
+    AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+    AmiModulePkg/AmiModulePkg.dec
+
+[LibraryClasses]
+    AmiDxeLib
+    UefiDriverEntryPoint
+
+[Depex]
+    gEfiAcpiTableProtocolGuid
+

@@ -1,0 +1,749 @@
+TOKEN
+	Name  = "Bds_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable Bds support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "BBS_USB_DEVICE_TYPE_SUPPORT"
+	Value  = "0"
+	Help  = "Treat USB devices as a separate BBS device type"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "BBS_NETWORK_DEVICE_TYPE_SUPPORT"
+	Value  = "0"
+	Help  = "Treat network devices as a separate BBS device type"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "GROUP_BOOT_OPTIONS_BY_TAG"
+	Value  = "1"
+	Help  = "When this token is on, the boot options are grouped by tag.\When this token is off, the boot list is flat (a.k.a. flex boot)."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FW_ORPHAN_BOOT_OPTIONS_POLICY"
+	Value  = "ORPHAN_BOOT_OPTIONS_POLICY_DELETE"
+	Help  = "Defines handling of the firmware boot options not associated with the device.\The supported policies are: \ORPHAN_BOOT_OPTIONS_POLICY_KEEP\ORPHAN_BOOT_OPTIONS_POLICY_DELETE\ORPHAN_BOOT_OPTIONS_POLICY_DISABLE\"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "NON_FW_ORPHAN_BOOT_OPTIONS_POLICY"
+	Value  = "ORPHAN_BOOT_OPTIONS_POLICY_HIDE"
+	Help  = "Defines handling of the non-firmware (third party) boot options not associated with the device.\The supported policies are: \ORPHAN_BOOT_OPTIONS_POLICY_KEEP\ORPHAN_BOOT_OPTIONS_POLICY_DELETE\ORPHAN_BOOT_OPTIONS_POLICY_DISABLE\ORPHAN_BOOT_OPTIONS_POLICY_HIDE\"
+	TokenType = Expression
+	TargetH = Yes
+	Range  = "ORPHAN_BOOT_OPTIONS_POLICY_KEEP"
+End
+
+TOKEN
+	Name  = "ORPHAN_GROUP_HEADERS_POLICY"
+	Value  = "ORPHAN_BOOT_OPTIONS_POLICY_DELETE"
+	Help  = "Defines handling of the legacy boot option headers associated with groups of devices.\The supported policies are: \ORPHAN_BOOT_OPTIONS_POLICY_KEEP\ORPHAN_BOOT_OPTIONS_POLICY_DELETE\ORPHAN_BOOT_OPTIONS_POLICY_DISABLE\"
+	TokenType = Expression
+	TargetH = Yes
+	Range  = "ORPHAN_BOOT_OPTIONS_POLICY_KEEP"
+End
+
+TOKEN
+	Name  = "NORMALIZE_BOOT_OPTION_NAME"
+	Value  = "1"
+	Help  = "When the token is on, the Description of the existing boot options is regenerated during the boot option processing.\It is possible to override built time Description normalization policy using NormalizeBootOptionName variable."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "NORMALIZE_BOOT_OPTION_DEVICE_PATH"
+	Value  = "1"
+	Help  = "When the token is on, the FilePathList of the existing boot options is regenerated during the boot option processing.\It is possible to override built time FilePathList normalization policy using NormalizeBootOptionDevicePath variable."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "BOOT_OPTION_TAG_PRIORITIES"
+	Value  = "BoTagUefi, BoTagLegacyCdrom, BoTagLegacyHardDisk, BoTagLegacyFloppy, BoTagLegacyEmbedNetwork, BoTagEmbeddedShell"
+	Help  = "List of value of type BOOT_OPTION_TAG that define priorities of the boot option tags.\BOOT_OPTION_TAG is defined in BdsBoard.c\"
+	TokenType = Expression
+	TargetH = Yes
+	Token = "DEBUG_MODE" "=" "0"
+End
+
+TOKEN
+	Name  = "BOOT_OPTION_TAG_PRIORITIES"
+	Value  = "BoTagEmbeddedShell, BoTagUefi, BoTagLegacyCdrom, BoTagLegacyHardDisk, BoTagLegacyFloppy, BoTagLegacyEmbedNetwork"
+	Help  = "List of value of type BOOT_OPTION_TAG that define priorities of the boot option tags.\BOOT_OPTION_TAG is defined in BdsBoard.c\"
+	TokenType = Expression
+	TargetH = Yes
+	Token = "DEBUG_MODE" "!=" "0"
+End
+
+TOKEN
+	Name  = "BOOT_OPTION_NAME_PREFIX_FUNCTION"
+	Value  = "ConstructBootOptionNamePrefixDefault"
+	Help  = "Name of the function of type CONSTRUCT_BOOT_OPTION_NAME.\The function is used to create boot option name prefix."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "BOOT_OPTION_NAME_SUFFIX_FUNCTION"
+	Value  = "ConstructBootOptionNameSuffixDefault"
+	Help  = "Name of the function of type CONSTRUCT_BOOT_OPTION_NAME.\The function is used to create boot option name suffix."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "BOOT_OPTION_GET_BBS_ENTRY_DEVICE_TYPE_FUNCTION"
+	Value  = "GetBbsEntryDeviceTypeDefault"
+	Help  = "Name of the function of type GET_BBS_ENTRY_DEVICE_TYPE.\The function is used to convert device type stored in the BBS table to a legacy device type that will be stored in the NVRAM.\The default implementation(GetBbsEntryDeviceTypeDefault) provides support for BBS_USB_DEVICE_TYPE_SUPPORT and BBS_NETWORK_DEVICE_TYPE_SUPPORT SDL tokens."
+	TokenType = Expression
+	TargetH = Yes
+	Token = "CSM_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "MATCH_BOOT_OPTION_BY_LOCATION"
+	Value  = "1"
+	Help  = "When this option is on, the boot option is matched to the boot device using device location information. The device location is a specific connection point that the device is attached to. \For example: SATA Controller 1 Port 0,  IDE Primary Master,  USB Controller 1 Port 3\"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "MATCH_BOOT_OPTION_BY_DEVICE"
+	Value  = "1"
+	Help  = "When this option is on, the boot option is matched to the boot device using device information such as device name, device serial number or other information that uniquely identifies the device."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "BDS_CONNECT_CONSOLE_DEVICES"
+	Value  = "1"
+	Help  = "Enables/Disables execution of the BDS Control Flow \functions from the 'Connect Console Devices' group"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "BDS_FULL_SYSTEM_INITIALIZATION"
+	Value  = "1"
+	Help  = "Enables/Disables execution of the BDS Control Flow(BDS_CONTROL_FLOW) \functions from the 'Full System Initialization' group"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "BDS_CONNECT_CON_OUT_DEVICES"
+	Value  = "1"
+	Help  = "Enables/Disables execution of the BDS Control Flow(BDS_CONTROL_FLOW) \functions from the 'Connect ConOut Devices' group"
+	TokenType = Boolean
+	Token = "BDS_CONNECT_CONSOLE_DEVICES" "=" "1"
+End
+
+TOKEN
+	Name  = "BDS_CONNECT_CON_IN_DEVICES"
+	Value  = "1"
+	Help  = "Enables/Disables execution of the BDS Control Flow(BDS_CONTROL_FLOW) \functions from the 'Connect ConIn Devices' group"
+	TokenType = Boolean
+	Token = "BDS_CONNECT_CONSOLE_DEVICES" "=" "1"
+End
+
+TOKEN
+	Name  = "BDS_UPDATE_BOOT_OPTION_VARIABLES"
+	Value  = "1"
+	Help  = "Enables/Disables execution of the BDS Control Flow(BDS_CONTROL_FLOW) \functions from the 'UpdateBootOptionVariables,' group"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "BDS_PROCESS_BOOT_OPTION_LIST"
+	Value  = "1"
+	Help  = "Enables/Disables execution of the BDS Control Flow(BDS_CONTROL_FLOW) \functions from the '/*Process Boot Option List*/' group"
+	TokenType = Boolean
+	Token = "BDS_UPDATE_BOOT_OPTION_VARIABLES" "=" "1"
+End
+
+TOKEN
+	Name  = "BUILT_IN_SHELL_SUPPORT"
+	Value  = "1"
+	Help  = "This SDL token defines if built-in Shell is supported in the project.\It controls installation of the boot option for a built-in Shell."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "BDS_MEMORY_ABOVE_4GB_HANDLING_MODE"
+	Value  = "2"
+	Help  = "Controls BDS processing of the memory above 4GB.\0 - Do not process memory above 4GB. Use this value if memory above 4GB should not be exposed to OS, or if processing is performed outside of BDS\1 - Make memory above 4GB available early in Bds->Entry\2 - Make memory above 4GB available late in Bds->Entry (right before handing over to TSE)\"
+	TokenType = Integer
+	Range  = "0-2"
+End
+
+TOKEN
+	Name  = "BDS_START_PCI_BEFORE_END_OF_DXE"
+	Value  = "0"
+	Help  = "When this token is enabled, PCI bus enumeration,\creation of PCI I/O handles, and launch of OpROM for onboard devices\are performed before generation of the End-of-DXE event.\This feature requires PciBus_12 or newer."
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "BDS_UPDATE_MEMORY_USAGE_INFORMATION_FUNCTION"
+	Value  = "UpdateMemoryUsageInformationDefault"
+	Help  = "This function is called on every boot to update size of preallocated regions for each memory type."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+PATH
+	Name  = "Bds_DIR"
+End
+
+MODULE
+	Help  = "Includes Bds.mak to Project"
+	File  = "Bds.mak"
+End
+
+ELINK
+	Name  = "BDS_CONTROL_FLOW"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "BootOptionDpMatchingFunctions"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "BootOptionMatchingFunctions"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "BootOptionBootDeviceFilteringFunctions"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "BootOptionBuildNameFunctions"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "BootOptionBuildFilePathFunctions"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "LocateDevicePathTest,"
+	Parent  = "BootOptionDpMatchingFunctions"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "PartitionDevicePathTest,"
+	Parent  = "BootOptionDpMatchingFunctions"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "UsbClassDevicePathTest,"
+	Parent  = "BootOptionDpMatchingFunctions"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "BbsDevicePathTest,"
+	Parent  = "BootOptionDpMatchingFunctions"
+	Token = "CSM_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "AmiBbsDevicePathTest,"
+	Parent  = "BootOptionDpMatchingFunctions"
+	Token = "CSM_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "ConstructBootOptionNameByHandle,"
+	Parent  = "BootOptionBuildNameFunctions"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "ConstructBootOptionNameByBbsDescription,"
+	Parent  = "BootOptionBuildNameFunctions"
+	Token = "CSM_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "ConstructBootOptionNameByHandleDevicePath,"
+	Parent  = "BootOptionBuildNameFunctions"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "ConstructBootOptionNameByFilePathList,"
+	Parent  = "BootOptionBuildNameFunctions"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "BuildLegacyLocationFilePath,"
+	Parent  = "BootOptionBuildFilePathFunctions"
+	Token = "CSM_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "BuildNameFilePath,"
+	Parent  = "BootOptionBuildFilePathFunctions"
+	Token = "MATCH_BOOT_OPTION_BY_DEVICE" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "BuildLegacyFilePath,"
+	Parent  = "BootOptionBuildFilePathFunctions"
+	Token = "CSM_SUPPORT" "=" "1"
+	InvokeOrder = BeforeParent
+End
+
+ELINK
+	Name  = "BuildEfiFilePath,"
+	Parent  = "BootOptionBuildFilePathFunctions"
+	InvokeOrder = BeforeParent
+End
+
+ELINK
+	Name  = "AmiDeviceNameDevicePathTest,"
+	Parent  = "BootOptionDpMatchingFunctions"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "DeviceTypeDevicePathTest,"
+	Parent  = "BootOptionDpMatchingFunctions"
+	Token = "MATCH_BOOT_OPTION_BY_LOCATION" "=" "0"
+	Token = "MATCH_BOOT_OPTION_BY_DEVICE" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "RecoverTheMemoryAbove4Gb,"
+	Parent  = "BDS_CONTROL_FLOW"
+	Token = "BDS_MEMORY_ABOVE_4GB_HANDLING_MODE" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "ConnectRootBridgeHandlesBeforeEndOfDxe,"
+	Parent  = "BDS_CONTROL_FLOW"
+	Token = "PCI_BUS_VER_COMBINED" ">=" "0x408A"
+	Token = "BDS_START_PCI_BEFORE_END_OF_DXE" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "SignalConnectDriversEvent,"
+	Parent  = "BDS_CONTROL_FLOW"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "ConnectRootBridgeHandles,"
+	Parent  = "BDS_CONTROL_FLOW"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "RegisterMemoryTypeInformationUpdateCallback,"
+	Parent  = "BDS_CONTROL_FLOW"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "FastBootHook,"
+	Parent  = "BDS_CONTROL_FLOW"
+	Token = "FAST_BOOT_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "/* Connect Console Devices */"
+	Parent  = "BDS_CONTROL_FLOW"
+	Token = "BDS_CONNECT_CONSOLE_DEVICES" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "/* Full System Initialization */"
+	Parent  = "BDS_CONTROL_FLOW"
+	Token = "BDS_CONNECT_CONSOLE_DEVICES" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "/* Connect ConOut Devices */"
+	Parent  = "/* Connect Console Devices */"
+	Token = "BDS_CONNECT_CON_OUT_DEVICES" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "/* Connect ConIn Devices */"
+	Parent  = "/* Connect Console Devices */"
+	Token = "BDS_CONNECT_CON_IN_DEVICES" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "ReportConnectConOutProgressCode,"
+	Parent  = "/* Connect ConOut Devices */"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "ConnectVgaConOut,"
+	Parent  = "/* Connect ConOut Devices */"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "ConnectConOutVariable,"
+	Parent  = "/* Connect ConOut Devices */"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "InstallConOutStartedProtocol,"
+	Parent  = "/* Connect ConOut Devices */"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "ReportConnectConInProgressCode,"
+	Parent  = "/* Connect ConIn Devices */"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "ConnectPs2ConIn,"
+	Parent  = "/* Connect ConIn Devices */"
+	Token = "PS2Ctl_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "ConnectUsbConIn,"
+	Parent  = "/* Connect ConIn Devices */"
+	Token = "AMIUSB_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "ConnectConInVariable,"
+	Parent  = "/* Connect ConIn Devices */"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "InstallConInStartedProtocol,"
+	Parent  = "/* Connect ConIn Devices */"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "ConInAvailabilityBeep,"
+	Parent  = "/* Connect ConIn Devices */"
+	Token = "BEEP_ENABLE" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "ConnectEverything,"
+	Parent  = "/* Full System Initialization */"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "RunDrivers,"
+	Parent  = "/* Full System Initialization */"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "InitConVars,"
+	Parent  = "/* Full System Initialization */"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "RunSysPrepApps,"
+	Parent  = "/* Full System Initialization */"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "ShadowAllLegacyOptionRoms,"
+	Parent  = "/* Full System Initialization */"
+	Token = "CSM_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "SignalAllDriversConnectedEvent,"
+	Parent  = "/* Full System Initialization */"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "InstallFwLoadFile,"
+	Parent  = "/* Full System Initialization */"
+	Token = "BUILT_IN_SHELL_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "UpdateBootOptionVariables,"
+	Parent  = "/* Full System Initialization */"
+	Token = "BDS_UPDATE_BOOT_OPTION_VARIABLES" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "CallTheDispatcher,"
+	Parent  = "BDS_CONTROL_FLOW"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "PerformCapsuleVariableCleanup,"
+	Parent  = "BDS_CONTROL_FLOW"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "UpdateEsrtFmpEntries,"
+	Parent  = "BDS_CONTROL_FLOW"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "RecoverTheMemoryAbove4Gb,"
+	Parent  = "BDS_CONTROL_FLOW"
+	Token = "BDS_MEMORY_ABOVE_4GB_HANDLING_MODE" "=" "2"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "HandoffToTse,"
+	Parent  = "BDS_CONTROL_FLOW"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "ReadBootOptions,"
+	Parent  = "UpdateBootOptionVariables,"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "AdjustLegacyBootOptionPriorities,"
+	Parent  = "UpdateBootOptionVariables,"
+	Token = "CSM_SUPPORT" "=" "1"
+	Token = "GROUP_BOOT_OPTIONS_BY_TAG" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "UnmaskOrphanDevices,"
+	Parent  = "UpdateBootOptionVariables,"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "CollectBootDevices,"
+	Parent  = "UpdateBootOptionVariables,"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "FilterBootDeviceList,"
+	Parent  = "UpdateBootOptionVariables,"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "MatchBootOptionsToDevices,"
+	Parent  = "UpdateBootOptionVariables,"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "DeleteUnmatchedUefiHddBootDevices,"
+	Parent  = "UpdateBootOptionVariables,"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "CreateBootOptionsForNewBootDevices,"
+	Parent  = "UpdateBootOptionVariables,"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "/*Process Boot Option List*/"
+	Parent  = "UpdateBootOptionVariables,"
+	Token = "BDS_PROCESS_BOOT_OPTION_LIST" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "MaskOrphanDevices,"
+	Parent  = "UpdateBootOptionVariables,"
+	Token = "CSM_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "SaveLegacyDevOrder,"
+	Parent  = "UpdateBootOptionVariables,"
+	Token = "CSM_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "SaveBootOptions,"
+	Parent  = "UpdateBootOptionVariables,"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "SetBootOptionTags,"
+	Parent  = "/*Process Boot Option List*/"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "NormalizeBootOptions,"
+	Parent  = "/*Process Boot Option List*/"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "PreProcessBootOptions,"
+	Parent  = "/*Process Boot Option List*/"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "SetBootOptionPriorities,"
+	Parent  = "/*Process Boot Option List*/"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "PostProcessBootOptions,"
+	Parent  = "/*Process Boot Option List*/"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "ReadBootOptionAndBoot,"
+	Parent  = "HandoffToTse,"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "MatchUefiFloppyDrive,"
+	Parent  = "BootOptionMatchingFunctions"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "BOOT_MANAGER_CAPABILITIES"
+	Help  = "The value constructed by OR-ing child eLinks defines boot manager capabilities.\UEFI BootOptionSupport variable is set to this value"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "OS_INDICATIONS_SUPPORTED"
+	Help  = "The value constructed by OR-ing child eLinks defines supported OS indications.\UEFI OsIndicationsSupported variable is set to this value"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "EFI_BOOT_OPTION_SUPPORT_KEY"
+	Parent  = "BOOT_MANAGER_CAPABILITIES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "EFI_BOOT_OPTION_SUPPORT_APP"
+	Parent  = "BOOT_MANAGER_CAPABILITIES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "EFI_BOOT_OPTION_SUPPORT_SYSPREP"
+	Parent  = "BOOT_MANAGER_CAPABILITIES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "0x300"
+	Parent  = "EFI_BOOT_OPTION_SUPPORT_KEY"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "EFI_OS_INDICATIONS_BOOT_TO_FW_UI"
+	Parent  = "OS_INDICATIONS_SUPPORTED"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "EFI_OS_INDICATIONS_TIMESTAMP_REVOCATION"
+	Parent  = "OS_INDICATIONS_SUPPORTED"
+	Token = "SecureBoot_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+INFComponent
+	Name  = "Bds"
+	File  = "Bds.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "DXE_DRIVER"
+End
+
+PcdMapping
+	Name  = "PcdResetOnMemoryTypeInformationChange"
+	GuidSpace  = "gEfiMdeModulePkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	DataType  = "Boolean"
+	Value  = "FALSE"
+	Offset  = 00h
+	Length  = 01h
+	TargetDSC = Yes
+	Token = "NV_SIMULATION" "=" "1"
+End
+

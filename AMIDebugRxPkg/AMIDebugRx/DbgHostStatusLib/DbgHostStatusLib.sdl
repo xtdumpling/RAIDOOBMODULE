@@ -1,0 +1,102 @@
+TOKEN
+	Name  = "DbgHostStatusLib_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling DbgHostStatusLib support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "DBG_CORE05_BUS_NUM"
+	Value  = "0x0"
+	Help  = "Bus Number used by Debugger to determine the PCIExBaseAddress when Dynamic MMCfg is ON"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "DBG_CORE05_DEV_NUM"
+	Value  = "0x5"
+	Help  = "Device Number used by Debugger to determine the PCIExBaseAddress when Dynamic MMCfg is ON"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "DBG_CORE05_FUNC_NUM"
+	Value  = "0x0"
+	Help  = "Function Number used by Debugger to determine the PCIExBaseAddress when Dynamic MMCfg is ON"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "DBG_R_IIO_MMCFG_B0"
+	Value  = "0x90"
+	Help  = "The 0xB0 Number used by Debugger to determine the PCIExBaseAddress when Dynamic MMCfg is ON"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+PATH
+	Name  = "DbgHostStatusLib_DIR"
+	Path  = "AMIDebugRxPkg\AMIDebugRx\DbgHostStatusLib"
+End
+
+INFComponent
+	Name  = "PeiDbgHostStatusLib"
+	File  = "PeiDbgHostStatusLib.inf"
+	Package  = "AMIDebugRx"
+	Arch  = "common"
+	Path  = "DbgHostStatusLib_DIR"
+End
+
+INFComponent
+	Name  = "DxeDbgHostStatusLib"
+	File  = "DxeDbgHostStatusLib.inf"
+	Package  = "AMIDebugRx"
+	Arch  = "common Ia32 X64"
+	Path  = "DbgHostStatusLib_DIR"
+End
+
+INFComponent
+	Name  = "SmmDbgHostStatusLib"
+	File  = "SmmDbgHostStatusLib.inf"
+	Package  = "AMIDebugRx"
+	Arch  = "common Ia32 X64"
+	Path  = "DbgHostStatusLib_DIR"
+	Token = "SMM_DEBUG_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "DbgHostStatusLib"
+	Instance  = "AMIDebugRx.PeiDbgHostStatusLib"
+	ModuleTypes  = "SEC PEIM PEI_CORE"
+	Arch  = "common"
+End
+
+LibraryMapping
+	Class  = "DbgHostStatusLib"
+	Instance  = "AMIDebugRx.DxeDbgHostStatusLib"
+	ModuleTypes  = "DXE_CORE DXE_DRIVER DXE_RUNTIME_DRIVER UEFI_APPLICATION UEFI_DRIVER"
+End
+
+LibraryMapping
+	Class  = "DbgHostStatusLib"
+	Instance  = "AMIDebugRx.SmmDbgHostStatusLib"
+	ModuleTypes  = "SMM_CORE DXE_SMM_DRIVER"
+	Token = "SMM_DEBUG_SUPPORT" "=" "1"
+End
+
+INFComponent
+    Name  = "CommonDebugLib"
+    File  = "CommonDebugLib.inf"
+    Package  = "AMIDebugRx"
+    Arch  = "common Ia32 X64"
+    Path  = "DbgHostStatusLib_DIR"
+End
+
+LibraryMapping
+    Class  = "CommonDebugLib"
+    Instance  = "AMIDebugRx.CommonDebugLib"
+End

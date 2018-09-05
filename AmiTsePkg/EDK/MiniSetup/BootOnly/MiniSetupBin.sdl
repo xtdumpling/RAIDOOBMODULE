@@ -1,0 +1,166 @@
+TOKEN
+	Name  = "MiniSetup_Bin_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable MiniSetup support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "HII_VERSION"
+	Value  = "2"
+	Help  = "Build support for Differnet HII versions: Make UEFI 2.1 Token dependand to this."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+
+TOKEN
+	Name  = "APTIO_4_00"
+	Value  = "1"
+	Help  = "Use enhanced features of Aptio 4.00"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "AMITSE_CryptoPkg_SUPPORT"
+	Value  = "1"
+	Help  = "To find project has CryptoPkg_SUPPORT"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "BaseCryptLib_SUPPORT" "=" "1"
+	Token = "TSE_HASH_PASSWORD" "=" "1"
+End
+
+TOKEN
+	Name  = "AMITSE_AmiCryptoPkg_SUPPORT"
+	Value  = "1"
+	Help  = "To find project has AmiCryptoPkg_SUPPORT"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "AmiBaseCryptLib_SUPPORT" "=" "1"
+	Token = "TSE_HASH_PASSWORD" "=" "1"
+End
+
+PATH
+	Name  = "TSESRC_DIR"
+End
+
+ELINK
+	Name  = "$(TSESRC_DIR)\MiniSetupLocal$(ARCH).lib"
+	Parent  = "MINISETUPLIB"
+	Priority  = 10
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(TSESRC_DIR)/hiistring21.c"
+	Parent  = "TSE_SOURCE_FILES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "MinisetupBin"
+	Parent  = "ADDITIONAL_AMITSE_LibraryClasses"
+	InvokeOrder = AfterParent
+End
+
+INFComponent
+	Name  = "MinisetupBin"
+	File  = "MinisetupBin.inf"
+	Package  = "AmiTsePkg"
+End
+
+LibraryMapping
+	Class  = "MinisetupBin"
+	Instance  = "AmiTsePkg.MinisetupBin"
+#	Arch  = "X64"
+End
+
+ELINK
+	Name  = "gEfiHiiDatabaseProtocolGuid"
+	Parent  = "ADDITIONAL_AMITSE_Protocols"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "gEfiHiiStringProtocolGuid"
+	Parent  = "ADDITIONAL_AMITSE_Protocols"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "PasswordEncode"
+	Parent  = "ADDITIONAL_AMITSE_LibraryClasses"
+	InvokeOrder = AfterParent
+End
+
+INFComponent
+    Name  = "PasswordEncode"
+    File  = "PasswordEncode/PasswordEncode.inf"
+    Package  = "AmiTsePkg"
+End
+
+
+LibraryMapping
+	Class  = "PasswordEncode"
+	Instance  = "AmiTsePkg.PasswordEncode"
+End
+
+ELINK
+	Name  = "$(TSESRC_DIR)/PasswordEncode/TsePasswordEncode$(ARCH).lib"
+	Parent  = "MINISETUPLIB"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "TsePasswordEncodeBin"
+	Parent  = "ADDITIONAL_AMITSE_LibraryClasses"
+	InvokeOrder = AfterParent
+End
+
+INFComponent
+    Name  = "TsePasswordEncodeBin"
+    File  = "PasswordEncode/TsePasswordEncodeBin.inf"
+   	Package  = "AmiTsePkg"
+End
+
+LibraryMapping
+	Class  = "TsePasswordEncodeBin"
+	Instance  = "AmiTsePkg.TsePasswordEncodeBin"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "AmiCryptoPkg.BaseCryptLib"
+#	Instance  = "AmiCryptoPkg.AmiCryptLib" for older versions of AmiCryptLib
+	Override = "AmiTsePkg.AMITSE"
+	Token = "TSE_HASH_PASSWORD" "=" "1"    
+  	Token = "AmiBaseCryptLib_SUPPORT" "=" "1"
+  	Token = "BaseCryptLib_SUPPORT" "=" "0"
+End
+
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "CryptoPkg.BaseCryptLib"
+	Override ="AmiTsePkg.AMITSE"
+	Token = "TSE_HASH_PASSWORD" "=" "1"    
+ 	Token = "BaseCryptLib_SUPPORT" "=" "1"
+End
+
+ELINK
+	Name  = "BaseCryptLib"
+	Parent  = "ADDITIONAL_ESA_LibraryClasses"
+	InvokeOrder = AfterParent
+	Token = "ESA_BINARY_SUPPORT" "=" "1"    
+	Token = "ESA_BUILD" "=" "0x0040"    
+	Token = "TSE_HASH_PASSWORD" "=" "1"    
+  	Token = "BaseCryptLib_SUPPORT" "=" "1"
+End

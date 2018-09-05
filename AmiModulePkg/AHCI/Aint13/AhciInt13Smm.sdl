@@ -1,0 +1,38 @@
+TOKEN
+    Name  = "AHCI_INT13_SMM_SUPPORT"
+    Value  = "0"
+    Help  = "Main switch to enable SMM support for AHCI Int13/MMIO operations in Project. Currently only INT13 Read/Write functions are supported."
+    TokenType = Boolean
+    Master = Yes
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+End
+
+PATH
+    Name  = "AHCI_INT13_SMM_DIR"
+End
+
+TOKEN
+    Name  = "AHCI_INT13_SMM_SWSMI_VALUE"
+    Value  = "043h"
+    Help  = "Value to write into SMI command register to generate software SMI for AHCI INT13/MMIO operations."
+    TokenType = Integer
+    TargetH = Yes
+    TargetEQU = Yes
+    Range  = "0 - 0xff"
+End
+
+INFComponent
+    Name  = "AhciInt13Dxe"
+    File  = "AhciInt13Dxe.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_DRIVER"
+End
+
+INFComponent
+    Name  = "AhciInt13Smm"
+    File  = "AhciInt13Smm.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes = "DXE_SMM_DRIVER"
+End

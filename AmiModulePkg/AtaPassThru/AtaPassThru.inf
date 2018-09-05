@@ -1,0 +1,63 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+## @file AtaPassthru.inf
+#   This driver installs AtaPassthru Protocol
+##
+
+[Defines]
+  INF_VERSION           = 0x00010015
+  VERSION_STRING        = 1.0
+  BASE_NAME             = AtaPassThru
+  MODULE_TYPE           = UEFI_DRIVER
+  FILE_GUID             = 2E3AB8B6-AC9D-4d70-A675-54F52FB22D66
+  ENTRY_POINT           = AtaPassThruEntry
+
+[Sources]
+  AtaPassThru.c
+  AtaPassThruSupport.h  
+  
+[LibraryClasses]
+  AmiDxeLib
+  UefiDriverEntryPoint
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+
+[Protocols]
+  gAmiIdeBusInitProtocolGuid
+  gAmiAhciBusProtocolGuid
+  gAmiAtaPassThruInitProtocolGuid
+  gEfiAtaPassThruProtocolGuid
+  gAmiPlatformIdeProtocolGuid
+  
+[Depex]
+  TRUE
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

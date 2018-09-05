@@ -1,0 +1,74 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+## @file LegacySredir.inf
+#
+##
+[Defines]
+  INF_VERSION = 0x00010015
+  VERSION_STRING = 1.0
+  BASE_NAME = LegacySredir
+  MODULE_TYPE = DXE_DRIVER
+  FILE_GUID = 4A3602BC-1A05-4c82-99B4-588CD2A32CD5
+  ENTRY_POINT = LegacySredirEntryPoint
+
+[Sources]
+  LegacySredir.c
+  LegacySredir.h
+  LegacySredir_Setup.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec 
+  AmiModulePkg/AmiModulePkg.dec
+  
+[LibraryClasses]
+  AmiDxeLib
+  UefiDriverEntryPoint
+  
+[Protocols]
+  gAmiSerialProtocolGuid
+  gEfiPciIoProtocolGuid
+  gEfiDevicePathProtocolGuid
+  gEfiComponentNameProtocolGuid
+  gEfiSimpleTextOutProtocolGuid
+  gEfiSerialIoProtocolGuid
+  gAmiEfiKeycodeProtocolGuid
+  gEfiDriverBindingProtocolGuid
+  gEfiLegacyBiosExtProtocolGuid
+  gEfiLegacySredirProtocolGuid
+  gEfiLegacyBiosProtocolGuid
+  gEfiAmiSioProtocolGuid
+  gOpromStartEndProtocolGuid
+  gBdsAllDriversConnectedProtocolGuid
+
+[Depex]
+  gEfiLegacyInterruptProtocolGuid AND #EFI_LEGACY_INTERRUPT_PROTOCOL_GUID
+  gEfiLegacy8259ProtocolGuid      AND #EFI_LEGACY_8259_PROTOCOL_GUID 
+  gEfiLegacyBiosProtocolGuid      AND #EFI_LEGACY_BIOS_PROTOCOL_GUID
+  gEfiLegacyBiosExtProtocolGuid       #EFI_LEGACY_BIOS_EXT_PROTOCOL_GUID
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

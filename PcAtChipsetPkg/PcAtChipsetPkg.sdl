@@ -1,0 +1,213 @@
+TOKEN
+	Name  = "PcAtChipsetPkg_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling PcAtChipsetPkg support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "Legacy8259_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable Legacy8259 support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "PcRtc_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable PcRtc support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "PcRtcSmm_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable PcRtc support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "Legacy8259"
+	File  = "8259InterruptControllerDxe/8259.inf"
+	Package  = "PcAtChipsetPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "Legacy8259_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "PcRtc"
+	File  = "PcatRealTimeClockRuntimeDxe/PcatRealTimeClockRuntimeDxe.inf"
+	Package  = "PcAtChipsetPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "PcRtc_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "PcRtcSmm"
+	File  = "PcatRealTimeClockSmm/PcatRealTimeClockSmm.inf"
+	Package  = "PcAtChipsetPkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "PcRtcSmm_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "BaseIoApicLib"
+	File  = "Library/BaseIoApicLib/BaseIoApicLib.inf"
+	Package  = "PcAtChipsetPkg"
+End
+
+INFComponent
+	Name  = "BaseAcpiTimerLib"
+	File  = "Library/AcpiTimerLib/BaseAcpiTimerLib.inf"
+	Package  = "PcAtChipsetPkg"
+	ModuleTypes = "BASE"
+End
+
+INFComponent
+	Name  = "DxeAcpiTimerLib"
+	File  = "Library/AcpiTimerLib/DxeAcpiTimerLib.inf"
+	Package  = "PcAtChipsetPkg"
+	ModuleTypes = "BASE"
+End
+
+LibraryMapping
+	Class  = "IoApicLib"
+	Instance  = "PcAtChipsetPkg.BaseIoApicLib"
+End
+
+PcdMapping
+    Name  = "PcdMinimalValidYear"
+    GuidSpace  = "gPcAtChipsetPkgTokenSpaceGuid"
+    PcdType  = "PcdsFixedAtBuild"
+    Value  = "1900"
+    Offset  = 00h
+    Length  = 00h
+    TargetDSC = Yes
+End
+
+# EIP257030, Clarify the uEFI Timer Services Test fail on Purley.
+PcdMapping
+    Name  = "PcdMaximalValidYear"
+    GuidSpace  = "gPcAtChipsetPkgTokenSpaceGuid"
+    PcdType  = "PcdsFixedAtBuild"
+    Value  = "9999"
+    Offset  = 00h
+    Length  = 00h
+    TargetDSC = Yes
+End
+
+LibraryMapping
+	Class  = "TimerLib"
+	Instance  = "PcAtChipsetPkg.BaseAcpiTimerLib"
+	Arch  = "IA32"
+End
+
+LibraryMapping
+	Class  = "TimerLib"
+	Instance  = "PcAtChipsetPkg.DxeAcpiTimerLib"
+	ModuleTypes  = "DXE_CORE DXE_RUNTIME_DRIVER DXE_SMM_DRIVER UEFI_APPLICATION SMM_CORE"
+	Arch  = "X64"
+	Token = "PERFORMANCE_ENABLE" "=" "1"
+End
+
+LibraryMapping
+	Class  = "TimerLib"
+	Instance  = "PcAtChipsetPkg.DxeAcpiTimerLib"
+	Arch  = "X64"
+	Token = "PERFORMANCE_ENABLE" "=" "1"
+End
+
+LibraryMapping
+	Class  = "TimerLib"
+	Instance  = "PcAtChipsetPkg.DxeAcpiTimerLib"
+	Arch  = "common"
+End
+
+PcdMapping
+	Name  = "PcdAcpiIoPortBaseAddress"
+	GuidSpace  = "gPcAtChipsetPkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "$(ACPI_BASE_ADDRESS)"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdAcpiIoPciBusNumber"
+	GuidSpace  = "gPcAtChipsetPkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0x00"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdAcpiIoPciDeviceNumber"
+	GuidSpace  = "gPcAtChipsetPkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0x1F"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdAcpiIoPciFunctionNumber"
+	GuidSpace  = "gPcAtChipsetPkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0x02"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdAcpiIoPciEnableRegisterOffset"
+	GuidSpace  = "gPcAtChipsetPkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0x0044"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdAcpiIoBarEnableMask"
+	GuidSpace  = "gPcAtChipsetPkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0x80"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdAcpiIoPciBarRegisterOffset"
+	GuidSpace  = "gPcAtChipsetPkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0x0040"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdAcpiPm1TmrOffset"
+	GuidSpace  = "gPcAtChipsetPkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0x0008"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End

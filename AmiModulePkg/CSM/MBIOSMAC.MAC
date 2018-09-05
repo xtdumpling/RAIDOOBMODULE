@@ -1,0 +1,587 @@
+;Inclusion guard
+ifndef _mbiosmac_mac_
+_mbiosmac_mac_	equ	1
+.xlist
+
+;************************************************************************
+;************************************************************************
+;**                                                                    **
+;**         (C)Copyright 1985-2016, American Megatrends, Inc.          **
+;**                                                                    **
+;**                          All Rights Reserved.                      **
+;**                                                                    **
+;**          5555 Oakbrook Pkwy Suite 200, Norcross, GA 30093          **
+;**                                                                    **
+;**                          Phone (770)-246-8600                      **
+;**                                                                    **
+;************************************************************************
+;************************************************************************
+
+;---------------------------------------;
+;		RET_SP			;
+;---------------------------------------;
+ret_sp	macro	dummy			; call routine without stack
+	local	llll, lll		; local label
+	even
+	mov	sp, offset cs:lll	; return address
+	jmp	dummy
+lll:
+	dw	offset cs:llll		; return address
+llll:
+endm
+;---------------------------------------;
+;		JMP_SP			;
+;---------------------------------------;
+jmp_sp	macro	dummy			; goto routine & back (via SP)
+	local	llll			; local label
+	mov	sp, offset cs:llll		; return address
+	jmp	dummy
+llll:
+endm
+;---------------------------------------;
+;		JMP_BP			;
+;---------------------------------------;
+jmp_bp	macro	dummy			; goto routine & back (via SI)
+	local	llll			; local label
+	mov	bp, offset cs:llll		; return address
+	jmp	dummy
+llll:
+endm
+;---------------------------------------;
+;		JMP_CX			;
+;---------------------------------------;
+jmp_cx	macro	dummy			; goto routine & back (via SI)
+	local	llll			; local label
+	mov	cx, offset cs:llll		; return address
+	jmp	dummy
+llll:
+endm
+;---------------------------------------;
+;		JMP_SI			;
+;---------------------------------------;
+jmp_si	macro	dummy			; goto routine & back (via SI)
+	local	llll			; local label
+	mov	si, offset cs:llll	; return address
+	jmp	dummy
+llll:
+endm
+;---------------------------------------;
+;		JMP_DI			;
+;---------------------------------------;
+jmp_di	macro	dummy			; goto routine & back (via DI)
+	local	llll			; local label
+	mov	di, offset cs:llll	; return address
+	jmp	dummy
+llll:
+endm
+;---------------------------------------;
+;		DES_TAB			;
+;---------------------------------------;
+des_tab	macro	v_mode_seg_size,seg_low_word,seg_high_byte,access_right
+	dw	v_mode_seg_size
+	dw	seg_low_word		; low word for descriptor
+	db	seg_high_byte			; descriptor high byte
+	db	access_right			; access right byte
+	dw	0000h			; reserved word
+endm
+
+;---------------------------------------;
+;	CHECK_POINT_INI			;
+;---------------------------------------;
+ifndef check_point_ini
+check_point_ini	macro	xx
+	mov	al,xx
+	out	80h,al
+endm
+endif
+
+ifndef RT_CHECK_POINT
+RT_CHECK_POINT	MACRO CP
+	mov	al, CP
+	out	80h, al
+ENDM
+endif
+
+;<AMI_MHDR_START>
+;----------------------------------------------------------------------------
+; Name:		IO_DELAY
+;
+; Description:	This macro can be used to introduced a delay of one IO
+;		read operation. Use this macro only when the stack is
+;		availabel.
+;
+; Input:
+;----------------------------------------------------------------------------
+;<AMI_MHDR_END>
+IO_DELAY	MACRO
+	push	ax
+	in	al, refresh_port
+	pop	ax
+ENDM
+
+;<AMI_MHDR_START>
+;----------------------------------------------------------------------------
+; Name:		IO_DELAY_BB
+;
+; Description:	This macro can be used to introduced a delay two jumps.
+;		The idea is, the jump will cause CPU to flush its instruction
+;		cache and will introduce some delay. In the newer CPUs this macro
+;		will introduce hardly any delay.
+;		This macro can be used without stack.
+;
+; Input:
+;----------------------------------------------------------------------------
+;<AMI_MHDR_END>
+IO_DELAY_bb	MACRO
+	jcxz	$+2
+	jcxz	$+2
+
+ENDM
+
+
+;<AMI_MHDR_START>
+;----------------------------------------------------------------------------
+; Name:		SET_ORG
+;
+; Description:	This macro can be used as a replacement to "ORG" directive
+;		in source files. The advantage in using this macro instead
+;		of "ORG" directive is that it generates necessary labels for
+;		for mapgaurd utility, so that any possible code overlaps
+;		betweens ORGs can be detected during build time itself.
+;
+; Input:	OrgValue	- Value for ORG.
+;		GuardTag	- Tag name for mapgaurd utility.
+;----------------------------------------------------------------------------
+;<AMI_MHDR_END>
+
+SET_ORG	MACRO	OrgValue, GuardTag
+
+	PUBLIC	orgguard_&GuardTag&_&OrgValue&_start
+orgguard_&GuardTag&_&OrgValue&_start	LABEL	BYTE
+	ORG	OrgValue
+	PUBLIC	orgguard_&GuardTag&_&OrgValue&_end
+orgguard_&GuardTag&_&OrgValue&_end	LABEL	BYTE
+
+ENDM
+
+;<AMI_MHDR_START>
+;----------------------------------------------------------------------------
+; Name:		SET_ORG_PLUS
+;
+; Description:	This macro can be used as a replacement to "ORG" directive
+;		in source files. The advantage in using this macro instead
+;		of "ORG" directive is that it generates necessary labels for
+;		for mapgaurd utility, so that any possible code overlaps
+;		betweens ORGs can be detected during build time itself.
+;
+; Input:	OrgBase		- Value for ORG base
+;		OrgPlus		- Offset from the OrgBase.
+;		GuardTag	- Tag name for mapgaurd utility.
+;----------------------------------------------------------------------------
+;<AMI_MHDR_END>
+SET_ORG_Plus	MACRO	OrgBase, OrgPlus, GuardTag
+	PUBLIC	orgguard_&GuardTag&_&OrgPlus&_&OrgBase&_start
+orgguard_&GuardTag&_&OrgPlus&_&OrgBase&_start	LABEL	BYTE
+	ORG	OrgBase + OrgPlus
+	PUBLIC	orgguard_&GuardTag&_&OrgPlus&_&OrgBase&_end
+orgguard_&GuardTag&_&OrgPlus&_&OrgBase&_end	LABEL	BYTE
+ENDM
+
+;<AMI_PHDR_START>
+;----------------------------------------------------------------------------
+;
+; Name:		mEXTERN_NEAR
+;
+; Description:	
+;
+; Input:
+;
+;----------------------------------------------------------------------------
+;<AMI_PHDR_END>
+
+mEXTERN_NEAR MACRO LabelName
+
+	EXTERN	LabelName:NEAR		; Define the label as a NEAR EXTERN.
+
+ENDM
+
+
+;<AMI_PHDR_START>
+;----------------------------------------------------------------------------
+;
+; Name:		mEXTERN_FAR
+;
+; Description:
+;
+; Input:	
+;
+;----------------------------------------------------------------------------
+;<AMI_PHDR_END>
+
+mEXTERN_FAR MACRO LabelName
+
+	EXTERN	LabelName:FAR		; Define the label as a FAR EXTERN.
+
+ENDM
+
+
+;<AMI_PHDR_START>
+;----------------------------------------------------------------------------
+;
+; Name:		mSTART_PROC_NEAR
+;
+; Description:	
+;
+; Input:
+;
+;----------------------------------------------------------------------------
+;<AMI_PHDR_END>
+
+mSTART_PROC_NEAR MACRO LabelName
+
+LabelName PROC NEAR PUBLIC
+
+ENDM
+
+
+;<AMI_PHDR_START>
+;----------------------------------------------------------------------------
+;
+; Name:		mBODY_CALL_PROC_NEAR
+;
+; Description:	
+;
+; Input:
+;
+;----------------------------------------------------------------------------
+;<AMI_PHDR_END>
+
+mBODY_CALL_PROC_NEAR MACRO LabelID, LabelName
+
+	call	LabelName
+
+ENDM
+
+
+;<AMI_PHDR_START>
+;----------------------------------------------------------------------------
+;
+; Name:		mBODY_JMP_PROC_NEAR
+;
+; Description:	
+;
+; Input:
+;
+;----------------------------------------------------------------------------
+;<AMI_PHDR_END>
+
+mBODY_JMP_PROC_NEAR MACRO LabelID, LabelName
+
+	jmp	LabelName
+	PUBLIC	LabelName&End
+LabelName&End::
+
+ENDM
+
+
+;<AMI_PHDR_START>
+;----------------------------------------------------------------------------
+;
+; Name:		mEND_PROC_NEAR
+;
+; Description:	
+;
+; Input:
+;
+;----------------------------------------------------------------------------
+;<AMI_PHDR_END>
+
+mEND_PROC_NEAR MACRO LabelName
+
+	ret
+LabelName ENDP
+
+ENDM
+
+
+;<AMI_PHDR_START>
+;----------------------------------------------------------------------------
+;
+; Name:		mEND_PROC_WITH_JMP_NEAR
+;
+; Description:	
+;
+; Input:
+;
+;----------------------------------------------------------------------------
+;<AMI_PHDR_END>
+
+mEND_PROC_WITH_JMP_NEAR MACRO LabelName
+
+	EXTERN	LabelName&End:NEAR
+	jmp	LabelName&End
+LabelName ENDP
+
+ENDM
+
+
+;<AMI_PHDR_START>
+;----------------------------------------------------------------------------
+;
+; Name:		mSTART_PROC_FAR
+;
+; Description:	
+;
+; Input:
+;
+;----------------------------------------------------------------------------
+;<AMI_PHDR_END>
+
+mSTART_PROC_FAR MACRO LabelName
+
+LabelName PROC FAR PUBLIC	
+
+ENDM
+
+
+;<AMI_PHDR_START>
+;----------------------------------------------------------------------------
+;
+; Name:		mBODY_CALL_PROC_FAR
+;
+; Description:	
+;
+; Input:
+;
+;----------------------------------------------------------------------------
+;<AMI_PHDR_END>
+
+mBODY_CALL_PROC_FAR MACRO LabelID, LabelName
+
+	call	LabelName
+
+ENDM
+
+
+;<AMI_PHDR_START>
+;----------------------------------------------------------------------------
+;
+; Name:		mBODY_JMP_PROC_FAR
+;
+; Description:	
+;
+; Input:
+;
+;----------------------------------------------------------------------------
+;<AMI_PHDR_END>
+
+mBODY_JMP_PROC_FAR MACRO LabelID, LabelName
+
+	jmp	LabelName
+	PUBLIC	LabelName&End
+LabelName&End::
+
+ENDM
+
+
+;<AMI_PHDR_START>
+;----------------------------------------------------------------------------
+;
+; Name:		mEND_PROC_FAR
+;
+; Description:	
+;
+; Input:
+;
+;----------------------------------------------------------------------------
+;<AMI_PHDR_END>
+
+mEND_PROC_FAR MACRO LabelName
+
+	ret
+LabelName ENDP
+
+ENDM
+
+
+;<AMI_PHDR_START>
+;----------------------------------------------------------------------------
+;
+; Name:		mEND_PROC_WITH_JMP_FAR
+;
+; Description:	
+;
+; Input:
+;
+;----------------------------------------------------------------------------
+;<AMI_PHDR_END>
+
+mEND_PROC_WITH_JMP_FAR MACRO LabelName
+
+	EXTERN	LabelName&End:FAR
+	jmp	LabelName&End
+LabelName ENDP
+
+ENDM
+
+
+;<AMI_PHDR_START>
+;----------------------------------------------------------------------------
+;
+; Name:		mSTART_TBL
+;
+; Description:	
+;
+; Input:
+;
+;----------------------------------------------------------------------------
+;<AMI_PHDR_END>
+
+mSTART_TBL MACRO LabelName
+
+	PUBLIC	LabelName
+LabelName LABEL BYTE
+
+ENDM
+
+;<AMI_PHDR_START>
+;----------------------------------------------------------------------------
+;
+; Name:		mBODY_TBL_ENTRY_NEAR
+;
+; Description:	
+;
+; Input:
+;
+;----------------------------------------------------------------------------
+;<AMI_PHDR_END>
+
+mBODY_TBL_ENTRY_NEAR MACRO LabelID, LabelName
+
+	stTblEntryNEAR <LabelName>
+
+ENDM
+
+
+;<AMI_PHDR_START>
+;----------------------------------------------------------------------------
+;
+; Name:		mBODY_ID_AND_TBL_ENTRY_NEAR
+;
+; Description:	
+;
+; Input:
+;
+;----------------------------------------------------------------------------
+;<AMI_PHDR_END>
+
+mBODY_ID_AND_TBL_ENTRY_NEAR MACRO LabelID, LabelName
+
+	stIDAndTblEntryNEAR <LabelID, LabelName>
+
+ENDM
+
+
+;<AMI_PHDR_START>
+;----------------------------------------------------------------------------
+;
+; Name:		mBODY_ID_AND_TBL_CSM_ENTRY_NEAR
+;
+; Description:	This macro is used to declare a function entry with an ID and
+;				a NEAR function. The EXTERN declaration is done WITHIN the 16 bit segment.
+;				This is useful if the macro is used to create a binary using EXE2BIN;
+;				if EXTRERN is declared outside the segment, then EXE2BIN will not work.
+;
+; Notes:		EXTERN definition only for functions (Prog. Guide pg 253)
+;
+;----------------------------------------------------------------------------
+;<AMI_PHDR_END>
+
+mBODY_ID_AND_TBL_CSM_ENTRY_NEAR MACRO LabelID, LabelName
+
+	EXTERN LabelName:NEAR
+	stIDAndTblEntryNEAR <LabelID, LabelName>
+
+ENDM
+
+mEND_TBL_CSM MACRO LabelName
+	stIDAndTblEntryNEAR <0FFFFh, 0>
+LabelName&End LABEL BYTE
+ENDM
+
+;<AMI_PHDR_START>
+;----------------------------------------------------------------------------
+;
+; Name:		mBODY_TBL_ENTRY_FAR
+;
+; Description:	
+;
+; Input:
+;
+;----------------------------------------------------------------------------
+;<AMI_PHDR_END>
+
+mBODY_TBL_ENTRY_FAR MACRO LabelID, LabelName
+
+	stTblEntryFAR <LabelName>
+
+ENDM
+
+
+;<AMI_PHDR_START>
+;----------------------------------------------------------------------------
+;
+; Name:		mBODY_ID_AND_TBL_ENTRY_FAR
+;
+; Description:	
+;
+; Input:
+;
+;----------------------------------------------------------------------------
+;<AMI_PHDR_END>
+
+mBODY_ID_AND_TBL_ENTRY_FAR MACRO LabelID, LabelName
+
+	stIDAndTblEntryFAR <LabelID, LabelName>
+
+ENDM
+
+
+;<AMI_PHDR_START>
+;----------------------------------------------------------------------------
+;
+; Name:		mEND_TBL
+;
+; Description:	
+;
+; Input:
+;
+;----------------------------------------------------------------------------
+;<AMI_PHDR_END>
+
+mEND_TBL MACRO LabelName
+
+	PUBLIC	LabelName&End
+LabelName&End LABEL BYTE
+
+ENDM
+
+
+;************************************************************************
+;************************************************************************
+;**                                                                    **
+;**         (C)Copyright 1985-2016, American Megatrends, Inc.          **
+;**                                                                    **
+;**                          All Rights Reserved.                      **
+;**                                                                    **
+;**          5555 Oakbrook Pkwy Suite 200, Norcross, GA 30093          **
+;**                                                                    **
+;**                          Phone (770)-246-8600                      **
+;**                                                                    **
+;************************************************************************
+;************************************************************************
+;---------------------------------------;
+.list
+
+;End of Inclusion guard
+endif	;_mbiosmac_mac_

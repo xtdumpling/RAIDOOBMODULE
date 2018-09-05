@@ -1,0 +1,354 @@
+##****************************************************************************
+##****************************************************************************
+##**                                                                        **
+##**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+##**                                                                        **
+##****************************************************************************
+##****************************************************************************
+#
+#  File History
+#
+#  Rev. 1.00
+#    Bug Fix : N/A.
+#    Reason  : Defended SMCI OOB in-band SW SMI 0xE6 with SMM communication 
+#              mail box mechanism.
+#    Auditor : Joe Jhang
+#    Date    : Jun/06/2017
+#
+##****************************************************************************
+TOKEN
+	Name  = "SMIFlash_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable SMIFlash  support in Project"
+	TokenType = Boolean
+	TargetMAK = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "SMI_FLASH_INTERFACE_VERSION"
+	Value  = "11"
+	Help  = "Version of the SMI Flash Interface"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PRESERVE_PASSWORDS"
+	Value  = "0"
+	Help  = "1 - Preserve passwords through flashing. 0 - Do not preserve passwords."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PRESERVE_EFIBOOTORDER"
+	Value  = "1"
+	Help  = "1 - Preserve EFI BootOrder through flashing. 0 - Do not preserve EFI BootOrder."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "AFU_BUFFER_IN_SHADOW"
+	Value  = "0"
+	Help  = "1 - AFU will store the buffer pointer in F-segment If Afu support."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "DISABLE_PWR_BUTTON"
+	Value  = "0"
+	Help  = "1 - Disable PWR Button when flashing BIOS in DOS."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "RECOVERY_PRESERVE_VARS_IN_SMM"
+	Value  = "1"
+	Help  = "1 - Preserved variables thru SMIFlash Func 0x20/0x24 if Capsule/Recovery mode of Secure Flash."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "NVRAM_MIGRATION"
+	Value  = "1"
+	Help  = "1 - Do Nvram migration if Nvram was updated"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "NVRAM_VERSION" ">=" "8"
+End
+
+PATH
+	Name  = "SMI_FLASH_DIR"
+End
+
+MODULE
+	Help  = "Includes SmiFlash.mak to Project"
+	File  = "SmiFlash.mak"
+End
+
+## SMCPKG_SUPPORT S
+ELINK
+	Name  = "AMI_SMI_FLASH_OEM_SOURCES_FILES"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "AMI_SMI_FLASH_OEM_PACKAGES"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "AMI_SMI_FLASH_OEM_LIBRARIES"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "AMI_SMI_FLASH_OEM_GUIDS"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "AMI_SMI_FLASH_OEM_PROTOCOLS"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "AMI_SMI_FLASH_OEM_DEPEX"
+	InvokeOrder = ReplaceParent
+End
+## SMCPKG_SUPPORT E
+
+ELINK
+	Name  = "SMIFlashInSmmList"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "SMIFlashNotInSmmList"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "SMIFlashPreUpdateList"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "SMIFlashEndUpdateList"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "SMIFlashPreHandlerList"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "SMIFlashEndHandlerList"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "SMIFlashSaveVarsList"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "SMIFlashSaveGuidsList"
+	InvokeOrder = ReplaceParent
+End
+
+## SMCPKG_SUPPORT S
+ELINK
+	Name  = "SMIFlashOemFuncHooksList"
+	InvokeOrder = ReplaceParent
+End
+## SMCPKG_SUPPORT E
+
+ELINK
+	Name  = '{L\"dbx\", {0xd719b2cb, 0x3d3a, 0x4596, 0xa3, 0xbc, 0xda, 0xd0, 0xe, 0x67, 0x65, 0x6f}, TRUE, NULL},'
+	Parent  = "SMIFlashSaveVarsList"
+	Help  = "{Name, GUID, Authentication, NULL(Don't change)}."
+	InvokeOrder = AfterParent
+	Token = "SecureBoot_SUPPORT" "=" "1"
+	Token = "SECURE_BOOT_MODULE_REVISION" "<" "14"
+End
+
+ELINK
+	Name  = '{L\"db\", {0xd719b2cb, 0x3d3a, 0x4596, 0xa3, 0xbc, 0xda, 0xd0, 0xe, 0x67, 0x65, 0x6f}, TRUE, NULL},'
+	Parent  = "SMIFlashSaveVarsList"
+	Help  = "{Name, GUID, Authentication, NULL(Don't change)}."
+	InvokeOrder = AfterParent
+	Token = "SecureBoot_SUPPORT" "=" "1"
+	Token = "SECURE_BOOT_MODULE_REVISION" "<" "14"
+End
+
+ELINK
+	Name  = '{L\"KEK\", {0x8BE4DF61, 0x93CA, 0x11d2, 0xAA, 0x0D, 0x00, 0xE0, 0x98, 0x03, 0x2B, 0x8C}, TRUE, NULL},'
+	Parent  = "SMIFlashSaveVarsList"
+	Help  = "{Name, GUID, Authentication, NULL(Don't change)}."
+	InvokeOrder = AfterParent
+	Token = "SecureBoot_SUPPORT" "=" "1"
+	Token = "SECURE_BOOT_MODULE_REVISION" "<" "14"
+End
+
+ELINK
+	Name  = '{L\"PK\", {0x8BE4DF61, 0x93CA, 0x11d2, 0xAA, 0x0D, 0x00, 0xE0, 0x98, 0x03, 0x2B, 0x8C}, TRUE, NULL},'
+	Parent  = "SMIFlashSaveVarsList"
+	Help  = "{Name, GUID, Authentication, NULL(Don't change)}."
+	InvokeOrder = AfterParent
+	Token = "SecureBoot_SUPPORT" "=" "1"
+	Token = "SECURE_BOOT_MODULE_REVISION" "<" "14"
+End
+
+ELINK
+	Name  = '{L\"SecureBootSetup\", {0x7B59104A, 0xC00D, 0x4158, 0x87, 0xFF, 0xF0, 0x4D, 0x63, 0x96, 0xA9, 0x15}, FALSE, NULL},'
+	Parent  = "SMIFlashSaveVarsList"
+	Help  = "{Name, GUID, Authentication, NULL(Don't change)}."
+	InvokeOrder = AfterParent
+	Token = "SecureBoot_SUPPORT" "=" "1"
+	Token = "SECURE_BOOT_MODULE_REVISION" "<" "14"
+End
+
+ELINK
+	Name  = '{L\"AMITSESetup\", {0xc811fa38, 0x42c8, 0x4579, 0xa9, 0xbb, 0x60, 0xe9, 0x4e, 0xdd, 0xfb, 0x34}, FALSE, NULL},'
+	Parent  = "SMIFlashSaveVarsList"
+	Help  = "{Name, GUID, Authentication, NULL(Don't change)}."
+	InvokeOrder = AfterParent
+	Token = "PRESERVE_PASSWORDS" "=" "1"
+End
+
+ELINK
+	Name  = "{ 0x77FA9ABD, 0x0359, 0x4D32, 0xBD, 0x60, 0x28, 0xF4, 0xE7, 0x8F, 0x78, 0x4B },"
+	Parent  = "SMIFlashSaveGuidsList"
+	Help  = "Windows 8 Debug Variable."
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = '{L\"BootOrder\", {0x8BE4DF61, 0x93CA, 0x11d2, 0xAA, 0x0D, 0x00, 0xE0, 0x98, 0x03, 0x2B, 0x8C}, FALSE, NULL},'
+	Parent  = "SMIFlashSaveVarsList"
+	InvokeOrder = AfterParent
+	Token = "PRESERVE_EFIBOOTORDER" "=" "1"
+End
+
+ELINK
+	Name  = '{L\"LegacyDevOrder\", {0xA56074DB, 0x65FE, 0x45F7, 0xBD, 0x21, 0x2D, 0x2B, 0xDD, 0x8E, 0x96, 0x52}, FALSE, NULL},'
+	Parent  = "SMIFlashSaveVarsList"
+	InvokeOrder = AfterParent
+	Token = "PRESERVE_EFIBOOTORDER" "=" "1"
+End
+
+ELINK
+	Name  = "PreserveVariables,"
+	Parent  = "SMIFlashPreUpdateList"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "RestoreVariables,"
+	Parent  = "SMIFlashEndUpdateList"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "DisablePowerButton,"
+	Parent  = "SMIFlashPreUpdateList"
+	Token = "DISABLE_PWR_BUTTON" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "EnablePowerButton,"
+	Parent  = "SMIFlashEndUpdateList"
+	Token = "DISABLE_PWR_BUTTON" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "DisableUSBKBD,"
+	Parent  = "SMIFlashPreUpdateList"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "EnableUSBKBD,"
+	Parent  = "SMIFlashEndUpdateList"
+	InvokeOrder = AfterParent
+End
+
+#-ELINK
+#-	Name  = "CheckNVRAMArea,"
+#-	Parent  = "SMIFlashPreUpdateList"
+#-	Token = "FAULT_TOLERANT_NVRAM_UPDATE" "=" "1"
+#-	InvokeOrder = BeforeParent
+#-End
+
+#-ELINK
+#-	Name  = "UpdateNVRAMArea,"
+#-	Parent  = "SMIFlashEndUpdateList"
+#-	Token = "FAULT_TOLERANT_NVRAM_UPDATE" "=" "1"
+#-	InvokeOrder = BeforeParent
+#-End
+
+ELINK
+	Name  = "UpdateShadowBuffer,"
+	Parent  = "SMIFlashPreHandlerList"
+	Token = "AFU_BUFFER_IN_SHADOW" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "ClearShadowBuffer,"
+	Parent  = "SMIFlashEndHandlerList"
+	Token = "AFU_BUFFER_IN_SHADOW" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "ReflashBeforeUpdateHook,"
+	Parent  = "OemBeforeFlashUpdateList"
+	Token = "RECOVERY_PRESERVE_VARS_IN_SMM" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "ReflashAfterUpdateHook,"
+	Parent  = "OemAfterFlashUpdateList"
+	Token = "RECOVERY_PRESERVE_VARS_IN_SMM" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+INFComponent
+	Name  = "SmiFlash"
+	File  = "../../Build/SmiFlash.inf" ##SMCPKG_SUPPORT
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+End
+
+INFComponent
+	Name  = "SmiFlashDxe"
+	File  = "SmiFlashDxe.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "DXE_RUNTIME_DRIVER"
+End
+
+INFComponent
+	Name  = "SmiFlashLibs"
+	File  = "SmiFlashLibs.inf"
+	Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "AmiModulePkg.SmiFlashLibs"
+	Override  = "AmiModulePkg.Reflash"
+End

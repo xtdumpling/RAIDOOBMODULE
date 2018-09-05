@@ -1,0 +1,39 @@
+TOKEN
+    Name  = "AmiCryptoPkg_SUPPORT"
+    Value  = "1"
+    Help  = "Switch for Enabling AmiCryptoPkg support in the project"
+    TokenType = Boolean
+    Master = Yes
+End
+
+TOKEN
+    Name  = "AMI_CRYPTOPACKAGE_MODULE_REVISION"
+    Value  = "30"
+    Help  = "Version of AmiCrypto Pkg interfaces"
+    TokenType = Integer
+    TargetMAK = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AmiCryptoPkg_DEBUG_MESSAGES"
+    Value  = "0"
+    TokenType = Boolean
+    Help  = "Control level of debug messages in AmiCryptoPkg source code"
+    Token = "DEBUG_CODE" "=" "1"
+End
+
+TOKEN
+    Name  = "AmiCryptoPkg_DEBUG_LEVEL"
+    Value  = "EFI_D_INFO"
+    TokenType = Expression
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AmiCryptoPkg_DEBUG_LEVEL"
+    Value  = "EFI_D_ERROR"
+    TokenType = Expression
+    TargetH = Yes
+    Token = "AmiCryptoPkg_DEBUG_MESSAGES" "=" "1"
+End

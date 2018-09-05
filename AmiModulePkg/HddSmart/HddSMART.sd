@@ -1,0 +1,119 @@
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**       (C)Copyright 1993-2016 Supermicro Computer, Inc.           **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
+//  File History
+//
+//  Rev. 1.00
+//    Bug Fix: Draft template.
+//    Reason:
+//    Auditor:  Kasber Chen
+//    Date:     Nov/04/2016
+//
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
+
+// /** @file HddSMART.sd
+//    HddSmart related setup definitions
+// **/
+
+#ifdef SETUP_DATA_DEFINITION
+// Put NVRAM data definitions here.
+// For example:	UINT8 Data1;
+// These definitions will be converted by the build process
+// to a definitions of SETUP_DATA fields.
+    UINT8 SmartSelfTest;
+#endif
+
+#if defined(VFRCOMPILE) && !defined(CONTROLS_ARE_DEFINED)
+#define CONTROL_DEFINITION
+#endif
+
+#ifdef CONTROL_DEFINITION
+
+        #define SMART_CHECKBOX_SMART_SELFTEST\
+            checkbox varid = SETUP_DATA.SmartSelfTest,\
+            prompt = STRING_TOKEN(STR_SMART_SELFTEST),\
+            help = STRING_TOKEN(STR_SMART_SELFTEST_HELP),\
+            flags = CHECKBOX_DEFAULT_MFG  | RESET_REQUIRED,\
+            default value = DEFAULT_SMART_SELFTEST, \
+            endcheckbox;
+#endif //#ifdef CONTROL_DEFINITION
+
+#ifdef CONTROLS_WITH_DEFAULTS
+
+    SMART_CHECKBOX_SMART_SELFTEST
+
+#endif //#ifdef CONTROLS_WITH_DEFAULTS
+
+#ifdef ADVANCED_FORM_SET //CHIPSET_FORM_SET
+
+    #ifdef FORM_SET_TYPEDEF
+    // Add any additional type definitions here
+    #endif
+
+    #ifdef FORM_SET_VARSTORE
+    // Define custom varstore's here
+    #endif
+
+    #ifdef FORM_SET_ITEM
+    // Define controls to be added to the main page of the formset
+    #endif
+
+    #ifdef FORM_SET_GOTO
+        // Define goto commands for the forms defined in this file
+        suppressif SMC_SETUP_STYLE;	//SMCPKG_SUPPORT S
+        goto SMART_FORM_ID, 
+            prompt = STRING_TOKEN(STR_SMART_FORM),
+            help = STRING_TOKEN(STR_SMART_FORM_HELP);
+        endif;	//SMCPKG_SUPPORT E
+    #endif
+
+    #ifdef FORM_SET_FORM
+
+        #ifndef SMART_FORM_MAIN
+        #define SMART_FORM_MAIN
+
+            // Define forms
+            form formid = AUTO_ID(SMART_FORM_ID),
+            title = STRING_TOKEN(STR_SMART_FORM);
+
+            SUBTITLE(STRING_TOKEN(STR_SMART_FORM))
+            SEPARATOR
+
+                grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+                    SMART_CHECKBOX_SMART_SELFTEST
+                endif;
+
+            endform;    // SMART_FORM_ID
+        #endif    // SMART_FORM_MAIN
+    #endif    // FORM_SET_FORM
+#endif    // ADVANCED_FORM_SET
+
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************

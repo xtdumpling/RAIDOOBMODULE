@@ -1,0 +1,332 @@
+//**********************************************************************
+//**                                                                  **
+//**         (C)Copyright 1993-2016 Supermicro Computer, Inc.         **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
+//  File History
+//
+//  Rev. 1.01
+//       Bug fixed:   Draft template.
+//       Reason:      
+//       Auditor:     Kasber Chen
+//       Date:        Nov/04/2016
+//
+//  Rev. 1.00
+//       Bug fixed:   Remove unused item for OOB.
+//       Reason:      
+//       Auditor:     Kasber Chen
+//       Date:        Aug/31/2016
+//
+//**********************************************************************
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**           5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093      **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
+
+#ifdef SETUP_DATA_DEFINITION
+	UINT8	CsmSupport;
+	UINT8	ExpansionCardText;
+	UINT8	I19Trap;
+	UINT8	ZipEmulation;
+	UINT8	KeepGA20Active;
+	UINT8	BootOptionFilter;
+	UINT8	PxeOpRom;
+	UINT8	MassStorageOpRom;
+	UINT8	VideoOpRom;
+	UINT8	OldOpRom;
+#endif
+
+#if defined(VFRCOMPILE) && !defined(CONTROLS_ARE_DEFINED)
+#define CONTROL_DEFINITION
+#endif
+#ifdef CONTROL_DEFINITION
+
+#define CSM_ONEOF_KEEPGA20ACTIVE\
+	oneof varid     = SETUP_DATA.KeepGA20Active,\
+		prompt      = STRING_TOKEN(STR_CSM_GA20_ACTIVE),\
+		help        = STRING_TOKEN(STR_CSM_GA20_ACTIVE_HELP),\
+		option text = STRING_TOKEN(STR_CSM_GA20_ACTIVE_UPONREQUEST), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_CSM_GA20_ACTIVE_ALWAYS),	value = 1, flags = 0;\
+	endoneof;
+
+#define CSM_ONEOF_EXPANSIONCARDTEXT\
+	oneof varid     = SETUP_DATA.ExpansionCardText,\
+		prompt      = STRING_TOKEN(STR_CSM_OPROM_DISPLAY_MODE),\
+		help        = STRING_TOKEN(STR_CSM_OPROM_DISPLAY_MODE_HELP),\
+		option text = STRING_TOKEN(STR_CSM_OPROM_DISPLAY_FORCE_BIOS),	value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_CSM_OPROM_DISPLAY_KEEP_CURRENT),	value = 0, flags = 0;\
+	endoneof;
+
+#define CSM_CHECKBOX_I19TRAP\
+	oneof varid  = SETUP_DATA.I19Trap,\
+		prompt      = STRING_TOKEN(STR_CSM_I19_TRAP),\
+		help        = STRING_TOKEN(STR_CSM_I19_TRAP_HELP),\
+		option text = STRING_TOKEN(STR_CSM_I19_TRAP_IMMEDIATE),	value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_CSM_I19_TRAP_POSTPONED),	value = 0, flags = 0;\
+	endoneof;
+
+
+#if CSM_SET_ZIP_EMULATION_TYPE
+
+#define CSM_ONEOF_ZIPEMULATION\
+	oneof varid     = SETUP_DATA.ZipEmulation,\
+		prompt      = STRING_TOKEN(STR_CSM_ZIP_EMULATION_PROMPT),\
+		help        = STRING_TOKEN(STR_CSM_ZIP_EMULATION_HELP),\
+		option text = STRING_TOKEN(STR_CSM_ZIP_EMULATION_FDD),	value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_CSM_ZIP_EMULATION_HDD),	value = 1, flags = 0;\
+	endoneof;
+
+#else
+#define CSM_ONEOF_ZIPEMULATION
+#endif //#if CSM_SET_ZIP_EMULATION_TYPE
+
+#define CSM_ONEOF_CSMSUPPORT\
+	oneof varid     = SETUP_DATA.CsmSupport, questionid = AUTO_ID(CSM_POLICY_LAUNCH_KEY),\
+		prompt      = STRING_TOKEN(STR_CSM_SUPPORT_PROMPT),\
+		help        = STRING_TOKEN(STR_CSM_SUPPORT_HELP),\
+		default     = DEFAULT_CSM_LAUNCH_POLICY,\
+		option text = STRING_TOKEN(STR_DISABLED),	value = 0, flags = INTERACTIVE | RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_ENABLED),	value = 1, flags = MANUFACTURING | INTERACTIVE | RESET_REQUIRED;\
+	endoneof;
+
+#define CSM_POLICY_BOOT_OPTION_FILTER\
+            oneof varid = SETUP_DATA.BootOptionFilter,\
+                prompt  = STRING_TOKEN(STR_BOOT_OPTION_FILTERING_POLICY),\
+                help    = STRING_TOKEN(STR_BOOT_OPTION_FILTERING_POLICY_HELP),\
+                default = DEFAULT_BOOT_OPTION_FILTERING_POLICY,\
+                option text = STRING_TOKEN(STR_BOOT_OPTION_FILTERING_POLICY_ALL),  value = 0, flags = MANUFACTURING | RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_BOOT_OPTION_FILTERING_POLICY_LEGACY_ONLY),  value = 1, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_BOOT_OPTION_FILTERING_POLICY_UEFI_ONLY),  value = 2, flags = RESET_REQUIRED;\
+            endoneof;
+
+#if OptionRomPolicy_SUPPORT
+#define CSM_POLICY_PXE_OPROM\
+            oneof varid = SETUP_DATA.PxeOpRom,\
+                prompt  = STRING_TOKEN(STR_PXE_OPROM_POLICY),\
+                help    = STRING_TOKEN(STR_PXE_OPROM_POLICY_HELP),\
+                default = DEFAULT_PXE_OPROM_POLICY,\
+                option text = STRING_TOKEN(STR_OPROM_POLICY_UEFI_ONLY),  value = 1, flags = MANUFACTURING | RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_OPROM_POLICY_LEGACY_ONLY),  value = 2, flags = RESET_REQUIRED;\
+            endoneof;
+#else
+#define CSM_POLICY_PXE_OPROM\
+            oneof varid = SETUP_DATA.PxeOpRom,\
+                prompt  = STRING_TOKEN(STR_PXE_OPROM_POLICY),\
+                help    = STRING_TOKEN(STR_PXE_OPROM_POLICY_HELP),\
+                default = DEFAULT_PXE_OPROM_POLICY,\
+                option text = STRING_TOKEN(STR_OPROM_POLICY_DISABLE),  value = 0, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_OPROM_POLICY_UEFI_ONLY),  value = 1, flags = MANUFACTURING | RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_OPROM_POLICY_LEGACY_ONLY),  value = 2, flags = RESET_REQUIRED;\
+            endoneof;
+#endif
+
+#if OptionRomPolicy_SUPPORT
+#define CSM_POLICY_MASS_STORAGE_OPROM\
+            oneof varid = SETUP_DATA.MassStorageOpRom,\
+                prompt  = STRING_TOKEN(STR_MASS_STORAGE_OPROM_POLICY),\
+                help    = STRING_TOKEN(STR_MASS_STORAGE_OPROM_POLICY_HELP),\
+                default = DEFAULT_MASS_STORAGE_OPROM_POLICY,\
+                option text = STRING_TOKEN(STR_OPROM_POLICY_UEFI_ONLY),  value = 1, flags = MANUFACTURING | RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_OPROM_POLICY_LEGACY_ONLY),  value = 2, flags = RESET_REQUIRED;\
+            endoneof;
+#else
+#define CSM_POLICY_MASS_STORAGE_OPROM\
+            oneof varid = SETUP_DATA.MassStorageOpRom,\
+                prompt  = STRING_TOKEN(STR_MASS_STORAGE_OPROM_POLICY),\
+                help    = STRING_TOKEN(STR_MASS_STORAGE_OPROM_POLICY_HELP),\
+                default = DEFAULT_MASS_STORAGE_OPROM_POLICY,\
+                option text = STRING_TOKEN(STR_OPROM_POLICY_DISABLE),  value = 0, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_OPROM_POLICY_UEFI_ONLY),  value = 1, flags = MANUFACTURING | RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_OPROM_POLICY_LEGACY_ONLY),  value = 2, flags = RESET_REQUIRED;\
+            endoneof;
+#endif
+
+#if OptionRomPolicy_SUPPORT
+#define CSM_POLICY_VIDEO_OPROM\
+            oneof varid = SETUP_DATA.VideoOpRom,\
+                prompt  = STRING_TOKEN(STR_VIDEO_OPROM_POLICY),\
+                help    = STRING_TOKEN(STR_VIDEO_OPROM_POLICY_HELP),\
+                default = DEFAULT_VIDEO_OPROM_POLICY,\
+                option text = STRING_TOKEN(STR_OPROM_POLICY_UEFI_ONLY),  value = 1, flags = MANUFACTURING | RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_OPROM_POLICY_LEGACY_ONLY),  value = 2, flags = RESET_REQUIRED;\
+            endoneof;
+
+#else
+#define CSM_POLICY_VIDEO_OPROM\
+            oneof varid = SETUP_DATA.VideoOpRom,\
+                prompt  = STRING_TOKEN(STR_VIDEO_OPROM_POLICY),\
+                help    = STRING_TOKEN(STR_VIDEO_OPROM_POLICY_HELP),\
+                default = DEFAULT_VIDEO_OPROM_POLICY,\
+                option text = STRING_TOKEN(STR_OPROM_POLICY_DISABLE),  value = 0, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_OPROM_POLICY_UEFI_ONLY),  value = 1, flags = MANUFACTURING | RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_OPROM_POLICY_LEGACY_ONLY),  value = 2, flags = RESET_REQUIRED;\
+            endoneof;
+#endif
+
+#if OptionRomPolicy_SUPPORT
+#define CSM_POLICY_OLD_OPROM\
+        oneof varid = SETUP_DATA.OldOpRom,\
+            prompt  = STRING_TOKEN(STR_OLD_OPROM_LAUNCH_POLICY),\
+            help    = STRING_TOKEN(STR_OLD_OPROM_LAUNCH_POLICY_HELP),\
+            option text = STRING_TOKEN(STR_OPROM_POLICY_UEFI_ONLY),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_OPROM_POLICY_LEGACY_ONLY),  value = 2, flags = RESET_REQUIRED;\
+        endoneof;
+#else
+#define CSM_POLICY_OLD_OPROM\
+        oneof varid = SETUP_DATA.OldOpRom,\
+            prompt  = STRING_TOKEN(STR_OLD_OPROM_LAUNCH_POLICY),\
+            help    = STRING_TOKEN(STR_OLD_OPROM_LAUNCH_POLICY_HELP),\
+            option text = STRING_TOKEN(STR_OPROM_POLICY_DISABLE),  value = 0, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_OPROM_POLICY_UEFI_ONLY),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_OPROM_POLICY_LEGACY_ONLY),  value = 2, flags = RESET_REQUIRED;\
+        endoneof;
+#endif
+
+
+#endif //#ifdef CONTROL_DEFINITION
+
+#ifdef CONTROLS_WITH_DEFAULTS
+     CSM_ONEOF_KEEPGA20ACTIVE
+     CSM_ONEOF_EXPANSIONCARDTEXT
+     CSM_CHECKBOX_I19TRAP
+     CSM_ONEOF_ZIPEMULATION
+     CSM_POLICY_BOOT_OPTION_FILTER
+#if OptionRomPolicy_SUPPORT && DEVICE_CLASS_POLICY_OVERRIDE
+#else
+     CSM_POLICY_PXE_OPROM
+     CSM_POLICY_MASS_STORAGE_OPROM
+     CSM_POLICY_VIDEO_OPROM
+     CSM_POLICY_OLD_OPROM
+#endif     
+#endif //#ifdef CONTROLS_WITH_DEFAULTS
+
+//Select Top level menu itmem (forset) for you pages
+#ifdef ADVANCED_FORM_SET
+    #ifndef SUPPRESS_GRAYOUT_ENDIF //old Core
+    #define SUPPRESS_GRAYOUT_ENDIF endif;
+    #endif
+
+#ifdef FORM_SET_TYPEDEF
+//If you need any additional type definitions add them here
+//typedef struct{
+//    UINT8 MyField;
+//} MyVariable;
+#endif
+
+#ifdef FORM_SET_VARSTORE
+//If you need custom varstore's define them here
+//    varstore MY_VARIABLE,
+//        key   = AUTO_ID(MY_VARSTORE_ID),
+//        name  = MyVariable,
+//        guid  = SETUP_GUID;
+#endif
+
+#ifdef FORM_SET_ITEM
+//	Define controls to be added to the top level page of the formset
+//	checkbox varid = SETUP_DATA.MyCombobox,
+//		prompt = STRING_TOKEN(...),
+//		help = STRING_TOKEN(...),  
+//		flags = 0 | MANUFACTURING, // Flags behavior for checkbox is overloaded so that it equals a DEFAULT value.  1 = ON, 0 = off
+//	endcheckbox;	
+
+#endif
+
+#ifdef FORM_SET_GOTO
+		// Define goto commands for the forms defined in this file
+		suppressif SMC_SETUP_STYLE;	//SMCPKG_SUPPORT S
+		goto CSM_FORM_ID, 
+		  prompt = STRING_TOKEN(STR_CSM_FORM),
+		help = STRING_TOKEN(STR_CSM_FORM_HELP);
+		endif;	//SMCPKG_SUPPORT E
+#endif
+
+#ifdef FORM_SET_FORM
+// Define forms
+	form formid = AUTO_ID(CSM_FORM_ID),
+		title = STRING_TOKEN(STR_CSM_FORM);
+
+    SUBTITLE(STRING_TOKEN(STR_CSM_TITLE))
+	SEPARATOR
+
+#if defined (SecureBoot_SUPPORT) && SecureBoot_SUPPORT
+	suppressif ideqval SECURE_BOOT_VAR.Value == 1;
+#endif
+    CSM_ONEOF_CSMSUPPORT
+
+suppressif ideqval SETUP_DATA.CsmSupport == 0;
+	SEPARATOR
+	text
+		help   = STRING_TOKEN(STR_CSM_MODULE_VERSION),
+		text   = STRING_TOKEN(STR_CSM_MODULE_VERSION),
+		text   = STRING_TOKEN(STR_CSM_MODULE_VERSION_VALUE),
+		flags  = 0,
+		key    = 0;
+	SEPARATOR
+
+	CSM_ONEOF_KEEPGA20ACTIVE
+suppressif NOT ideqval SETUP_DATA.VideoOpRom == 2;
+	CSM_ONEOF_EXPANSIONCARDTEXT
+endif;
+	suppressif SMC_SETUP_STYLE;	//SMCPKG_SUPPORT S
+    CSM_CHECKBOX_I19TRAP
+        endif;	//SMCPKG_SUPPORT E
+	SEPARATOR
+	CSM_POLICY_BOOT_OPTION_FILTER
+	SEPARATOR
+
+#if OptionRomPolicy_SUPPORT && DEVICE_CLASS_POLICY_OVERRIDE
+#else
+#if SMCPKG_SUPPORT == 0
+    SUBTITLE(STRING_TOKEN(STR_CSM_OPROM_POLICY))
+	SEPARATOR
+	CSM_POLICY_PXE_OPROM
+	CSM_POLICY_MASS_STORAGE_OPROM
+	CSM_POLICY_VIDEO_OPROM
+	CSM_POLICY_OLD_OPROM
+#endif	//#if SMCPKG_SUPPORT == 0
+#endif	
+
+#if CSM_SET_ZIP_EMULATION_TYPE
+	CSM_ONEOF_ZIPEMULATION
+#endif
+endif;
+#if defined (SecureBoot_SUPPORT) && SecureBoot_SUPPORT
+	endif;
+#endif
+
+#if defined (SecureBoot_SUPPORT) && SecureBoot_SUPPORT
+    suppressif ideqval SECURE_BOOT_VAR.Value == 0;
+        SUBTITLE(STRING_TOKEN(STR_CSM_SUBTITLE_DISABLE1))
+        SEPARATOR
+        SUBTITLE(STRING_TOKEN(STR_CSM_SUBTITLE_DISABLE2))
+        SUBTITLE(STRING_TOKEN(STR_CSM_SUBTITLE_DISABLE3))
+    endif;
+#endif
+endform;
+#endif
+
+#endif
+
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**           5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093      **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************

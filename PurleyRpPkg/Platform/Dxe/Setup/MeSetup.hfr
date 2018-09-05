@@ -1,0 +1,826 @@
+//
+// This file contains an 'Intel Peripheral Driver' and is
+// licensed for Intel CPUs and chipsets under the terms of your
+// license agreement with Intel or your vendor.  This file may
+// be modified by the user, subject to additional terms of the
+// license agreement
+//
+// /*++
+// Copyright (c) 2011-2016 Intel Corporation. All rights reserved.
+// This software and associated documentation (if any) is furnished
+// under a license and may only be used or copied in accordance
+// with the terms of the license. Except as permitted by such
+// license, no part of this software or documentation may be
+// reproduced, stored in a retrieval system, or transmitted in any
+// form or by any means without the express written consent of
+// Intel Corporation.
+// --*/
+
+#if (defined(AMT_SUPPORT) && AMT_SUPPORT)
+
+#include "Configuration.h"
+#include "SetupMisc.h"
+#include <Config/MeConfig.h>
+#include "AmtSetup.h"
+#include "MeState.h"
+
+#if defined(ICC_SUPPORT) && ICC_SUPPORT
+#include "IccPlatform.h"
+#endif // ICC_SUPPORT
+
+#ifndef INVENTORY
+#define INVENTORY(Name,Value) \
+    text \
+      help  = STRING_TOKEN(STR_EMPTY_STRING), \
+      text  = Name, \
+      text  = Value, \
+      flags = 0, \
+      key   = 0;
+#endif // INVENTORY
+
+suppressif NOT ideqval ME_RC_CONFIGURATION.MeType == METYPE_AMT;
+
+//**********************************************************************
+//                 Workstation ME Configuration Form
+//**********************************************************************
+  form formid = VFR_FORMID_AMT_ME,
+    title   = STRING_TOKEN(STR_AMT_FORM_TITLE);
+    subtitle text = STRING_TOKEN(STR_AMT_FORM_SUBTITLE);
+
+    //
+    // Display the ME Firmware Version available in MKHI interface
+    //
+    text
+      help  = STRING_TOKEN(STR_ME_FWVER_OPERATIONAL_HELP),
+      text  = STRING_TOKEN(STR_ME_FWVER_OPERATIONAL_PROMPT),
+      text  = STRING_TOKEN(STR_ME_FWVER_OPERATIONAL_VALUE),
+      flags = 0,
+      key   = 0;
+  
+    suppressif NOT ideqval ME_RC_CONFIGURATION.MeFirmwareMode == 0xFF;
+      INVENTORY(STRING_TOKEN(STR_ME_FW_TYPE_PROMPT),STRING_TOKEN(STR_ME_FW_TYPE_AMT))
+      INVENTORY(STRING_TOKEN(STR_ME_FW_TYPE_PROMPT),STRING_TOKEN(STR_ME_FW_TYPE_UNKNOWN))
+    endif;
+  
+    text
+      help   = STRING_TOKEN(STR_ME_FW_TYPE_HELP),
+      text   = STRING_TOKEN(STR_ME_FW_TYPE_PROMPT),
+      text   = STRING_TOKEN(STR_ME_FW_TYPE_VALUE),
+      flags  = 0,
+      key    = 0;
+  
+    suppressif TRUE;
+      // Set MeType default value
+      numeric varid   = ME_RC_CONFIGURATION.MeType,
+        prompt  = STRING_TOKEN(STR_ME_FW_TYPE_PROMPT),
+        help    = STRING_TOKEN(STR_NULL_STRING),
+        flags   = DISPLAY_UINT_HEX | RESET_REQUIRED,
+        minimum = 0,
+        maximum = 0xFF,
+        step    = 0,
+        default = METYPE_AMT, defaultstore = MyStandardDefault,
+        default = METYPE_AMT, defaultstore = MyManufactureDefault,
+      endnumeric;
+    endif; // suppressif TRUE
+  
+    suppressif NOT ideqval ME_RC_CONFIGURATION.MeFirmwareMode == 0xFF;
+      INVENTORY(STRING_TOKEN(STR_ME_FW_INFO_PROMPT),STRING_TOKEN(STR_ME_NORMAL_MODE))
+      INVENTORY(STRING_TOKEN(STR_ME_FW_INFO_PROMPT),STRING_TOKEN(STR_ME_ALT_DISABLED))
+      INVENTORY(STRING_TOKEN(STR_ME_FW_INFO_PROMPT),STRING_TOKEN(STR_ME_TEMP_DISABLED))
+      INVENTORY(STRING_TOKEN(STR_ME_FW_INFO_PROMPT),STRING_TOKEN(STR_ME_SECOVER))
+      INVENTORY(STRING_TOKEN(STR_ME_FW_INFO_PROMPT),STRING_TOKEN(STR_ME_FAILED))
+    endif;
+  
+    text
+      help   = STRING_TOKEN(STR_ME_FW_INFO_HELP),
+      text   = STRING_TOKEN(STR_ME_FW_INFO_PROMPT),
+      text   = STRING_TOKEN(STR_ME_FW_INFO_VALUE),
+      flags  = 0,
+      key    = 0;
+  
+    text
+      help   = STRING_TOKEN(STR_ME_FW_SKU_HELP),
+      text   = STRING_TOKEN(STR_ME_FW_SKU_PROMPT),
+      text   = STRING_TOKEN(STR_ME_FW_SKU_VALUE),
+      flags  = 0,
+      key    = 0;
+  
+    text
+      help   = STRING_TOKEN(STR_ME_FILE_SYSTEM_CORRUPTION_HELP),
+      text   = STRING_TOKEN(STR_ME_FILE_SYSTEM_CORRUPTION_PROMPT),
+      text   = STRING_TOKEN(STR_ME_FILE_SYSTEM_CORRUPTION_VALUE),
+      flags  = 0,
+      key    = 0;
+  
+    text
+      help  = STRING_TOKEN(STR_ME_FWVER_BACKUP_HELP),
+      text  = STRING_TOKEN(STR_ME_FWVER_BACKUP_PROMPT),
+      text  = STRING_TOKEN(STR_ME_FWVER_BACKUP_VALUE),
+      flags = 0,
+      key   = 0;
+  
+    text
+      help  = STRING_TOKEN(STR_ME_FWVER_RECOVERY_HELP),
+      text  = STRING_TOKEN(STR_ME_FWVER_RECOVERY_PROMPT),
+      text  = STRING_TOKEN(STR_ME_FWVER_RECOVERY_VALUE),
+      flags = 0,
+      key   = 0;
+  
+    text
+      help  = STRING_TOKEN(STR_ME_FWSTS1_HELP),
+      text  = STRING_TOKEN(STR_ME_FWSTS1_PROMPT),
+      text  = STRING_TOKEN(STR_ME_FWSTS1_VALUE),
+      flags = 0,
+      key   = 0;
+  
+    text
+      help  = STRING_TOKEN(STR_ME_FWSTS2_HELP),
+      text  = STRING_TOKEN(STR_ME_FWSTS2_PROMPT),
+      text  = STRING_TOKEN(STR_ME_FWSTS2_VALUE),
+      flags = 0,
+      key   = 0;
+  
+    text
+      help  = STRING_TOKEN(STR_ME_FWCURSTE_HELP),
+      text  = STRING_TOKEN(STR_ME_FWCURSTE_PROMPT),
+      text  = STRING_TOKEN(STR_ME_FWCURSTE_VALUE),
+      flags = 0,
+      key   = 0;
+  
+    text
+      help  = STRING_TOKEN(STR_ME_FWERRCODE_HELP),
+      text  = STRING_TOKEN(STR_ME_FWERRCODE_PROMPT),
+      text  = STRING_TOKEN(STR_ME_FWERRCODE_VALUE),
+      flags = 0,
+      key   = 0;
+  
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+    
+    oneof varid = ME_RC_CONFIGURATION.Amt,
+      prompt   = STRING_TOKEN(STR_AMT_STATE_PROMPT),
+      help     = STRING_TOKEN(STR_AMT_STATE_HELP),
+      option text = STRING_TOKEN(STR_DISABLED), value = 0, flags =  RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+    endoneof;
+    
+    goto VFR_FORMID_AMT,
+      prompt  = STRING_TOKEN(STR_AMT_CONFIG_FORM),
+      help    = STRING_TOKEN(STR_AMT_CONFIG_FORM_HELP);
+
+  endform; // VFR_FORMID_AMT_ME
+
+//**********************************************************************
+//                 AMT Info Form
+//**********************************************************************
+  form formid = VFR_FORMID_AMT,
+    title = STRING_TOKEN(STR_AMT_CONFIG_FORM_TITLE);
+
+    grayoutif ideqval ME_RC_CONFIGURATION.Amt == 0;
+    
+      subtitle text = STRING_TOKEN(STR_NULL_STRING);
+      subtitle text = STRING_TOKEN(STR_FW_UPGRADE_SUBTITLE);
+    
+      oneof varid      = ME_RC_CONFIGURATION.MeFwDowngrade,
+        prompt         = STRING_TOKEN(STR_AMT_ME_FW_DOWNGRADE_PROMPT),
+        help           = STRING_TOKEN(STR_AMT_ME_FW_DOWNGRADE_HELP),
+        option text    = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text    = STRING_TOKEN(STR_ENABLED), value = 1, flags =  RESET_REQUIRED;
+      endoneof;
+      
+      suppressif NOT ideqval ME_RC_CONFIGURATION.MeImageType <= ME_IMAGE_CONSUMER_SKU_FW;
+        oneof varid      = ME_RC_CONFIGURATION.LocalFwUpdEnabled,
+          questionid     = AMT_LOCAL_FW_UPDATE_QUESTION_ID,
+          prompt         = STRING_TOKEN(STR_AMT_LOCAL_FW_UPDATE_PROMPT),
+          help           = STRING_TOKEN(STR_AMT_LOCAL_FW_UPDATE_HELP),
+          option text    = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | INTERACTIVE;
+          option text    = STRING_TOKEN(STR_ENABLED), value = 1, flags = INTERACTIVE;
+        endoneof;
+      endif;
+
+      subtitle text = STRING_TOKEN(STR_NULL_STRING);
+      subtitle text = STRING_TOKEN(STR_AMT_CONFIG_FORM_SUBTITLE);
+
+      suppressif ideqval ME_RC_CONFIGURATION.MeImageType <= ME_IMAGE_CONSUMER_SKU_FW OR
+                 ideqval ME_RC_CONFIGURATION.MeStateControl == 0 OR
+                 NOT ideqval ME_RC_CONFIGURATION.MeFirmwareMode == ME_MODE_NORMAL;
+        oneof varid      = ME_RC_CONFIGURATION.MngState,
+          questionid     = AMT_KEY_AMT1_QUESTION_ID,
+          prompt         = STRING_TOKEN(STR_MNG_STATE_PROMPT),
+          help           = STRING_TOKEN(STR_MNG_STATE_HELP),
+          option text    = STRING_TOKEN(STR_DISABLED), value = 0, flags = INTERACTIVE | RESET_REQUIRED;
+          option text    = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | INTERACTIVE | RESET_REQUIRED;
+        endoneof;
+      endif;
+
+      oneof varid      = ME_RC_CONFIGURATION.MdesCapability,
+        prompt = STRING_TOKEN(STR_MDES_PROMPT),
+        help   = STRING_TOKEN(STR_MDES_HELP),
+        option text    = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text    = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+
+      checkbox varid  = ME_RC_CONFIGURATION.AmtbxHotKeyPressed,
+        prompt   = STRING_TOKEN(STR_AMTBX_HOTKEY_PRESSED_PROMPT),
+        help     = STRING_TOKEN(STR_AMTBX_HOTKEY_PRESSED_HELP),
+        // Flags behavior for checkbox is overloaded so that it equals
+        // a DEFAULT value.  CHECKBOX_DEFAULT = ON, 0 = off
+        flags    = 0 | RESET_REQUIRED,
+        key      = 0,
+      endcheckbox;
+
+      checkbox varid  = ME_RC_CONFIGURATION.HideUnConfigureMeConfirm,
+        prompt   = STRING_TOKEN(STR_AMT_HIDE_CONFIRMATION_UNCONFIGURE_ME_PROMPT),
+        help     = STRING_TOKEN(STR_AMT_HIDE_CONFIRMATION_UNCONFIGURE_ME_HELP),
+        // Flags behavior for checkbox is overloaded so that it equals
+        // a DEFAULT value.  CHECKBOX_DEFAULT = ON, 0 = off
+        flags    = 0 | RESET_REQUIRED,
+        key      = 0,
+      endcheckbox;
+
+      checkbox varid  = ME_RC_CONFIGURATION.UnConfigureMe,
+        prompt   = STRING_TOKEN(STR_AMT_UNCONFIGURE_ME_PROMPT),
+        help     = STRING_TOKEN(STR_AMT_UNCONFIGURE_ME_HELP),
+        // Flags behavior for checkbox is overloaded so that it equals
+        // a DEFAULT value.  CHECKBOX_DEFAULT = ON, 0 = off
+        flags    = 0 | RESET_REQUIRED,
+        key      = 0,
+      endcheckbox;
+
+// APTIOV_SERVER_OVERRIDE_RC_START: SA50020, AMT Provisioning Protection
+      oneof varid = ME_RC_CONFIGURATION.USBProvision,
+        prompt   = STRING_TOKEN(STR_AMT_USB_CONFIGURE_PROMPT),
+        help     = STRING_TOKEN(STR_AMT_USB_CONFIGURE_HELP),
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+// APTIOV_SERVER_OVERRIDE_RC_END
+
+      oneof varid = ME_RC_CONFIGURATION.FWProgress,
+        prompt   = STRING_TOKEN(STR_AMT_PET_PROGRESS_PROMPT),
+        help     = STRING_TOKEN(STR_AMT_PET_PROGRESS_HELP),
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+      endoneof;
+
+      checkbox varid  = ME_RC_CONFIGURATION.AmtCiraRequest,
+        prompt   = STRING_TOKEN(STR_AMT_CIRA_REQUEST_PROMPT),
+        help     = STRING_TOKEN(STR_AMT_CIRA_REQUEST_HELP),
+        // Flags behavior for checkbox is overloaded so that it equals
+        // a DEFAULT value.  CHECKBOX_DEFAULT = ON, 0 = off
+        flags    = 0 | RESET_REQUIRED,
+        key      = 0,
+      endcheckbox;
+
+      grayoutif ideqval ME_RC_CONFIGURATION.AmtCiraRequest == 0 OR ideqval ME_RC_CONFIGURATION.Amt == 0;
+        numeric varid   = ME_RC_CONFIGURATION.AmtCiraTimeout,
+          prompt  = STRING_TOKEN (STR_AMT_CIRA_TIMEOUT_PROMPT),
+          help    = STRING_TOKEN (STR_AMT_CIRA_TIMEOUT_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 0,
+          maximum = 255,
+          step    = 1 ,       // Stepping of 0 equates to a manual entering
+                              // of a value, otherwise it will auto-increment
+                              // with a left/right arrow
+          default = 0, defaultstore = MyStandardDefault,
+          default = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+      endif;
+
+      oneof varid = ME_RC_CONFIGURATION.Asf,
+        prompt   = STRING_TOKEN(STR_ASF_PROMPT),
+        help     = STRING_TOKEN(STR_ASF_HELP),
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+      endoneof;
+
+      grayoutif ideqval ME_RC_CONFIGURATION.Asf == 0;
+        oneof varid = ME_RC_CONFIGURATION.WatchDog,
+          prompt   = STRING_TOKEN(STR_WATCHDOG_PROMPT),
+          help     = STRING_TOKEN(STR_WATCHDOG_HELP),
+          option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+      endif;
+
+      grayoutif ideqval ME_RC_CONFIGURATION.Asf == 0 OR ideqval ME_RC_CONFIGURATION.WatchDog == 0;
+
+        numeric varid   = ME_RC_CONFIGURATION.WatchDogTimerBios,
+           prompt  = STRING_TOKEN (STR_WATCHDOG_TIMER_BIOS_PROMPT),
+           help    = STRING_TOKEN (STR_WATCHDOG_TIMER_BIOS_HELP),
+           minimum = 0,
+           maximum = 65535,
+           step    = 1 , // Stepping of 0 equates to a manual entering
+                         // of a value, otherwise it will auto-increment
+                         // with a left/right arrow
+           default = 0, defaultstore = MyStandardDefault,
+           default = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        oneof varid = ME_RC_CONFIGURATION.WatchDogOs,
+          prompt   = STRING_TOKEN(STR_WATCHDOG_OS_PROMPT),
+          help     = STRING_TOKEN(STR_WATCHDOG_OS_HELP),
+          option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+        grayoutif ideqval ME_RC_CONFIGURATION.WatchDogOs == 0;
+          numeric varid   = ME_RC_CONFIGURATION.WatchDogTimerOs,
+             prompt  = STRING_TOKEN (STR_WATCHDOG_TIMER_OS_PROMPT),
+             help    = STRING_TOKEN (STR_WATCHDOG_TIMER_OS_HELP),
+             minimum = 0,
+             maximum = 65535,
+             step    = 1 , // Stepping of 0 equates to a manual entering
+                           // of a value, otherwise it will auto-increment
+                           // with a left/right arrow
+             default = 0, defaultstore = MyStandardDefault,
+             default = 0, defaultstore = MyManufactureDefault,
+          endnumeric;
+        endif;
+      endif;
+
+      oneof varid   = ME_RC_CONFIGURATION.CoreBiosDoneEnabled,
+        prompt      = STRING_TOKEN(STR_ME_CORE_BIOS_DONE_PROMPT),
+        help        = STRING_TOKEN(STR_ME_CORE_BIOS_DONE_HELP),
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+      endoneof;
+
+      subtitle text = STRING_TOKEN(STR_NULL_STRING);
+      checkbox varid  = ME_RC_CONFIGURATION.MebxDebugMsg,
+        prompt   = STRING_TOKEN(STR_AMT_MEBX_DEBUG_MSG_PROMPT),
+        help     = STRING_TOKEN(STR_AMT_MEBX_DEBUG_MSG_HELP),
+        // Flags behavior for checkbox is overloaded so that it equals
+        // a DEFAULT value.  CHECKBOX_DEFAULT = ON, 0 = off
+        flags    = 0 | RESET_REQUIRED,
+        key      = 0,
+      endcheckbox;
+
+      checkbox varid  = ME_RC_CONFIGURATION.AmtbxSelectionScreen,
+        prompt   = STRING_TOKEN(STR_AMTBX_SELECTION_SCREEN_PROMPT),
+        help     = STRING_TOKEN(STR_AMTBX_SELECTION_SCREEN_HELP),
+        // Flags behavior for checkbox is overloaded so that it equals
+        // a DEFAULT value.  CHECKBOX_DEFAULT = ON, 0 = off
+        flags    = 0 | RESET_REQUIRED,
+        key      = 0,
+      endcheckbox;
+
+      goto VFR_FORMID_MEBX,
+        prompt  = STRING_TOKEN(STR_MEBX_FORM),
+        help    = STRING_TOKEN(STR_MEBX_FORM_HELP);
+        
+    endif; // grayoutif ideqval ME_RC_CONFIGURATION.Amt == 0;
+  endform; // VFR_FORMID_AMT
+
+//**********************************************************************
+//                 MEBx Resolution Configuration Form
+//**********************************************************************
+  form formid = VFR_FORMID_MEBX,
+    title     = STRING_TOKEN(STR_MEBX_FORM);
+
+    oneof varid = ME_RC_CONFIGURATION.MebxNonUiTextMode,
+      prompt   = STRING_TOKEN(STR_MEBX_NONUI_MODE_PROMPT),
+      help     = STRING_TOKEN(STR_MEBX_NONUI_MODE_HELP),
+      option text = STRING_TOKEN(STR_MEBX_MODE_AUTO), value = 0, flags = DEFAULT | MANUFACTURING;
+      option text = STRING_TOKEN(STR_MEBX_TEXT_80_25), value = 1, flags = 0;
+      option text = STRING_TOKEN(STR_MEBX_TEXT_100_31), value = 2, flags = 0;
+    endoneof;
+
+    oneof varid = ME_RC_CONFIGURATION.MebxUiTextMode,
+      prompt   = STRING_TOKEN(STR_MEBX_UI_MODE_PROMPT),
+      help     = STRING_TOKEN(STR_MEBX_UI_MODE_HELP),
+      option text = STRING_TOKEN(STR_MEBX_MODE_AUTO), value = 0, flags = DEFAULT | MANUFACTURING;
+      option text = STRING_TOKEN(STR_MEBX_TEXT_80_25), value = 1, flags = 0;
+      option text = STRING_TOKEN(STR_MEBX_TEXT_100_31), value = 2, flags = 0;
+    endoneof;
+
+    oneof varid = ME_RC_CONFIGURATION.MebxGraphicsMode,
+      prompt   = STRING_TOKEN(STR_MEBX_GRAPHICS_MODE_PROMPT),
+      help     = STRING_TOKEN(STR_MEBX_GRAPHICS_MODE_HELP),
+      option text = STRING_TOKEN(STR_MEBX_MODE_AUTO), value = 0, flags = DEFAULT | MANUFACTURING;
+      option text = STRING_TOKEN(STR_MEBX_GRAPHICS_640_480), value = 1, flags = 0;
+      option text = STRING_TOKEN(STR_MEBX_GRAPHICS_800_600), value = 2, flags = 0;
+      option text = STRING_TOKEN(STR_MEBX_GRAPHICS_1024_768), value = 3, flags = 0;
+    endoneof;
+  endform; // VFR_FORMID_MEBX
+
+#if ME_TESTMENU_FLAG
+
+//**********************************************************************
+//                 Workstation ME Debug Configuration Form
+//**********************************************************************
+  form formid = VFR_FORMID_AMT_FWDEBUG,
+    title = STRING_TOKEN(STR_FWDEBUG_FORM_TITLE);
+
+    goto VFR_FORMID_AMT_FWDEBUG_GEN,
+      prompt = STRING_TOKEN(STR_FWDEBUG_GEN_FORM),
+      help   = STRING_TOKEN(STR_FWDEBUG_GEN_FORM_HELP);
+      
+    subtitle text = STRING_TOKEN(STR_EMPTY_STRING);
+
+    goto VFR_FORMID_ME_SMBIOS,
+      prompt  = STRING_TOKEN(STR_FW_SMBIOS_MENU_TITLE),
+      help    = STRING_TOKEN(STR_FW_SMBIOS_MENU_HELP);
+
+    subtitle text = STRING_TOKEN(STR_EMPTY_STRING);
+
+  endform; // VFR_FORMID_AMT_FWDEBUG
+
+//**********************************************************************
+//                 FW SMBIOS 130 OEM Capabilities setup options
+//**********************************************************************
+  form formid = VFR_FORMID_ME_SMBIOS,
+    title     = STRING_TOKEN(STR_FW_SMBIOS_MENU_TITLE);
+
+    checkbox varid  = ME_RC_CONFIGURATION.BiosReflash,
+        prompt   = STRING_TOKEN(STR_FW_SMBIOS_REFLASH_PROMPT),
+        help     = STRING_TOKEN(STR_FW_SMBIOS_REFLASH_HELP),
+        // Flags behavior for checkbox is overloaded so that it equals
+        // a DEFAULT value.  CHECKBOX_DEFAULT = ON, 0 = off
+        flags    =  CHECKBOX_DEFAULT | CHECKBOX_DEFAULT_MFG | RESET_REQUIRED,
+        key      = 0,
+    endcheckbox;
+
+   checkbox varid  = ME_RC_CONFIGURATION.BiosSetup,
+        prompt   = STRING_TOKEN(STR_FW_SMBIOS_SETUP_PROMPT),
+        help     = STRING_TOKEN(STR_FW_SMBIOS_SETUP_HELP),
+        // Flags behavior for checkbox is overloaded so that it equals
+        // a DEFAULT value.  CHECKBOX_DEFAULT = ON, 0 = off
+        flags    =  CHECKBOX_DEFAULT | CHECKBOX_DEFAULT_MFG | RESET_REQUIRED,
+        key      = 0,
+    endcheckbox;
+
+    checkbox varid  = ME_RC_CONFIGURATION.BiosPause,
+        prompt   = STRING_TOKEN(STR_FW_SMBIOS_PAUSE_PROMPT),
+        help     = STRING_TOKEN(STR_FW_SMBIOS_PAUSE_HELP),
+        // Flags behavior for checkbox is overloaded so that it equals
+        // a DEFAULT value.  CHECKBOX_DEFAULT = ON, 0 = off
+        flags    =  CHECKBOX_DEFAULT | CHECKBOX_DEFAULT_MFG | RESET_REQUIRED,
+        key      = 0,
+    endcheckbox;
+
+    checkbox varid  = ME_RC_CONFIGURATION.SecureBootExposureToFw,
+        prompt   = STRING_TOKEN(STR_FW_SMBIOS_SECURE_BOOT_PROMPT),
+        help     = STRING_TOKEN(STR_FW_SMBIOS_SECURE_BOOT_HELP),
+        // Flags behavior for checkbox is overloaded so that it equals
+        // a DEFAULT value.  CHECKBOX_DEFAULT = ON, 0 = off
+        flags    =  CHECKBOX_DEFAULT | CHECKBOX_DEFAULT_MFG | RESET_REQUIRED,
+        key      = 0,
+    endcheckbox;
+
+  endform; // VFR_FORMID_ME_SMBIOS
+  
+//**********************************************************************
+//                 Workstation ME General Debug Configuration Form
+//**********************************************************************
+  form formid = VFR_FORMID_AMT_FWDEBUG_GEN,
+    title = STRING_TOKEN(STR_FWDEBUG_GEN_FORM_TITLE);
+
+    oneof varid   = ME_RC_CONFIGURATION.HsioMessagingEnabled,
+      prompt   = STRING_TOKEN(STR_ME_HSIO_ENABLE_PROMPT),
+      help     = STRING_TOKEN(STR_ME_HSIO_ENABLE_HELP),
+      option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = 0;
+      option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = 0 | DEFAULT | MANUFACTURING;
+    endoneof;
+  
+    checkbox varid = ME_RC_CONFIGURATION.MeDidEnabled,
+      prompt       = STRING_TOKEN(STR_ME_DID_ENABLE_PROMPT),
+      help         = STRING_TOKEN(STR_ME_DID_ENABLE_HELP),
+      // Flags behavior for checkbox is overloaded so that it equals
+      // a DEFAULT value.  CHECKBOX_DEFAULT = ON, 0 = off
+      flags        = CHECKBOX_DEFAULT | CHECKBOX_DEFAULT_MFG | RESET_REQUIRED,
+      key          = 0,
+    endcheckbox;
+  
+    grayoutif ideqval ME_RC_CONFIGURATION.MeDidEnabled == 0;
+      oneof varid   = ME_RC_CONFIGURATION.MeDidInitStat,
+        prompt      = STRING_TOKEN(STR_ME_DID_INIT_STAT_PROMPT),
+        help        = STRING_TOKEN(STR_ME_DID_INIT_STAT_HELP),
+        option text = STRING_TOKEN(STR_ME_DID_INIT_STAT_AUTO), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ME_DID_INIT_STAT_0), value = 1, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ME_DID_INIT_STAT_1), value = 2, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ME_DID_INIT_STAT_2), value = 3, flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+  
+    checkbox varid = ME_RC_CONFIGURATION.HostResetNotification,
+      prompt       = STRING_TOKEN(STR_ME_HRW_ENABLE_PROMPT),
+      help         = STRING_TOKEN(STR_ME_HRW_ENABLE_HELP),
+      // Flags behavior for checkbox is overloaded so that it equals
+      // a DEFAULT value.  CHECKBOX_DEFAULT = ON, 0 = off
+      flags        = CHECKBOX_DEFAULT | CHECKBOX_DEFAULT_MFG | RESET_REQUIRED,
+      key          = 0,
+    endcheckbox;
+
+#if defined(ICC_SUPPORT) && ICC_SUPPORT
+    goto VFR_FORMID_AMT_ICC_OVERRIDE,
+      questionid = ICC_OVERRIDE_FORM_AMT_QUESTIONID,
+      prompt  = STRING_TOKEN(STR_ME_ICC_OVERRIDE_FORM),
+      help    = STRING_TOKEN(STR_ME_ICC_OVERRIDE_FORM_HELP),
+      flags   = INTERACTIVE;
+#endif // ICC_SUPPORT
+
+    oneof varid   = ME_RC_CONFIGURATION.MeEndOfPostEnabled,
+      prompt      = STRING_TOKEN(STR_ME_ENDOFPOST_PROMPT),
+      help        = STRING_TOKEN(STR_ME_ENDOFPOST_HELP),
+      option text = STRING_TOKEN(STR_DISABLED), value = EOP_DISABLED, flags = 0;
+      option text = STRING_TOKEN(STR_ENABLED),  value = EOP_SEND_IN_DXE, flags = 0 | DEFAULT | MANUFACTURING;
+    endoneof;
+
+    grayoutif ideqval ME_RC_CONFIGURATION.RemoteSessionActive == 0x01
+                      //OR ideqval ME_RC_CONFIGURATION.AfterEoP == 0x1
+                      // Heci1 has to be enabled to test this feature
+                      OR ideqval ME_RC_CONFIGURATION.MeHeci1Enabled == ME_DEVICE_DISABLED
+                      ;
+      oneof varid      = ME_RC_CONFIGURATION.MeStateControl,
+        prompt         = STRING_TOKEN(STR_ME_STATE_CONTROL_PROMPT),
+        help           = STRING_TOKEN(STR_ME_STATE_CONTROL_HELP),
+        option text    = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
+        option text    = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+      endoneof;
+    endif; // grayoutif RemoteSessionActive
+
+    oneof varid   = ME_RC_CONFIGURATION.MeHeci1Enabled,
+      prompt      = STRING_TOKEN(STR_ME_HECI1ENABLE_PROMPT),
+      help        = STRING_TOKEN(STR_ME_HECI1ENABLE_HELP),
+      option text = STRING_TOKEN(STR_DISABLED), value = ME_DEVICE_DISABLED, flags = 0;
+      option text = STRING_TOKEN(STR_ENABLED),  value = ME_DEVICE_ENABLED, flags = 0;
+      option text = STRING_TOKEN(STR_AUTO),     value = ME_DEVICE_AUTO, flags = 0 | DEFAULT | MANUFACTURING | RESET_REQUIRED;
+    endoneof;
+  
+    oneof varid   = ME_RC_CONFIGURATION.MeHeci2Enabled,
+      prompt      = STRING_TOKEN(STR_ME_HECI2ENABLE_PROMPT),
+      help        = STRING_TOKEN(STR_ME_HECI2ENABLE_HELP),
+      option text = STRING_TOKEN(STR_DISABLED), value = ME_DEVICE_DISABLED, flags = 0;
+      option text = STRING_TOKEN(STR_ENABLED),  value = ME_DEVICE_ENABLED, flags = 0;
+      option text = STRING_TOKEN(STR_AUTO),     value = ME_DEVICE_AUTO, flags = 0 | DEFAULT | MANUFACTURING | RESET_REQUIRED;
+    endoneof;
+  
+    oneof varid   = ME_RC_CONFIGURATION.MeHeci3Enabled,
+      prompt      = STRING_TOKEN(STR_ME_HECI3ENABLE_PROMPT),
+      help        = STRING_TOKEN(STR_ME_HECI3ENABLE_HELP),
+      option text = STRING_TOKEN(STR_DISABLED), value = ME_DEVICE_DISABLED, flags = 0;
+      option text = STRING_TOKEN(STR_ENABLED),  value = ME_DEVICE_ENABLED, flags = 0;
+      option text = STRING_TOKEN(STR_AUTO),     value = ME_DEVICE_AUTO, flags = 0 | DEFAULT | MANUFACTURING | RESET_REQUIRED;
+    endoneof;
+  
+    oneof varid   = ME_RC_CONFIGURATION.MeIderEnabled,
+      prompt      = STRING_TOKEN(STR_ME_IDERENABLE_PROMPT),
+      help        = STRING_TOKEN(STR_ME_IDERENABLE_HELP),
+      option text = STRING_TOKEN(STR_DISABLED), value = ME_DEVICE_DISABLED, flags = 0;
+      option text = STRING_TOKEN(STR_ENABLED),  value = ME_DEVICE_ENABLED, flags = 0;
+      option text = STRING_TOKEN(STR_AUTO),     value = ME_DEVICE_AUTO, flags = 0 | DEFAULT | MANUFACTURING | RESET_REQUIRED;
+    endoneof;
+  
+    oneof varid   = ME_RC_CONFIGURATION.MeKtEnabled,
+      prompt      = STRING_TOKEN(STR_ME_KTENABLE_PROMPT),
+      help        = STRING_TOKEN(STR_ME_KTENABLE_HELP),
+      option text = STRING_TOKEN(STR_DISABLED), value = ME_DEVICE_DISABLED, flags = 0;
+      option text = STRING_TOKEN(STR_ENABLED),  value = ME_DEVICE_ENABLED, flags = 0;
+      option text = STRING_TOKEN(STR_AUTO),     value = ME_DEVICE_AUTO, flags = 0 | DEFAULT | MANUFACTURING | RESET_REQUIRED;
+    endoneof;
+
+    oneof varid   = ME_RC_CONFIGURATION.DisableD0I3SettingForHeci,
+      prompt      = STRING_TOKEN(STR_D0I3_SETTING_DISABLE_PROMPT),
+      help        = STRING_TOKEN(STR_D0I3_SETTING_DISABLE_HELP),
+      option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = 0 | DEFAULT | MANUFACTURING;
+      option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = 0;
+    endoneof;
+
+  endform; // VFR_FORMID_AMT_FWDEBUG_GEN
+
+#if defined(ICC_SUPPORT) && ICC_SUPPORT
+//**********************************************************************
+//                 Workstation ME ICC Clock Settings Override Form
+//**********************************************************************  
+  form formid = VFR_FORMID_AMT_ICC_OVERRIDE,
+    title = STRING_TOKEN(STR_ME_ICC_OVERRIDE_FORM_TITLE);
+
+    checkbox varid = ME_RC_CONFIGURATION.IccClkOverride,
+      prompt       = STRING_TOKEN(STR_ME_ICC_OVERRIDE_PROMPT),
+      help         = STRING_TOKEN(STR_ME_ICC_OVERRIDE_HELP),
+      flags        = 0 | RESET_REQUIRED,
+      key          = 0,
+    endcheckbox;
+
+    subtitle text = STRING_TOKEN(STR_EMPTY_STRING);
+
+    grayoutif ideqval ME_RC_CONFIGURATION.IccClkOverride == 0;
+
+  /*
+      oneof varid     = ME_RC_CONFIGURATION.IccWdtEnabled,
+          prompt      = STRING_TOKEN(STR_ICC_WDT_ENABLE),
+          help        = STRING_TOKEN(STR_ICC_WDT_ENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLED), value = OPTION_DISABLED, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLED),  value = OPTION_ENABLED, flags = RESET_REQUIRED;
+      endoneof;
+
+      oneof varid     = ME_RC_CONFIGURATION.IccSetClockEnables,
+          prompt      = STRING_TOKEN(STR_ICC_CLOCK_ENABLING),
+          help        = STRING_TOKEN(STR_ICC_CLOCK_ENABLING_HELP),
+          option text = STRING_TOKEN(STR_DISABLED), value = OPTION_DISABLED, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLED),  value = OPTION_ENABLED,  flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+      endoneof;
+  */
+      grayoutif ideqval ME_RC_CONFIGURATION.AllowAdvancedOptions == DONT_DISPLAY;
+      oneof varid     = ME_RC_CONFIGURATION.RegLock,
+          prompt      = STRING_TOKEN(STR_ICC_LOCK),
+          help        = STRING_TOKEN(STR_ICC_LOCK_HELP),
+          option text = STRING_TOKEN(STR_ICC_LOCK_DEFAULT), value = OPTION_LOCK_DEFAULT, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ICC_LOCK_ALL), value = OPTION_LOCK_ALL, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ICC_UNLOCK_ALL), value = OPTION_UNLOCK_ALL, flags = RESET_REQUIRED;
+      endoneof;
+      endif;
+
+      grayoutif ideqval ME_RC_CONFIGURATION.ShowProfile == DONT_DISPLAY;
+      numeric varid = ME_RC_CONFIGURATION.IccProfile,
+          prompt    = STRING_TOKEN(STR_ICC_PROFILE),
+          help      = STRING_TOKEN(STR_ICC_PROFILE_HELP),
+          flags     = RESET_REQUIRED | INTERACTIVE,
+          key       = KEY_ICC_PROFILE,
+          minimum   = 0,
+          maximum   = 15,
+          step      = 1,
+          default   = 0, defaultstore = MyStandardDefault,
+          default   = 0, defaultstore = MyManufactureDefault,
+      endnumeric;
+      endif;
+
+      subtitle text = STRING_TOKEN(STR_EMPTY_STRING);
+
+  /*
+      suppressif NOT ideqval SETUP_VOLATILE_DATA.PlatformType == TypeUlt;
+        subtitle text = STRING_TOKEN(STR_EMPTY_STRING);
+        oneof varid     = SETUP_DATA.IccPllShutdownEnabled,
+            prompt      = STRING_TOKEN(STR_ICC_PLL_SHUTDOWN),
+            help        = STRING_TOKEN(STR_ICC_PLL_SHUTDOWN_HELP),
+            option text = STRING_TOKEN(STR_DISABLED), value = OPTION_DISABLED, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_ENABLED),  value = OPTION_ENABLED, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        endoneof;
+      endif;
+  */
+
+      subtitle text = STRING_TOKEN(STR_EMPTY_STRING);
+
+      suppressif ideqval ME_RC_CONFIGURATION.AllowAdvancedOptions == DONT_DISPLAY OR
+                 ideqval ME_RC_CONFIGURATION.ShowClock[CLOCK1] == DONT_DISPLAY;
+          //
+          // CLOCK 2 SETTINGS
+          //
+          subtitle text = STRING_TOKEN(STR_ICC_CLOCK1_TITLE);
+            text
+                help   = STRING_TOKEN(STR_EMPTY_STRING),
+                text   = STRING_TOKEN(STR_ICC_CLOCK_DEFAULT_SETTINGS),
+                text   = STRING_TOKEN(STR_ICC_CLOCK1_DEFAULT_TEXT),
+                flags  = 0, key = 0;
+
+            text
+                help   = STRING_TOKEN(STR_EMPTY_STRING),
+                text   = STRING_TOKEN(STR_ICC_CLOCK_FREQ_RANGE),
+                text   = STRING_TOKEN(STR_ICC_CLOCK1_FREQ_RANGE_TEXT),
+                flags  = 0, key = 0;
+
+            text
+                help   = STRING_TOKEN(STR_EMPTY_STRING),
+                text   = STRING_TOKEN(STR_ICC_CLOCK_MAX_SPREAD),
+                text   = STRING_TOKEN(STR_ICC_CLOCK1_MAX_SPREAD_TEXT),
+                flags  = 0, key = 0;
+
+            text
+                help   = STRING_TOKEN(STR_EMPTY_STRING),
+                text   = STRING_TOKEN(STR_ICC_CLOCK_SPREAD_ADJUSTMENTS),
+                text   = STRING_TOKEN(STR_ICC_CLOCK1_SPREAD_ADJUSTMENTS_TEXT),
+                flags  = 0, key = 0;
+        endif;
+
+      suppressif ideqval ME_RC_CONFIGURATION.AllowAdvancedOptions == DONT_DISPLAY OR
+                 ideqval ME_RC_CONFIGURATION.ShowClock[CLOCK1] == DONT_DISPLAY OR
+                 ideqval ME_RC_CONFIGURATION.ShowFrequency[CLOCK1] == DONT_DISPLAY;
+              numeric varid = ME_RC_CONFIGURATION.Frequency[CLOCK1],
+                  prompt    = STRING_TOKEN(STR_ICC_CLOCK_FREQUENCY1),
+                  help      = STRING_TOKEN(STR_ICC_CLOCK_FREQUENCY_HELP),
+                  flags     = INTERACTIVE,
+                  key       = KEY_ICC_FREQ2,
+                  minimum   = 0,
+                  maximum   = 65535,
+                  step      = 1,
+                  default   = 0, //this value is ignored, default values are retrieved from C code
+              endnumeric;
+            endif;
+
+      suppressif ideqval ME_RC_CONFIGURATION.AllowAdvancedOptions == DONT_DISPLAY OR
+                 ideqval ME_RC_CONFIGURATION.ShowSpread[CLOCK1] == DONT_DISPLAY OR
+                 ideqval ME_RC_CONFIGURATION.ShowClock[CLOCK1] == DONT_DISPLAY;
+              numeric varid = ME_RC_CONFIGURATION.Spread[CLOCK1],
+                  prompt    = STRING_TOKEN(STR_ICC_CLOCK_SPREAD_PERCENT1),
+                  help      = STRING_TOKEN(STR_ICC_CLOCK_SPREAD_PERCENT_HELP),
+                  flags     = INTERACTIVE,
+                  key       = KEY_ICC_SPREAD2,
+                  minimum   = 0,
+                  maximum   = 255,
+                  step      = 1,
+                  default   = 0, //this value is ignored, default values are retrieved from C code
+              endnumeric;
+            endif;
+
+      subtitle text = STRING_TOKEN(STR_EMPTY_STRING);
+
+      suppressif ideqval ME_RC_CONFIGURATION.AllowAdvancedOptions == DONT_DISPLAY OR
+                 ideqval ME_RC_CONFIGURATION.ShowClock[CLOCK0] == DONT_DISPLAY;
+          //
+          // CLOCK 3 SETTINGS
+          //
+          subtitle text = STRING_TOKEN(STR_ICC_CLOCK0_TITLE);
+            text
+                help   = STRING_TOKEN(STR_EMPTY_STRING),
+                text   = STRING_TOKEN(STR_ICC_CLOCK_DEFAULT_SETTINGS),
+                text   = STRING_TOKEN(STR_ICC_CLOCK0_DEFAULT_TEXT),
+                flags  = 0, key = 0;
+
+            text
+                help   = STRING_TOKEN(STR_EMPTY_STRING),
+                text   = STRING_TOKEN(STR_ICC_CLOCK_FREQ_RANGE),
+                text   = STRING_TOKEN(STR_ICC_CLOCK0_FREQ_RANGE_TEXT),
+                flags  = 0, key = 0;
+
+            text
+                help   = STRING_TOKEN(STR_EMPTY_STRING),
+                text   = STRING_TOKEN(STR_ICC_CLOCK_MAX_SPREAD),
+                text   = STRING_TOKEN(STR_ICC_CLOCK0_MAX_SPREAD_TEXT),
+                flags  = 0, key = 0;
+
+            text
+                help   = STRING_TOKEN(STR_EMPTY_STRING),
+                text   = STRING_TOKEN(STR_ICC_CLOCK_SPREAD_ADJUSTMENTS),
+                text   = STRING_TOKEN(STR_ICC_CLOCK0_SPREAD_ADJUSTMENTS_TEXT),
+                flags  = 0, key = 0;
+        endif;
+        
+      suppressif ideqval ME_RC_CONFIGURATION.AllowAdvancedOptions == DONT_DISPLAY OR
+                 ideqval ME_RC_CONFIGURATION.ShowClock[CLOCK0] == DONT_DISPLAY OR
+                 ideqval ME_RC_CONFIGURATION.ShowFrequency[CLOCK0] == DONT_DISPLAY;
+              numeric varid = ME_RC_CONFIGURATION.Frequency[CLOCK0],
+                  prompt    = STRING_TOKEN(STR_ICC_CLOCK_FREQUENCY2),
+                  help      = STRING_TOKEN(STR_ICC_CLOCK_FREQUENCY_HELP),
+                  flags     = INTERACTIVE,
+                  key       = KEY_ICC_FREQ3,
+                  minimum   = 0,
+                  maximum   = 65535,
+                  step      = 1,
+                  default   = 0, //this value is ignored, default values are retrieved from C code
+              endnumeric;
+            endif;
+
+      suppressif ideqval ME_RC_CONFIGURATION.AllowAdvancedOptions == DONT_DISPLAY OR
+                 ideqval ME_RC_CONFIGURATION.ShowSpread[CLOCK0] == DONT_DISPLAY OR
+                 ideqval ME_RC_CONFIGURATION.ShowClock[CLOCK0] == DONT_DISPLAY;
+              numeric
+                  varid = ME_RC_CONFIGURATION.Spread[CLOCK0],
+                  prompt    = STRING_TOKEN(STR_ICC_CLOCK_SPREAD_PERCENT2),
+                  help      = STRING_TOKEN(STR_ICC_CLOCK_SPREAD_PERCENT_HELP),
+                  flags     = INTERACTIVE,
+                  key       = KEY_ICC_SPREAD3,
+                  minimum   = 0,
+                  maximum   = 255,
+                  step      = 1,
+                  default   = 0, //this value is ignored, default values are retrieved from C code
+              endnumeric;
+            endif;
+
+    // Questions that provide default values for some vaiables used in suppressifs
+      suppressif TRUE;
+
+        numeric varid = ME_RC_CONFIGURATION.ShowClock[CLOCK1],
+          prompt = STRING_TOKEN(0), help = STRING_TOKEN(0), flags = 0, minimum = DONT_DISPLAY, maximum = DISPLAY,
+        endnumeric;
+        numeric varid = ME_RC_CONFIGURATION.ShowClock[CLOCK0],
+          prompt = STRING_TOKEN(0), help = STRING_TOKEN(0), flags = 0, minimum = DONT_DISPLAY, maximum = DISPLAY,
+        endnumeric;
+        numeric varid = ME_RC_CONFIGURATION.ShowFrequency[CLOCK1],
+          prompt = STRING_TOKEN(0), help = STRING_TOKEN(0), flags = 0, minimum = DONT_DISPLAY, maximum = DISPLAY,
+        endnumeric;
+        numeric varid = ME_RC_CONFIGURATION.ShowFrequency[CLOCK0],
+          prompt = STRING_TOKEN(0), help = STRING_TOKEN(0), flags = 0, minimum = DONT_DISPLAY, maximum = DISPLAY,
+        endnumeric;
+        numeric varid = ME_RC_CONFIGURATION.ShowSpread[CLOCK1],
+          prompt = STRING_TOKEN(0), help = STRING_TOKEN(0), flags = 0, minimum = DONT_DISPLAY, maximum = DISPLAY,
+        endnumeric;
+        numeric varid = ME_RC_CONFIGURATION.ShowSpread[CLOCK0],
+          prompt = STRING_TOKEN(0), help = STRING_TOKEN(0), flags = 0, minimum = DONT_DISPLAY, maximum = DISPLAY,
+        endnumeric;
+        numeric varid = ME_RC_CONFIGURATION.ShowProfile,
+          prompt = STRING_TOKEN(0), help = STRING_TOKEN(0), flags = 0, minimum = DONT_DISPLAY, maximum = DISPLAY,
+        endnumeric;
+        numeric varid = ME_RC_CONFIGURATION.AllowAdvancedOptions,
+          prompt = STRING_TOKEN(0), help = STRING_TOKEN(0), flags = 0, minimum = DONT_DISPLAY, maximum = DISPLAY,
+        endnumeric;
+      endif;
+
+    endif; //grayoutif ideqval ME_RC_CONFIGURATION.IccClkOverride == 0;
+    
+  endform; // VFR_FORMID_AMT_ICC_OVERRIDE
+#endif // ICC_SUPPORT
+
+#endif // ME_TESTMENU_FLAG
+
+endif; // Suppress if MeType != AMT
+#endif // AMT_SUPPORT

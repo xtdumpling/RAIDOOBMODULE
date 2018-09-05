@@ -1,0 +1,106 @@
+TOKEN
+	Name  = "AmiBoardInfo_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable AMI Board Info support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "AMI_BOARD_INFO_MAJOR_VERSION"
+	Value  = "1"
+	Help  = "AMI Board Info Driver Major Version"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "AMI_BOARD_INFO_MINOR_VERSION"
+	Value  = "0"
+	Help  = "AMI Board Info Driver Mainor Version"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "AMI_BOARD_VER_COMBINED"
+	Value  = "$(AMI_BOARD_INFO_MAJOR_VERSION)*100+ $(AMI_BOARD_INFO_MINOR_VERSION)*10"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Lock = Yes
+End
+
+PATH
+	Name  = "AmiBoardInfo_DIR"
+	Help  = "Path to AMI Board Info Module in Project"
+End
+
+ELINK
+	Name  = "ASL_EXP_INCLUDE_PATH"
+	Help  = "Include passes for ASL expander"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "ASLPREPROCESS_FLAG"
+	Help  = "Option override for preprocessing ASL files"
+	InvokeOrder = ReplaceParent
+End
+
+OUTPUTREGISTER
+	Name  = "APTIO_V_PCI"
+	Path  = "Build"
+	File  = "PCIBRDSDL.c"
+End
+
+OUTPUTREGISTER
+	Name  = "APTIO_V_SIO"
+	Path  = "Build"
+	File  = "SIOBRDSDL.c"
+End
+
+OUTPUTREGISTER
+	Name  = "APTIO_V_IOAPIC"
+	Path  = "Build"
+	File  = "APICBRDSDL.c"
+End
+
+INFComponent
+	Name  = "AmiBoardInfo2"
+	File  = "AMIBoardInfo2.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "DXE_DRIVER"
+End
+
+INFComponent
+	Name  = "BrdInfoOutput"
+	File  = "BrdInfoOutput.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "DXE_DRIVER"
+End
+
+FFS_FILE
+	Name  = "AmiBoardInfoData"
+	FD_AREA  = "FV_MAIN"
+	INFComponent  = "AmiModulePkg.BrdInfoOutput"
+	Rule_Override  = "SubtypeGuidCompressed"
+End
+
+FFS_FILE
+	Name  = "ROM Storage"
+	FD_AREA  = "FV_MAIN"
+	OpRom  = "AmiModulePkg\BoardInfo\PciRomTemplate.txt"
+	Guid  = "a0327fe0-1fda-4e5b-905d-b510c45a61d0"
+End
+

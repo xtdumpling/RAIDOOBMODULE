@@ -1,0 +1,67 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.00
+#       Bug fixed:   Initialize revision
+#       Reason:      Clone from Sample folder.
+#       Auditor:     Leon Xu
+#       Date:        20-Jul-2017
+#
+#****************************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SmcOptimizeDxe
+  FILE_GUID                      = cf7a379e-f788-44d4-af65-165ce1e0ed68
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = SmcOptimizeDxeInit
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+#  
+
+[Sources]  
+  SmcOptimizeDxe.c
+
+[Packages]
+  MdePkg/MdePkg.dec   
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec 
+  AmiModulePkg/AmiModulePkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  SmcPkg/SmcPkg.dec
+  PurleyRpPkg/PlatformPkg.dec
+  
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  AmiDxeLib
+  AmiCspLib
+  PcdLib
+  SmcLib
+  SetupLib
+  
+[Pcd]  
+  
+[Protocols]  
+  gPchResetCallbackProtocolGuid
+  
+[Guids]
+  
+[Depex]
+  TRUE
+  
+#**********************************************************************

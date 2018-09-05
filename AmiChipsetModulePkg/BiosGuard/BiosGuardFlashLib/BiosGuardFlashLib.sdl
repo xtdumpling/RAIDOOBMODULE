@@ -1,0 +1,88 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**     5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093            **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+#**********************************************************************
+#<AMI_FHDR_START>
+#
+# Name:	BiosGuardFlashLib.sdl
+#
+# Description: SDL file for BiosGuardFlashLib
+#
+#<AMI_FHDR_END>
+#**********************************************************************
+
+TOKEN
+     Name = "BIOS_GUARD_FLASH_LIB_SUPPORT"
+     Value = "1"
+     TokenType = Boolean
+     TargetEQU = Yes
+     TargetMAK = Yes
+     Master = Yes
+     Help = "Main switch to enable BIOS_GUARD_FLASH_LIB support in Project"
+End
+
+ELINK
+     Name = "IdentifyBiosGuardFlash,"
+     Parent = "FlashList"
+     InvokeOrder = AfterParent
+     Priority = 60
+     Token = "BiosGuard_SUPPORT" "=" "1"
+End
+
+INFComponent
+     Name = "BiosGuardFlashLib"
+     File = "BiosGuardFlashLib.inf"
+     Package = "AmiChipsetModulePkg"
+End
+
+LibraryMapping
+     Class = "CspFlashLib"
+     Instance = "AmiChipsetModulePkg.BiosGuardFlashLib"
+     ModuleTypes = "DXE_CORE DXE_DRIVER DXE_RUNTIME_DRIVER DXE_SAL_DRIVER DXE_SMM_DRIVER SMM_CORE UEFI_APPLICATION UEFI_DRIVER"
+End
+
+INFComponent
+     Name = "BiosGuardFlashPeiLib"
+     File = "BiosGuardFlashPeiLib.inf"
+     Package = "AmiChipsetModulePkg"
+End
+
+LibraryMapping
+     Class = "CspFlashLib"
+     Instance = "AmiChipsetModulePkg.BiosGuardFlashPeiLib"
+     ModuleTypes = "PEIM"
+End
+
+PATH
+     Name  = "BIOS_GUARD_FLASH_LIB_PATH"
+End
+
+PATH
+     Name  = "BIOS_GUARD_FLASH_LIB_PATH"
+     Path  = "AmiChipsetModulePkg/BiosGuard/BiosGuardFlashLib"
+     Token = "TOOL_CHAIN_TAG" "=" "GCC"
+End
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**     5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093            **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

@@ -1,0 +1,90 @@
+TOKEN
+	Name  = "XhciHandler_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling XhciHandler support in the project"
+	TokenType = Boolean
+	Master = Yes
+	Token = "USB_3_DEBUG_SUPPORT" "=" "1"
+	Token = "Usb3Statuscode_Support" "=" "1"
+End
+
+TOKEN
+	Name  = "XHCI_PCI_ADDR"
+	Value  = "0xA0000"
+	Help  = "PCI Addr for Xhci Hc, default set for BDF[0,14,0]"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+    Name  = "XHCI_MMIO_BASEADDRESS"
+    Value  = "0xFE400000"
+    Help  = "MMIO Base Address for first XHCI Controller"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "EARLY_MEM_INIT"
+    Value  = "0"
+    Help  = "Help"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+PATH
+	Name  = "XhciHandler_DIR"
+	Path  = "Usb3Statuscode\XhciHandler"
+End
+
+INFComponent
+	Name  = "XhciHandlerCommon"
+	File  = "XhciHandlerCommon.inf"
+	Package  = "Usb3Statuscode"
+	Path  = "XhciHandler_DIR"
+End
+
+INFComponent
+	Name  = "XhciHandlerPei"
+	File  = "XhciHandlerPei.inf"
+	Package  = "Usb3Statuscode"
+	Arch  = "Ia32"
+	Path  = "XhciHandler_DIR"
+End
+
+INFComponent
+	Name  = "XhciHandlerDxe"
+	File  = "XhciHandlerDxe.inf"
+	Package  = "Usb3Statuscode"
+	Arch  = "x64"
+	Path  = "XhciHandler_DIR"
+End
+
+LibraryMapping
+	Class  = "XhciHandlerCommon"
+	Instance  = "Usb3Statuscode.XhciHandlerCommon"
+End
+
+LibraryMapping
+	Class  = "XhciHandlerPei"
+	Instance  = "Usb3Statuscode.XhciHandlerPei"
+End
+
+LibraryMapping
+	Class  = "XhciHandlerDxe"
+	Instance  = "Usb3Statuscode.XhciHandlerDxe"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "Usb3Statuscode.XhciHandlerPei"
+	Override  = "AmiModulePkg.StatusCodePei"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "Usb3Statuscode.XhciHandlerDxe"
+	Override  = "AmiModulePkg.StatusCodeDxe"
+End

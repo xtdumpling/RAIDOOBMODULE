@@ -1,0 +1,165 @@
+//****************************************************************************
+//**                                                                        **
+//**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+//**                                                                        **
+//****************************************************************************
+//  File History
+//
+//  Rev. 1.00
+//    Bug Fix:  Initialize revision
+//    Reason:   Get base code from Grantley
+//    Auditor:  Kasber Chen
+//    Date:     Jun/07/2016
+//
+//****************************************************************************
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
+
+//
+// @file  BmcSelfTestLog.sd
+//
+// Bmc Self Test log form set
+//
+
+#ifdef SERVER_MGMT_CONFIGURATION_DATA_DEFINITION
+//***********************************************************
+// Put NVRAM data definitions here.
+// For example:    UINT8 Data1;
+// These definitions will be converted by the build process
+// to a definitions of SERVER_MGMT_CONFIGURATION_DATA fields.
+//***********************************************************
+  UINT8            BstErase;
+  UINT8            BstLogFull;
+#endif //#ifdef SERVER_MGMT_CONFIGURATION_DATA_DEFINITION
+
+#if defined(VFRCOMPILE) && !defined(CONTROLS_ARE_DEFINED)
+#define CONTROL_DEFINITION
+#endif
+
+#ifdef CONTROL_DEFINITION
+
+#define BMCSELFTESTLOG_ONEOF_BSTERASE\
+    oneof varid = SERVER_MGMT_CONFIGURATION_DATA.BstErase,\
+        prompt = STRING_TOKEN(STR_BST_ERASE_LOG),\
+        help = STRING_TOKEN(STR_BST_ERASE_LOG_HELP),\
+        option text = STRING_TOKEN(STR_BST_ERASE_LOG_YES), value = 1, flags = RESET_REQUIRED;\
+        option text = STRING_TOKEN(STR_BST_ERASE_LOG_NO), value = 0, flags = 0 | RESET_REQUIRED;\
+        default = 1,\
+        default = 1, defaultstore = AmiMfgDefault,\
+    endoneof;
+
+#define BMCSELFTESTLOG_ONEOF_BSTLOGFULL\
+    oneof varid = SERVER_MGMT_CONFIGURATION_DATA.BstLogFull,\
+        prompt = STRING_TOKEN(STR_BST_ERASE_LOG_FULL),\
+        help = STRING_TOKEN(STR_BST_ERASE_LOG_FULL_HELP),\
+        option text = STRING_TOKEN(STR_BST_ERASE_LOG_FULL_YES), value = 1, flags = RESET_REQUIRED;\
+        option text = STRING_TOKEN(STR_BST_ERASE_LOG_FULL_NO), value = 0, flags = 0 | RESET_REQUIRED;\
+        default = 1,\
+        default = 1, defaultstore = AmiMfgDefault,\
+    endoneof;
+
+#endif //#ifdef CONTROL_DEFINITION
+
+#ifdef CONTROLS_WITH_DEFAULTS
+    BMCSELFTESTLOG_ONEOF_BSTERASE
+    BMCSELFTESTLOG_ONEOF_BSTLOGFULL
+#endif //#ifdef CONTROLS_WITH_DEFAULTS
+
+#ifdef SERVER_MGMT_FORM_SET
+
+    #ifdef FORM_SET_TYPEDEF
+    //
+    // If you need any additional type definitions add them here
+    //
+    #endif
+
+    #ifdef FORM_SET_VARSTORE
+    //
+    //If you need custom varstore's define them here
+    //
+    #endif
+
+    #ifdef FORM_SET_ITEM
+    //
+    // Define controls to be added to the main page of the formset
+    //
+    #endif
+
+    #ifdef FORM_SET_GOTO
+#if SMCPKG_SUPPORT == 0
+        suppressif  ideqval SERVER_MGMT_CONFIGURATION_DATA.BmcSupport == 0;
+#else
+        suppressif  SMCPKG_SUPPORT;	// SMCPKG_SUPPORT ideqval SERVER_MGMT_CONFIGURATION_DATA.BmcSupport == 0;
+#endif
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+        goto BMC_SELFTEST_LOG_FORM, 
+            prompt = STRING_TOKEN(STR_BMC_SELFTEST_LOG),
+            help   = STRING_TOKEN(STR_BMC_SELFTEST_LOG_HELP),
+            flags  = INTERACTIVE,
+            key    = AUTO_ID(BMC_SELFTEST_LOG_KEY);
+        SUPPRESS_GRAYOUT_ENDIF
+    #endif
+
+    #ifdef FORM_SET_FORM
+        #ifndef BMCSELFTESTLOG_FORM_SERVERMGMT
+        #define BMCSELFTESTLOG_FORM_SERVERMGMT
+        form formid = AUTO_ID(BMC_SELFTEST_LOG_FORM),
+            title = STRING_TOKEN (STR_BMC_SELFTEST_LOG);
+            subtitle text = STRING_TOKEN (STR_LOG_CAPACITY);
+            subtitle text = STRING_TOKEN (STR_NULL_STRING);
+            BMCSELFTESTLOG_ONEOF_BSTERASE
+            BMCSELFTESTLOG_ONEOF_BSTLOGFULL
+            subtitle text = STRING_TOKEN (STR_NULL_STRING);
+            subtitle text = STRING_TOKEN (STR_NULL_STRING);
+    #if TSE_MULTILINE_CONTROLS==1
+             subtitle text = STRING_TOKEN (STR_DATE_TIME_STATUSCODE_HEADING);
+    #endif
+            subtitle text = STRING_TOKEN (STR_IPMI_SELF_TEST_LOG_1);
+            subtitle text = STRING_TOKEN (STR_IPMI_SELF_TEST_LOG_2);
+            subtitle text = STRING_TOKEN (STR_IPMI_SELF_TEST_LOG_3);
+            subtitle text = STRING_TOKEN (STR_IPMI_SELF_TEST_LOG_4);
+            subtitle text = STRING_TOKEN (STR_IPMI_SELF_TEST_LOG_5);
+            subtitle text = STRING_TOKEN (STR_IPMI_SELF_TEST_LOG_6);
+            subtitle text = STRING_TOKEN (STR_IPMI_SELF_TEST_LOG_7);
+            subtitle text = STRING_TOKEN (STR_IPMI_SELF_TEST_LOG_8);
+            subtitle text = STRING_TOKEN (STR_IPMI_SELF_TEST_LOG_9);
+            subtitle text = STRING_TOKEN (STR_IPMI_SELF_TEST_LOG_10);
+            subtitle text = STRING_TOKEN (STR_IPMI_SELF_TEST_LOG_11);
+            subtitle text = STRING_TOKEN (STR_IPMI_SELF_TEST_LOG_12);
+            subtitle text = STRING_TOKEN (STR_IPMI_SELF_TEST_LOG_13);
+            subtitle text = STRING_TOKEN (STR_IPMI_SELF_TEST_LOG_14);
+            subtitle text = STRING_TOKEN (STR_IPMI_SELF_TEST_LOG_15);
+            subtitle text = STRING_TOKEN (STR_IPMI_SELF_TEST_LOG_16);
+            subtitle text = STRING_TOKEN (STR_IPMI_SELF_TEST_LOG_17);
+            subtitle text = STRING_TOKEN (STR_IPMI_SELF_TEST_LOG_18);
+            subtitle text = STRING_TOKEN (STR_IPMI_SELF_TEST_LOG_19);
+            subtitle text = STRING_TOKEN (STR_IPMI_SELF_TEST_LOG_20);
+        endform;
+        #endif //#ifndef BMCSELFTESTLOG_FORM_SERVERMGMT
+    #endif //#ifdef FORM_SET_FORM
+#endif //#ifdef SERVER_MGMT_FORM_SET
+
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**         5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093     **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************

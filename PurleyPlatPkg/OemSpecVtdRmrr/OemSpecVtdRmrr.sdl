@@ -1,0 +1,26 @@
+TOKEN
+	Name  = "OemSpecVtdRmrr_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling OemSpecVtdRmrr support in the project"
+	TokenType = Boolean
+	Master = Yes
+    Token = "OemVtdRmrr_SUPPORT" "=" "1"
+End
+
+ELINK
+    Name  = "OemSpecVtdRmrr,"
+    Parent  = "OEM_VTD_RMRR_HOOK"
+    InvokeOrder = AfterParent
+End
+
+INFComponent
+	Name  = "OemSpecVtdRmrr"
+	File  = "OemSpecVtdRmrr.inf"
+	Package  = "PurleyPlatPkg"
+End
+
+LibraryMapping
+   Class  = "NULL"
+   Instance  = "PurleyPlatPkg.OemSpecVtdRmrr"
+   Override  = "PurleyPlatPkg.OemVtdRmrr"
+End

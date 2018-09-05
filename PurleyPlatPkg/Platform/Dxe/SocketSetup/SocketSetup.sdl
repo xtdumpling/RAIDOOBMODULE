@@ -1,0 +1,113 @@
+##****************************************************************************
+##****************************************************************************
+##**                                                                        **
+##**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+##**                                                                        **
+##****************************************************************************
+##****************************************************************************
+#
+#  File History
+#
+#  Rev. 1.00
+#    Bug Fix : N/A.
+#    Reason  : Based on Purley_Setup_Mapping_Language_Draft_20170301_Joe.xlsx 
+#              and Official_BIOS_SOP_Revised_Draft_20170301_Mapping_Language_Joe.xlsx 
+#              to implement HII mapping language for BIOS setting preservation.
+#    Auditor : Joe Jhang
+#    Date    : Mar/02/2017
+#
+##***************************************************************************
+TOKEN
+	Name  = "SocketSetup_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling SocketSetup support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+INFComponent
+	Name  = "SocketSetup"
+	File  = "SocketSetup.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "SocketSetup_SUPPORT" "=" "1"
+End
+
+# Form ID of Socket Configuration Tab
+TOKEN
+	Name  = "VFR_FORMID_SOCKET"
+	Value  = "0x510"
+	Help  = "Socket Configuration main page ID. Value available from PurleySktPkg\Include\SocketConfiguration.h. "
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "AMITSE_ROOT_PAGE_ORDER_SUPPORT" "=" "1"
+End
+
+OUTPUTREGISTER
+	Name = "SocketSetupXAmiStrings"
+	File = "SocketSetupXAmiStrings.uni"
+	Path = "Build"    
+	Template = "SocketSetup.txt"
+End
+
+ELINK
+	Name  = "SOCKET_SETUP_MAPPING_LANGUAGE_FILES"
+	Help  = "This is a list of UNI files added by OEM to include the mapping language strings."
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "KtiSetupStringsXAmi.uni"
+	Parent = "SOCKET_SETUP_MAPPING_LANGUAGE_FILES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "KtiSvSetupStringsXAmi.uni"
+	Parent = "SOCKET_SETUP_MAPPING_LANGUAGE_FILES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "IioSetupStringsXAmi.uni"
+	Parent = "SOCKET_SETUP_MAPPING_LANGUAGE_FILES"
+	InvokeOrder = AfterParent
+End
+
+#SMCPKG_SUPPORT S
+ELINK
+	Name  = "IioDfxSetupStringsXAmi.uni"
+	Parent = "SOCKET_SETUP_MAPPING_LANGUAGE_FILES"
+	InvokeOrder = AfterParent
+End
+#SMCPKG_SUPPORT E
+
+ELINK
+	Name  = "MemorySetupStringsXAmi.uni"
+	Parent = "SOCKET_SETUP_MAPPING_LANGUAGE_FILES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "MemoryDfxSetupStringsXAmi.uni"
+	Parent = "SOCKET_SETUP_MAPPING_LANGUAGE_FILES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "CommonRefCodeStringsXAmi.uni"
+	Parent = "SOCKET_SETUP_MAPPING_LANGUAGE_FILES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "ProcessorSetupStringsXAmi.uni"
+	Parent = "SOCKET_SETUP_MAPPING_LANGUAGE_FILES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "PowerManagmentSetupStringsXAmi.uni"
+	Parent = "SOCKET_SETUP_MAPPING_LANGUAGE_FILES"
+	InvokeOrder = AfterParent
+End

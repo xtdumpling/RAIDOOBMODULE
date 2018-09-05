@@ -1,0 +1,75 @@
+
+
+[Defines]
+INF_VERSION = 0x00010015
+VERSION_STRING = 1.0
+BASE_NAME = Minisetup
+MODULE_TYPE = BASE
+LIBRARY_CLASS = Minisetup
+
+[Sources]
+AMILogo/AMILogo.c
+AMILogo/AMILogo.h
+amiver.h
+bbs.c
+bbs.h
+boot.c
+box.c
+box.h
+buffer.c
+buffer.h
+dobmpmgr.c
+globals.c
+hiistring.c
+hiistring.h
+logo.c
+mem.c
+minisetup.c
+minisetup.h
+minisetupext.c
+notify.c
+postmgmt.c
+print.c
+protocol.c
+protocol.h
+screen.c
+screen.h
+string.c
+string.h
+timer.c
+Timer.h
+variable.c
+Resources.c
+HookAnchor.c
+EDKhelper.c
+EDKhelper.h
+password.h
+password.c
+postmgmtext.c
+
+
+[Packages]
+  AmiTsePkg/AmiTsePkg.dec
+  AmiTsePkg/AmiTsePrivatePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  MdePkg/MdePkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+    
+[LibraryClasses]
+
+
+[Protocols]
+  gEfiUsbIoProtocolGuid                         
+  gEfiDiskIoProtocolGuid
+  gEfiLoadFileProtocolGuid
+
+  
+[BuildOptions]
+MSFT:*_*_*_CC_FLAGS = /DTSE_FOR_APTIO_4_50  
+GCC:*_*_*_CC_FLAGS = -DTSE_FOR_APTIO_4_50  
+
+[Pcd]
+   gEfiIntelFrameworkModulePkgTokenSpaceGuid.PcdShellFile

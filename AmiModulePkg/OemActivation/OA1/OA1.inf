@@ -1,0 +1,28 @@
+
+
+[Defines]
+    INF_VERSION = 0x00010005
+    VERSION_STRING = 1.0
+    BASE_NAME = OA1
+    MODULE_TYPE = DXE_DRIVER
+    FILE_GUID = CCABB74A-6077-49f7-A291-71EBB7A7036C
+    ENTRY_POINT = OA1_EntryPoint
+
+[Sources]
+    OA1.c
+    OA1.h
+
+[Packages]
+    MdePkg/MdePkg.dec
+    IntelFrameworkPkg/IntelFrameworkPkg.dec
+    AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+    AmiModulePkg/AmiModulePkg.dec
+
+[LibraryClasses]
+    AmiDxeLib
+    UefiDriverEntryPoint
+    AmiCspLib
+
+[Depex]
+    gEfiLegacyBiosExtProtocolGuid
+

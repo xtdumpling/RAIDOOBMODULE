@@ -1,0 +1,40 @@
+
+
+
+################################################################################
+#
+# Defines Section - statements that will be processed to create a Makefile.
+#
+################################################################################
+
+[Defines]
+  DEC_SPECIFICATION              = 0x00010005
+  PACKAGE_NAME                   = SerialDebugger
+  PACKAGE_GUID                   = 5D2E6849-CC72-4c28-97FC-6C2955D7D154
+  PACKAGE_VERSION                = 0.1
+
+################################################################################
+#
+# Include Section - list of Include Paths that are provided by this package.
+#                   Comments are used for Keywords and Module Types.
+#
+# Supported Module Types: 
+#  SEC PEIM DXE_DRIVER DXE_RUNTIME_DRIVER DXE_SMM_DRIVER DXE_SAL_DRIVER UEFI_DRIVER
+#
+################################################################################
+[Includes]
+  Include
+  ../../Build
+
+[LibraryClasses]
+  ##  @libraryclass  Provides communication I/O functions between Debug Agent and HOST.
+  ##
+
+[Guids]
+  ## MdeModule package token space guid
+  gEfiSerialDebuggerTokenSpaceGuid = {0xb2c7d8f7, 0x4e7f, 0x46a9, { 0x8c, 0xde, 0xf9, 0xfb, 0x6d, 0x27, 0x62, 0x78 }}
+
+[PcdsFixedAtBuild, PcdsPatchableInModule]
+  ## The mask of exception numbers whose handlers would be ignored and cannot be replaced or 
+  ## hooked by Debug Agent Library.
+  gEfiSerialDebuggerTokenSpaceGuid.PcdExceptionsIgnoredByDebugger|0x00000000|UINT32|0x00000004

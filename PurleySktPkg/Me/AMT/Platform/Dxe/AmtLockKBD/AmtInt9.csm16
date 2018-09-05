@@ -1,0 +1,265 @@
+
+        TITLE   AMTINT9.ASM -- OEM INTERRUPT IMPLEMENTATION
+
+;*************************************************************************
+;*************************************************************************
+;**                                                                     **
+;**        (C)Copyright 1985-2010, American Megatrends, Inc.            **
+;**                                                                     **
+;**                       All Rights Reserved.                          **
+;**                                                                     **
+;**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+;**                                                                     **
+;**                       Phone: (770)-246-8600                         **
+;**                                                                     **
+;*************************************************************************
+;*************************************************************************
+;
+; $Header: $
+;
+; $Date: $
+;
+;****************************************************************************
+; Revision History
+; ----------------
+; $Log: $
+; 
+;
+;****************************************************************************
+;<AMI_FHDR_START>
+;   
+; Name:         AMTInt9.asm
+;   
+; Description:  Hook Int 9 for Legacy Serial Redirection.
+;   
+;<AMI_FHDR_END>
+;****************************************************************************
+
+;----------------------------------------------------------------------------
+;       INCLUDE FILES
+;----------------------------------------------------------------------------
+include token.equ
+;----------------------------------------------------------------------------
+;       EQUATES & STRUCTURES
+;----------------------------------------------------------------------------
+refresh_port            equ     61h
+kb_data_port            equ     60h     ; keyboard data port
+kb_stat_port            equ     64h     ; keyboard status port
+kbcCMDPort              EQU     64h     ; Keyboard controller command port
+enKeyboardCMD           EQU     0aeh    ; Enable keyboard command
+diKeyboardCMD           EQU     0adh    ; Disable keyboard command
+IBFTimeoutCount         EQU     0f000h  ; Check keyboart input buffer count
+kbcIBF                  EQU     00000010b; Keyboard input buffer full
+;----------------------------------------------------------------------------
+;       EXTERNS USED
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;       CSMOEM_CSEG  S E G M E N T  STARTS
+;----------------------------------------------------------------------------
+CSMOEM_CSEG SEGMENT PARA PUBLIC 'CODE' USE16
+        ASSUME cs:CSMOEM_CSEG, ds:CSMOEM_CSEG
+.386p
+;----------------------------------------------------------------------------
+
+OldIntHandler   LABEL DWORD
+        IntSegSav       dw      0
+        IntOfsSav       dw      0
+
+;<AMI_PHDR_START>
+;----------------------------------------------------------------------------
+;
+; Procedure:    AMTINT09Proc
+;
+; Description:
+;
+; Input:
+;
+; Output:
+;
+; Modified:
+;
+;----------------------------------------------------------------------------
+;<AMI_PHDR_END>
+AMTINT09Proc PROC NEAR PUBLIC
+        pushf
+        cmp     cs:dSredirInterruptPtr, 0
+        jnz     lock_local_keyboard
+        popf
+        jmp     DWORD PTR cs:[OldIntHandler]
+lock_local_keyboard:
+        push    ds
+        push    si
+        ; DS:SI = *dSredirInterruptPtr
+        lds     si, DWORD PTR cs:dSredirInterruptPtr
+;        cmp    WORD PTR ds:[si], 0  ; does interrutp come from redirection ?
+        test    BYTE PTR ds:[si], 1  ; does interrutp come from redirection ?
+        jz      not_serial_redirection_interrupt ; br not redirection interrupt
+        ; jmp to original Int 9 vector to service redirection interrupt
+        pushf
+        push    cs
+        push    OFFSET returnFromInt9
+        push    DWORD PTR cs:OldIntHandler
+        retf
+returnFromInt9:
+;        mov     WORD PTR ds:[si], 0     ; clear redirection interrupt flag
+        mov     BYTE PTR ds:[si], 0     ; clear redirection interrupt flag
+        jmp     redirection_return_to_caller
+not_serial_redirection_interrupt:
+        ; do nothing and return to caller.
+        push    ax
+        call    disable_keyboard
+        call    enable_keyboard
+        ; clear EOI
+        mov     al, 20h         ; end of INT code
+        out     20h, al         ; out to INT CONTROLLER port
+        pop     ax
+redirection_return_to_caller:
+        pop     si
+        pop     ds
+        popf
+        retf    2
+
+AMTINT09Proc    ENDP
+;<AMI_PHDR_START>
+;----------------------------------------------------------------------------
+; Procedure:    CheckKBCController
+;
+; Description:  Check KBC controller present.
+;
+; Input:        None.
+;
+; Output:       None.
+;
+; Modified:     ZF = 0 KBC controller present.
+;                  = 1 No KBC controller.
+;
+; Referrals:
+;
+;----------------------------------------------------------------------------
+;<AMI_PHDR_END>
+CheckKBCController PROC NEAR
+        push    ax
+        in      al, kb_stat_port
+        cmp     al, 0ffh
+        pop     ax
+        ret
+CheckKBCController ENDP
+;<AMI_PHDR_START>
+;----------------------------------------------------------------------------
+; Procedure:    enable_keyboard
+;
+; Description:  Enables KBD interface. Also CPU interrupt will be enabled
+;               here.
+;
+; Input:        None.
+;
+; Output:       None.
+;
+; Modified:     AL.
+;
+; Referrals:    ib_free.
+;
+;----------------------------------------------------------------------------
+;<AMI_PHDR_END>
+
+enable_keyboard PROC NEAR PUBLIC
+
+        call    CheckKBCController
+        jz      short Enable_keyboardExit
+        call    ib_free                 ; Wait for input buffer free.
+        mov     al, enKeyboardCMD       ; CMD to enable KBD interface.
+        out     kbcCMDPort, al          ; Write command to KBC.
+        call    ib_free                 ; Wait for input buffer free.
+Enable_keyboardExit:                    ;(BUG4128+)
+        sti
+        ret
+
+enable_keyboard ENDP
+;<AMI_PHDR_START>
+;----------------------------------------------------------------------------
+; Procedure:    disable_keyboard
+;
+; Description:  Disables KBD interface and reads the data from KBC data port.
+;
+; Input:        None.
+;
+; Output:       AL      - Data read from KBC data port.
+;
+; Modified:     AL.
+;
+; Referrals:    ib_free.
+;
+;----------------------------------------------------------------------------
+;<AMI_PHDR_END>
+
+disable_keyboard PROC NEAR PUBLIC
+        call    CheckKBCController
+        jz      short Disable_keyboardExit
+        call    ib_free                 ; Wait for input buffer free.
+        mov     al, diKeyboardCMD       ; CMD to disable KBD interface.
+        out     kbcCMDPort, al          ; Write command to KBC.
+        call    ib_free                 ; Wait for input buffer free.
+        in      al, kb_data_port        ; Read the data.(BUG2673+)
+Disable_keyboardExit:                   ;
+        ret
+
+disable_keyboard ENDP
+;<AMI_PHDR_START>
+;----------------------------------------------------------------------------
+; Procedure:    ib_free
+;
+; Description:  This routine waits until the KBC input buffer is free.
+;
+; Input:        None.
+;
+; Output:       None.
+;
+; Modified:     AL.
+;
+; Referrals:    None.
+;
+; Notes:        DO NOT USE STACK.  This routine may be called with RET_SP
+;               macro.
+;
+;----------------------------------------------------------------------------
+;<AMI_PHDR_END>
+ib_free PROC NEAR PUBLIC
+        push    cx
+        mov     cx, IBFTimeoutCount
+IbFreeLp:
+        in      al, kb_stat_port
+        call    CheckKBCController
+        jz      short IbFreeExit
+        out     0ebh, al
+        out     0ebh, al
+        out     0ebh, al
+        test    al, kbcIBF
+        loopnz  IbFreeLp
+IbFreeExit:
+        pop     cx
+        ret
+ib_free ENDP
+
+;----------------------------------------------------------------------------
+LockKeyBoardSignature           DB      '$LKb'
+dSredirInterruptPtr             DD      0
+dLockKBD                        DD      0
+;----------------------------------------------------------------------------
+;       CSMOEM_CSEG  S E G M E N T  ENDS
+;----------------------------------------------------------------------------
+CSMOEM_CSEG ENDS
+END
+;****************************************************************************
+;****************************************************************************
+;**                                                                        **
+;**             (C)Copyright 1985-2009, American Megatrends, Inc.          **
+;**                                                                        **
+;**                          All Rights Reserved.                          **
+;**                                                                        **
+;**           5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093         **
+;**                                                                        **
+;**                          Phone (770)-246-8600                          **
+;**                                                                        **
+;****************************************************************************
+;****************************************************************************

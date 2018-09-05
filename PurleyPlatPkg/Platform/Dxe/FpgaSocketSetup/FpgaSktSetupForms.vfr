@@ -1,0 +1,261 @@
+//
+// This file contains an 'Intel Peripheral Driver' and is
+// licensed for Intel CPUs and chipsets under the terms of your
+// license agreement with Intel or your vendor.  This file may
+// be modified by the user, subject to additional terms of the
+// license agreement
+//
+// *++
+//
+// Copyright (c) 2016 - 2017 Intel Corporation. All rights reserved
+// This software and associated documentation (if any) is furnished
+// under a license and may only be used or copied in accordance
+// with the terms of the license. Except as permitted by such
+// license, no part of this software or documentation may be
+// reproduced, stored in a retrieval system, or transmitted in any
+// form or by any means without the express written consent of
+// Intel Corporation.
+//
+//
+// Module Name:
+//
+//   FpgaSktSetupForms.vfr
+//
+// Abstract:
+//
+//   Fpga Socket Setup formset.
+//
+// Revision History:
+//
+// --*/
+
+#include "FpgaSocketSetupStrDefs.h"
+#include <Guid/FpgaSocketVariable.h>
+#include <FpgaConfiguration.h>
+
+
+formset
+  guid     = FPGA_FORMSET_GUID,
+  title    = STRING_TOKEN(STR_FPGA_FORM),
+  help     = STRING_TOKEN(STR_FPGA_FORM_HELP),
+  class    = FPGA_CLASS_ID,
+  subclass = FPGA_SUBCLASS_ID,
+
+  efivarstore FPGA_SOCKET_CONFIGURATION,
+    varid = FPGA_SOCKET_CONFIGURATION_VARID,
+    attribute = PLATFORM_VARIABLE_ATTRIBUTES,  // EFI variable attributes  EFI_VARIABLE_NON_VOLATILE | EFI_VARIABLE_BOOTSERVICE_ACCESS | EFI_VARIABLE_RUNTIME_ACCESS
+    name  = FpgaSocketConfig,
+    guid  = FPGA_CONFIGURATION_GUID;
+
+
+//  varstore FPGA_SOCKET_CONFIGURATION,
+//    varid = FPGA_SOCKET_CONFIGURATION_VARID,
+//    name = FPGA_SOCKET_CONFIGURATION_NAME,
+//    guid = FPGA_CONFIGURATION_GUID;
+
+  defaultstore MyStandardDefault,
+      prompt      = STRING_TOKEN(STR_STANDARD_DEFAULT_PROMPT),
+      attribute   = 0x0000;                         // Default ID: 0000 standard default
+
+  defaultstore MyManufactureDefault,
+      prompt      = STRING_TOKEN(STR_MANUFACTURE_DEFAULT_PROMPT),
+      attribute   = 0x0001;
+
+  form formid = VFR_FORMID_FPGA_SETUP,
+
+        title = STRING_TOKEN(STR_FPGA_FORM);
+//
+// Phony UI element that is never shown, used to be sure strings are included due to "IF_NOT_USED" macro
+//
+
+    subtitle text = STRING_TOKEN(STR_FPGA_FORM);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+
+    numeric varid = FPGA_SOCKET_CONFIGURATION.FpgaSetupEnabled,
+            prompt   = STRING_TOKEN(STR_FPGA_SOCKETE_EN),
+            help     = STRING_TOKEN(STR_FPGA_SOCKETE_EN_HELP),
+            flags   = DISPLAY_UINT_HEX | RESET_REQUIRED,
+            minimum  = 0,
+            maximum = 0xFF,
+            step    = 1, // Stepping of 0 equates to a manual entering of a value, otherwise it will auto-increment with a left/right arrow
+            default = FPGA_SETUP_ENABLE_DEFAULT_VALUE, defaultstore = MyStandardDefault,
+            default = FPGA_SETUP_ENABLE_DEFAULT_VALUE, defaultstore = MyManufactureDefault,
+    endnumeric;
+
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+    text
+        help  = STRING_TOKEN(STR_NULL_STRING),
+        text  = STRING_TOKEN(STR_SOCKET0_BBS_VERSION_PROMPT),
+        text  = STRING_TOKEN(STR_SOCKET0_BBS_VERSION_VALUE),
+        flags = 0, key = 0;
+
+#if MAX_SOCKET > 1
+    text
+        help  = STRING_TOKEN(STR_NULL_STRING),
+        text  = STRING_TOKEN(STR_SOCKET1_BBS_VERSION_PROMPT),
+        text  = STRING_TOKEN(STR_SOCKET1_BBS_VERSION_VALUE),
+        flags = 0, key = 0;
+#endif
+
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+
+    oneof varid   = FPGA_SOCKET_CONFIGURATION.FpgaSocketGuid[0],
+            prompt   = STRING_TOKEN(STR_SOCKET0_BBS_PROMPT),
+            help     = STRING_TOKEN(STR_SOCKET_BBS_HELP),
+            option text = STRING_TOKEN(STR_BBS_AUTO_STRING),              value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+            option text = STRING_TOKEN(STR_BBS_HSSI_STRING),              value = 1, flags = 0;
+            option text = STRING_TOKEN(STR_BBS_NONE_STRING),              value = 0xFF, flags = 0;
+    endoneof;
+
+#if MAX_SOCKET > 1
+    oneof varid   = FPGA_SOCKET_CONFIGURATION.FpgaSocketGuid[1],
+            prompt   = STRING_TOKEN(STR_SOCKET1_BBS_PROMPT),
+            help     = STRING_TOKEN(STR_SOCKET_BBS_HELP),
+            option text = STRING_TOKEN(STR_BBS_AUTO_STRING),              value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+            option text = STRING_TOKEN(STR_BBS_HSSI_STRING),              value = 1, flags = 0;
+            option text = STRING_TOKEN(STR_BBS_NONE_STRING),              value = 0xFF, flags = 0;
+    endoneof;
+#endif
+
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+    goto VFR_FORMID_FPGA_THERMAL_MANAGEMENT,
+        prompt  = STRING_TOKEN(STR_FPGA_THERMAL_MGMT_FORM_TITLE),
+        help    = STRING_TOKEN(STR_FPGA_THERMAL_MGMT_FORM_HELP);
+
+    goto VFR_FORMID_FPGA_DFX_CONFIG,
+        prompt  = STRING_TOKEN(STR_FPGA_DFX_CFG_FORM_TITLE),
+        help    = STRING_TOKEN(STR_FPGA_DFX_CFG_FORM_HELP);
+
+  endform;
+
+  //
+  // Submenu for FPGA Thermal Management
+  //
+  form formid = VFR_FORMID_FPGA_THERMAL_MANAGEMENT,
+    title = STRING_TOKEN(STR_FPGA_THERMAL_MGMT_FORM_TITLE);
+
+    subtitle text = STRING_TOKEN(STR_FPGA_THERMAL_MGMT_FORM_TITLE);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+
+    oneof varid   = FPGA_SOCKET_CONFIGURATION.FpgaThermalTH1[0],
+            prompt   = STRING_TOKEN(STR_FPGA_SOCKET0_TH1),
+            help     = STRING_TOKEN(STR_FPGA_THERMAL_HELP),
+            option text = STRING_TOKEN(STR_DISABLED_STRING),          value = 0, flags = 0;
+            option text = STRING_TOKEN(STR_60_C),                     value = 60, flags = 0;
+            option text = STRING_TOKEN(STR_65_C),                     value = 65, flags = 0;
+            option text = STRING_TOKEN(STR_70_C),                     value = 70, flags = 0;
+            option text = STRING_TOKEN(STR_75_C),                     value = 75, flags = 0;
+            option text = STRING_TOKEN(STR_80_C),                     value = 80, flags = 0;
+            option text = STRING_TOKEN(STR_85_C),                     value = 85, flags = 0;
+            option text = STRING_TOKEN(STR_90_C),                     value = 90, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+            option text = STRING_TOKEN(STR_93_C),                     value = 93, flags = 0;
+            option text = STRING_TOKEN(STR_94_C),                     value = 94, flags = 0;
+            option text = STRING_TOKEN(STR_95_C),                     value = 95, flags = 0;
+            option text = STRING_TOKEN(STR_96_C),                     value = 96, flags = 0;
+            option text = STRING_TOKEN(STR_97_C),                     value = 97, flags = 0;
+            option text = STRING_TOKEN(STR_98_C),                     value = 98, flags = 0;
+            option text = STRING_TOKEN(STR_99_C),                     value = 99, flags = 0;
+            option text = STRING_TOKEN(STR_100_C),                    value = 100, flags = 0;
+            option text = STRING_TOKEN(STR_101_C),                    value = 101, flags = 0;
+            option text = STRING_TOKEN(STR_102_C),                    value = 102, flags = 0;
+            option text = STRING_TOKEN(STR_103_C),                    value = 103, flags = 0;
+    endoneof;
+
+    oneof varid   = FPGA_SOCKET_CONFIGURATION.FpgaThermalTH2[0],
+            prompt   = STRING_TOKEN(STR_FPGA_SOCKET0_TH2),
+            help     = STRING_TOKEN(STR_FPGA_THERMAL_HELP),
+            option text = STRING_TOKEN(STR_DISABLED_STRING),          value = 0, flags = 0;
+            option text = STRING_TOKEN(STR_60_C),                     value = 60, flags = 0;
+            option text = STRING_TOKEN(STR_65_C),                     value = 65, flags = 0;
+            option text = STRING_TOKEN(STR_70_C),                     value = 70, flags = 0;
+            option text = STRING_TOKEN(STR_75_C),                     value = 75, flags = 0;
+            option text = STRING_TOKEN(STR_80_C),                     value = 80, flags = 0;
+            option text = STRING_TOKEN(STR_85_C),                     value = 85, flags = 0;
+            option text = STRING_TOKEN(STR_90_C),                     value = 90, flags = 0;
+            option text = STRING_TOKEN(STR_93_C),                     value = 93, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+            option text = STRING_TOKEN(STR_94_C),                     value = 94, flags = 0;
+            option text = STRING_TOKEN(STR_95_C),                     value = 95, flags = 0;
+            option text = STRING_TOKEN(STR_96_C),                     value = 96, flags = 0;
+            option text = STRING_TOKEN(STR_97_C),                     value = 97, flags = 0;
+            option text = STRING_TOKEN(STR_98_C),                     value = 98, flags = 0;
+            option text = STRING_TOKEN(STR_99_C),                     value = 99, flags = 0;
+            option text = STRING_TOKEN(STR_100_C),                    value = 100, flags = 0;
+            option text = STRING_TOKEN(STR_101_C),                    value = 101, flags = 0;
+            option text = STRING_TOKEN(STR_102_C),                    value = 102, flags = 0;
+            option text = STRING_TOKEN(STR_103_C),                    value = 103, flags = 0;
+    endoneof;
+
+#if MAX_SOCKET > 1
+    oneof varid   = FPGA_SOCKET_CONFIGURATION.FpgaThermalTH1[1],
+            prompt   = STRING_TOKEN(STR_FPGA_SOCKET1_TH1),
+            help     = STRING_TOKEN(STR_FPGA_THERMAL_HELP),
+            option text = STRING_TOKEN(STR_DISABLED_STRING),          value = 0, flags = 0;
+            option text = STRING_TOKEN(STR_60_C),                     value = 60, flags = 0;
+            option text = STRING_TOKEN(STR_65_C),                     value = 65, flags = 0;
+            option text = STRING_TOKEN(STR_70_C),                     value = 70, flags = 0;
+            option text = STRING_TOKEN(STR_75_C),                     value = 75, flags = 0;
+            option text = STRING_TOKEN(STR_80_C),                     value = 80, flags = 0;
+            option text = STRING_TOKEN(STR_85_C),                     value = 85, flags = 0;
+            option text = STRING_TOKEN(STR_90_C),                     value = 90, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+            option text = STRING_TOKEN(STR_93_C),                     value = 93, flags = 0;
+            option text = STRING_TOKEN(STR_94_C),                     value = 94, flags = 0;
+            option text = STRING_TOKEN(STR_95_C),                     value = 95, flags = 0;
+            option text = STRING_TOKEN(STR_96_C),                     value = 96, flags = 0;
+            option text = STRING_TOKEN(STR_97_C),                     value = 97, flags = 0;
+            option text = STRING_TOKEN(STR_98_C),                     value = 98, flags = 0;
+            option text = STRING_TOKEN(STR_99_C),                     value = 99, flags = 0;
+            option text = STRING_TOKEN(STR_100_C),                    value = 100, flags = 0;
+            option text = STRING_TOKEN(STR_101_C),                    value = 101, flags = 0;
+            option text = STRING_TOKEN(STR_102_C),                    value = 102, flags = 0;
+            option text = STRING_TOKEN(STR_103_C),                    value = 103, flags = 0;
+    endoneof;
+
+    oneof varid   = FPGA_SOCKET_CONFIGURATION.FpgaThermalTH2[1],
+            prompt   = STRING_TOKEN(STR_FPGA_SOCKET1_TH2),
+            help     = STRING_TOKEN(STR_FPGA_THERMAL_HELP),
+            option text = STRING_TOKEN(STR_DISABLED_STRING),          value = 0, flags = 0;
+            option text = STRING_TOKEN(STR_60_C),                     value = 60, flags = 0;
+            option text = STRING_TOKEN(STR_65_C),                     value = 65, flags = 0;
+            option text = STRING_TOKEN(STR_70_C),                     value = 70, flags = 0;
+            option text = STRING_TOKEN(STR_75_C),                     value = 75, flags = 0;
+            option text = STRING_TOKEN(STR_80_C),                     value = 80, flags = 0;
+            option text = STRING_TOKEN(STR_85_C),                     value = 85, flags = 0;
+            option text = STRING_TOKEN(STR_90_C),                     value = 90, flags = 0;
+            option text = STRING_TOKEN(STR_93_C),                     value = 93, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+            option text = STRING_TOKEN(STR_94_C),                     value = 94, flags = 0;
+            option text = STRING_TOKEN(STR_95_C),                     value = 95, flags = 0;
+            option text = STRING_TOKEN(STR_96_C),                     value = 96, flags = 0;
+            option text = STRING_TOKEN(STR_97_C),                     value = 97, flags = 0;
+            option text = STRING_TOKEN(STR_98_C),                     value = 98, flags = 0;
+            option text = STRING_TOKEN(STR_99_C),                     value = 99, flags = 0;
+            option text = STRING_TOKEN(STR_100_C),                    value = 100, flags = 0;
+            option text = STRING_TOKEN(STR_101_C),                    value = 101, flags = 0;
+            option text = STRING_TOKEN(STR_102_C),                    value = 102, flags = 0;
+            option text = STRING_TOKEN(STR_103_C),                    value = 103, flags = 0;
+    endoneof;
+#endif
+
+  endform;
+
+  //
+  // Submenu for FPGA DFX Configuration
+  //
+  form formid = VFR_FORMID_FPGA_DFX_CONFIG,
+    title = STRING_TOKEN(STR_FPGA_DFX_CFG_FORM_TITLE);
+
+    subtitle text = STRING_TOKEN(STR_FPGA_DFX_CFG_FORM_TITLE);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+
+    oneof varid = FPGA_SOCKET_CONFIGURATION.HssiEqTuningEn,
+        prompt  = STRING_TOKEN(STR_HSSI_EQ_TUNING_ENABLE_PROMPT),
+        help    = STRING_TOKEN(STR_HSSI_EQ_TUNING_ENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLED_STRING),      value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED_STRING),       value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+    endoneof;
+
+  endform;
+
+ endformset;

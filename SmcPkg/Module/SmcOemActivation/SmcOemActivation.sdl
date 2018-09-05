@@ -1,0 +1,145 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2015 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.01
+#    Bug Fix:  Move $SMC to 1st. 4K in ROMHOLE.
+#    Reason:
+#    Auditor:  Kasber Chen
+#    Date:     Sep/01/2016
+#
+#  Rev. 1.00
+#    Bug Fix:  Initialize revision
+#    Reason:
+#    Auditor:  Kasber Chen
+#    Date:     Feb/11/2015
+#
+#****************************************************************************
+#****************************************************************************
+
+TOKEN
+	Name        = "SmcOemActivation"
+	Value       = "1"
+	TokenType   = Boolean
+	TargetEQU   = Yes
+	TargetMAK   = Yes
+	TargetH     = Yes
+	Master      = Yes
+	Help        = "Main switch to enable SmcLib support in Project"
+End
+
+PATH
+	Name  = "SmcOemActivation_DIR"
+End
+
+TOKEN
+	Name  = "OEM_ACTIVATION_TABLE_ADDRESS"
+	Value = "$(SMC_ROM_HOLE_LOCATION)"
+	Help  = "OEM Activation Table address in SMC ROM HOLE second 4K" 
+	TokenType = Integer
+	TargetH = Yes
+	Token = "SmcRomHole_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "OEM_ACTIVATION_TABLE_SIZE"
+	Value = "$(SMC_ROM_HOLE_SIZE)"
+	Help  = "OEM Activation Table size in the NCB. Port this token!" 
+	TokenType = Integer
+	TargetH = Yes
+End
+
+FFS_FILE
+	Name  = "SmcOemActivation"
+	FD_AREA  = "FV_MAIN"
+	INFComponent  = "SmcPkg.SmcOemActivation"
+End
+
+INFComponent
+        Name  = "SmcOemActivation"
+        File  = "SmcOemActivation.inf"
+        Package  = "SmcPkg"
+        ModuleTypes  = "DXE_DRIVER"
+End
+
+INFComponent
+        Name  = "SmcOemID"
+        File  = "SmcOemID.inf"
+        Package  = "SmcPkg"
+        ModuleTypes  = "BASE"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "SmcPkg.SmcOemID"
+	Override = "AmiModulePkg.ACPI"
+End
+
+ELINK
+	Name  = "SmcOverrideAcpiTableId,"
+	Parent  = "OemUpdateHeader"
+	InvokeOrder = AfterParent
+End
+
+TOKEN
+	Name  = "ROMHOLE0_FILE"
+	Value  = "SmcPkg/Module/SmcOemActivation/PubKey.bin"
+	TokenType = File
+	TargetMAK = Yes
+        TargetFDF = Yes
+End
+
+FFS_FILE
+	Name  = "SmcRomHoleSlpPubKey"
+	FD_AREA  = "FV_MAIN"
+	FILE_Stmt  = "SmcPkg/Module/SmcOemActivation/SmcPubKey.txt"
+End
+
+TOKEN
+	Name  = "ROMHOLE1_FILE"
+	Value  = "SmcPkg/Module/SmcOemActivation/Marker.bin"
+	TokenType = File
+	TargetMAK = Yes
+        TargetFDF = Yes
+End
+
+FFS_FILE
+	Name  = "SmcRomHoleSlpMarker"
+	FD_AREA  = "FV_MAIN"
+	FILE_Stmt  = "SmcPkg/Module/SmcOemActivation/SmcMarker.txt"
+End
+
+INFComponent
+	Name = "Marker"
+	File = "Marker.inf"
+	Package = "AmiModulePkg"
+	ModuleTypes = "USER_DEFINED"
+	Disable = Yes
+End
+
+FFS_FILE
+	Name = "Marker"
+	FD_AREA = "FV_MAIN"
+	INFComponent = "AmiModulePkg.Marker"
+	Rule_Override = "UncompressedBinary"
+	Disable = Yes
+End
+
+INFComponent
+	Name = "PubKey"
+	File = "PubKey.inf"
+	Package = "AmiModulePkg"
+	ModuleTypes = "USER_DEFINED"
+	Disable = Yes    
+End
+
+FFS_FILE
+	Name = "PubKey"
+	FD_AREA = "FV_MAIN"
+	INFComponent = "AmiModulePkg.PubKey"
+	Rule_Override = "UncompressedBinary"
+	Disable = Yes    
+End

@@ -1,0 +1,74 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+
+TOKEN
+	Name  = "MEFwUpdLcl_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable MEFwUpdLcl support in Project"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+	Token = "AUTO_MEUD_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "ME_FW_UPDATE_API_CONTROL"
+	Value  = "0"
+	Help  = "Switch for FWUpdate API Control.\0 - ME 9.0/10.0 (Sharkbay/Broadwell).\1 - ME 11.0(Skylake).\2 - TXE 2.0(Braswell)."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+PATH
+	Name  = "MEFwUpdLcl_DIR"
+End
+
+MODULE
+	Help  = "Includes MEFwUpdLcl.mak into project"
+	Path  = "$(MEFwUpdLcl_DIR)"
+	File  = "MEFwUpdLcl.mak"
+End
+
+ELINK
+	Name  = "MEFwUpdLcLPackages"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "MEFwUpdLcLDepex"
+	InvokeOrder = ReplaceParent
+End
+
+INFComponent
+	Name  = "MEFwUpdLcl"
+	File  = "../../../../Build/MEFwUpdLcl.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "DXE_DRIVER"
+End
+
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+

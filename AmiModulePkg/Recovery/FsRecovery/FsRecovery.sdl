@@ -1,0 +1,184 @@
+TOKEN
+    Name  = "FsRecovery_SUPPORT"
+    Value  = "1"
+    Help  = "Switch for Enabling FsRecovery support in the project"
+    TokenType = Boolean
+    Master = Yes
+End
+
+TOKEN
+    Name  = "NTFSRecovery_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable NTFSRecovery support in Project"
+    TokenType = Boolean
+End
+
+TOKEN
+    Name  = "NTFS_NAME_CORRECTION"
+    Value  = "0"
+    Help  = "This token is  to enable the file name correction. In NTFS, in which the characters of file names are sometimes used as flags of some kind. When this happens, the file name in the Index is altered, but the corresponding file name in the Master File Table can be used to correct the name."
+    TokenType = Boolean
+    TargetMAK = Yes
+    TargetH = Yes
+    Token = "NTFSRecovery_SUPPORT" "=" "1"
+End
+    
+TOKEN
+    Name  = "EXTRecovery_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable EXTRecovery support in Project"
+    TokenType = Boolean
+End
+
+TOKEN
+    Name  = "EXFATRecovery_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable ExFatRecovery support in Project"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "SEARCH_PATH"
+    Value = "0"
+    Help = "Enable supports for directory search for recovery file . The specified path can be ported in RECOVERY_PATH token."
+    TokenType = BOOLEAN
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "RECOVERY_PATH"
+    Value  = "Recovery/BIOS/"
+    Help  = "It contains Directory path for Recovery file. It will work only when SEARCH_PATH token is enable."
+    TokenType = Expression
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "MATCH_VOLUME_NAME"
+    Value = "0"
+    Help = "If ON, the volume name must match token VOLUME_NAME before the volume is searched."
+    TokenType = BOOLEAN
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "VOLUME_NAME"
+    Value  = "AMI"
+    Help  = "Token contains the volume name."
+    TokenType = Expression
+    TargetH = Yes
+    Token = "MATCH_VOLUME_NAME" "=" "1"
+End
+
+ELINK
+    Name  = "FsRecoveryList"
+    InvokeOrder = ReplaceParent
+End
+
+ELINK
+    Name  = "ProcessCd,"
+    Parent  = "FsRecoveryList"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "ProcessFatDevice,"
+    Parent  = "FsRecoveryList"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "ProcessNTFSDevice,"
+    Parent  = "FsRecoveryList"
+    Token = "NTFSRecovery_SUPPORT" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "ProcessExtDevice,"
+    Parent  = "FsRecoveryList"
+    Token = "EXTRecovery_SUPPORT" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "ProcessExFatDevice,"
+    Parent  = "FsRecoveryList"
+    Token = "EXFATRecovery_SUPPORT" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "OemRecoveryVolumeIntegrityList"
+    InvokeOrder = ReplaceParent
+End
+
+OUTPUTREGISTER
+    Name = "FsRecoveryElinksFile"
+    File = "FsRecoveryElinks.h"
+    Path = "Build"    
+    Template = "FsRecovery.txt"
+End
+
+INFComponent
+    Name  = "FsRecovery"
+    File  = "FsRecovery.inf"
+    Package  = "AmiModulePkg"
+    Token = "FsRecovery_SUPPORT" "=" "1"
+    ModuleTypes = "PEIM"
+End
+
+INFComponent
+    Name  = "NtfsRecovery"
+    File  = "NtfsRecovery.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "PEIM"
+    Token = "NTFSRecovery_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiModulePkg.NtfsRecovery"
+    Override  = "AmiModulePkg.FsRecovery"
+    Token = "NTFSRecovery_SUPPORT" "=" "1"
+End
+
+INFComponent
+    Name  = "ExtRecovery"
+    File  = "ExtRecovery.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "PEIM"
+    Token = "EXTRecovery_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiModulePkg.ExtRecovery"
+    Override  = "AmiModulePkg.FsRecovery"
+    Token = "EXTRecovery_SUPPORT" "=" "1"
+End
+
+INFComponent
+    Name  = "ExFatRecovery"
+    File  = "ExFatRecovery.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "PEIM"
+    Token = "EXFATRecovery_SUPPORT" "=" "1"
+End
+
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiModulePkg.ExFatRecovery"
+    Override  = "AmiModulePkg.FsRecovery"
+    Token = "EXFATRecovery_SUPPORT" "=" "1"
+End
+
+FFS_FILE
+    Name  = "FsRecovery"
+    FD_AREA  = "FV_BB"
+    INFComponent  = "AmiModulePkg.FsRecovery"
+    Rule_Override  = "Compressed"
+    Token = "FsRecovery_SUPPORT" "=" "1"
+End

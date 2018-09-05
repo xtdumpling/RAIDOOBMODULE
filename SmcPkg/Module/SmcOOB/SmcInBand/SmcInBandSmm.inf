@@ -1,0 +1,97 @@
+#****************************************************************************
+#****************************************************************************
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#  
+#  Rev. 1.05
+#    Bug fixed:
+#    Reason   : Use Oob SMM Library Protocol to replace some library functions.
+#    Auditor  : Durant Lin
+#    Date     : Feb/12/2018
+#
+#  Rev. 1.04
+#    Bug Fix:  Add an interface to call platform specific SmmRomHoleLib.
+#    Reason:
+#    Auditor:  Durant Lin
+#    Date:     Feb/07/2018
+#
+#  Rev. 1.03
+#    Bug Fix:  Re-write SmcOutBand module.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Aug/02/2016
+#
+#  Rev. 1.02
+#    Bug Fix:  Add BIOS config InBand function for sum.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Jul/18/2016
+#
+#  Rev. 1.01
+#    Bug Fix:  Fix system hangs at Sum InBand command.
+#    Reason:   Because of using Boot Service in SMM. Separate SmcRomHole into two libraries - DXE and SMM.
+#    Auditor:  Hartmann Hsieh
+#    Date:     Jul/12/2016
+#
+#  Rev. 1.00
+#    Bug Fix:  Initial revision.
+#    Reason:   
+#    Auditor:  Kasber Chen
+#    Date:     May/26/2016
+#
+#****************************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SmcInBandSmm
+  FILE_GUID                      = 08b2e586-35a8-4a3f-a9ed-e48134891601
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  VERSION_STRING                 = 1.0
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  ENTRY_POINT                    = InitSmcInBandSmm
+  DPX_SOURCE                     = SmcInBandSmm.dxs
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF EBC
+#
+
+[Sources]
+  SmcInBandSmm.c
+  SmcInBand.h
+
+[Packages]
+  MdePkg/MdePkg.dec   
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec 
+  AmiModulePkg/AmiModulePkg.dec
+  SmcPkg/SmcPkg.dec
+  SmcPkg/Module/SmcOOB/SmcOOB.dec
+  
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  SmmServicesTableLib
+  IoLib
+  AmiBufferValidationLib
+  AmiDxeLib
+  
+[Guids]
+  gSmcBoardInfoVariableGuid
+  gAmiSmbiosNvramGuid
+  gSmcOobPlatformPolicyGuid
+  
+[Ppis]
+
+[Protocols]
+  gEfiSmmBase2ProtocolGuid
+  gEfiSmmSwDispatch2ProtocolGuid
+  gEfiSmmCpuProtocolGuid
+  gSmcSmmRomHoleProtocolGuid
+  gSmcSmmOobLibraryProtocolGuid
+
+[Pcd]
+

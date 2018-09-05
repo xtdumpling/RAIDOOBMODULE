@@ -1,0 +1,28 @@
+<component>
+    name = "Serial Redirection"
+    category = eModule
+    LocalRoot = "AmiModulePkg\Terminal\"
+    RefName = "AmiModulePkg.Terminal"
+[INF]
+"TerminalSrc.inf"
+"SerialIo.inf"
+"TerminalAcpi.inf"
+"TerminalBds.inf"
+[files]
+"Terminal.chm"  
+"Terminal.sdl"  
+"Terminal.sd"   
+"Terminal.uni"  
+"InitTerminalStrings.c" 
+"TerminalPostMsg.c" 
+"TerminalDriverElink.txt"   
+[parts]
+"TerminalAmiSerial Protocol"
+"Terminal Setup Includes"
+[dependency]
+AmiCompatibilityPkg.Setup >= "SS: AptioV;$/AptioV/Source/Modules/Setup;Setup_04"
+CSM >= "SS: AptioV;$/AptioV/Source/Modules/Csm;Csm_7.78_08"
+[dependency.optional]
+AmiModulePkg.LegacySerialRedirection >= "SS: AptioV;$/AptioV/Source/Modules/Legacy Serial Redirection;LegacySreDir_08"
+AmiSerial >= "SS: AptioV;$/AptioV/Source/Modules/AmiSerial;AmiSerial_02"
+<endComponent>

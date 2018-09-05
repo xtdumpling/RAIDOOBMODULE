@@ -1,0 +1,106 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+## @file
+# Piketon Package
+
+[Defines]
+  DEC_SPECIFICATION              = 0x00010005
+  PACKAGE_NAME                   = AmiCRBPkg
+  PACKAGE_GUID                   = d3a90228-d29a-4fd4-9617-ca7e9ec0866a
+  PACKAGE_VERSION                = 0.1
+################################################################################
+#
+# Include Section - list of Include Paths that are provided by this package.
+#                   Comments are used for Keywords and Module Types.
+#
+# Supported Module Types: 
+#  SEC PEIM DXE_DRIVER DXE_RUNTIME_DRIVER DXE_SMM_DRIVER DXE_SAL_DRIVER UEFI_DRIVER
+#
+################################################################################
+[Includes]
+  Chipset/SB					#$(SB_CHIPSET_DIR)
+  Board/SB					#$(SB_BOARD_DIR)
+  Chipset/NB					#$(NB_CHIPSET_DIR)
+  Board/NB					#$(NB_BOARD_DIR)
+  Include
+  Library
+################################################################################
+#
+# Library Class Header section - list of Library Class header files that are
+#                                provided by this package.
+#
+################################################################################
+#[LibraryClasses]
+#  ##  @libraryclass  Provides a service to retrieve a pointer to the EFI Boot Services Table.
+#  #                  Only available to DXE and UEFI module types.
+#  #UefiBootServicesTableLib|Include/Library/UefiBootServicesTableLib.h
+#
+################################################################################
+#
+# Global Guid Definition section - list of Global Guid C Name Data Structures
+#                                  that are provided by this package.
+#
+################################################################################
+[Guids]
+  gEfiTscFrequencyGuid                = { 0xdba6a7e3, 0xbb57, 0x4be7, { 0x8a, 0xf8, 0xd5, 0x78, 0xdb, 0x7e, 0x56, 0x87 }} # To use TimerLib from PerformancePkg
+  gAmiCRBPkgTokenSpaceGuid            = {0xe7ccb2db, 0xc180, 0x4b42, {0x86, 0x4, 0x46, 0x89, 0xa7, 0xf6, 0x10, 0xad }} # To PcdPerfPkgAcpiIoPortBaseAddress PCD from PerformancePkg
+  gVideoInitDoneSentGuid              = { 0x89c44717, 0x7ee4, 0x487b, { 0x8f, 0x5c, 0x8e, 0x60, 0x95, 0x56, 0xa9, 0xf } }
+################################################################################
+#
+# Global Protocols Definition section - list of Global Protocols C Name Data
+#                                  Structures that are provided by this package.
+#
+################################################################################
+[Protocols]
+## Include/Protocol/AcpiModeEnable.h
+  gEfiAcpiEnDispatchProtocolGuid={0xbd88ec68,0xebe4,0x4f7b,{0x93,0x5a,0x4f,0x66,0x66,0x42,0xe7,0x5f}}
+  
+## Include/Protocol/AcpiModeEnable.h
+  gEfiAcpiDisDispatchProtocolGuid={0x9c939ba6,0x1fcc,0x46f6,{0xb4,0xe1,0x10,0x2d,0xbe,0x18,0x65,0x67}}
+
+################################################################################
+#
+# Global Ppis Definition section - list of Global Ppis C Name Data Structures
+#                                  that are provided by this package.
+#
+################################################################################
+[Ppis]
+ 
+################################################################################
+#
+# PCD Declarations section - list of all PCDs Declared by this Package
+#                            Only this package should be providing the
+#                            declaration, other packages should not.
+#
+################################################################################
+[PcdsFeatureFlag]
+
+[PcdsFixedAtBuild]
+ gAmiCRBPkgTokenSpaceGuid.PcdPerfPkgAcpiIoPortBaseAddress|0x400|UINT16|1
+
+[PcdsDynamic,PcdsDynamicEx]
+  ##                                              |        SocketPresent BitMap       |            Socket 0                   |              Socket 1                 |        Socket 2                       |          Socket 3                     |         Socket 4                      |            Socket 5                   |         Socket 6                      |          Socket 7                      | 
+  gAmiCRBPkgTokenSpaceGuid.PcdPcieSegBusTablePtr|{0x0, 0x0, 0x0, 0x0, 0x0,0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,  0x0, 0x0}|VOID*|0x00000002
+
+   
+[PcdsFixedAtBuild,PcdsPatchableInModule,PcdsDynamic,PcdsDynamicEx]
+
+[Ppis]
+
+[Protocols]
+
+[Guids]
+  #SBDxe File GUID
+  gAmiDxeSBGuid 				 = {0xb7d19491, 0xe55a, 0x470d, {0x85, 0x8, 0x85, 0xa5, 0xdf, 0xa4, 0x19, 0x74}}
+  

@@ -1,0 +1,55 @@
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = DbgPortLib
+  FILE_GUID                      = D2C1E11C-F56B-4f71-A0FC-5627CE7DB7C0
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 0.1
+  LIBRARY_CLASS                  = DebugPortLib
+
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+
+[Sources.common]
+  PeiDbgPort.c
+  PeiDbgPortCOM.c
+  
+[Packages]
+  MdePkg/MdePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AMIDebugRxPkg/SerialDebugger/SerialDebugger.dec
+ 
+
+[LibraryClasses]
+SerialPortLib
+DebugPortingLib
+  
+  [Pcd]
+  gEfiMdeModulePkgTokenSpaceGuid.PcdSerialRegisterBase
+ 
+
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************

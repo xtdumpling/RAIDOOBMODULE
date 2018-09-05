@@ -1,0 +1,60 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = BaseAcpiLib
+  FILE_GUID                      = C9DBF045-9DFC-44f6-AF11-733E5F5A879C
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = AmiAcpiLib|DXE_DRIVER DXE_RUNTIME_DRIVER UEFI_APPLICATION UEFI_DRIVER
+  
+  CONSTRUCTOR                    = AmiAcpiLibConstructor
+
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF EBC ARM
+#
+[Sources.IA32, Sources.X64]
+  AcpiBaseLib.c
+
+[Sources.ARM, Sources.AARCH64]
+  ARM/AcpiBaseLib.c
+
+[Packages]
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  MdePkg/MdePkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  
+[Packages.ARM, Packages.AARCH64]
+  ArmPkg/ArmPkg.dec
+  
+[LibraryClasses]
+  AmiDxeLib
+  UefiDriverEntryPoint
+  AmiSdlLib
+  PcdLib
+  GpioLib
+
+[LibraryClasses.IA32, LibraryClasses.X64]
+
+  AmiAcpiCpuLib
+
+[Protocols.IA32, Protocols.X64]
+
+  gEfiSioProtocolGuid		        ## CONSUMES
+
+[Guids.ARM, Guids.AARCH64]
+
+  gArmMpCoreInfoGuid		        ## CONSUMES
+  
+[Protocols]
+
+  gEfiDevicePathProtocolGuid		## CONSUMES
+  gEfiCpuArchProtocolGuid   ## CONSUMES
+
+[Pcd]
+
+  gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemTableId
+  
+[Pcd.ARM, Pcd.AARCH64]
+  gArmTokenSpaceGuid.PcdGicInterruptInterfaceBase
+  gArmTokenSpaceGuid.PcdGicDistributorBase  

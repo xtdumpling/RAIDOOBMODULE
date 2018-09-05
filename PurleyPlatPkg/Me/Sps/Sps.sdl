@@ -1,0 +1,46 @@
+TOKEN
+    Name  = "SPS_ENABLE"
+    Value  = "1"
+    Help  = "Switch for Enabling Sps support in the project"
+    TokenType = Boolean
+    TargetMAK = Yes
+    Master = Yes
+End
+
+TOKEN
+	Name  = "SpsAcpiSsdt_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable SpsAcpiSsdt support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "SpsAcpiHooks_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable SpsAcpiHooks support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "SpsAcpiSsdt"
+	File  = "Acpi\SpsAcpiSsdt.inf"
+	Package  = "PurleyPlatPkg"
+    ModuleTypes  = "USER_DEFINED"
+	Token = "SpsAcpiSsdt_SUPPORT" "=" "1"
+End
+FFS_FILE
+    Name  = "SpsAcpiSsdt"
+    FD_AREA  = "FV_MAIN"
+    INFComponent  = "PurleyPlatPkg.SpsAcpiSsdt"
+    Rule_Override  = "ACPITABLE"
+    Token = "SpsAcpiSsdt_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "SpsAcpiHooks"
+	File  = "Acpi\SpsAcpiHooks.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "SpsAcpiHooks_SUPPORT" "=" "1"
+End
+

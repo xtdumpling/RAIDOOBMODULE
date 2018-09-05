@@ -1,0 +1,409 @@
+//***************************************************************************
+//**       (C)Copyright 1993-2017 Supermicro Computer, Inc.                **
+//***************************************************************************
+//
+//  File History
+//
+//  Rev. 1.00
+//    Bug Fix:  Draft template v0.1.
+//    Reason:   
+//    Auditor:  Jimmy Chiu
+//    Date:     Jan/17/2017
+//
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**        5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093         **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
+
+//<AMI_FHDR_START>
+//----------------------------------------------------------------------------
+//
+// Name:        SecureBootMod.sd
+//
+// Description:    
+//
+//----------------------------------------------------------------------------
+//<AMI_FHDR_END>
+
+#ifdef SETUP_DATA_DEFINITION
+/***********************************************************/
+/* Put NVRAM data definitions here.
+/* For example:    UINT8 Data1;
+/* These definitions will be converted by the build process
+/* to a definitions of SETUP_DATA fields.
+/***********************************************************/
+#endif
+
+#ifdef SECURITY_FORM_SET
+
+  #ifdef FORM_SET_TYPEDEF
+    #include "SecureBoot.h"
+ #endif
+
+  #ifdef FORM_SET_VARSTORE
+    varstore SECURE_BOOT_SETUP_VAR,
+        key   = AUTO_ID(SECURE_BOOT_SETUP_ID),
+        name  = SecureBootSetup,
+        guid  = SECURITY_FORM_SET_GUID;
+    varstore SECURE_VAR_INSTALL_VAR,
+        key   = AUTO_ID(SECURE_VAR_INSTALL_ID),
+        name  = SecureVarPresent,
+        guid  = SECURITY_FORM_SET_GUID;
+    varstore SECURE_BOOT_VENDOR_KEY_VAR,
+        key   = AUTO_ID(SECURE_VAR_VENDOR_KEY_ID),
+        name  = VendorKeys,
+        guid  = EFI_GLOBAL_VARIABLE_GUID;
+    varstore SETUP_MODE_VAR,
+        key   = AUTO_ID(SETUP_MODE_ID),
+        name  = SetupMode,
+        guid  = EFI_GLOBAL_VARIABLE_GUID;
+    varstore SECURE_BOOT_VAR,
+        key   = AUTO_ID(SECURE_BOOT_ID),
+        name  = SecureBoot,
+        guid  = EFI_GLOBAL_VARIABLE_GUID;
+    varstore AUDIT_MODE_VAR,
+        key   = AUTO_ID(AUDIT_MODE_ID),
+        name  = AuditMode,
+        guid  = EFI_GLOBAL_VARIABLE_GUID;
+    varstore DEPLOYED_MODE_VAR,
+        key   = AUTO_ID(DEPLOYED_MODE_ID),
+        name  = DeployedMode,
+        guid  = EFI_GLOBAL_VARIABLE_GUID;
+  #endif
+
+  #ifdef FORM_SET_ITEM
+  #endif
+
+  #ifdef FORM_SET_GOTO
+
+    SEPARATOR
+    //
+    // Define goto commands for the forms defined in this file
+    //
+    //
+    // Define goto commands for the forms defined in this file
+    //
+    goto SECURE_BOOT_SUBMENU_FORM_ID,
+    prompt  = STRING_TOKEN(SECURE_BOOT_MENU_FORM_TITLE),
+    help    = STRING_TOKEN(SECURE_BOOT_MENU_FORM_HELP),
+    flags   = INTERACTIVE, key = AUTO_ID(SECURE_BOOT_MENU_REFRESH);
+
+  #endif
+
+  #ifdef FORM_SET_FORM
+    //
+    // Define forms
+    //
+    form formid = AUTO_ID(SECURE_BOOT_SUBMENU_FORM_ID),
+    title     = STRING_TOKEN(SECURE_BOOT_MENU_FORM_TITLE);
+
+        SEPARATOR
+        suppressif NOT ideqval DEPLOYED_MODE_VAR.Value == 1;
+            text 
+                help   = STRING_TOKEN(STR_EMPTY),
+                text   = STRING_TOKEN(STR_PLATFORM_MODE),
+                text   = STRING_TOKEN(STR_DEPLOYED),
+                flags  = 0,
+                key    = 0;
+        endif;
+        suppressif NOT ideqval AUDIT_MODE_VAR.Value == 1;
+            text 
+                help   = STRING_TOKEN(STR_EMPTY),
+                text   = STRING_TOKEN(STR_PLATFORM_MODE),
+                text   = STRING_TOKEN(STR_AUDIT),
+                flags  = 0,
+                key    = 0;
+        endif;
+        suppressif ideqval DEPLOYED_MODE_VAR.Value == 1 OR ideqval AUDIT_MODE_VAR.Value == 1 OR ideqval SETUP_MODE_VAR.Value == 0;
+            text 
+                help   = STRING_TOKEN(STR_EMPTY),
+                text   = STRING_TOKEN(STR_PLATFORM_MODE),
+                text   = STRING_TOKEN(STR_SETUP),
+                flags  = 0,
+                key    = 0;
+        endif;
+        suppressif ideqval DEPLOYED_MODE_VAR.Value == 1 OR ideqval AUDIT_MODE_VAR.Value == 1 OR ideqval SETUP_MODE_VAR.Value == 1;
+            text 
+                help   = STRING_TOKEN(STR_EMPTY),
+                text   = STRING_TOKEN(STR_PLATFORM_MODE),
+                text   = STRING_TOKEN(STR_USER),
+                flags  = 0,
+                key    = 0;
+        endif;        
+        suppressif NOT ideqval SECURE_BOOT_VAR.Value == 0;
+            text 
+                help   = STRING_TOKEN(STR_EMPTY),
+                text   = STRING_TOKEN(STR_PLATFORM_SECURE_MODE),
+                text   = STRING_TOKEN(STR_INACTIVE),
+                flags  = 0,
+                key    = 0;
+        endif;
+        suppressif NOT ideqval SECURE_BOOT_VAR.Value == 1;
+            text 
+                help   = STRING_TOKEN(STR_EMPTY),
+                text   = STRING_TOKEN(STR_PLATFORM_SECURE_MODE),
+                text   = STRING_TOKEN(STR_ACTIVE),
+                flags  = 0,
+                key    = 0;
+        endif;
+        suppressif NOT ideqval SECURE_BOOT_VENDOR_KEY_VAR.Value == 1;
+            text 
+                help   = STRING_TOKEN(STR_EMPTY),
+                text   = STRING_TOKEN(STR_VENDOR_KEYS_MODE),
+                text   = STRING_TOKEN(STR_ACTIVE),
+                flags  = 0,
+                key    = 0;
+        endif;
+        suppressif NOT ideqval SECURE_BOOT_VENDOR_KEY_VAR.Value == 0;
+            text 
+                help   = STRING_TOKEN(STR_EMPTY),
+                text   = STRING_TOKEN(STR_VENDOR_KEYS_MODE),
+                text   = STRING_TOKEN(STR_INACTIVE),
+                flags  = 0,
+                key    = 0;
+        endif;
+        //
+        // Define controls to be added to the main page of the formset
+        //
+        SEPARATOR
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+            oneof varid  = SECURE_BOOT_SETUP_VAR.SecureBootSupport,
+                questionid = AUTO_ID(SECURE_BOOT_SUPPORT_CHANGE_KEY),
+                prompt = STRING_TOKEN(STR_SECURE_BOOT_ENABLE),
+                help = STRING_TOKEN(STR_SECURE_BOOT_HELP),
+                default = DEFAULT_SECURE_BOOT_ENABLE,
+                option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED | INTERACTIVE;
+                option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = MANUFACTURING | RESET_REQUIRED | INTERACTIVE;
+            endoneof;
+
+#if defined(CUSTOMIZED_SECURE_BOOT_DEPLOYMENT) && CUSTOMIZED_SECURE_BOOT_DEPLOYMENT == 1
+// Display Audit Callback
+            suppressif ideqval AUDIT_MODE_VAR.Value == 1 OR ideqval DEPLOYED_MODE_VAR.Value == 1;
+                goto SECURE_BOOT_SUBMENU_FORM_ID,
+                prompt  = STRING_TOKEN(STR_FORCE_AUDIT_MODE),
+                help    = STRING_TOKEN(STR_FORCE_AUDIT_MODE_HELP),
+                flags   = INTERACTIVE | RESET_REQUIRED, key = AUTO_ID(FORCE_AUDIT_KEY);
+            endif;
+// Display Deployed Callback
+            suppressif ideqval DEPLOYED_MODE_VAR.Value == 1 OR ideqval SETUP_MODE_VAR.Value == 1;
+                goto SECURE_BOOT_SUBMENU_FORM_ID,
+                prompt  = STRING_TOKEN(STR_FORCE_DEPLOYED_MODE),
+                help    = STRING_TOKEN(STR_FORCE_DEPLOYED_MODE_HELP),
+                flags   = INTERACTIVE | RESET_REQUIRED, key = AUTO_ID(FORCE_DEPLOYED_KEY);
+            endif;
+            SEPARATOR
+#endif
+            oneof varid  = SECURE_BOOT_SETUP_VAR.SecureBootMode,
+                questionid = AUTO_ID(SECURE_BOOT_MODE_CHANGE_KEY),
+                prompt = STRING_TOKEN(STR_SECURE_BOOT_MODE),
+                help = STRING_TOKEN(STR_SECURE_BOOT_MODE_HELP),
+                default = DEFAULT_SECURE_BOOT_MODE,
+                option text = STRING_TOKEN(SECURE_BOOT_STANDARD), value = 0, flags = MANUFACTURING | RESET_REQUIRED | INTERACTIVE;
+                option text = STRING_TOKEN(SECURE_BOOT_CUSTOM), value = 1, flags = RESET_REQUIRED | INTERACTIVE;
+            endoneof;
+        endif;
+	
+#if SMCPKG_SUPPORT && SMC_SETUP_STYLE
+	oneof varid     = SETUP_DATA.CsmSupport,
+	    prompt      = STRING_TOKEN(STR_CSM_SUPPORT_PROMPT),
+	    help        = STRING_TOKEN(STR_CSM_SUPPORT_HELP),
+	    default     = DEFAULT_CSM_LAUNCH_POLICY,
+	    option text = STRING_TOKEN(STR_DISABLED),	value = 0, flags = INTERACTIVE | RESET_REQUIRED;
+	    option text = STRING_TOKEN(STR_ENABLED),	value = 1, flags = MANUFACTURING | INTERACTIVE | RESET_REQUIRED;
+	endoneof;
+#endif
+
+        //
+        // Define goto commands for the forms defined in this file
+        //
+         grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER OR ideqval SECURE_BOOT_SETUP_VAR.SecureBootMode == 0;
+            goto SECURE_KEY_MANAGEMENT_FORM_ID,
+            prompt  = STRING_TOKEN(STR_KEY_MANAGEMENT_TITLE),
+            help    = STRING_TOKEN(STR_KEY_MANAGEMENT_HELP),
+            flags   = INTERACTIVE, key = AUTO_ID(KEY_MANAGEMENT_MENU_REFRESH);
+#if (defined(ENABLE_IMAGE_EXEC_POLICY_OVERRIDE) && ENABLE_IMAGE_EXEC_POLICY_OVERRIDE == 1)
+            goto IMAGE_EXEC_POLICY_FORM_ID,
+            prompt  = STRING_TOKEN(IMAGE_EXEC_POLICY_FORM_TITLE),
+            help    = STRING_TOKEN(IMAGE_EXEC_POLICY_FORM_HELP);
+#endif
+         endif;
+    endform;
+
+    form formid = AUTO_ID(SECURE_KEY_MANAGEMENT_FORM_ID),
+    title     = STRING_TOKEN(STR_KEY_MANAGEMENT_TITLE);
+
+        oneof varid  = SECURE_BOOT_SETUP_VAR.DefaultKeyProvision,
+            questionid = AUTO_ID(KEY_PROVISION_CHANGE_KEY),
+            prompt = STRING_TOKEN(STR_DEFAULT_KEY_PROVISION_MODE),
+            help = STRING_TOKEN(STR_KEY_PROVISION_MODE_HELP),
+            default = DEFAULT_PROVISION_SECURE_VARS,
+            option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED | INTERACTIVE;
+            option text = STRING_TOKEN(STR_ENABLED), value = 1,  flags = MANUFACTURING | RESET_REQUIRED | INTERACTIVE;
+        endoneof;
+        //
+        // Define goto commands for the forms defined in this file
+        //
+        SEPARATOR
+        suppressif ideqval SECURE_VAR_INSTALL_VAR.PK == 0 OR ideqval SECURE_BOOT_SETUP_VAR.DefaultKeyProvision == 1;
+            goto SECURE_KEY_MANAGEMENT_FORM_ID,
+            prompt  = STRING_TOKEN(STR_FORCE_SETUP_MODE),
+            help    = STRING_TOKEN(STR_FORCE_SETUP_MODE_HELP),
+            flags   = INTERACTIVE | RESET_REQUIRED, key = AUTO_ID(FORCE_SETUP_KEY);
+        endif;
+        suppressif NOT ideqval SECURE_VAR_INSTALL_VAR.PK == 0 AND ideqval SECURE_BOOT_SETUP_VAR.DefaultKeyProvision == 0;
+            goto SECURE_KEY_MANAGEMENT_FORM_ID,
+            prompt  = STRING_TOKEN(STR_FORCE_DEFAULT_MODE),
+            help    = STRING_TOKEN(STR_FORCE_DEFAULT_MODE_HELP),
+            flags   = INTERACTIVE | RESET_REQUIRED, key = AUTO_ID(FORCE_DEFAULT_KEY);
+        endif;
+            goto SECURE_KEY_MANAGEMENT_FORM_ID,
+            prompt  = STRING_TOKEN(STR_ENROLL_EFI_IMAGE),
+            help    = STRING_TOKEN(STR_ENROLL_EFI_IMAGE_HELP),
+            flags   = INTERACTIVE, key = AUTO_ID(ENROLL_EFI_IMAGE);
+        grayoutif ideqval SECURE_VAR_INSTALL_VAR.PK == 0 AND ideqval SECURE_VAR_INSTALL_VAR.KEK == 0 AND ideqval SECURE_VAR_INSTALL_VAR.DB == 0 AND ideqval SECURE_VAR_INSTALL_VAR.DBX == 0 AND ideqval SECURE_VAR_INSTALL_VAR.DBT == 0 AND ideqval SECURE_VAR_INSTALL_VAR.DBR == 0;
+            goto SECURE_KEY_MANAGEMENT_FORM_ID,
+            prompt  = STRING_TOKEN(STR_GET_ALL_VARS),
+            help    = STRING_TOKEN(STR_GET_KEYS_HELP),
+            flags   = INTERACTIVE, key = AUTO_ID(GET_PK_KEY);
+        endif;
+
+        SEPARATOR   
+        SUBTITLE(STRING_TOKEN(STR_KEY_TITLE))
+       
+        goto SECURE_KEY_MANAGEMENT_FORM_ID,
+        prompt  = STRING_TOKEN(STR_PK_TITLE),
+        help    = STRING_TOKEN(STR_KEY_UPDATE_HELP),
+        flags   = INTERACTIVE | RESET_REQUIRED, key = AUTO_ID(MANAGE_PK_KEY);
+
+        goto SECURE_KEY_MANAGEMENT_FORM_ID,
+        prompt  = STRING_TOKEN(STR_KEK_TITLE),
+        help    = STRING_TOKEN(STR_KEY_UPDATE_HELP),
+        flags   = INTERACTIVE, key = AUTO_ID(MANAGE_KEK_KEY);
+
+        goto SECURE_KEY_MANAGEMENT_FORM_ID,
+        prompt  = STRING_TOKEN(STR_DB_TITLE),
+        help    = STRING_TOKEN(STR_KEY_UPDATE_HELP),
+        flags   = INTERACTIVE, key = AUTO_ID(MANAGE_DB_KEY);
+
+        goto SECURE_KEY_MANAGEMENT_FORM_ID,
+        prompt  = STRING_TOKEN(STR_DBX_TITLE),
+        help    = STRING_TOKEN(STR_KEY_UPDATE_HELP),
+        flags   = INTERACTIVE, key = AUTO_ID(MANAGE_DBX_KEY);
+
+        goto SECURE_KEY_MANAGEMENT_FORM_ID,
+        prompt  = STRING_TOKEN(STR_DBT_TITLE),
+        help    = STRING_TOKEN(STR_KEY_UPDATE_HELP),
+        flags   = INTERACTIVE, key = AUTO_ID(MANAGE_DBT_KEY);
+
+        goto SECURE_KEY_MANAGEMENT_FORM_ID,
+        prompt  = STRING_TOKEN(STR_DBR_TITLE),
+        help    = STRING_TOKEN(STR_KEY_UPDATE_HELP),
+        flags   = INTERACTIVE, key = AUTO_ID(MANAGE_DBR_KEY);
+
+    endform;
+    
+#if (defined(ENABLE_IMAGE_EXEC_POLICY_OVERRIDE) && ENABLE_IMAGE_EXEC_POLICY_OVERRIDE == 1)
+    form formid = AUTO_ID(IMAGE_EXEC_POLICY_FORM_ID),
+    title     = STRING_TOKEN(IMAGE_EXEC_POLICY_FORM_TITLE);
+
+        text 
+                help   = STRING_TOKEN(STR_EMPTY),
+                text   = STRING_TOKEN(STR_LOAD_FROM_FV),
+                text   = STRING_TOKEN(ALWAYS_ENABLED),
+                flags  = 0,
+                key    = 0;
+
+        oneof varid  = SECURE_BOOT_SETUP_VAR.Load_from_OROM,
+            prompt = STRING_TOKEN(STR_LOAD_FROM_OROM),
+            help = STRING_TOKEN(STR_LOAD_FROM_HELP),
+            default = LOAD_FROM_OROM,
+#if (LOAD_FROM_OROM == 0 )
+            option text = STRING_TOKEN(ALWAYS_ENABLED), value = 0,  flags = RESET_REQUIRED;
+#endif
+#if (LOAD_FROM_OROM < 2 )
+            option text = STRING_TOKEN(ALWAYS_DISABLED), value = 1, flags = RESET_REQUIRED;
+#endif
+#if (LOAD_FROM_OROM < 3 )
+            option text = STRING_TOKEN(ALLOW_EXECUTE_ON_SECURITY_VIOLATION), value = 2, flags = RESET_REQUIRED;
+#endif
+#if (LOAD_FROM_OROM < 4 )
+            option text = STRING_TOKEN(DEFER_EXECUTE_ON_SECURITY_VIOLATION), value = 3, flags = RESET_REQUIRED;
+#endif
+#if (LOAD_FROM_OROM < 5 )
+            option text = STRING_TOKEN(DENY_EXECUTE_ON_SECURITY_VIOLATION), value = 4, flags = MANUFACTURING | RESET_REQUIRED;
+#endif
+            option text = STRING_TOKEN(QUERY_USER_ON_SECURITY_VIOLATION), value = 5, flags = RESET_REQUIRED;
+        endoneof;
+
+        oneof varid  = SECURE_BOOT_SETUP_VAR.Load_from_REMOVABLE_MEDIA,
+            prompt = STRING_TOKEN(STR_LOAD_FROM_REMOVABLE_MEDIA),
+            help = STRING_TOKEN(STR_LOAD_FROM_HELP),
+            default = LOAD_FROM_REMOVABLE_MEDIA,
+#if (LOAD_FROM_REMOVABLE_MEDIA == 0 )
+            option text = STRING_TOKEN(ALWAYS_ENABLED), value = 0,  flags = RESET_REQUIRED;
+#endif
+#if (LOAD_FROM_REMOVABLE_MEDIA < 2 )
+            option text = STRING_TOKEN(ALWAYS_DISABLED), value = 1, flags = RESET_REQUIRED;
+#endif
+#if (LOAD_FROM_REMOVABLE_MEDIA < 3 )
+            option text = STRING_TOKEN(ALLOW_EXECUTE_ON_SECURITY_VIOLATION), value = 2, flags = RESET_REQUIRED;
+#endif
+#if (LOAD_FROM_REMOVABLE_MEDIA < 4 )
+            option text = STRING_TOKEN(DEFER_EXECUTE_ON_SECURITY_VIOLATION), value = 3, flags = RESET_REQUIRED;
+#endif
+#if (LOAD_FROM_REMOVABLE_MEDIA < 5 )
+            option text = STRING_TOKEN(DENY_EXECUTE_ON_SECURITY_VIOLATION), value = 4, flags = MANUFACTURING | RESET_REQUIRED;
+#endif
+            option text = STRING_TOKEN(QUERY_USER_ON_SECURITY_VIOLATION), value = 5, flags = RESET_REQUIRED;
+        endoneof;
+
+        oneof varid  = SECURE_BOOT_SETUP_VAR.Load_from_FIXED_MEDIA,
+            prompt = STRING_TOKEN(STR_LOAD_FROM_FIXED_MEDIA),
+            help = STRING_TOKEN(STR_LOAD_FROM_HELP),
+            default = LOAD_FROM_FIXED_MEDIA,
+#if (LOAD_FROM_FIXED_MEDIA == 0 )
+            option text = STRING_TOKEN(ALWAYS_ENABLED), value = 0,  flags = RESET_REQUIRED;
+#endif
+#if (LOAD_FROM_FIXED_MEDIA < 2 )
+            option text = STRING_TOKEN(ALWAYS_DISABLED), value = 1, flags = RESET_REQUIRED;
+#endif
+#if (LOAD_FROM_FIXED_MEDIA < 3 )
+            option text = STRING_TOKEN(ALLOW_EXECUTE_ON_SECURITY_VIOLATION), value = 2, flags = RESET_REQUIRED;
+#endif
+#if (LOAD_FROM_FIXED_MEDIA < 4 )
+            option text = STRING_TOKEN(DEFER_EXECUTE_ON_SECURITY_VIOLATION), value = 3, flags = RESET_REQUIRED;
+#endif
+#if (LOAD_FROM_FIXED_MEDIA < 5 )
+            option text = STRING_TOKEN(DENY_EXECUTE_ON_SECURITY_VIOLATION), value = 4, flags = MANUFACTURING | RESET_REQUIRED;
+#endif
+            option text = STRING_TOKEN(QUERY_USER_ON_SECURITY_VIOLATION), value = 5, flags = RESET_REQUIRED;
+        endoneof;
+
+    endform;
+#endif
+  #endif
+
+#endif // SECURITY_FORM_SET
+
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**        5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093         **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************

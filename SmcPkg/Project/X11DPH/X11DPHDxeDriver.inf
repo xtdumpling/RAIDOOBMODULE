@@ -1,0 +1,107 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.01
+#       Bug fixed:   pcd add for option rom ctl
+#       Reason:      option rom remove.
+#       Auditor:     Max Mu	
+#       Date:        Mar/17/2016
+#
+#  Rev. 1.00
+#       Bug fixed:   Initialize revision
+#       Reason:      Clone from Sample folder.
+#       Auditor:     Max Mu	
+#       Date:        Mar/02/2016
+#
+#****************************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = X11DPHDxeDriver
+  FILE_GUID                      = 7a9a372d-3487-402e-b489-5fc551a43bd1
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = X11DPHDxeDriverInit
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+#  
+
+[Sources]  
+  X11DPHDxeDriver.c
+  X11DPHDxeDriver.h	
+  HideSetupItem.c
+  HideSetupItem.h
+
+[Packages]
+  MdePkg/MdePkg.dec   
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec 
+  AmiModulePkg/AmiModulePkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  SmcPkg/SmcPkg.dec
+  
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  AmiDxeLib
+  SmcCspLib
+  SmcLib
+
+[Guids]
+  gProjectOwnProtocolGuid
+
+[Pcd]  
+  gSmcPkgTokenSpaceGuid.PcdSmcOBLan1BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBLan2BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBLan3BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBLan4BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcMultiFuncLanChip1
+  gSmcPkgTokenSpaceGuid.PcdSmcMultiFuncLanChip2
+  gSmcPkgTokenSpaceGuid.PcdSmcOBSASBDF
+  gSmcPkgTokenSpaceGuid.PcdSmcRiserID
+  gSmcPkgTokenSpaceGuid.PcdSmcSXB1Index
+  gSmcPkgTokenSpaceGuid.PcdSmcSXB2Index
+  gSmcPkgTokenSpaceGuid.PcdSmcSXB3Index
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe1BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe2BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe3BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe4BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe5BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe6BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe7BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe8BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe9BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe10BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe11BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe12BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT1BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT2BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT3BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT4BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT5BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT6BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT7BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT8BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT9BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT10BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT11BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcAOCLocation
+  
+[Protocols]  
+  gSetupModifyProtocolGuid
+  gAmiSmbiosProtocolGuid
+  
+[Depex]
+  TRUE
+  
+#**********************************************************************

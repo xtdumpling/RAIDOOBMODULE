@@ -1,0 +1,108 @@
+#/** @file
+#  Component description file for the PCI Express Error Handler.
+#
+#  Copyright (c) 2009 - 2016, Intel Corporation.
+#  All rights reserved. This software and associated documentation
+#  (if any) is furnished under a license and may only be used or
+#  copied in accordance with the terms of the license.  Except as
+#  permitted by such license, no part of this software or
+#  documentation may be reproduced, stored in a retrieval system, or
+#  transmitted in any form or by any means without the express
+#  written consent of Intel Corporation.
+#
+#**/
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = PcieErrorHandler
+  FILE_GUID                      = A630B937-3AB3-4263-85B1-A63E98F29949
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  VERSION_STRING                 = 1.0
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  ENTRY_POINT                    = InitializePcieErrHandler
+
+[Sources]
+  PcieErrorHandler.c
+  PcieErrorHandler.h
+  IIoErrorHandler.c
+  IIoErrorHandler.h
+  SbErrorHandler.c
+
+
+[Packages]
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+  IA32FamilyCpuPkg/IA32FamilyCpuPkg.dec
+# APTIOV_SERVER_OVERRIDE_RC_START
+  #BpCommonPkg/BpCommonPkg.dec
+# APTIOV_SERVER_OVERRIDE_RC_END
+  UefiCpuPkg/UefiCpuPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpPlatPkg/CpPlatPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  DebugLib
+  BaseMemoryLib
+  IoLib
+  BaseLib
+  PciLib
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  SmmServicesTableLib
+  PciExpressLib
+  EmcaLib
+  SynchronizationLib
+  LocalApicLib
+  PcdLib
+  ResetSystemLib
+  PrintLib
+  SerialPortLib
+  GpioLib
+  GpioPrivateLib
+  ChipsetErrReporting
+  MmPciLib
+# APTIOV_SERVER_OVERRIDE_RC_START
+  OemRasLib
+# APTIOV_SERVER_OVERRIDE_RC_END
+
+[Protocols]
+  gEfiPlatformRasPolicyProtocolGuid
+  gEfiPlatformErrorHandlingProtocolGuid
+  gEfiSmmBase2ProtocolGuid
+  gEfiErrorHandlingProtocolGuid
+  gEfiMemRasProtocolGuid
+  gEfiSmmReadyToLockProtocolGuid
+  gEfiPciRootBridgeIoProtocolGuid
+  gEfiSmmGpiDispatch2ProtocolGuid
+  gEfiIioSystemProtocolGuid
+
+[Guids]
+gErrRecordPcieErrGuid
+gErrRecordNotifyPcieGuid
+[FixedPcd]
+  gEfiCpuTokenSpaceGuid.PcdCpuMaxLogicalProcessorNumber
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[Depex]
+  gEfiSmmBase2ProtocolGuid AND
+  gEfiErrorHandlingProtocolGuid AND
+  gEfiPlatformRasPolicyProtocolGuid AND
+  gEfiPlatformErrorHandlingProtocolGuid AND
+  gEfiMemRasProtocolGuid AND
+  gEfiSmmGpiDispatch2ProtocolGuid
+
+[BuildOptions]
+  MSFT:*_*_*_CC_FLAGS     = /wd4142 /wd4244 /Gs999999 /GL-
+  GCC:*_*_*_CC_FLAGS     = 
+  # Append new linker alignment option (= is Append, == is Replace)
+  MSFT:*_*_*_DLINK_FLAGS = /ALIGN:128
+  GCC:*_*_*_DLINK_FLAGS = -z common-page-size=0x80
+
+[PCD]

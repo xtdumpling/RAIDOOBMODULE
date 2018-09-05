@@ -1,0 +1,172 @@
+TOKEN
+    Name  = "iAMT_Setup"
+    Value  = "1"
+    Help  = "Main switch to enable iAMT Setup support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    Master = Yes
+End
+
+TOKEN
+        Name  = "CIRA_SUPPORT"
+        Value  = "1"
+        Help  = "Enable Disable CIRA"
+        TokenType = Boolean
+        TargetH = Yes
+        Token = "iAMT_Setup" "=" "1"
+End
+
+# KeyShiftState is set in MebxPrompt.c
+TOKEN
+        Name = "MEBX_SCANCODE"
+        Value = "0"
+        Help = "The scancode of MEBX in Project"
+        TokenType = Integer
+        TargetH = Yes
+End
+
+TOKEN
+        Name = "MEBX_UNICODE"
+        Value = "0x50"
+        Help = "The unicode of MEBX in Project"
+        TokenType = integer
+        TargetH = Yes
+End
+
+TOKEN
+        Name = "MEBX_KeyToggleState"
+        Value = "0"
+        Help = "The KeyToggleState of MEBX in Project"
+        TokenType = integer
+        TargetH = Yes
+End
+
+TOKEN
+        Name = "CIRA_SCANCODE"
+        Value = "EFI_SCAN_F1"
+        Help = "The scancode value of CIRA in Project"
+        TokenType = Expression
+        TargetH = Yes
+        Token = "CIRA_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name = "CIRA_UNICODE"
+        Value = "0"
+        Help = "The unicode value of CIRA in Project"
+        TokenType = integer
+        TargetH = Yes
+        Token = "CIRA_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name = "CIRA_KeyToggleState"
+        Value = "0"
+        Help = "The KeyToggleState of CIRA in Project"
+        TokenType = integer
+        TargetH = Yes
+        Token = "CIRA_SUPPORT" "=" "1"
+End
+
+
+PATH
+    Name  = "AMT_SETUP_DIR"
+End
+
+ELINK
+    Name  = "iAMTProcessProceedToBootHook,"
+    Parent  = "ProcessProceedToBoot,"
+    Help  = "iAMT hook into TSE for TSE specific functions "
+    InvokeOrder = BeforeParent
+End
+
+ELINK
+	Name  = "iAMTProcessEnterSetupHook,"
+	Parent  = "PostManagerHandShakeHook,"
+	Help  = "iAMT hook into TSE for TSE specific functions "
+	InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(AMT_SETUP_DIR)\AmtTseFunc.c"
+    Parent  = "TSE_SOURCE_FILES"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "iAMTProcessConInAvailabilityHook,"
+    Parent  = "ProcessConInAvailability,"
+    Help  = "iAMT hook into TSE for TSE specific functions "
+    InvokeOrder = AfterParent
+End
+
+ELINK
+        Name  = "$(AMT_SETUP_DIR)\MebxPrompt.c"
+        Parent  = "TSE_SOURCE_FILES"
+        InvokeOrder = AfterParent
+End
+
+ELINK
+        Name  = "MebxPromptConInAvailabilityHook,"
+        Parent  = "ProcessConInAvailabilityHook,"
+        InvokeOrder = AfterParent
+End
+
+ELINK
+        Name  = "RemoteAssistConInAvailabilityHook,"
+        Parent  = "ProcessConInAvailabilityHook,"
+        InvokeOrder = AfterParent
+        Token = "CIRA_SUPPORT" "=" "1"
+End
+
+ELINK
+        Name  = "MEProcessEnterSetup,"
+        Parent  = "ProcessEnterSetup,"
+        InvokeOrder = AfterParent
+End
+
+
+INFComponent
+    Name  = "AMTbypass"
+    File  = "AMTbypass.inf"
+    Package  = "SkylakePlatSamplePkg"
+    EDK_Module = Yes
+    ModuleTypes="DXE_DRIVER"
+End
+
+ELINK
+    Name  = "PurleySktPkg\Me\MePkg.dec"
+    Parent  = "ADDITIONAL_AMITSE_Packages"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "gEfiAmtWrapperProtocolGuid"
+    Parent  = "ADDITIONAL_AMITSE_Protocols"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "gAlertStandardFormatProtocolGuid"
+    Parent  = "ADDITIONAL_AMITSE_Protocols"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "gDxeAmtPolicyGuid"
+    Parent  = "ADDITIONAL_AMITSE_Protocols"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "gHeciProtocolGuid"
+    Parent  = "ADDITIONAL_AMITSE_Protocols"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "gMeBiosExtensionSetupGuid"
+    Parent  = "ADDITIONAL_AMITSE_Guids"
+    InvokeOrder = AfterParent    
+End

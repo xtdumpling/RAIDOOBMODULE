@@ -1,0 +1,39 @@
+TOKEN
+    Name  = "SERVWORK_506FX"
+    Value = "0"
+    Help  = "Intel(R) Denverton"
+    TokenType = Boolean
+    Master = Yes
+End
+
+TOKEN
+    Name  = "SERVWORK_M01506F0"
+    Value  = "1"
+    Help  = "Intel(R) Denverton Processor A-0 Stepping"
+    TokenType = Boolean
+    Token = "NON_PRODUCTION_MICROCODE" "=" "1"
+End
+
+TOKEN
+    Name  = "SERVWORK_M01506F1"
+    Value  = "1"
+    Help  = "Intel(R) Denverton Processor B Stepping"
+    TokenType = Boolean
+    Token = "NON_PRODUCTION_MICROCODE" "=" "1"
+End
+
+ELINK
+    Name  = "$(MICROCODE_SERVWORK_DIR)/M01506F0_00000010.mcb"
+    Parent  = "MICROCODE_FILES"
+    Help  = "Intel(R) Denverton Processor A-0 Stepping"
+    Token = "SERVWORK_M01506F0" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(MICROCODE_SERVWORK_DIR)/M01506F1_00000018.mcb"
+    Parent  = "MICROCODE_FILES"
+    Help  = "Intel(R) Denverton Processor B Stepping"
+    Token = "SERVWORK_M01506F1" "=" "1"
+    InvokeOrder = AfterParent
+End

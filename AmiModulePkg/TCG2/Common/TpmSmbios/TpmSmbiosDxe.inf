@@ -1,0 +1,66 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2017, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+## @file TpmSmbiosDxe.inf
+#   TpmSmbios Dxe Driver 
+##
+
+[Defines]
+  INF_VERSION = 0x00010015
+  BASE_NAME = TpmSmbiosDxe
+  FILE_GUID = 077A3100-1667-45FA-B98C-37651B5073EE
+  VERSION_STRING = 1.0
+  MODULE_TYPE = DXE_DRIVER
+  ENTRY_POINT = TpmSmbiosDxeEntry
+  
+[Sources]
+  TpmSmbios.h
+  TpmSmbiosDxe.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  AmiTcgPkg/AmiTcgPkg.dec
+
+[Pcd]
+  gAmiTcgPkgTokenSpaceGuid.PcdTpmSmbiosCharacteristicSupport
+  gAmiTcgPkgTokenSpaceGuid.PcdTpmSmbiosConfigFirmware
+  gAmiTcgPkgTokenSpaceGuid.PcdTpmSmbiosConfigSoftware
+  gAmiTcgPkgTokenSpaceGuid.PcdTpmSmbiosConfigOem
+  gAmiTcgPkgTokenSpaceGuid.PcdTpmSmbiosOemDefined
+  gEfiMdePkgTokenSpaceGuid.PcdDebugPrintErrorLevel
+    
+[LibraryClasses]
+  UefiDriverEntryPoint
+  ReportStatusCodeLib
+  PcdLib
+  BaseTisLib20
+  BaseAmiTcmlib
+  
+[Protocols]
+  gEfiSmbiosProtocolGuid      		## CONSUMES
+  gEfiTrEEProtocolGuid        		## CONSUMES
+  gEfiTcgProtocolGuid        		## CONSUMES
+  gAmiTcg2InfoProtocolGuid          ## CONSUMES
+  gTcgPlatformSetupPolicyGuid       ## CONSUMES
+  
+[Guids]
+  gEfiEndOfDxeEventGroupGuid 		## CONSUMES
+  gTpm20HobGuid				## CONSUMES
+  
+[Depex]
+  TRUE
+
+

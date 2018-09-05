@@ -1,0 +1,84 @@
+##****************************************************************************
+##****************************************************************************
+##**                                                                        **
+##**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+##**                                                                        **
+##****************************************************************************
+##****************************************************************************
+#
+#  File History
+#
+#  Rev. 1.01
+#    Bug Fix : N/A
+#    Bug Fix : Added PC 0xB2 W/A for system stops at PXE option ROM.
+#              (Refer to Grangeville Trunk revision #32.)
+#    Reason  : Bug Fixed
+#    Auditor : Joe Jhang
+#    Date    : May/17/2017
+#
+#  Rev. 1.00
+#    Bug Fix:  Initialize revision
+#    Reason:   Get base code from Grantley
+#    Auditor:  Salmon Chen
+#    Date:     Dec/18/2014
+#
+#****************************************************************************
+#****************************************************************************
+[Defines]
+  INF_VERSION                    = 0x00010005
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  BASE_NAME                      = SuperMSmm
+  FILE_GUID                      = 8650a9d0-3a80-43f2-85d8-6d10cdbf611e
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = SuperMSmiDriverInit
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+#  
+
+[Sources]  
+  SuperMSmiDriver.c
+
+[Packages]
+  MdePkg/MdePkg.dec   
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec 
+  AmiModulePkg/AmiModulePkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  SmcPkg/SmcPkg.dec
+  
+[LibraryClasses]
+  AmiDxeLib
+  SmmServicesTableLib  
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  SmcCspLib
+  
+[Protocols]
+  gEfiSmmPowerButtonDispatch2ProtocolGuid
+  gEfiSmmSxDispatch2ProtocolGuid
+  gPchTcoSmiDispatchProtocolGuid
+  
+[Depex]
+  gEfiSmmPowerButtonDispatch2ProtocolGuid AND
+  gEfiSmmSxDispatch2ProtocolGuid AND
+  gPchTcoSmiDispatchProtocolGuid
+  
+  
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

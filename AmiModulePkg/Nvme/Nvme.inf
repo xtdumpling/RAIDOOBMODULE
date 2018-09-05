@@ -1,0 +1,94 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+## @file Nvme.inf
+#   Nvme Bus Driver 
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = Nvme
+  FILE_GUID                      = 634E8DB5-C432-43BE-A653-9CA2922CC458
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = NvmeBusEntryPoint
+
+[Sources]  
+  NvmeBus.c
+  NvmeComponentName.c
+  NvmeIncludes.h
+  NvmeBus.h
+  NvmePassthru.c
+  NvmePassthru.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  ReportStatusCodeLib
+  PcdLib
+  DevicePathLib
+  NvmeControllerLib
+
+[Protocols]
+  gEfiPciIoProtocolGuid
+  gEfiDriverBindingProtocolGuid
+  gEfiBlockIoProtocolGuid
+  gAmiNvmeControllerProtocolGuid
+  gAmiNvmePassThruProtocolGuid
+  gEfiDevicePathProtocolGuid
+  gEfiComponentName2ProtocolGuid
+  gAmiNvmeLegacyProtocolGuid
+  gEfiSmmCommunicationProtocolGuid
+## Add gEfiNvmExpressPassThruProtocolGuid dependency once it is checked in to MdePkg
+## gEfiNvmExpressPassThruProtocolGuid
+## Add gAmiTcgStorageSecurityProtocolGuid dependency once it is checked in to AmiModulePkg
+## gAmiTcgStorageSecurityProtocolGuid
+  gEfiDiskInfoProtocolGuid
+  gAmiHddSecurityInitProtocolGuid
+  gAmiHddSecurityEndProtocolGuid
+  gAmiHddSecurityProtocolGuid
+  gAmiHddSmartInitProtocolGuid
+  gAmiHddSmartProtocolGuid
+  gEfiStorageSecurityCommandProtocolGuid
+  gAmiBlockIoWriteProtectionProtocolGuid
+    
+[Guids] 
+  gEfiEventReadyToBootGuid 
+  gAmiSmmNvmeCommunicationGuid
+  gEfiDiskInfoNvmeInterfaceGuid
+  gAmiResetSystemEventGuid
+
+[Depex]
+  TRUE
+
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdDebugPrintErrorLevel
+
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************

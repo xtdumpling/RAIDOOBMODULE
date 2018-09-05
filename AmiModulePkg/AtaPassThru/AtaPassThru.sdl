@@ -1,0 +1,41 @@
+TOKEN
+    Name  = "AtaPassThru_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable AtaPassThru support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes
+    Master = Yes
+End
+
+PATH
+    Name  = "ATAPASSTHRU_DIR"
+End
+
+TOKEN
+    Name  = "ATAPI_COMMANDS_SUPPORT_IN_ATAPASSTHRU"
+    Value  = "1"
+    Help  = "ATAPI Devices Command support in AtaPassThru Protocol"
+    TokenType = Boolean
+    TargetH = Yes
+    TargetEQU = Yes
+    TargetMAK = Yes
+End
+
+INFComponent
+    Name  = "AtaPassThru"
+    File  = "AtaPassThru.inf"
+    Package  = "AtaPassThru"
+    ModuleTypes  = "UEFI_DRIVER"
+    Token = "AtaPassThru_SUPPORT" "=" "1"
+    Token = "IdeBusSrc_SUPPORT" "=" "1"
+End
+
+INFComponent
+    Name  = "AtaPassThru"
+    File  = "AtaPassThru.inf"
+    Package  = "AtaPassThru"
+    ModuleTypes  = "UEFI_DRIVER"
+    Token = "AtaPassThru_SUPPORT" "=" "1"
+    Token = "AHCI_SUPPORT" "=" "1"
+End

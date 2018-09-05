@@ -1,0 +1,56 @@
+TOKEN
+    Name  = SECURE_FLASH_SUPPORT
+    Value  = "1"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    Master = Yes
+    Help  = "Main switch to enable Security Flash in Project"
+End
+
+TOKEN
+    Name  = "[OFBD Security Update]"
+    Help  = "See detail description in each token's help box."
+    TokenType = Expression
+    Lock = Yes
+End
+
+PATH
+    Name  = "OFBD_SECURE_FLASH_DIR"
+End
+
+ELINK
+	Name  = "$(OFBD_SECURE_FLASH_DIR)/SecureFlash.h"
+	Parent  = "OFBD_FUNC_INCLUDE_FILES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(OFBD_SECURE_FLASH_DIR)/SecureFlash.c"
+	Parent  = "OFBD_FUNC_SOURCES_FILES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "ASFUEntry,"
+	Parent  = "OFBD_INIT_FUNC_LIST"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "ASFUInSmm,"
+	Parent  = "OFBD_IN_SMM_FUNC_LIST"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "AmiCryptoPkg/AmiCryptoPkg.dec"
+	Parent  = "AMI_OFBD_PACKAGES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "AmiCryptLib"
+	Parent  = "AMI_OFBD_LIBRARIES"
+	InvokeOrder = AfterParent
+End

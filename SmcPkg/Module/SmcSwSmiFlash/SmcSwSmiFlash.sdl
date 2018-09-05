@@ -1,0 +1,76 @@
+#****************************************************************************
+#****************************************************************************
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#  
+#  Rev. 1.01
+#    Bug Fix:  Fix building failure when disabling SmcOOB_SUPPORT.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Oct/13/2016
+#
+#  Rev. 1.00
+#    Bug Fix:  Trigger a software SMI to flash ROM part after BIOS lock.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Sep/30/2016
+#
+#****************************************************************************
+
+TOKEN
+	Name  = "SmcSwSmiFlash_SUPPORT"
+	Value  = "1"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+End
+
+PATH
+	Name  = "SmcSwSmiFlash_DIR"
+	Path  = "SmcPkg\Module\SmcSwSmiFlash"
+End
+
+INFComponent
+    Name  = "SmcSwSmiFlashSmm"
+    File  = "SmcSwSmiFlashSmm.inf"
+    Package  = "SmcPkg"
+    ModuleTypes = "DXE_SMM_DRIVER"
+End
+
+INFComponent
+    Name  = "SmcSwSmiFlashDxe"
+    File  = "SmcSwSmiFlashDxe.inf"
+    Package  = "SmcPkg"
+    ModuleTypes = "DXE_DRIVER"
+End
+
+INFComponent
+        Name  = "SmcSwSmiFlashLib"
+        File  = "SmcSwSmiFlashLib.inf"
+        Package  = "SMCPkg"
+        ModuleTypes  = "BASE"
+End
+
+LibraryMapping
+	Class  = "SmcSwSmiFlashLib"
+	Instance  = "SMCPkg.SmcSwSmiFlashLib"
+End
+
+TOKEN
+        Name = "SWSMI_SMC_FLASH"
+        Value = "0xE9"
+        Help = "Sw Smi E9 for flash"
+        TargetEQU = Yes
+        TargetH = Yes
+End
+
+ELINK
+    Name  = "$(SmcSwSmiFlash_DIR)\SmcSwSmiFlash.ssp"
+    Parent  = "ADDON_SSP_FILES"
+    InvokeOrder = AfterParent
+End
+

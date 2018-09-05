@@ -1,0 +1,123 @@
+;;@file
+;
+;@copyright
+; Copyright (c) 2010 - 2016 Intel Corporation. All rights reserved
+; This software and associated documentation (if any) is furnished
+; under a license and may only be used or copied in accordance
+; with the terms of the license. Except as permitted by the
+; license, no part of this software or documentation may be
+; reproduced, stored in a retrieval system, or transmitted in any
+; form or by any means without the express written consent of
+; Intel Corporation.
+; This file contains a 'Sample Driver' and is licensed as such
+; under the terms of your license agreement with Intel or your
+; vendor. This file may be modified by the user, subject to
+; the additional terms of the license agreement.
+;
+;@par Specification Reference:
+;;
+
+CALLBACK_CSEG  SEGMENT USE16
+
+                dw  ControlEntry
+KeyboardSwitch: dw 0
+gAX:            dw 0
+gBP:            dw 0
+CurrentINT16:   dd 0
+
+global ASM_PFX(Int16)
+ASM_PFX(Int16):
+   or ah, ah
+   jnz .check_ah_is_1
+   pushf                       ; get keystroke from keyboard
+   call far [cs:CurrentINT16]
+   mov [cs:gBP],bp
+   mov bp,sp
+   pushf
+   pop word [bp + 4]
+   mov bp,[cs:gBP]
+   jmp .done
+.check_ah_is_1:
+   cmp ah, 0x01
+   jnz .otherwise
+   mov [cs:gAX],ax             ; check for keystroke in the keyboard buffer
+   mov [cs:gBP],bp
+   mov bp,sp
+   mov ax,[bp + 4]          ; sp, ss, flag
+   or ax,0x40                  ; ZF = 1, no avilable key
+   mov [bp + 4],ax
+   mov bp,[cs:gBP]
+   mov ax,[cs:gAX]
+   jmp .done
+.otherwise:
+   pushf
+   call far [cs:CurrentINT16]
+   mov [cs:gBP],bp
+   mov bp,sp
+   pushf
+   pop word [bp + 4]
+   mov bp,[cs:gBP]
+.done:
+  iret
+
+global ASM_PFX(ControlEntry)
+ASM_PFX(ControlEntry):
+   or ah, ah
+   jnz .check_ah_is_1
+                           ; 0 = Init
+   mov ax,0x1234           ;  Magic Code
+   jmp .done
+.check_ah_is_1:
+   cmp ah, 0x01
+   jnz .check_ah_is_2
+   push ax                 ; 1 = Hook Int16
+   push bx
+   push dx
+   mov bx,0x16             ; get current INT 16h
+   call GetInterrupt
+   mov word [cs:CurrentINT16],ax
+   mov word [cs:CurrentINT16 + 2],dx
+   mov bx,0x16             ; set new INT 16h
+   mov dx,cs
+   mov ax, ASM_PFX(Int16)
+   call SetInterrupt
+   pop dx
+   pop bx
+   pop ax
+   mov ax,0x1234           ;   Success Code
+   jmp .done
+.check_ah_is_2:
+   cmp ah, 0x02
+   jnz .done
+   push ax                ; 2 = Unhook Int16
+   push bx
+   push dx
+   mov bx,0x16             ; get current INT 16h
+   mov ax, [cs:CurrentINT16]
+   mov dx, [cs:CurrentINT16 + 2]
+   call SetInterrupt
+   pop dx
+   pop bx
+   pop ax
+   mov ax,0x1234           ;   Success Code
+.done:
+   retf
+
+global ASM_PFX(GetInterrupt)
+ASM_PFX(GetInterrupt):
+  push bx
+  shl bx,2
+  mov ax,[es:bx+0]
+  mov dx,[es:bx+2]
+  pop bx
+  ret
+
+global ASM_PFX(SetInterrupt)
+ASM_PFX(SetInterrupt):
+  push bx
+  shl bx,2
+  mov [es:bx+0],ax
+  mov [es:bx+2],dx
+  pop bx
+  ret
+

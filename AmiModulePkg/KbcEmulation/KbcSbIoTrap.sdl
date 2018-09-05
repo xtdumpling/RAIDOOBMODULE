@@ -1,0 +1,30 @@
+TOKEN
+    Name  = "IoTrapTemplate_SUPPORT"
+    Value  = "1"
+    Help  = "Switch for Enabling KbcUhci support in the project"
+    TokenType = Boolean
+    Master = Yes
+    Token = "IOTRAP_EMUL_SUPPORT" "=" "1"
+End
+
+INFComponent
+    Name  = "KbcSbIoTrapSmm"
+    File  = "KbcSbIoTrapSmm.inf"
+    Package  = "AmiModulePkg"
+End
+
+INFComponent
+    Name  = "KbcSbIoTrapDxe"
+    File  = "KbcSbIoTrapDxe.inf"
+    Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+    Class  = "KbcSbIoTrapLib"
+    Instance  = "AmiModulePkg.KbcSbIoTrapSmm"
+End
+
+LibraryMapping
+    Class  = "KbcSbIoTrapDxeLib"
+    Instance  = "AmiModulePkg.KbcSbIoTrapDxe"
+End

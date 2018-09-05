@@ -1,0 +1,101 @@
+TOKEN
+	Name  = "ProcessorStartup_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling ProcessorStartup support in the project"
+	TokenType = Boolean
+	Master = Yes	
+End
+
+LibraryMapping
+	Class  = "PlatformSecLib"
+	Instance  = "PurleySktPkg.ProcessorStartup"
+End
+
+INFComponent
+	Name  = "ProcessorStartup"
+	File  = "ProcessorStartupLBG.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "SEC"
+	Token = "ProcessorStartup_SUPPORT" "=" "1"
+End
+
+PATH
+	Name  = "PURLEY_PROCESSOR_STARTUP_PATH"
+End
+
+TOKEN
+	Name  = "CODE_CACHE_BASE_ADDRESS"
+	Value  = "$(FV_BB_BASE)"
+	Help  = "Code Cache Base Address."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "CAR_BASE_ADDRESS"
+	Value  = "0xfe800000"
+	Help  = "DO NOT CHANGE THIS VALUE.\Cache-as-RAM physical base location"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "CAR_TOTAL_SIZE"
+	Value  = "0x200000"
+	Help  = "Total Cache-as-RAM size available (in bytes)"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "CODE_CACHE_SIZE"
+	Value  = "$(FV_BB_SIZE)"
+	Help  = "Code Cache Size. Size must match alignment of base."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+PcdMapping
+    Name  = "PcdTemporaryRamBase"
+    GuidSpace  = "gEfiCpuTokenSpaceGuid"
+    PcdType  = "PcdsFixedAtBuild"
+    Value  = "$(CAR_BASE_ADDRESS)"
+    Offset  = 00h
+    Length  = 00h
+    TargetDSC = Yes
+End
+
+PcdMapping
+    Name  = "PcdTemporaryRamSize"
+    GuidSpace  = "gEfiCpuTokenSpaceGuid"
+    PcdType  = "PcdsFixedAtBuild"
+    Value  = "$(CAR_TOTAL_SIZE)"
+    Offset  = 00h
+    Length  = 00h
+    TargetDSC = Yes
+End
+
+PcdMapping
+    Name  = "PcdFlashSecCacheRegionBase"
+    GuidSpace  = "gCpuUncoreTokenSpaceGuid"
+    PcdType  = "PcdsFixedAtBuild"
+    Value  = "$(CODE_CACHE_BASE_ADDRESS)"
+    Offset  = 00h
+    Length  = 00h
+    TargetDSC = Yes
+End
+
+PcdMapping
+    Name  = "PcdFlashSecCacheRegionSize"
+    GuidSpace  = "gCpuUncoreTokenSpaceGuid"
+    PcdType  = "PcdsFixedAtBuild"
+    Value  = "$(CODE_CACHE_SIZE)"
+    Offset  = 00h
+    Length  = 00h
+    TargetDSC = Yes
+End
+

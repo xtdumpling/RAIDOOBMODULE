@@ -1,0 +1,75 @@
+TOKEN
+        Name = "INTEL_BOOT_GUARD_TCG2_SUPPORT"
+        Value = "1"
+        Help = "Main switch to enable INTEL_BOOT_GUARD_TCG2_SUPPORT in Project"
+        TokenType = Boolean
+        TargetEQU = Yes
+        TargetMAK = Yes
+        Master = Yes
+        Token = "TCG2Support" "=" "1"
+        Token = "BOOT_GUARD_TPM_CHAIN_OF_TRUST" "=" "1"
+End
+
+INFComponent
+        Name  = "BootGuardTCG2"
+        File  = "BootGuardTCG2.inf"
+        Package = "PurleyPlatPkg"
+End
+
+LibraryMapping
+        Class = "BootGuardTCG2"
+        Instance = "PurleyPlatPkg.BootGuardTCG2"
+        ModuleTypes = "PEIM"
+End
+
+TOKEN
+        Name = "MEASURE_CRTM_VERSION_PEI_FUNCTION"
+        Value = "BootGuardTcg2MeasureCRTMVersion"
+        Help = "Function to measure crtm version. Input:EFI_PEI_SERVICES **. AMI function Modified Pcr 0"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "TPM20_MEASURE_CRTM_VERSION_PEI_FUNCTION"
+        Value  = "BootGuardTcg2MeasureCRTMVersion"
+        Help  = "Function to measure tpm20crtm version. Input:EFI_PEI_SERVICES **. AMI function Modified Pcr 0"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+LibraryMapping
+        Class  = "NULL"
+        Instance  = "PurleyPlatPkg.BootGuardTCG2"
+        Override  = "AmiModulePkg.AmiTcgPlatformPeiBeforeMem"
+End
+
+LibraryMapping
+        Class  = "NULL"
+        Instance  = "PurleyPlatPkg.BootGuardTCG2"
+        Override  = "AmiModulePkg.AmiTcgPlatformPeiAfterMem"
+End
+
+LibraryMapping
+        Class  = "NULL"
+        Instance  = "PurleyPlatPkg.BootGuardTCG2"
+        Override  = "AmiModulePkg.TcgPeiplatform"
+End
+
+LibraryMapping
+        Class  = "NULL"
+        Instance  = "PurleyPlatPkg.BootGuardTCG2"
+        Override  = "AmiModulePkg.TcgPei"
+End
+
+LibraryMapping
+        Class  = "NULL"
+        Instance  = "PurleyPlatPkg.BootGuardTCG2"
+        Override  = "AmiModulePkg.TrEEPei"
+End
+
+LibraryMapping
+        Class  = "NULL"
+        Instance  = "PurleyPlatPkg.BootGuardTCG2"
+        Override  = "AmiModulePkg.AmiTpm20PlatformPei"
+End

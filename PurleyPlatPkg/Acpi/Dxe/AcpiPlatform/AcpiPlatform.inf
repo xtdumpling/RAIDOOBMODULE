@@ -1,0 +1,126 @@
+## @file
+#
+#  Copyright (c) 2009 - 2016, Intel Corporation. All rights reserved.<BR>
+#
+#  This program and the accompanying materials
+#  are licensed and made available under the terms and conditions of the BSD License
+#  which accompanies this distribution. The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.php
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+#
+##
+
+[Defines]
+  INF_VERSION                   = 0x00010005
+  BASE_NAME                     = AcpiPlatform
+  FILE_GUID                     = 87AB821C-79B8-4ef6-A913-21D22063F55F
+  MODULE_TYPE                   = DXE_DRIVER
+  VERSION_STRING                = 1.0
+  ENTRY_POINT                   = AcpiPlatformEntryPoint
+
+[Sources]
+  AcpiPlatform.c
+  AcpiPlatform.h
+  AcpiPlatformHooks.c
+  AcpiPlatformHooks.h
+  AcpiPlatformVTDHooks.c
+
+[Packages]
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+  PurleySktPkg/Override/IA32FamilyCpuPkg/IA32FamilyCpuPkg.dec
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec ##
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  IA32FamilyCpuPkg/IA32FamilyCpuPkg.dec
+  CpPlatPkg/CpPlatPkg.dec
+  # APTIOV_SERVER_OVERRIDE_RC_START
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiCRBPkg/AmiCRBPkg.dec  # Added to use AmiPlatformAcpiLib.
+  # APTIOV_SERVER_OVERRIDE_RC_END
+  UefiCpuPkg/UefiCpuPkg.dec
+
+[LibraryClasses]
+  UefiBootServicesTableLib
+  UefiDriverEntryPoint
+  BaseMemoryLib
+  DebugLib
+  UefiLib
+  UefiRuntimeServicesTableLib
+  HobLib
+  CpuConfigLib
+  SetupLib
+  PlatformHooksLib
+  AcpiPlatformTableLib
+  UsraLib
+  FpgaConfigurationLib
+  # APTIOV_SERVER_OVERRIDE_RC_START
+  ReportStatusCodeLib # Added to Resolve build error
+  AmiPlatformAcpiLib # Added to use the functions of AmiPlatformAcpiLib.
+  AmiPlatformHooksLib # Added for Oem Hook to Override XhciAcpiTable and to use AmiPlatformHooksLib.
+  # APTIOV_SERVER_OVERRIDE_RC_END
+
+[Protocols]
+  # APTIOV_SERVER_OVERRIDE_RC_START : Remove LpcPlatform component.
+  #gEfiLpcPolicyProtocolGuid
+  # APTIOV_SERVER_OVERRIDE_RC_END : Remove LpcPlatform component.
+  gEfiMpServiceProtocolGuid
+  gEfiIioUdsProtocolGuid
+  gEfiGlobalNvsAreaProtocolGuid
+  gEfiPciIoProtocolGuid
+  gEfiFirmwareVolume2ProtocolGuid
+  gEfiAcpiTableProtocolGuid             # ALWAYS_CONSUMED; before was gEfiAcpiSupportProtocolGuid
+  gEfiSerialIoProtocolGuid
+  gDxeEnhancedSpeedstepProtocolGuid
+  gEfiPlatformTypeProtocolGuid
+  gEfiDmaRemapProtocolGuid
+  gEfiRasfSupportProtocolGuid
+  gEfiCpuCsrAccessGuid
+  gEfiCrystalRidgeGuid
+  gEfiJedecNvDimmGuid
+  gEfiSmbiosProtocolGuid
+  gEfiIioSystemProtocolGuid
+  gEfiSvSmmProtocolGuid
+  gEfiPciRootBridgeIoProtocolGuid
+  gEfiDxeSystemBoardProtocolGuid
+  gEfiNgnAcpiSmmInterfaceProtocolGuid
+
+[Guids]
+  gEfiGlobalVariableGuid
+  gEfiAcpiTableStorageGuid
+  gEfiMemoryMapGuid
+  gEfiPcAnsiGuid
+  gEfiVT100PlusGuid
+  gEfiVT100Guid
+  gEfiVTUTF8Guid
+  gEfiHobListGuid
+  gEfiPlatformInfoGuid
+  gEfiSetupVariableGuid
+  gEfiPchRcVariableGuid
+  gEfiSocketIioVariableGuid
+  gEfiSocketMemoryVariableGuid
+  gEfiSocketCommonRcVariableGuid
+  gEfiSocketMpLinkVariableGuid
+  gEfiSocketPowermanagementVarGuid
+  gEfiSocketProcessorCoreVarGuid
+
+[Pcd]
+  gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemId
+  gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemTableId
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[Depex]
+  gEfiAcpiTableProtocolGuid AND
+  gEfiMpServiceProtocolGuid AND
+  gEfiIioSystemProtocolGuid AND
+  gEfiCrystalRidgeGuid AND
+  gEfiJedecNvDimmGuid
+

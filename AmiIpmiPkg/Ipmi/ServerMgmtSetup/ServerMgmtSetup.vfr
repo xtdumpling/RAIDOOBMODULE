@@ -1,0 +1,235 @@
+//****************************************************************************
+//**                                                                        **
+//**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+//**                                                                        **
+//****************************************************************************
+//  File History
+//
+//  Rev. 1.01
+//    Bug Fix:  Draft template.
+//    Reason:   
+//    Auditor:  Kasber Chen
+//    Date:     Dec/16/2016
+//  
+//  Rev. 1.00
+//    Bug Fix:  Initialize revision
+//    Reason:   Get base code from Grantley
+//    Auditor:  Kasber Chen
+//    Date:     Jun/07/2016
+//
+//****************************************************************************
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
+
+//
+// @file  ServerMgmtSetup.vfr 
+//
+//   Server Mgmt Setup formset.
+//
+
+#include "ServerMgmtSetup.h"
+
+#if defined(VFRCOMPILE) && !defined(CONTROL_DEFINITION)
+#define CONTROL_DEFINITION
+#endif
+
+#ifdef CONTROL_DEFINITION
+
+#define SERVERMGMTSETUP_ONEOF_BMCSUPPORT\
+    oneof varid   = SERVER_MGMT_CONFIGURATION_DATA.BmcSupport,\
+        prompt      = STRING_TOKEN(STR_BMC_SUPPORT),\
+        help        = STRING_TOKEN(STR_BMC_SUPPORT_HELP),\
+        option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;\
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = 0 | RESET_REQUIRED;\
+        default = 1,\
+        default = 1, defaultstore = AmiMfgDefault,\
+    endoneof;
+
+#define SERVERMGMTSETUP_ONEOF_WAITFORBMC\
+    oneof varid   = SERVER_MGMT_CONFIGURATION_DATA.WaitForBmc,\
+        prompt      = STRING_TOKEN(STR_WAIT_FOR_BMC_RESPONSE),\
+        help        = STRING_TOKEN(STR_WAIT_FOR_BMC_RESPONSE_HELP),\
+        option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = 0 | RESET_REQUIRED;\
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+        default = 0,\
+        default = 0, defaultstore = AmiMfgDefault,\
+    endoneof;
+
+#define SERVERMGMTSETUP_STRING_TIMEZONE\
+    string varid = SERVER_MGMT_CONFIGURATION_DATA.TimeZone,\
+        prompt = STRING_TOKEN(STR_BMC_TIME_ZONE),\
+        help = STRING_TOKEN(STR_BMC_TIME_ZONE_HELP),\
+        flags = INTERACTIVE | RESET_REQUIRED,\
+        key = AUTO_ID(BMC_TIME_ZONE_KEY),\
+        minsize = 6,\
+        maxsize = 6,\
+        default = STRING_TOKEN(STR_BMC_TIME_ZONE_DEFAULT),\
+        default = STRING_TOKEN(STR_BMC_TIME_ZONE_DEFAULT), defaultstore = AmiMfgDefault,\
+    endstring;
+    
+#endif //#ifdef CONTROL_DEFINITION
+
+#define SERVER_MGMT_FORM_SET
+#define FORM_SET_TYPEDEF
+#include <ServerMgmtSetupDefinitions.h>
+#undef FORM_SET_TYPEDEF
+
+formset guid  = SERVER_MGMT_CONFIGURATION_GUID,
+    title     = STRING_TOKEN(STR_SERVER_MGMT_TITLE),
+    help      = STRING_TOKEN(STR_SERVER_MGMT_TITLE_HELP),
+    class     = SERVER_MGMT_CLASS_ID,
+    subclass  = SERVER_MGMT_SUBCLASS_ID,
+
+    SYSTEM_ACCESS_VARSTORE
+    SERVER_MGMT_CONFIGURATION_DATA_VARSTORE
+
+    defaultstore AmiMfgDefault, prompt = STRING_TOKEN(STR_EMPTY), attribute = 0x01;
+
+    #define FORM_SET_VARSTORE
+    #include <ServerMgmtSetupDefinitions.h>
+    #undef FORM_SET_VARSTORE
+
+    form formid = AUTO_ID(SERVER_MGMT_MAIN),
+        title = STRING_TOKEN(STR_SERVER_MGMT_TITLE);
+
+        suppressif  ideqval SERVER_MGMT_CONFIGURATION_DATA.BmcSupport == 0;
+	    suppressif  SMCPKG_SUPPORT;
+            text 
+                help   = STRING_TOKEN(STR_IPMI_BMC_SELF_TEST_STATUS_HELP),
+                text   = STRING_TOKEN(STR_IPMI_BMC_SELF_TEST_STATUS),
+                text   = STRING_TOKEN(STR_IPMI_BMC_SELF_TEST_STATUS_VAL),
+                flags  = 0,
+                key    = 0;
+            text 
+                help   = STRING_TOKEN(STR_IPMI_BMC_DEVICE_ID_HELP),
+                text   = STRING_TOKEN(STR_IPMI_BMC_DEVICE_ID),
+                text   = STRING_TOKEN(STR_IPMI_BMC_DEVICE_ID_VAL),
+                flags  = 0,
+                key    = 0;
+            text 
+                help   = STRING_TOKEN(STR_IPMI_BMC_DEVICE_REVISION_HELP),
+                text   = STRING_TOKEN(STR_IPMI_BMC_DEVICE_REVISION),
+                text   = STRING_TOKEN(STR_IPMI_BMC_DEVICE_REVISION_VAL),
+                flags  = 0,
+                key    = 0;
+            endif;
+            text 
+                help   = STRING_TOKEN(STR_IPMI_BMC_FIRMWARE_REVISION_HELP),
+                text   = STRING_TOKEN(STR_IPMI_BMC_FIRMWARE_REVISION),
+                text   = STRING_TOKEN(STR_IPMI_BMC_FIRMWARE_REVISION_VAL),
+                flags  = 0,
+                key    = 0;
+#if SMCPKG_SUPPORT == 1
+            text
+                help   = STRING_TOKEN(STR_IPMI_BMC_SELF_TEST_STATUS_HELP),
+                text   = STRING_TOKEN(STR_IPMI_BMC_SELF_TEST_STATUS),
+                text   = STRING_TOKEN(STR_IPMI_BMC_SELF_TEST_STATUS_VAL),
+                flags  = 0,
+                key    = 0;
+#endif
+	    suppressif  SMCPKG_SUPPORT;
+            text 
+                help   = STRING_TOKEN(STR_IPMI_VERSION_HELP),
+                text   = STRING_TOKEN(STR_IPMI_VERSION),
+                text   = STRING_TOKEN(STR_IPMI_VERSION_VAL),
+                flags  = 0,
+                key    = 0;
+            endif;
+           text 
+                help   = STRING_TOKEN(STR_EMPTY),
+                text   = STRING_TOKEN(STR_EMPTY),
+                text   = STRING_TOKEN(STR_EMPTY),
+                flags  = 0,
+                key    = 0;
+        endif;
+
+	suppressif  SMCPKG_SUPPORT;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+            SERVERMGMTSETUP_ONEOF_BMCSUPPORT
+        endif;
+
+        #if BMC_INIT_DELAY
+        suppressif  ideqval SERVER_MGMT_CONFIGURATION_DATA.BmcSupport == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+            SERVERMGMTSETUP_ONEOF_WAITFORBMC
+        SUPPRESS_GRAYOUT_ENDIF
+        #endif
+	endif;
+
+        #if BMC_TIMEZONE_SUPPORT
+        suppressif  ideqval SERVER_MGMT_CONFIGURATION_DATA.BmcSupport == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+            SERVERMGMTSETUP_STRING_TIMEZONE
+        text
+            help = STRING_TOKEN(STR_BMC_CURR_TIME_ZONE_HELP),
+            text = STRING_TOKEN(STR_BMC_CURR_TIME_ZONE),
+            text = STRING_TOKEN(STR_BMC_CURR_TIME_ZONE_VALUE),
+            flags = 0,
+            key = 0;
+        SUPPRESS_GRAYOUT_ENDIF
+        #endif
+
+        #define FORM_SET_ITEM
+        #include <ServerMgmtSetupDefinitions.h>
+        #undef FORM_SET_ITEM
+        
+        #define FORM_SET_GOTO
+        #define BMCSELFTESTLOG_FORM_SERVERMGMT	// SMCPKG_SUPPORT
+        #include <ServerMgmtSetupDefinitions.h>
+        #undef FORM_SET_GOTO
+        
+#if SMCPKG_SUPPORT
+        suppressif SMC_SETUP_STYLE;  //SMCPKG_SUPPORT S
+        oneof varid   = SERVER_MGMT_CONFIGURATION_DATA.IpmiFunctionSupport,
+          prompt      = STRING_TOKEN(STR_IPMI_FUNCTION_SUPPORT),
+          help        = STRING_TOKEN(STR_IPMI_FUNCTION_SUPPORT_HELP),
+          option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = DEFAULT | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = 1 | RESET_REQUIRED;
+        endoneof;
+        endif;  //SMCPKG_SUPPORT E
+#endif
+
+	suppressif  SMCPKG_SUPPORT;
+        #if BMC_WARM_RESET_SUPPORT
+        suppressif  ideqval SERVER_MGMT_CONFIGURATION_DATA.BmcSupport == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+            text 
+                help   = STRING_TOKEN(STR_IPMI_BMC_WARM_RESET_HELP),
+                text   = STRING_TOKEN(STR_IPMI_BMC_WARM_RESET),
+                flags  = INTERACTIVE,
+                key    = AUTO_ID(BMC_WARM_RESET_KEY);
+        SUPPRESS_GRAYOUT_ENDIF
+        #endif
+	endif;
+
+    endform;
+
+    #define FORM_SET_FORM
+    #include <ServerMgmtSetupDefinitions.h>
+    #undef FORM_SET_FORM
+endformset;
+
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**         5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093     **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************

@@ -1,0 +1,103 @@
+#
+# This file contains an 'Intel Pre-EFI Module' and is licensed
+# for Intel CPUs and Chipsets under the terms of your license 
+# agreement with Intel or your vendor.  This file may be      
+# modified by the user, subject to additional terms of the    
+# license agreement                                           
+#
+#/** @file
+#  Library functions for Sec hook library.
+#
+#  Copyright (c) 2015 - 2016, Intel Corporation. All rights reserved.<BR>
+#
+#  This software and associated documentation (if any) is furnished
+#  under a license and may only be used or copied in accordance
+#  with the terms of the license. Except as permitted by such
+#  license, no part of this software or documentation may be
+#  reproduced, stored in a retrieval system, or transmitted in any
+#  form or by any means without the express written consent of
+#  Intel Corporation.
+#
+#
+#**/
+
+################################################################################
+#
+# Defines Section - statements that will be processed to create a Makefile.
+#
+################################################################################
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = ProcessorStartup
+  FILE_GUID                      = 0833A84D-8A39-431f-BD1C-30965AAE71DD
+  MODULE_TYPE                    = SEC
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = PlatformSecLib 
+  EDK_RELEASE_VERSION            = 0x00020000
+  UEFI_SPECIFICATION_VERSION     = 0x00020000
+
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32
+#
+
+################################################################################
+#
+# Sources Section - list of files that are required for the build to succeed.
+#
+################################################################################
+
+[Sources]
+  ProcessorStartup.c
+  ProcessorStartup.h
+
+[Sources.IA32]
+  Ia32/Flat32.asm | MSFT
+  Ia32/Flat32.nasm | GCC
+  Ia32/ProcessorStartup.asm
+  Ia32/ProcessorStartup.S | GCC
+  Ia32/ProcessorStartupChipset.asm
+  Ia32/ProcessorStartupChipset.S | GCC
+  Ia32/ProcessorStartupCore.asm
+  Ia32/ProcessorStartupCore.S | GCC
+  Ia32/ProcessorStartupOem.asm
+  Ia32/ProcessorStartupOem.S | GCC
+  Ia32/ProcessorStartupUncore.asm
+  Ia32/ProcessorStartupUncore.S | GCC
+
+################################################################################
+#
+# Package Dependency Section - list of Package files that are required for
+#                              this module.
+#
+################################################################################
+
+[Packages]
+  MdePkg/MdePkg.dec
+  IA32FamilyCpuPkg/IA32FamilyCpuPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec   #SERVER_BIOS
+  UefiCpuPkg/UefiCpuPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  CpRcPkg/CpRcPkg.dec
+
+[LibraryClasses]
+  OemProcessorStartupLib
+
+[Pcd.common]
+  gCpuUncoreTokenSpaceGuid.PcdFlashSecCacheRegionBase
+  gCpuUncoreTokenSpaceGuid.PcdFlashSecCacheRegionSize
+  gCpuUncoreTokenSpaceGuid.PcdFlashNvStorageMicrocodeBase
+  gCpuUncoreTokenSpaceGuid.PcdFlashNvStorageMicrocodeSize
+  gEfiPchTokenSpaceGuid.PcdPchAcpiIoPortBaseAddress          #SERVER_BIOS
+  gEfiPchTokenSpaceGuid.PcdTcoBaseAddress                    #SERVER_BIOS
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[BuildOptions]
+  MSFT:*_*_IA32_PP_FLAGS                 = /FIProcessorStartup.h
+  GCC:*_*_IA32_PP_FLAGS                 = -include ProcessorStartup.h -DSV_HOOKS -DPCH_LBG_ASM
+  *_*_IA32_ASM_FLAGS = -DSV_HOOKS -DPCH_LBG_ASM

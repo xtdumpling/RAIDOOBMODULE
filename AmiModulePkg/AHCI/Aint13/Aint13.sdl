@@ -1,0 +1,54 @@
+TOKEN
+    Name  = "AINT13_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable AHCI Int13 support in the project."
+    TokenType = Boolean
+    TargetH = Yes
+    Master = Yes
+    Token = "CSM_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "AHCI_CONTROLLER_COUNT"
+    Value  = "8"
+    Help  = "The controller count can range from 1-8"
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetH = Yes
+    Range  = "1-8"
+End
+
+TOKEN
+    Name  = "AI13_BINARY_VERSION"
+    Value  = "5714"
+    Help  = "Version of AI13.bin. Higher 2 digits represent CSM version and lower 2 digits represent AI13.bin build number"
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+End
+
+PATH
+    Name  = "AINT13_DIR"
+End
+
+ELINK
+    Name  = "AhciApiModuleStart"
+    Parent  = "CsmOem16Functions"
+    ProcID  = 07h
+    SrcFile  = "AhciAcc.csm16"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name = "OPROM(1,0,1,$(AINT13_DIR)\AI13.BIN)"
+    Parent = "CSM_OPROM_LIST"
+    InvokeOrder = AfterParent
+End
+
+INFComponent
+    Name  = "Aint13"
+    File  = "Aint13.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_DRIVER"
+End

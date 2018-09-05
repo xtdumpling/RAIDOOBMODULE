@@ -1,0 +1,102 @@
+#****************************************************************************
+#****************************************************************************
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.05
+#    Bug Fix : N/A
+#    Reason  : Remove OobLibrary replaced by Oob Library Protocol.
+#    Auditor : Durant Lin
+#    Date    : Feb/12/2018
+#
+#  Rev. 1.04
+#    Bug Fix : N/A
+#    Reason  : Isolate PciLib from OOB to OobLibraryProtocol, since different
+#              platform will cause hang up issue.
+#    Auditor : Durant Lin
+#    Date    : Jun/02/2018
+#
+#  Rev. 1.03
+#    Bug Fix:  Fix some errors for upload and download OOB files.
+#    Reason:
+#    Auditor:  Hartmann Hsieh
+#    Date:     Oct/20/2016
+#
+#  Rev. 1.02
+#    Bug Fix:  Enable SmcAssetInfo module and change IPMI command.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Sep/10/2016
+#
+#  Rev. 1.01
+#    Bug Fix:  Add Full SMBIOS module.
+#    Reason:
+#    Auditor:  Hartmann Hsieh
+#    Date:     Jul/27/2016
+#
+#  Rev. 1.00
+#    Bug Fix:  Initial revision.
+#    Reason:   
+#    Auditor:  Kasber Chen
+#    Date:     May/25/2016
+#
+#****************************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SmcAssetInfo
+  FILE_GUID                      = ce12b236-17e5-47b4-96ae-c85bbac1e5bf
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  ENTRY_POINT                    = InitSmcAssetInfo
+  DPX_SOURCE                     = SmcAssetInfo.dxs
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF EBC
+#
+
+[Sources]
+  SmcAssetInfo.c
+  SmcAssetInfo.h
+
+[Packages]
+  MdePkg/MdePkg.dec   
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec 
+  AmiModulePkg/AmiModulePkg.dec
+  AmiChipsetModulePkg/AmiChipsetModulePkg.dec
+  CryptoPkg/CryptoPkg.dec
+  AmiIpmiPkg/AmiIpmiPkg.dec
+  SmcPkg/SmcPkg.dec
+  SmcPkg/Module/SmcOOB/SmcOOB.dec
+  
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  AmiDxeLib
+  BaseCryptLib 
+  OobLibrary
+
+[Pcd]
+
+[Guids]
+  gSMCOOBMD5GUID
+  gSmcOobPlatformPolicyGuid
+
+[Ppis]
+
+[Protocols]
+  gEfiDxeIpmiTransportProtocolGuid
+  gEfiDiskInfoProtocolGuid
+  gBdsAllDriversConnectedProtocolGuid
+  gSmcIpmiOemCommandSetProtocolGuid
+  gEfiDevicePathProtocolGuid
+  gSmcOobLibraryProtocolGuid
+  

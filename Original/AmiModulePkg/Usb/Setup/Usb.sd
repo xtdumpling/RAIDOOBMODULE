@@ -1,0 +1,1131 @@
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**       (C)Copyright 1993-2016 Supermicro Computer, Inc.           **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
+//  File History
+//
+//  Rev. 1.01
+//    Bug Fix:  Adjust draft setup template.
+//    Reason:
+//    Auditor:  Jacker Yeh
+//    Date:     Nov/06/2016
+//
+//  Rev. 1.00
+//    Bug Fix: Draft template.
+//    Reason:
+//    Auditor:  Kasber Chen
+//    Date:     Nov/04/2016
+//
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
+
+//**********************************************************************
+//<AMI_FHDR_START>
+//
+// Name:	Usb.sd
+//
+// Description:	This is the setup page 'USB Configuration.'
+//              The link to the page is in the setup 'Advanced' tab. 
+//<AMI_FHDR_END>
+//**********************************************************************
+
+#ifdef SETUP_DATA_DEFINITION
+/***********************************************************/
+/* Put NVRAM data definitions here.
+/* For example:	UINT8 Data1;
+/* These definitions will be converted by the build process
+/* to a definitions of SETUP_DATA fields.
+/***********************************************************/
+#endif
+
+#if defined(VFRCOMPILE) && !defined(CONTROLS_ARE_DEFINED)
+#define CONTROL_DEFINITION
+#endif
+#ifdef CONTROL_DEFINITION
+
+#define USB_ONEOF_USBMAINSUPPORT\
+    oneof varid     = USB_SUPPORT_SETUP.UsbMainSupport,\
+        prompt      = STRING_TOKEN(STR_USB_SUPPORT),\
+        help        = STRING_TOKEN(STR_USB_SUPPORT_HELP),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_DISABLED), value = 0, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_ENABLED), value = 1, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+    endoneof;
+
+#if LEGACY_USB_DISABLE_FOR_USB_MASS
+#if USB_RUNTIME_DRIVER_IN_SMM
+#define USB_ONEOF_USBLEGACYSUPPORT\
+    oneof varid     = USB_SUPPORT_SETUP.UsbLegacySupport,\
+        prompt      = STRING_TOKEN(STR_USB_LEGACY_SUPPORT),\
+        help        = STRING_TOKEN(STR_USB_LEGACY_SUPPORT_HELP1),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_ENABLED), value = 0, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_DISABLED), value = 1, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 2, flags = 0;\
+    endoneof;
+#else
+#define USB_ONEOF_USBLEGACYSUPPORT\
+    oneof varid     = USB_SUPPORT_SETUP.UsbLegacySupport,\
+        prompt      = STRING_TOKEN(STR_USB_LEGACY_SUPPORT),\
+        help        = STRING_TOKEN(STR_USB_LEGACY_SUPPORT_HELP1),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_ENABLED), value = 0, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_DISABLED), value = 1, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 2, flags = 0;\
+    endoneof;
+#endif
+#else
+#if USB_RUNTIME_DRIVER_IN_SMM
+#define USB_ONEOF_USBLEGACYSUPPORT\
+    oneof varid     = USB_SUPPORT_SETUP.UsbLegacySupport,\
+        prompt      = STRING_TOKEN(STR_USB_LEGACY_SUPPORT),\
+        help        = STRING_TOKEN(STR_USB_LEGACY_SUPPORT_HELP),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_ENABLED), value = 0, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_DISABLED), value = 1, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 2, flags = 0;\
+    endoneof;
+#else
+#define USB_ONEOF_USBLEGACYSUPPORT\
+    oneof varid     = USB_SUPPORT_SETUP.UsbLegacySupport,\
+        prompt      = STRING_TOKEN(STR_USB_LEGACY_SUPPORT),\
+        help        = STRING_TOKEN(STR_USB_LEGACY_SUPPORT_HELP),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_ENABLED), value = 0, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_DISABLED), value = 1, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 2, flags = 0;\
+    endoneof;
+#endif
+#endif 
+
+#define USB_ONEOF_USBHISPEEDSUPPORT\
+    oneof varid     = USB_SUPPORT_SETUP.UsbHiSpeedSupport,\
+        prompt      = STRING_TOKEN(STR_USB_HISPEED_SUPPORT),\
+        help        = STRING_TOKEN(STR_USB_HISPEED_SUPPORT_HELP),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_HISPEED), value = 1, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_FULLSPEED), value = 0, flags = 0;\
+    endoneof;
+
+#if XHCI_SUPPORT
+#define USB_ONEOF_USBXHCISUPPORT\
+    oneof varid     = USB_SUPPORT_SETUP.UsbXhciSupport,\
+        prompt      = STRING_TOKEN(STR_USB_XHCI_SUPPORT),\
+        help        = STRING_TOKEN(STR_USB_XHCI_SUPPORT_HELP),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_ENABLED), value = 1, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_DISABLED), value = 0, flags = 0;\
+    endoneof;
+
+#define USB_ONEOF_USBXHCIHANDOFF\
+    oneof varid     = USB_SUPPORT_SETUP.UsbXhciHandoff,\
+        prompt      = STRING_TOKEN(STR_USB_BIOS_XHCI_HANDOFF),\
+        help        = STRING_TOKEN(STR_USB_BIOS_XHCI_HANDOFF_HELP),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_ENABLED), value = 1, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_DISABLED), value = 0, flags = 0;\
+        default     = DEFAULT_XHCI_HANDOFF_OPTION,\
+        default     = DEFAULT_XHCI_HANDOFF_OPTION, defaultstore = AmiMfgDefault,\
+    endoneof;
+#else
+#define USB_ONEOF_USBXHCISUPPORT
+#define USB_ONEOF_USBXHCIHANDOFF
+#endif
+
+#if USB_EHCI_HANDOFF_SUPPORT
+#define USB_ONEOF_USBEHCIHANDOFF\
+    oneof varid     = USB_SUPPORT_SETUP.UsbEhciHandoff,\
+        prompt      = STRING_TOKEN(STR_USB_BIOS_EHCI_HANDOFF),\
+        help        = STRING_TOKEN(STR_USB_BIOS_EHCI_HANDOFF_HELP),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_DISABLED), value = 0, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_ENABLED), value = 1, flags = 0;\
+    endoneof;
+#else
+#define USB_ONEOF_USBEHCIHANDOFF
+#endif
+
+#if USB_OHCI_HANDOFF_SUPPORT
+#define USB_ONEOF_USBOHCIHANDOFF\
+    oneof varid     = USB_SUPPORT_SETUP.UsbOhciHandoff,\
+        prompt      = STRING_TOKEN(STR_USB_BIOS_OHCI_HANDOFF),\
+        help        = STRING_TOKEN(STR_USB_BIOS_OHCI_HANDOFF_HELP),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_DISABLED), value = 0, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_ENABLED), value = 1, flags = 0;\
+    endoneof;
+#else
+#define USB_ONEOF_USBOHCIHANDOFF
+#endif
+
+#if USB_DEV_MASS
+#define USB_ONEOF_USBMASSDRIVERSUPPORT\
+    oneof varid     = USB_SUPPORT_SETUP.UsbMassDriverSupport,\
+        prompt      = STRING_TOKEN(STR_USB_MASS_DRIVER_SUPPORT),\
+        help        = STRING_TOKEN(STR_USB_MASS_DRIVER_SUPPORT_HELP),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_DISABLED), value = 0, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_ENABLED), value = 1, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+    endoneof;
+#else
+#define USB_ONEOF_USBMASSDRIVERSUPPORT
+#endif
+
+#if defined (EMUL6064_SUPPORT) && EMUL6064_SUPPORT
+#define USB_ONEOF_USBEMUL6064\
+    oneof varid     = USB_SUPPORT_SETUP.UsbEmul6064,\
+        prompt      = STRING_TOKEN(STR_USB_6064),\
+        help        = STRING_TOKEN(STR_USB_6064_HELP),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_DISABLED), value = 0, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_ENABLED), value = 1, flags = 0;\
+        default     = DEFAULT_USB_EMUL6064_OPTION,\
+        default     = DEFAULT_USB_EMUL6064_OPTION, defaultstore = AmiMfgDefault,\
+    endoneof;
+#else
+#define USB_ONEOF_USBEMUL6064
+#endif
+
+#if defined (USB_HOTPLUG_FDD) && USB_HOTPLUG_FDD
+#define USB_ONEOF_USBHOTPLUGFDDSUPPORT\
+    oneof varid     = USB_SUPPORT_SETUP.UsbHotplugFddSupport,\
+        prompt      = STRING_TOKEN(STR_USB_HOTPLUG_FDD),\
+        help        = STRING_TOKEN(STR_USB_HOTPLUG_FDD_HELP),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_ENABLED), value = 1, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_DISABLED), value = 2, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 3, flags = 0;\
+    endoneof;
+#else
+#define USB_ONEOF_USBHOTPLUGFDDSUPPORT
+#endif
+
+#if defined (USB_HOTPLUG_HDD) && USB_HOTPLUG_HDD
+#define USB_ONEOF_USBHOTPLUGHDDSUPPORT\
+    oneof varid     = USB_SUPPORT_SETUP.UsbHotplugHddSupport,\
+        prompt      = STRING_TOKEN(STR_USB_HOTPLUG_HDD),\
+        help        = STRING_TOKEN(STR_USB_HOTPLUG_HDD_HELP),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_ENABLED), value = 1, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_DISABLED), value = 2, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 3, flags = 0;\
+    endoneof;
+#else
+#define USB_ONEOF_USBHOTPLUGHDDSUPPORT
+#endif
+
+#if defined (USB_HOTPLUG_CDROM) && USB_HOTPLUG_CDROM
+#define USB_ONEOF_USBHOTPLUGCDROMSUPPORT\
+    oneof varid     = USB_SUPPORT_SETUP.UsbHotplugCdromSupport,\
+        prompt      = STRING_TOKEN(STR_USB_HOTPLUG_CDROM),\
+        help        = STRING_TOKEN(STR_USB_HOTPLUG_CDROM_HELP),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_ENABLED), value = 1, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_DISABLED), value = 2, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 3, flags = 0;\
+    endoneof;
+#else
+#define USB_ONEOF_USBHOTPLUGCDROMSUPPORT
+#endif
+
+#if defined (USB_S5_WAKEUP_SUPPORT) && USB_S5_WAKEUP_SUPPORT
+#define USB_ONEOF_USBS5WAKEUPSUPPORT\
+    oneof varid     = USB_SUPPORT_SETUP.UsbS5WakeupSupport,\
+        prompt      = STRING_TOKEN(STR_USB_S5_WAKEUP_SUPPORT),\
+        help        = STRING_TOKEN(STR_USB_S5_WAKEUP_SUPPORT_HELP),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_DISABLED),   value = 0, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_ENABLED),    value = 1, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+    endoneof;
+#else
+#define USB_ONEOF_USBS5WAKEUPSUPPORT
+#endif
+
+#define USB_ONEOF_USBCONTROLTIMEOUT\
+    oneof varid     = USB_SUPPORT_SETUP.UsbControlTimeOut,\
+        prompt      = STRING_TOKEN(STR_USB_CONTROL_TIME_OUT),\
+        help        = STRING_TOKEN(STR_USB_CONTROL_TIME_OUT_HELP),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_DELAY_01), value = 1, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_DELAY_05), value = 5, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_DELAY_10), value = 10, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_DELAY_20), value = 20, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+    endoneof;
+
+#define USB_ONEOF_USBMASSRESETDELAY\
+    oneof varid     = USB_SUPPORT_SETUP.UsbMassResetDelay,\
+        prompt      = STRING_TOKEN(STR_USB_MASS_RESET_DELAY),\
+        help        = STRING_TOKEN(STR_USB_MASS_RESET_DELAY_HELP),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_DELAY_10), value = 0, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_DELAY_20), value = 1, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_DELAY_30), value = 2, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_DELAY_40), value = 3, flags = 0;\
+    endoneof;
+
+#define USB_ONEOF_POWERGOODDEVICEDELAY\
+    oneof varid     = USB_SUPPORT_SETUP.PowerGoodDeviceDelay,\
+        prompt      = STRING_TOKEN(STR_USB_POWERGOOD_DELAY),\
+        help        = STRING_TOKEN(STR_USB_POWERGOOD_DELAY_HELP),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 0, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_DELAY_VALUE), value = 1, flags = 0;\
+    endoneof;
+
+#define USB_NUMERIC_POWERGOODDEVICENUMDELAY\
+    numeric varid   = USB_SUPPORT_SETUP.PowerGoodDeviceNumDelay,\
+        prompt      = STRING_TOKEN (STR_USB_DELAY_NUM_VALUE),\
+        help        = STRING_TOKEN (STR_USB_DELAY_NUM_VALUE_HELP),\
+        flags       = RESET_REQUIRED,\
+        minimum     = 1,\
+        maximum     = 40,\
+        step        = 1,\
+        default     = 5,\
+        default     = 5, defaultstore = AmiMfgDefault,\
+    endnumeric;
+
+#if USB_MASS_EMULATION_NATIVE
+#define USB_ONEOF_USBEMU1\
+    oneof varid     = USB_SUPPORT_SETUP.UsbEmu1,\
+        prompt      = STRING_TOKEN(STR_USB_MASS_DEVICE1),\
+        help        = STRING_TOKEN(STR_USB_EMULATION_TYPE_HELP1),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 0, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FLOPPY), value = 1, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FORCED_FDD), value = 2, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_HDD), value = 3, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_CDROM), value = 4, flags = 0;\
+    endoneof;
+
+#define USB_ONEOF_USBEMU2\
+    oneof varid     = USB_SUPPORT_SETUP.UsbEmu2,\
+        prompt      = STRING_TOKEN(STR_USB_MASS_DEVICE2),\
+        help        = STRING_TOKEN(STR_USB_EMULATION_TYPE_HELP1),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 0, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FLOPPY), value = 1, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FORCED_FDD), value = 2, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_HDD), value = 3, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_CDROM), value = 4, flags = 0;\
+    endoneof;
+
+#define USB_ONEOF_USBEMU3\
+    oneof varid     = USB_SUPPORT_SETUP.UsbEmu3,\
+        prompt      = STRING_TOKEN(STR_USB_MASS_DEVICE3),\
+        help        = STRING_TOKEN(STR_USB_EMULATION_TYPE_HELP1),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 0, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FLOPPY), value = 1, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FORCED_FDD), value = 2, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_HDD), value = 3, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_CDROM), value = 4, flags = 0;\
+    endoneof;
+
+#define USB_ONEOF_USBEMU4\
+    oneof varid     = USB_SUPPORT_SETUP.UsbEmu4,\
+        prompt      = STRING_TOKEN(STR_USB_MASS_DEVICE4),\
+        help        = STRING_TOKEN(STR_USB_EMULATION_TYPE_HELP1),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 0, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FLOPPY), value = 1, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FORCED_FDD), value = 2, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_HDD), value = 3, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_CDROM), value = 4, flags = 0;\
+    endoneof;
+
+#define USB_ONEOF_USBEMU5\
+    oneof varid     = USB_SUPPORT_SETUP.UsbEmu5,\
+        prompt      = STRING_TOKEN(STR_USB_MASS_DEVICE5),\
+        help        = STRING_TOKEN(STR_USB_EMULATION_TYPE_HELP1),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 0, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FLOPPY), value = 1, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FORCED_FDD), value = 2, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_HDD), value = 3, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_CDROM), value = 4, flags = 0;\
+    endoneof;
+
+#define USB_ONEOF_USBEMU6\
+    oneof varid     = USB_SUPPORT_SETUP.UsbEmu6,\
+        prompt      = STRING_TOKEN(STR_USB_MASS_DEVICE6),\
+        help        = STRING_TOKEN(STR_USB_EMULATION_TYPE_HELP1),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 0, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FLOPPY), value = 1, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FORCED_FDD), value = 2, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_HDD), value = 3, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_CDROM), value = 4, flags = 0;\
+    endoneof;
+
+#define USB_ONEOF_USBEMU7\
+    oneof varid     = USB_SUPPORT_SETUP.UsbEmu7,\
+        prompt      = STRING_TOKEN(STR_USB_MASS_DEVICE7),\
+        help        = STRING_TOKEN(STR_USB_EMULATION_TYPE_HELP1),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 0, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FLOPPY), value = 1, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FORCED_FDD), value = 2, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_HDD), value = 3, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_CDROM), value = 4, flags = 0;\
+    endoneof;
+
+#define USB_ONEOF_USBEMU8\
+    oneof varid     = USB_SUPPORT_SETUP.UsbEmu8,\
+        prompt      = STRING_TOKEN(STR_USB_MASS_DEVICE8),\
+        help        = STRING_TOKEN(STR_USB_EMULATION_TYPE_HELP1),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 0, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FLOPPY), value = 1, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FORCED_FDD), value = 2, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_HDD), value = 3, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_CDROM), value = 4, flags = 0;\
+    endoneof;
+
+#define USB_ONEOF_USBEMU9\
+    oneof varid     = USB_SUPPORT_SETUP.UsbEmu9,\
+        prompt      = STRING_TOKEN(STR_USB_MASS_DEVICE9),\
+        help        = STRING_TOKEN(STR_USB_EMULATION_TYPE_HELP1),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 0, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FLOPPY), value = 1, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FORCED_FDD), value = 2, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_HDD), value = 3, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_CDROM), value = 4, flags = 0;\
+    endoneof;
+
+#define USB_ONEOF_USBEMU10\
+    oneof varid     = USB_SUPPORT_SETUP.UsbEmu10,\
+        prompt      = STRING_TOKEN(STR_USB_MASS_DEVICE10),\
+        help        = STRING_TOKEN(STR_USB_EMULATION_TYPE_HELP1),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 0, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FLOPPY), value = 1, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FORCED_FDD), value = 2, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_HDD), value = 3, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_CDROM), value = 4, flags = 0;\
+    endoneof;
+
+#define USB_ONEOF_USBEMU11\
+    oneof varid     = USB_SUPPORT_SETUP.UsbEmu11,\
+        prompt      = STRING_TOKEN(STR_USB_MASS_DEVICE11),\
+        help        = STRING_TOKEN(STR_USB_EMULATION_TYPE_HELP1),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 0, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FLOPPY), value = 1, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FORCED_FDD), value = 2, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_HDD), value = 3, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_CDROM), value = 4, flags = 0;\
+    endoneof;
+
+#define USB_ONEOF_USBEMU12\
+    oneof varid     = USB_SUPPORT_SETUP.UsbEmu12,\
+        prompt      = STRING_TOKEN(STR_USB_MASS_DEVICE12),\
+        help        = STRING_TOKEN(STR_USB_EMULATION_TYPE_HELP1),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 0, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FLOPPY), value = 1, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FORCED_FDD), value = 2, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_HDD), value = 3, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_CDROM), value = 4, flags = 0;\
+    endoneof;
+
+#define USB_ONEOF_USBEMU13\
+    oneof varid     = USB_SUPPORT_SETUP.UsbEmu13,\
+        prompt      = STRING_TOKEN(STR_USB_MASS_DEVICE13),\
+        help        = STRING_TOKEN(STR_USB_EMULATION_TYPE_HELP1),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 0, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FLOPPY), value = 1, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FORCED_FDD), value = 2, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_HDD), value = 3, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_CDROM), value = 4, flags = 0;\
+    endoneof;
+    
+#define USB_ONEOF_USBEMU14\
+    oneof varid     = USB_SUPPORT_SETUP.UsbEmu14,\
+        prompt      = STRING_TOKEN(STR_USB_MASS_DEVICE14),\
+        help        = STRING_TOKEN(STR_USB_EMULATION_TYPE_HELP1),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 0, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FLOPPY), value = 1, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FORCED_FDD), value = 2, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_HDD), value = 3, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_CDROM), value = 4, flags = 0;\
+    endoneof;
+
+#define USB_ONEOF_USBEMU15\
+    oneof varid     = USB_SUPPORT_SETUP.UsbEmu15,\
+        prompt      = STRING_TOKEN(STR_USB_MASS_DEVICE15),\
+        help        = STRING_TOKEN(STR_USB_EMULATION_TYPE_HELP1),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 0, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FLOPPY), value = 1, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FORCED_FDD), value = 2, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_HDD), value = 3, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_CDROM), value = 4, flags = 0;\
+    endoneof;
+
+#define USB_ONEOF_USBEMU16\
+    oneof varid     = USB_SUPPORT_SETUP.UsbEmu16,\
+        prompt      = STRING_TOKEN(STR_USB_MASS_DEVICE16),\
+        help        = STRING_TOKEN(STR_USB_EMULATION_TYPE_HELP1),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 0, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FLOPPY), value = 1, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FORCED_FDD), value = 2, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_HDD), value = 3, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_CDROM), value = 4, flags = 0;\
+    endoneof;
+#else //#if USB_MASS_EMULATION_NATIVE
+#define USB_ONEOF_USBEMU1\
+    oneof varid     = USB_SUPPORT_SETUP.UsbEmu1,\
+        prompt      = STRING_TOKEN(STR_USB_MASS_DEVICE1),\
+        help        = STRING_TOKEN(STR_USB_EMULATION_TYPE_HELP),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 0, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FLOPPY), value = 1, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FORCED_FDD), value = 2, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_HDD), value = 3, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_CDROM), value = 4, flags = 0;\
+    endoneof;
+
+#define USB_ONEOF_USBEMU2\
+    oneof varid     = USB_SUPPORT_SETUP.UsbEmu2,\
+        prompt      = STRING_TOKEN(STR_USB_MASS_DEVICE2),\
+        help        = STRING_TOKEN(STR_USB_EMULATION_TYPE_HELP),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 0, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FLOPPY), value = 1, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FORCED_FDD), value = 2, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_HDD), value = 3, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_CDROM), value = 4, flags = 0;\
+    endoneof;
+
+#define USB_ONEOF_USBEMU3\
+    oneof varid     = USB_SUPPORT_SETUP.UsbEmu3,\
+        prompt      = STRING_TOKEN(STR_USB_MASS_DEVICE3),\
+        help        = STRING_TOKEN(STR_USB_EMULATION_TYPE_HELP),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 0, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FLOPPY), value = 1, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FORCED_FDD), value = 2, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_HDD), value = 3, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_CDROM), value = 4, flags = 0;\
+    endoneof;
+
+#define USB_ONEOF_USBEMU4\
+    oneof varid     = USB_SUPPORT_SETUP.UsbEmu4,\
+        prompt      = STRING_TOKEN(STR_USB_MASS_DEVICE4),\
+        help        = STRING_TOKEN(STR_USB_EMULATION_TYPE_HELP),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 0, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FLOPPY), value = 1, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FORCED_FDD), value = 2, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_HDD), value = 3, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_CDROM), value = 4, flags = 0;\
+    endoneof;
+
+#define USB_ONEOF_USBEMU5\
+    oneof varid     = USB_SUPPORT_SETUP.UsbEmu5,\
+        prompt      = STRING_TOKEN(STR_USB_MASS_DEVICE5),\
+        help        = STRING_TOKEN(STR_USB_EMULATION_TYPE_HELP),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 0, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FLOPPY), value = 1, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FORCED_FDD), value = 2, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_HDD), value = 3, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_CDROM), value = 4, flags = 0;\
+    endoneof;
+
+#define USB_ONEOF_USBEMU6\
+    oneof varid     = USB_SUPPORT_SETUP.UsbEmu6,\
+        prompt      = STRING_TOKEN(STR_USB_MASS_DEVICE6),\
+        help        = STRING_TOKEN(STR_USB_EMULATION_TYPE_HELP),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 0, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FLOPPY), value = 1, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FORCED_FDD), value = 2, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_HDD), value = 3, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_CDROM), value = 4, flags = 0;\
+    endoneof;
+
+#define USB_ONEOF_USBEMU7\
+    oneof varid     = USB_SUPPORT_SETUP.UsbEmu7,\
+        prompt      = STRING_TOKEN(STR_USB_MASS_DEVICE7),\
+        help        = STRING_TOKEN(STR_USB_EMULATION_TYPE_HELP),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 0, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FLOPPY), value = 1, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FORCED_FDD), value = 2, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_HDD), value = 3, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_CDROM), value = 4, flags = 0;\
+    endoneof;
+
+#define USB_ONEOF_USBEMU8\
+    oneof varid     = USB_SUPPORT_SETUP.UsbEmu8,\
+        prompt      = STRING_TOKEN(STR_USB_MASS_DEVICE8),\
+        help        = STRING_TOKEN(STR_USB_EMULATION_TYPE_HELP),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 0, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FLOPPY), value = 1, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FORCED_FDD), value = 2, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_HDD), value = 3, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_CDROM), value = 4, flags = 0;\
+    endoneof;
+
+#define USB_ONEOF_USBEMU9\
+    oneof varid     = USB_SUPPORT_SETUP.UsbEmu9,\
+        prompt      = STRING_TOKEN(STR_USB_MASS_DEVICE9),\
+        help        = STRING_TOKEN(STR_USB_EMULATION_TYPE_HELP),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 0, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FLOPPY), value = 1, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FORCED_FDD), value = 2, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_HDD), value = 3, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_CDROM), value = 4, flags = 0;\
+    endoneof;
+
+#define USB_ONEOF_USBEMU10\
+    oneof varid     = USB_SUPPORT_SETUP.UsbEmu10,\
+        prompt      = STRING_TOKEN(STR_USB_MASS_DEVICE10),\
+        help        = STRING_TOKEN(STR_USB_EMULATION_TYPE_HELP),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 0, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FLOPPY), value = 1, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FORCED_FDD), value = 2, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_HDD), value = 3, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_CDROM), value = 4, flags = 0;\
+    endoneof;
+
+#define USB_ONEOF_USBEMU11\
+    oneof varid     = USB_SUPPORT_SETUP.UsbEmu11,\
+        prompt      = STRING_TOKEN(STR_USB_MASS_DEVICE11),\
+        help        = STRING_TOKEN(STR_USB_EMULATION_TYPE_HELP),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 0, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FLOPPY), value = 1, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FORCED_FDD), value = 2, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_HDD), value = 3, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_CDROM), value = 4, flags = 0;\
+    endoneof;
+
+#define USB_ONEOF_USBEMU12\
+    oneof varid     = USB_SUPPORT_SETUP.UsbEmu12,\
+        prompt      = STRING_TOKEN(STR_USB_MASS_DEVICE12),\
+        help        = STRING_TOKEN(STR_USB_EMULATION_TYPE_HELP),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 0, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FLOPPY), value = 1, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FORCED_FDD), value = 2, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_HDD), value = 3, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_CDROM), value = 4, flags = 0;\
+    endoneof;
+
+#define USB_ONEOF_USBEMU13\
+    oneof varid     = USB_SUPPORT_SETUP.UsbEmu13,\
+        prompt      = STRING_TOKEN(STR_USB_MASS_DEVICE13),\
+        help        = STRING_TOKEN(STR_USB_EMULATION_TYPE_HELP),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 0, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FLOPPY), value = 1, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FORCED_FDD), value = 2, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_HDD), value = 3, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_CDROM), value = 4, flags = 0;\
+    endoneof;
+	
+#define USB_ONEOF_USBEMU14\
+    oneof varid     = USB_SUPPORT_SETUP.UsbEmu14,\
+        prompt      = STRING_TOKEN(STR_USB_MASS_DEVICE14),\
+        help        = STRING_TOKEN(STR_USB_EMULATION_TYPE_HELP),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 0, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FLOPPY), value = 1, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FORCED_FDD), value = 2, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_HDD), value = 3, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_CDROM), value = 4, flags = 0;\
+    endoneof;
+
+#define USB_ONEOF_USBEMU15\
+    oneof varid     = USB_SUPPORT_SETUP.UsbEmu15,\
+        prompt      = STRING_TOKEN(STR_USB_MASS_DEVICE15),\
+        help        = STRING_TOKEN(STR_USB_EMULATION_TYPE_HELP),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 0, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FLOPPY), value = 1, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FORCED_FDD), value = 2, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_HDD), value = 3, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_CDROM), value = 4, flags = 0;\
+    endoneof;
+
+#define USB_ONEOF_USBEMU16\
+    oneof varid     = USB_SUPPORT_SETUP.UsbEmu16,\
+        prompt      = STRING_TOKEN(STR_USB_MASS_DEVICE16),\
+        help        = STRING_TOKEN(STR_USB_EMULATION_TYPE_HELP),\
+        flags       = RESET_REQUIRED,\
+        option text = STRING_TOKEN(STR_USB_AUTO), value = 0, flags = OPTION_DEFAULT | OPTION_DEFAULT_MFG;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FLOPPY), value = 1, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_FORCED_FDD), value = 2, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_HDD), value = 3, flags = 0;\
+        option text = STRING_TOKEN(STR_USB_EMUL_CDROM), value = 4, flags = 0;\
+    endoneof;
+#endif //#if USB_MASS_EMULATION_NATIVE
+
+#endif //#ifdef CONTROL_DEFINITION
+
+
+#ifdef CONTROLS_WITH_DEFAULTS
+
+USB_ONEOF_USBMAINSUPPORT    // UINT8    UsbMainSupport; // Disable \[Enable]
+USB_ONEOF_USBLEGACYSUPPORT  // UINT8    UsbLegacySupport;   //[Enable]\ Disable \ Auto
+USB_ONEOF_USBHISPEEDSUPPORT // UINT8    UsbHiSpeedSupport;   //[HiSpeed]\ FullSpeed
+USB_ONEOF_USBXHCISUPPORT    // UINT8    UsbXhciSupport; //[Enable]\ Disable
+USB_ONEOF_USBXHCIHANDOFF    // UINT8    UsbXhciHandoff; //[Enable]\ Disable
+USB_ONEOF_USBEHCIHANDOFF    // UINT8    UsbEhciHandoff; //[Disable] \ Enable
+USB_ONEOF_USBMASSDRIVERSUPPORT  // UINT8    UsbMassDriverSupport; // Disable \[Enable]
+USB_ONEOF_USBEMUL6064      // UINT8    UsbEmul6064; // Disable \[Enable]
+USB_ONEOF_USBHOTPLUGFDDSUPPORT  // UINT8    UsbHotplugFddSupport;   // Enable \[Disable]\ Auto
+USB_ONEOF_USBHOTPLUGHDDSUPPORT // UINT8 UsbHotplugHddSupport;   // Enable \[Disable]\ Auto
+USB_ONEOF_USBHOTPLUGCDROMSUPPORT // UINT8   UsbHotplugCdromSupport; // Enable \[Disable]\ Auto
+USB_ONEOF_USBS5WAKEUPSUPPORT // UINT8   UsbS5WakeupSupport // Disable \[Enable]
+USB_ONEOF_USBCONTROLTIMEOUT // UINT8    UsbControlTimeOut;  // 1 sec \ 5 sec \ 10 sec \[20 sec]
+USB_ONEOF_USBMASSRESETDELAY // UINT8    UsbMassResetDelay;  // 10 sec \[20 sec]\ 30 sec \ 40sec
+USB_ONEOF_POWERGOODDEVICEDELAY // UINT8 PowerGoodDeviceDelay;   //[Auto]\ Manual
+USB_NUMERIC_POWERGOODDEVICENUMDELAY // UINT8    PowerGoodDeviceNumDelay;    //[1...40] (seconds)
+USB_ONEOF_USBEMU1 // UINT8  UsbEmu1;    //[Auto] \ Floppy \ Forced FDD \ Hard Disk \ CD-ROM
+USB_ONEOF_USBEMU2 // UINT8  UsbEmu2;    //[Auto] \ Floppy \ Forced FDD \ Hard Disk \ CD-ROM
+USB_ONEOF_USBEMU3 // UINT8  UsbEmu3;    //[Auto] \ Floppy \ Forced FDD \ Hard Disk \ CD-ROM
+USB_ONEOF_USBEMU4 // UINT8  UsbEmu4;    //[Auto] \ Floppy \ Forced FDD \ Hard Disk \ CD-ROM
+USB_ONEOF_USBEMU5 // UINT8  UsbEmu5;    //[Auto] \ Floppy \ Forced FDD \ Hard Disk \ CD-ROM
+USB_ONEOF_USBEMU6 // UINT8  UsbEmu6;    //[Auto] \ Floppy \ Forced FDD \ Hard Disk \ CD-ROM
+USB_ONEOF_USBEMU7 // UINT8  UsbEmu7;    //[Auto] \ Floppy \ Forced FDD \ Hard Disk \ CD-ROM
+USB_ONEOF_USBEMU8 // UINT8  UsbEmu8;    //[Auto] \ Floppy \ Forced FDD \ Hard Disk \ CD-ROM
+USB_ONEOF_USBEMU9 // UINT8  UsbEmu9;    //[Auto] \ Floppy \ Forced FDD \ Hard Disk \ CD-ROM
+USB_ONEOF_USBEMU10 // UINT8 UsbEmu10;   //[Auto] \ Floppy \ Forced FDD \ Hard Disk \ CD-ROM
+USB_ONEOF_USBEMU11 // UINT8 UsbEmu11;   //[Auto] \ Floppy \ Forced FDD \ Hard Disk \ CD-ROM
+USB_ONEOF_USBEMU12 // UINT8 UsbEmu12;   //[Auto] \ Floppy \ Forced FDD \ Hard Disk \ CD-ROM
+USB_ONEOF_USBEMU13 // UINT8 UsbEmu13;   //[Auto] \ Floppy \ Forced FDD \ Hard Disk \ CD-ROM
+USB_ONEOF_USBEMU14 // UINT8 UsbEmu14;   //[Auto] \ Floppy \ Forced FDD \ Hard Disk \ CD-ROM
+USB_ONEOF_USBEMU15 // UINT8 UsbEmu15;   //[Auto] \ Floppy \ Forced FDD \ Hard Disk \ CD-ROM
+USB_ONEOF_USBEMU16 // UINT8 UsbEmu16;   //[Auto] \ Floppy \ Forced FDD \ Hard Disk \ CD-ROM
+
+#endif //#ifdef CONTROLS_WITH_DEFAULTS
+
+#ifdef FORM_SET_TYPEDEF
+	#include <Protocol/UsbPolicy.h>
+#if defined (USB_VIDEO_SUPPORT) && USB_VIDEO_SUPPORT	
+	#include <Protocol/AmiUsbVideoPolicy.h>
+#endif
+#endif
+
+#ifdef FORM_SET_VARSTORE
+    varstore USB_MASS_DEV_NUM,
+        key   = AUTO_ID(USB_MASS_DEV_NUM_KEY),
+        name  = UsbMassDevNum,
+        guid  = SETUP_GUID;
+
+    varstore USB_MASS_DEV_VALID,
+        key   = AUTO_ID(USB_MASS_DEV_VALID_KEY),
+        name  = UsbMassDevValid,
+        guid  = SETUP_GUID;
+        
+    varstore USB_CONTROLLER_NUM,
+        key   = AUTO_ID(USB_CONTROLLER_NUM_KEY),
+        name  = UsbControllerNum,
+        guid  = SETUP_GUID;
+
+    varstore USB_SUPPORT_SETUP,
+        key   = AUTO_ID(USB_SUPPORT_KEY),
+        name  = UsbSupport,
+        guid  = SETUP_GUID;
+#endif
+
+//**********************************************************************
+//                ADVANCED - USB Configuration Form
+//**********************************************************************
+#ifdef ADVANCED_FORM_SET
+
+#ifndef SUPPRESS_GRAYOUT_ENDIF //old Core
+#define SUPPRESS_GRAYOUT_ENDIF endif;
+#endif
+
+    #ifdef FORM_SET_ITEM
+        //
+        // Define controls to be added to the main page of the formset
+        //
+    #endif
+
+    #ifdef FORM_SET_GOTO
+        //
+        // Define goto commands for the forms defined in this file
+        //
+    suppressif SMC_SETUP_STYLE;	//SMCPKG_SUPPORT S        
+    goto USB_CONFIG_FORM_ID,
+        prompt  = STRING_TOKEN(STR_USB_CONFIGURATION),
+        help    = STRING_TOKEN(STR_USB_CONFIGURATION_HELP);
+    endif;//SMCPKG_SUPPORT E
+    #endif
+
+    #ifdef FORM_SET_FORM
+        //
+        // Define forms
+        //
+        #ifndef USB_FORM_USB
+        #define USB_FORM_USB
+        form formid = AUTO_ID(USB_CONFIG_FORM_ID),
+        title = STRING_TOKEN(STR_USB_CONFIGURATION);
+
+        SUBTITLE(STRING_TOKEN(STR_USB_CONFIGURATION))
+        SEPARATOR
+                                        //(EIP102493+)>		
+        //Display USB Module Version. 
+        text
+            help   = STRING_TOKEN(STR_EMPTY),
+            text   = STRING_TOKEN(STR_USB_MODULE_VER_HELP),
+            text   = STRING_TOKEN(STR_USB_MODULE_VER),
+            flags  = 0,
+            key    = 0;
+
+        SEPARATOR
+                                        //<(EIP102493+)
+
+        text
+            help   = STRING_TOKEN(STR_EMPTY),
+            text   = STRING_TOKEN(STR_USB_CONTROLLERS_ENABLED),
+            flags  = 0,
+            key    = 0;
+        SUBTITLE(STRING_TOKEN(STR_USB_CONTROLLERS_ENABLED_LIST))
+            
+        text
+            help   = STRING_TOKEN(STR_EMPTY),
+            text   = STRING_TOKEN(STR_USB_DEVICES_ENABLED),
+            flags  = 0,
+            key    = 0;
+
+        SUBTITLE(STRING_TOKEN(STR_USB_DEVICES_ENABLED_LIST))
+        SEPARATOR
+// UINT8    UsbMainSupport; // Disable \[Enable]
+#if HIDE_USB_SUPPORT_SETUP_QUESTION
+        suppressif ideqid USB_SUPPORT_SETUP.UsbMainSupport == USB_SUPPORT_SETUP.UsbMainSupport;
+#endif
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+            USB_ONEOF_USBMAINSUPPORT
+        endif;
+#if HIDE_USB_SUPPORT_SETUP_QUESTION
+        endif;  // suppress-grayout
+#endif
+
+#if defined (USB_VIDEO_SUPPORT) && USB_VIDEO_SUPPORT
+        suppressif ideqval USB_UVC_DEVICE.UvcDeviceConnected == 0;
+            goto UVC_FORM_ID,
+                prompt  = STRING_TOKEN(STR_USB_VIDEO_TITLE),
+                help    = STRING_TOKEN(STR_USB_VIDEO_TITLE_HELP);
+                
+            SEPARATOR
+        endif;
+#endif
+
+// UINT8    UsbLegacySupport;   //[Enable]\ Disable \ Auto
+#if USB_RUNTIME_DRIVER_IN_SMM
+        suppressif ideqval USB_SUPPORT_SETUP.UsbMainSupport == 0;
+#else
+        suppressif TRUE;
+#endif
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+            USB_ONEOF_USBLEGACYSUPPORT
+        SUPPRESS_GRAYOUT_ENDIF
+
+#if EHCI_SUPPORT
+#if HIDE_USB_HISPEED_SUPPORT_SETUP_QUESTION
+        suppressif TRUE;
+#else
+        suppressif ideqval USB_SUPPORT_SETUP.UsbMainSupport == 0 OR ideqval USB_CONTROLLER_NUM.EhciNum == 0;
+#endif
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+            USB_ONEOF_USBHISPEEDSUPPORT
+        SUPPRESS_GRAYOUT_ENDIF
+#endif
+
+#if XHCI_SUPPORT
+#if HIDE_USB_XHCI_LEGACY_SUPPORT_SETUP_QUESTION
+        suppressif TRUE;
+#else
+        suppressif ideqval USB_SUPPORT_SETUP.UsbMainSupport == 0 OR ideqval USB_CONTROLLER_NUM.XhciNum == 0;
+#endif
+// UINT8    UsbXhciSupport; //[Enable]\ Disable
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+            USB_ONEOF_USBXHCISUPPORT
+        SUPPRESS_GRAYOUT_ENDIF
+// UINT8    UsbXhciHandoff; //[Enable]\ Disable
+        suppressif ideqval USB_SUPPORT_SETUP.UsbMainSupport == 0 OR ideqval USB_CONTROLLER_NUM.XhciNum == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+            USB_ONEOF_USBXHCIHANDOFF
+        SUPPRESS_GRAYOUT_ENDIF
+#endif
+#if USB_EHCI_HANDOFF_SUPPORT
+// UINT8    UsbEhciHandoff; //[Disable] \ Enable
+        suppressif ideqval USB_SUPPORT_SETUP.UsbMainSupport == 0 OR ideqval USB_CONTROLLER_NUM.EhciNum == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+            USB_ONEOF_USBEHCIHANDOFF
+        SUPPRESS_GRAYOUT_ENDIF
+#endif
+
+#if USB_OHCI_HANDOFF_SUPPORT
+// UINT8    UsbOhciHandoff; //[Disable] \ Enable
+        suppressif ideqval USB_SUPPORT_SETUP.UsbMainSupport == 0 OR ideqval USB_CONTROLLER_NUM.OhciNum == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+            USB_ONEOF_USBOHCIHANDOFF
+        SUPPRESS_GRAYOUT_ENDIF
+#endif
+
+#if USB_DEV_MASS
+// UINT8    UsbMassDriverSupport; // Disable \[Enable]
+        suppressif ideqval USB_SUPPORT_SETUP.UsbMainSupport == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER OR (
+                  ideqval USB_CONTROLLER_NUM.UhciNum == 0 AND
+                  ideqval USB_CONTROLLER_NUM.OhciNum == 0 AND
+                  ideqval USB_CONTROLLER_NUM.EhciNum == 0 AND
+                  ideqval USB_CONTROLLER_NUM.XhciNum == 0);
+            USB_ONEOF_USBMASSDRIVERSUPPORT
+        SUPPRESS_GRAYOUT_ENDIF
+#endif
+
+#if defined (EMUL6064_SUPPORT) && EMUL6064_SUPPORT
+// UINT8    UsbEmul6064; // Disable \[Enable]
+        suppressif ideqval USB_SUPPORT_SETUP.UsbMainSupport == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+            USB_ONEOF_USBEMUL6064
+        SUPPRESS_GRAYOUT_ENDIF
+#endif
+
+#if defined (USB_HOTPLUG_FDD) && USB_HOTPLUG_FDD
+// UINT8    UsbHotplugFddSupport;   // Enable \[Disable]\ Auto
+        suppressif ideqval USB_SUPPORT_SETUP.UsbMainSupport == 0 OR ideqval USB_SUPPORT_SETUP.UsbLegacySupport == 1;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER OR (
+                  ideqval USB_CONTROLLER_NUM.UhciNum == 0 AND
+                  ideqval USB_CONTROLLER_NUM.OhciNum == 0 AND
+                  ideqval USB_CONTROLLER_NUM.EhciNum == 0 AND
+                  ideqval USB_CONTROLLER_NUM.XhciNum == 0);
+            USB_ONEOF_USBHOTPLUGFDDSUPPORT
+        SUPPRESS_GRAYOUT_ENDIF
+#endif
+
+#if defined (USB_HOTPLUG_HDD) && USB_HOTPLUG_HDD
+// UINT8 UsbHotplugHddSupport;   // Enable \[Disable]\ Auto
+        suppressif ideqval USB_SUPPORT_SETUP.UsbMainSupport == 0 OR ideqval USB_SUPPORT_SETUP.UsbLegacySupport == 1;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER OR (
+                  ideqval USB_CONTROLLER_NUM.UhciNum == 0 AND
+                  ideqval USB_CONTROLLER_NUM.OhciNum == 0 AND
+                  ideqval USB_CONTROLLER_NUM.EhciNum == 0 AND
+                  ideqval USB_CONTROLLER_NUM.XhciNum == 0);
+            USB_ONEOF_USBHOTPLUGHDDSUPPORT
+        SUPPRESS_GRAYOUT_ENDIF
+#endif
+
+#if defined (USB_HOTPLUG_CDROM) && USB_HOTPLUG_CDROM
+// UINT8   UsbHotplugCdromSupport; // Enable \[Disable]\ Auto
+        suppressif ideqval USB_SUPPORT_SETUP.UsbMainSupport == 0 OR ideqval USB_SUPPORT_SETUP.UsbLegacySupport == 1;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER OR (
+                  ideqval USB_CONTROLLER_NUM.UhciNum == 0 AND
+                  ideqval USB_CONTROLLER_NUM.OhciNum == 0 AND
+                  ideqval USB_CONTROLLER_NUM.EhciNum == 0 AND
+                  ideqval USB_CONTROLLER_NUM.XhciNum == 0);
+            USB_ONEOF_USBHOTPLUGCDROMSUPPORT
+        SUPPRESS_GRAYOUT_ENDIF
+#endif
+
+#if defined (USB_S5_WAKEUP_SUPPORT) && USB_S5_WAKEUP_SUPPORT
+// UINT8    UsbS5WakeupSupport; // Disable \[Enable]
+        suppressif TRUE;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+            USB_ONEOF_USBS5WAKEUPSUPPORT
+        SUPPRESS_GRAYOUT_ENDIF
+#endif
+	suppressif SMC_SETUP_STYLE;	//SMCPKG_SUPPORT S
+        SEPARATOR
+        text
+            help   = STRING_TOKEN(STR_EMPTY),
+            text   = STRING_TOKEN(STR_USB_DELAYS),
+            flags  = 0,
+            key    = 0;
+
+//(EIP30079+)>
+// UINT8    UsbControlTimeOut;  // 1 sec \ 5 sec \ 10 sec \[20 sec]
+        suppressif ideqval USB_SUPPORT_SETUP.UsbMainSupport == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER OR (
+                  ideqval USB_CONTROLLER_NUM.UhciNum == 0 AND
+                  ideqval USB_CONTROLLER_NUM.OhciNum == 0 AND
+                  ideqval USB_CONTROLLER_NUM.EhciNum == 0 AND
+                  ideqval USB_CONTROLLER_NUM.XhciNum == 0);
+            USB_ONEOF_USBCONTROLTIMEOUT
+        SUPPRESS_GRAYOUT_ENDIF
+//<(EIP30079+)
+// UINT8    UsbMassResetDelay;  // 10 sec \[20 sec]\ 30 sec \ 40sec
+        suppressif ideqval USB_SUPPORT_SETUP.UsbMainSupport == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER OR (
+                  ideqval USB_CONTROLLER_NUM.UhciNum == 0 AND
+                  ideqval USB_CONTROLLER_NUM.OhciNum == 0 AND
+                  ideqval USB_CONTROLLER_NUM.EhciNum == 0 AND
+                  ideqval USB_CONTROLLER_NUM.XhciNum == 0);
+            USB_ONEOF_USBMASSRESETDELAY
+        SUPPRESS_GRAYOUT_ENDIF
+// UINT8 PowerGoodDeviceDelay;   //[Auto]\ Manual
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER OR (
+                  ideqval USB_CONTROLLER_NUM.UhciNum == 0 AND
+                  ideqval USB_CONTROLLER_NUM.OhciNum == 0 AND
+                  ideqval USB_CONTROLLER_NUM.EhciNum == 0 AND
+                  ideqval USB_CONTROLLER_NUM.XhciNum == 0);
+            USB_ONEOF_POWERGOODDEVICEDELAY
+        endif;
+        endif;	//SMCPKG_SUPPORT E
+// UINT8    PowerGoodDeviceNumDelay;    //[1...40] (seconds)
+        suppressif ideqval USB_SUPPORT_SETUP.PowerGoodDeviceDelay == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER OR (
+                  ideqval USB_CONTROLLER_NUM.UhciNum == 0 AND
+                  ideqval USB_CONTROLLER_NUM.OhciNum == 0 AND
+                  ideqval USB_CONTROLLER_NUM.EhciNum == 0 AND
+                  ideqval USB_CONTROLLER_NUM.XhciNum == 0);
+            USB_NUMERIC_POWERGOODDEVICENUMDELAY
+        SUPPRESS_GRAYOUT_ENDIF
+
+        SEPARATOR
+
+        suppressif ideqval USB_SUPPORT_SETUP.UsbMainSupport == 0 OR ideqval USB_MASS_DEV_NUM.UsbMassDevNum == 0;
+        text
+            help   = STRING_TOKEN(STR_EMPTY),
+            text   = STRING_TOKEN(STR_USB_EMULATION),
+            flags  = 0,
+            key    = 0;
+        endif;
+// UINT8  UsbEmu1;    //[Auto] \ Floppy \ Forced FDD \ Hard Disk \ CD-ROM
+        suppressif ideqval USB_SUPPORT_SETUP.UsbMainSupport == 0 OR ideqval USB_MASS_DEV_VALID.UsbEmu1Valid == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER OR ideqval USB_SUPPORT_SETUP.UsbLegacySupport == 1;
+            USB_ONEOF_USBEMU1
+        SUPPRESS_GRAYOUT_ENDIF
+// UINT8  UsbEmu2;    //[Auto] \ Floppy \ Forced FDD \ Hard Disk \ CD-ROM
+        suppressif ideqval USB_SUPPORT_SETUP.UsbMainSupport == 0 OR ideqval USB_MASS_DEV_VALID.UsbEmu2Valid == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER OR ideqval USB_SUPPORT_SETUP.UsbLegacySupport == 1;
+            USB_ONEOF_USBEMU2
+        SUPPRESS_GRAYOUT_ENDIF
+// UINT8  UsbEmu3;    //[Auto] \ Floppy \ Forced FDD \ Hard Disk \ CD-ROM
+//		suppressif  ideqval USB_MASS_DEV_NUM.UsbMassDevNum == 2 OR ideqval USB_MASS_DEV_NUM.UsbMassDevNum == 1 OR ideqval USB_MASS_DEV_NUM.UsbMassDevNum == 0 OR ideqval USB_SUPPORT_SETUP.UsbLegacySupport == 1;
+        suppressif ideqval USB_SUPPORT_SETUP.UsbMainSupport == 0 OR ideqval USB_MASS_DEV_VALID.UsbEmu3Valid == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER OR ideqval USB_SUPPORT_SETUP.UsbLegacySupport == 1;
+            USB_ONEOF_USBEMU3
+        SUPPRESS_GRAYOUT_ENDIF
+// UINT8  UsbEmu4;    //[Auto] \ Floppy \ Forced FDD \ Hard Disk \ CD-ROM
+//		suppressif   ideqval USB_MASS_DEV_NUM.UsbMassDevNum == 3 OR ideqval USB_MASS_DEV_NUM.UsbMassDevNum == 2 OR ideqval USB_MASS_DEV_NUM.UsbMassDevNum == 1 OR ideqval USB_MASS_DEV_NUM.UsbMassDevNum == 0 OR ideqval USB_SUPPORT_SETUP.UsbLegacySupport == 1;
+        suppressif ideqval USB_SUPPORT_SETUP.UsbMainSupport == 0 OR ideqval USB_MASS_DEV_VALID.UsbEmu4Valid == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER OR ideqval USB_SUPPORT_SETUP.UsbLegacySupport == 1;
+            USB_ONEOF_USBEMU4
+        SUPPRESS_GRAYOUT_ENDIF
+// UINT8  UsbEmu5;    //[Auto] \ Floppy \ Forced FDD \ Hard Disk \ CD-ROM
+//		suppressif  ideqval USB_MASS_DEV_NUM.UsbMassDevNum == 4 OR ideqval USB_MASS_DEV_NUM.UsbMassDevNum == 3 OR ideqval USB_MASS_DEV_NUM.UsbMassDevNum == 2 OR ideqval USB_MASS_DEV_NUM.UsbMassDevNum == 1 OR ideqval USB_MASS_DEV_NUM.UsbMassDevNum == 0 OR ideqval USB_SUPPORT_SETUP.UsbLegacySupport == 1;
+        suppressif ideqval USB_SUPPORT_SETUP.UsbMainSupport == 0 OR ideqval USB_MASS_DEV_VALID.UsbEmu5Valid == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER OR ideqval USB_SUPPORT_SETUP.UsbLegacySupport == 1;
+            USB_ONEOF_USBEMU5
+        SUPPRESS_GRAYOUT_ENDIF
+// UINT8  UsbEmu6;    //[Auto] \ Floppy \ Forced FDD \ Hard Disk \ CD-ROM
+//		suppressif  ideqval USB_MASS_DEV_NUM.UsbMassDevNum == 5 OR ideqval USB_MASS_DEV_NUM.UsbMassDevNum == 4 OR ideqval USB_MASS_DEV_NUM.UsbMassDevNum == 3 OR ideqval USB_MASS_DEV_NUM.UsbMassDevNum == 2 OR ideqval USB_MASS_DEV_NUM.UsbMassDevNum == 1 OR ideqval USB_MASS_DEV_NUM.UsbMassDevNum == 0 OR ideqval USB_SUPPORT_SETUP.UsbLegacySupport == 1;
+        suppressif ideqval USB_SUPPORT_SETUP.UsbMainSupport == 0 OR ideqval USB_MASS_DEV_VALID.UsbEmu6Valid == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER OR ideqval USB_SUPPORT_SETUP.UsbLegacySupport == 1;
+            USB_ONEOF_USBEMU6
+        SUPPRESS_GRAYOUT_ENDIF
+// UINT8  UsbEmu7;    //[Auto] \ Floppy \ Forced FDD \ Hard Disk \ CD-ROM
+//		suppressif  ideqval USB_MASS_DEV_NUM.UsbMassDevNum == 6 OR ideqval USB_MASS_DEV_NUM.UsbMassDevNum == 5 OR ideqval USB_MASS_DEV_NUM.UsbMassDevNum == 4 OR ideqval USB_MASS_DEV_NUM.UsbMassDevNum == 3 OR ideqval USB_MASS_DEV_NUM.UsbMassDevNum == 2 OR ideqval USB_MASS_DEV_NUM.UsbMassDevNum == 1 OR ideqval USB_MASS_DEV_NUM.UsbMassDevNum == 0 OR ideqval USB_SUPPORT_SETUP.UsbLegacySupport == 1;
+        suppressif ideqval USB_SUPPORT_SETUP.UsbMainSupport == 0 OR ideqval USB_MASS_DEV_VALID.UsbEmu7Valid == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER OR ideqval USB_SUPPORT_SETUP.UsbLegacySupport == 1;
+            USB_ONEOF_USBEMU7
+        SUPPRESS_GRAYOUT_ENDIF
+// UINT8  UsbEmu8;    //[Auto] \ Floppy \ Forced FDD \ Hard Disk \ CD-ROM
+//		suppressif  ideqval USB_MASS_DEV_NUM.UsbMassDevNum == 7 OR ideqval USB_MASS_DEV_NUM.UsbMassDevNum == 6 OR ideqval USB_MASS_DEV_NUM.UsbMassDevNum == 5 OR ideqval USB_MASS_DEV_NUM.UsbMassDevNum == 4 OR ideqval USB_MASS_DEV_NUM.UsbMassDevNum == 3 OR ideqval USB_MASS_DEV_NUM.UsbMassDevNum == 2 OR ideqval USB_MASS_DEV_NUM.UsbMassDevNum == 1 OR ideqval USB_MASS_DEV_NUM.UsbMassDevNum == 0 OR ideqval USB_SUPPORT_SETUP.UsbLegacySupport == 1;
+        suppressif ideqval USB_SUPPORT_SETUP.UsbMainSupport == 0 OR ideqval USB_MASS_DEV_VALID.UsbEmu8Valid == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER OR ideqval USB_SUPPORT_SETUP.UsbLegacySupport == 1;
+            USB_ONEOF_USBEMU8
+        SUPPRESS_GRAYOUT_ENDIF
+// UINT8  UsbEmu9;    //[Auto] \ Floppy \ Forced FDD \ Hard Disk \ CD-ROM
+        suppressif ideqval USB_SUPPORT_SETUP.UsbMainSupport == 0 OR ideqval USB_MASS_DEV_VALID.UsbEmu9Valid == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER OR ideqval USB_SUPPORT_SETUP.UsbLegacySupport == 1;
+            USB_ONEOF_USBEMU9
+        SUPPRESS_GRAYOUT_ENDIF
+// UINT8  UsbEmu10;    //[Auto] \ Floppy \ Forced FDD \ Hard Disk \ CD-ROM
+        suppressif ideqval USB_SUPPORT_SETUP.UsbMainSupport == 0 OR ideqval USB_MASS_DEV_VALID.UsbEmu10Valid == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER OR ideqval USB_SUPPORT_SETUP.UsbLegacySupport == 1;
+            USB_ONEOF_USBEMU10
+        SUPPRESS_GRAYOUT_ENDIF
+// UINT8  UsbEmu11;    //[Auto] \ Floppy \ Forced FDD \ Hard Disk \ CD-ROM
+        suppressif ideqval USB_SUPPORT_SETUP.UsbMainSupport == 0 OR ideqval USB_MASS_DEV_VALID.UsbEmu11Valid == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER OR ideqval USB_SUPPORT_SETUP.UsbLegacySupport == 1;
+            USB_ONEOF_USBEMU11
+        SUPPRESS_GRAYOUT_ENDIF
+// UINT8  UsbEmu12;    //[Auto] \ Floppy \ Forced FDD \ Hard Disk \ CD-ROM
+        suppressif ideqval USB_SUPPORT_SETUP.UsbMainSupport == 0 OR ideqval USB_MASS_DEV_VALID.UsbEmu12Valid == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER OR ideqval USB_SUPPORT_SETUP.UsbLegacySupport == 1;
+            USB_ONEOF_USBEMU12
+        SUPPRESS_GRAYOUT_ENDIF
+// UINT8  UsbEmu13;    //[Auto] \ Floppy \ Forced FDD \ Hard Disk \ CD-ROM
+        suppressif ideqval USB_SUPPORT_SETUP.UsbMainSupport == 0 OR ideqval USB_MASS_DEV_VALID.UsbEmu13Valid == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER OR ideqval USB_SUPPORT_SETUP.UsbLegacySupport == 1;
+            USB_ONEOF_USBEMU13
+        SUPPRESS_GRAYOUT_ENDIF
+// UINT8  UsbEmu14;    //[Auto] \ Floppy \ Forced FDD \ Hard Disk \ CD-ROM
+        suppressif ideqval USB_SUPPORT_SETUP.UsbMainSupport == 0 OR ideqval USB_MASS_DEV_VALID.UsbEmu14Valid == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER OR ideqval USB_SUPPORT_SETUP.UsbLegacySupport == 1;
+            USB_ONEOF_USBEMU14
+        SUPPRESS_GRAYOUT_ENDIF
+// UINT8  UsbEmu15;    //[Auto] \ Floppy \ Forced FDD \ Hard Disk \ CD-ROM
+        suppressif ideqval USB_SUPPORT_SETUP.UsbMainSupport == 0 OR ideqval USB_MASS_DEV_VALID.UsbEmu15Valid == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER OR ideqval USB_SUPPORT_SETUP.UsbLegacySupport == 1;
+            USB_ONEOF_USBEMU15
+        SUPPRESS_GRAYOUT_ENDIF
+// UINT8  UsbEmu16;    //[Auto] \ Floppy \ Forced FDD \ Hard Disk \ CD-ROM
+        suppressif ideqval USB_SUPPORT_SETUP.UsbMainSupport == 0 OR ideqval USB_MASS_DEV_VALID.UsbEmu16Valid == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER OR ideqval USB_SUPPORT_SETUP.UsbLegacySupport == 1;
+            USB_ONEOF_USBEMU16
+        SUPPRESS_GRAYOUT_ENDIF
+
+        text 
+            help  = STRING_TOKEN(STR_EMPTY),
+            text  = STRING_TOKEN(STR_EMPTY);
+        suppressif TRUE;
+            suppressif ideqval AMI_CALLBACK.Value == INTERACTIVE_TEXT_VALUE;
+            text 
+                help  = STRING_TOKEN(STR_EMPTY),
+                text  = STRING_TOKEN(STR_EMPTY),
+                flags = INTERACTIVE, key = AUTO_ID(USB_DEVICES_ENABLED_REFRESH_KEY);
+            endif;
+        endif;
+        endform;
+
+        #endif //#ifndef USB_FORM_USB
+
+    #endif
+
+#endif // ADVANCED_FORM_SET
+
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************

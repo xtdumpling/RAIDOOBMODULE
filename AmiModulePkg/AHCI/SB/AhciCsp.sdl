@@ -1,0 +1,49 @@
+TOKEN
+    Name  = "AhciCspLib_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable AhciCspLib support in Project"
+    TokenType = Boolean
+    Master = Yes
+End
+
+TOKEN
+    Name  = "AVOID_MULTIPLE_BIG_REAL_MODE_SWITCH"
+    Value  = "1"
+    Help  = "1- Access the MMIO region by Multiple big real mode switch, 0 - Access the MMIO region by single big real mode switch"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "ACCESS_MMIO_THROUGH_SWSMI"
+    Value  = "0"
+    Help  = "*** ONLY FOR TESTING***When Set to 1 Forces the code to access MMIO region through SoftwareSMI if not in big real mode to retain backward compatibility.This token value should be always 0.AHCI_INT13_SMM_SUPPORT should be set to 1,if this token is to be enabled."
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+End
+
+PATH
+    Name  = "AHCI_CSP_DIR"
+End
+
+ELINK
+    Name  = "$(AHCI_CSP_DIR)/AhciAcc.csm16"
+    Parent  = "CSM_OEM16_SRC"
+    InvokeOrder = AfterParent
+End
+
+INFComponent
+    Name  = "AhciCspLib"
+    File  = "AhciCspLib.inf"
+    Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+    Class  = "AhciCspLib"
+    Instance  = "AmiModulePkg.AhciCspLib"
+End
+

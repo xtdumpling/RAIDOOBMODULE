@@ -1,0 +1,69 @@
+#****************************************************************************
+#****************************************************************************
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.02
+#    Bug Fix:  Re-write SmcOutBand module.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Aug/02/2016
+#
+#  Rev. 1.01
+#    Bug Fix:  Add Full SMBIOS module.
+#    Reason:
+#    Auditor:  Hartmann Hsieh
+#    Date:     Jul/27/2016
+#
+#  Rev. 1.00
+#    Bug Fix:  Compress and encipher HII data for sum.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Jul/25/2016
+#
+#****************************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = BaseOobLibrary
+  FILE_GUID                      = 106a2fd5-11ff-42ea-afba-b4969a702616
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = OobLibrary
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  CryptoPkg/CryptoPkg.dec
+  SmcPkg/SmcPkg.dec
+  SmcPkg/Module/SmcOOB/SmcOOB.dec
+
+[LibraryClasses]
+  IoLib
+  BaseCryptLib
+  UefiBootServicesTableLib
+  BaseMemoryLib
+  DebugLib
+  AmiDxeLib
+    
+[Sources]
+  OobLibrary.c
+  OobLibrary.h
+  TianoCompress.c
+  TianoCompress.h
+  CBlowfish.c
+  CBlowfish.h
+  CBlowfish.h2
+  SmcFeatureFlag.c
+  SmcFeatureFlag.h
+
+[Protocols]
+
+[Guids]
+
+[Pcd]
+

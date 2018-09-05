@@ -1,0 +1,197 @@
+TOKEN
+    Name  = "HDD_SECURITY_STATIC_SETUP_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable HddSecurity static setup support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes
+    Master = Yes
+    Token = "SECURITY_SUPPORT" "=" "1"
+    Token = "SETUP_SAME_SYS_HDD_PW" "=" "0"
+    Token = "AMI_TSE_HDD_SECURITY_SUPPORT" "=" "1"
+End
+
+PATH
+    Name  = "HDDSECURITYSTATICSETUP_DIR"
+End
+
+ELINK
+    Name  = "$(HDDSECURITY_DIR)/HddSecuritySetup.c"
+    Parent  = "SetupCallbackFiles"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "InitHddSecurityStrings,"
+    Parent  = "SetupStringInit"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(HDDSECURITY_DIR)/HddSecurity.sd"
+    Parent  = "SETUP_DEFINITIONS"
+    Token = "SETUP_IDE_SECURITY_SUPPORT" "=" "0"
+    Token = "HDD_SECURITY_PLUG_IN" "=" "0"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(HDDSECURITY_DIR)/HddSecurityCommon.sd"
+    Parent  = "SETUP_DEFINITIONS"
+    Token = "SETUP_IDE_SECURITY_SUPPORT" "=" "1"
+    Token = "HDD_SECURITY_PLUG_IN" "=" "0"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(HDDSECURITY_DIR)/HddSecurity.uni"
+    Parent  = "SetupStringFiles"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SECURITY_FORM_SET_CLASS,0,HDD_SECURITY_GET_USERPASSWORD1_KEY,HddPasswordCallback),"
+    Parent  = "SetupItemCallbacks"
+    InvokeOrder = AfterParent
+    Token = "SETUP_IDE_SECURITY_SUPPORT" "=" "0"
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SECURITY_FORM_SET_CLASS,0,HDD_SECURITY_GET_MASTERPASSWORD1_KEY,HddPasswordCallback),"
+    Parent  = "SetupItemCallbacks"
+    InvokeOrder = AfterParent
+    Token = "DISPLAY_MASTER_PASSWORD" "=" "1"
+    Token = "SETUP_IDE_SECURITY_SUPPORT" "=" "0"
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SECURITY_FORM_SET_CLASS,0,HDD_SECURITY_GET_USERPASSWORD2_KEY,HddPasswordCallback),"
+    Parent  = "SetupItemCallbacks"
+    InvokeOrder = AfterParent
+    Token = "ALL_HDD_SAME_PW" "=" "0"
+    Token = "SETUP_IDE_SECURITY_SUPPORT" "=" "0"
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SECURITY_FORM_SET_CLASS,0,HDD_SECURITY_GET_MASTERPASSWORD2_KEY,HddPasswordCallback),"
+    Parent  = "SetupItemCallbacks"
+    InvokeOrder = AfterParent
+    Token = "DISPLAY_MASTER_PASSWORD" "=" "1"
+    Token = "ALL_HDD_SAME_PW" "=" "0"
+    Token = "SETUP_IDE_SECURITY_SUPPORT" "=" "0"
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SECURITY_FORM_SET_CLASS,0,HDD_SECURITY_GET_USERPASSWORD3_KEY,HddPasswordCallback),"
+    Parent  = "SetupItemCallbacks"
+    InvokeOrder = AfterParent
+    Token = "ALL_HDD_SAME_PW" "=" "0"
+    Token = "SETUP_IDE_SECURITY_SUPPORT" "=" "0"
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SECURITY_FORM_SET_CLASS,0,HDD_SECURITY_GET_MASTERPASSWORD3_KEY,HddPasswordCallback),"
+    Parent  = "SetupItemCallbacks"
+    InvokeOrder = AfterParent
+    Token = "DISPLAY_MASTER_PASSWORD" "=" "1"
+    Token = "ALL_HDD_SAME_PW" "=" "0"
+    Token = "SETUP_IDE_SECURITY_SUPPORT" "=" "0"
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SECURITY_FORM_SET_CLASS,0,HDD_SECURITY_GET_USERPASSWORD4_KEY,HddPasswordCallback),"
+    Parent  = "SetupItemCallbacks"
+    InvokeOrder = AfterParent
+    Token = "ALL_HDD_SAME_PW" "=" "0"
+    Token = "SETUP_IDE_SECURITY_SUPPORT" "=" "0"
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SECURITY_FORM_SET_CLASS,0,HDD_SECURITY_GET_MASTERPASSWORD4_KEY,HddPasswordCallback),"
+    Parent  = "SetupItemCallbacks"
+    InvokeOrder = AfterParent
+    Token = "DISPLAY_MASTER_PASSWORD" "=" "1"
+    Token = "ALL_HDD_SAME_PW" "=" "0"
+    Token = "SETUP_IDE_SECURITY_SUPPORT" "=" "0"
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SECURITY_FORM_SET_CLASS,0,HDD_SECURITY_GET_USERPASSWORD5_KEY,HddPasswordCallback),"
+    Parent  = "SetupItemCallbacks"
+    InvokeOrder = AfterParent
+    Token = "ALL_HDD_SAME_PW" "=" "0"
+    Token = "SETUP_IDE_SECURITY_SUPPORT" "=" "0"
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SECURITY_FORM_SET_CLASS,0,HDD_SECURITY_GET_MASTERPASSWORD5_KEY,HddPasswordCallback),"
+    Parent  = "SetupItemCallbacks"
+    InvokeOrder = AfterParent
+    Token = "DISPLAY_MASTER_PASSWORD" "=" "1"
+    Token = "ALL_HDD_SAME_PW" "=" "0"
+    Token = "SETUP_IDE_SECURITY_SUPPORT" "=" "0"
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SECURITY_FORM_SET_CLASS,0,HDD_SECURITY_GET_USERPASSWORD6_KEY,HddPasswordCallback),"
+    Parent  = "SetupItemCallbacks"
+    InvokeOrder = AfterParent
+    Token = "ALL_HDD_SAME_PW" "=" "0"
+    Token = "SETUP_IDE_SECURITY_SUPPORT" "=" "0"
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SECURITY_FORM_SET_CLASS,0,HDD_SECURITY_GET_MASTERPASSWORD6_KEY,HddPasswordCallback),"
+    Parent  = "SetupItemCallbacks"
+    InvokeOrder = AfterParent
+    Token = "DISPLAY_MASTER_PASSWORD" "=" "1"
+    Token = "ALL_HDD_SAME_PW" "=" "0"
+    Token = "SETUP_IDE_SECURITY_SUPPORT" "=" "0"
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SECURITY_FORM_SET_CLASS,0,HDD_SECURITY_UPDATE_INFORMATION_KEY,HddSecurityUpdateFormCallback),"
+    Parent  = "SetupItemCallbacks"
+    InvokeOrder = AfterParent
+    Token = "SETUP_IDE_SECURITY_SUPPORT" "=" "0"
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SECURITY_FORM_SET_CLASS,0,HDD_SECURITY_UPDATE_INFORMATION2_KEY,HddSecurityUpdateFormCallback),"
+    Parent  = "SetupItemCallbacks"
+    InvokeOrder = AfterParent
+    Token = "SECURITY_SETUP_ON_SAME_PAGE" "=" "0"
+    Token = "SETUP_IDE_SECURITY_SUPPORT" "=" "0"
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SECURITY_FORM_SET_CLASS,0,HDD_SECURITY_UPDATE_INFORMATION3_KEY,HddSecurityUpdateFormCallback),"
+    Parent  = "SetupItemCallbacks"
+    InvokeOrder = AfterParent
+    Token = "SECURITY_SETUP_ON_SAME_PAGE" "=" "0"
+    Token = "SETUP_IDE_SECURITY_SUPPORT" "=" "0"
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SECURITY_FORM_SET_CLASS,0,HDD_SECURITY_UPDATE_INFORMATION4_KEY,HddSecurityUpdateFormCallback),"
+    Parent  = "SetupItemCallbacks"
+    InvokeOrder = AfterParent
+    Token = "SECURITY_SETUP_ON_SAME_PAGE" "=" "0"
+    Token = "SETUP_IDE_SECURITY_SUPPORT" "=" "0"
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SECURITY_FORM_SET_CLASS,0,HDD_SECURITY_UPDATE_INFORMATION5_KEY,HddSecurityUpdateFormCallback),"
+    Parent  = "SetupItemCallbacks"
+    InvokeOrder = AfterParent
+    Token = "SECURITY_SETUP_ON_SAME_PAGE" "=" "0"
+    Token = "SETUP_IDE_SECURITY_SUPPORT" "=" "0"
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SECURITY_FORM_SET_CLASS,0,HDD_SECURITY_UPDATE_INFORMATION6_KEY,HddSecurityUpdateFormCallback),"
+    Parent  = "SetupItemCallbacks"
+    InvokeOrder = AfterParent
+    Token = "SECURITY_SETUP_ON_SAME_PAGE" "=" "0"
+    Token = "SETUP_IDE_SECURITY_SUPPORT" "=" "0"
+End

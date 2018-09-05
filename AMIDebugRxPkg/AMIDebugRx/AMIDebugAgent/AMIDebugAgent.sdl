@@ -1,0 +1,113 @@
+TOKEN
+	Name  = "AMIDebugAgent_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling AMIDebugAgent support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "PeiAMIDebugAgentLib_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable PeiAMIDebugAgentLib support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "DxeAMIDebugAgentLib_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable DxeAMIDebugAgentLib support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "SmmAMIDebugAgentLib_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable SmmAMIDebugAgentLib support in Project"
+	TokenType = Boolean
+End
+
+PATH
+	Name  = "DxeAMIDebugAgentLib_DIR"
+	Path  = "AMIDebugRxPkg\AMIDebugRx\AMIDebugAgent"
+End
+
+PATH
+	Name  = "PeiAMIDebugAgentLib_DIR"
+	Path  = "AMIDebugRxPkg\AMIDebugRx\AMIDebugAgent"
+End
+
+PATH
+	Name  = "SmmAMIDebugAgentLib_DIR"
+	Path  = "AMIDebugRxPkg\AMIDebugRx\AMIDebugAgent"
+End
+
+INFComponent
+    Name  = "CommonDebugAgentLib"
+    File  = "CommonDebugAgentLib.inf"
+    Package  = "AMIDebugRx"
+    Arch  = "common Ia32 X64"
+End
+
+INFComponent
+    Name  = "DxeAMIDebugAgentLib"
+	File  = "DxeAMIDebugAgentLib.inf"
+	Package  = "AMIDebugRx"
+	Arch  = "common Ia32 X64"
+	Path  = "DxeAMIDebugAgentLib_DIR"
+End
+
+INFComponent
+    Name  = "PeiAMIDebugAgentLib"
+    File  = "PeiAMIDebugAgentLib.inf"
+    Package  = "AMIDebugRx"
+    Arch  = "common Ia32 X64"
+    Path  = "PeiAMIDebugAgentLib_DIR"
+End
+
+INFComponent
+    Name  = "SmmAMIDebugAgentLib"
+    File  = "SmmAMIDebugAgentLib.inf"
+    Package  = "AMIDebugRx"
+    Arch  = "common Ia32 X64"
+    Path  = "SmmAMIDebugAgentLib_DIR"
+    Token = "SMM_DEBUG_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+    Class  = "CommonDebugAgentLib"
+    Instance  = "AMIDebugRx.CommonDebugAgentLib"
+End
+
+LibraryMapping
+    Class  = "DebugAgentLib"
+    Instance  = "AMIDebugRx.DxeAMIDebugAgentLib"
+    ModuleTypes  = "DXE_CORE DXE_DRIVER DXE_RUNTIME_DRIVER UEFI_APPLICATION"
+End
+
+LibraryMapping
+    Class  = "DebugAgentLib"
+    Instance  = "AMIDebugRx.PeiAMIDebugAgentLib"
+    ModuleTypes  = "SEC PEIM PEI_CORE"
+End
+
+LibraryMapping
+    Class  = "DebugAgentLib"
+    Instance  = "AMIDebugRx.SmmAMIDebugAgentLib"
+    ModuleTypes  = "DXE_SMM_DRIVER"
+    Token = "SMM_DEBUG_SUPPORT" "=" "1"    
+End
+
+INFComponent
+    Name  = "InitializeLocalApicLib"
+    File  = "InitializeLocalApicLib/InitializeLocalApicLib.inf"
+    Package  = "AMIDebugRx"
+    Arch  = "common Ia32 X64"
+    Path  = "InitializeLocalApicLib_DIR"
+End
+
+LibraryMapping
+    Class  = "InitializeLocalApicLib"
+    Instance  = "AMIDebugRx.InitializeLocalApicLib"
+End
+

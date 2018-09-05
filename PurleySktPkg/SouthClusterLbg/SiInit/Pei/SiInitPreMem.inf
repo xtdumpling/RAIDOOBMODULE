@@ -1,0 +1,99 @@
+## @file
+#  Component description file for the Silicon Init Pre Memory module.
+#
+#@copyright
+# Copyright (c) 2013 - 2016 Intel Corporation. All rights reserved
+# This software and associated documentation (if any) is furnished
+# under a license and may only be used or copied in accordance
+# with the terms of the license. Except as permitted by the
+# license, no part of this software or documentation may be
+# reproduced, stored in a retrieval system, or transmitted in any
+# form or by any means without the express written consent of
+# Intel Corporation.
+# This file contains an 'Intel Peripheral Driver' and is uniquely
+# identified as "Intel Reference Module" and is licensed for Intel
+# CPUs and chipsets under the terms of your license agreement with
+# Intel or your vendor. This file may be modified by the user, subject
+# to additional terms of the license agreement.
+#
+#@par Specification
+#
+##
+
+
+[Defines]
+  INF_VERSION = 0x00010017
+  BASE_NAME            = SiInitPreMem
+  FILE_GUID            = A8499E65-A6F6-48B0-96DB-45C266030D83
+  VERSION_STRING       = 1.0
+  MODULE_TYPE          = PEIM
+  ENTRY_POINT          = SiInitPrePolicy
+
+
+[LibraryClasses]
+  PeimEntryPoint
+  DebugLib
+  PeiServicesLib
+  #SERVER_BIOS  SaInitLib
+  PchInitLib
+  #SERVER_BIOS  CpuInitLib
+  #SERVER_BIOS  MeInitLib
+  #SERVER_BIOS  ActiveManagementLib
+  PlatformHooksLib                       #SERVER_BIOS
+  PeiPchRcLib                            #SERVER_BIOS
+  TraceHubInitLib                        #SERVER_BIOS
+  PerformanceLib                         #SERVER_BIOS
+  #SERVER_BIOS  MemoryInitLib
+  #SERVER_BIOS  EvLoaderLib
+  #SERVER_BIOS  PchAlternateAccessModeLib
+  #SERVER_BIOS  PchRcLib
+
+
+[Packages]
+  MdePkg/MdePkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  PurleySktPkg/Me/MePkg.dec
+
+[Sources]
+  SiInitPreMem.c
+# APTIOV_SERVER_OVERRIDE_RC_START : Add missing file
+  SiInitPreMem.h
+# APTIOV_SERVER_OVERRIDE_RC_END : Add missing file
+
+[Pcd]
+  gEfiPchTokenSpaceGuid.PcdTraceHubEnMode               #SERVER_BIOS
+  gEfiPchTokenSpaceGuid.PcdTraceHubEnFwTrace            #SERVER_BIOS
+  gEfiPchTokenSpaceGuid.PcdTraceHubDest                     #SERVER_BIOS
+  gEfiPchTokenSpaceGuid.PcdTraceHubTempCsrMtbBar    #SERVER_BIOS
+
+[Ppis]
+  gPchPlatformPolicyPpiGuid        ## CONSUMES #SERVER_BIOS
+  #SERVER_BIOS gPchPolicyPpiGuid   ## CONSUMES
+  #SERVER_BIOS gSiPolicyPpiGuid    ## CONSUMES
+  #SERVER_BIOS gMePolicyPpiGuid    ## CONSUMES
+  #SERVER_BIOS gAmtPolicyPpiGuid   ## CONSUMES
+  #SERVER_BIOS gSiSaPolicyPpiGuid  ## CONSUMES
+  gMePolicyPpiGuid                 ## CONSUMES #SERVER_BIOS
+
+[Guids]
+##
+## Performance GUIDs
+##
+gPerfPchPrePolicyGuid     ## CONSUMES
+gPerfSiValidateGuid       ## CONSUMES
+gPerfPchValidateGuid      ## CONSUMES
+gPerfAmtValidateGuid      ## CONSUMES
+gPerfCpuValidateGuid      ## CONSUMES
+gPerfMeValidateGuid       ## CONSUMES
+gPerfSaValidateGuid       ## CONSUMES
+gPerfHeciPreMemGuid       ## CONSUMES
+gPerfPchPreMemGuid        ## CONSUMES
+gPerfCpuPreMemGuid        ## CONSUMES
+gPerfMePreMemGuid         ## CONSUMES
+gPerfSaPreMemGuid         ## CONSUMES
+gPerfEvlGuid              ## CONSUMES
+gPerfMemGuid              ## CONSUMES
+
+[Depex]
+  TRUE
+

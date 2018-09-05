@@ -1,0 +1,94 @@
+/*++
+  This file contains 'Framework Code' and is licensed as such
+  under the terms of your license agreement with Intel or your
+  vendor.  This file may not be modified, except as allowed by
+  additional terms of your license agreement.
+--*/
+/*++
+
+  Copyright (c) 2014 Intel Corporation.  All rights reserved.
+
+  This software and associated documentation (if any) is furnished under 
+  a license and may only be used or copied in accordance with the terms 
+  of the license.  Except as permitted by such license, no part of this 
+  software or documentation may be reproduced, stored in a retrieval 
+  system, or transmitted in any form or by any means without the express 
+  written consent of Intel Corporation.
+ 
+Module Name:
+
+  Pcct.aslc
+
+Abstract:
+
+  This file contains a structure definition for the ACPI Platform Communications Channel Table (PCCT).
+
+--*/
+
+//
+// Statements that include other files
+//
+#include <Acpi/Pcct.h>
+
+//
+// PCCT Table
+//
+
+#pragma pack(1)
+
+EFI_ACPI_PLATFORM_COMMUNICATIONS_CHANNEL_TABLE mPcctTable = {
+
+  { // EFI_ACPI_DESCRIPTION_HEADER
+    { EFI_ACPI_3_0_PCCT_SIGNATURE,
+      sizeof (EFI_ACPI_PLATFORM_COMMUNICATIONS_CHANNEL_TABLE), // Length
+      EFI_ACPI_PCCT_REVISION,				// Revision
+      0x00,                                             // CheckSum
+      'I', 'N', 'T', 'E', 'L', ' ',                     // OemId
+      0,                                                // OemTableId
+      EFI_ACPI_OEM_REVISION,				// OemRevision
+      EFI_ACPI_CREATOR_ID,                              // CreaterId
+      EFI_ACPI_CREATOR_REVISION,                        // CreaterRevision
+    },
+    EFI_ACPI_SCI_DOORBELL_SET,		                // Flags
+    EFI_ACPI_RESERVED_BYTE,
+    EFI_ACPI_RESERVED_BYTE,
+    EFI_ACPI_RESERVED_BYTE,
+    EFI_ACPI_RESERVED_BYTE,
+    EFI_ACPI_RESERVED_BYTE,
+    EFI_ACPI_RESERVED_BYTE,
+    EFI_ACPI_RESERVED_BYTE,
+    EFI_ACPI_RESERVED_BYTE,
+  },
+
+  // PCC
+  {
+    { PCC_SUBSPACE_STRUCTURE_TYPE,                      // PCC Subspace Structure
+      sizeof (EFI_ACPI_PCC_SUBSPACE_STRUCTURE),		      // Length
+      EFI_ACPI_RESERVED_BYTE,
+      EFI_ACPI_RESERVED_BYTE,
+      EFI_ACPI_RESERVED_BYTE,
+      EFI_ACPI_RESERVED_BYTE,
+      EFI_ACPI_RESERVED_BYTE,
+      EFI_ACPI_RESERVED_BYTE,
+      00,						                                    // BaseAddress- GAS (DWORD Memory) Address will be filled during boot
+      sizeof(EFI_ACPI_PCC_SHARED_MEMORY_REGION_RASF),	  // Length
+      PcctActionItemExecute,				                    // GAS Doorbell Register
+      0x00,						                                  // mask of bits to preserve when writing the doorbell register.
+      RASF_SWSMI_VALUE,					                        // Cmask of bits to set when writing the doorbell register.
+      PCC_SBSTANCE_NOMINAL_LATENCY,                     // Nominal Latency
+      PCC_SBSTANCE_MAX_PERIODIC_ACCESS_RATE,            // Maximum Periodic Access Rate
+      PCC_SBSTANCE_MIN_REQUEST_TURNAROUND_TIME          // Minimum Request Turnaround Time
+    }
+  }
+};
+
+#pragma pack()
+
+VOID*
+ReferenceAcpiTable (
+  VOID
+  )
+
+{
+ return (VOID*)&mPcctTable;
+}

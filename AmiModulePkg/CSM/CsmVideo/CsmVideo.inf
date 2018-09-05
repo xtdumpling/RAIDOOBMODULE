@@ -1,0 +1,62 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = CsmVideo
+  FILE_GUID                      = 29CF55F8-B675-4f5d-8F2F-B87A3ECFD063
+  MODULE_TYPE                    = UEFI_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = BiosVideoDriverEntryPoint
+
+[Sources]
+  UefiBiosVideo.h
+  UefiBiosVideo.c
+  VesaBiosExtensions.h
+  VgaClass.h
+  VgaClass.c
+  CsmVideoComponentName.c
+
+[Packages]
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+
+[Protocols]
+  gEfiLegacyBiosProtocolGuid
+  gEfiEdidDiscoveredProtocolGuid
+  gEfiEdidActiveProtocolGuid
+  gEfiEdidOverrideProtocolGuid
+  gEfiDriverBindingProtocolGuid
+  gEfiPciIoProtocolGuid
+  gEfiVgaMiniPortProtocolGuid
+  gEfiGraphicsOutputProtocolGuid
+  gEfiSimpleTextOutProtocolGuid
+  gEfiComponentNameProtocolGuid
+  gAmiCsmVideoPolicyProtocolGuid
+  gOpromStartEndProtocolGuid
+
+[Guids]
+  gAmiCsmThunkDriverGuid
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  AmiDxeLib
+  DevicePathLib
+  ReportStatusCodeLib
+
+[Depex]
+  gEfiLegacyBiosProtocolGuid

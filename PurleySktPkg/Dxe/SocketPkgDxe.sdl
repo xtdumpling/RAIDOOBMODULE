@@ -1,0 +1,195 @@
+TOKEN
+	Name  = "Dxe_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling Dxe support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+#TOKEN
+#	Name  = "CpuSncInit_SUPPORT"
+#	Value  = "1"
+#	Help  = "Main switch to enable CpuSncInit support in Project"
+#	TokenType = Boolean
+#End
+
+TOKEN
+	Name  = "IioInit_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable IioInit support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "PpmInitialize_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable PpmInitialize support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "MemRas_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable MemRas support in Project"
+	TokenType = Boolean
+        Token = "RAS_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "FpgaDxe_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable FpgaDxe support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "JedecNvDimm_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable JedecNvDimm support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "JedecNvDimmSMM_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable JedecNvDimmSMM support in Project"
+	TokenType = Boolean
+End
+
+#INFComponent
+#	Name  = "CpuSncInit"
+#	File  = "CpuSncInit\CpuSncInit.inf"
+#	Package  = "PurleySktPkg"
+#	ModuleTypes  = "DXE_DRIVER"
+#	Token = "CpuSncInit_SUPPORT" "=" "1"
+#End
+
+INFComponent
+	Name  = "IioInit"
+	File  = "IioInit\IioInit.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "IioInit_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "PpmInitialize"
+	File  = "PowerManagement\PpmInitialize.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "PpmInitialize_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "PcdLib"
+	Instance  = "MdePkg.DxePcdLib"
+	Override  = "PurleySktPkg.PpmInitialize"
+	Token = "PpmInitialize_SUPPORT" "=" "1"	
+End
+
+INFComponent
+	Name  = "MemRas"
+	File  = "MemRas\MemRas.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "MemRas_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "CompressDxeLib"
+	Instance  = "CpPlatPkg.CompressDxeLib"
+	Override  = "PurleySktPkg.MemRas"
+	Token = "MemRas_SUPPORT" "=" "1"	
+End
+
+TOKEN
+    Name  = "CpuCsrAccess_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable CpuCsrAccess support in Project"
+    TokenType = Boolean
+End
+
+TOKEN
+    Name  = "CpuCsrAccessSMM_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable CpuCsrAccessSMM support in Project"
+    TokenType = Boolean
+End
+
+INFComponent
+    Name  = "CpuCsrAccess"
+    File  = "CpuCsrAccess\CpuCsrAccess.inf"
+    Package  = "PurleySktPkg"
+    ModuleTypes  = "DXE_RUNTIME_DRIVER"
+    PreProcess = Yes
+    Token = "CpuCsrAccess_SUPPORT" "=" "1"
+End
+
+INFComponent
+    Name  = "CpuCsrAccessSMM"
+    File  = "CpuCsrAccess\CpuCsrAccessSMM.inf"
+    Package  = "PurleySktPkg"
+    ModuleTypes  = "DXE_SMM_DRIVER"
+    PreProcess = Yes
+    Token = "CpuCsrAccessSMM_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "CpuCsrAccessCpRcPkg_Ref"
+	Value  = "../CpRcPkg"
+	TokenType = Expression	
+End
+
+TOKEN
+    Name  = "CrystalRidge_SUPPORT"
+    Value  = "1"
+    Help  = "Switch for Enabling CrystalRidge support in the project"
+    TokenType = Boolean
+End
+
+TOKEN
+    Name  = "CrystalRidgeSMM_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable CrystalRidgeSMM support in Project"
+    TokenType = Boolean
+End
+
+INFComponent
+    Name  = "CrystalRidge"
+    File  = "CrystalRidge\CrystalRidge.inf"
+    Package  = "PurleySktPkg"
+    ModuleTypes  = "DXE_RUNTIME_DRIVER"
+    Token = "CrystalRidge_SUPPORT" "=" "1"
+End
+
+INFComponent
+    Name  = "CrystalRidgeSMM"
+    File  = "CrystalRidge\CrystalRidgeSMM.inf"
+    Package  = "PurleySktPkg"
+    ModuleTypes  = "DXE_SMM_DRIVER"
+    Token = "CrystalRidgeSMM_SUPPORT" "=" "1"
+End
+
+INFComponent
+    Name  = "FpgaDxe"
+    File  = "FpgaInit\FpgaDxe\FpgaDxe.inf"
+    Package  = "PurleySktPkg"
+    ModuleTypes  = "DXE_DRIVER"
+    Token = "FpgaDxe_SUPPORT" "=" "1"
+End
+
+INFComponent
+    Name  = "JedecNvDimm"
+    File  = "JedecNvDimm\JedecNvDimm.inf"
+    Package  = "PurleySktPkg"
+    ModuleTypes  = "DXE_RUNTIME_DRIVER"
+    Token = "JedecNvDimm_SUPPORT" "=" "1"
+End
+
+INFComponent
+    Name  = "JedecNvDimmSMM"
+    File  = "JedecNvDimm\JedecNvDimmSMM.inf"
+    Package  = "PurleySktPkg"
+    ModuleTypes  = "DXE_SMM_DRIVER"
+    Token = "JedecNvDimmSMM_SUPPORT" "=" "1"
+End

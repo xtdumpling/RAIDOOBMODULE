@@ -1,0 +1,68 @@
+TOKEN
+	Name  = "DbgHostStatusLib_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling DbgHostStatusLib support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+PATH
+	Name  = "COMDbgHostStatusLib_DIR"
+	Path  = "AMIDebugRxPkg\SerialDebugger\DbgHostStatusLib"
+End
+
+INFComponent
+	Name  = "PeiDbgHostStatusLib"
+	File  = "PeiDbgHostStatusLib.inf"
+	Package  = "SerialDebugger"
+	Arch  = "common"
+	Path  = "COMDbgHostStatusLib_DIR"
+End
+
+INFComponent
+	Name  = "DxeDbgHostStatusLib"
+	File  = "DxeDbgHostStatusLib.inf"
+	Package  = "SerialDebugger"
+	Arch  = "common Ia32 X64"
+	Path  = "COMDbgHostStatusLib_DIR"
+End
+
+INFComponent
+	Name  = "SmmDbgHostStatusLib"
+	File  = "SmmDbgHostStatusLib.inf"
+	Package  = "SerialDebugger"
+	Arch  = "common Ia32 X64"
+	Path  = "COMDbgHostStatusLib_DIR"
+End
+
+LibraryMapping
+	Class  = "DbgHostStatusLib"
+	Instance  = "SerialDebugger.PeiDbgHostStatusLib"
+	ModuleTypes  = "SEC PEIM PEI_CORE"
+	Arch  = "common"
+End
+
+LibraryMapping
+	Class  = "DbgHostStatusLib"
+	Instance  = "SerialDebugger.DxeDbgHostStatusLib"
+	ModuleTypes  = "DXE_CORE DXE_DRIVER DXE_RUNTIME_DRIVER UEFI_APPLICATION UEFI_DRIVER"
+End
+
+LibraryMapping
+	Class  = "DbgHostStatusLib"
+	Instance  = "SerialDebugger.SmmDbgHostStatusLib"
+	ModuleTypes  = "SMM_CORE DXE_SMM_DRIVER"
+End
+
+INFComponent
+    Name  = "CommonDebugLib"
+    File  = "CommonDebugLib.inf"
+    Package  = "SerialDebugger"
+    Arch  = "common Ia32 X64"
+    Path  = "COMDbgHostStatusLib_DIR"
+End
+
+LibraryMapping
+    Class  = "CommonDebugLib"
+    Instance  = "SerialDebugger.CommonDebugLib"
+End

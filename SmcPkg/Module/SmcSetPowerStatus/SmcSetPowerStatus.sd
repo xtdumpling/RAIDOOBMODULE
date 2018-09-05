@@ -1,0 +1,152 @@
+//****************************************************************************
+//**            (C)Copyright 1993-2015 Supermicro Computer, Inc.            **
+//****************************************************************************
+//****************************************************************************
+//  File History
+//
+//  Rev. 1.01
+//    Bug Fix:  Fixed Power Button 4 sec shutdown
+//    Reason:   
+//    Auditor:  Sunny Yang
+//    Date:     Jun/15/2016
+//
+//  Rev. 1.00
+//    Bug Fix:  Initialize revision.
+//    Reason:   
+//    Auditor:  Leon Xu
+//    Date:     Dec/28/2014
+//**************************************************************************//
+
+
+#ifdef SETUP_DATA_DEFINITION
+
+/***********************************************************/
+/* Put NVRAM data definitions here.
+/* For example: UINT8 Data1;
+/* These definitions will be converted by the build process
+/* to a definitions of SETUP_DATA fields.
+/***********************************************************/
+	UINT8	AcLossPolicy;
+	UINT8	SmcAfterG3Save;  
+	UINT8   SmcPwrBtnFn;
+#endif
+
+
+#ifdef FORM_SET_TYPEDEF
+    // #include 
+
+    #ifndef SUPPRESS_GRAYOUT_ENDIF //old Core
+      #if EFI_SPECIFICATION_VERSION>0x20000
+        #define SUPPRESS_GRAYOUT_ENDIF endif; endif;
+      #else
+        #define SUPPRESS_GRAYOUT_ENDIF endif;
+      #endif
+    #endif
+#endif // FORM_SET_TYPEDEF
+
+//**********************************************************************
+//                  Compatibility Section
+//**********************************************************************
+
+#if defined(VFRCOMPILE) && !defined(CONTROLS_ARE_DEFINED)
+  #define CONTROL_DEFINITION
+#endif
+
+//**********************************************************************
+//                  Controls Section
+//
+// The following section contains control macros that can be overridden
+// in external files.  This allows customization of control content, 
+// while ensuring the control's data is available.
+//**********************************************************************
+
+#ifdef CONTROL_DEFINITION
+
+#define AC_LOSS_POLICY \
+    oneof varid     = SETUP_DATA.AcLossPolicy, \
+      prompt        = STRING_TOKEN (STR_LAST_STATE_POLICY_PROMPT), \
+    	  help        = STRING_TOKEN (STR_LAST_STATE_POLICY_HELP), \
+ 	      option text = STRING_TOKEN (STR_LAST_STATE_BIOS), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED; \
+    	  option text = STRING_TOKEN (STR_LAST_STATE_IPMI), value = 1, flags = RESET_REQUIRED; \
+  	endoneof;
+
+#define SMC_AFTER_G3_SAVE\
+    oneof varid     = SETUP_DATA.SmcAfterG3Save, \
+      prompt        = STRING_TOKEN (STR_LAST_STATE_PROMPT), \
+    	  help        = STRING_TOKEN (STR_LAST_STATE_HELP), \
+ 	      option text = STRING_TOKEN (STR_POWER_OFF),  value = 0, flags = RESET_REQUIRED; \
+    	  option text = STRING_TOKEN (STR_POWER_ON),   value = 1, flags = RESET_REQUIRED; \
+    	  option text = STRING_TOKEN (STR_LAST_STATE), value = 2, flags = RESET_REQUIRED | DEFAULT |  MANUFACTURING; \
+    endoneof;
+#define SMC_PWR_BTN_FN \
+        oneof varid		= SETUP_DATA.SmcPwrBtnFn,\
+            prompt      = STRING_TOKEN (STR_SMC_POWER_BTN),\
+            help        = STRING_TOKEN (STR_SMC_POWER_BTN_HELP),\
+            option text = STRING_TOKEN (STR_PWR_BTN_INSTANT_OFF), value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+            option text = STRING_TOKEN (STR_PWR_BTN_OVERRIDE),    value = 0, flags = RESET_REQUIRED;\
+        endoneof;
+	
+#endif //#ifdef CONTROL_DEFINITION
+
+
+#ifdef CONTROLS_WITH_DEFAULTS
+    AC_LOSS_POLICY
+    SMC_AFTER_G3_SAVE
+    SMC_PWR_BTN_FN    
+#endif //#ifdef CONTROLS_WITH_DEFAULTS
+
+/*
+#ifdef ADVANCED_FORM_SET
+
+    #ifdef FORM_SET_ITEM
+    // Define controls to be added to the main page of the formset
+    #endif
+
+    #ifdef FORM_SET_GOTO
+    // Define goto commands for the forms defined in this file
+        goto SMC_BOOT_FEATURE_FORM_ID, 
+        prompt = STRING_TOKEN(STR_SMC_BOOT_FEATURE_FORM),
+        help = STRING_TOKEN(STR_SMC_BOOT_FEATURE_FORM_HELP);
+    #endif
+
+    #ifdef FORM_SET_FORM
+
+
+      #ifndef ADV_BOOT_FORM_DEF
+      #define ADV_BOOT_FORM_DEF
+        // Define forms
+        form formid = AUTO_ID(SMC_BOOT_FEATURE_FORM_ID),
+
+        title = STRING_TOKEN(STR_SMC_BOOT_FEATURE_FORM);
+        SUBTITLE(STRING_TOKEN(STR_SMC_BOOT_FEATURE_FORM_HELP))
+    
+        SEPARATOR
+    
+        // grayout (for display only)
+        suppressif ideqval SETUP_DATA.AcLossPolicy == 0;
+          AC_LOSS_POLICY
+        endif;
+
+          SMC_AFTER_G3_SAVE
+          SMC_PWR_BTN_FN
+        endform; 
+      #endif // #ifndef CMOS_FORM_DEF
+
+    #endif // FORM_SET_FORM
+
+#endif  // ADVANCED_FORM_SET
+*/
+
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2012, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**     5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093            **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************

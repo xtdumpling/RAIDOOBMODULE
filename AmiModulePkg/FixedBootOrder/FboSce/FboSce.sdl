@@ -1,0 +1,51 @@
+TOKEN
+	Name  = "FboSce_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable FboSce support in Project"
+	TokenType = Boolean
+    TargetH = Yes
+    Master = Yes
+    Token = "SmiVariable_SUPPORT" "=" "1"
+End
+
+PATH
+	Name  = "FboSce_DIR"
+End
+
+ELINK
+    Name  = "FboSceBuildDefault,"
+    Parent  = "SaveBootOptions,"
+    InvokeOrder = BeforeParent
+End
+
+ELINK
+    Name  = "FboSceCheck,"
+    Parent  = "FboSyncBootOptionsFromDevOrder,"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(FboSce_DIR)\FboSceTse.c"
+	Parent  = "TSE_SOURCE_FILES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "FboSceSaves,"
+	Parent  = "FixedBootOrderSaveChange,"
+	Help  = "Save Sce variable of Fbo for Detection"
+	InvokeOrder = AfterParent
+End
+
+INFComponent
+	Name  = "FboSce"
+	File  = "FboSce.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "DXE_DRIVER"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "AmiModulePkg.FboSce"
+	Override  = "AmiModulePkg.Bds"
+End

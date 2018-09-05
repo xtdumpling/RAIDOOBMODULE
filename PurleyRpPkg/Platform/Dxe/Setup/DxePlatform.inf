@@ -1,0 +1,281 @@
+#
+# This file contains an 'Intel Peripheral Driver' and is
+# licensed for Intel CPUs and chipsets under the terms of your
+# license agreement with Intel or your vendor.  This file may
+# be modified by the user, subject to additional terms of the
+# license agreement
+#
+## @file
+# Component description file for DxePlatform module.
+#
+# This driver initializes platform configuration setting and installs several platform policy potocols.
+# Copyright (c) 2006 - 2016, Intel Corporation. All rights reserved.
+#
+#  This software and associated documentation (if any) is furnished
+#  under a license and may only be used or copied in accordance
+#  with the terms of the license. Except as permitted by such
+#  license, no part of this software or documentation may be
+#  reproduced, stored in a retrieval system, or transmitted in any
+#  form or by any means without the express written consent of
+#  Intel Corporation.
+#
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = Platform
+  FILE_GUID                      = ABBCE13D-E25A-4d9f-A1F9-2F7710786892
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = SetupDriverEntry
+
+  # APTIOV_SERVER_OVERRIDE_RC_START : change done to add IntelRcSetup to defaults.bin during build
+  UEFI_HII_RESOURCE_SECTION      = TRUE
+  # APTIOV_SERVER_OVERRIDE_RC_END : change done to add IntelRcSetup to defaults.bin during build
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF EBC
+#
+
+[Sources]
+  # APTIOV_SERVER_OVERRIDE_RC_START
+  #  BootOptions.uni
+  # APTIOV_SERVER_OVERRIDE_RC_END
+  SystemEventLogStrings.uni
+  PchSetupStrings.uni
+  SetupStrings.uni
+  Strings.uni
+# APTIOV_SERVER_OVERRIDE_RC_START
+#  UsbConfigData.uni
+# APTIOV_SERVER_OVERRIDE_RC_END
+  MeSetup.uni
+  MeSpsSetup.uni
+  MeDfxSetup.uni
+  IeConfig.uni
+  IccSetup.uni
+  # APTIOV_SERVER_OVERRIDE_RC_START
+  #  BmcLanCfg.uni
+  # APTIOV_SERVER_OVERRIDE_RC_END
+  Overclocking.uni
+  # APTIOV_SERVER_OVERRIDE_RC_START
+  #  ConsoleRedirectionConfigurationStrings.uni
+  # APTIOV_SERVER_OVERRIDE_RC_END
+
+  SetupPlatform.h
+  # APTIOV_SERVER_OVERRIDE_RC_START
+  #  SetupScreenVfrDefines.h
+  # APTIOV_SERVER_OVERRIDE_RC_END
+
+  SystemEventLog.hfr
+  PchSetup.hfr
+  # APTIOV_SERVER_OVERRIDE_RC_START
+  #  UsbConfigData.hfr
+  #  BmcLanCfg.hfr
+  # APTIOV_SERVER_OVERRIDE_RC_END
+  MeSetup.hfr
+  MeSpsSetup.hfr
+  MeDfxSetup.hfr
+  IeConfig.hfr
+  # APTIOV_SERVER_OVERRIDE_RC_START
+  #  SystemInfo.hfr
+  #  BootAllOptions.hfr
+  #  ConsoleRedirectionConfigurationSetup.hfr
+  #  Advanced.vfr
+  #  Main.vfr
+  #  BootOptions.vfr
+  #  Tpm.vfr
+  IntelRCSetup.vfr
+  # APTIOV_SERVER_OVERRIDE_RC_END
+  Overclocking.hfr
+  DebugInterface.hfr
+  # APTIOV_SERVER_OVERRIDE_RC_START: Defines dummy control and update value from NVRAM or HOB in order to avoid load defaults issue.
+  IntelRcSetupDummyControls.hfr
+  # APTIOV_SERVER_OVERRIDE_RC_END: Defines dummy control and update value from NVRAM or HOB in order to avoid load defaults issue.
+
+  # APTIOV_SERVER_OVERRIDE_RC_START
+  #  KeyboardSetup.c 
+  # APTIOV_SERVER_OVERRIDE_RC_END
+  SetupFunctions.c
+  SetupInfoRecords.c
+  SetupPlatform.c
+  SecurityCallback.c
+  MeSetup.c
+  MeSpsSetup.c
+  IeSetup.c
+  IccSetup.c
+  ResetTestingSetupStrings.uni
+  # APTIOV_SERVER_OVERRIDE_RC_START : Include x-AMI mapping language UNI file
+  PlatformSetupXAmiStringIncludes.uni
+  # APTIOV_SERVER_OVERRIDE_RC_END : Include x-AMI mapping language UNI file
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  # APTIOV_SERVER_OVERRIDE_RC_START
+  #  BpCommonPkg/BpCommonPkg.dec
+  # APTIOV_SERVER_OVERRIDE_RC_END
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+  PurleySktPkg/Me/MePkg.dec
+  PurleySktPkg/Ie/IePkg.dec
+  CpPlatPkg/CpPlatPkg.dec
+  # APTIOV_SERVER_OVERRIDE_RC_START : AMI doesn't use CpPcPlatPkg
+  #  CpPcPlatPkg/CpPcPlatPkg.dec
+  # APTIOV_SERVER_OVERRIDE_RC_END : AMI doesn't use CpPcPlatPkg
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  IA32FamilyCpuPkg/IA32FamilyCpuPkg.dec
+
+[LibraryClasses]
+  DebugLib
+  IoLib
+  S3IoLib
+  UefiBootServicesTableLib
+  UefiDriverEntryPoint
+  UefiRuntimeServicesTableLib
+  HiiLib
+  HobLib
+  PciLib
+  UefiLib
+  PrintLib
+  BaseMemoryLib
+  PcdLib
+  S3IoLib
+  S3PciLib
+  PchPlatformLib
+  PciExpressLib
+  DxeMeLib
+  MeTypeLib
+  DxeSpsPolicyLib
+  SetupLib
+  PlatformHooksLib
+  PchPcieRpLib
+  PchInfoLib
+  PchAlternateAccessModeLib
+  HeciCoreLib
+  DxePolicyUpdateLib
+  # APTIOV_SERVER_OVERRIDE_RC_START
+  #  CmosAccessLib 
+  # APTIOV_SERVER_OVERRIDE_RC_END
+  UsraLib
+  PttHeciLib
+  # APTIOV_SERVER_OVERRIDE_RC_START : Password handling is done as per AMI TSE
+  #  PasswordEncodeLib
+  # APTIOV_SERVER_OVERRIDE_RC_END : Password handling is done as per AMI TSE
+
+[Guids]
+  gEfiSetupVariableGuid
+  gEfiStatusCodeSpecificDataGuid
+  gMainPkgListGuid
+  gAdvancedPkgListGuid
+  gTpmPkgListGuid
+  gEfiCpuHtCapableGuid
+  gEfiMemorySetupGuid
+  gEfiMemoryMapGuid
+# APTIOV_SERVER_OVERRIDE_RC_START : Commenting the GUID as it is not signalled in AMI BIOS.
+#  gSignalBeforeEnterSetupGuid
+# APTIOV_SERVER_OVERRIDE_RC_END : Commenting the GUID as it is not signalled in AMI BIOS.
+  gBootOptionsPkgListGuid
+  gEfiSetupVariableGuid
+  gIccGuid
+  gEfiSetupEnterGuid
+  gEfiAdminPasswordHobGuid
+  gEfiSocketCommonRcVariableGuid
+  gEfiSocketMemoryVariableGuid
+  gEfiSocketIioVariableGuid
+  gEfiSocketMpLinkVariableGuid
+  gEfiSocketPowermanagementVarGuid
+  gEfiSocketProcessorCoreVarGuid
+  gEfiPchRcVariableGuid
+  gEfiMeRcVariableGuid
+  gEfiIeRcVariableGuid
+  gEfiMfgUUIDHobGuid
+  gPchPolicyHobGuid
+  gReserveMemFlagVariableGuid
+  gFpgaSocketVariableGuid
+  
+[Protocols]
+  gEfiDevicePathProtocolGuid                    # PROTOCOL ALWAYS_CONSUMED
+  gEfiHiiDatabaseProtocolGuid                   # PROTOCOL ALWAYS_CONSUMED
+  gEfiHiiConfigAccessProtocolGuid               # PROTOCOL ALWAYS_CONSUMED
+  gEfiHiiConfigRoutingProtocolGuid              # PROTOCOL ALWAYS_CONSUMED
+  gEfiFormBrowser2ProtocolGuid                  # PROTOCOL ALWAYS_CONSUMED
+  gEfiTcgProtocolGuid
+  gEfiPlatformPolicyProtocolGuid                # PROTOCOL ALWAYS_PRODUCED
+  gEfiPlatformTypeProtocolGuid
+  gEfiPciRootBridgeIoProtocolGuid
+  gDxePchPlatformPolicyProtocolGuid
+  gEfiPs2PolicyProtocolGuid
+  gEfiIsaIoProtocolGuid
+  gEfiDiskInfoProtocolGuid
+  gEfiDataHubProtocolGuid
+  gEfiIioUdsProtocolGuid
+  gEfiLegacyBootMarkerGuid         ## Produces
+  gEfiWindowsInt10Workaround       ## Produces
+  gEfiSmbiosProtocolGuid                        # PROTOCOL CONSUMES
+  gDxePchPlatformResetPolicyProtocolGuid        # PROTOCOL ALWAYS_PRODUCED
+  gEfiDxeSystemBoardProtocolGuid                # PROTOCOL CONSUMES
+  gEfiIioSystemProtocolGuid
+  gEfiMpServiceProtocolGuid
+  gWdtProtocolGuid
+  gPchResetProtocolGuid
+  gIccDataProtocolGuid
+  gSpsPolicyProtocolGuid
+  gEfiUsbLegacyStack
+  # APTIOV_SERVER_OVERRIDE_RC_START
+  gEfiHiiPackageListProtocolGuid
+  # APTIOV_SERVER_OVERRIDE_RC_END
+  gEfiAmtWrapperProtocolGuid
+
+[Pcd]
+  gPlatformTokenSpaceGuid.PcdCmosDebugPrintLevelReg
+  gServerCommonTokenSpaceGuid.PcdUefiOptimizedBoot
+  # APTIOV_SERVER_OVERRIDE_RC_START
+  # gCpPlatTokenSpaceGuid.PcdUefiWindowsInt10Workaround
+  gServerCommonTokenSpaceGuid.PcdEfiWindowsInt10Workaround
+  # APTIOV_SERVER_OVERRIDE_RC_END
+  gCpPlatFlashTokenSpaceGuid.PcdFlashFvAcmBase
+  gEfiPchTokenSpaceGuid.PcdWakeOnRTCS5
+  gEfiPchTokenSpaceGuid.PcdRtcWakeupTimeHour
+  gEfiPchTokenSpaceGuid.PcdRtcWakeupTimeMinute
+  gEfiPchTokenSpaceGuid.PcdRtcWakeupTimeSecond
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+  gEfiMdePkgTokenSpaceGuid.PcdPlatformBootTimeOut
+  gEfiMdeModulePkgTokenSpaceGuid.PcdUse1GPageTable
+  gEfiMdeModulePkgTokenSpaceGuid.PcdResetOnMemoryTypeInformationChange
+  gEfiCpuTokenSpaceGuid.PcdCpuSmmMsrSaveStateEnable
+  gEfiCpuTokenSpaceGuid.PcdCpuSmmUseDelayIndication
+  gEfiCpuTokenSpaceGuid.PcdCpuSmmUseBlockIndication
+  gEfiCpuTokenSpaceGuid.PcdCpuSmmUseSmmEnableIndication
+
+#
+# LegacySol_Common_start
+#
+  gEfiMdePkgTokenSpaceGuid.PcdUartDefaultBaudRate
+  gEfiMdePkgTokenSpaceGuid.PcdUartDefaultDataBits
+  gEfiMdePkgTokenSpaceGuid.PcdUartDefaultParity
+  gEfiMdePkgTokenSpaceGuid.PcdUartDefaultStopBits
+  gEfiMdePkgTokenSpaceGuid.PcdDefaultTerminalType
+
+#
+# LegacySol_Common_end
+#
+
+  gPlatformTokenSpaceGuid.PcdSupportLegacyStack
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[Depex]
+  gEfiVariableArchProtocolGuid      AND
+  gEfiVariableWriteArchProtocolGuid AND
+  gEfiHiiDatabaseProtocolGuid       AND
+  gEfiPlatformTypeProtocolGuid      AND
+  gPcdProtocolGuid                  AND
+  gEfiDxeSystemBoardProtocolGuid

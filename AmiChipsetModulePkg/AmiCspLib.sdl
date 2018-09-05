@@ -1,0 +1,289 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+
+#/** @file AmiCspLib.sdl
+#
+#*/
+
+TOKEN
+	Name  = "AMICSPLIB_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable CSP Library support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "CSPLIB_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable CSP Library support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+End
+
+PATH
+	Name  = "AmiCspLib_DIR"
+End
+
+PATH
+	Name  = "CSP_LIB_DIR"
+	Path  = "AmiChipsetModulePkg/Library/AmiCspLib"
+End
+
+MODULE
+	Help  = "Includes AmiCspLib.mak to Project"
+	File  = "AmiCspLib.mak"
+End
+
+ELINK
+	Name  = "gEfiAcpiTableProtocolGuid"
+	Parent  = "AMI_CSP_DXE_PROTOCOLS"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(CSP_LIB_DIR)/CspLibPei.c"
+	Parent  = "AMI_CSP_PEI_SOURCES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "AMI_CSP_PEI_SOURCES"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "AMI_CSP_DXE_SOURCES"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "AMI_CSP_PEI_LIBRARIES"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "AMI_CSP_DXE_LIBRARIES"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "AMI_CSP_LIBRARIES"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "AMI_CSP_PEI_PPIS"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "AMI_CSP_DXE_PROTOCOLS"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "AMI_CSP_PACKAGES"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "AMI_CSP_PCD"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "AMI_CSP_PEI_PCD"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "AMI_CSP_DXE_PCD"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = " "
+	Parent  = "AMI_CSP_PEI_PCD"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = " "
+	Parent  = "AMI_CSP_DXE_PCD"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "AMI_CSP_PEI_GUIDS"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "AMI_CSP_DXE_GUIDS"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "AMI_CSP_GUIDS"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = " "
+	Parent  = "AMI_CSP_PEI_GUIDS"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = " "
+	Parent  = "AMI_CSP_DXE_GUIDS"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = " "
+	Parent  = "AMI_CSP_GUIDS"
+	InvokeOrder = AfterParent
+End
+
+OUTPUTREGISTER
+	Name  = "AMI_CSP_LIB_HEADER_FILE"
+	Path  = "Build\"
+	File  = "AmiCspLib.h"
+	Template  = "Include\AmiCspLib.txt"
+End
+
+INFComponent
+	Name  = "AmiCspLibPei"
+	File  = "../Build/AmiCspLibPei.inf"
+	Package  = "AmiChipsetModulePkg"
+End
+
+INFComponent
+	Name  = "AmiCspLibDxe"
+	File  = "../Build/AmiCspLibDxe.inf"
+	Package  = "AmiChipsetModulePkg"
+End
+
+INFComponent
+	Name  = "PciTableInit"
+	File  = "Library/AmiCspLib/PciTableInit.inf"
+	Package  = "AmiChipsetModulePkg"
+	ModuleTypes  = "PEIM"
+End
+
+LibraryMapping
+	Class  = "AmiCspLib"
+	Instance  = "AmiChipsetModulePkg.AmiCspLibPei"
+	ModuleTypes  = "PEIM PEI_CORE SEC"
+End
+
+LibraryMapping
+	Class  = "AmiCspLib"
+	Instance  = "AmiChipsetModulePkg.AmiCspLibDxe"
+	ModuleTypes  = "DXE_DRIVER DXE_CORE DXE_RUNTIME_DRIVER UEFI_DRIVER SMM_CORE DXE_SMM_DRIVER UEFI_APPLICATION"
+End
+
+
+# Added to support CSP files in Purley.
+
+ELINK
+	Name  = "PurleySktPkg/SouthClusterLbg/PchRcPkg.dec"
+	Parent  = "AMI_CSP_PACKAGES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "PurleyPlatPkg/PlatPkg.dec"
+	Parent  = "AMI_CSP_PACKAGES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "PurleySktPkg/SocketPkg.dec"
+    Parent  = "AMI_CSP_PACKAGES"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "CpRcPkg/RcPlatPurley.dec"
+    Parent  = "AMI_CSP_PACKAGES"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "AmiCRBPkg\AmiCRBPkg.dec"
+	Parent  = "AMI_CSP_PACKAGES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "AmiPeiLib"
+	Parent  = "AMI_CSP_PEI_LIBRARIES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "AmiDxeLib"
+	Parent  = "AMI_CSP_DXE_LIBRARIES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress"
+	Parent  = "AMI_CSP_PCD"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "AmiPcieSegBusLib"
+    Parent  = "AMI_CSP_LIBRARIES"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "MmPciLib"
+    Parent  = "AMI_CSP_LIBRARIES"
+    InvokeOrder = AfterParent
+End
+
+LibraryMapping 
+  Class = "AmiCspFlashLib" 
+  Instance = "AmiChipsetModulePkg.AmiCspLibDxe" 
+  ModuleTypes = "DXE_CORE DXE_DRIVER DXE_RUNTIME_DRIVER DXE_SAL_DRIVER DXE_SMM_DRIVER SMM_CORE UEFI_APPLICATION UEFI_DRIVER" 
+End 
+
+LibraryMapping 
+  Class = "AmiCspFlashLib" 
+  Instance = "AmiChipsetModulePkg.AmiCspLibPei" 
+  ModuleTypes = "PEIM" 
+End 
+
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************

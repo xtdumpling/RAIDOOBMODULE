@@ -1,0 +1,115 @@
+#****************************************************************************
+#****************************************************************************
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.06
+#    Bug Fix : N/A
+#    Reason  : Add a protocol guid to inform OOB update to BMC done.
+#    Auditor : Durant Lin
+#    Date    : Aug/07/2018
+#
+#  Rev. 1.05
+#    Bug Fix : N/A
+#    Reason  : Isolate PciLib from OOB to OobLibraryProtocol, since different
+#              platform will cause hang up issue.
+#    Auditor : Durant Lin
+#    Date    : Jun/02/2018
+#
+#  Rev. 1.04
+#    Bug Fix : N/A
+#    Reason  : Implement a SmcOobProtocol Interface for InBand and OutBand to
+#                access Build time OobLibrary not OBJ OobLobrary. 
+#    Auditor : Durant Lin
+#    Date    : Dec/27/2017
+#  
+#  Rev. 1.03
+#    Bug Fix:  Fix some errors in SmcOutBand module.
+#    Reason:
+#    Auditor:  Hartmann Hsieh
+#    Date:     Aug/10/2016
+#
+#  Rev. 1.02
+#    Bug Fix:  Add Full SmBios InBand support.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Aug/05/2016
+#
+#  Rev. 1.01
+#    Bug Fix:  Re-write SmcOutBand module.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Aug/02/2016
+#
+#  Rev. 1.00
+#    Bug Fix:  Initial revision.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Mar/31/2015
+#
+#****************************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SmcOutBand
+  FILE_GUID                      = 3672557A-06A7-43ef-60C3-1964F3DD1198
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = SmcOutBandEntry
+  DPX_SOURCE                     = SmcOutBand.dxs
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF EBC
+#
+
+[Sources]
+  SmcOutBand.c
+  SmcOutBand.h
+
+[Packages]
+  MdePkg/MdePkg.dec   
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec 
+  AmiModulePkg/AmiModulePkg.dec
+  AmiIpmiPkg/AmiIpmiPkg.dec
+  CryptoPkg/CryptoPkg.dec
+  SmcPkg/SmcPkg.dec
+  SmcPkg/Module/SmcOOB/SmcOOB.dec
+    
+[LibraryClasses]
+  AmiDxeLib
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  OobLibrary
+  PcdLib
+
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+  gSmcPkgTokenSpaceGuid.PcdGetOobFileStatus0
+  gSmcPkgTokenSpaceGuid.PcdGetOobFileStatus1
+  gSmcPkgTokenSpaceGuid.PcdGetOobFileStatus2
+  gSmcPkgTokenSpaceGuid.PcdGetOobFileStatus3
+
+[Guids]
+  gSuperMDriverProtocolGuid
+  gSMCOOBMD5GUID
+  gSmcFeatureSupportFlagsGuid
+  gSmcOobPlatformPolicyGuid
+
+[Ppis]
+
+[Protocols]
+  gEfiFirmwareVolume2ProtocolGuid
+  gEfiGenericElogProtocolGuid
+  gBdsAllDriversConnectedProtocolGuid
+  gEfiDxeIpmiTransportProtocolGuid
+  gSmcOobDataReadyProtocolGuid
+  gSmcIpmiOemCommandSetProtocolGuid
+  gSmcRomHoleProtocolGuid
+  gSmcOobLibraryProtocolGuid
+  gSmcOobDataUploadBmcDoneGuid

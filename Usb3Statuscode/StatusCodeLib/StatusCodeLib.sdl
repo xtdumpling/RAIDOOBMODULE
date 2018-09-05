@@ -1,0 +1,71 @@
+TOKEN
+	Name  = "StatusCodeLib_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling StatusCodeLib support in the project"
+	TokenType = Boolean
+	Master = Yes
+	Token = "USB_3_DEBUG_SUPPORT" "=" "1"
+	Token = "Usb3Statuscode_Support" "=" "1"
+End
+
+PATH
+	Name  = "StatusCodeLib_DIR"
+	Path  = "Usb3Statuscode\StatusCodeLib"
+End
+
+INFComponent
+    Name  = "StatusCodePeiLib"
+    File  = "StatusCodePeiLib.inf"
+    Package  = "Usb3Statuscode"
+	Arch  = "Ia32"
+	Path  = "StatusCodeLib_DIR"
+End
+
+INFComponent
+    Name  = "StatusCodeDxeLib"
+    File  = "StatusCodeDxeLib.inf"
+    Package  = "Usb3Statuscode"
+	Arch  = "x64"
+	Path  = "StatusCodeLib_DIR"
+End
+
+LibraryMapping
+	Class  = "StatusCodePeiLib"
+	Instance  = "Usb3Statuscode.StatusCodePeiLib"
+	ModuleTypes  = "PEIM PEI_CORE"
+End
+
+LibraryMapping
+	Class  = "StatusCodeDxeLib"
+	Instance  = "Usb3Statuscode.StatusCodeDxeLib"
+	ModuleTypes  = "DXE_CORE DXE_DRIVER DXE_RUNTIME_DRIVER UEFI_APPLICATION UEFI_DRIVER"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "Usb3Statuscode.StatusCodePeiLib"
+	Override  = "AmiModulePkg.StatusCodePei"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "Usb3Statuscode.StatusCodeDxeLib"
+	Override  = "AmiModulePkg.StatusCodeDxe"
+End
+
+ELINK
+    Name  = "PeiDebugInitialize"
+    InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "SendDebugText,"
+	Parent  = "PeiReportStringStatus"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "SendDebugText,"
+	Parent  = "DxeReportStringStatus"
+	InvokeOrder = AfterParent
+End

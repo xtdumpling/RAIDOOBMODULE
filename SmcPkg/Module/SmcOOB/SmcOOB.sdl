@@ -1,0 +1,134 @@
+##****************************************************************************
+##****************************************************************************
+##**                                                                        **
+##**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+##**                                                                        **
+##****************************************************************************
+##****************************************************************************
+#
+#  File History
+#
+#  Rev. 1.09
+#    Bug Fix:  
+#    Reason:   Isolate IPMI support for no IPMI module platform InBand. 
+#    Auditor:  Durant Lin
+#    Date:     Feb/07/2018
+#
+#  Rev. 1.08
+#    Bug Fix:  Fix failed to apply BIOS CFG in stress test.
+#    Reason:   
+#    Auditor:  Jason Hsu
+#    Date:     Jun/23/2017
+#
+#  Rev. 1.07
+#    Bug Fix:  Add suffix strings in Setup BBS pages for SUM to identify boot devices if they have the same device name.
+#    Reason:   
+#    Auditor:  Jason Hsu
+#    Date:     May/26/2017
+#
+#  Rev. 1.06
+#    Bug Fix:  N/A
+#    Reason:   Updated to SUM Feature Flag specification revision 1.5.
+#    Auditor:  Joe Jhang
+#    Date:     May/25/2017
+#
+#  Rev. 1.05
+#    Bug Fix:  Enable SMC_OOB_MD5_SUPPORT to reduce time of BIOS send data to BMC
+#    Reason:   Per Joe Tai request
+#    Auditor:  Salmon Chen
+#    Date:     Mar/20/2017
+#
+#  Rev. 1.04
+#    Bug Fix:  Change feature flag platform ID to 0x0A (Purley).
+#    Reason:
+#    Auditor:  Hartmann Hsieh
+#    Date:     Nov/30/2016
+#
+#  Rev. 1.03
+#    Bug Fix:  Update to SUM Feature Flag spec 1.4.
+#    Reason:   
+#    Auditor:  Kasber Chen
+#    Date:     Sep/23/2016
+#
+#  Rev. 1.02
+#    Bug Fix:  Re-write SmcOutBand module.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Aug/02/2016
+#
+#  Rev. 1.00
+#    Bug Fix:  Initial revision.
+#    Reason:   
+#    Auditor:  Kasber Chen
+#    Date:     May/25/2016
+#
+#*****************************************************************************
+
+TOKEN
+    Name          = "SmcOOB_SUPPORT"
+    Value         = "1"
+    TokenType     = Boolean
+    TargetEQU     = Yes
+    TargetMAK     = Yes
+    TargetH       = Yes
+    Master        = Yes
+End
+
+PATH
+    Name          = "SmcOOB_DIR"
+End
+
+TOKEN
+    Name          = "SmcOutBand_SUPPORT"
+    Value         = "0"
+    TokenType     = Boolean
+    TargetEQU     = Yes
+    TargetMAK     = Yes
+    TargetH       = Yes
+    Token         = "IPMI_SUPPORT" "=" "0"
+End
+
+TOKEN
+    Name          = "SmcAssetInfo_SUPPORT"
+    Value         = "0"
+    TokenType     = Boolean
+    TargetEQU     = Yes
+    TargetMAK     = Yes
+    TargetH       = Yes
+    Token         = "IPMI_SUPPORT" "=" "0"
+End
+
+TOKEN
+    Name          = "SMC_OOB_DEBUG_MESSAGE_SUPPORT"
+    Value         = "1"
+    Help          = "Enables/Disables Debug message support from AMI IPMI PKG. Default is disabled. This token is provided to track flow of the modules when IPMI module is not working as expected. "
+    TokenType     = Boolean
+    TargetH       = Yes
+    Token         = "DEBUG_MODE" "=" "1"
+End
+
+TOKEN
+    Name          = "SMC_OOB_DEBUG_MESSAGE_SUPPORT"
+    Value         = "0"
+    Help          = "Added to resolve build error in release mode. Do not change this token. This should always be disabled for Release mode"
+    TokenType     = Boolean
+    TargetH       = Yes
+    Token         = "DEBUG_MODE" "=" "0"
+End
+
+TOKEN
+    Name          = "OOB_DEBUG(Arguments)"
+    Value         = "DEBUG(Arguments)"
+    TokenType     = Expression
+    TargetH       = Yes
+    Token         = "SMC_OOB_DEBUG_MESSAGE_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name          = "OOB_DEBUG(Arguments)"
+    Value         = " "
+    TokenType     = Expression
+    TargetH       = Yes
+    Token         = "SMC_OOB_DEBUG_MESSAGE_SUPPORT" "=" "0"
+End
+

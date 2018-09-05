@@ -1,0 +1,88 @@
+TOKEN
+	Name  = "OA2_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable OA2 support in Project"
+	TokenType = Boolean
+	TargetH = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "MARKER_BIN"
+	Value  = "$(OA2_SUPPORT_DIR)/Marker.bin"
+	Help  = "Directory where Maker.bin is placed."
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "PUBKEY_BIN"
+	Value  = "$(OA2_SUPPORT_DIR)/PubKey.bin"
+	Help  = "Directory where PubKey.bin is placed."
+	TokenType = Expression
+End
+
+PATH
+	Name  = "OA2_SUPPORT_DIR"
+	Path  = "AmiModulePkg/OemActivation/OA2"
+End
+
+INFComponent
+	Name  = "OA2"
+	File  = "OA2.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "UEFI_DRIVER"
+End
+
+INFComponent
+	Name  = "Marker"
+	File  = "Marker.inf"
+	Package  = "AmiModulePkg"
+	PreProcess = Yes
+	ModuleTypes  = "USER_DEFINED"
+End
+
+FFS_FILE
+	Name  = "Marker"
+	FD_AREA  = "FV_MAIN"
+	INFComponent  = "AmiModulePkg.Marker"
+	Rule_Override  = "UncompressedBinary"
+	Index = 0
+	Token = "NESTED_FV_MAIN" "=" "0"
+End
+
+FFS_FILE
+	Name  = "Marker"
+	FD_AREA  = "FV_MAIN_WRAPPER"
+	INFComponent  = "AmiModulePkg.Marker"
+	Rule_Override  = "UncompressedBinary"
+	Index = 0
+	Token = "NESTED_FV_MAIN" "=" "1"
+End
+
+INFComponent
+	Name  = "PubKey"
+	File  = "PubKey.inf"
+	Package  = "AmiModulePkg"
+	PreProcess = Yes
+	ModuleTypes  = "USER_DEFINED"
+End
+
+FFS_FILE
+	Name  = "PubKey"
+	FD_AREA  = "FV_MAIN"
+	INFComponent  = "AmiModulePkg.PubKey"
+	Rule_Override  = "UncompressedBinary"
+    Index = 0
+    Token = "NESTED_FV_MAIN" "=" "0"
+End
+
+FFS_FILE
+	Name  = "PubKey"
+	FD_AREA  = "FV_MAIN_WRAPPER"
+	INFComponent  = "AmiModulePkg.PubKey"
+	Rule_Override  = "UncompressedBinary"
+    Index = 0
+    Token = "NESTED_FV_MAIN" "=" "1"
+End
+
+

@@ -1,0 +1,31 @@
+
+
+[Defines]
+    INF_VERSION = 0x00010005
+    VERSION_STRING = 1.0
+    BASE_NAME = OA3
+    MODULE_TYPE = DXE_DRIVER
+    FILE_GUID = 76D5CF91-0C55-434E-97C2-D2825C82E610
+    ENTRY_POINT = OA3_EntryPoint
+
+[Sources]
+    OA3.c
+    OA3.h
+
+[Packages]
+    MdePkg/MdePkg.dec
+    IntelFrameworkPkg/IntelFrameworkPkg.dec
+    AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+    AmiModulePkg/AmiModulePkg.dec
+
+[Protocols]
+    gEfiAcpiTableProtocolGuid
+
+[LibraryClasses]
+    AmiDxeLib
+    UefiDriverEntryPoint
+    AmiCspLib
+    FlashLib
+
+[Depex]
+    gEfiAcpiTableProtocolGuid

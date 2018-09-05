@@ -1,0 +1,44 @@
+## @file
+#  SMM GenericSio  Save Boot script Driver
+#
+##
+
+
+[Defines]
+INF_VERSION = 0x00010005
+VERSION_STRING = 1.0
+BASE_NAME = SmmGenericSio
+MODULE_TYPE = DXE_SMM_DRIVER
+FILE_GUID = 2486829B-D3F3-47ec-827A-FC104907FC5C
+ENTRY_POINT = SmmGenericSioEntryPoint
+PI_SPECIFICATION_VERSION = 0x0001000A
+
+[Sources]
+SmmGenericSio.c
+
+[LibraryClasses]
+IoLib
+HobLib
+BaseLib
+DebugLib
+BaseMemoryLib
+SmmServicesTableLib
+MemoryAllocationLib
+UefiBootServicesTableLib
+UefiDriverEntryPoint
+AmiDxeLib
+
+[Protocols]
+gAmiBoardInfo2ProtocolGuid
+gAmiSioSmmHandoffProtocolGuid
+gEfiS3SmmSaveStateProtocolGuid
+gEfiSmmReadyToLockProtocolGuid
+
+[Packages]
+MdePkg/MdePkg.dec
+AmiModulePkg/AmiModulePkg.dec
+AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+
+[Depex]
+gAmiSioSmmHandoffProtocolGuid
+

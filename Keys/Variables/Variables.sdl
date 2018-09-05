@@ -1,0 +1,155 @@
+TOKEN
+    Name  = "DefaultSecVariables_SUPPORT"
+    Value  = "1"
+    TokenType = Boolean
+    Master = Yes
+End
+
+TOKEN
+    Name  = "DBX_include"
+    Value  = "1"
+    TokenType = Boolean
+    TargetMAK = Yes
+    TargetFDF = Yes
+End
+
+TOKEN
+    Name  = "DBT_include"
+    Value  = "0"
+    TokenType = Boolean
+    TargetMAK = Yes
+    TargetFDF = Yes
+End
+
+TOKEN
+    Name  = "DBR_include"
+    Value  = "0"
+    TokenType = Boolean
+    TargetMAK = Yes
+    TargetFDF = Yes
+End
+
+TOKEN
+    Name  = "PKVarFile"
+    Value  = "$(SecVariables_DIR)$(PATH_SLASH)PK"
+    TokenType = Expression
+    TargetMAK = Yes
+End
+
+TOKEN
+    Name  = "KEKVarFile"
+    Value  = "$(SecVariables_DIR)$(PATH_SLASH)KEK"
+    TokenType = Expression
+    TargetMAK = Yes
+End
+
+TOKEN
+    Name  = "dbVarFile"
+    Value  = "$(SecVariables_DIR)$(PATH_SLASH)db"
+    TokenType = Expression
+    TargetMAK = Yes
+End
+
+TOKEN
+    Name  = "dbtVarFile"
+    Value  = "$(SecVariables_DIR)$(PATH_SLASH)dbt"
+    TokenType = Expression
+    TargetMAK = Yes
+End
+
+TOKEN
+    Name  = "dbxVarFile"
+    Value  = "$(SecVariables_DIR)$(PATH_SLASH)dbx"
+    TokenType = Expression
+    TargetMAK = Yes
+End
+
+TOKEN
+    Name  = "dbrVarFile"
+    Value  = "$(SecVariables_DIR)$(PATH_SLASH)dbr"
+    TokenType = Expression
+    TargetMAK = Yes
+End
+
+PATH
+    Name  = "SecVariables_DIR"
+    Help  = "Path to Variables Module in Project"
+End
+
+MODULE
+    Help  = "Includes Variables.mak to Project"
+    File  = "Variables.mak"
+End
+
+ELINK
+    Name  = "PKVar"
+    InvokeOrder = ReplaceParent
+End
+
+ELINK
+    Name  = "KEKVar"
+    InvokeOrder = ReplaceParent
+End
+
+ELINK
+    Name  = "dbVar"
+    InvokeOrder = ReplaceParent
+End
+
+ELINK
+    Name  = "dbtVar"
+    InvokeOrder = ReplaceParent
+End
+
+ELINK
+    Name  = "dbxVar"
+    InvokeOrder = ReplaceParent
+End
+
+ELINK
+    Name  = "dbrVar"
+    InvokeOrder = ReplaceParent
+End
+
+ELINK
+    Name  = "$(PKVarFile)"
+    Parent = "PKVar"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(KEKVarFile)"
+    Parent = "KEKVar"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(dbVarFile)"
+    Parent = "dbVar"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(dbtVarFile)"
+    Parent = "dbtVar"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(dbxVarFile)"
+    Parent = "dbxVar"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(dbrVarFile)"
+    Parent = "dbrVar"
+    InvokeOrder = AfterParent
+End
+
+FFS_FILE
+    Name  = "PKfileStatement"
+    FD_AREA  = "FV_MAIN"
+    FILE_Stmt  = "Keys/Variables/PKfileStatement.txt"
+End
+

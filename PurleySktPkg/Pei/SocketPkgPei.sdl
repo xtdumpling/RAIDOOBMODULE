@@ -1,0 +1,64 @@
+TOKEN
+	Name  = "SocketPkgPei_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling SocketPkgPei support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "UncoreInitPeim_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable UncoreInitPeim support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "CrystalRidgePeim_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable CrystalRidgePeim support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+    Name  = "FpgaLoaderPeim_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable FpgaLoaderPeim support in Project"
+    TokenType = Boolean
+End
+
+INFComponent
+	Name  = "UncoreInitPeim"
+	File  = "UncoreInit/UncoreInit.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "PEIM"
+	Token = "UncoreInitPeim_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "S3BootScriptLib"
+	Instance  = "MdePkg.BaseS3BootScriptLibNull"
+	Override  = "PurleySktPkg.UncoreInitPeim"
+End
+
+LibraryMapping
+	Class  = "UsraRegisterFilterLib"
+        Instance  = "PurleySktPkg.UsraRegisterFilterLib"
+	Override  = "PurleySktPkg.UncoreInitPeim"
+End
+
+INFComponent
+	Name  = "CrystalRidgePeim"
+	File  = "CrystalRidge/CrystalRidgePeim.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "PEIM"
+	Token = "CrystalRidgePeim_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "FpgaLoaderPeim"
+	File  = "FpgaLoader/FpgaLoader.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "PEIM"
+    Token = "FpgaLoaderPeim_SUPPORT" "=" "1"
+End

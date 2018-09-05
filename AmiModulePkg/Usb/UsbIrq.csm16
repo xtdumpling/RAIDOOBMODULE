@@ -1,0 +1,434 @@
+	TITLE	UsbIrq.csm16
+;*************************************************************************
+;*************************************************************************
+;**                                                                     **
+;**        (C)Copyright 1985-2014, American Megatrends, Inc.            **
+;**                                                                     **
+;**                       All Rights Reserved.                          **
+;**                                                                     **
+;**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+;**                                                                     **
+;**                       Phone: (770)-246-8600                         **
+;**                                                                     **
+;*************************************************************************
+;*************************************************************************
+	include token.equ
+
+
+OFFSET_SHIFT_FLAG	EQU 	80000000h
+IRQ0_INT_OFFSET		EQU	008H
+IRQ8_INT_OFFSET		EQU	070h
+
+OEM16_CSEG	SEGMENT		PARA PUBLIC 'CODE' USE16
+	ASSUME cs:OEM16_CSEG, ds:OEM16_CSEG
+.586p
+ALIGN	8
+        PUBLIC LegacyUsbIrqHook
+LegacyUsbIrqHook LABEL BYTE
+        jmp     LegacyUsbIrqInit
+
+ALIGN	8
+	PUBLIC	UsbHostInfoStruct
+UsbHostInfoStruct	dd	'$$UH'
+UsbHostCount 	LABEL	BYTE
+        db	0			; Host count
+UsbHost1 	LABEL	BYTE
+	db	0			; Irq number
+	dd	0			; URP_STRUC offset
+UsbHost2 	LABEL	BYTE
+	db	0			; Irq number
+	dd	0			; URP_STRUC offset
+UsbHost3 	LABEL	BYTE
+	db	0			; Irq number
+	dd	0			; URP_STRUC offset
+UsbHost4 	LABEL	BYTE
+	db	0			; Irq number
+	dd	0			; URP_STRUC offset
+UsbHost5 	LABEL	BYTE
+	db	0			; Irq number
+	dd	0			; URP_STRUC offset
+UsbHost6 	LABEL	BYTE
+	db	0			; Irq number
+	dd	0			; URP_STRUC offset
+UsbHost7 	LABEL	BYTE
+	db	0			; Irq number
+	dd	0			; URP_STRUC offset
+UsbHost8 	LABEL	BYTE
+	db	0			; Irq number
+	dd	0			; URP_STRUC offset
+
+ALIGN	8
+	PUBLIC	UsbIsrHandlerStruct1
+UsbIsrHandlerStruct1	dd	'$$U1'
+	PUBLIC UsbIsrHandlerTable
+UsbIsrHandlerTable	LABEL WORD
+	dw	offset UsbInterrtup0
+	dw	offset UsbInterrtup1
+	dw	offset UsbInterrtup2
+	dw	offset UsbInterrtup3
+	dw	offset UsbInterrtup4
+	dw	offset UsbInterrtup5
+	dw	offset UsbInterrtup6
+	dw	offset UsbInterrtup7
+	dw	offset UsbInterrtup8
+	dw	offset UsbInterrtup9
+	dw	offset UsbInterrtup10
+	dw	offset UsbInterrtup11
+	dw	offset UsbInterrtup12
+	dw	offset UsbInterrtup13
+	dw	offset UsbInterrtup14
+	dw	offset UsbInterrtup15
+
+;<AMI_FHDR_START>
+;-----------------------------------------------------------------------------
+;
+; Name:	        LegacyUsbIrqInit
+;
+; Description:	This function call to init USB IRQ handler
+;
+; Input:        None
+;
+; Output:       None
+;
+; Modified:	None.
+;
+; Referrals:	None.
+;
+; Notes:
+;
+;-----------------------------------------------------------------------------
+;<AMI_FHDR_END>
+LegacyUsbIrqInit	PROC	NEAR	PUBLIC
+	pushad
+	push	es
+	push	cs
+	pop	es
+
+	call	GetShiftData
+; Get Host count
+	mov	bx, offset UsbHostCount
+	cmp	esi, OFFSET_SHIFT_FLAG
+.if carry?
+	sub	bx, si
+.else
+	add	bx, si
+.endif
+	mov	cl, byte ptr es:[bx]	
+	movzx	cx, cl
+
+	mov	di, bx
+	inc	di
+InitHandlerLp:
+	
+	movzx	ax, byte ptr es:[di]		;Get IRQ number
+	mov	bx, offset UsbIsrHandlerTable
+	cmp	esi, OFFSET_SHIFT_FLAG
+.if carry?
+	sub	bx, si
+.else
+	add	bx, si
+.endif	
+	mov	dx, ax
+	shl	dx, 1
+	add	bx, dx
+	
+	mov	bx, word ptr es:[bx]
+	cmp	esi, OFFSET_SHIFT_FLAG
+.if carry?
+	sub	bx, si
+.else
+	add	bx, si
+.endif		
+	xchg	ax, bx
+
+; init INT table
+; BL = irq number
+	push	es
+	push	0
+	pop	es
+.if bl<8
+	add	bx, IRQ0_INT_OFFSET
+.else
+	sub	bx, 8
+	add	bx, IRQ8_INT_OFFSET
+.endif
+	shl	bx, 2			; INT TABLE OFFSET = INTn * 4
+        mov	word ptr es:[bx], ax
+
+        push	cs
+        pop	ax
+        mov	word ptr es:[bx+2], ax
+	pop	es
+	
+	loop	InitHandlerLp
+	
+	pop	es
+	popad
+	retf
+LegacyUsbIrqInit	ENDP
+
+
+;<AMI_FHDR_START>
+;-----------------------------------------------------------------------------
+;
+; Name:	        GetShiftData
+;
+; Description:	This function call to get shift size from this segment.
+;
+; Input:        None
+;
+; Output:       ESI = offset shift data
+;
+; Modified:	ESI
+;
+; Referrals:	None.
+;
+; Notes:
+;
+;-----------------------------------------------------------------------------
+;<AMI_FHDR_END>
+GetShiftData		PROC	PUBLIC
+	push	edi
+	push	es
+	push	cs
+	pop	es
+
+; to check '$$UH' and calculate shift data.
+	xor	esi, esi
+SearchStartOffsetLp:
+	cmp	dword ptr es:[si], '$$UH'
+	je	StartOffsetFound
+	inc	si
+	jmp	SearchStartOffsetLp
+StartOffsetFound:
+	mov	edi, offset UsbHostInfoStruct
+	cmp	di, si
+.if carry?
+	sub	si, di
+	or	esi, OFFSET_SHIFT_FLAG 
+.else
+	sub	di, si
+	mov	si, di
+.endif
+
+	pop	es
+	pop	edi
+	ret
+GetShiftData		ENDP
+
+;<AMI_PHDR_START>
+;----------------------------------------------------------------------------
+;
+; Procedure:	UsbInterruptHandler
+;
+; Description:	This function call to generate SW SMI when USB IRQ active.
+;
+; Input:	None.
+;
+; Output:	None.
+;
+; Modified:	NONE
+;
+; Referrals:	None.
+;
+; Notes:	
+;
+;----------------------------------------------------------------------------
+;<AMI_PHDR_END>
+UsbInterruptHandler	PROC	NEAR	PUBLIC
+	push	es
+	push	cs
+	pop	es
+	call	GetShiftData
+
+; Get Host count
+	mov	bx, offset UsbHostCount
+	cmp	esi, OFFSET_SHIFT_FLAG
+.if carry?
+	sub	bx, si
+.else
+	add	bx, si
+.endif
+	mov	cl, byte ptr es:[bx]	
+	movzx	cx, cl
+
+; Get first Host info
+	mov	bx, offset UsbHost1
+	cmp	esi, OFFSET_SHIFT_FLAG
+.if carry?
+	sub	bx, si
+.else
+	add	bx, si
+.endif
+
+HostInterrupLp:
+	mov	al, byte ptr es:[bx]
+	cmp	al, ah
+.if zero?
+	mov	edi, dword ptr es:[bx+1]
+
+	push	es
+	push	40h
+	pop	es
+	mov	es, es:[0Eh]		; ES - EBDA segment.
+	mov	es:[104h], edi		; ptr_smi_runtime_interface
+
+; USB SW SMI
+	mov	al, MKF_USB_SWSMI
+	out	MKF_SW_SMI_IO_ADDRESS, al
+	out	0edh, al		; Io delay
+	out	0edh, al		; Io delay
+	out	0edh, al		; Io delay
+	out	0edh, al		; Io delay
+	pop	es
+.endif
+	add	bx, 5
+	loop	HostInterrupLp
+
+; Send EOI to the interrupt controller
+	mov	al, 20h			;AL = EOI command
+	cmp	ah, 8
+	jb	UIH_EoiPri		;Br if using IRQ 0..7 (2nd 8259 needs no EOI)
+	out	0A0h, al
+	jcxz	$+2
+	jcxz	$+2
+UIH_EoiPri:
+	out	20h, al
+	jcxz	$+2
+	jcxz	$+2
+
+	pop	es
+	popad
+	iret
+UsbInterruptHandler	ENDP
+
+	PUBLIC	UsbIsrHandlerStruct2
+UsbIsrHandlerStruct2	dd	'$$U2'
+UsbInterrtup0	PROC	NEAR	PUBLIC
+	cli
+	pushad
+	xor	ah, ah
+	jmp	UsbInterruptHandler
+UsbInterrtup0		ENDP
+
+UsbInterrtup1	PROC	NEAR	PUBLIC
+	cli
+	pushad
+	mov	ah, 1
+	jmp	UsbInterruptHandler
+UsbInterrtup1		ENDP
+
+UsbInterrtup2	PROC	NEAR	PUBLIC 
+	cli
+	pushad
+	mov	ah, 2
+	jmp	UsbInterruptHandler
+UsbInterrtup2		ENDP
+
+UsbInterrtup3	PROC	NEAR	PUBLIC 
+	cli
+	pushad
+	mov	ah, 3
+	jmp	UsbInterruptHandler
+UsbInterrtup3		ENDP
+
+UsbInterrtup4	PROC	NEAR	PUBLIC 
+	cli
+	pushad
+	mov	ah, 4
+	jmp	UsbInterruptHandler
+UsbInterrtup4		ENDP
+
+UsbInterrtup5	PROC	NEAR	PUBLIC 
+	cli
+	pushad
+	mov	ah, 5
+	jmp	UsbInterruptHandler
+UsbInterrtup5		ENDP
+
+UsbInterrtup6	PROC	NEAR	PUBLIC 
+	cli
+	pushad
+	mov	ah, 6
+	jmp	UsbInterruptHandler
+UsbInterrtup6		ENDP
+
+UsbInterrtup7	PROC	NEAR	PUBLIC 
+	cli
+	pushad
+	mov	ah, 7
+	jmp	UsbInterruptHandler
+UsbInterrtup7		ENDP
+
+UsbInterrtup8	PROC	NEAR	PUBLIC 
+	cli
+	pushad
+	mov	ah, 8
+	jmp	UsbInterruptHandler
+UsbInterrtup8		ENDP
+
+UsbInterrtup9	PROC	NEAR	PUBLIC 
+	cli
+	pushad
+	mov	ah, 9
+	jmp	UsbInterruptHandler
+UsbInterrtup9		ENDP
+
+UsbInterrtup10	PROC	NEAR	PUBLIC 
+	cli
+	pushad
+	mov	ah, 10
+	jmp	UsbInterruptHandler
+UsbInterrtup10		ENDP
+
+UsbInterrtup11	PROC	NEAR	PUBLIC 
+	cli
+	pushad
+	mov	ah, 11
+	jmp	UsbInterruptHandler
+UsbInterrtup11		ENDP
+
+UsbInterrtup12	PROC	NEAR	PUBLIC 
+	cli
+	pushad
+	mov	ah, 12
+	jmp	UsbInterruptHandler
+UsbInterrtup12		ENDP
+
+UsbInterrtup13	PROC	NEAR	PUBLIC 
+	cli
+	pushad
+	mov	ah, 13
+	jmp	UsbInterruptHandler
+UsbInterrtup13		ENDP
+
+UsbInterrtup14	PROC	NEAR	PUBLIC 
+	cli
+	pushad
+	mov	ah, 14
+	jmp	UsbInterruptHandler
+UsbInterrtup14		ENDP
+
+UsbInterrtup15	PROC	NEAR	PUBLIC 
+	cli
+	pushad
+	mov	ah, 15
+	jmp	UsbInterruptHandler
+UsbInterrtup15		ENDP
+
+OEM16_CSEG	ENDS
+
+END
+;*************************************************************************
+;*************************************************************************
+;**                                                                     **
+;**        (C)Copyright 1985-2014, American Megatrends, Inc.            **
+;**                                                                     **
+;**                       All Rights Reserved.                          **
+;**                                                                     **
+;**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+;**                                                                     **
+;**                       Phone: (770)-246-8600                         **
+;**                                                                     **
+;*************************************************************************
+;*************************************************************************

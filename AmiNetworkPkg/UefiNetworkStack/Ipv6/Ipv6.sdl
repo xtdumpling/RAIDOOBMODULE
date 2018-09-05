@@ -1,0 +1,69 @@
+TOKEN
+	Name  = "Ipv6_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable Ipv6 stack support in Project"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "Ip6Dxe_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable Ip6Dxe support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "Udp6Dxe_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable Udp6Dxe support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "Dhcp6Dxe_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable Dhcp6Dxe support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "Mtftp6Dxe_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable Mtftp6Dxe support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "Ip6Dxe"
+	File  = "Ip6Dxe/Ip6Dxe.inf"
+	Package  = "AmiNetworkPkg"
+	ModuleTypes  = "UEFI_DRIVER"
+	Token = "Ip6Dxe_SUPPORT" "=" "1"	
+End
+
+INFComponent
+	Name  = "Udp6Dxe"
+	File  = "Udp6Dxe/Udp6Dxe.inf"
+	Package  = "AmiNetworkPkg"
+	ModuleTypes  = "UEFI_DRIVER"
+	Token = "Udp6Dxe_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "Dhcp6Dxe"
+	File  = "Dhcp6Dxe/Dhcp6Dxe.inf"
+	Package  = "AmiNetworkPkg"
+	ModuleTypes  = "UEFI_DRIVER"
+	Token = "Dhcp6Dxe_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "Mtftp6Dxe"
+	File  = "Mtftp6Dxe/Mtftp6Dxe.inf"
+	Package  = "AmiNetworkPkg"
+	ModuleTypes  = "UEFI_DRIVER"
+	Token = "Mtftp6Dxe_SUPPORT" "=" "1"
+End

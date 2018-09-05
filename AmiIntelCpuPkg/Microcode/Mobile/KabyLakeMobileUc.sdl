@@ -1,0 +1,54 @@
+TOKEN
+	Name  = "MOBILE_406EY"
+	Value  = "0"
+    Help = "Intel(R) KabyLake"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+    Name  = "MOBILE_M80406E8"
+    Value  = "1"
+    Help  = "Intel(R) KabyLake Processor G-0 Stepping"
+    TokenType = Boolean
+    Token = "NON_PRODUCTION_MICROCODE" "=" "1"
+End
+
+TOKEN
+    Name  = "MOBILE_MC0806E9"
+    Value  = "1"
+    Help  = "Intel(R) KabyLake-U Processor H-0, J-1 Stepping"
+    TokenType = Boolean
+End
+
+TOKEN
+    Name  = "MOBILE_MC0806EA"
+    Value  = "1"
+    Help  = "Intel(R) KabyLake-U Processor Y-0 Stepping"
+    TokenType = Boolean
+End
+
+ELINK
+    Name  = "$(MICROCODE_MOBILE_DIR)/M80406E8_00000026.mcb"
+    Parent  = "MICROCODE_FILES"
+    Help  = "Intel(R) KabyLake Processor G-0 Stepping"
+    Token = "MOBILE_M80406E8" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(MICROCODE_MOBILE_DIR)/MC0806E9_00000062.mcb"
+    Parent  = "MICROCODE_FILES"
+    Help  = "Intel(R) KabyLake-U Processor H-0, J-1 Stepping"
+    Token = "MOBILE_MC0806E9" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(MICROCODE_MOBILE_DIR)/MC0806EA_00000064.mcb"
+    Parent  = "MICROCODE_FILES"
+    Help  = "Intel(R) KabyLake-U Processor Y-0 Stepping"
+    Token = "MOBILE_MC0806EA" "=" "1"
+    InvokeOrder = AfterParent
+End
+

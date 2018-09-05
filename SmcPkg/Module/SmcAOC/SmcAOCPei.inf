@@ -1,0 +1,61 @@
+[Defines]
+  INF_VERSION = 0x00010005
+  BASE_NAME = SmcAOCPei
+  FILE_GUID = 617076fc-65ee-4340-9b18-7e72fec05d5a
+  MODULE_TYPE = PEIM
+  VERSION_STRING = 1.0
+  ENTRY_POINT = SmcAOCPeiInit
+
+[Sources]
+  SmcAOCPei.c
+  SmcAOCPei.h
+  SmcAOCCommon.c
+  SmcAOCCommon.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  AmiIpmiPkg/AmiIpmiPkg.dec
+  SmcPkg/SmcPkg.dec
+  PurleySktPkg/Me/MePkg.dec
+
+[LibraryClasses]
+  PeimEntryPoint
+  PeiServicesLib
+  PchPlatformLib
+  GpioLib
+  PciLib
+  BaseLib
+  DebugLib
+  SmcLib
+
+[Ppis]
+  gEfiPeiSmbus2PpiGuid
+  gEfiPeiIpmiTransportPpiGuid
+  gEfiPeiStallPpiGuid
+
+[Guids]
+  gMemoryInitDoneSentGuid
+
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT1BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT2BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT3BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT4BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT5BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT6BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT7BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT8BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT9BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT10BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT11BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcAOCLocation
+  gSmcPkgTokenSpaceGuid.PcdSmcAOCExtendFlag
+  gSmcPkgTokenSpaceGuid.PcdSmcAOCNVMeMode
+  gSmcPkgTokenSpaceGuid.PcdSmcRiserID
+  
+[Depex]
+  gEfiPeiSmbus2PpiGuid

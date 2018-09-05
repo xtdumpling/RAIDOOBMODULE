@@ -1,0 +1,60 @@
+#/*++
+# This file contains a 'Sample Driver' and is licensed as such
+# under the terms of your license agreement with Intel or your
+# vendor.  This file may be modified by the user, subject to
+# the additional terms of the license agreement
+#--*/
+#/*++
+#
+#  Copyright (c) 2015 - 2016 Intel Corporation. All rights reserved
+#  This software and associated documentation (if any) is furnished
+#  under a license and may only be used or copied in accordance
+#  with the terms of the license. Except as permitted by such
+#  license, no part of this software or documentation may be
+#  reproduced, stored in a retrieval system, or transmitted in any
+#  form or by any means without the express written consent of
+#  Intel Corporation.
+#
+#  Module Name:
+#
+#    MeLibPei.inf
+#
+#  Abstract:
+#
+#    Component description file for AMT Library functions for PEIMs
+#
+#--*/
+
+[defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = MeLibPei
+  FILE_GUID                      = 54975633-0945-4d9c-97c2-e0cc6469a5a3
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = MeLibPei
+
+[sources.common]
+  MeLibPei.c
+
+[Guids]
+
+[Ppis]
+  gSpsPolicyPpiGuid
+
+[Packages]
+  MdePkg/MdePkg.dec
+  PurleySktPkg/Me/MePkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  
+
+[LibraryClasses]
+  DebugLib
+  MeChipsetLib
+  AmtLibPei
+  MeTypeLib
+  MeSpsPolicyPeiLib
+  PeiMePolicyUpdateLib
+  MeSpsPolicyAccessPeiLib
+  PchPmcLib

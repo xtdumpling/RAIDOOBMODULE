@@ -1,0 +1,51 @@
+//*************************************************************************
+//*************************************************************************
+//**                                                                     **
+//**        (C)Copyright 1985-2015, American Megatrends, Inc.            **
+//**                                                                     **
+//**                       All Rights Reserved.                          **
+//**                                                                     **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+//**                                                                     **
+//**                       Phone: (770)-246-8600                         **
+//**                                                                     **
+//*************************************************************************
+//*************************************************************************
+
+//*****************************************************************************
+/** @file 
+    This file contains the ME Firmware Layout Structure definition.  This structure
+    is filled out a build time token definitions that give information about the current 
+    ME FW Layout.
+*/
+
+// Module specific Includes
+#include <Token.h>
+#include <RomLayout.h>
+#ifdef _BUILD_BIOS_MEFW_CAPSULE_
+#define FIRMWARE_CAPSULE_LENGTH FWCAPSULE_MAX_PAYLOAD_SIZE
+#endif
+#ifdef _BUILD_MEFW_CAPSULE_
+#define FIRMWARE_CAPSULE_LENGTH FV_MEFW_CAPSULE_SIZE
+#endif
+#ifdef _BUILD_ISHFW_CAPSULE_
+#define FIRMWARE_CAPSULE_LENGTH FV_ISH_FW_CAPSULE_SIZE
+#endif
+ROM_AREA  FwCapsuleLayout[2] = {\
+    { 0, 0, FIRMWARE_CAPSULE_LENGTH, 0, ROM_AREA_FV_PEI + ROM_AREA_FV_DXE + ROM_AREA_FV_SIGNED}, 
+    { 0, 0, 0, 0, 0}
+};
+
+//*************************************************************************
+//*************************************************************************
+//**                                                                     **
+//**        (C)Copyright 1985-2015, American Megatrends, Inc.            **
+//**                                                                     **
+//**                       All Rights Reserved.                          **
+//**                                                                     **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+//**                                                                     **
+//**                       Phone: (770)-246-8600                         **
+//**                                                                     **
+//*************************************************************************
+//*************************************************************************

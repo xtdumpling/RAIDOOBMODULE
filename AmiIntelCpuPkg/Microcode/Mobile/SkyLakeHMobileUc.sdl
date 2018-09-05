@@ -1,0 +1,39 @@
+TOKEN
+	Name  = "MOBILE_506EX"
+	Value  = "0"
+    Help = "Intel(R) SkyLake-H"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+    Name  = "MOBILE_M14506E2"
+    Value  = "1"
+    Help  = "Intel(R) SkyLake-H Processor M-0"
+    TokenType = Boolean
+    Token = "NON_PRODUCTION_MICROCODE" "=" "1"
+End
+
+TOKEN
+    Name  = "MOBILE_M36506E3"
+    Value  = "1"
+    Help  = "Intel(R) SkyLake-H Processor N-0, R-0"
+    TokenType = Boolean
+End
+
+ELINK
+    Name  = "$(MICROCODE_MOBILE_DIR)/M14506E2_0000002C.mcb"
+    Parent  = "MICROCODE_FILES"
+    Help  = "Intel(R) SkyLake-H M-0"
+    Token = "MOBILE_M14506E2" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(MICROCODE_MOBILE_DIR)/M36506E3_000000BA.mcb"
+    Parent  = "MICROCODE_FILES"
+    Help  = "Intel(R) SkyLake-H Processor N-0, R-0 Stepping"
+    Token = "MOBILE_M36506E3" "=" "1"
+    InvokeOrder = AfterParent
+End
+

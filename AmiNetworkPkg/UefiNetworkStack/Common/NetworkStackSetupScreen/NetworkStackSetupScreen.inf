@@ -1,0 +1,49 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+## @file
+#   This driver is for UEFI network stack setup options.
+##
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF EBC
+#
+
+
+[Defines]
+  INF_VERSION = 0x00010005
+  VERSION_STRING = 1.0
+  BASE_NAME = NetworkStackSetupScreen
+  MODULE_TYPE = DXE_DRIVER
+  FILE_GUID = 21891A9E-763E-4377-8841-8D5C90D88C51
+  ENTRY_POINT = InitNetworkStackVar
+
+[Sources]
+  NetworkStackSetupScreen.c
+
+[LibraryClasses]
+  AmiDxeLib
+  UefiDriverEntryPoint
+
+[Packages]
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiNetworkPkg/AmiNetworkPkg.dec
+
+[Guids]
+  gEfiNetworkStackSetupGuid
+
+[Depex]
+  TRUE

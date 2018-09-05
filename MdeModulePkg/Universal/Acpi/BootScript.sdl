@@ -1,0 +1,82 @@
+TOKEN
+	Name  = "BootScript_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable Capsule support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+INFComponent
+	Name  = "S3SaveStateDxe"
+	File  = "S3SaveStateDxe/S3SaveStateDxe.inf"
+	Package  = "MdeModulePkg"
+	Arch  = "IA32 X64"
+	ModuleTypes  = "DXE_DRIVER"
+End
+
+INFComponent
+	Name  = "SmmS3SaveState"
+	File  = "SmmS3SaveState/SmmS3SaveState.inf"
+	Package  = "MdeModulePkg"
+	Arch  = "IA32 X64"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+End
+
+INFComponent
+	Name  = "BootScriptExecutorDxe"
+	File  = "BootScriptExecutorDxe/BootScriptExecutorDxe.inf"
+	Package  = "MdeModulePkg"
+	Arch  = "IA32 X64"
+	ModuleTypes  = "DXE_DRIVER"
+End
+
+INFComponent
+      Name  = "DxeS3BootScriptLib"
+      File  = "../../Library/PiDxeS3BootScriptLib/DxeS3BootScriptLib.inf"
+      Package  = "MdeModulePkg"
+End
+
+INFComponent
+	Name  = "BaseSmbusLibNull"
+	File  = "../../../MdePkg/Library/BaseSmbusLibNull/BaseSmbusLibNull.inf"
+	Package  = "MdePkg"
+End
+
+LibraryMapping
+	Class  = "S3BootScriptLib"
+	Instance  = "MdeModulePkg.DxeS3BootScriptLib"
+	Override  = "MdeModulePkg.S3SaveStateDxe"
+End
+
+LibraryMapping
+	Class  = "S3BootScriptLib"
+	Instance  = "MdeModulePkg.DxeS3BootScriptLib"
+	Override  = "MdeModulePkg.SmmS3SaveState"
+End
+
+LibraryMapping
+	Class  = "S3BootScriptLib"
+	Instance  = "MdeModulePkg.DxeS3BootScriptLib"
+	Override  = "MdeModulePkg.BootScriptExecutorDxe"
+End
+
+LibraryMapping
+	Class  = "SmbusLib"
+	Instance  = "MdePkg.BaseSmbusLibNull"
+	Override  = "MdeModulePkg.S3SaveStateDxe"
+End
+
+LibraryMapping
+	Class  = "SmbusLib"
+	Instance  = "MdePkg.BaseSmbusLibNull"
+	Override  = "MdeModulePkg.SmmS3SaveState"
+End
+
+LibraryMapping
+	Class  = "DebugLib"
+	Instance  = "MdePkg.BaseDebugLibSerialPort"
+	Override  = "MdeModulePkg.BootScriptExecutorDxe"
+End
+

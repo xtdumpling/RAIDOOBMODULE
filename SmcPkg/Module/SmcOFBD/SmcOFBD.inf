@@ -1,0 +1,52 @@
+#***************************************************************************
+#***************************************************************************
+#**                                                                       **
+#**       (C)Copyright 1993-2016 Supermicro Computer, Inc.                **
+#**                                                                       **
+#***************************************************************************
+#***************************************************************************
+#
+#  History
+#
+#  Rev. 1.00
+#    Bug Fix : Renew.
+#    Reason  : Move from Greenlow
+#    Auditor : Kasber Chen
+#    Date    : Aug/17/2016
+#
+#****************************************************************************
+[Defines]
+  INF_VERSION = 0x00010005
+  VERSION_STRING = 1.0
+  BASE_NAME = SmcOFBD
+  MODULE_TYPE = BASE
+  LIBRARY_CLASS = SmcOFBD
+  FILE_GUID = edca411c-655b-438b-b9fe-c3356632ad53
+
+[Sources]
+  SmcOFBD.c
+  SmcOFBD.h
+  SmcGetPattern.c
+  SmcGetPattern.h
+
+[LibraryClasses]
+  AmiDxeLib
+  UefiLib
+  UefiDriverEntryPoint
+  SmcRomHoleSmmLib
+  SmcLib
+
+[Protocols]
+  gEfiSmmBase2ProtocolGuid
+  gEfiSmmSwDispatch2ProtocolGuid
+  gEfiSmmIpmiTransportProtocolGuid
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  AmiIpmiPkg/AmiIpmiPkg.dec
+  SmcPkg/SmcPkg.dec

@@ -1,0 +1,88 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+## @file Ahci.inf
+#  Module that produces AHCI Bus Protocol and Booting to OS in AHCI mode 
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = Ahci
+  FILE_GUID                      = 8F5A2E02-538C-4D59-B920-C4786ACBC552
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = AhciBusEntryPoint
+
+[Sources]  
+  AhciBus.c
+  AhciController.c
+  AhciComponentName.c
+  
+[Packages]
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  PurleySktPkg/SocketPkg.dec	#SMCPKG_SUPPORT
+  PurleyPlatPkg/PlatPkg.dec	#SMCPKG_SUPPORT
+
+[LibraryClasses]
+  AmiDxeLib
+  UefiDriverEntryPoint
+  AhciCspLib
+
+[Guids]
+  gEfiDiskInfoIdeInterfaceGuid
+  gEfiDiskInfoAhciInterfaceGuid
+  gEfiGlobalVariableGuid
+  
+[Protocols]
+  gEfiPciIoProtocolGuid
+  gEfiDevicePathProtocolGuid
+  gEfiIdeControllerInitProtocolGuid
+  gEfiDriverBindingProtocolGuid
+  gEfiBlockIoProtocolGuid
+  gEfiDiskInfoProtocolGuid                  
+  gAmiAhciBusProtocolGuid
+  gAint13ProtocolGuid
+  gAmiAhciPlatformPolicyProtocolGuid
+  gAmiIdeBusInitProtocolGuid
+  gEfiStorageSecurityCommandProtocolGuid
+  gEfiComponentNameProtocolGuid
+  gEfiComponentName2ProtocolGuid
+  gAmiHddSecurityProtocolGuid
+  gAmiHddSecurityInitProtocolGuid
+  gAmiHddSecurityEndProtocolGuid
+  gAmiHddSmartProtocolGuid
+  gAmiHddSmartInitProtocolGuid
+  gAmiHddOpalSecInitProtocolGuid
+  gAmiAtaPassThruInitProtocolGuid
+  gAmiScsiPassThruInitProtocolGuid
+  gAmiBlockIoWriteProtectionProtocolGuid
+
+[Depex]
+  TRUE
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

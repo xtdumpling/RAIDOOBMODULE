@@ -1,0 +1,1871 @@
+##****************************************************************************
+##****************************************************************************
+##**                                                                        **
+##**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+##**                                                                        **
+##****************************************************************************
+##****************************************************************************
+#
+#  File History
+#
+#  Rev. 1.45
+#    Bug Fix : N/A
+#    Reason  : Setting "SMI_FLASH_INTERFACE_VERSION" to "14" for all SMCI Intel 
+#              Purley projects because SUM team has already fixed "Segmentation 
+#              fault (core dumped)" on the projects that are using 32 MB BIOS.
+#    Auditor : Joe Jhang
+#    Date    : Jun/15/2017
+#
+#  Rev. 1.44
+#      Bug Fixed:  Fix system hangs at error log when doing Error Injection[64MB BIOS ROM and debug mode only]. 
+#                  Correct FV_ERROR_LOGGING_BASE for FPGA_SUPPORT and DEBUG_MODE. 
+#      Reason:     the FAULT_TOLERANT_NVRAM_UPDATE token is alwasy disabled once DEBUG_MODE was turned on, that cause 
+#                  FV_ERROR_LOGGING_BASE point to FPGA area where was write-protected SPI flash area.
+#      Auditor:    Max Mu
+#      Date:       Jun/05/2017
+#
+#  Rev. 1.43
+#    Bug Fix : Fixed SUM updatebios shows "Segmentation fault (core dumped)".
+#    Reason  : Bug Fixed.
+#    Auditor : Joe Jhang
+#    Date    : May/24/2017
+#
+#  Rev. 1.42
+#      Bug Fixed:  1.Fix can't flash BIOS with 64MB ROM. AFUEFI need use version AfuEfix64 5.09.02.1384.
+#      Reason:     
+#      Auditor:    Jimmy Chiu
+#      Date:       May/02/2017
+#
+#  Rev. 1.41
+#      Bug Fixed:  1.Add TOKEN "SMC_ISATA_PORT_NUM" and "SMC_SSATA_PORT_NUM" to map the SATA silkscreen string to real port number for HDD smart error.
+#      Reason:     
+#      Auditor:    Jimmy Chiu
+#      Date:       Apr/11/2017
+#
+#  Rev. 1.40       1.Change setup item [Refresh Options] name to [2X REFRESH].
+#                  2.Modify setup item [2X REFRESH] behavior.
+#                    [2X REFRESH] -> [Auto]    : 2x refresh temperature : High:100,  Mid:93, Low:85
+#                    [2X REFRESH] -> [Enabled] : 2x refresh temperature : High:100,  Mid:93, Low:0   
+#                  3.ADD TOKEN to control the 2x refresh low/mid temperature.
+#      Bug Fixed:
+#      Reason:     
+#      Auditor:    Jimmy Chiu
+#      Date:       Mar/29/2017
+#
+#  Rev. 1.39
+#      Bug Fixed:  Add a token EarlyVideoBootGuard_Support to support
+#                  BootGuard with EarlyVideo_Mode enabled.
+#      Reason:     
+#      Auditor:    Isaac Hsu
+#      Date:       Mar/28/2017
+#
+#  Rev. 1.38
+#      Bug Fixed:  Fix POST shutdown due to BootGuard verified failure.
+#      Reason:     
+#      Auditor:    Isaac Hsu
+#      Date:       Mar/27/2017
+#
+#  Rev. 1.37
+#      Bug Fixed:  Move NVDIMM code to SmcNVDIMM.
+#      Reason:     
+#      Auditor:    Leon Xu
+#      Date:       Mar/16/2017
+#
+#  Rev. 1.36
+#      Bug Fixed:  Fix PEI debug message miss.
+#      Reason:     
+#      Auditor:    Leon Xu
+#      Date:       Mar/08/2017
+#
+#  Rev. 1.35
+#      Bug Fixed:  Log CMOS Battery Low event into SMBIOS(POST Error Type 08h)/IPMI(Sensor type 29h).
+#      Reason:     Add table SMC_EFI_TO_LEGACY_STATUS_CODE for SMBIOS, OEM_STATUS_CODE_LIST for IPMI
+#      Auditor:    Jimmy Chiu
+#      Date:       Feb/23/2017
+#
+#  Rev. 1.34
+#      Bug Fixed:  Add NVDIMM/CPLD function
+#      Reason:     
+#      Auditor:    Leon Xu
+#      Date:       Feb/17/2017
+#
+#  Rev. 1.33
+#    Bug Fix:  Correct the ME FPT_START offset.
+#    Reason:   Refer the spsFITc build map, the FPT start should be 0x1000.
+#    Auditor:  Jimmy Chiu
+#    Date:     Feb/09/2017
+#
+#  Rev. 1.32
+#    Bug Fix:  1. Add debug message through SOL function.
+#              2. Default disable AST2500_RECOVERY_SUPPORT token.
+#    Reason:
+#    Auditor:  Jacker Yeh
+#    Date:     Feb/08/2017
+#
+#  Rev. 1.31
+#    Bug Fix:  Draft template v0.1.
+#    Reason:
+#    Auditor:  Jimmy Chiu
+#    Date:     Jan/17/2017
+#
+#  Rev. 1.30
+#    Bug Fix:  Fix system hangs at 0x78 when building 64MB BIOS ROM. Correct FV_ERROR_LOGGING_BASE for FPGA_SUPPORT.
+#    Reason:
+#    Auditor:  Hartmann Hsieh
+#    Date:     Jan/12/2017
+#
+#  Rev. 1.29
+#       Bug fixed:   Override OA2_SUPPORT token
+#       Reason:      Label 61beta disabled OA2_SUPPORT.
+#       Auditor:     Stephen Chen
+#       Date:        Dec/28/2016
+#
+#  Rev. 1.28
+#    Bug Fix:  Modify ROM layout for FPGA_SUPPORT.
+#    Reason:
+#    Auditor:  Hartmann Hsieh
+#    Date:     Dec/27/2016
+#
+#  Rev. 1.27
+#       Bug fixed:   Sync with branch SVN_689 for NVMe legacy mode hotplug.
+#       Reason:      
+#       Auditor:     Jacker Yeh
+#       Date:        Dec/20/2016
+#
+#  Rev. 1.26
+#       Bug fixed:   Fix X557 iSCSI OPROM can't be loaded.
+#       Reason:      iSCSI ROM size over 128k.
+#       Auditor:     Kasber Chen
+#       Date:        Oct/14/2016
+#
+#  Rev. 1.25
+#       Bug fixed:   Support AHCI M.2 install OS.
+#       Reason:      New AHCI module update.
+#       Auditor:     Kasber Chen
+#       Date:        Sep/26/2016
+#
+#  Rev. 1.24       
+#       Bug fixed:   Add FW_VERSION_GUID token in Project.SDL.
+#       Reason:      Keep this value to avoid that kernel code may change this value in further code updating.
+#       Auditor:     Chen Lin
+#       Date:        Sep/23/2016
+#
+#  Rev. 1.23         Add setup item "Onboard LAN Device" to enable/disable onboard LAN device.
+#       Bug fixed:
+#       Reason:      For onboard 10Gbe, set TOKEN "" to 1 and add code in project's PEI/DXE function "GetProjectPciEBifurcate"
+#       Auditor:     Jimmy Chiu
+#       Date:        Sep/06/2016
+#
+#  Rev. 1.22
+#     Reason:   Add PCD for PcdSmcPS2AlwaysInstall support, also enable "EMUL6064_SUPPORT" for Win7 Install support.
+#     Auditor:  Sunny Yang
+#     Date:     Sep/07/2016
+#
+#
+#  Rev. 1.21
+#    Bug Fix :  Let MECI (Multiple Event Count),METW (Multiple Event Time Window) can work with Memory correct error report and Pcie error report.
+#    Reason  : 
+#    Auditor : Chen Lin
+#    Date    : Aug/23/2016
+#
+#  Rev. 1.20
+#       Bug Fixed:  Expose "PH Randomization" setup item from Intel TXT.
+#       Reason:     
+#       Auditor:    Jimmy Chiu
+#       Date:       Aug/22/2016
+#
+#  Rev. 1.19
+#       Bug Fixed:  Build different SPS by token - BIOS_SIZE.
+#       Reason:     
+#       Auditor:    Hartmann Hsieh
+#       Date:       Aug/15/2016
+#
+#  Rev. 1.18
+#       Bug Fixed:  Remove 1.18.
+#       Reason:     The root cause is realted to "AMI Generic LPC Super I/O Driver" executed after function ProcessAllLocks.
+#                   Patched it in PchInitUefi.c.
+#       Auditor:    Jimmy Chiu
+#       Date:       Aug/15/2016
+#
+#  Rev. 1.17
+#       Bug Fixed:  Fixed COM1 console redirection always been disabled issue.
+#       Reason:     
+#       Auditor:    Jacker Yeh
+#       Date:       Aug/12/2016
+#
+#  Rev. 1.16        Change the BIOS size to 16MB.
+#       Bug Fixed:  
+#       Reason:     ME:4MB, 10Gbe NVM:6MB, IE:6MB, BIOS:16MB
+#       Auditor:    Jimmy Chiu
+#       Date:       Aug/03/2016
+#
+#  Rev. 1.15        Enable JPME2_Jumpless_SUPPORT
+#       Bug Fixed:  
+#       Reason:     Enablle JPME2 jmpless function.
+#       Auditor:    Jimmy Chiu
+#       Date:       Aug/01/2016
+#
+#  Rev. 1.14        
+#       Bug Fixed:  Fixed system hang when loading Adaptec ASC-29320LPE OPROM.
+#       Reason:     Enable IO port61[4] timer emulation(PORT61H_EMULATION = 1) for old PCIe OPROM(e.g. Adaptec ASC-29320LPE)
+#       Auditor:    Jimmy Chiu
+#       Date:       Jul/27/2016
+#
+#  Rev. 1.13
+#       Bug Fixed:  Fix M.2 can't install OS.
+#       Reason:     
+#       Auditor:    Kasber Chen
+#       Date:       Jul/20/2016
+#
+#  Rev. 1.12
+#       Bug Fixed:  Support fixed SMBIOS type 17 handle number.
+#       Reason:     
+#       Auditor:    Ivern Yeh
+#       Date:       Jul/11/2016
+#
+#  Rev. 1.11
+#       Bug Fixed:  Support SMC Memory map-out function.
+#       Reason:     
+#       Auditor:    Ivern Yeh
+#       Date:       Jul/07/2016
+#
+#  Rev. 1.10
+#       Bug fixed: Fix system hangs at 0x4f after warm reboot.
+#       Reason   : The GPNV area didn't be created.
+#       Auditor  : Hartmann Hsieh
+#       Date     : Jun/27/2016
+#
+#  Rev. 1.09
+#       Bug fixed: Add 32MB ROM part support.
+#       Reason   : Modify BIOS_SIZE to "0x2000000" in "Project.SDL" and modify some lines in "BuildSps.bat".
+#       Auditor  : Hartmann Hsieh
+#       Date     : Jun/23/2016
+#
+#  Rev. 1.08
+#       Bug fixed: Remove signon message in ROM.
+#       Reason   : 
+#       Auditor  : Kasber Chen
+#       Date     : Jun/22/2016
+#
+#  Rev. 1.07
+#       Bug fixed: Fix that flashing BIOS with "/ME" will destroy DXE.
+#       Reason   : 
+#       Auditor  : Hartmann Hsieh
+#       Date     : Jun/20/2016
+#
+#  Rev. 1.06
+#       Bug fixed: Update ECC/PCI SMBIOS event log.
+#       Reason   : It is one of SMC features.
+#       Auditor  : Ivern Yeh
+#       Date     : Jun/16/2016
+#
+#  Rev. 1.05
+#       Bug fixed: Add a SMC feature - JPME2_Jumpless_SUPPORT
+#       Reason   : It is one of SMC features.
+#       Auditor  : Hartmann Hsieh
+#       Date     : Jun/08/2016
+#
+#  Rev. 1.04
+#       Bug fixed:   Clear CMOS feature doesn't show MSG 
+#       Reason:	
+#       Auditor:     Sunny Yang 
+#       Date:        Jun/04/2016
+#
+#  Rev. 1.03
+#       Bug fixed:   Fix system hang up after enable Dynamic_MMCFG_BASE_Support
+#       Reason:      
+#       Auditor:     Salmon Chen
+#       Date:        Apr/21/2016
+#
+#  Rev. 1.02
+#       Bug fixed: Add a SMC feature - Disable SMBIOS type 01 & 02 write once
+#       Reason   : It is one of SMC features.
+#       Auditor  : Yenhsin Cho
+#       Date     : Mar/30/2016
+#
+#  Rev. 1.01
+#       Bug fixed:   Disable non used AST2500 tokens.
+#       Reason:      
+#       Auditor:     Jacker Yeh
+#       Date:        Mar/10/2016
+#
+#  Rev. 1.00
+#       Bug fixed:   Initialize revision
+#       Reason:      Get base code from Grantley
+#       Auditor:     Salmon Chen
+#       Date:        Dec/01/2014
+#
+#*****************************************************************************
+TOKEN
+	Name  = "PROJECT_SUPPORT"
+	Value  = "1"
+	Help  = "The file is for platform settings. EX : Grantley platform settings, BayTrail platform settings."
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "********** Project Driver **********"
+	TokenType = Expression
+End
+
+FFS_FILE
+	Name  = "ProjectPeiDriver"
+	FD_AREA  = "FV_BB"
+	INFComponent  = "SmcPkg.ProjectPeiDriver"
+	Apriori_Index  = "1"
+End
+
+FFS_FILE
+	Name  = "ProjectDxeDriver"
+	FD_AREA  = "FV_MAIN"
+	INFComponent  = "SmcPkg.ProjectDxeDriver"
+	Apriori_Index  = "3"
+End
+
+INFComponent
+	Name  = "ProjectDxeDriver"
+	File  = "ProjectDxeDriver.inf"
+	Package  = "SmcPkg"
+	ModuleTypes = "DXE_DRIVER"
+End
+
+INFComponent
+	Name  = "ProjectPeiDriver"
+	File  = "ProjectPeiDriver.inf"
+	Package  = "SmcPkg"
+	ModuleTypes  = "PEIM"
+End
+
+INFComponent
+        Name  = "ProjectSmmDriver"
+        File  = "ProjectSmmDriver.inf"
+        Package  = "SmcPkg"
+        ModuleTypes  = "DXE_SMM_DRIVER"
+End
+
+INFComponent
+	Name  = "ProjectDxeLib"
+	File  = "ProjectDxeLib.inf"
+	Package  = "SmcPkg"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "SmcPkg.ProjectDxeLib"
+	Override  = "AmiModulePkg.Bds"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "SmcPkg.ProjectDxeLib"
+	Override  = "AmiModulePkg.CsmDxe"
+End
+
+TOKEN
+	Name  = "====== Supermicro Tokens ======================"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "SMC_SSID"
+	Value  = "0xFFFFFFFF"
+	Help  = "This an example, Bit00-15: Vendor ID/Bit16-31:Device ID."
+	TokenType = Integer
+	TargetH = Yes
+	TargetMAK = Yes
+End
+
+ELINK
+	Name  = "LogMemErrorToGpnv,"
+	Parent  = "MemErrorHandlers"
+	Disable = Yes
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "SmcLogMemErrorToGpnv,"
+	Parent  = "MemErrorHandlers"
+	Priority = 30
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "LogPciErrorToGpnv,"
+	Parent  = "PciErrorHandlers"
+	Disable = Yes
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "SmcLogPciErrorToGpnv,"
+	Parent  = "PciErrorHandlers"
+	Priority = 30
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "{  { 0x8BEB8C19, 0x3FEC, 0x4fab, 0xA3, 0x78, 0xC9, 0x03, 0xE8, 0x90, 0xFC, 0xAE },EVENT_LOGS_MAIN, NULL},"
+	Parent  = "{ SETUP_ROOT_PAGE_ORDER_GUID, BOOT_FLOW_CONDITION_NORMAL, NULL},"
+	Priority  = 12
+	InvokeOrder = AfterParent
+	Token = "EventLogsSetupPage_SUPPORT" "=" "1"
+End
+
+ELINK
+	Name  = "$(BUILD_DIR)/EventLogsAutoId.h"
+	Parent  = "AMITSE_OEM_HEADER_LIST"
+	Token = "EventLogsSetupPage_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+
+TOKEN
+	Name  = "====== Tokens clone from Kernel default ======================"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "TOTAL_SIO_SERIAL_PORTS"
+	Value  = "2"
+	Help  = "**PORTING NEEDED** Total number of Super IO serial ports present."
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+	Range  = "0-10"
+End
+
+TOKEN
+	Name  = "COM0_DEFAULT_CONSOLE_REDIRECTION_ENABLE"
+	Value  = "0"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "COM1_DEFAULT_CONSOLE_REDIRECTION_ENABLE"
+	Value  = "1"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "DEFAULT_TERMINAL_TYPE"
+	Value  = "1"
+	Help  = "TERMINAL_TYPE ANSI, which is 3."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "EXTENDED_RESOLUTION_ENABLE"
+	Value  = "1"
+	Help  = "Enable or disable 100 x 31 terminal resolution"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "DEFAULT_ACPI_SPCR_CONSOLE_REDIRECTION_ENABLE"
+	Value  = "0"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "====== Project Chipset relative setting ======================"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "S3NvramSave_SUPPORT"
+	Value  = "0"
+	Help  = "Switch for saving MRC config to NVRAM"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "====== Project Platform Setting ======================"
+	TokenType = Expression
+End
+
+TOKEN
+        Name      = "SmcBoardType"
+        Value     = "TypeNeonCityEPRP"
+        Help      = "TypeNeonCityEPRP, TypeNeonCityFPGA"
+        TokenType = Expression
+        TargetH   = Yes
+End
+
+TOKEN
+	Name  = "SIO_SETUP_USE_APTIO_4_STYLE"
+	Value  = "1"
+	Help  = "Main switch to enable Aptio 4.x Static Setup Screen Instead of Auto generated Setup in Aptio V."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "BMC_UART2Mode_Support"
+	Value  = "1"
+	Help  = "COM2 support SOL function"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name      = "ONBOARD_VGA_DID"
+	Value     = "0x20001A03"
+	Help      = "Onboard VGA Option Rom Agent Did"
+	TokenType = Integer
+	TargetH   = Yes
+End
+
+TOKEN
+    Name  = "FW_VERSION_GUID"
+    Value  = "{0x1B9BE3B8, 0x7DE4, 0x4f7f, {0xA3, 0xD0, 0xF2, 0xA9, 0x8F, 0xA5, 0x9B, 0x42}}"
+    Help  = "FW Version GUID inserted into Firmware ID structure.\FW version has to be overridden for every project."
+    TokenType = Expression
+    TargetH = Yes
+    Range  = "GUID"
+End
+
+TOKEN
+	Name  = "CLEAR_POST_MCE"
+	Value  = "1"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+# JPME2_Jumpless_SUPPORT start
+TOKEN
+	Name  = "********** Jumpless Support **********"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "JPME2_Jumpless_SUPPORT"
+	Value  = "1"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "JPME2_GPIO_CFG_MMIO_Address"
+	Value  = "0xFDAE0448"
+	Help  = "ME_MFR_MODE(GPP_C9) config address"
+    	TokenType = Integer
+	TargetH = Yes
+	TargetEQU = Yes
+End
+# JPME2_Jumpless_SUPPORT end
+
+TOKEN
+	Name  = "********** USB OC Settings **********"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "USB2_OC_PIN"
+	Value  = "{0, 1, 1, 2, 3, 3, 7, 7, 6, 4, 6, 4, 5, 4, 8, 8}"
+	Help = "0: OC_PIN_1, 1: OC_PIN_2, 2: OC_PIN_3, ~~ 8: OC_PIN_SKIP"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "USB3_OC_PIN"
+	Value  = "{0, 1, 1, 2, 3, 3, 8, 8, 8, 8}"
+	Help = "0: OC_PIN_1, 1: OC_PIN_2, 2: OC_PIN_3, ~~ 8: OC_PIN_SKIP"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "USB2_AFE"
+	Value  = "{{7, 0, 2, 1},{7, 0, 2, 1},{7, 0, 2, 1},{7, 0, 2, 1},{7, 0, 2, 1},{7, 0, 2, 1},{7, 0, 2, 1},{7, 0, 2, 1},{7, 0, 2, 1},{7, 0, 2, 1},{7, 0, 2, 1},{7, 0, 2, 1},{7, 0, 2, 1},{7, 0, 2, 1}}"
+	Help = "{Petxiset, Txiset, Predeemp, Pehalfbit}"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "********** IOBP Settings **********"
+	TokenType = Expression
+End
+
+#  LanNum 0xFF : will Ingnore it. 
+TOKEN
+	Name  = "SB_OEM_PTSS_TABLE_LIST"
+	Value  = "{0xFF, 0xFF, 0x02, 0x1098, 0x002A0000, ~0x003F0000},"
+	Help  = "Format:{PordId, LanNum, PhyMode, Offset, Value, BitMask}, PordId: ignored, LanNum: HSIO Lan#(Start from 0), PhyMode: 0:PCIEDMI/1:USB3/2:SATA/8:USB2, For USB2 set LanNum to 0."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PeiRamBootSupport"
+	Value  = "0"
+	Help  = "Main switch to enable PEI RAM Boot support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "====== Flash Configuration ======================"
+	TokenType = Expression
+End
+
+
+#
+# Please modify the map if your change the ROM layout.
+# The region layout map is fixed.
+# 1. Disable feature token will set the correspond region size to 0 and then the region will removed from the rom layout.
+# 2. Increase/decrease region space by change region_SIZE and the increased/decreased size will reflect to FV_MAIN.
+# 3. The offset, base address, block numbers and FD_AREA will sync up with the size setting automatically.
+# Below is the layout of SMC project with the most full feature enabled (Except FPGA).
+#====================================================================================================================
+# SPI size: 32MB , BIOS ROM size:16MB , SPS size:16MB                                                                |
+#--------------------------------------------------------------------------------------------------------------------|
+# Region             |Size (Hex) | ROM Offset | Memory Base (Hex) | Related Token                                    |
+#--------------------------------------------------------------------------------------------------------------------|
+# NVRAM              |  80000    |            |         |                                                            |
+#--------------------------------------------------------------------------------------------------------------------|
+# NVRAM BACKUP       |  80000    |            |         | FAULT_TOLERANT_NVRAM_UPDATE                                |
+# -------------------------------------------------------------------------------------------------------------------|
+# WHEA               |  10000    |            |         | WHEA_SUPPORT                                               |
+# -------------------------------------------------------------------------------------------------------------------|
+# GPNV               |  10000    |            |         | GpnvErrorLogging_SUPPORT                                   |
+# -------------------------------------------------------------------------------------------------------------------|
+# FV_MAIN            | A80000    |            |         |                                                            |
+# -------------------------------------------------------------------------------------------------------------------|
+# OA (SMC_ROM_HOLE)  |  10000    |            |         | OEM_ACTIVATION_TABLE_LOCATION/SmcRomHole_SUPPORT           |
+# -------------------------------------------------------------------------------------------------------------------|
+# FV_FIT             |  50000    |            |         | INTEL_FIT_SUPPORT                                          |
+# -------------------------------------------------------------------------------------------------------------------|
+# FV_BB              | 400000    |            |         |                                                            |
+# -------------------------------------------------------------------------------------------------------------------|
+# Total               1000000                                                                                        |
+# -------------------------------------------------------------------------------------------------------------------|
+
+
+#
+# Below is the layout for FPGA platform.
+#====================================================================================================================+
+# SPI size: 64MB , BIOS ROM size:48MB , SPS size:16MB                                                                |
+#--------------------------------------------------------------------------------------------------------------------|
+# Region             |Size (Hex) | ROM Offset | Memory Base (Hex) | Related Token                                    |
+#--------------------------------------------------------------------------------------------------------------------|
+# FPGA               | 2000000   |            | FD000000          | FPGA_SUPPORT                                     |
+#--------------------------------------------------------------------------------------------------------------------|
+# NVRAM              |   80000   |            | FF000000          |                                                  |
+#--------------------------------------------------------------------------------------------------------------------|
+# NVRAM BACKUP       |   80000   |            |                   | FAULT_TOLERANT_NVRAM_UPDATE                      |
+# -------------------------------------------------------------------------------------------------------------------|
+# WHEA               |   10000   |            |                   | WHEA_SUPPORT                                     |
+# -------------------------------------------------------------------------------------------------------------------|
+# GPNV               |   10000   |            |                   | GpnvErrorLogging_SUPPORT                         |
+# -------------------------------------------------------------------------------------------------------------------|
+# FV_MAIN            |  A80000   |            |                   |                                                  |
+# -------------------------------------------------------------------------------------------------------------------|
+# OA (SMC_ROM_HOLE)  |   10000   |            |                   | OEM_ACTIVATION_TABLE_LOCATION/SmcRomHole_SUPPORT |
+# -------------------------------------------------------------------------------------------------------------------|
+# FV_FIT             |   50000   |            |                   | INTEL_FIT_SUPPORT                                |
+# -------------------------------------------------------------------------------------------------------------------|
+# FV_BB              |  400000   |            |                   |                                                  |
+# -------------------------------------------------------------------------------------------------------------------|
+# Total                3000000                                                                                       |
+# -------------------------------------------------------------------------------------------------------------------|
+
+
+TOKEN
+	Name  = "BIOS_SIZE"
+	Value  = "0x1000000"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+End
+
+TOKEN
+        Name  = "FLASH_SIZE"
+        Value  = "0xC00000"
+        Help  = "Size of the Physical SPI Flash Device in bytes"
+        TokenType = Integer
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "FLASH_SIZE"
+        Value  = "0x1000000"
+        Help  = "Size of the Physical SPI Flash Device in bytes"
+        TokenType = Integer
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+	Token = "BIOS_SIZE" "=" "0x2000000"
+End
+
+TOKEN
+    Name  = "FLASH_SIZE"
+    Value  = "0x3000000"
+    Help  = "Size of the Flash Device in bytes"
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+    Token = "FPGA_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "SMI_FLASH_INTERFACE_VERSION"
+	Value  = "14"
+	Help  = "Version of the SMI Flash Interface"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "NO_MMIO_FLASH_ACCESS_DURING_UPDATE"
+	Value  = "1"
+	Help  = "This token should be set to 1 if flash part is not memory mapped while write enabled."
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "BIOS_SIZE" "=" "0x4000000"
+End
+
+RSVCHIPSET
+	Name  = "ME Flash resources Region"
+	BASEADDR  = "0xFF000000"
+	LENGTH  = "0x400000"
+	TYPE  = "EfiGcdMemoryTypeMemoryMappedIo"
+	ATTRIBUTES  = "0x8000000000000001"
+End
+
+RSVCHIPSET
+	Name  = "ME Flash resources Region"
+	BASEADDR  = "0xFC000000"
+	LENGTH  = "0x400000"
+	TYPE  = "EfiGcdMemoryTypeMemoryMappedIo"
+	ATTRIBUTES  = "0x8000000000000001"
+        Token = "FPGA_SUPPORT" "=" "1"
+End
+
+RSVCHIPSET
+	Name  = "BIOS Flash resources Region"
+	BASEADDR  = "0xFF000000"
+	LENGTH  = "0x1000000"
+	TYPE  = "EfiGcdMemoryTypeMemoryMappedIo"
+	ATTRIBUTES  = "0x8000000000000001"
+        Token = "FPGA_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "FPT_START"
+	Value  = "0x1000"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "OPR2_LENGTH"
+	Value  = "0x0"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+        Name  = "FV_ERROR_LOGGING_BASE"
+        Value  = "$(FLASH_BASE)+$(FV_FPGA_SIZE)+$(NVRAM_SIZE)"
+        Help  = "Base Address of the ErrorLogging Space"
+        TokenType = Integer
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+        Range  = "From: 4G - FLASH_SIZE To: 4G"
+        Token = "FPGA_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "FV_ERROR_LOGGING_BASE"
+        Value  = "$(FLASH_BASE)+$(FV_FPGA_SIZE)+$(NVRAM_SIZE)*2"
+        Help  = "Base Address of the ErrorLogging Space"
+        TokenType = Integer
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+        Range  = "From: 4G - FLASH_SIZE To: 4G"
+        Token = "FAULT_TOLERANT_NVRAM_UPDATE" "=" "1"
+        Token = "FPGA_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "FV_ERROR_LOGGING_BASE"
+        Value  = "$(FLASH_BASE)+$(FV_FPGA_SIZE)+$(NVRAM_SIZE)*2+$(FV_WHEA_SIZE)"
+        Help  = "Base Address of the ErrorLogging Space"
+        TokenType = Integer
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+        Range  = "From: 4G - FLASH_SIZE To: 4G"
+        Token = "FAULT_TOLERANT_NVRAM_UPDATE" "=" "1"
+        Token = "WHEA_SUPPORT" "=" "1"
+        Token = "FPGA_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "FV_MAIN_OFFSET"
+	Value  = "$(NVRAM_OFFSET)+$(NVRAM_SIZE)*1+$(GPNV_SIZE)"
+	Help  = "Offset to the start of the FV_MAIN area from the start of the ROM image"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Range  = "From: 0 To: FLASH_SIZE - NVRAM_SIZE - FV_MAIN_SIZE"
+	Token = "GpnvErrorLogging_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "FV_MAIN_OFFSET"
+	Value  = "$(NVRAM_OFFSET)+$(NVRAM_SIZE)*2+$(GPNV_SIZE)"
+	Help  = "Offset to the start of the FV_MAIN area from the start of the ROM image"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Range  = "From: 0 To: FLASH_SIZE - NVRAM_SIZE - FV_MAIN_SIZE"
+	Token = "FAULT_TOLERANT_NVRAM_UPDATE" "=" "1"
+	Token = "GpnvErrorLogging_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "FV_MAIN_OFFSET"
+	Value  = "$(NVRAM_OFFSET)+$(NVRAM_SIZE)+$(FV_WHEA_SIZE)+$(GPNV_SIZE)"
+	Help  = "Offset to the start of the FV_MAIN area from the start of the ROM image"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Range  = "From: 0 To: FLASH_SIZE - NVRAM_SIZE - FV_MAIN_SIZE"
+	Token = "GpnvErrorLogging_SUPPORT" "=" "1"
+	Token = "FAULT_TOLERANT_NVRAM_UPDATE" "=" "0"	
+	Token  = "WHEA_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "FV_MAIN_OFFSET"
+	Value  = "$(NVRAM_OFFSET)+$(NVRAM_SIZE)*2+$(FV_WHEA_SIZE)+$(GPNV_SIZE)"
+	Help  = "Offset to the start of the FV_MAIN area from the start of the ROM image"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Range  = "From: 0 To: FLASH_SIZE - NVRAM_SIZE - FV_MAIN_SIZE"
+	Token = "FAULT_TOLERANT_NVRAM_UPDATE" "=" "1"
+	Token = "GpnvErrorLogging_SUPPORT" "=" "1"
+	Token  = "WHEA_SUPPORT" "=" "1"
+End
+
+FD_AREA
+	Name  = "GPNV"
+	TYPE = Yes
+	FD_INFO  = "AMIROM"
+	Offset  = "$(NVRAM_OFFSET)+$(NVRAM_SIZE)"
+	Size  = "$(GPNV_SIZE)"
+	Layout_Attribute  = "0x100"
+	Attributes  = "0xffff"
+	Alignment  = "16"
+	Token = "GpnvErrorLogging_SUPPORT" "=" "1"
+End
+
+FD_AREA
+	Name  = "GPNV"
+	TYPE = Yes
+	FD_INFO  = "AMIROM"
+	Offset  = "$(NVRAM_OFFSET)+$(NVRAM_SIZE)*2"
+	Size  = "$(GPNV_SIZE)"
+	Layout_Attribute  = "0x100"
+	Attributes  = "0xffff"
+	Alignment  = "16"
+	Token = "FAULT_TOLERANT_NVRAM_UPDATE" "=" "1"
+	Token = "GpnvErrorLogging_SUPPORT" "=" "1"
+End
+
+FD_AREA
+	Name  = "GPNV"
+	TYPE = Yes
+	FD_INFO  = "AMIROM"
+	Offset  = "$(NVRAM_OFFSET)+$(NVRAM_SIZE)*2+$(FV_WHEA_SIZE)"
+	Size  = "$(GPNV_SIZE)"
+	Layout_Attribute  = "0x100"
+	Attributes  = "0xffff"
+	Alignment  = "16"
+	Token = "FAULT_TOLERANT_NVRAM_UPDATE" "=" "1"
+	Token = "GpnvErrorLogging_SUPPORT" "=" "1"
+	Token = "WHEA_SUPPORT" "=" "1"
+End
+
+FD_AREA
+	Name  = "GPNV"
+	TYPE = Yes
+	FD_INFO  = "AMIROM"
+	Offset  = "$(NVRAM_OFFSET)+$(NVRAM_SIZE)+$(FV_WHEA_SIZE)"
+	Size  = "$(GPNV_SIZE)"
+	Layout_Attribute  = "0x100"
+	Attributes  = "0xffff"
+	Alignment  = "16"
+	Token = "GpnvErrorLogging_SUPPORT" "=" "1"
+	Token = "WHEA_SUPPORT" "=" "1"
+	Token = "FAULT_TOLERANT_NVRAM_UPDATE" "=" "0"
+End
+
+TOKEN
+	Name  = "FV_MAIN_SIZE"
+	Value  = "$(FLASH_SIZE) - $(FV_BB_SIZE) - $(OEM_ACTIVATION_TABLE_SIZE) - $(FV_MAIN_OFFSET) - $(FV_LOGO_SIZE)"
+	Help  = "Size of the FV_MAIN area"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Range  = "From: 0 To: FLASH_SIZE - FV_BB - FV_MAIN_OFFSET"
+	Token = "EarlyVideo_Mode" "=" "1"
+	Token = "LOGO_Data_FV_Support" "=" "1"
+End
+
+TOKEN
+	Name  = "FV_MAIN_SIZE"
+	Value  = "$(FLASH_SIZE) - $(FV_BB_SIZE) - $(FIT_AREA) - $(OEM_ACTIVATION_TABLE_SIZE) - $(FV_MAIN_OFFSET) - $(FV_LOGO_SIZE)"
+	Help  = "Size of the FV_MAIN area"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Range  = "From: 0 To: FLASH_SIZE - FV_BB - FV_MAIN_OFFSET"
+	Token = "IntelLtsxFit_SUPPORT" "=" "1"
+	Token = "EarlyVideo_Mode" "=" "1"
+	Token = "LOGO_Data_FV_Support" "=" "1"
+End
+
+FD_AREA
+	Name  = "FV_LOGO"
+	TYPE = "FV"
+	FD_INFO  = "AMIROM"
+	Offset  = "$(FV_MAIN_OFFSET)+$(FV_MAIN_SIZE)"
+	Size  = "$(FV_LOGO_SIZE)"
+	Layout_Attribute  = "0x000"
+	Attributes  = "0xffff"
+	Alignment  = "16"
+	Guid  = "AC9DBAB9-2114-454D-B0F8-F6746D31A580"
+	Token = "EarlyVideo_Mode" "=" "1"
+	Token = "LOGO_Data_FV_Support" "=" "1"
+End
+
+TOKEN
+	Name  = "  ====== GPIO Define ======  "
+	TokenType = Integer
+End
+
+TOKEN
+	Name  = "SMC_EXT_NMI_GPIO"
+	Value  = "$(SMC_GPP_D) + 3"
+	Help  = "The Number of GPIO pin which should be routed to cause NMI.. \0xFF: no such Pin."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SMC_BMC_NMI_GPIO"
+	Value  = "$(SMC_GPP_D) + 0"
+	Help  = "The Number of GPIO pin which should be routed to cause NMI.. \0xFF: no such Pin."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SMI_BMC_PIN"
+	Value  = "$(SMC_GPP_C) + 22"
+	Help  = "The Number of GPIO pin which should be routed to cause SMI. \0xFF: no such Pin."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name      = "BMC_Present_Pin"
+	Value     = "$(SMC_GPP_B) + 21"
+	Help      = "BMC Present GPIO, JPB1 Jumper status, GPP_B21"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH   = Yes
+	Range     = "4 byte length"
+	Token = "IPMI_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name      = "BMC_POST_COMPLETE"
+	Value     = "$(SMC_GPP_B) + 20"
+	Help      = "BIOS POST COMPLTET pin of SB, GPIO_SKL_H_GPP_B20"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH   = Yes
+	Range     = "4 byte length"
+End
+
+PcdMapping
+	Name  = "PcdSmcPS2AlwaysInstall"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x00"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 01h
+	TargetDSC = Yes
+End
+
+TOKEN
+	Name  = "DEFAULT_XHCI_HANDOFF_OPTION"
+	Value  = "0"
+	Help  = "Default value of the XHCI Hand-off option."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "USB_MOUSE_UPDATE_EBDA_DATA"
+	Value  = "0"
+	Help  = "Enables the direct update of EBDA from USB mouse driver. \Note that enabling this flag may cause a failure of those DOS mouse drivers that trap INT74 and do not use EBDA."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "  ====== CSM setting ======  "
+	TokenType = Integer
+End
+
+MODULE
+	Help  = "Includes Project.cif to Project"
+	File  = "Project.mak"
+End
+
+TOKEN
+	Name  = "PCH_DEFAULT_SVID"
+	Value  = "0x15D9"
+	Help  = "Pch default Sub Sytem Vendor ID. This value is taken from PchRegs.h file."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "USE_PLATFORM_EVENT_MESSAGE"
+	Value  = "1"
+	Help  = "If turned on, replaces ADD_SEL_ENTRY commands with PLATFORM_EVENT commands."
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "IPMI_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "SMC_UEFI_PXE_NAME_STYLE"
+	Value  = "0"
+	Help  = "Set to 1 will add BDF in front of UEFI PXE boot variable, set to 2 will add MAC address in front of UEFI PXE boot variable."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "BOOT_OPTION_NAME_PREFIX_FUNCTION"
+	Value  = "SMCConstructUefiPXEBootNamebyBDF"
+	Help  = "Name of the function of type CONSTRUCT_BOOT_OPTION_NAME.\The function is used to create boot option name prefix."
+	TokenType = Expression
+	TargetH = Yes
+	Token = "SMC_UEFI_PXE_NAME_STYLE" "=" "1"
+End
+
+TOKEN
+	Name  = "BOOT_OPTION_NAME_PREFIX_FUNCTION"
+	Value  = "SMCConstructUefiPXEBootNamebyMAC"
+	Help  = "Name of the function of type CONSTRUCT_BOOT_OPTION_NAME.\The function is used to create boot option name prefix."
+	TokenType = Expression
+	TargetH = Yes
+	Token = "SMC_UEFI_PXE_NAME_STYLE" "=" "2"
+End
+
+TOKEN
+	Name  = "SETUP_HIDE_BIOS_SIGNON_MESSAGE2"
+	Value  = "1"
+	Help  = "1 => Hides the BIOS signon message. 0 => Shows the BIOS sign on message."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "********** IIO Setting **********"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "FAST_READ_SUPPORT"
+	Value  = "1"
+	Help  = "Fast Read Support(Need Hardware SPI Support). 0 - Read(03), 1 - Fast Read(0B), 2 - Dual Output Fast Read(3B)."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "********** Disabled CRB Setting **********"
+	TokenType = Expression
+End
+
+PCIDEVICE
+	Title  = "PCIE PCH Slot #3"
+	Parent  = "PCIE PCH Root Port #1"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 03h
+	SleepNum  = 01h
+	ASLdeviceName  = "SLT3"
+	IntA =  LNKA; 16
+	IntB =  LNKB; 17
+	IntC =  LNKC; 18
+	IntD =  LNKD; 19
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+	Disable = Yes
+End
+
+PCIDEVICE
+	Title  = "PCI Express Slot 1 on 1C on PC01"
+	Parent  = "PCI Express Port 1C on PC01"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 01h
+	ASLdeviceName  = "SLT1"
+	SleepNum  = 00h
+	IntA =  LNKA; 16
+	IntB =  LNKB; 17
+	IntC =  LNKC; 18
+	IntD =  LNKD; 19
+	Token = "NB_IOxAPIC_SUPPORT" "=" "0"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+	Disable = Yes
+End
+
+PCIDEVICE
+	Title  = "PCI Express Slot 1 on 1C on PC01"
+	Parent  = "PCI Express Port 1C on PC01"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 01h
+	ASLdeviceName  = "SLT1"
+	SleepNum  = 01h
+	IntA =  LNKA; 34
+	IntB =  LNKB; 37
+	IntC =  LNKC; 38
+	IntD =  LNKD; 36
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+	Disable = Yes
+End
+
+PCIDEVICE
+	Title  = "PCI Express Slot 2 on 3A on PC03"
+	Parent  = "PCI Express Port 3A on PC03"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 02h
+	ASLdeviceName  = "SLT2"
+	SleepNum  = 00h
+	IntA =  LNKA; 16
+	IntB =  LNKB; 17
+	IntC =  LNKC; 18
+	IntD =  LNKD; 19
+	Token = "NB_IOxAPIC_SUPPORT" "=" "0"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+	Disable = Yes
+End
+
+PCIDEVICE
+	Title  = "PCI Express Slot 2 on 3A on PC03"
+	Parent  = "PCI Express Port 3A on PC03"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 02h
+	ASLdeviceName  = "SLT2"
+	SleepNum  = 01h
+	IntA =  LNKA; 48
+	IntB =  LNKB; 52
+	IntC =  LNKC; 53
+	IntD =  LNKD; 54
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+	Disable = Yes
+End
+
+PCIDEVICE
+	Title  = "PCI Express Slot 6 on P0 on PC06"
+	Parent  = "PCI Express Port 0 on PC06"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 06h
+	ASLdeviceName  = "SLT6"
+	SleepNum  = 00h
+	IntA =  LNKA; 16
+	IntB =  LNKB; 17
+	IntC =  LNKC; 18
+	IntD =  LNKD; 19
+	Token = "NB_IOxAPIC_SUPPORT" "=" "0"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+	Disable = Yes
+End
+
+PCIDEVICE
+	Title  = "PCI Express Slot 6 on P0 on PC06"
+	Parent  = "PCI Express Port 0 on PC06"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 06h
+	ASLdeviceName  = "SLT6"
+	SleepNum  = 00h
+	IntA =  LNKA; 72
+	IntB =  LNKB; 76
+	IntC =  LNKC; 77
+	IntD =  LNKD; 78
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+	Disable = Yes
+End
+
+PCIDEVICE
+	Title  = "PCI Express Slot 4 on 1A on PC07"
+	Parent  = "PCI Express Port 1A on PC07"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 04h
+	ASLdeviceName  = "SLT4"
+	SleepNum  = 00h
+	IntA =  LNKA; 16
+	IntB =  LNKB; 17
+	IntC =  LNKC; 18
+	IntD =  LNKD; 19
+	Token = "NB_IOxAPIC_SUPPORT" "=" "0"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+	Disable = Yes
+End
+
+PCIDEVICE
+	Title  = "PCI Express Slot 4 on 1A on PC07"
+	Parent  = "PCI Express Port 1A on PC07"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 04h
+	ASLdeviceName  = "SLT4"
+	SleepNum  = 00h
+	IntA =  LNKA; 80
+	IntB =  LNKB; 84
+	IntC =  LNKC; 85
+	IntD =  LNKD; 86
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+	Disable = Yes
+End
+
+PCIDEVICE
+	Title  = "PCI Express Slot 8 on 2A on PC08"
+	Parent  = "PCI Express Port 2A on PC08"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 08h
+	ASLdeviceName  = "SLT8"
+	SleepNum  = 00h
+	IntA =  LNKA; 16
+	IntB =  LNKB; 17
+	IntC =  LNKC; 18
+	IntD =  LNKD; 19
+	Token = "NB_IOxAPIC_SUPPORT" "=" "0"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+	Disable = Yes
+End
+
+PCIDEVICE
+	Title  = "PCI Express Slot 8 on 2A on PC08"
+	Parent  = "PCI Express Port 2A on PC08"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 08h
+	ASLdeviceName  = "SLT8"
+	SleepNum  = 00h
+	IntA =  LNKA; 88
+	IntB =  LNKB; 92
+	IntC =  LNKC; 93
+	IntD =  LNKD; 94
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+	Disable = Yes
+End
+
+PCIDEVICE
+	Title  = "PCI Express Slot 5 on 3A on PC09"
+	Parent  = "PCI Express Port 3A on PC09"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 05h
+	ASLdeviceName  = "SLT5"
+	SleepNum  = 00h
+	IntA =  LNKA; 16
+	IntB =  LNKB; 17
+	IntC =  LNKC; 18
+	IntD =  LNKD; 19
+	Token = "NB_IOxAPIC_SUPPORT" "=" "0"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+	Disable = Yes
+End
+
+PCIDEVICE
+	Title  = "PCI Express Slot 5 on 3A on PC09"
+	Parent  = "PCI Express Port 3A on PC09"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 05h
+	ASLdeviceName  = "SLT5"
+	SleepNum  = 00h
+	IntA =  LNKA; 96
+	IntB =  LNKB; 100
+	IntC =  LNKC; 101
+	IntD =  LNKD; 102
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+	Disable = Yes
+End
+
+PCIDEVICE
+	Title  = "PCI Express Slot 7 on 3C on PC09"
+	Parent  = "PCI Express Port 3C on PC09"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 07h
+	ASLdeviceName  = "SLT7"
+	SleepNum  = 00h
+	IntA =  LNKA; 16
+	IntB =  LNKB; 17
+	IntC =  LNKC; 18
+	IntD =  LNKD; 19
+	Token = "NB_IOxAPIC_SUPPORT" "=" "0"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+	Disable = Yes
+End
+
+PCIDEVICE
+	Title  = "PCI Express Slot 7 on 3C on PC09"
+	Parent  = "PCI Express Port 3C on PC09"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 07h
+	ASLdeviceName  = "SLT7"
+	SleepNum  = 00h
+	IntA =  LNKA; 98
+	IntB =  LNKB; 101
+	IntC =  LNKC; 102
+	IntD =  LNKD; 100
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+	Disable = Yes
+End
+
+ELINK
+	Name  = "PCI_SLOT_DSM(0x01, Slot01, \_SB.PC01.BR1C),"
+	Parent  = "DsmAsl"
+	Help  = "eLink for creating platform device names with DSM method. Specify Slot number, name and current device scope"
+	InvokeOrder = AfterParent
+	Disable = Yes
+End
+
+ELINK
+	Name  = "PCI_SLOT_DSM(0x02, Slot02, \_SB.PC03.BR3A),"
+	Parent  = "DsmAsl"
+	Help  = "eLink for creating platform device names with DSM method. Specify Slot number, name and current device scope"
+	InvokeOrder = AfterParent
+	Disable = Yes
+End
+
+ELINK
+	Name  = "PCI_SLOT_DSM(0x04, Slot04, \_SB.PC07.QR1A),"
+	Parent  = "DsmAsl"
+	Help  = "eLink for creating platform device names with DSM method. Specify Slot number, name and current device scope"
+	InvokeOrder = AfterParent
+	Disable = Yes
+End
+
+ELINK
+	Name  = "PCI_SLOT_DSM(0x05, Slot05, \_SB.PC09.QR3A),"
+	Parent  = "DsmAsl"
+	Help  = "eLink for creating platform device names with DSM method. Specify Slot number, name and current device scope"
+	InvokeOrder = AfterParent
+	Disable = Yes
+End
+
+ELINK
+	Name  = "PCI_SLOT_DSM(0x06, Slot06, \_SB.PC06.QRP0),"
+	Parent  = "DsmAsl"
+	Help  = "eLink for creating platform device names with DSM method. Specify Slot number, name and current device scope"
+	InvokeOrder = AfterParent
+	Disable = Yes
+End
+
+ELINK
+	Name  = "PCI_SLOT_DSM(0x07, Slot07, \_SB.PC09.QR3C),"
+	Parent  = "DsmAsl"
+	Help  = "eLink for creating platform device names with DSM method. Specify Slot number, name and current device scope"
+	InvokeOrder = AfterParent
+	Disable = Yes
+End
+
+ELINK
+	Name  = "PCI_SLOT_DSM(0x08, Slot08, \_SB.PC08.QR2A),"
+	Parent  = "DsmAsl"
+	Help  = "eLink for creating platform device names with DSM method. Specify Slot number, name and current device scope"
+	InvokeOrder = AfterParent
+	Disable = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable Pilot4 support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "AST2500_KEYBOARD_PRESENT"
+	Value  = "0"
+	Help  = "Keyboard Present / Not Present."
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "KBC_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "AST2500_MOUSE_PRESENT"
+	Value  = "0"
+	Help  = "Mouse Present / Not Present."
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "KBC_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "AST2500_SERIAL_PORT3_PRESENT"
+	Value  = "0"
+	Help  = "Serial Port 3 (COMC / UART3) Present / Not Present."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "AST2500_SERIAL_PORT4_PRESENT"
+	Value  = "0"
+	Help  = "Serial Port 4 (COMD / UART4) Present / Not Present."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "AST2500_SWC_PRESENT"
+	Value  = "0"
+	Help  = "System Wake Up Controller Present / Not Present."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "AST2500_ILPC2AHB_PRESENT"
+	Value  = "0"
+	Help  = "ILPC to AHB Controller Present / Not Present."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_RECOVERY_SUPPORT"
+    Value  = "0"
+    Help  = "Switch to enable SIO recovery support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "AmiModulePkg.AST2500DxeInit"
+	Override  = "AmiModulePkg.SmmGenericSio"
+End
+
+LibraryMapping
+	Class  = "PciLib"
+	Instance  = "MdePkg.BasePciLibCf8"
+	Override  = "AmiModulePkg.AST2500PeiInit"
+End
+
+LibraryMapping
+	Class  = "PciLib"
+	Instance  = "MdePkg.BasePciLibCf8"
+	Override  = "SmcPkg.EarlyVideoPei"
+End
+
+LibraryMapping
+	Class  = "TimerLib"
+	Instance  = "PcAtChipsetPkg.BaseAcpiTimerLib"
+        Override  = "SmcPkg.EarlyVideoPei"
+End
+
+TOKEN
+    Name  = "MemoryMapOut_SUPPORT"
+    Value  = "1"
+    Help  = " Memory Map Out support"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+ELINK
+	Name  = "SmcPkg\Project\Project.ssp"
+	Parent  = "ADDON_SSP_FILES"
+	InvokeOrder = AfterParent
+End
+
+TOKEN
+	Name  = "IMC_PER_SOCKET"
+	Value  = "2"
+	Help  = " Number of memory IMC present on board in CPU0"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "CHANNEL_PER_IMC"
+	Value  = "3"
+	Help  = " Number of memory channels present on board in IMC"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "DIMM_PER_CHANNEL"
+	Value  = "2"
+	Help  = " Number of DIMM's per channel available"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "A1_MEMORY_SOCKETS"
+	Value  = "$(IMC_PER_SOCKET) * $(CHANNEL_PER_IMC) * $(DIMM_PER_CHANNEL)"
+	Help  = "Number of Memory Modules/Slots in the first physical Memory Array"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "A2_MEMORY_SOCKETS"
+	Value  = "$(IMC_PER_SOCKET) * $(CHANNEL_PER_IMC) * $(DIMM_PER_CHANNEL)"
+	Help  = "Number of Memory Modules/Slots in the first physical Memory Array"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+  Token = "NUMBER_CPU_SOCKETS" "=" "2"	
+End
+
+TOKEN
+    Name  = "FixedType17Handle_SUPPORT"
+    Value  = "1"
+    Help  = " Support fixed SMBIOS type 17 handle number."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AHCI_INT13_SMM_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable SMM support for AHCI Int13/MMIO operations in Project. Currently only INT13 Read/Write functions are supported."
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "ACCESS_MMIO_THROUGH_SWSMI"
+    Value  = "1"
+    Help  = "*** ONLY FOR TESTING***When Set to 1 Forces the code to access MMIO region through SoftwareSMI if not in big real mode to retain backward compatibility.This token value should be always 0.AHCI_INT13_SMM_SUPPORT should be set to 1,if this token is to be enabled."
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name = "TPM2_DISABLE_PLATFORM_HIERARCHY_RANDOMIZATION"
+    Value  = "1"
+    Help  = "Question to disable Platform Hierarchy randomization to facilitate TXT testing during development"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH   = Yes
+    TargetMAK = Yes
+End
+
+TOKEN
+    Name = "ONBOARD_10GBE_DISABLE_BY_SETUP_ITEM"
+    Value  = "0"
+    Help  = "Question to disable Platform Hierarchy randomization to facilitate TXT testing during development"
+    TokenType = Boolean
+    TargetH   = Yes
+End
+
+TOKEN
+	  Name  = "CSM_ALLOW_LARGE_OPROMS"
+	  Value  = "1"
+	  Help  = "Enabling this switch allows CSM to load and execute legacy Option ROMs larger than 128K. If enabled, the >128KB size will be taken from PCIR structure, not from ROM header."
+	  TokenType = Boolean
+	  TargetH = Yes
+End
+
+TOKEN
+        Name  = "HOTPLUG_SUPPORT"
+        Value  = "1"
+        Help  = "Enables / Disables Pci Bus Driver Native PCI Hotplug support"
+        TokenType = Boolean
+        TargetMAK = Yes
+        TargetH = Yes
+End
+
+TOKEN
+	Name  = "OA2_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable OA2 support in Project"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "NWSTACK_DEFAULT_VALUE"
+	Value  = "1"
+	Help  = "Token to set default value of Network stack Enabled or Disabled."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "NETWORKSTACK_IPV4_PXE_SUPPORT"
+	Value  = "1"
+	Help  = "Token to set default value of PXE_Ipv4 Support Enabled or Disabled."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "NETWORKSTACK_IPV6_PXE_SUPPORT"
+	Value  = "1"
+	Help  = "Token to set default value of PXE_Ipv6 Support Enabled or Disabled."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "LOCK_LEGACY_RES_SETUP_ENABLE"
+	Value  = "0"
+	Help  = "Switch to enable/disable Lock Legacy Resources Setup question."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SRIOV_SUPPORT_DEFAULT_VALUE"
+	Value  = "0"
+	Help  = "Sets SRIOV Support Setup Item Default option for BIOS Setup."
+	TokenType = Boolean
+	TargetH = Yes
+	Range  = "ON or OFF default is OFF"
+End
+
+TOKEN
+	Name  = "DEBUG_FROM_SOL"
+	Value  = "0"
+	Help  = "Output debug message through SOL"
+	TokenType = Boolean
+	TargetH = Yes
+	Range  = "ON or OFF default is OFF"
+End
+
+TOKEN
+    Name  = "DEBUG_COM_PORT_ADDR"
+    Value  = "0x2F8"
+    Help  = "COM Port address the debugger uses. "
+    TokenType = Integer
+    TargetH = Yes
+    Token = "AST2500_DBG_SUPPORT" "=" "1"
+    Token = "DEBUG_FROM_SOL" "=" "1"
+End
+
+TOKEN
+    Name  = "EarlyConsoleOut_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable EarlyConsoleOut support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+End
+
+TOKEN
+    Name  = "SMC_EFI_TO_LEGACY_STATUS_CODE"
+    Value  = "{DXE_SB_BAD_BATTERY, 0xFFFFFFFF}"
+    Help  = "EFI to Legacy status code, 0xFFFFFFFF is the last code, the status code also need to define in table TranslationTable1"
+    TokenType = Expression
+    TargetH = Yes
+End
+
+TOKEN
+	Name  = "SmcSerialConsole_SUPPORT"
+	Value  = "0"
+	Help  = "For debug message missing, it is caused by the peim re-configure serial port"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes        
+	Token = "DEBUG_MODE" "=" "1"
+End
+
+TOKEN
+	Name  = "SMC_CLTT_TEMP_LO_DOUBLE_REFRESH_DEFAULT"
+	Value  = "0"
+	Help  = "CLTT double refresh low temperature"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SMC_CLTT_TEMP_MID_DOUBLE_REFRESH_DEFAULT"
+	Value  = "93"
+	Help  = "CLTT double refresh middle temperature"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SMC_CLTT_TEMP_LO_SINGLE_REFRESH_DEFAULT"
+	Value  = "85"
+	Help  = "CLTT single refresh low temperature"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SMC_CLTT_TEMP_MID_SINGLE_REFRESH_DEFAULT"
+	Value  = "93"
+	Help  = "CLTT single refresh middle temperature"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SMC_ISATA_PORT_NUM"
+	Value  = "{0, 1, 2, 3, 4, 5, 6, 7}"
+	Help  = "I-SATA silkscreen and real port mapping for HDD smart error. Index 0 is 1 means silkscreen I-SATA1 map to real ISATA port 0"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SMC_SSATA_PORT_NUM"
+	Value  = "{0, 1, 2, 3, 4, 5}"
+	Help  = "S-SATA silkscreen and real port mapping for HDD smart error. Index 0 is 1 means silkscreen S-SATA1 map to real SSATA port 0"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+ELINK
+    Name  = "{ DXE_SB_BAD_BATTERY, EFI_ERROR_CODE, 0x29, 0X00, 0x00, 0x00 },"
+    Help  = "SMC EFI to SEL log table"
+    Parent  = "OEM_STATUS_CODE_LIST"
+    InvokeOrder = ReplaceParent
+    Token = "OEM_SEL_SUPPORT" "=" "1"
+End

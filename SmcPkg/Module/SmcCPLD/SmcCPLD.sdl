@@ -1,0 +1,81 @@
+TOKEN
+	Name  = "SMC_CPLD_SUPPORT"
+	Value  = "1"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+End
+
+Path
+	Name  = "SMC_CPLD_DIR"
+End
+
+TOKEN
+	Name  = "WDT_DEFAULT_SETTING"
+	Value  = "0"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Help = "0 - Disable; 1 - PowerON; 2 - POST; 3 - OS"
+End
+
+TOKEN
+	Name  = "WDT_TIMER_DEFAULT_SETTING"
+	Value  = "300"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Help = "dec second"
+End
+
+TOKEN
+	Name  = "SMC_CPLD_NMI_GPIO"
+	Value  = "$(SMC_GPP_D) + 2"
+	Help  = "NMI_CPLD use GPP_D2"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+ELINK
+	Name  = "$(SMC_CPLD_DIR)\SmcCPLD.uni"
+	Parent  = "SetupStringFiles"
+	Priority  = 10
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name = "$(SMC_CPLD_DIR)\SmcCPLD.sd"
+	Parent = "SETUP_DEFINITIONS"
+	Priority = 30
+	InvokeOrder = AfterParent
+End
+
+INFComponent
+	Name  = "CPLDPEI"
+	File  = "SmcCPLD_PEI.inf"
+	Package  = "SmcPkg"
+	ModuleTypes  = "PEIM"
+#	Disable = Yes
+End
+
+FFS_FILE
+	Name  = "CPLDPEI"
+	FD_AREA  = "FV_BB"
+	INFComponent  = "SmcPkg.CPLDPEI"
+	Apriori_Index  = "1"
+#	Disable = Yes
+End
+
+INFComponent
+	Name  = "CPLDDXE"
+	File  = "SmcCPLD_DXE.inf"
+	Package  = "SmcPkg"
+	ModuleTypes  = "DXE_DRIVER"
+End
+

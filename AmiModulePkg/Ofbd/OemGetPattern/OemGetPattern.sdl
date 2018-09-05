@@ -1,0 +1,48 @@
+TOKEN
+	Name  = "OEM_GET_PATTERN_SUPPORT"
+	Value  = "0"
+	Help  = "Switch for Enabling OEM Get Pattern support in the project"
+	TokenType = Boolean
+	Master = Yes
+	Token = "OFBD_FOR_ARM_SUPPORT" "=" "0"  
+End
+
+TOKEN
+	Name  = "[OFBD OEM Get Pattern]"
+	Help  = "See detail description in each token's help box."
+	TokenType = Expression
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "OEM_GET_PATTERN_SAMPLE_TEST"
+	Value  = "1"
+	Help  = "TEST Function : How to get pattern of rom file"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+PATH
+	Name  = "OFBD_OEM_GET_PATTERN_DIR"
+End
+
+ELINK
+	Name  = "$(OFBD_OEM_GET_PATTERN_DIR)/OemGetPattern.h"
+	Parent  = "OFBD_FUNC_INCLUDE_FILES"
+	InvokeOrder = BeforeParent
+End
+
+ELINK
+	Name  = "$(OFBD_OEM_GET_PATTERN_DIR)/OemGetPattern.c"
+	Parent  = "OFBD_FUNC_SOURCES_FILES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "OemGetPatternEntry,"
+	Parent  = "OFBD_INIT_FUNC_LIST"
+	Token = "OEM_GET_PATTERN_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+

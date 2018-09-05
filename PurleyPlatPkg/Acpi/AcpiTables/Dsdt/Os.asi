@@ -1,0 +1,182 @@
+/*++
+  This file contains 'Framework Code' and is licensed as such
+  under the terms of your license agreement with Intel or your
+  vendor.  This file may not be modified, except as allowed by
+  additional terms of your license agreement.
+--*/
+/*++
+
+This source code and any documentation accompanying it ("Material") is furnished
+under license and may only be used or copied in accordance with the terms of that
+license.  No license, express or implied, by estoppel or otherwise, to any
+intellectual property rights is granted to you by disclosure or delivery of these
+Materials.  The Materials are subject to change without notice and should not be
+construed as a commitment by Intel Corporation to market, license, sell or support
+any product or technology.  Unless otherwise provided for in the license under which
+this Material is provided, the Material is provided AS IS, with no warranties of
+any kind, express or implied, including without limitation the implied warranties
+of fitness, merchantability, or non-infringement.  Except as expressly permitted by
+the license for the Material, neither Intel Corporation nor its suppliers assumes
+any responsibility for any errors or inaccuracies that may appear herein.  Except
+as expressly permitted by the license for the Material, no part of the Material
+may be reproduced, stored in a retrieval system, transmitted in any form, or
+distributed by any means without the express written consent of Intel Corporation.
+
+
+Module Name:
+
+  Os.asi 
+
+Abstract:
+
+  Identify version of the OS
+
+--*/
+
+
+Scope (\_SB) {
+
+  Name (XCNT, 0)
+  // APTIOV_SERVER_OVERRIDE_RC_START : Fix for USB devices not working in Windows7/2008 when Smart Auto is enabled and BIOS booted to XHCI aware OS in previous boot.
+  Name (ECNT, 0)   
+  // APTIOV_SERVER_OVERRIDE_RC_END : Fix for USB devices not working in Windows7/2008 when Smart Auto is enabled and BIOS booted to XHCI aware OS in previous boot.
+  Name (OSYS, 0)   // Global variable for type of OS.
+// APTIOV_SERVER_OVERRIDE_RC_START : Add TokenAsl.h SDL output
+#if ASL_DsmAsl_SUPPORT 
+// APTIOV_SERVER_OVERRIDE_RC_END : Add TokenAsl.h SDL output
+  //
+  // Device specific method
+  //
+  Method (_DSM, 4, Serialized) {
+    If (LEqual(Arg0,ToUUID("663E35AF-CC10-41A4-88EA-5470AF055295"))){
+
+      // L1 DIR POINTER
+      Switch (ToInteger(Arg2)) {
+        //
+        //Function 0: Return supported functions, based on revision
+        //
+        Case(0)
+        {
+          Switch (ToInteger(Arg1)) {
+            Case(0) { 
+              If (Lequal(EMCA,1))
+              {
+                Return ( Buffer() {0x3} )
+              }
+              Else
+              {
+                Return (Buffer() {0})
+              }
+            }
+          }
+            
+        } 
+        //
+        // Function 1: 
+        //
+        Case(1) {Return (LDIR) }
+        Default { }
+      } 
+    }
+
+    Return (Buffer() {0})
+  }
+// APTIOV_SERVER_OVERRIDE_RC_START : Add TokenAsl.h SDL output
+#endif 
+// APTIOV_SERVER_OVERRIDE_RC_END : Add TokenAsl.h SDL output
+
+  Method (_INI) {
+
+    If (CondRefOf (_OSI, Local0)) {
+
+      If (\_OSI ("Windows 2001.1 SP1")) {
+        Store (5, OSYS)      // Windows Server 2003 SP1
+      }
+
+      If (\_OSI ("Windows 2001.1")) {
+        Store (6, OSYS)      // Windows Server 2003
+      }
+
+      If (\_OSI ("Windows 2001 SP2")) {
+        Store (7, OSYS)      // Windows XP SP2
+      }
+
+      If (\_OSI ("Windows 2001")) {
+        Store (8, OSYS)      // Windows XP
+      }
+
+      If (\_OSI ("Windows 2006.1")) {
+        Store (9, OSYS)      // Windows Server 2008
+      }
+
+      If (\_OSI ("Windows 2006 SP1")) {
+        Store (10, OSYS)      // Windows Vista SP1
+      } 
+
+      If (\_OSI ("Windows 2006")) {
+        Store (11, OSYS)      // Windows Vista
+      }
+
+      If (\_OSI ("Windows 2009")) {
+        Store (12, OSYS)      // Windows Server 2008 R2 & Windows 7
+      }
+
+      If (\_OSI ("Windows 2012")) {
+        Store (13, OSYS)      // Windows Server 2012 & Windows 8
+      }
+
+      If (\_OSI ("Windows 2013")) {
+        Store (14, OSYS)      // Windows Server 2012 R2 & Windows 8.1
+      }
+
+      If (\_OSI ("Windows 2015")) {
+        Store (15, OSYS)      // Windows 10
+      }
+      //
+      // Check Linux also
+      //
+      If (\_OSI ("Linux")) {
+        Store (1, OSYS)
+      }
+
+      If (\_OSI ("FreeBSD")) {
+        Store (2, OSYS)
+      }
+
+      If (\_OSI ("HP-UX")) {
+        Store (3, OSYS)
+      }
+
+      If (\_OSI ("OpenVMS")) {
+        Store (4, OSYS)
+      }
+
+      //
+      // Running WinSvr2012, Win8, or later?
+      //
+      If (LGreaterEqual (\_SB.OSYS, 13)) {
+        //
+        // It is Svr2012 or Win8
+        // Call xHCI device to switch USB ports over
+        //  unless it has been done already
+        //
+        If (LEqual (XCNT, 0)) {
+#ifndef PC_HOOK
+          Store (0x84, IO80)
+#endif
+          Increment (XCNT)
+        }
+      // APTIOV_SERVER_OVERRIDE_RC_START : Fix for USB devices not working in Windows7/2008 when Smart Auto is enabled and BIOS booted to XHCI aware OS in previous boot.
+      }
+       ElseIf (LEqual (\_SB.OSYS, 12)) { // Is Win7 or WinSvr2008.
+       If (LEqual (ECNT, 0)) {
+          Increment (ECNT)
+        } 
+      // APTIOV_SERVER_OVERRIDE_RC_END : Fix for Windows7/2008 hang when Smart Auto is enabled and BIOS booted to XHCI aware OS in previous boot.
+      } Else {
+        Store (\_SB.OSYS, IO80)
+      }
+    }  
+  } // End Method (_INI)
+  
+} // End Scope (_SB)

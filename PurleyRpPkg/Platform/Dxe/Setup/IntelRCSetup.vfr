@@ -1,0 +1,1063 @@
+//****************************************************************************
+//**                                                                        **
+//**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+//**                                                                        **
+//****************************************************************************
+//****************************************************************************
+//
+//    Rev.  1.03
+//       Bug fixed:     Draft template.
+//       Reason:
+//       Auditor:       Kasber Chen
+//       Issue Date:    Nov/04/2016
+//
+//    Rev.  1.02        Expose "Server IE Configuration" setup page when TOKEN "IE_ENABLE" set to 1.
+//       Bug fixed:
+//       Reason:
+//       Auditor:       Jimmy Chiu
+//       Issue Date:    Sep/23/2016
+//
+//    Rev.  1.01        Modify "Active Video" string to "VGA Priority" and set default to onboard. Also hide this item in IntelRCSetup.vfr.
+//       Bug fixed:
+//       Reason:
+//       Auditor:       Jimmy Chiu (Refer Grantley SVN_717)
+//       Issue Date:    Sep/01/2016
+//
+//    Rev.  1.00
+//       Bug fixed:     none
+//       Reason:        Change default for platform rule & wake on Lan convenient. 
+//       Auditor:       SunnyYang
+//       Issue Date:    Aug/16/2016
+//
+//****************************************************************************
+//****************************************************************************
+//
+// This file contains an 'Intel Peripheral Driver' and is
+// licensed for Intel CPUs and chipsets under the terms of your
+// license agreement with Intel or your vendor.  This file may
+// be modified by the user, subject to additional terms of the
+// license agreement
+//
+// *++
+//
+// Copyright (c)  1999 - 2016 Intel Corporation. All rights reserved
+// This software and associated documentation (if any) is furnished
+// under a license and may only be used or copied in accordance
+// with the terms of the license. Except as permitted by such
+// license, no part of this software or documentation may be
+// reproduced, stored in a retrieval system, or transmitted in any
+// form or by any means without the express written consent of
+// Intel Corporation.
+//
+//
+// Module Name:
+//
+//   IntelRCSetup.vfr
+//
+// Abstract:
+//
+//   Setup IntelRCSetup formset.
+//
+// Revision History:
+//
+// --*/
+
+#include "Configuration.h"
+
+#include "PlatformStrDefs.h"
+#include <Guid/SetupVariable.h>
+#include <SocketConfiguration.h>
+#include <Guid/SocketVariable.h>
+//
+// PCH_VARIABLE
+// Add the PCH variables till we move to PCH pkg
+//
+#include <PchRcConfiguration.h>
+#include <Guid/PchRcVariable.h>
+
+//
+// ME_VARIABLE
+// Add the ME variables till we move to ME pkg
+//
+#if defined(ME_SUPPORT_FLAG) && ME_SUPPORT_FLAG
+#include <MeRcConfiguration.h>
+#include <Guid/MeRcVariable.h>
+#include <Library/MeTypeDefs.h>
+#endif // ME_SUPPORT_FLAG
+
+//
+// IE_VARIABLE
+// Add the ME variables till we move to IE pkg
+//
+#ifdef IE_SUPPORT
+#include <IeRcConfiguration.h>
+#include <Guid/IeRcVariable.h>
+#endif //IE_SUPPORT
+
+
+
+
+
+#include "Common.hfr"
+#include <ResetMisc.h>
+#include "../Platform/Dxe/SocketSetup/VariableCommon.hfr"
+
+// APTIOV_SERVER_OVERRIDE_START : Syncing Default value with AMI PCI driver.
+#include <Token.h>
+// APTIOV_SERVER_OVERRIDE_END : Syncing Default value with AMI PCI driver.
+
+formset
+    guid      = SYSTEM_CONFIGURATION_GUID,
+    title     = STRING_TOKEN(STR_INTELRCSETUP_TITLE),
+    help      = STRING_TOKEN(STR_INTELRCSETUP_HELP),
+    class     = VFR_INTELRCSETUP_CLASS,
+    subclass  = 0,
+
+    VFR_VARSTORE_SETUP
+    efivarstore PCH_RC_CONFIGURATION,       attribute = PLATFORM_VARIABLE_ATTRIBUTES,  name = PchRcConfiguration,   guid = PCH_RC_CONFIGURATION_GUID;
+#if defined(ME_SUPPORT_FLAG) && ME_SUPPORT_FLAG
+    efivarstore ME_RC_CONFIGURATION,        attribute = PLATFORM_VARIABLE_ATTRIBUTES,  name = MeRcConfiguration,    guid = ME_RC_CONFIGURATION_GUID;
+#endif // ME_SUPPORT_FLAG
+
+
+#ifdef IE_SUPPORT
+        efivarstore IE_RC_CONFIGURATION,
+                attribute =  PLATFORM_VARIABLE_ATTRIBUTES, // EFI_VARIABLE_BOOTSERVICE_ACCESS | EFI_VARIABLE_RUNTIME_ACCESS |EFI_VARIABLE_NON_VOLATILE,
+                name = IeRcConfiguration,
+                guid = IE_RC_CONFIGURATION_GUID;
+#endif //IE_SUPPORT
+
+//
+// Do not use these for any construct that will change values, they are not saved by the SetupPlatform.c config routines.
+// so using them as a value in a Grayout or suppress is fine, in something like a "one of" or a checkbox is not
+// Failure to follow this guideline will result in the changed values not being saved on setup exit.
+// For those cases where the values need to be changed, they should be placed in the proper setup forms Pkg.
+//
+    VFR_VARSTORE_SOCKET
+
+  VFR_FAKE_VARSTORE
+
+    defaultstore MyStandardDefault,
+      prompt      = STRING_TOKEN(STR_STANDARD_DEFAULT_PROMPT),
+      attribute   = 0x0000;                         // Default ID: 0000 standard default
+
+    defaultstore MyManufactureDefault,
+      prompt      = STRING_TOKEN(STR_MANUFACTURE_DEFAULT_PROMPT),
+      attribute   = 0x0001;
+
+    form formid = VFR_FORMID_INTELRCSETUP,
+
+        title = STRING_TOKEN(STR_INTELRCSETUP_TITLE);
+
+        suppressif TRUE;
+          oneof varid     = FAKE_VARSTORE.FakeItem,
+              prompt      = STRING_TOKEN(STR_FAKE_VARSTORE),
+              help        = STRING_TOKEN(STR_FAKE_VARSTORE_HELP),
+              option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+              option text = STRING_TOKEN(STR_DISABLE),  value = 1, flags = RESET_REQUIRED;
+          endoneof;
+        endif;
+
+        disableif TRUE;
+            numeric varid     = SYSTEM_CONFIGURATION.VariablePlatId,
+            prompt      = STRING_TOKEN(STR_PLATID_PROMPT_PC),
+            help        = STRING_TOKEN(STR_PLATID_PROMPT_HELP_PC),
+              minimum = 0,
+              maximum = 0x1,
+              step    = 1,
+            endnumeric;
+        endif;
+        // Jump to Pch Configuration Form
+        //
+        goto VFR_FORMID_PCH,
+            prompt = STRING_TOKEN(STR_PCH_CONFIG_FORM_TITLE),
+            help   = STRING_TOKEN(STR_PCH_CONFIG_FORM_HELP);
+
+
+        // Jump to the Overclocking Form
+        //
+        suppressif  ideqval SYSTEM_CONFIGURATION.PlatformOCSupport == 0;
+          goto VFR_FORMID_OVERCLOCKING,
+              prompt = STRING_TOKEN(STR_OVERCLOCKING_MENU_CONFIGURATION),
+              help   = STRING_TOKEN(STR_OVERCLOCKING_CONFIGURATION_HELP);
+        endif;
+
+        //
+        // Jump to Miscelleneous Configuration Form
+        //
+        goto VFR_FORMID_MISC,
+            prompt = STRING_TOKEN(STR_MISC_FORM_TITLE),
+            help   = STRING_TOKEN(STR_MISC_FORM_HELP);
+        // APTIOV_SERVER_OVERRIDE_START : Removing as equivalent setup page is available from AMI
+	/*
+        //
+        // Console Redirection setup
+        //
+        goto VFR_FORMID_CONSOLE_REDIRECTION_CONFIGURATION,
+            prompt = STRING_TOKEN(STR_CONSOLE_REDIRECTION_CONFIGURATION_FORM_TITLE),
+            help   = STRING_TOKEN(STR_CONSOLE_REDIRECTION_CONFIGURATION_FORM_TITLE_HELP);
+        */
+	// APTIOV_SERVER_OVERRIDE_END
+        //
+        // Jump to Network Configuration Form
+        //
+        // APTIOV_SERVER_OVERRIDE_START : Removing unused intel setup .uni/.hfr files.
+        /*
+        goto VFR_FORMID_NETWORK,
+            prompt = STRING_TOKEN(STR_NETWORK_CONFIGURATION),
+            help   = STRING_TOKEN(STR_NETWORK_CONFIGURATION_HELP);
+        */
+        // APTIOV_SERVER_OVERRIDE_END
+#if defined(ME_SUPPORT_FLAG) && ME_SUPPORT_FLAG
+
+#if defined(AMT_SUPPORT) && AMT_SUPPORT
+        //
+        // Jump to Workstation ME FW Configuration Form
+        //
+        suppressif NOT ideqval ME_RC_CONFIGURATION.MeType == METYPE_AMT;
+          goto VFR_FORMID_AMT_ME,
+           prompt  = STRING_TOKEN(STR_AMT_FORM),
+           help    = STRING_TOKEN(STR_AMT_FORM_HELP);
+        endif; // Suppress if MeType != AMT
+        
+#if defined(ME_TESTMENU_FLAG) && ME_TESTMENU_FLAG
+        //
+        // Jump to Workstation ME FW Debug Form
+        //
+        suppressif NOT ideqval ME_RC_CONFIGURATION.MeType == METYPE_AMT;
+          goto VFR_FORMID_AMT_FWDEBUG,
+           prompt  = STRING_TOKEN(STR_FWDEBUG_FORM),
+           help    = STRING_TOKEN(STR_FWDEBUG_FORM_HELP);
+        endif; // Suppress if MeType != AMT
+#endif // ME_TESTMENU_FLAG
+
+#endif // AMT_SUPPORT
+
+#if defined(SPS_SUPPORT) && SPS_SUPPORT
+        //
+        // Jump to Server ME FW Configuration Form
+        //
+        suppressif NOT ideqval ME_RC_CONFIGURATION.MeType == METYPE_SPS;
+          goto VFR_FORMID_SPS_ME,
+           prompt  = STRING_TOKEN(STR_SPS_FORM),
+           help    = STRING_TOKEN(STR_SPS_FORM_HELP);
+        endif; // Suppress if MeType != SPS
+        
+#if defined(ME_TESTMENU_FLAG) && ME_TESTMENU_FLAG
+        //
+        // Jump to Server ME FW Debug Form
+        //
+        suppressif NOT ideqval ME_RC_CONFIGURATION.MeType == METYPE_SPS;
+          goto VFR_FORMID_SPS_FWDEBUG,
+           prompt  = STRING_TOKEN(STR_SPS_FWDEBUG_FORM),
+           help    = STRING_TOKEN(STR_SPS_FWDEBUG_FORM_HELP);
+        endif; // Suppress if MeType != SPS
+#endif // ME_TESTMENU_FLAG
+
+#endif // SPS_SUPPORT
+
+#if defined(ME_TESTMENU_FLAG) && ME_TESTMENU_FLAG
+        //
+        // Jump to ME DFX FW Debug Form
+        //
+        suppressif NOT ideqval ME_RC_CONFIGURATION.MeType == METYPE_DFX;
+          goto VFR_FORMID_DFX_FWDEBUG,
+           prompt  = STRING_TOKEN(STR_DFX_FWDEBUG_FORM),
+           help    = STRING_TOKEN(STR_DFX_FWDEBUG_FORM_HELP);
+        endif; // Suppress if MeType != DFX
+#endif // ME_TESTMENU_FLAG
+
+#endif // ME_SUPPORT_FLAG
+
+//SMCPKG_SUPPORT
+#ifdef IE_SUPPORT
+        //
+        // Jump to IE Configuration Form
+        //
+        goto VFR_FORMID_IE,
+            prompt = STRING_TOKEN(STR_SERVER_IE_FORM_TITLE),
+            help   = STRING_TOKEN(STR_SERVER_IE_FORM_HELP);
+
+        //
+#endif //IE_SUPPORT
+//SMCPKG_SUPPORT
+
+        //
+        // Jump to Event Log Form
+        //
+        goto VFR_FORMID_EVENT_LOG,
+            prompt = STRING_TOKEN(STR_EVENT_LOG_FORM_TITLE),
+            help   = STRING_TOKEN(STR_EVENT_LOG_FORM_HELP);
+
+        //
+        // Jump to Reserve Memory Form
+        //
+        goto VFR_RESERVE_MEMORY,
+            prompt = STRING_TOKEN(STR_RESERVE_MEMORY_OPTION),
+            help   = STRING_TOKEN(STR_RESERVE_MEMORY_OPTION_HELP);
+
+        //
+        // Jump to BootAllOptions Form
+        //
+        // APTIOV_SERVER_OVERRIDE_START : Removing unused intel setup .uni/.hfr files.
+        /*
+        goto VFR_BOOT_ALL_OPTIONS,
+            prompt = STRING_TOKEN(STR_BOOT_ALL_OPTIONS),
+            help   = STRING_TOKEN(STR_BOOT_ALL_OPTIONS_HELP);
+	*/
+        // APTIOV_SERVER_OVERRIDE_END
+        //
+        // Jump to CommonRc Configuration Form
+        //
+        goto VFR_FORMID_RESET_TESTING,
+            prompt = STRING_TOKEN(STR_RESET_TESTING_FORM),
+            help   = STRING_TOKEN(STR_NULL_STRING);
+
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+
+        subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+        subtitle text = STRING_TOKEN(STR_WARNING_MESSAGE1);
+        subtitle text = STRING_TOKEN(STR_WARNING_MESSAGE2);
+        subtitle text = STRING_TOKEN(STR_WARNING_MESSAGE3);
+
+    endform;
+
+
+
+    //
+    // Miscelleneous Configuration Form
+    //
+    form formid = VFR_FORMID_MISC,
+
+        title    = STRING_TOKEN(STR_MISC_FORM_TITLE);
+
+        subtitle text = STRING_TOKEN(STR_MISC_FORM_TITLE);
+        subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+        //
+        // Select Max Page Table Size
+        //
+        oneof varid     = SYSTEM_CONFIGURATION.CloudProfile,
+            questionid =  KEY_CLOUD_PROFILE,
+            prompt      = STRING_TOKEN(STR_CLOUD_PROFILE_PROMPT),
+            help        = STRING_TOKEN(STR_CLOUD_PROFILE_HELP),
+            option text = STRING_TOKEN(STR_CRB_POR), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+            option text = STRING_TOKEN(STR_CLOUD_PROFILE_1),  value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+        oneof varid     = SYSTEM_CONFIGURATION.Use1GPageTable,
+            prompt      = STRING_TOKEN(STR_MAX_PAGE_TABLE_SIZE_SELECT_PROMPT),
+            help        = STRING_TOKEN(STR_MAX_PAGE_TABLE_SIZE_SELECT_HELP),
+            option text = STRING_TOKEN(STR_2M_PAGE_TABLE), value = 0, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_1G_PAGE_TABLE),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        endoneof;
+#ifndef PC_HOOK
+        //
+        // Reset on Memory Map Change
+        //
+        checkbox varid = SYSTEM_CONFIGURATION.ResetOnMemMapChange,
+              prompt     = STRING_TOKEN(STR_MEM_CHANGE_RESET_PROMPT),
+              help       = STRING_TOKEN(STR_MEM_CHANGE_RESET_HELP),
+              flags      = RESET_REQUIRED,
+        endcheckbox;
+#endif
+        //
+        // Fan PWM Offset
+        //
+        numeric varid = SYSTEM_CONFIGURATION.FanPwmOffset,
+            prompt    = STRING_TOKEN(STR_FAN_PWM_OFFSET_PROMPT),
+            help      = STRING_TOKEN(STR_FAN_PWM_OFFSET_HELP),
+            flags     = RESET_REQUIRED,
+            minimum   = 0, maximum = 100,
+            default   = 0, defaultstore = MyStandardDefault,
+            default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+//SMCPKG_SUPPORT - Start
+        oneof varid   = SYSTEM_CONFIGURATION.WakeOnLanSupport,
+            prompt        = STRING_TOKEN(STR_WAKE_ON_LAN_SUPPORT_PROMPT),
+            help          = STRING_TOKEN(STR_WAKE_ON_LAN_SUPPORT_HELP),
+            option text   = STRING_TOKEN(STR_DISABLE),        value = 0, flags = RESET_REQUIRED ;
+            option text   = STRING_TOKEN(STR_ENABLE),         value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        endoneof;
+//SMCPKG_SUPPORT - End
+        //
+        // Breakpoints
+        //
+        oneof varid = SYSTEM_CONFIGURATION.ValidationBreakpointType,
+            prompt  = STRING_TOKEN(STR_VALIDATION_BREAKPOINT_TYPE),
+            help    = STRING_TOKEN(STR_VALIDATION_BREAKPOINT_TYPE_HELP),
+            option text = STRING_TOKEN(STR_NONE),           value = 0,  flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_BREAKPOINT_AFTER_MRC),     value = 1,  flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_BREAKPOINT_AFTER_QPIRC),   value = 2,  flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_BREAKPOINT_AFTER_RESOURCE_ALLOC), value = 3,  flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_BREAKPOINT_AFTER_POST), value = 4,  flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_BREAKPOINT_AFTER_FULL_SPEED_SETUP), value = 5,  flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_BREAKPOINT_READY_FOR_IBIST), value = 6, flags = RESET_REQUIRED;
+        endoneof;
+
+        numeric varid   = SYSTEM_CONFIGURATION.bsdBreakpoint,
+          prompt      = STRING_TOKEN(STR_BSDBREAKPOINT),
+          help        = STRING_TOKEN(STR_BSDBREAKPOINT_HELP),
+          flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+          minimum   = 0,
+          maximum   = 0xFFFF,
+          step      = 1, // 0 = manual entering of a value, else it will auto-increment with a left/right arrow
+          default   = 0, defaultstore = MyStandardDefault,
+          default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+         //
+         //  Force Setup
+         //
+         checkbox varid = SYSTEM_CONFIGURATION.ForceSetup,
+              prompt   = STRING_TOKEN(STR_FORCE_SETUP_PROMPT),
+              help     = STRING_TOKEN(STR_FORCE_SETUP_HELP),
+              flags    = 0,
+         endcheckbox;
+
+
+        //
+        //  BIOS Guard setup question
+        //
+        grayoutif ideqval SYSTEM_CONFIGURATION.BiosGuardPlatformSupported == 0;
+         checkbox varid = SYSTEM_CONFIGURATION.BiosGuardEnabled,
+              prompt   = STRING_TOKEN(STR_BIOSGUARD_SETUP_PROMPT),
+              help     = STRING_TOKEN(STR_BIOSGUARD_SETUP_HELP),
+              flags    = RESET_REQUIRED,
+              default  = 0, defaultstore = MyStandardDefault,
+              default  = 0, defaultstore = MyManufactureDefault,
+         endcheckbox;
+        endif;
+
+        //
+        //  Populate BIOS Guard MSR with BG Directory pointer
+        //
+        // APTIOV_SERVER_OVERRIDE_START
+        suppressif TRUE;
+       // APTIOV_SERVER_OVERRIDE_END : Not used in AMI BG
+        suppressif ideqval SYSTEM_CONFIGURATION.BiosGuardEnabled == 0;
+         checkbox varid = SYSTEM_CONFIGURATION.DfxPopulateBGDirectory,
+              prompt   = STRING_TOKEN(STR_DFX_BIOSGUARD_POPULATE_BGDIR_PROMPT),
+              help     = STRING_TOKEN(STR_DFX_BIOSGUARD_POPULATE_BGDIR_HELP),
+              flags    = RESET_REQUIRED,
+              default  = 0, defaultstore = MyStandardDefault,
+              default  = 0, defaultstore = MyManufactureDefault,
+         endcheckbox;
+        endif;         
+       // APTIOV_SERVER_OVERRIDE_START
+        endif; 
+       // APTIOV_SERVER_OVERRIDE_END : Not used in AMI BG
+
+        //
+        //  Anti Flash Wearout support
+        //
+        // APTIOV_SERVER_OVERRIDE_START
+        suppressif TRUE;
+        // APTIOV_SERVER_OVERRIDE_END : Not used in AMI BG
+        suppressif ideqval SYSTEM_CONFIGURATION.AntiFlashWearoutSupported == 0;
+         checkbox varid = SYSTEM_CONFIGURATION.EnableAntiFlashWearout,
+              prompt   = STRING_TOKEN(STR_BIOSGUARD_ANTI_FW_PROMPT),
+              help     = STRING_TOKEN(STR_BIOSGUARD_ANTI_FW_HELP),
+              flags    = RESET_REQUIRED,
+              default  = 0, defaultstore = MyStandardDefault,
+              default  = 0, defaultstore = MyManufactureDefault,
+         endcheckbox;
+        endif;
+       // APTIOV_SERVER_OVERRIDE_START
+        endif;
+       // APTIOV_SERVER_OVERRIDE_END : Not used in AMI BG
+
+        oneof varid   = SYSTEM_CONFIGURATION.SkipXmlComprs,
+          prompt      = STRING_TOKEN (STR_SKIP_XML_COMPRESSION_PROMPT),
+          help        = STRING_TOKEN (STR_SKIP_XML_COMPRESSION_HELP),
+          option text = STRING_TOKEN(STR_DISABLED), value  = 0x0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLED),  value  = 0x1, flags = RESET_REQUIRED; 
+        endoneof;
+
+        //
+        //  Advance debug function
+        //
+        oneof varid   = SYSTEM_CONFIGURATION.DfxAdvDebugJumper,
+          prompt      = STRING_TOKEN (STR_DFX_ADVANCE_DEBUG_PROMPT),
+          help        = STRING_TOKEN (STR_DFX_ADVANCE_DEBUG_HELP),
+#if defined(PPO_FLAG) && defined(PCH_SPT)
+          option text = STRING_TOKEN(STR_AUTO),     value = 2, flags = MANUFACTURING | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = DEFAULT | RESET_REQUIRED;
+#else
+          option text = STRING_TOKEN(STR_AUTO),     value = 2, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;
+#endif
+        endoneof;
+
+        //
+        // Debug Knob Enable Additional Post Codes
+        //		
+        oneof varid   = SYSTEM_CONFIGURATION.DfxAltPostCode,
+          prompt      = STRING_TOKEN(STR_DFX_ALT_POSTCODE_PROMPT),
+          help        = STRING_TOKEN(STR_DFX_ALT_POSTCODE_HELP),
+          option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED ;
+        endoneof;
+		
+        //
+        // Debug Configuration
+        //
+        goto DEBUG_INTERFACE_FORM_ID,
+          prompt = STRING_TOKEN(STR_DEBUG_INTERFACE_FORM),
+          help   = STRING_TOKEN(STR_DEBUG_INTERFACE_FORM_HELP);
+
+        //
+        // Serial Debug level
+        //
+#ifndef SERIAL_DBG_MSG
+        suppressif TRUE;
+#endif
+        oneof varid = SYSTEM_CONFIGURATION.serialDebugMsgLvl,
+          questionid =  KEY_SERIAL_DEBUG_MSGLVL,
+          prompt      = STRING_TOKEN(STR_SERIAL_DEBUG_MSG_PROMPT),
+          help        = STRING_TOKEN(STR_SERIAL_DEBUG_MSG_HELP),
+          option text = STRING_TOKEN(STR_DISABLE),                 value = 0, flags = INTERACTIVE | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_SERIAL_DEBUG_MINIMUM),    value = 1, flags = INTERACTIVE | RESET_REQUIRED | MANUFACTURING;
+          option text = STRING_TOKEN(STR_SERIAL_DEBUG_NORMAL),     value = 2, flags = INTERACTIVE | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_SERIAL_DEBUG_MAXIMUM),    value = 3, flags = INTERACTIVE | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_AUTO),                    value = 4, flags = INTERACTIVE | RESET_REQUIRED | DEFAULT;
+        endoneof;
+#ifndef SERIAL_DBG_MSG
+        endif;
+#endif
+
+#ifndef SERIAL_DBG_MSG
+        suppressif TRUE;
+#endif
+        oneof varid = SYSTEM_CONFIGURATION.serialDebugTrace,
+          prompt      = STRING_TOKEN(STR_SERIAL_DEBUG_TRACE_PROMPT),
+          help        = STRING_TOKEN(STR_SERIAL_DEBUG_TRACE_HELP),
+          option text = STRING_TOKEN(STR_DISABLED_STRING),  value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLED_STRING),   value = 4, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLED_WITH_TAG), value = 64, flags = RESET_REQUIRED;
+        endoneof;
+#ifndef SERIAL_DBG_MSG
+        endif;
+#endif
+
+#ifndef SERIAL_DBG_MSG
+        suppressif TRUE;
+#endif
+        oneof varid = SYSTEM_CONFIGURATION.serialDebugMsgLvlTrainResults,
+          prompt      = STRING_TOKEN(STR_MRC_SERIAL_DEBUG_TRAIN_PROMPT),
+          help        = STRING_TOKEN(STR_MRC_SERIAL_DEBUG_TRAIN_HELP),
+          option text = STRING_TOKEN(STR_DISABLED_STRING),  value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLED_STRING),   value = 8, flags = RESET_REQUIRED;
+        endoneof;
+#ifndef SERIAL_DBG_MSG
+        endif;
+#endif
+
+suppressif TRUE; //SMCPKG_SUPPORT
+        //
+        // Video Support
+        //
+        oneof varid     = SYSTEM_CONFIGURATION.VideoSelect,
+            prompt      = STRING_TOKEN(STR_VIDEO_SELECT_PROMPT),
+            help        = STRING_TOKEN(STR_VIDEO_SELECT_HELP),
+            //option text = STRING_TOKEN(STR_AUTO),               value = 0, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_VIDEO_SELECT_ONBOARD), value = 1, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+            option text = STRING_TOKEN(STR_VIDEO_SELECT_PCIE),    value = 2, flags = RESET_REQUIRED;
+        endoneof;
+endif; //SMCPKG_SUPPORT
+
+        //
+        // Pmtt Support
+        //
+        oneof varid = SYSTEM_CONFIGURATION.Pmtt,
+             prompt   = STRING_TOKEN(STR_PMTT_PROMPT),
+             help     = STRING_TOKEN(STR_PMTT_HELP),
+             option text  = STRING_TOKEN (STR_ENABLED_STRING), value = 1, flags = RESET_REQUIRED;
+             option text  = STRING_TOKEN (STR_DISABLED_STRING), value = 0, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        endoneof;
+        
+        //
+        // PS2 Port Support
+        //
+        oneof varid     = SYSTEM_CONFIGURATION.Ps2PortSwap,
+            prompt      = STRING_TOKEN(STR_PS2PORT_PROMPT),
+            help        = STRING_TOKEN(STR_PS2PORT_HELP),
+            option text = STRING_TOKEN(STR_DISABLE),  value = 0, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+            option text = STRING_TOKEN(STR_ENABLE),   value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+        //
+        // Num Lock
+        //
+        oneof varid     = SYSTEM_CONFIGURATION.Numlock,
+            prompt      = STRING_TOKEN(STR_NUMLOCK_PROMPT),
+            help        = STRING_TOKEN(STR_NUMLOCK_HELP),
+            option text = STRING_TOKEN(STR_DISABLE),  value = 0, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+            option text = STRING_TOKEN(STR_ENABLE),   value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+        //
+        // Wake on Lan S5
+        //
+//SMCPKG_SUPPORT - Start
+        oneof varid     = SYSTEM_CONFIGURATION.WakeOnLanS5,
+            prompt      = STRING_TOKEN(STR_WAKE_ON_LAN_S5_PROMPT),
+            help        = STRING_TOKEN(STR_WAKE_ON_LAN_S5_HELP),
+            option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = INTERACTIVE | RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = INTERACTIVE | RESET_REQUIRED | DEFAULT | MANUFACTURING;
+        endoneof;
+//SMCPKG_SUPPORT - End
+        //
+        // Network Boot
+        //
+        oneof varid     = SYSTEM_CONFIGURATION.BootNetwork,
+            prompt      = STRING_TOKEN(STR_BOOT_NETWORK_PROMPT),
+            help        = STRING_TOKEN(STR_BOOT_NETWORK_HELP),
+            option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = INTERACTIVE | RESET_REQUIRED | DEFAULT | MANUFACTURING;
+            option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = INTERACTIVE | RESET_REQUIRED;
+        endoneof;
+#ifdef EFI_PCI_IOV_SUPPORT
+        
+        //
+        // ARI Enable
+        //
+        oneof varid     = SYSTEM_CONFIGURATION.ARIEnable,
+            prompt      = STRING_TOKEN(STR_ARI_ENABLE_PROMPT),
+            help        = STRING_TOKEN(STR_ARI_ENABLE_HELP),
+            option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = INTERACTIVE | RESET_REQUIRED ;
+            option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = INTERACTIVE | RESET_REQUIRED | DEFAULT | MANUFACTURING;
+        endoneof;
+	
+        //
+        // ARI FORWARD
+        //
+        oneof varid     = SYSTEM_CONFIGURATION.ARIForward,
+            prompt      = STRING_TOKEN(STR_ARI_FORWARD_PROMPT),
+            help        = STRING_TOKEN(STR_ARI_FORWARD_HELP),
+            option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = INTERACTIVE | RESET_REQUIRED | DEFAULT | MANUFACTURING;
+            option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = INTERACTIVE | RESET_REQUIRED ;
+        endoneof;
+	
+        // APTIOV_SERVER_OVERRIDE_START : Suppress IOV option since it is supported in AMI PCI driver.
+        suppressif TRUE;
+        //
+        // SR-IOV Enable
+        //
+        oneof varid     = SYSTEM_CONFIGURATION.SRIOVEnable,
+            prompt      = STRING_TOKEN(STR_SR_IOV_ENABLE_PROMPT),
+            help        = STRING_TOKEN(STR_SR_IOV_ENABLE_HELP),
+// APTIOV_SERVER_OVERRIDE_START : Syncing Default value with AMI PCI driver.
+#if (SRIOV_SUPPORT && SRIOV_SUPPORT_DEFAULT_VALUE)
+            option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = INTERACTIVE | RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = INTERACTIVE | RESET_REQUIRED | DEFAULT | MANUFACTURING;
+#else
+            option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = INTERACTIVE | RESET_REQUIRED | DEFAULT | MANUFACTURING;
+            option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = INTERACTIVE | RESET_REQUIRED;
+#endif
+// APTIOV_SERVER_OVERRIDE_END : Syncing Default value with AMI PCI driver.
+        endoneof;
+
+       grayoutif ideqval SYSTEM_CONFIGURATION.SRIOVEnable == 0;
+            oneof varid     = SYSTEM_CONFIGURATION.SystemPageSize,
+                prompt      = STRING_TOKEN(STR_SR_IOV_SYSTEM_PAGE_SIZE_PROMPT),
+                help        = STRING_TOKEN(STR_SR_IOV_SYSTEM_PAGE_SIZE_HELP),
+                option text = STRING_TOKEN(STR_4K),   value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+                option text = STRING_TOKEN(STR_8K),   value = 1, flags = RESET_REQUIRED;
+                option text = STRING_TOKEN(STR_64K),  value = 4, flags = RESET_REQUIRED;
+                option text = STRING_TOKEN(STR_256K), value = 6, flags = RESET_REQUIRED;
+                option text = STRING_TOKEN(STR_1M),   value = 8, flags = RESET_REQUIRED;
+                option text = STRING_TOKEN(STR_4M),   value = 10, flags = RESET_REQUIRED;
+            endoneof;
+        endif;
+
+        //
+        // MR-IOV Enable
+        //
+        oneof varid     = SYSTEM_CONFIGURATION.MRIOVEnable,
+            prompt      = STRING_TOKEN(STR_MR_IOV_ENABLE_PROMPT),
+            help        = STRING_TOKEN(STR_MR_IOV_ENABLE_HELP),
+            option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = INTERACTIVE | RESET_REQUIRED | DEFAULT | MANUFACTURING;
+            option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = INTERACTIVE | RESET_REQUIRED;
+        endoneof;
+        endif;
+       // APTIOV_SERVER_OVERRIDE_END : Suppress IOV option since it is supported in AMI PCI driver.
+#endif
+
+        /*//
+        // Manageability Engine (ME) Support
+        //
+        oneof varid     = SYSTEM_CONFIGURATION.MESupport,
+            prompt      = STRING_TOKEN(STR_ME_SUPPORT_PROMPT),
+            help        = STRING_TOKEN(STR_ME_SUPPORT_HELP),
+            option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+            option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+        grayoutif ideqval SYSTEM_CONFIGURATION.MESupport == 0 OR
+                  ideqval SYSTEM_CONFIGURATION.MEFwState == 0;
+            oneof varid     = SYSTEM_CONFIGURATION.MEViaBmc,
+                prompt      = STRING_TOKEN(STR_ME_VIA_BMC_PROMPT),
+                help        = STRING_TOKEN(STR_ME_VIA_BMC_HELP),
+                option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+                option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+            endoneof;
+        endif;
+
+        grayoutif ideqval SYSTEM_CONFIGURATION.MESupport == 0;
+            oneof varid     = SYSTEM_CONFIGURATION.MEEopSupport,
+                prompt      = STRING_TOKEN(STR_ME_END_OF_POST_PROMPT),
+                help        = STRING_TOKEN(STR_ME_END_OF_POST_HELP),
+                option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+                option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+            endoneof;
+        endif;
+
+        grayoutif ideqval SYSTEM_CONFIGURATION.MESupport == 0 OR
+                  ideqval SYSTEM_CONFIGURATION.MEViaBmc == 1;
+            oneof varid     = SYSTEM_CONFIGURATION.MEFwState,
+                prompt      = STRING_TOKEN(STR_ME_FW_STATE_PROMPT),
+                help        = STRING_TOKEN(STR_ME_FW_STATE_HELP),
+                option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+                option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+            endoneof;
+        endif;
+        */
+            oneof   varid   = SYSTEM_CONFIGURATION.WakeOnRTCS4S5,
+        prompt      = STRING_TOKEN(STR_WAKE_ON_RTC_PROMPT),
+        help        = STRING_TOKEN(STR_WAKE_ON_RTC_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value=0, flags=  DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLE), value= 1, flags= RESET_REQUIRED;
+          endoneof;
+
+      suppressif  ideqval SYSTEM_CONFIGURATION.WakeOnRTCS4S5 == 0;
+        numeric varid  = SYSTEM_CONFIGURATION.RTCWakeupTimeHour,
+          prompt      = STRING_TOKEN(STR_RTC_WAKEUP_HOUR_PROMPT),
+          help        = STRING_TOKEN(STR_RTC_HOUR_HELP),
+          flags       = RESET_REQUIRED,
+          minimum     = 0,
+          maximum     = 23,
+          step        = 1,
+          default     = 0, defaultstore = MyStandardDefault, 
+          default     = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid  = SYSTEM_CONFIGURATION.RTCWakeupTimeMinute,
+          prompt      = STRING_TOKEN(STR_RTC_WAKEUP_MINUTE_PROMPT),
+          help        = STRING_TOKEN(STR_TIME_MINUTE_HELP),
+          flags       = RESET_REQUIRED,
+          minimum       = 0,
+          maximum       = 59,
+          step          = 1,
+          default       = 0, defaultstore = MyStandardDefault,
+          default       = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid  = SYSTEM_CONFIGURATION.RTCWakeupTimeSecond,
+          prompt      = STRING_TOKEN(STR_RTC_WAKEUP_SECOND_PROMPT),
+          help        = STRING_TOKEN(STR_TIME_SECOND_HELP),
+          flags       = RESET_REQUIRED,
+          minimum       = 0,
+          maximum       = 59,
+          step          = 1,
+          default       = 0, defaultstore = MyStandardDefault,
+          default       = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+           endif;
+
+        oneof varid = PCH_RC_CONFIGURATION.FirmwareConfiguration,
+          prompt   = STRING_TOKEN(STR_FIRMWARE_CONFIG_NAME),
+          help     = STRING_TOKEN(STR_FIRMWARE_CONFIG_NAME_HELP),
+          option text = STRING_TOKEN(STR_FW_CONFIG_PRODUCTION_VALUE), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_FW_CONFIG_DEBUG_VALUE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        
+        suppressif TRUE;
+        oneof varid = SYSTEM_CONFIGURATION.StorageOpROMSuppression,
+             prompt   = STRING_TOKEN(STR_SATA_OPROM_SUPPRESSION),
+             help     = STRING_TOKEN(STR_SATA_OPROM_SUPPRESSION_HELP),
+             option text  = STRING_TOKEN (STR_ENABLED_STRING), value = 1, flags = MANUFACTURING | RESET_REQUIRED;
+             option text  = STRING_TOKEN (STR_DISABLED_STRING), value = 0, flags = DEFAULT | RESET_REQUIRED;
+        endoneof;
+        endif;   
+        
+        //
+        //APTIOV_SERVER_OVERRIDE_RC_START : Commenting unused setup options
+        //
+        suppressif TRUE;
+        oneof varid   = SYSTEM_CONFIGURATION.RsaSupport,
+            prompt        = STRING_TOKEN(STR_RSA_SUPPORT_PROMPT),
+            help          = STRING_TOKEN(STR_RSA_SUPPORT_HELP),
+            option text   = STRING_TOKEN(STR_DISABLE),        value = 0, flags = RESET_REQUIRED  | MANUFACTURING | DEFAULT;
+            option text   = STRING_TOKEN(STR_ENABLE),         value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        endif;
+        //
+        //APTIOV_SERVER_OVERRIDE_RC_END : Commenting unused setup options
+        //
+    endform;
+
+  form formid = VFR_FORMID_NETWORK,
+
+    title     = STRING_TOKEN(STR_NETWORK_CONFIGURATION);
+
+    oneof varid = SYSTEM_CONFIGURATION.LegacyPxeRom,
+      prompt   = STRING_TOKEN(STR_LEGACY_PXEROM_CONTROL),
+      help     = STRING_TOKEN(STR_LEGACY_PXEROM_CONTROL_HELP),
+      option text = STRING_TOKEN(STR_ENABLED_STRING), value = 1, flags =  RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_DISABLED_STRING), value = 0, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
+    endoneof;
+
+    oneof varid = SYSTEM_CONFIGURATION.EfiNetworkSupport,
+      prompt   = STRING_TOKEN(STR_EFI_NETWORK_CONTROL),
+      help     = STRING_TOKEN(STR_EFI_NETWORK_CONTROL_HELP),
+      option text = STRING_TOKEN(STR_ENABLED_STRING), value = 1, flags =  RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_DISABLED_STRING), value = 0, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
+    endoneof;
+
+    oneof varid = SYSTEM_CONFIGURATION.LomDisableByGpio,
+      prompt   = STRING_TOKEN(STR_LOM_DISABLE_BY_GPIO),
+      help     = STRING_TOKEN(STR_LOM_DISABLE_BY_GPIO_HELP),
+      option text = STRING_TOKEN(STR_ENABLED_STRING), value = 1, flags =  DEFAULT | MANUFACTURING | RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_DISABLED_STRING), value = 0, flags = RESET_REQUIRED;
+    endoneof;
+
+    suppressif ideqval SYSTEM_CONFIGURATION.FpkPortPresent[0] == 0;
+      oneof varid   = SYSTEM_CONFIGURATION.FpkPortConfig[0],
+        prompt      = STRING_TOKEN(STR_FPK_PORT1),
+        help        = STRING_TOKEN(STR_FPK_PORT1_PROMPT_HELP),
+        option text = STRING_TOKEN(STR_ENABLED_STRING),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_MANAGEMENT_STRING), value = 2, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_DISABLED_STRING), value = 0, flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SYSTEM_CONFIGURATION.FpkPortPresent[1] == 0;
+      oneof varid   = SYSTEM_CONFIGURATION.FpkPortConfig[1],
+        prompt      = STRING_TOKEN(STR_FPK_PORT2),
+        help        = STRING_TOKEN(STR_FPK_PORT2_PROMPT_HELP),
+        option text = STRING_TOKEN(STR_ENABLED_STRING),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_MANAGEMENT_STRING), value = 2, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_DISABLED_STRING), value = 0, flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SYSTEM_CONFIGURATION.FpkPortPresent[2] == 0;
+      oneof varid   = SYSTEM_CONFIGURATION.FpkPortConfig[2],
+        prompt      = STRING_TOKEN(STR_FPK_PORT3),
+        help        = STRING_TOKEN(STR_FPK_PORT3_PROMPT_HELP),
+        option text = STRING_TOKEN(STR_ENABLED_STRING),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_MANAGEMENT_STRING), value = 2, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_DISABLED_STRING), value = 0, flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SYSTEM_CONFIGURATION.FpkPortPresent[3] == 0;
+      oneof varid   = SYSTEM_CONFIGURATION.FpkPortConfig[3],
+        prompt      = STRING_TOKEN(STR_FPK_PORT4),
+        help        = STRING_TOKEN(STR_FPK_PORT4_PROMPT_HELP),
+        option text = STRING_TOKEN(STR_ENABLED_STRING),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_MANAGEMENT_STRING), value = 2, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_DISABLED_STRING), value = 0, flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+  endform;
+
+  form formid = VFR_RESERVE_MEMORY,
+
+    title     = STRING_TOKEN(STR_RESERVE_MEMORY_OPTION);
+
+    //
+    // Reserve Memory that is hidden from the OS.
+    //
+
+    checkbox varid = SYSTEM_CONFIGURATION.ReserveMem,
+      prompt   = STRING_TOKEN(STR_RESERVE_MEMORY_ENABLE),
+      help     = STRING_TOKEN(STR_RESERVE_MEMORY_ENABLE_HELP),
+      flags    = 0,
+      default  = 0, defaultstore = MyStandardDefault,
+      default  = 0, defaultstore = MyManufactureDefault,
+    endcheckbox;
+
+
+    grayoutif ideqval SYSTEM_CONFIGURATION.ReserveMem == 0;
+      numeric varid = SYSTEM_CONFIGURATION.ReserveStartAddr,
+        prompt    = STRING_TOKEN(STR_RESERVE_MEMORY_START_ADDRESS),
+        help      = STRING_TOKEN(STR_RESERVE_MEMORY_START_ADDRESS_HELP),
+        flags     = DISPLAY_UINT_HEX,
+        minimum   = 0x100000,
+        maximum   = 0xFFFFFFFFFFFFFFFF,
+        step      = 0x1000,
+        default   = 0x100000, defaultstore = MyStandardDefault,
+        default   = 0x100000, defaultstore = MyManufactureDefault,
+
+      endnumeric;
+    endif;
+
+    //
+    // ReserveMem Result Display
+    //
+    suppressif ideqval SYSTEM_CONFIGURATION.ReserveMem == 0;
+      text
+          help   = STRING_TOKEN(STR_NULL_STRING),
+          text   = STRING_TOKEN(STR_RESERVE_MEMORY_RESULT),
+          text   = STRING_TOKEN(STR_RESERVE_MEMORY_RESULT_VALUE),
+          flags  = 0, key = 0;
+    endif;
+
+    //
+    // Reserve TAGEC Memory
+    //
+    oneof varid   = SYSTEM_CONFIGURATION.TagecMem,
+        prompt      = STRING_TOKEN(STR_TAGEC_MEMORY),
+        help        = STRING_TOKEN(STR_TAGEC_MEMORY_HELP),
+        option text = STRING_TOKEN(STR_DISABLE),        value = 0, flags = RESET_REQUIRED | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),         value = 1, flags = RESET_REQUIRED | MANUFACTURING;
+    endoneof;
+
+  endform;
+
+  form formid = VFR_FORMID_RESET_TESTING,
+
+    title = STRING_TOKEN(STR_RESET_TESTING_FORM);
+
+    subtitle text = STRING_TOKEN(STR_RESETTESTING_FORM);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+    oneof varid = SYSTEM_CONFIGURATION.ValidationResetType,
+        prompt  = STRING_TOKEN(STR_VALIDATION_RESET_TYPE_PROMPT),
+        help    = STRING_TOKEN(STR_VALIDATION_RESET_TYPE_HELP),
+        option text = STRING_TOKEN(STR_NONE),                value = V_RESET_NONE,                flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_PWRGD_RST_SS),        value = V_RESET_PWRGD_RST_SS,        flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_NORMAL_SF_FF_HRDRST), value = V_RESET_NORMAL_SF_FF_HRDRST, flags = RESET_REQUIRED;
+    endoneof;
+
+    suppressif ideqval SYSTEM_CONFIGURATION.ValidationResetType == 0x00;
+            oneof varid = SYSTEM_CONFIGURATION.ValidationCountOuter,
+                    prompt  = STRING_TOKEN(STR_VALIDATION_COUNT_OUTER_PROMPT),
+                    help    = STRING_TOKEN(STR_VALIDATION_COUNT_OUTER_HELP),
+                    option text = STRING_TOKEN(STR_1),              value = 1, flags = RESET_REQUIRED;
+                    option text = STRING_TOKEN(STR_10),             value = 10, flags = RESET_REQUIRED;
+                    option text = STRING_TOKEN(STR_20),             value = 20, flags = RESET_REQUIRED;
+                    option text = STRING_TOKEN(STR_100),            value = 100, flags = RESET_REQUIRED;
+                    option text = STRING_TOKEN(STR_500),            value = 500, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                    option text = STRING_TOKEN(STR_1000),           value = 1000, flags = RESET_REQUIRED;
+                    option text = STRING_TOKEN(STR_5000),           value = 5000, flags = RESET_REQUIRED;
+                    option text = STRING_TOKEN(STR_10000),          value = 10000, flags = RESET_REQUIRED;
+                    option text = STRING_TOKEN(STR_INFINITE),       value = 0, flags = RESET_REQUIRED;
+            endoneof;
+
+            oneof varid = SYSTEM_CONFIGURATION.ValidationCountInner,
+                    prompt  = STRING_TOKEN(STR_VALIDATION_COUNT_INNER_PROMPT),
+                    help    = STRING_TOKEN(STR_VALIDATION_COUNT_INNER_HELP),
+                    option text = STRING_TOKEN(STR_10),             value = 10, flags = RESET_REQUIRED;
+                    option text = STRING_TOKEN(STR_20),             value = 20, flags = RESET_REQUIRED;
+                    option text = STRING_TOKEN(STR_100),            value = 100, flags = RESET_REQUIRED;
+                    option text = STRING_TOKEN(STR_500),            value = 500, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                    option text = STRING_TOKEN(STR_1000),           value = 1000, flags = RESET_REQUIRED;
+                    option text = STRING_TOKEN(STR_5000),           value = 5000, flags = RESET_REQUIRED;
+                    option text = STRING_TOKEN(STR_10000),          value = 10000, flags = RESET_REQUIRED;
+                    option text = STRING_TOKEN(STR_INFINITE),       value = 0, flags = RESET_REQUIRED;
+            endoneof;
+
+            oneof varid = SYSTEM_CONFIGURATION.ValidationStopOnError,
+                    prompt  = STRING_TOKEN(STR_VALIDATION_SOE_PROMPT),
+                    help    = STRING_TOKEN(STR_VALIDATION_SOE_HELP),
+                    option text = STRING_TOKEN(STR_NO),             value = 0, flags = RESET_REQUIRED;
+                    option text = STRING_TOKEN(STR_YES),            value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+            endoneof;
+
+            oneof varid = SYSTEM_CONFIGURATION.ValidationBootWhenDone,
+                    prompt  = STRING_TOKEN(STR_VALIDATION_BWD_PROMPT),
+                    help    = STRING_TOKEN(STR_VALIDATION_BWD_HELP),
+                    option text = STRING_TOKEN(STR_NO),             value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                    option text = STRING_TOKEN(STR_YES),            value = 1, flags = RESET_REQUIRED;
+            endoneof;
+
+            oneof varid = SYSTEM_CONFIGURATION.ValidationSkxPciError,
+                    prompt  = STRING_TOKEN(STR_VALIDATION_PROC_PCI_PROMPT),
+                    help    = STRING_TOKEN(STR_VALIDATION_PROC_PCI_HELP),
+                    option text = STRING_TOKEN(STR_NO),             value = 0, flags = RESET_REQUIRED;
+                    option text = STRING_TOKEN(STR_YES),            value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+            endoneof;
+
+            oneof varid = SYSTEM_CONFIGURATION.ValidationSkxPciLinkError,
+                    prompt  = STRING_TOKEN(STR_VALIDATION_PROC_PCI_LINK_PROMPT),
+                    help    = STRING_TOKEN(STR_VALIDATION_PROC_PCI_LINK_HELP),
+                    option text = STRING_TOKEN(STR_NO),             value = 0, flags = RESET_REQUIRED;
+                    option text = STRING_TOKEN(STR_YES),            value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+            endoneof;
+
+            oneof varid = SYSTEM_CONFIGURATION.ValidationSkxPciLinkRecoveryCountError,
+                    prompt  = STRING_TOKEN(STR_VALIDATION_PROC_PCI_LINK_RECOVERY_COUNT_PROMPT),
+                    help    = STRING_TOKEN(STR_VALIDATION_PROC_PCI_LINK_RECOVERY_COUNT_HELP),
+                    option text = STRING_TOKEN(STR_NO),             value = 0, flags = RESET_REQUIRED;
+                    option text = STRING_TOKEN(STR_YES),            value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+            endoneof;
+
+            numeric varid   = SYSTEM_CONFIGURATION.ValidationSkxPciLinkRecoveryCountThreshold,
+                prompt      = STRING_TOKEN(STR_VALIDATION_PROC_PCI_LINK_RECOVERY_COUNT_THRESHOLD_PROMPT),
+                help        = STRING_TOKEN(STR_VALIDATION_PROC_PCI_LINK_RECOVERY_COUNT_THRESHOLD_HELP),
+                flags       = RESET_REQUIRED,
+                minimum     = 0,
+                maximum     = 0xFFFF,
+                step        = 1,
+               default      = 4, defaultstore = MyStandardDefault,
+               default      = 4, defaultstore = MyManufactureDefault,
+            endnumeric;
+
+            oneof varid = SYSTEM_CONFIGURATION.ValidationPchPciError,
+                    prompt  = STRING_TOKEN(STR_VALIDATION_PCH_PCI_PROMPT),
+                    help    = STRING_TOKEN(STR_VALIDATION_PCH_PCI_HELP),
+                    option text = STRING_TOKEN(STR_NO),             value = 0, flags = RESET_REQUIRED;
+                    option text = STRING_TOKEN(STR_YES),            value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+            endoneof;
+
+            oneof varid = SYSTEM_CONFIGURATION.ValidationKtiError,
+                    prompt  = STRING_TOKEN(STR_VALIDATION_KTI_PROMPT),
+                    help    = STRING_TOKEN(STR_VALIDATION_KTI_HELP),
+                    option text = STRING_TOKEN(STR_NO),             value = 0, flags = RESET_REQUIRED;
+                    option text = STRING_TOKEN(STR_YES),            value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+            endoneof;
+
+    endif;
+  endform;
+
+  #include "PchSetup.hfr"
+  #include "DebugInterface.hfr"
+  #include "SystemEventLog.hfr"
+// APTIOV_SERVER_OVERRIDE_START : Removing unused intel setup .uni/.hfr files.
+//  #include "ConsoleRedirectionConfigurationSetup.hfr"
+// APTIOV_SERVER_OVERRIDE_END : Removing unused intel setup .uni/.hfr files.
+//Comment out UsbConfigData header file since we dont need USB Configuration under Advanced setup screen anymore
+  //#include "UsbConfigData.hfr"
+  
+#if defined(ME_SUPPORT_FLAG) && ME_SUPPORT_FLAG
+
+#if defined(AMT_SUPPORT) && AMT_SUPPORT
+  #include "MeSetup.hfr"
+#endif // AMT_SUPPORT
+
+#if defined(SPS_SUPPORT) && SPS_SUPPORT
+  #include "MeSpsSetup.hfr"
+#endif // SPS_SUPPORT
+
+  #include "MeDfxSetup.hfr"
+  
+#endif // ME_SUPPORT_FLAG
+
+#ifdef IE_SUPPORT
+  #include "IeConfig.hfr"
+#endif //IE_SUPPORT
+// APTIOV_SERVER_OVERRIDE_START : Removing unused intel setup .uni/.hfr files.
+//  #include "BootAllOptions.hfr"
+// APTIOV_SERVER_OVERRIDE_END : Removing unused intel setup .uni/.hfr files.
+  #include "Overclocking.hfr"
+// APTIOV_SERVER_OVERRIDE_RC_START: Defines dummy control and update value from NVRAM or HOB in order to avoid load defaults issue.
+  #include "IntelRcSetupDummyControls.hfr"
+// APTIOV_SERVER_OVERRIDE_RC_END: Defines dummy control and update value from NVRAM or HOB in order to avoid load defaults issue.
+endformset;

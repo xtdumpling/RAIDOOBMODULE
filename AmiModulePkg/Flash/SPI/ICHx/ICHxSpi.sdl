@@ -1,0 +1,114 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2011, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+#**********************************************************************
+# $Header: $
+#
+# $Revision: $
+#
+# $Date: $
+#**********************************************************************
+
+TOKEN
+	Name  = "ICHx_SPI_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable ICHx SPI support in Project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "SPI_INITIALIZE_WITH_VSCC"
+	Value  = "0"
+	Help  = "Program Host Lower/Upper Vendor Specific Component Capabilities Register."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SPI_USE_HARDWARE_SEQUENCE"
+	Value  = "0"
+	Help  = "Sets to use SPI Hardware Sequence.\0 - Use SPI Software Sequence, 1 - ICH/PCH Hardware Sequence, 2 - SKYLAKE-PCH Hardware Sequence or Later ."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SPI_REGISTERS"
+	Value  = "{ 0, 4, 8, 0x10, 0x90, 0x91, 0x94, 0x96, 0x98, 0xB0, 0xB4, 0xC4, 0xC8, 0xCC, 0xD0 }"
+	Help  = "SPI Registers Configuration.\{ SPI Bus/Device/Function/Register, HwSeqStsCtl, FlashAddr, FlashData, SwSeqStatus, SwSeqCtrl, PrefixOp, OpType, OpMenu, FDOC, FDOD, LVSCC, UVSCC, PT Index, PT Data}"
+	TokenType = Expression
+	TargetH = Yes
+	Token = "SPI_USE_HARDWARE_SEQUENCE" "<=" "1"
+End
+
+TOKEN
+	Name  = "SPI_REGISTERS"
+	Value  = "{ 0 , 4, 8, 0x10, 0xA0, 0xA1, 0xA4, 0xA6, 0xA8, 0xB4, 0xB8, 0xC4, 0xC8, 0xCC, 0xD0 }"
+	Help  = "SPI Registers Configuration.\{ SPI Bus/Device/Function/Register, HwSeqStsCtl, FlashAddr, FlashData, SwSeqStatus, SwSeqCtrl, PrefixOp, OpType, OpMenu, FDOC, FDOD, LVSCC, UVSCC, PT Index, PT Data}"
+	TokenType = Expression
+	TargetH = Yes
+	Token = "SPI_USE_HARDWARE_SEQUENCE" ">=" "2"
+End
+
+TOKEN
+	Name  = "SPI_FREQUENCY"
+	Value  = "0"
+	Help  = "Sets frequency to use for all SPI software sequencing cycles.\0 - 20MHz, 1 - 33MHz, 4 - 50MHz."
+	TokenType = Integer
+	TargetH = Yes
+	Token = "FAST_READ_SUPPORT" "!=" "0"
+End
+
+PATH
+	Name  = "SPI_CSP_DIR"
+End
+
+INFComponent
+	Name  = "ICHxCspSpiFlashLib"
+	File  = "ICHxCspSpiFlashLib.inf"
+	Package  = "AmiModulePkg"
+End
+
+INFComponent
+	Name  = "ICHxCspSpiFlashPeiLib"
+	File  = "ICHxCspSpiFlashPeiLib.inf"
+	Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+	Class  = "CspSpiFlashLib"
+	Instance  = "AmiModulePkg.ICHxCspSpiFlashLib"
+	ModuleTypes  = "DXE_CORE DXE_DRIVER DXE_RUNTIME_DRIVER DXE_SAL_DRIVER DXE_SMM_DRIVER SMM_CORE UEFI_APPLICATION UEFI_DRIVER"
+End
+
+LibraryMapping
+	Class  = "CspSpiFlashLib"
+	Instance  = "AmiModulePkg.ICHxCspSpiFlashPeiLib"
+	ModuleTypes  = "PEIM"
+End
+
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2011, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+

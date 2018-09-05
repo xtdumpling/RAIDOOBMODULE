@@ -1,0 +1,59 @@
+##****************************************************************************
+##****************************************************************************
+##**                                                                        **
+##**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+##**                                                                        **
+##****************************************************************************
+##****************************************************************************
+#
+#  File History
+#
+#  Rev. 1.01
+#    Bug Fix : N/A
+#    Reason  : Overridden AMI legacy CSM16 binary when B2 W/A is enabled.
+#    Auditor : Joe Jhang
+#    Date    : May/17/2017
+#
+#  Rev. 1.00
+#    Bug Fix:  Initial revision
+#    Reason:
+#    Auditor:  Salmon Chen
+#    Date:     Mar/11/2015
+#
+#*****************************************************************************
+
+TOKEN
+	Name  = "KernelOverride"
+	Value  = "1"
+	Help  = "Enable/Disable Setup Override"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+End
+
+PATH
+	Name  = "KernelOverride_DIR"
+End
+
+PATH
+	Name  = "CSM_DIR"
+	Path  = "AmiModulePkg/CSM"
+	Help  = "CSM source directory"
+End
+
+ELINK
+	Name  = "OPROM(1,0,0,$(CSM_DIR)/AmiLegacy16.bin)"
+	Parent  = "CSM_OPROM_LIST"
+	InvokeOrder = AfterParent
+	Disable = Yes
+	Token = "B2_WORKAROUND_SUPPORT" "=" "1"
+End
+
+ELINK
+	Name  = "OPROM(1,0,0,$(KernelOverride_DIR)/$(CSM_DIR)/AmiLegacy16.bin)"
+	Parent  = "CSM_OPROM_LIST"
+	InvokeOrder = AfterParent
+	Token = "B2_WORKAROUND_SUPPORT" "=" "1"
+End

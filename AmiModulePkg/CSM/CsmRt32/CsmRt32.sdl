@@ -1,0 +1,47 @@
+TOKEN
+	Name  = "CSM_RT32_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable PCI RT32 support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+End
+
+TOKEN
+    Name  = "RT32_BINARY_LOCATION"
+    Value  = "2"
+    Help  = "1 - RT32 binary goes to F000 segment, 2 - E000 segment, 0 - either F000 or E000 depending on availability."
+    TokenType = Integer
+    TargetH = Yes
+    TargetEQU = Yes
+End
+
+TOKEN
+    Name  = "PCI_CFG_HW_MECH"
+    Value  = "1"
+    Help  = "Specify the PCI Config hardware mechinism. Config mechanism 1 is default."
+    TokenType = Integer
+    TargetEQU = Yes
+End
+
+PATH
+	Name  = "CSM_RT32_DIR"
+End
+
+INFComponent
+	Name  = "CsmRt32"
+	File  = "CsmRt32.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "DXE_DRIVER"
+End
+
+INFComponent
+	Name  = "CsmRt32Asm"
+	File  = "CsmRt32Asm.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "USER_DEFINED"
+End
+
+

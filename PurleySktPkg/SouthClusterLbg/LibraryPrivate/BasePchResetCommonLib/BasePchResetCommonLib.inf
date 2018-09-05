@@ -1,0 +1,63 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.00
+#    Bug Fix:  Add workaround to fix ME can't report platform power after system global reset(CF9GR=1)
+#    Reason:   Refer ME spec, the CF9GR should be cleared.
+#    Auditor:  Jimmy Chiu
+#    Date:     Oct/27/2016
+#
+#****************************************************************************
+## @file
+#  Component description file for the PchResetCommonLib
+#
+#@copyright
+# Copyright (c) 2014 Intel Corporation. All rights reserved
+# This software and associated documentation (if any) is furnished
+# under a license and may only be used or copied in accordance
+# with the terms of the license. Except as permitted by the
+# license, no part of this software or documentation may be
+# reproduced, stored in a retrieval system, or transmitted in any
+# form or by any means without the express written consent of
+# Intel Corporation.
+# This file contains an 'Intel Peripheral Driver' and is uniquely
+# identified as "Intel Reference Module" and is licensed for Intel
+# CPUs and chipsets under the terms of your license agreement with
+# Intel or your vendor. This file may be modified by the user, subject
+# to additional terms of the license agreement.
+#
+#@par Specification Reference:
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = BasePchResetCommonLib
+  FILE_GUID                      = 1E6151B2-6306-4C9C-B9AC-794A13BEBC3F
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = PchResetCommonLib
+
+[Sources]
+  PchResetCommon.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec                   #SERVER_BIOS
+  CpRcPkg/CpRcPkg.dec                   #SERVER_BIOS
+  ServerCommonPkg/ServerCommonPkg.dec   #SERVER_BIOS
+  PurleySktPkg/SocketPkg.dec            #SMCPKG_SUPPORT
+  PurleyPlatPkg/PlatPkg.dec             #SMCPKG_SUPPORT
+  CpRcPkg/RcPlatPurley.dec              #SMCPKG_SUPPORT
+
+[LibraryClasses]
+  IoLib
+  DebugLib
+  PchCycleDecodingLib
+  SetupLib                              #SMCPKG_SUPPORT
+
+[Ppis]
+  gEfiPeiReadOnlyVariable2PpiGuid       #SMCPKG_SUPPORT

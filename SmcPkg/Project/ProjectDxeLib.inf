@@ -1,0 +1,64 @@
+#****************************************************************************
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2015 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#
+#  File History
+#
+#  Rev. 1.00
+#       Bug fixed:   Implement UEFI PXE index function.
+#       Reason:      Function implement.
+#       Auditor:     Jacker Yeh
+#       Date:        Dec/21/2015
+#
+#****************************************************************************
+
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = ProjectDxeLib
+  FILE_GUID                      = 42f449ac-4c51-4dd5-a825-de346b9579b9                                   
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = ProjectDxeLib|DXE_DRIVER
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+#  
+#
+
+[Sources]
+  ProjectDxeLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec 
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec 
+  AmiModulePkg/AmiModulePkg.dec
+  PurleyPlatPkg/PlatPkg.dec  #AptioV Purley Override.
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec  
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  PurleySktPkg/SocketPkg.dec  #AptioV Purley Override.
+  
+[LibraryClasses]
+  PcdLib
+  S3BootScriptLib
+  AmiDxeLib
+
+[Protocols]
+  gExitPmAuthProtocolGuid
+  gEfiIioUdsProtocolGuid
+  gEfiPciIoProtocolGuid
+  gCompletePowerManagementProtocolGuid #Aptio V Sever Override
+  gEfiLoadFileProtocolGuid #Supermicro
+
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+
+[Guids]
+  gEfiSetupVariableGuid

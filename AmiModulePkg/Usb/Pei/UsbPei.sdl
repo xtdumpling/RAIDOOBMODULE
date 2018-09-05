@@ -1,0 +1,233 @@
+TOKEN
+	Name  = "USBPEI_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable USB PEI support in Project"
+	TokenType = Boolean
+	TargetH = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "UHCI_PEI_SUPPORT"
+	Value  = "0"
+	Help  = "Enable/Disable UHCI controller(s) in PEI"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "OHCI_PEI_SUPPORT"
+	Value  = "0"
+	Help  = "Enable/Disable OHCI controller(s) in PEI"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "EHCI_PEI_SUPPORT"
+	Value  = "1"
+	Help  = "Enable/Disable EHCI controller(s) in PEI"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "XHCI_PEI_SUPPORT"
+	Value  = "0"
+	Help  = "Enable/Disable XHCI controller(s) in PEI"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PEI_UHCI_IOBASE"
+	Value  = "0x4000"
+	Help  = "IO Base Address for UHCI Controller during PEI phase"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PEI_UHCI_PCI_DEVICES"
+	Value  = "{0x1D0000, 0x1D0100, 0x1D0200, 0x1D0300, 0x1A0000, 0x1A0100}"
+	Help  = "List of supported UHCI controllers in the following format: {devfunc1, devfunc2,...,devfuncN}\devfunc represents the location of UHCI controller on PCI bus: dev = Bus << 24 + Dev << 16 + Func << 8. Value followed by dev is the PCI device interface, for UHCI it must be 0.\Note: number of entries {devfunc} must not be less than a number of supported UHCI controllers specified in USB_UHCI token."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PEI_UHCI_PCI_DEVICES"
+	Value  = "{0}"
+	Help  = "Default value if not using UHCI controller"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PEI_EHCI_PCI_BDFS"
+	Value  = "{0x1A0000, 0x1D0000}"
+	Help  = "List of supported EHCI controllers in the following format: {devfunc1, devfunc2,...,devfuncN}\devfunc represents the location of EHCI controller on PCI bus: dev = Bus << 24 + Dev << 16 + Func << 8. Value followed by dev is the PCI device interface, for EHCI it must be 0.\Note: number of entries {devfunc} must not be less than a number of supported EHCI controllers specified in PEI_NUM_EHCI token."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PEI_EHCI_MEM_BASE_ADDRESSES"
+	Value  = "{0xDFFFF000, 0xDFFFFC00}"
+	Help  = "List of base addresses for the respective EHCI controllers specified by PEI_EHCI_PCI_BDFS"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PEI_OHCI_IOBASE"
+	Value  = "0xFC087000"
+	Help  = "Memory Mapped IO Base Address for first Recovery module OHCI Controller during PEI phase"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PEI_XHCI_MMIOBASE"
+	Value  = "0xFE400000"
+	Help  = "MMIO Base Address for first XHCI Controller during PEI phase"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PEI_XHCI_MMIOSIZE"
+	Value  = "0x10000"
+	Help  = "MMIO size for XHCI Controller during PEI phase"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PEI_XHCI_CONTROLLER_PCI_ADDRESS"
+	Value  = "{0x1, 0x0, 0x0},"
+	Help  = "Default value if XHCI controllers are not supported"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PEI_XHCI_CONTROLLER_PCI_REGISTER_VALUES"
+	Value  = "{0,0x1c,0,0x19,8,1,0},{0,0x1c,0,0x1a,8,1,0},{0,0x1c,0,0x20,16,0xfe40,0},{0,0x1c,0,0x22,16,0xfe40,0},{0,0x1c,0,4,8,6,0},"
+	Help  = "Enable PCIe slot by programming bridge with the secondary/subordinate bus number and memory window.\Information format (AccessWidth is decimal), with a comma at the end:\   {Bus, Device, Function, Register, AccessWidth, BitsToSet, BitsToClear},"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PEI_USB_RECOVERYREQUEST_RETRIES"
+	Value  = "2"
+	Help  = "Number of retries while trying to catch recovery request from USB keyboard, each up to PEI_USB_RECOVERYREQUEST_TIMEOUT milliseconds long.\Note: value of 0 disables USB keyboard recovery request."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PEI_USB_RECOVERYREQUEST_TIMEOUT"
+	Value  = "30"
+	Help  = "USB keyboard recovery request time-out value in milliseconds.\Note: this value should be chosen depending of the project needs: the more value, the more is the timeframe for the keypress requesting recovery; at the same time recovery request timeout increases the boot time."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PEI_USB_RECOVERYREQUEST_KEY_MODIIFIER_VALUES"
+	Value  = "8, 4,"
+	Help  = "Specify the key modifiers (Ctr/Alt/Shift/Win) to be pressed along with the key combination to invoke recovery.\Separate modifiers by commas, with a comma at the end: 'Mod1, Mod2,'\Use 'ShiftState' section of AmiKeycodePpi.h for the list of supported modifiers."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PEI_USB_RECOVERYREQUEST_KEY_EFISCANCODE"
+	Value  = "5"
+	Help  = "Specify the EFI scan code to be used for recovery request.\Use 'EFI Scan codes' section of AmiKeycodePpi.h for the list of supported EFI scan codes."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PEI_USB_KEYBOARD_NUMLOCK_ON"
+	Value  = "1"
+	Help  = "This token specifies whether or not turn the NumLock on during USB keyboard initialization in PEI."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "USBPEI_IN_S3_SUPPORT"
+	Value  = "0"
+	Help  = "USB PEI support in S3 resume."
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "USB_PEI_KEYBOARD_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "USBR_OHCI_CONTROLLER_PCI_ADDRESS"
+	Value  = "{0x0, 0x12, 0x0},{0x0, 0x12, 0x1},{0x0, 0x13, 0x0},{0x0, 0x13, 0x1},{0x0, 0x14, 0x5},"
+	Help  = "Specifies the location of supported OHCI controllers on the PCI bus.  Use the following format with hexadecimal values, with a comma at the end: \  {bus, device, function},"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "USBR_OHCI_CONTROLLER_PCI_REGISTER_VALUE"
+	Value  = "{ 32, 0x40, 0x300, 0x0 }, { 32, 0xc, 0x2010, 0x0 }, { 32, 0x4, 0x6, 0x0 },"
+	Help  = "Specifies the PCI register values to be programmed for each of the supported OHCI controllers specified by OHCI_CONTROLLER_PCI_ADDRESS. Use the following format with hexadecimal values (AccessWidth is decimal), with a comma at the end:\   {AccessWidth, Register, BitsToSet, BitsToClear},"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "USB_PEI_KEYBOARD_SUPPORT"
+	Value  = "0"
+	Help  = "Enable/disable support for USB keyboards.\On - We always initial usb controllers and devices in PEI phase.\Off - We initial usb controllers and devices only if the system is in recovery mode."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PEI_USB_DEVICE_CONNECT_TIMEOUT"
+	Value  = "1"
+	Help  = "Some devices may connect lately, polling process to wait for devices. The unit of timeout is the second."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PEI_USB_KEYBOARD_CONNECT_DELAY_MS"
+	Value  = "0"
+	Help  = "Some devices may connect lately, add delay time to wait usb keyboard are connected. The unit of the token is MS."
+	TokenType = Integer
+	TargetH = Yes
+	Token = "USB_PEI_KEYBOARD_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "PEI_USB_MASS_STORAGE_SUPPORT_POLICY"
+	Value  = "0"
+	Help  = "This token controlls usb mass storage support in the PEI phase.\0 - Initialize usb mass storage devices only in the system is in the recovery mode.\1 - Always initialize usb mass storage devices."
+	TokenType = Integer
+	TargetH = Yes
+	Token = "USB_PEI_KEYBOARD_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "UsbPei"
+	File  = "UsbPei.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "PEIM"
+End
+
+FFS_FILE
+	Name  = "UsbPei"
+	FD_AREA  = "FV_BB"
+	INFComponent  = "AmiModulePkg.UsbPei"
+	Rule_Override  = "Compressed"
+End

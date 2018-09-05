@@ -1,0 +1,42 @@
+TOKEN
+	Name  = "ME_ENABLE"	
+	Value  = "1"
+	Help  = "Switch for Enabling ME support in the project"
+	TokenType = Boolean
+	TargetMAK = Yes
+	Master = Yes
+End
+
+TOKEN
+    Name  = "ME_TESTMENU"
+    Value  = "1"
+    Help  = "Switch for Enabling ME_TESTMENU support in the project"
+    TokenType = Boolean
+    TargetMAK = Yes
+End
+
+INFComponent
+	Name  = "AmtLibPei"
+	File  = "AMT\Library\AmtLibPei\AmtLibPei.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "BASE"
+End
+
+LibraryMapping
+	Class  = "AmtLibPei"
+	Instance  = "PurleySktPkg.AmtLibPei"
+End
+
+
+INFComponent
+	Name  = "PeiDxeMeShowBufferLib"
+	File  = "Heci\Library\PeiDxeMeShowBufferLib\PeiDxeMeShowBufferLib.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "UEFI_DRIVER"
+End
+
+LibraryMapping
+	Class  = "MeShowBufferLib"
+	Instance  = "PurleySktPkg.PeiDxeMeShowBufferLib"
+    Arch  = "IA32 X64"
+End

@@ -1,0 +1,60 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+## @file
+#
+##
+[Defines]
+INF_VERSION 					            = 0x00010005
+VERSION_STRING 					= 1.0
+BASE_NAME 						        = TpmClearRollbackMain
+MODULE_TYPE 					       = DXE_SMM_DRIVER
+FILE_GUID 						               = FD2CB3F1-9520-4c24-BCB3-2C73F0C2B7EC
+ENTRY_POINT 					       = TpmClearRollBackSmmInit
+
+[Sources]
+TpmClearOnRollback.c
+TpmClearOnRollback.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  TpmClearOnRollbackWrapperLib
+  TimerLib
+  
+[Protocols]
+  gEfiTcgProtocolGuid
+
+[Guids]
+  gEfiHobListGuid
+
+[Depex]
+      gEfiSmmBase2ProtocolGuid
+
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************

@@ -1,0 +1,76 @@
+## @file
+#  OemProcMemInitLib Layer to call into Mrc Oem Hooks Ppi 
+#
+#  Copyright (c) 2009 - 2016, Intel Corporation. All rights reserved.<BR>
+#
+#  This program and the accompanying materials
+#  are licensed and made available under the terms and conditions of the BSD License
+#  which accompanies this distribution. The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.php
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = OemProcMemInitLibPpi
+  FILE_GUID                      = 682FC854-D0CB-4c9f-A8C4-F4F97A39EF3E
+  MODULE_TYPE                    = BASE
+  LIBRARY_CLASS                  = OemProcMemInitLib| PEIM
+
+[Sources]
+  OemProcMemInitLibPpi.c
+
+################################################################################
+#
+# Package Dependency Section - list of Package files that are required for
+#                              this module.
+#
+################################################################################
+
+[Packages]
+  MdePkg/MdePkg.dec
+  PurleySktPkg/SocketPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  CpRcPkg/CpRcPkg.dec
+
+
+################################################################################
+#
+# Library Class Section - list of Library Classes that are required for
+#                         this module.
+#
+################################################################################
+
+[LibraryClasses]
+  BaseLib
+  DebugLib
+  PcdLib
+
+[Ppis]
+  gMrcOemHooksPpiGuid        ## CONSUMES
+
+[Guids]
+  gEfiSocketPciResourceDataGuid
+  gEfiPrevBootNGNDimmCfgVariableGuid
+
+[Depex]
+
+
+################################################################################
+#
+# Protocol C Name Section - list of Protocol and Protocol Notify C Names
+#                           that this module uses or produces.
+#
+################################################################################
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+
+[BuildOptions.Ia32]
+  MSFT:*_*_*_CC_FLAGS     = /W4 /Gs999999 /GF /GL- /wd4214 /wd4334 /wd4142 /wd4819 /DBUILDING_FOR_IA32  /DIA32 $(DSC_GLOBAL_BUILD_OPTIONS)
+
+[BuildOptions.X64]
+  MSFT:*_*_X64_CC_FLAGS   = /W2 /Gs32768 /DCONFIG_DP /DKTI_HW_PLATFORM /DBUILDING_FOR_X64 /UIA32 /DEXTERNAL_PACKAGE /DRAS_FEATURES /wd4142 /wd4819 $(DSC_GLOBAL_BUILD_OPTIONS)

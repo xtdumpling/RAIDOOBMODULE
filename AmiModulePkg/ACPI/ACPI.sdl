@@ -1,0 +1,2101 @@
+TOKEN
+	Name  = "MPS_TABLE_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable MPS V 1.4 Table support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "ACPI_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable ACPI support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "ACPI_MODULE_VER"
+	Value  = "110"
+	Help  = "ACPI Module Version Number.\ DO NOT CHANGE THIS VALUE"
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "ACPI_DBG8_ASL_SUPPORT"
+	Value  = "$(INTEL_ARCHITECTURE_SUPPORT)"
+	Help  = "Should be used as #if ASL_ACPI_DBG8_ASL_SUPPORT to enable use of port 80 for checkpoints in asl code for compatibility with platforms without IO."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "T_ACPI_OEM_ID"
+	Value  = "ALASKA"
+	Help  = "ACPI OEM Id -\a string value to be filled into ACPI table headers"
+	TokenType = Expression
+	TargetMAK = Yes
+	TargetH = Yes
+	Range  = "1-6 characters"
+End
+
+TOKEN
+	Name  = "T_ACPI_OEM_TBL_ID"
+	Value  = "A M I "
+	Help  = "ACPI OEM Id -\a string value to be filled into ACPI table headers"
+	TokenType = Expression
+	TargetMAK = Yes
+	TargetH = Yes
+	Range  = "1-8 characters"
+End
+
+TOKEN
+	Name  = "ACPI_OEM_REV"
+	Value  = "0x01072009"
+	Help  = "Just use BCD of the current date"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "8 byte length"
+End
+
+TOKEN
+	Name  = "IO_APIC_BASE_ADDRESS_TOP"
+	Value  = "0xFED00000"
+	Help  = "Top memory address where search for IO APIC Base should be started."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "S3_BASE_MEMORY_SIZE"
+	Value  = "0x40000"
+	Help  = "Number of bytes for S3 resume base memory."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0x40000 = 256K, increase/decrease it in units of 0x1000 = 4K"
+End
+
+TOKEN
+	Name  = "S3_MEMORY_SIZE_PER_CPU"
+	Value  = "4096"
+	Help  = "Number of S3 bytes reserved per CPU"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "ATAD_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable ACPI Time and Alarm support in Project"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "ACPI_TIME_AND_ALARM_SW_SMI"
+	Value  = "0x50"
+	TokenType = Integer
+	TargetH = Yes
+	Token = "ATAD_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "ATAA"
+	Value  = "$(ACPI_TIME_AND_ALARM_SW_SMI)"
+	Help  = "Token to go to ASL Name Definitions"
+	TokenType = Integer
+	TargetASL = Yes
+	Token = "ATAD_SUPPORT" "=" "1"
+End
+
+PCIDEVICE
+	Title  = "AcpiTimeAndAlarmDev"
+	Parent  = "PciHost (Virtual)"
+	Attribute  = "0x0"
+	Dev_type  = "Container"
+	Dev  = 00h
+	Fun  = 00h
+	SleepNum  = 01h
+	ASLfile  = "'AmiModulePkg\ACPI\TimeAndAlarm.asl;After Pci Tree'"
+	Token = "ATAD_SUPPORT" "=" "1"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	Virtual = Yes
+End
+
+TOKEN
+	Name  = "====== ACPI Tables Creation Flags ========"
+	Value  = "!!!DO NOT CHANGE NAMES JUST VALUES!!!"
+	Help  = "Specfy which tables will be created by the ACPI Driver."
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "ACPI_SPEC_VERSION"
+	Value  = "61"
+	Help  = "Highest Version of ACPI specification supported. For example 4.0 = 40; 5.0 = 50; 5.1 = 51"
+	TokenType = Integer
+	TargetH = Yes
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "ACPI_BUILD_TABLES_2_0"
+	Value  = "1"
+	Help  = "Main switch to enable ACPI 2.0 tables to be build in Project. Left for compatibility reason."
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "ACPI_SPEC_VERSION" ">=" "20"
+End
+
+TOKEN
+	Name  = "ACPI_BUILD_TABLES_2_0"
+	Value  = "0"
+	Help  = "Main switch to enable ACPI 2.0 tables to be build in Project. Left for compatibility reason."
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "ACPI_SPEC_VERSION" "<" "20"
+End
+
+TOKEN
+	Name  = "ACPI_ARM_BOOT_ARCH"
+	Value  = "0000h"
+	Help  = "ARM Boot Architecture flags\this token may be 'ored' see range field for details"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "1 - PSCI_COMPLIANT; 2 - PSCI_USE_HVC (1 if HVC must be used as the PSCI conduit.instead of SMC)"
+	Token = "ACPI_SPEC_VERSION" ">=" "51"
+
+End
+
+TOKEN
+	Name  = "FORCE_TO_ACPI1_SETUP_ENABLE"
+	Value  = "0"
+	Help  = "Main switch to enable Force to ACPI 1.0 Setup question in Project"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "ACPI_APIC_TBL"
+	Value  = "1"
+	Help  = "Main switch to enable MADT table build in Project"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "IO_APIC_ID_READ_MASK"
+	Value  = "0x0f000000"
+	Help  = "Mask used when auto-detecting I/O APIC id by reading from I/O APIC data register. Default - 0x0f000000 is for 4 bit IDs. Change to 0xff000000 when 8 bits IO APIC IDs supported."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FACP_BUILD"
+	Value  = "1"
+	Help  = "Main Token to enable built-in creation of Fixed ACPI Data Table. If disabled make sure that FACP will be published by other module before ReadyToBoot. Also no one module should assume that FACP will be available right after publishing of ACPI protocols."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FPDT_BUILD"
+	Value  = "1"
+	Help  = "Main Token to enable built-in creation of Firmware Performance Data Table."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "DSDT_BUILD"
+	Value  = "1"
+	Help  = "Main Token to enable built-in creation of Differentiated System Data Table. If disabled make sure that DSDT will be published by other module before ReadyToBoot. Also no one module should assume that DSDT will be available right after publishing of ACPI protocols."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "====== Sleep States Supported  =========="
+	Value  = "!!!DO NOT CHANGE NAMES JUST VALUES!!!"
+	Help  = "Sleep States Supported By the Platform."
+	TokenType = Expression
+	Range  = "4 decimal or Hex (use '0x' prefix) values separated with ','"
+End
+
+TOKEN
+	Name  = "A_S1"
+	Value  = "1"
+	Help  = "S1 Sleep state enabled in BIOS"
+	TokenType = Boolean
+	TargetH = Yes
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "A_S2"
+	Value  = "0"
+	Help  = "S2 supported"
+	TokenType = Boolean
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "A_S3"
+	Value  = "1"
+	Help  = "S3 supported"
+	TokenType = Boolean
+	TargetH = Yes
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "A_S4"
+	Value  = "1"
+	Help  = "S4 supported"
+	TokenType = Boolean
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "====== OEM Platform Features ==========="
+	Value  = "!!!DO NOT CHANGE NAMES JUST VALUES!!!"
+	Help  = "Specfy some additional platform faetures supported by ACPI Name Space."
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "A_SI"
+	Value  = "0"
+	Help  = "Set to 1 if System has a software controllable System state LED;\System indication(LED), Implementation in SI.asl"
+	TokenType = Boolean
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "A_THERMAL"
+	Value  = "0"
+	Help  = "ASL Thermal management module ( implemented in TZ.ASL )\FAN module is required; SMBus interface is optional is thermal sensor accessd over SMBus."
+	TokenType = Boolean
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "A_FAN"
+	Value  = "0"
+	Help  = "FAN cooling device ( implementation in FAN.ASL )\Enable feature if Thermal support is selected (A_THERMAL = 1)"
+	TokenType = Boolean
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "====== No-Maskable Int Sorses ==========="
+	Value  = "Specifies which I/O (S)APIC int inputs should be enabled as non-maskable."
+	Help  = "Specifies which I/O (S)APIC int inputs should be enabled as non-maskable."
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "NMIs_QUANTITY"
+	Value  = "0"
+	Help  = "Indicates the number non-maskable  I/O (S)APIC \inputs, that platform has (non, if 0). "
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "===Values for NMIs structure in MADT======="
+	Value  = "If NMIs_QUANTITY more than 1 look Help"
+	Help  = "If NMIs_QUANTITY more than 1 add 3 more entries (NMI_GLOBAL_SYS_INT_i, NMI_i_POLARITY and NMI_i_TRIGGER_MODE for each additional NMI"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "NMI_GLOBAL_SYS_INT_0"
+	Value  = "0"
+	Help  = "The Global System Interrupt that this NMI \will signal."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "depends on system architecture"
+	Token = "NMIs_QUANTITY" ">" "0"
+End
+
+TOKEN
+	Name  = "NMI_0_POLARITY"
+	Value  = "0"
+	Help  = "0 = Conforms to specifications of bus.\1 = Active High.\3 = Active Low."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0, 1 or 3. 2-reserved"
+	Token = "NMIs_QUANTITY" ">" "0"
+End
+
+TOKEN
+	Name  = "NMI_0_TRIGGER_MODE"
+	Value  = "0"
+	Help  = "0 = Conforms to specifications of bus.\1 = Edge-triggered.\3 = Level-triggered."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0, 1 or 3. 2-reserved"
+	Token = "NMIs_QUANTITY" ">" "0"
+End
+
+TOKEN
+	Name  = "====== LOCAL INTERRUPT ASSIGNMENT info ==========="
+	Value  = "Specifies what int sourse is connected to each local int input of each local APIC."
+	Help  = "Specifies what int sourse is connected to each local int input of each local APIC. Valid only for Multy Processor platforms"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "LOCAL_APIC_VERSION_PARAMETER"
+	Value  = "0x21"
+	Help  = "LAPIC/LSAPIC revision BOUNDARY. For Intel it is should be 0x21. Clone and reasign if different"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "LAPIC_QUANTITY"
+	Value  = "2"
+	Help  = "Indicates the number of LAPIC int lines. If more than 2 lines - add aditional set of parameters for each additional line"
+	TokenType = Integer
+	TargetH = Yes
+	Token = "NCPU" ">" "1"
+End
+
+TOKEN
+	Name  = "====Parameters for each line======="
+	Value  = "Dont Change names"
+	Help  = "If more than 2 lines - add aditional set of parameters for each additional line"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "LAPIC_0_INT_TYPE"
+	Value  = "3"
+	Help  = "Interrupt type: 0-INT; 1-NMI; 2-SMI; 3-ExtINT"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0, 1, 2, 3"
+	Token = "LAPIC_QUANTITY" ">" "0"
+End
+
+TOKEN
+	Name  = "LAPIC_0_POLARITY"
+	Value  = "1"
+	Help  = "0 = Conforms to specifications of bus.\1 = Active High.\3 = Active Low."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0, 1 or 3. 2-reserved"
+	Token = "LAPIC_QUANTITY" ">" "0"
+End
+
+TOKEN
+	Name  = "LAPIC_0_TRIGGER_MODE"
+	Value  = "1"
+	Help  = "0 = Conforms to specifications of bus.\1 = Edge-triggered.\3 = Level-triggered."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0, 1 or 3. 2-reserved"
+	Token = "LAPIC_QUANTITY" ">" "0"
+End
+
+TOKEN
+	Name  = "LAPIC_0_SOURCE_BUS_ID"
+	Value  = "0"
+	Help  = "Identifies the bus from which the interrupt signal comes."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "depends on system architecture"
+	Token = "LAPIC_QUANTITY" ">" "0"
+End
+
+TOKEN
+	Name  = "LAPIC_0_SOURCE_BUS_IRQ"
+	Value  = "0"
+	Help  = "Identifies the interrupt signal from the source bus. Values are mapped onto source bus signals, starting from Zero."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "depends on system architecture"
+	Token = "LAPIC_QUANTITY" ">" "0"
+End
+
+TOKEN
+	Name  = "LAPIC_0_DEST_ID"
+	Value  = "0xFF"
+	Help  = "Identifies the LAPIC to which the signal is connected. If 0xFFh - the signal is connected to all local APICs."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "depends on system architecture"
+	Token = "LAPIC_QUANTITY" ">" "0"
+End
+
+TOKEN
+	Name  = "LAPIC_0_DEST_LINTIN"
+	Value  = "0"
+	Help  = "Identifies the LINTINn pin to which the signal is connected."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "depends on system architecture (Usualy 0 or 1)"
+	Token = "LAPIC_QUANTITY" ">" "0"
+End
+
+TOKEN
+	Name  = "LAPIC_1_INT_TYPE"
+	Value  = "1"
+	Help  = "Interrupt type: 0-INT; 1-NMI; 2-SMI; 3-ExtINT"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0, 1, 2, 3"
+	Token = "LAPIC_QUANTITY" ">" "1"
+End
+
+TOKEN
+	Name  = "LAPIC_1_POLARITY"
+	Value  = "1"
+	Help  = "0 = Conforms to specifications of bus.\1 = Active High.\3 = Active Low."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0, 1 or 3. 2-reserved"
+	Token = "LAPIC_QUANTITY" ">" "1"
+End
+
+TOKEN
+	Name  = "LAPIC_1_TRIGGER_MODE"
+	Value  = "1"
+	Help  = "0 = Conforms to specifications of bus.\1 = Edge-triggered.\3 = Level-triggered."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0, 1 or 3. 2-reserved"
+	Token = "LAPIC_QUANTITY" ">" "1"
+End
+
+TOKEN
+	Name  = "LAPIC_1_SOURCE_BUS_ID"
+	Value  = "0"
+	Help  = "Identifies the bus fron which the interrupt signal comes."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "depends on system architecture"
+	Token = "LAPIC_QUANTITY" ">" "1"
+End
+
+TOKEN
+	Name  = "LAPIC_1_SOURCE_BUS_IRQ"
+	Value  = "0"
+	Help  = "Identifies the interrupt signal from the source bus. Values are mapped onto source bus signals, starting from Zero."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "depends on system architecture"
+	Token = "LAPIC_QUANTITY" ">" "1"
+End
+
+TOKEN
+	Name  = "LAPIC_1_DEST_ID"
+	Value  = "0xFF"
+	Help  = "Identifies the LAPIC to which the signal is connected. If 0FFh - the signal is connected to all local APICs."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "depends on system architecture"
+	Token = "LAPIC_QUANTITY" ">" "1"
+End
+
+TOKEN
+	Name  = "LAPIC_1_DEST_LINTIN"
+	Value  = "1"
+	Help  = "Identifies the LINTINn pin to which the signal is connected."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "depends on system architecture (Usualy 0 or 1)"
+	Token = "LAPIC_QUANTITY" ">" "1"
+End
+
+TOKEN
+	Name  = "==== Interrupt Source Override info ===="
+	Value  = "!!!DO NOT CHANGE NAMES JUST VALUES!!!"
+	Help  = "Interrupt Source Override information feeded to MADT table."
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "IO_APIC_VERSION_PARAMETER"
+	Value  = "0x21"
+	Help  = "IOAPIC/IOSAPIC revision BOUNDARY. For Intel it is should be 0x21. Clone and reasign if different"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "IRQ_00_OVERRIDE_ENABLE"
+	Value  = "1"
+	Help  = "Enables or disables PIC IRQ 00 Override entry in MADT\For most of the systems default value is ON and only entry required.\For Standard PC Systems IO APIC INT_00 is used to deliver 8259 PIC 'INTR' signal\and PIC IRQ 02 used as CASCAD INTERRUPT for Second 8259 PIC."
+	TokenType = Boolean
+	TargetH = Yes
+	Range  = "On\Off"
+End
+
+TOKEN
+	Name  = "IRQ_00_APIC_INT"
+	Value  = "2"
+	Help  = "IOAPIC INT IN number overriding PIC IRQ 00"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0..256 depends on system architecture"
+	Token = "IRQ_00_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_00_POLARITY"
+	Value  = "0"
+	Help  = "0 = Conforms to specifications of bus.\1 = Active High.\3 = Active Low."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0, 1 or 3. 2-reserved"
+	Token = "IRQ_00_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_00_TRIGGER_MODE"
+	Value  = "0"
+	Help  = "0 = Conforms to specifications of bus.\1 = Edge-triggered.\3 = Level-triggered."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0, 1 and 3. 2 - reserved."
+	Token = "IRQ_00_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_01_OVERRIDE_ENABLE"
+	Value  = "0"
+	Help  = "Enables or disables PIC IRQ 01 Override entry in MADT\For most of the systems default value is OFF.\IRQ 01 is mapped to INT_IN 01."
+	TokenType = Boolean
+	TargetH = Yes
+	Range  = "On\Off"
+End
+
+TOKEN
+	Name  = "IRQ_01_APIC_INT"
+	Value  = "1"
+	Help  = "IOAPIC INT IN number overriding PIC IRQ 01"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0..256 depends on system architecture"
+	Token = "IRQ_01_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_01_POLARITY"
+	Value  = "0"
+	Help  = "0 = Conforms to specifications of bus.\1 = Active High.\3 = Active Low."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0, 1 or 3. 2-reserved"
+	Token = "IRQ_01_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_01_TRIGGER_MODE"
+	Value  = "0"
+	Help  = "0 = Conforms to specifications of bus.\1 = Edge-triggered.\3 = Level-triggered."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0, 1 and 3. 2 - reserved."
+	Token = "IRQ_01_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_03_OVERRIDE_ENABLE"
+	Value  = "0"
+	Help  = "Enables or disables PIC IRQ 03 Override entry in MADT\For most of the systems default value is OFF.\IRQ 03 is mapped to INT_IN 03."
+	TokenType = Boolean
+	TargetH = Yes
+	Range  = "On\Off"
+End
+
+TOKEN
+	Name  = "IRQ_03_APIC_INT"
+	Value  = "3"
+	Help  = "IOAPIC INT IN number overriding PIC IRQ 03"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0..256 depends on system architecture"
+	Token = "IRQ_03_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_03_POLARITY"
+	Value  = "0"
+	Help  = "0 = Conforms to specifications of bus.\1 = Active High.\3 = Active Low."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0, 1 or 3. 2-reserved"
+	Token = "IRQ_03_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_03_TRIGGER_MODE"
+	Value  = "0"
+	Help  = "0 = Conforms to specifications of bus.\1 = Edge-triggered.\3 = Level-triggered."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0, 1 and 3. 2 - reserved."
+	Token = "IRQ_03_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_04_OVERRIDE_ENABLE"
+	Value  = "0"
+	Help  = "Enables or disables PIC IRQ 04 Override entry in MADT\For most of the systems default value is OFF.\IRQ 04 is mapped to INT_IN 04."
+	TokenType = Boolean
+	TargetH = Yes
+	Range  = "On\Off"
+End
+
+TOKEN
+	Name  = "IRQ_04_APIC_INT"
+	Value  = "4"
+	Help  = "IOAPIC INT IN number overriding PIC IRQ 04"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0..256 depends on system architecture"
+	Token = "IRQ_04_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_04_POLARITY"
+	Value  = "0"
+	Help  = "0 = Conforms to specifications of bus.\1 = Active High.\3 = Active Low."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0, 1 or 3. 2-reserved"
+	Token = "IRQ_04_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_04_TRIGGER_MODE"
+	Value  = "0"
+	Help  = "0 = Conforms to specifications of bus.\1 = Edge-triggered.\3 = Level-triggered."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0, 1 and 3. 2 - reserved."
+	Token = "IRQ_04_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_05_OVERRIDE_ENABLE"
+	Value  = "0"
+	Help  = "Enables or disables PIC IRQ 05 Override entry in MADT\For most of the systems default value is OFF.\IRQ 05 is mapped to INT_IN 05."
+	TokenType = Boolean
+	TargetH = Yes
+	Range  = "On\Off"
+End
+
+TOKEN
+	Name  = "IRQ_05_APIC_INT"
+	Value  = "5"
+	Help  = "IOAPIC INT IN number overriding PIC IRQ 05"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0..256 depends on system architecture"
+	Token = "IRQ_05_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_05_POLARITY"
+	Value  = "0"
+	Help  = "0 = Conforms to specifications of bus.\1 = Active High.\3 = Active Low."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0, 1 or 3. 2-reserved"
+	Token = "IRQ_05_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_05_TRIGGER_MODE"
+	Value  = "0"
+	Help  = "0 = Conforms to specifications of bus.\1 = Edge-triggered.\3 = Level-triggered."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0, 1 and 3. 2 - reserved."
+	Token = "IRQ_05_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_06_OVERRIDE_ENABLE"
+	Value  = "0"
+	Help  = "Enables or disables PIC IRQ 06 Override entry in MADT\For most of the systems default value is OFF.\IRQ 06 is mapped to INT_IN 06."
+	TokenType = Boolean
+	TargetH = Yes
+	Range  = "On\Off"
+End
+
+TOKEN
+	Name  = "IRQ_06_APIC_INT"
+	Value  = "6"
+	Help  = "IOAPIC INT IN number overriding PIC IRQ 06"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0..256 depends on system architecture"
+	Token = "IRQ_06_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_06_POLARITY"
+	Value  = "0"
+	Help  = "0 = Conforms to specifications of bus.\1 = Active High.\3 = Active Low."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0, 1 or 3. 2-reserved"
+	Token = "IRQ_06_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_06_TRIGGER_MODE"
+	Value  = "0"
+	Help  = "0 = Conforms to specifications of bus.\1 = Edge-triggered.\3 = Level-triggered."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0, 1 and 3. 2 - reserved."
+	Token = "IRQ_06_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_07_OVERRIDE_ENABLE"
+	Value  = "0"
+	Help  = "Enables or disables PIC IRQ 07 Override entry in MADT\For most of the systems default value is OFF.\IRQ 07 is mapped to INT_IN 07."
+	TokenType = Boolean
+	TargetH = Yes
+	Range  = "On\Off"
+End
+
+TOKEN
+	Name  = "IRQ_07_APIC_INT"
+	Value  = "7"
+	Help  = "IOAPIC INT IN number overriding PIC IRQ 07"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0..256 depends on system architecture"
+	Token = "IRQ_07_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_07_POLARITY"
+	Value  = "0"
+	Help  = "0 = Conforms to specifications of bus.\1 = Active High.\3 = Active Low."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0, 1 or 3. 2-reserved"
+	Token = "IRQ_07_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_07_TRIGGER_MODE"
+	Value  = "0"
+	Help  = "0 = Conforms to specifications of bus.\1 = Edge-triggered.\3 = Level-triggered."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0, 1 and 3. 2 - reserved."
+	Token = "IRQ_07_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_08_OVERRIDE_ENABLE"
+	Value  = "0"
+	Help  = "Enables or disables PIC IRQ 08 Override entry in MADT\For most of the systems default value is OFF.\IRQ 08 is mapped to INT_IN 08."
+	TokenType = Boolean
+	TargetH = Yes
+	Range  = "On\Off"
+End
+
+TOKEN
+	Name  = "IRQ_08_APIC_INT"
+	Value  = "8"
+	Help  = "IOAPIC INT IN number overriding PIC IRQ 08"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0..256 depends on system architecture"
+	Token = "IRQ_08_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_08_POLARITY"
+	Value  = "0"
+	Help  = "0 = Conforms to specifications of bus.\1 = Active High.\3 = Active Low."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0, 1 or 3. 2-reserved"
+	Token = "IRQ_08_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_08_TRIGGER_MODE"
+	Value  = "0"
+	Help  = "0 = Conforms to specifications of bus.\1 = Edge-triggered.\3 = Level-triggered."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0, 1 and 3. 2 - reserved."
+	Token = "IRQ_08_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_09_OVERRIDE_ENABLE"
+	Value  = "1"
+	Help  = "Enables or disables PIC IRQ 09 Override entry in MADT\For most of the systems default value is OFF.\IRQ 09 is mapped to INT_IN 09.\For INTEL chipsets this entry should be on\since Intel uses IRQ 09 LEVEL_TRIGGERED; ACTIVE_HIGH.\For all other chipsets IRQ 9 conforms to the spec."
+	TokenType = Boolean
+	TargetH = Yes
+	Range  = "On\Off"
+End
+
+TOKEN
+	Name  = "IRQ_09_APIC_INT"
+	Value  = "9"
+	Help  = "IOAPIC INT IN number overriding PIC IRQ 09"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0..256 depends on system architecture"
+	Token = "IRQ_09_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_09_POLARITY"
+	Value  = "1"
+	Help  = "0 = Conforms to specifications of bus.\1 = Active High.\3 = Active Low."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0, 1 or 3. 2-reserved"
+	Token = "IRQ_09_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_09_TRIGGER_MODE"
+	Value  = "3"
+	Help  = "0 = Conforms to specifications of bus.\1 = Edge-triggered.\3 = Level-triggered."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0, 1 and 3. 2 - reserved."
+	Token = "IRQ_09_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_10_OVERRIDE_ENABLE"
+	Value  = "0"
+	Help  = "Enables or disables PIC IRQ 10 Override entry in MADT\For most of the systems default value is OFF.\IRQ 10 is mapped to INT_IN 10."
+	TokenType = Boolean
+	TargetH = Yes
+	Range  = "On\Off"
+End
+
+TOKEN
+	Name  = "IRQ_10_APIC_INT"
+	Value  = "10"
+	Help  = "IOAPIC INT IN number overriding PIC IRQ 10"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0..256 depends on system architecture"
+	Token = "IRQ_10_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_10_POLARITY"
+	Value  = "0"
+	Help  = "0 = Conforms to specifications of bus.\1 = Active High.\3 = Active Low."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0, 1 or 3. 2-reserved"
+	Token = "IRQ_10_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_10_TRIGGER_MODE"
+	Value  = "0"
+	Help  = "0 = Conforms to specifications of bus.\1 = Edge-triggered.\3 = Level-triggered."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0, 1 and 3. 2 - reserved."
+	Token = "IRQ_10_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_11_OVERRIDE_ENABLE"
+	Value  = "0"
+	Help  = "Enables or disables PIC IRQ 11 Override entry in MADT\For most of the systems default value is OFF.\IRQ 11 is mapped to INT_IN 11."
+	TokenType = Boolean
+	TargetH = Yes
+	Range  = "On\Off"
+End
+
+TOKEN
+	Name  = "IRQ_11_APIC_INT"
+	Value  = "11"
+	Help  = "IOAPIC INT IN number overriding PIC IRQ 11"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0..256 depends on system architecture"
+	Token = "IRQ_11_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_11_POLARITY"
+	Value  = "0"
+	Help  = "0 = Conforms to specifications of bus.\1 = Active High.\3 = Active Low."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0, 1 or 3. 2-reserved"
+	Token = "IRQ_11_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_11_TRIGGER_MODE"
+	Value  = "0"
+	Help  = "0 = Conforms to specifications of bus.\1 = Edge-triggered.\3 = Level-triggered."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0, 1 and 3. 2 - reserved."
+	Token = "IRQ_11_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_12_OVERRIDE_ENABLE"
+	Value  = "0"
+	Help  = "Enables or disables PIC IRQ 12 Override entry in MADT\For most of the systems default value is OFF.\IRQ 12 is mapped to INT_IN 12."
+	TokenType = Boolean
+	TargetH = Yes
+	Range  = "On\Off"
+End
+
+TOKEN
+	Name  = "IRQ_12_APIC_INT"
+	Value  = "12"
+	Help  = "IOAPIC INT IN number overriding PIC IRQ 12"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0..256 depends on system architecture"
+	Token = "IRQ_12_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_12_POLARITY"
+	Value  = "0"
+	Help  = "0 = Conforms to specifications of bus.\1 = Active High.\3 = Active Low."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0, 1 or 3. 2-reserved"
+	Token = "IRQ_12_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_12_TRIGGER_MODE"
+	Value  = "0"
+	Help  = "0 = Conforms to specifications of bus.\1 = Edge-triggered.\3 = Level-triggered."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0, 1 and 3. 2 - reserved."
+	Token = "IRQ_12_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_13_OVERRIDE_ENABLE"
+	Value  = "0"
+	Help  = "Enables or disables PIC IRQ 13 Override entry in MADT\For most of the systems default value is OFF.\IRQ 13 is mapped to INT_IN 13."
+	TokenType = Boolean
+	TargetH = Yes
+	Range  = "On\Off"
+End
+
+TOKEN
+	Name  = "IRQ_13_APIC_INT"
+	Value  = "13"
+	Help  = "IOAPIC INT IN number overriding PIC IRQ 13"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0..256 depends on system architecture"
+	Token = "IRQ_13_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_13_POLARITY"
+	Value  = "0"
+	Help  = "0 = Conforms to specifications of bus.\1 = Active High.\3 = Active Low."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0, 1 or 3. 2-reserved"
+	Token = "IRQ_13_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_13_TRIGGER_MODE"
+	Value  = "0"
+	Help  = "0 = Conforms to specifications of bus.\1 = Edge-triggered.\3 = Level-triggered."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0, 1 and 3. 2 - reserved."
+	Token = "IRQ_13_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_14_OVERRIDE_ENABLE"
+	Value  = "0"
+	Help  = "Enables or disables PIC IRQ 14 Override entry in MADT\For most of the systems default value is OFF.\IRQ 14 is mapped to INT_IN 14."
+	TokenType = Boolean
+	TargetH = Yes
+	Range  = "On\Off"
+End
+
+TOKEN
+	Name  = "IRQ_14_APIC_INT"
+	Value  = "14"
+	Help  = "IOAPIC INT IN number overriding PIC IRQ 14"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0..256 depends on system architecture"
+	Token = "IRQ_14_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_14_POLARITY"
+	Value  = "0"
+	Help  = "0 = Conforms to specifications of bus.\1 = Active High.\3 = Active Low."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0, 1 or 3. 2-reserved"
+	Token = "IRQ_14_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_14_TRIGGER_MODE"
+	Value  = "0"
+	Help  = "0 = Conforms to specifications of bus.\1 = Edge-triggered.\3 = Level-triggered."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0, 1 and 3. 2 - reserved."
+	Token = "IRQ_14_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_15_OVERRIDE_ENABLE"
+	Value  = "0"
+	Help  = "Enables or disables PIC IRQ 15 Override entry in MADT\For most of the systems default value is OFF.\IRQ 15 is mapped to INT_IN 15."
+	TokenType = Boolean
+	TargetH = Yes
+	Range  = "On\Off"
+End
+
+TOKEN
+	Name  = "IRQ_15_APIC_INT"
+	Value  = "15"
+	Help  = "IOAPIC INT IN number overriding PIC IRQ 15"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0..256 depends on system architecture"
+	Token = "IRQ_15_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_15_POLARITY"
+	Value  = "0"
+	Help  = "0 = Conforms to specifications of bus.\1 = Active High.\3 = Active Low."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0, 1 or 3. 2-reserved"
+	Token = "IRQ_15_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "IRQ_15_TRIGGER_MODE"
+	Value  = "0"
+	Help  = "0 = Conforms to specifications of bus.\1 = Edge-triggered.\3 = Level-triggered."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0, 1 and 3. 2 - reserved."
+	Token = "IRQ_15_OVERRIDE_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "====== APIC Properties ================="
+	Value  = "!!!DO NOT CHANGE NAMES JUST VALUES!!!"
+	Help  = "Specfy some IO/APIC faetures ."
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "FEC00000_APIC_AUTODETECT"
+	Value  = "1"
+	Help  = "This will Auto Detect IO/APIC(s) which resides in MMIO region from 0xFEC0_0000  to 0xFED0_0000-1.\\ If set to 'off' ACPI initialization software will assume - system has one IO/APIC\with address provided in 'APCB' token."
+	TokenType = Boolean
+	TargetH = Yes
+	Range  = "On - Off"
+End
+
+TOKEN
+	Name  = "PCI_BUS_APIC_AUTODETECT"
+	Value  = "0"
+	Help  = "This token is used to enable ACPI initialization software feature which will look for IO/APIC devices on the PCI bus.\\If set to 'off' ACPI initialization software will assume - system has one IO/APIC\with address provided in 'APCB' token."
+	TokenType = Boolean
+	TargetH = Yes
+	Range  = "On - Off"
+End
+
+TOKEN
+	Name  = "PCI_BUS_APIC_LEAVE_ENABLE"
+	Value  = "1"
+	Help  = "Tells ACPI Driver not to restore previous state (it might be DISABLED) of IOAPICs discovered on PCI Bus."
+	TokenType = Boolean
+	TargetH = Yes
+	Range  = "On - Off"
+	Token = "PCI_BUS_APIC_AUTODETECT" "=" "1"
+End
+
+TOKEN
+	Name  = "USE_BOARD_INFO_APIC_DATA"
+	Value  = "0"
+	Help  = "Force BIOS to use IOAPIC SDL data structures in order collect IOAPIC information."
+	TokenType = Boolean
+	TargetH = Yes
+	Range  = "On - Off"
+	Token = "AmiBoardInfo_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "SW_SMI_S4BIOS"
+	Value  = "0"
+	Help  = "Value to write to the SMI CMD register to enter \BIOS S4 state.\NOTE: Currently not implemented"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0-0xff 0 = not supported"
+End
+
+TOKEN
+	Name  = "ACPI_RSDT_TABLE_NUM"
+	Value  = "0x10"
+	Help  = "number of max entryes in RSDT"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "2-256"
+End
+
+TOKEN
+	Name  = "ACPI_INT_MODEL"
+	Value  = "1"
+	Help  = "Interrupt Model for the ACPI system"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0=Dual PIC; 1=Mult APIC; 2=Mult SAPIC "
+End
+
+TOKEN
+	Name  = "ACPI_APIC_FLAGS"
+	Value  = "1"
+	Help  = "Firmware control structure flags. See Table 5-12 for a description of this field.(ACPI 2.0 SPEC)."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0 = System has only APIC; 1 = System also has a PC-ATcompatible dual-PIC 8259; all other bits reserved an must be 0"
+End
+
+TOKEN
+	Name  = "ACPI_PM_PROFILE"
+	Value  = "3"
+	Help  = "Power Management Profile ACPI 2.0\See acpi20.h"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0-8 0 = Unspecified; 1 = Desktop; 2 = Modile; 3 = Workstation; 4 = Enterprise Server; 5 = SOHO Server; 6 = Application PC; 7 = Performance Server; 8 = Tablet"
+	Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+	Name  = "ACPI_IA_BOOT_ARCH"
+	Value  = "0003h"
+	Help  = "IA Boot Architecture\this token may be 'ored' see renge field for details"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "1 - IA_LEGACY; 2 - IA_8042; 4 - VGA Not Present; 8 - MSI Not Supported; 10h - PCIe ASPM Controls, 20h - CMOS RTC Not Present"
+	Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+	Token = "ATAD_SUPPORT" "=" "0"
+End
+
+TOKEN
+	Name  = "ACPI_IA_BOOT_ARCH"
+	Value  = "0023h"
+	Help  = "IA Boot Architecture\this token may be 'ored' see renge field for details"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "1 - IA_LEGACY; 2 - IA_8042; 4 - VGA Not Present; 8 - MSI Not Supported; 10h - PCIe ASPM Controls, 20h - CMOS RTC Not Present"
+	Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+	Token = "ATAD_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "P_LVL2_LAT_VAL"
+	Value  = "0065h"
+	Help  = "Worst case Latency for enter C2"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0-0xff"
+End
+
+TOKEN
+	Name  = "P_LVL3_LAT_VAL"
+	Value  = "03E9h"
+	Help  = "Worst case Latency for enter C3"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0-0xff"
+End
+
+TOKEN
+	Name  = "FLUSH_SIZE_VAL"
+	Value  = "400h"
+	Help  = "If WBINVD=0, the value of this field is the number of flush strides that need to be read (using cacheable addresses) to\completely flush dirty lines from any processor’s memory caches.\Notice that the value in FLUSH_STRIDE is typically the smallest cache line width on any of the\processor’s caches (for more information, ACPI SPEC)."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0-0xffff"
+End
+
+TOKEN
+	Name  = "FLUSH_STRIDE_VAL"
+	Value  = "10h"
+	Help  = "If WBINVD=0, the value of this field is the cache line width, in bytes, of the processor’s memory caches. This\value is typically the smallest cache line width on any of the processor’s caches. For more information, see the\description of the FLUSH_SIZE field. (for more information, ACPI SPEC)."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0-0xffff"
+End
+
+TOKEN
+	Name  = "DUTY_OFFSET_VAL"
+	Value  = "1"
+	Help  = "The zero-based index of where the processor’s duty cycle setting is within the processor’s P_CNT register.\(for more information, ACPI SPEC)."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0-0xf0"
+End
+
+TOKEN
+	Name  = "DUTY_WIDTH_VAL"
+	Value  = "3"
+	Help  = "The bit width of the processor’s duty cycle setting value in the P_CNT register. Each processor’s duty cycle setting\allows the software to select a nominal processor frequency below its absolute frequency.\(for more information, ACPI SPEC)."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0-0xff: depends on 'duty_offset'"
+End
+
+TOKEN
+	Name  = "FACS_FLAG_S4BIOS"
+	Value  = "0"
+	Help  = "Firmware control S4BIOS_F flags. See Table 5-12 for a description of this field.(ACPI 2.0 SPEC)."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0 = OS will do S4; 1 = BIOS will do S4"
+End
+
+TOKEN
+	Name  = "FACS_FLAG_64BIT_WAKE_SUPPORTED"
+	Value  = "0"
+	Help  = "Firmware control F64BIT_WAKE_SUPPORTED_F flags. See Table 5-13 for a description of this field.(ACPI 4.0 SPEC)."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "1 = platform firmware supports a 64 bit execution environment for the waking vector; 0 = Otherwise"
+End
+
+TOKEN
+	Name  = "ASSB"
+	Value  = "0"
+	Help  = "ACPI Sleep State Buffer for BIOS Usage."
+	TokenType = Integer
+	TargetASL = Yes
+End
+
+TOKEN
+	Name  = "AOTB"
+	Value  = "0"
+	Help  = "ACPI OS Type Buffer for BIOS Usage."
+	TokenType = Integer
+	TargetASL = Yes
+End
+
+TOKEN
+	Name  = "AAXB"
+	Value  = "0"
+	Help  = "ACPI Auxiliary Buffer for BIOS Usage."
+	TokenType = Integer
+	TargetASL = Yes
+End
+
+TOKEN
+	Name  = "DEFAULT_SS4"
+	Value  = "$(A_S4)"
+	Help  = "Default Value for ACPI Setup S4."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "DEFAULT_ACPI_LOCK_LEGACY_DEV"
+	Value  = "0"
+	Help  = "Default Value for ACPI Lock Legacy Resources."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "DEFAULT_SS3"
+	Value  = "$(A_S3)"
+	Help  = "Default Value for ACPI Setup S3."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "DEFAULT_SS2"
+	Value  = "$(A_S2)"
+	Help  = "Default Value for ACPI Setup S2."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "DEFAULT_SS1"
+	Value  = "$(A_S1)"
+	Help  = "Default Value for ACPI Setup S1."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "DEFAULT_AUTO_ACPI"
+	Value  = "0"
+	Help  = "Default Value for ACPI Auto Config."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PEHP"
+	Value  = "$(PCI_EXPRESS_SUPPORT)"
+	Help  = "_OSC: Pci Express Native Hot Plug Control"
+	TokenType = Integer
+	Token = "INTEL_ARCHITECTURE_SUPPORT" "=" "1"
+	TargetASL = Yes
+End
+
+TOKEN
+	Name  = "PEHP"
+	Value  = "0"
+	Help  = "_OSC: Pci Express Native Hot Plug Control"
+	TokenType = Integer
+	Token = "INTEL_ARCHITECTURE_SUPPORT" "=" "0"
+	TargetASL = Yes
+End
+
+TOKEN
+	Name  = "SHPC"
+	Value  = "$(HOTPLUG_SUPPORT)"
+	Help  = "_OSC: Standard Hot Plug Controller (SHPC) Native Hot Plug control"
+	TokenType = Integer
+	Token = "INTEL_ARCHITECTURE_SUPPORT" "=" "1"
+	TargetASL = Yes
+End
+
+TOKEN
+	Name  = "SHPC"
+	Value  = "0"
+	Help  = "_OSC: Standard Hot Plug Controller (SHPC) Native Hot Plug control"
+	TokenType = Integer
+	Token = "INTEL_ARCHITECTURE_SUPPORT" "=" "0"
+	TargetASL = Yes
+End
+
+TOKEN
+	Name  = "PEPM"
+	Value  = "$(PEHP)"
+	Help  = "_OSC: Pci Express Native Power Management Events control"
+	TokenType = Integer
+	TargetASL = Yes
+End
+
+TOKEN
+	Name  = "PEER"
+	Value  = "$(PEHP)"
+	Help  = "_OSC: Pci Express Advanced Error Reporting control"
+	TokenType = Integer
+	TargetASL = Yes
+End
+
+TOKEN
+	Name  = "PECS"
+	Value  = "$(PEHP)"
+	Help  = "_OSC: Pci Express Capability Structure control"
+	TokenType = Integer
+	TargetASL = Yes
+End
+
+TOKEN
+	Name  = "S3_VIDEO_REPOST_SUPPORT"
+	Value  = "0"
+	Help  = "Switch to enable/disable S3 video repost support."
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "CSM_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "LOCK_LEGACY_RES_SETUP_ENABLE"
+	Value  = "1"
+	Help  = "Switch to enable/disable Lock Legacy Resources Setup question."
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "INTEL_ARCHITECTURE_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "======FACP Fixed Feature Flags"
+	Value  = "Fixed Feature Flags Starts Here"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "FACP_FLAG_WBINVD"
+	Value  = "1"
+	Help  = "Processor properly implements a functional \equivalent to the WBINVD IA-32 instruction.\If set, signifies that the WBINVD instruction \correctly flushes the processor caches, maintains \memory coherency, and upon completion of the \instruction, all caches for the current processor \contain no cached data other than what OSPM \references and allows to be cached. If this flag is \not set, the ACPI OS is responsible for disabling \all ACPI features that need this function. This field \is maintained for ACPI 1.0 processor compatibility \on existing systems. Processors in new ACPI-\compatible systems are required to support this \function and indicate this to OSPM by setting this \field."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FACP_FLAG_WBINVD_FLUSH"
+	Value  = "0"
+	Help  = "If set, indicates that the hardware flushes all \caches on the WBINVD instruction and maintains \memory coherency, but does not guarantee the \caches are invalidated. This provides the complete \semantics of the WBINVD instruction, and \provides enough to support the system sleeping \states. If neither of the WBINVD flags is set, the \system will require FLUSH_SIZE and \FLUSH_STRIDE to support sleeping states. If the \FLUSH parameters are also not supported, the \machine cannot support sleeping states S1, S2, \or S3."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FACP_FLAG_PROC_C1"
+	Value  = "1"
+	Help  = "If ON - indicates that the C1 power state is \supported on all processors."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FACP_FLAG_P_LVL2_UP"
+	Value  = "0"
+	Help  = "A zero indicates that the C2 power state is \configured to only work on a uniprocessor (UP) \system. A one indicates that the C2 power state \is configured to work on a UP or multiprocessor \(MP) system."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FACP_FLAG_PWR_BUTTON"
+	Value  = "0"
+	Help  = "A zero indicates the power button is handled as a \fixed feature programming model; a one indicates \the power button is handled as a control method \device. If the system does not have a power \button, this value would be ??and no sleep \button device would be present.\Independent of the value of this field, the \presence of a power button device in the \namespace indicates to OSPM that the power \button is handled as a control method device."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FACP_FLAG_SLP_BUTTON"
+	Value  = "1"
+	Help  = "A zero indicates the sleep button is handled as a \fixed feature programming model; a one indicates \the sleep button is handled as a control method \device.\If the system does not have a sleep button, this \value would be ??and no sleep button device \would be present.\Independent of the value of this field, the presence \of a sleep button device in the namespace \indicates to OSPM that the sleep button is \handled as a control method device."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FACP_FLAG_FIX_RTC"
+	Value  = "0"
+	Help  = "A zero indicates the RTC wake status is supported \in fixed register space; a one indicates the RTC \wake status is not supported in fixed register space."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FACP_FLAG_RTC_S4"
+	Value  = "1"
+	Help  = "Indicates whether the RTC alarm function can \wake the system from the S4 state. The RTC \must be able to wake the system from an S1, S2, \or S3 sleep state. The RTC alarm can optionally \support waking the system from the S4 state, as \indicated by this value."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FACP_FLAG_TMR_VAL_EXT"
+	Value  = "0"
+	Help  = "A zero indicates TMR_VAL is implemented as a \24-bit value. A one indicates TMR_VAL is \implemented as a 32-bit value. The TMR_STS \bit is set when the most significant bit of the \TMR_VAL toggles."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FACP_FLAG_DCK_CAP"
+	Value  = "0"
+	Help  = "A zero indicates that the system cannot support \docking. A one indicates that the system can \support docking. Notice that this flag does not \indicate whether or not a docking station is \currently present; it only indicates that the system \is capable of docking."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FACP_FLAG_RESET_REG_SUP"
+	Value  = "1"
+	Help  = "If set, indicates the system supports system reset \via the FADT RESET_REG"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FACP_FLAG_SEALED_CASE"
+	Value  = "0"
+	Help  = "System Type Attribute. If set indicates that the \system has no internal expansion capabilities \and the case is sealed."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FACP_FLAG_HEADLESS"
+	Value  = "0"
+	Help  = "System Type Attribute. If set indicates the system \cannot detect the monitor or keyboard / mouse \devices."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FACP_FLAG_CPU_SW_SLP"
+	Value  = "0"
+	Help  = "If set, indicates to OSPM that a processor native \instruction must be executed after writing the \SLP_TYPx register."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FACP_FLAG_PCI_EXP_WAK"
+	Value  = "0"
+	Help  = "If set, indicates the platform supports the \PCIEXP_WAKE_STS bit in the PM1 Status \register and the PCIEXP_WAKE_EN bit in \the PM1 Enable register."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FACP_FLAG_USE_PLATFORM_CLOCK"
+	Value  = "$(HPET_SUPPORT) "
+	Help  = "A value of one indicates that OSPM should use a platform\provided timer to drive any monotonically non-decreasing\counters, such as OSPM performance counter services. Which\particular platform timer will be used is OSPM specific, however,\it is recommended that the timer used is based on the following\algorithm: If the HPET is exposed to OSPM, OSPM should use\the HPET. Otherwise, OSPM will use the ACPI power\management timer. A value of one indicates that the platform is\known to have a correctly implemented ACPI power management\timer.\A platform may choose to set this flag if a internal processor clock\(or clocks in a multi-processor configuration) cannot provide\consistent monotonically non-decreasing counters.\Note: If a value of zero is present, OSPM may arbitrarily choose to\use an internal processor clock or a platform timer clock for these\operations. That is, a zero does not imply that OSPM will\necessarily use the internal processor clock to generate a\monotonically non-decreasing counter to the system.\\Note:\If system supports HPET put here $(HPET_SUPPORT) token value.\"
+	TokenType = Integer
+	Token = "INTEL_ARCHITECTURE_SUPPORT" "=" "1"
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FACP_FLAG_USE_PLATFORM_CLOCK"
+	Value  = "0"
+	Help  = "A value of one indicates that OSPM should use a platform\provided timer to drive any monotonically non-decreasing\counters, such as OSPM performance counter services. Which\particular platform timer will be used is OSPM specific, however,\it is recommended that the timer used is based on the following\algorithm: If the HPET is exposed to OSPM, OSPM should use\the HPET. Otherwise, OSPM will use the ACPI power\management timer. A value of one indicates that the platform is\known to have a correctly implemented ACPI power management\timer.\A platform may choose to set this flag if a internal processor clock\(or clocks in a multi-processor configuration) cannot provide\consistent monotonically non-decreasing counters.\Note: If a value of zero is present, OSPM may arbitrarily choose to\use an internal processor clock or a platform timer clock for these\operations. That is, a zero does not imply that OSPM will\necessarily use the internal processor clock to generate a\monotonically non-decreasing counter to the system.\\Note:\If system supports HPET put here $(HPET_SUPPORT) token value.\"
+	TokenType = Integer
+	Token = "INTEL_ARCHITECTURE_SUPPORT" "=" "0"
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FACP_FLAG_S4_RTC_STS_VALID"
+	Value  = "$(S4_WAKE_FROM_RTC_SUPPORTED)"
+	Help  = "A one indicates that the contents of the RTC_STS flag is valid when waking the system from S4.\See PM1 Status Registers Fixed Hardware Feature Status Bits for more information.\Some existing systems do not reliably set this input today, and this bit allows OSPM\to differentiate correctly functioning platforms from platforms with this errata."
+	TokenType = Integer
+	Token = "INTEL_ARCHITECTURE_SUPPORT" "=" "1"
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FACP_FLAG_S4_RTC_STS_VALID"
+	Value  = "0"
+	Help  = "A one indicates that the contents of the RTC_STS flag is valid when waking the system from S4.\See PM1 Status Registers Fixed Hardware Feature Status Bits for more information.\Some existing systems do not reliably set this input today, and this bit allows OSPM\to differentiate correctly functioning platforms from platforms with this errata."
+	TokenType = Integer
+	Token = "INTEL_ARCHITECTURE_SUPPORT" "=" "0"
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FACP_FLAG_REMOTE_POWER_ON_CAPABLE"
+	Value  = "$(REMOTE_POWER_ON_SUPPORTED)"
+	Help  = "A one indicates that the platform is compatible with remote power on.\That is, the platform supports OSPM leaving GPE wake events armed prior to an S5 transition.\Some existing platforms do not reliably transition to S5 with wake events enabled\(for example, the platform may immediately generate a spurious wake event after completing the S5 transition).\This flag allows OSPM to differentiate correctly functioning platforms from platforms with this type of errata."
+	TokenType = Integer
+	Token = "INTEL_ARCHITECTURE_SUPPORT" "=" "1"
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FACP_FLAG_REMOTE_POWER_ON_CAPABLE"
+	Value  = "0"
+	Help  = "A one indicates that the platform is compatible with remote power on.\That is, the platform supports OSPM leaving GPE wake events armed prior to an S5 transition.\Some existing platforms do not reliably transition to S5 with wake events enabled\(for example, the platform may immediately generate a spurious wake event after completing the S5 transition).\This flag allows OSPM to differentiate correctly functioning platforms from platforms with this type of errata."
+	TokenType = Integer
+	Token = "INTEL_ARCHITECTURE_SUPPORT" "=" "0"
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FACP_FLAG_FORCE_APIC_CLUSTER_MODEL"
+	Value  = "0"
+	Help  = "A one indicates that all local APICs must be \configured for the cluster destination model when \delivering interrupts in logical mode.\If this bit is set, then logical mode interrupt delivery \operation may be undefined until OSPM has moved \all local APICs to the cluster model.\Note that the cluster destination model doesn’t \apply to Itanium processor local SAPICs. This bit is \intended for xAPIC based machines that require \the cluster destination model even when 8 or \fewer local APICs are present in the machine."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FACP_FLAG_FORCE_APIC_PHYSICAL_DESTINATION_MODE"
+	Value  = "0"
+	Help  = "A one indicates that all local xAPICs must be \configured for physical destination mode. If this \bit is set, interrupt delivery operation in logical \destination mode is undefined. On machines that \contain fewer than 8 local xAPICs or that do not \use the xAPIC architecture, this bit is ignored."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "HW_REDUCED_ACPI"
+	Value  = "0"
+	Help  = "A one indicates that the ACPI Hardware Interface \is not implemented. Software-only alternatives \are used for supported fixed-features."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "LOW_POWER_S0_IDLE_CAPABLE"
+	Value  = "0"
+	Help  = "A one informs OSPM that the platform is able to \achieve power savings in S0 similar to or better \than those typically achieved in S3. In effect, when \this bit is set it indicates that the system will \achieve no power benefit by making a sleep transition to S3."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "=====End of FACP Fixed Featured Flags"
+	Value  = "Fixed Featured Flags Ends here"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "ARM_FACP_BUILD"
+	Value  = "1"
+	Help  = "Main Token to enable built in creation of Fixed ACPI Description Table for ARM."
+	TokenType = Boolean
+	Token = "INTEL_ARCHITECTURE_SUPPORT" "=" "0"
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "GTDT_BUILD"
+	Value  = "1"
+	Help  = "Main Token to enable built in creation of Generic Timer Description Table for ARM."
+	TokenType = Boolean
+	Token = "INTEL_ARCHITECTURE_SUPPORT" "=" "0"
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "GTDT_BUILD"
+	Value  = "0"
+	Help  = "Main Token to enable built in creation of Generic Timer Description Table for ARM."
+	TokenType = Boolean
+	Token = "INTEL_ARCHITECTURE_SUPPORT" "=" "1"
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "GTDT_PHYSICAL_ADDRESS"
+	Value  = "0x2FAF080"
+	Help  = "The 64-bit physical address at which the counter block is located."
+	TokenType = Integer
+	Token = "GTDT_BUILD" "=" "1"
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "GTDT_GLOBAL_FLAGS"
+	Value  = "0x0"
+	Help  = "GTDT Global flags: Bit0 - 1: memory mapped block is present 0: memory mapped block is not present; Bit1 - Interrupt Mode: 1:Edge, 0:Level."
+	TokenType = Integer
+	Token = "GTDT_BUILD" "=" "1"
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "GTDT_SECURE_PL1_TIMER_GSIV"
+	Value  = "0x0"
+	Help  = "GSIV for the secure PL1 physical timer interrupt."
+	TokenType = Integer
+	Token = "GTDT_BUILD" "=" "1"
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "GTDT_SECURE_PL1_TIMER_FLAGS"
+	Value  = "0x0"
+	Help  = "Secure PL1 timer Flags. Bit0 - Timer interrupt Mode: 1 Interrupt is Edge triggered, 0 Interrupt is Level triggered; Bit1 - Timer Interrupt polarity: 1 Interrupt is Active low, 0 Interrupt is Active high. "
+	TokenType = Integer
+	Token = "GTDT_BUILD" "=" "1"
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "GTDT_NON_SECURE_PL1_TIMER_GSIV"
+	Value  = "0x000D"
+	Help  = "GSIV for the non-secure PL1 timer physical timer interrupt."
+	TokenType = Integer
+	Token = "GTDT_BUILD" "=" "1"
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "GTDT_NON_SECURE_PL1_TIMER_FLAGS"
+	Value  = "0x0000"
+	Help  = "Non secure PL1 timer Flags. Bit0 - Timer interrupt Mode: 1 Interrupt is Edge triggered, 0 Interrupt is Level triggered; Bit1 - Timer Interrupt polarity: 1 Interrupt is Active low, 0 Interrupt is Active high. "
+	TokenType = Integer
+	Token = "GTDT_BUILD" "=" "1"
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "GTDT_VIRTUAL_TIMER_GSIV"
+	Value  = "0x001E"
+	Help  = "GSIV for the non-secure virtual timer interrupt."
+	TokenType = Integer
+	Token = "GTDT_BUILD" "=" "1"
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "GTDT_VIRTUAL_TIMER_FLAGS"
+	Value  = "0x0000"
+	Help  = "Virtual timer Flags. Bit0 - Timer interrupt Mode: 1 Interrupt is Edge triggered, 0 Interrupt is Level triggered; Bit1 - Timer Interrupt polarity: 1 Interrupt is Active low, 0 Interrupt is Active high. "
+	TokenType = Integer
+	Token = "GTDT_BUILD" "=" "1"
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "GTDT_NON_SECURE_PL2_TIMER_GSIV"
+	Value  = "0x0000"
+	Help  = "GSIV for the non-secure PL2 timer physical timer interrupt."
+	TokenType = Integer
+	Token = "GTDT_BUILD" "=" "1"
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "GTDT_NON_SECURE_PL2_TIMER_FLAGS"
+	Value  = "0x0000"
+	Help  = "Flags for the Non-Secure PL2 physical timer. Bit0 - Timer interrupt Mode: 1 Interrupt is Edge triggered, 0 Interrupt is Level triggered; Bit1 - Timer Interrupt polarity: 1 Interrupt is Active low, 0 Interrupt is Active high. "
+	TokenType = Integer
+	Token = "GTDT_BUILD" "=" "1"
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "ARM_MADT_BUILD"
+	Value  = "1"
+	Help  = "Main Token to enable built in creation of Generic Timer Description Table for ARM."
+	TokenType = Boolean
+	Token = "INTEL_ARCHITECTURE_SUPPORT" "=" "0"
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "ARM_MADT_BUILD"
+	Value  = "0"
+	Help  = "Main Token to enable built in creation of Generic Timer Description Table for ARM."
+	TokenType = Boolean
+	Token = "INTEL_ARCHITECTURE_SUPPORT" "=" "1"
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "ARM_MADT_GIC_FLAGS"
+	Value  = "0x0001"
+	Help  = "GIC Flags. Bit0 - Enabled: If zero, this processor is unusable, and the operating system support will not attempt to use it; Bit1 - Performance Interrupt Mode: 0 - Level-triggered, 1 - Edge-Triggered."
+	TokenType = Integer
+	Token = "ARM_MADT_BUILD" "=" "1"
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "ARM_MADT_GIC_DISTR_ID"
+	Value  = "0x0200143B"
+	Help  = "This GIC Distributor’s hardware ID."
+	TokenType = Integer
+	Token = "ARM_MADT_BUILD" "=" "1"
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "MPS_TABLE_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable MPS V 1.4 Table support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "CSM_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "MP_TABLE_LEGACY_REGION_LOCATION"
+	Value  = "1"
+	Help  = "if set to 1 MPS table will reside in F0000 \segment, otherwise it will be above 1MB"
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "MPS_TABLE_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "MP_TBL_TMP_BUFFER_SIZE"
+	Value  = "4096"
+	Help  = "Size of the Scratch Pad Buffer used to build MP Tables.\Usually 4K(4096 bytes) it enough in most cases.\ BUT for the Systems with more than 16 CPU and complicated BUS and IOAPICs infrastructure it is recommended to set it to 8K (8192 bytes)."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "ACPI_THUNK_REAL_MODE_SEGMENT"
+	Value  = "0x1000"
+	Help  = "Segment of where ACPI thunk will be copied to."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "ACPI_THUNK_STACK_TOP"
+	Value  = "0x1000"
+	Help  = "Offset of top of stack in ACPI THUNK."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "ITKE"
+	Value  = "0"
+	Help  = "This will be overridden by the ITK module."
+	TokenType = Integer
+	TargetASL = Yes
+End
+
+TOKEN
+	Name  = "MBEC"
+	Value  = "0xFFFF"
+	Help  = "EC presence (0) or abssence (0xFFFF) in system. EC declare I/O port \ 62/66, also declared as MotherBoard Resources in rmisc.asl,\ as EC's resource. To avoid conflicts redefine \ to 0 in EC mopdule, if present"
+	TokenType = Integer
+	TargetASL = Yes
+End
+
+TOKEN
+	Name  = "IFDEF_ASL_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable the #IF statement in the ASL file."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+	Range  = "0 - 1"
+End
+
+TOKEN
+	Name  = "ASLEXPANDER"
+	Value  = "ASLExpander.exe"
+	TokenType = Expression
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "DSDT_FILE"
+	Value  = "$(ACPI_BOARD_DIR)/DsdtAsl.asl"
+	Help  = "File name and path to include in DsdtAsl.inf"
+	TokenType = Expression
+End
+
+PATH
+	Name  = "ACPI_BOARD_DIR"
+	Path  = "AmiModulePkg/ACPI"
+End
+
+ELINK
+	Name  = "$(ACPI_BOARD_DIR)/ACPI.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	Priority  = 5
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(ACPI_BOARD_DIR)/ACPI.uni"
+	Parent  = "SetupStringFiles"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "OemUpdateHeader"
+	Help  = "Parent for OEM routines called before any table is created or submitted"
+	InvokeOrder = ReplaceParent
+End
+
+OUTPUTREGISTER
+	Name  = "TOKEN_ASL"
+	Path  = "Build"
+	File  = "Token.asl"
+End
+
+OUTPUTREGISTER
+	Name  = "TOKEN_ASLH"
+	Path  = "Build"
+	File  = "TokenAsl.h"
+	Token = "IFDEF_ASL_SUPPORT" "=" "1"
+End
+
+OUTPUTREGISTER
+	Name  = "APTIO_V_DSDT"
+	Path  = "Build/"
+	File  = "DSDT.ASL"
+End
+
+OUTPUTREGISTER
+	Name  = "APTIO_V_PCI_TREE_ASL"
+	Path  = "Build"
+	File  = "PCI_TREE.ASL"
+End
+
+OUTPUTREGISTER
+	Name  = "APTIO_V_IRQ_ROUTING"
+	Path  = "Build/"
+	File  = "IRQROUT.ASL"
+End
+
+OUTPUTREGISTER
+	Name  = "ACPI_ELINKS_H"
+	Path  = "Build"
+	File  = "AcpiOemElinks.h"
+	Template  = "AcpiElinkTempl.txt"
+End
+
+INFComponent
+	Name  = "ACPI"
+	File  = "ACPI.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "DXE_DRIVER"
+End
+
+INFComponent
+	Name  = "DsdtAsl"
+	File  = "DsdtAsl.inf"
+	Package  = "AmiModulePkg"
+	PreProcess = Yes
+	ModuleTypes  = "USER_DEFINED"
+	Token = "DSDT_BUILD" "=" "1"
+End
+
+ELINK
+	Name  = "ADT_List"
+	Help  = "List of Acpi Tables Binaries"
+	InvokeOrder = ReplaceParent
+End
+#Usage Example
+#ELINK 
+#	Name  = '../AmiModulePkg/ACPI/AcpiAdt/Gtdt.adt'
+#	Parent  = "ADT_List"
+#	InvokeOrder = AfterParent
+#End
+ELINK
+	Name  = "DSDT_Packages_List"
+	Help  = "List of Packages, that will go into Packages section of DsdtAsl.inf"
+	InvokeOrder = ReplaceParent
+End
+#Usage Example
+#ELINK 
+#	Name  = 'MdePkg/MdePkg.dec'
+#	Parent  = "DSDT_Packages_List"
+#	InvokeOrder = AfterParent
+#End
+
+ELINK
+	Name  = "DSDT_LibraryClasses_List"
+	Help  = "List of LibraryClasses, that will go into LibraryClasses section of DsdtAsl.inf"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "DSDT_Pcd_List"
+	Help  = "List of Pcds, that will go into Pcd section of DsdtAsl.inf"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "DSDT_Protocols_List"
+	Help  = "List of Protocols, that will go into Protocols section of DsdtAsl.inf"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "DSDT_PPIs_List"
+	Help  = "List of PPIs, that will go into PPIs section of DsdtAsl.inf"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "DSDT_Guids_List"
+	Help  = "List of Guids, that will go into Guids section of DsdtAsl.inf"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "DSDT_Depex_List"
+	Help  = "List of Depex, that will go into Depex section of DsdtAsl.inf"
+	InvokeOrder = ReplaceParent
+End
+
+INFComponent
+	Name  = "AcpiAtd"
+	File  = "AcpiTables.inf"
+	Package  = "AmiModulePkg"
+	PreProcess = Yes
+	ModuleTypes  = "USER_DEFINED"
+End
+
+INFComponent
+	Name  = "BaseAcpiLib"
+	File  = "AcpiLib.inf"
+	Package  = "AmiModulePkg"
+End
+
+INFComponent
+	Name  = "TimeAndAlarmSmi"
+	File  = "TimeAndAlarmSmi.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "ATAD_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "AmiAcpiLib"
+	Instance  = "AmiModulePkg.BaseAcpiLib"
+	ModuleTypes  = "DXE_DRIVER DXE_RUNTIME_DRIVER UEFI_APPLICATION UEFI_DRIVER"
+End
+
+PcdMapping
+    Name  = "PcdAcpiDefaultOemId"
+    GuidSpace  = "gEfiMdeModulePkgTokenSpaceGuid"
+    PcdType  = "PcdsDynamicDefault"
+    Value  = '"$(T_ACPI_OEM_ID)"'   #"ALASKA"
+    Arch  = "common"
+    Offset  = 00h
+    Length  = 00h
+    TargetDSC = Yes
+End
+
+PcdMapping
+    Name  = "PcdAcpiDefaultOemTableId"
+    GuidSpace  = "gEfiMdeModulePkgTokenSpaceGuid"
+    PcdType  = "PcdsDynamicDefault"
+    Value  = "0x2049204D2041"   #"A M I "
+    Arch  = "common"
+    Offset  = 00h
+    Length  = 00h
+    TargetDSC = Yes
+End

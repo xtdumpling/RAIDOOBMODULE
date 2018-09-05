@@ -1,0 +1,169 @@
+TOKEN
+    Name  = "NVMe_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable NVMe support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes
+    Master = Yes
+End
+
+TOKEN
+    Name  = "NVME_VERBOSE_PRINT"
+    Value  = "0"
+    Help  = "Make sure PcdDebugPrintErrorLevel is set to PcdsPatchableInModule. Search in all SDL files."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+PATH
+    Name = "NVME_DIR"
+End
+
+TOKEN
+    Name  = "NVME_SETUP"
+    Value  = "1"
+    Help  = "Enable if NVMe setup controls from NVME eModule needs to be displayed in setup"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "DEBUG_ERROR_LEVEL_MASK"
+    Value  = "0x80400044"
+    Help  = "Used to control the debug message printed from this module. Look into DebugLib.h for the definition."
+    TokenType = Integer
+    TargetH = Yes
+    Token = "NVME_VERBOSE_PRINT" "=" "1"
+End
+
+TOKEN
+    Name  = "NVME_BUS_DRIVER_VERSION"
+    Value  = "1"
+    Help  = "NVMe Bus driver version # reported in Driver Binding Protocol"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "NVME_DRIVER_VERSION"
+    Value  = "12"
+    Help  = "NVMe driver version is used to avoid compatibility problems during NVMe driver Label update"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "NVME_COMMAND_TIMEOUT"
+    Value  = "1"
+    Help  = "NVMe timeout in seconds used for the execution of NVM Express Command Packet"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+ELINK
+    Name  = "$(NVME_DIR)"
+    Parent  = "PLATFORM_DSC_INCLUDE_PATHS"
+    InvokeOrder = AfterParent
+End
+
+INFComponent
+    Name  = "Nvme"
+    File  = "Nvme.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "UEFI_DRIVER"
+End
+
+INFComponent
+    Name  = "NvmeSmm"
+    File  = "NvmeSmm\NvmeSmm.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_SMM_DRIVER"
+    Token = "CSM_SUPPORT" "=" "1"
+    Token = "NVMEINT13_SUPPORT" "=" "1"	#SMCPKG_SUPPORT
+End
+
+#Cloned to make PcdDebugPrintErrorLevel PatchableInModule in NVMe module.
+PcdMapping
+    Name  = "PcdDebugPrintErrorLevel"
+    GuidSpace  = "gEfiMdePkgTokenSpaceGuid"
+    PcdType  = "PcdsFixedAtBuild"
+    Value  = "0x80400044"
+    Override  = "AmiModulePkg.Nvme"
+    Offset  = 00h
+    Length  = 00h
+    TargetDSC = Yes
+    Token = "NVME_VERBOSE_PRINT" "=" "1"
+End
+
+ELINK
+    Name  = "$(NVME_DIR)/Nvme.sd"
+    Parent  = "SETUP_DEFINITIONS"
+    InvokeOrder = AfterParent
+    Token = "NVME_SETUP" "=" "1"
+    Token = "NvmeDynamicSetup_SUPPORT" "=" "0"
+End
+
+ELINK
+    Name  = "$(NVME_DIR)/NvmeSetup.c"
+    Parent  = "SetupCallbackFiles"
+    InvokeOrder = AfterParent
+    Token = "NVME_SETUP" "=" "1"
+    Token = "NvmeDynamicSetup_SUPPORT" "=" "0"
+End 
+
+ELINK
+    Name  = "InitNvmeStrings,"
+    Parent  = "SetupStringInit"
+    InvokeOrder = AfterParent
+    Token = "NVME_SETUP" "=" "1"
+    Token = "NvmeDynamicSetup_SUPPORT" "=" "0"
+End
+
+ELINK
+    Name  = "$(NVME_DIR)/Nvme.uni"
+    Parent  = "SetupStringFiles"
+    InvokeOrder = AfterParent
+    Token = "NVME_SETUP" "=" "1"
+    Token = "NvmeDynamicSetup_SUPPORT" "=" "0"
+End
+
+ELINK
+    Name  = "gEfiPciIoProtocolGuid"
+    Parent  = "AdditionalSetupProtocols"    
+    InvokeOrder = AfterParent
+    Token = "NvmeDynamicSetup_SUPPORT" "=" "0"
+End
+
+ELINK
+    Name  = "gAmiNvmeControllerProtocolGuid"
+    Parent  = "AdditionalSetupProtocols"    
+    InvokeOrder = AfterParent
+    Token = "NvmeDynamicSetup_SUPPORT" "=" "0"
+End
+
+ELINK
+    Name  = "gEfiComponentName2ProtocolGuid"
+    Parent  = "AdditionalSetupProtocols"    
+    InvokeOrder = AfterParent
+    Token = "NvmeDynamicSetup_SUPPORT" "=" "0"
+End
+
+ELINK
+    Name  = "gEfiDevicePathProtocolGuid"
+    Parent  = "AdditionalSetupProtocols"    
+    InvokeOrder = AfterParent
+    Token = "NvmeDynamicSetup_SUPPORT" "=" "0"
+End
+
+INFComponent
+    Name  = "NvmeControllerLib"
+    File  = "NvmeControllerLib.inf"
+    Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+    Class  = "NvmeControllerLib"
+    Instance  = "AmiModulePkg.NvmeControllerLib"
+End
+

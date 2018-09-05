@@ -1,0 +1,63 @@
+## @file
+#
+#  Copyright (c) 2009 - 2016, Intel Corporation. All rights reserved.<BR>
+#
+#  This program and the accompanying materials
+#  are licensed and made available under the terms and conditions of the BSD License
+#  which accompanies this distribution. The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.php
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+#
+##
+
+[Defines]
+  INF_VERSION          = 0x00010005
+  BASE_NAME            = SpsAcpiHooks
+  FILE_GUID            = 7adbad98-7fe1-4774-9260-747327435e6d
+  MODULE_TYPE          = DXE_DRIVER
+  VERSION_STRING       = 1.0
+  ENTRY_POINT          = SpsUpdateAslForMe
+
+[Sources]
+  SpsUpdateAsl.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  PurleySktPkg/Me/MePkg.dec
+  PurleySktPkg/SocketPkg.dec
+  
+[LibraryClasses]
+  UefiBootServicesTableLib
+  UefiDriverEntryPoint
+  UefiRuntimeServicesTableLib
+  DxeServicesTableLib
+  HobLib
+  IoLib
+  DebugLib
+  MmPciLib
+
+[Protocols]
+  gEfiFirmwareVolume2ProtocolGuid
+  gEfiAcpiTableProtocolGuid
+  
+[Guids]
+  gEfiSpsAcpiTableLocatorGuid
+
+[Pcd]
+  gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemId
+  gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemTableId
+  gPlatformTokenSpaceGuid.PcdUpdateSpsAcpiOemTableId
+
+[Depex]
+  gEfiAcpiSdtProtocolGuid AND
+  gEfiAcpiTableProtocolGuid AND
+  gEfiFirmwareVolume2ProtocolGuid AND
+  gEfiPciEnumerationCompleteProtocolGuid
+

@@ -1,0 +1,38 @@
+TOKEN
+    Name  = "DESKTOP_506EY"
+    Value = "0"
+    Help  = "Intel(R) KabyLake"
+    TokenType = Boolean
+    Master = Yes
+End
+
+TOKEN
+    Name  = "DESKTOP_M22506E8"
+    Value  = "1"
+    Help  = "Intel(R) KabyLake -S -X Processor A-0 Stepping"
+    TokenType = Boolean
+    Token = "NON_PRODUCTION_MICROCODE" "=" "1"
+End
+
+TOKEN
+    Name  = "DESKTOP_M22906E9"
+    Value  = "1"
+    Help  = "Intel(R) KabyLake-S -X Processor B-0 Stepping"
+    TokenType = Boolean
+End
+
+ELINK
+    Name  = "$(MICROCODE_DESKTOP_DIR)/M22506E8_00000034.mcb"
+    Parent  = "MICROCODE_FILES"
+    Help  = "Intel(R) KabyLake -S -X Processor A-0 Stepping"
+    Token = "DESKTOP_M22506E8" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(MICROCODE_DESKTOP_DIR)/M2A906E9_0000005E.mcb"
+    Parent  = "MICROCODE_FILES"
+    Help  = "Intel(R) KabyLake-S -X Processor B-0 Stepping"
+    Token = "DESKTOP_M22906E9" "=" "1"
+    InvokeOrder = AfterParent
+End

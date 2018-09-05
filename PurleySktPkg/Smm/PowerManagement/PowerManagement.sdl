@@ -1,0 +1,22 @@
+TOKEN
+	Name  = "SocketPkgPowerManagement_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling SocketPkgPowerManagementsupport in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "HwpLvtSmm_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable HwpLvtSmm support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "HwpLvtSmm"
+	File  = "HwpLvtSmm\HwpLvtSmm.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "HwpLvtSmm_SUPPORT" "=" "1"
+End

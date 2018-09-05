@@ -1,0 +1,72 @@
+#
+# This file contains a 'Sample Driver' and is licensed as such
+# under the terms of your license agreement with Intel or your
+# vendor.  This file may be modified by the user, subject to
+# the additional terms of the license agreement
+#
+#  Component description file for MemorySubClass driver.
+#
+#  Copyright (c) 2008 - 2016, Intel Corporation. All rights reserved
+#  This software and associated documentation (if any) is furnished
+#  under a license and may only be used or copied in accordance
+#  with the terms of the license. Except as permitted by such
+#  license, no part of this software or documentation may be
+#  reproduced, stored in a retrieval system, or transmitted in any
+#  form or by any means without the express written consent of
+#  Intel Corporation.
+#    
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = MemorySubClass
+  FILE_GUID                      = 6A3DEF38-0A45-4107-A74E-ABF2B8EAED86
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = MemorySubClassEntryPoint
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF EBC
+#
+
+[Sources]
+  MemorySubClassStrings.uni
+  MemorySubClass.c
+  
+[LibraryClasses]
+  UefiDriverEntryPoint
+  MemoryAllocationLib
+  HiiLib
+  HobLib
+  SmcLib  #SGI
+[Protocols]
+  gEfiSmbiosProtocolGuid
+  
+[Guids]
+  gEfiMemorySetupGuid
+  gEfiMemoryMapGuid
+  
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec #SGI  
+  SmcPkg/SmcPkg.dec #SGI
+[Pcd]
+  gOemSkuTokenSpaceGuid.PcdOemSkuBoardSocketCount
+  gOemSkuTokenSpaceGuid.PcdOemSkuMaxChannel
+  gOemSkuTokenSpaceGuid.PcdOemSkuMaxDimmPerChannel  
+  
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[Depex]
+  gEfiVariableArchProtocolGuid AND 
+  gEfiVariableWriteArchProtocolGuid AND
+  gEfiSmbiosProtocolGuid
+ 

@@ -1,0 +1,73 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2010, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+[Defines]
+    INF_VERSION                     = 0x00010005
+    VERSION_STRING                  = 1.0
+    FILE_GUID                       = 70e1a818-0be1-4449-bfd4-9ef68c7f02a8
+    MODULE_TYPE                     = DXE_DRIVER
+    BASE_NAME                       = ReFlash
+    ENTRY_POINT                     = ReFlashEntry
+#
+#  This flag specifies whether HII resource section is generated into PE image.
+#
+    UEFI_HII_RESOURCE_SECTION       = TRUE
+
+[Sources]
+    ReFlash.c
+    Esrt.c
+    ReFlashWorker.c
+    ReFlash.h
+    ReFlash.uni
+    ReFlash.vfr
+    TempRomLayout.c
+    
+[Packages]
+    AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+    AmiModulePkg/AmiModulePkg.dec
+    MdePkg/MdePkg.dec
+    MdeModulePkg/MdeModulePkg.dec
+    
+[LibraryClasses]
+    AmiDxeLib
+    AmiCspLib
+    AmiRomLayoutLib
+    PcdLib
+    UefiDriverEntryPoint
+    HobLib
+    BaseLib
+    BaseMemoryLib
+    UefiBootServicesTableLib
+    UefiRuntimeServicesTableLib
+    
+[Protocols]
+    gFlashProtocolGuid          ## CONSUMES
+    gAmiReflashProtocolGuid     ## PRODUCES
+    gEfiConsoleControlProtocolGuid     ## CONSUMES
+    gEfiFirmwareVolume2ProtocolGuid     ## CONSUMES
+    gEsrtManagementProtocolGuid
+    
+[Guids]
+    gAmiRecoveryImageHobGuid
+    
+[Pcd]
+    gAmiModulePkgTokenSpaceGuid.PcdRecoveryImageSize
+    gAmiModulePkgTokenSpaceGuid.AmiPcdInstallEsrtTable
+
+[Depex]
+    gEfiHiiDatabaseProtocolGuid AND
+    gFlashProtocolGuid
+    
+[BuildOptions]
+    *_*_*_BUILD_FLAGS=-s

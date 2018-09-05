@@ -1,0 +1,38 @@
+TOKEN
+	Name  = "Heci_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling Heci support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "HeciSmm_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable HeciSmm support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "HeciSmm"
+	File  = "Smm\HeciSmm.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "HeciSmm_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "Heci3Smm_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable HeciSmm support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "Heci3Smm"
+	File  = "SmmHeci3\MeHeci3Smm.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "Heci3Smm_SUPPORT" "=" "1"
+End
+

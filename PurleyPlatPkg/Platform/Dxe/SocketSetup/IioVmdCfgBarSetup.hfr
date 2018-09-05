@@ -1,0 +1,1424 @@
+//****************************************************************************
+//**                                                                        **
+//**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+//**                                                                        **
+//****************************************************************************
+//  File History
+//
+//  Rev. 1.00
+//    Bug Fix:  Draft template.
+//    Reason:   
+//    Auditor:  Kasber Chen
+//    Date:     Dec/16/2016
+//
+//****************************************************************************
+//
+// This file contains an 'Intel Peripheral Driver' and is      
+// licensed for Intel CPUs and chipsets under the terms of your
+// license agreement with Intel or your vendor.  This file may 
+// be modified by the user, subject to additional terms of the 
+// license agreement                                           
+//
+// *++
+//
+// Copyright (c) 2015 - 2016 Intel Corporation. All rights reserved
+// This software and associated documentation (if any) is furnished
+// under a license and may only be used or copied in accordance
+// with the terms of the license. Except as permitted by such
+// license, no part of this software or documentation may be
+// reproduced, stored in a retrieval system, or transmitted in any
+// form or by any means without the express written consent of
+// Intel Corporation.
+// 
+// 
+// Module Name:
+//
+//   IioVmdCfgBarSetup.hfr
+// 
+// Abstract:
+// 
+//   IIO VMD Config BAR Setup formset.
+// 
+// --*/
+
+
+    #if (STACK == 0)
+      subtitle text = STRING_TOKEN(STR_IIO_VMD_IIO0_PSTACK0_SUB_TITLE);
+      subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+      oneof varid = SOCKET_IIO_CONFIGURATION.VMDEnabled[0],
+        prompt  = STRING_TOKEN(STR_IIO_VMD_SUPPORT_PROMPT_0),
+        help    = STRING_TOKEN(STR_IIO_VMD_SUPPORT_HELP),
+        // SKX_PO: disable VMD  for nwo since warm reset is not supported.      
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      suppressif  ideqval SOCKET_IIO_CONFIGURATION.VMDEnabled[0] == 0x00;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[0],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_0),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[1],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_1),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[2],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_2),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[3],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_3),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDHotPlugEnable[0],
+          prompt  = STRING_TOKEN(STR_VMD_HOTPLUGENABLE_PROMPT_0),
+          help    = STRING_TOKEN(STR_VMD_HOTPLUGENABLE_HELP_0),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        
+        suppressif SMC_SETUP_STYLE;  //SMCPKG_SUPPORT S
+        numeric varid = SOCKET_IIO_CONFIGURATION.VMDCfgBarSz[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_CFGBARSZ_0_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_CFGBARSZ_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 20,
+          maximum = 27,
+          step    = 1,
+          default = 25, defaultstore = MyStandardDefault,
+          default = 25, defaultstore = MyManufactureDefault,
+        endnumeric;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping < B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDCfgBarAttr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_CFGBARATTR_0_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+          option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;          endoneof;
+        endif;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping >= B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDCfgBarAttr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_CFGBARATTR_0_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+          option text = STRING_TOKEN(STR_VMD_32BIT_NONPREFETCH), value = VMD_32BIT_NONPREFETCH, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          endoneof;
+        endif;
+        numeric varid = SOCKET_IIO_CONFIGURATION.VMDMemBarSz1[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ1_0_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ1_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 20,
+          maximum = 39,
+          step    = 1,
+          default = 25, defaultstore = MyStandardDefault,
+          default = 25, defaultstore = MyManufactureDefault,
+        endnumeric;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDMemBar1Attr[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBAR1ATTR_0_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+         option text = STRING_TOKEN(STR_VMD_32BIT_NONPREFETCH), value = VMD_32BIT_NONPREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED ;
+        endoneof;
+        numeric varid = SOCKET_IIO_CONFIGURATION.VMDMemBarSz2[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ2_0_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ2_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 20,
+          maximum = 39,
+          step    = 1,
+          default = 20, defaultstore = MyStandardDefault,
+          default = 20, defaultstore = MyManufactureDefault,
+        endnumeric;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDMemBar2Attr[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBAR2ATTR_0_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+          option text = STRING_TOKEN(STR_VMD_32BIT_NONPREFETCH), value = VMD_32BIT_NONPREFETCH, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED ;
+        endoneof;
+        endif;  //SMCPKG_SUPPORT E
+
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+      endif;
+    #endif // STACK == 0
+    #if (STACK == 1)
+      subtitle text = STRING_TOKEN(STR_IIO_VMD_IIO0_PSTACK1_SUB_TITLE);
+      subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+      oneof varid = SOCKET_IIO_CONFIGURATION.VMDEnabled[1],
+        prompt  = STRING_TOKEN(STR_IIO_VMD_SUPPORT_PROMPT_1),
+        help    = STRING_TOKEN(STR_IIO_VMD_SUPPORT_HELP),
+        // SKX_PO: disable VMD  for nwo since warm reset is not supported.      
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      suppressif  ideqval SOCKET_IIO_CONFIGURATION.VMDEnabled[1] == 0x00;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[4],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_4),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[5],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_5),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[6],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_6),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[7],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_7),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDHotPlugEnable[1],
+          prompt  = STRING_TOKEN(STR_VMD_HOTPLUGENABLE_PROMPT_1),
+          help    = STRING_TOKEN(STR_VMD_HOTPLUGENABLE_HELP_1),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        
+        suppressif SMC_SETUP_STYLE;  //SMCPKG_SUPPORT S
+        numeric varid = SOCKET_IIO_CONFIGURATION.VMDCfgBarSz[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_CFGBARSZ_1_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_CFGBARSZ_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 20,
+          maximum = 27,
+          step    = 1,
+          default = 25, defaultstore = MyStandardDefault,
+          default = 25, defaultstore = MyManufactureDefault,
+        endnumeric;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping < B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDCfgBarAttr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_CFGBARATTR_1_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          endoneof;
+        endif;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping >= B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDCfgBarAttr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_CFGBARATTR_1_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_32BIT_NONPREFETCH), value = VMD_32BIT_NONPREFETCH, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          endoneof;
+        endif;
+        numeric varid = SOCKET_IIO_CONFIGURATION.VMDMemBarSz1[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ1_1_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ1_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 20,
+          maximum = 39,
+          step    = 1,
+          default = 25, defaultstore = MyStandardDefault,
+          default = 25, defaultstore = MyManufactureDefault,
+        endnumeric;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDMemBar1Attr[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBAR1ATTR_1_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+          option text = STRING_TOKEN(STR_VMD_32BIT_NONPREFETCH), value = VMD_32BIT_NONPREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED ;
+        endoneof;
+        numeric varid = SOCKET_IIO_CONFIGURATION.VMDMemBarSz2[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ2_1_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ2_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 20,
+          maximum = 39,
+          step    = 1,
+          default = 20, defaultstore = MyStandardDefault,
+          default = 20, defaultstore = MyManufactureDefault,
+        endnumeric;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping >= B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDMemBar2Attr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBAR2ATTR_1_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_32BIT_NONPREFETCH), value = VMD_32BIT_NONPREFETCH, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED ;
+          endoneof;
+        endif;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping < B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDMemBar2Attr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBAR2ATTR_1_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED ;
+          endoneof;
+        endif;  //SMCPKG_SUPPORT E
+        endif;        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+      endif;
+    #endif // STACK == 1
+    #if (STACK == 2)
+      subtitle text = STRING_TOKEN(STR_IIO_VMD_IIO0_PSTACK2_SUB_TITLE);
+      subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+      oneof varid = SOCKET_IIO_CONFIGURATION.VMDEnabled[2],
+        prompt  = STRING_TOKEN(STR_IIO_VMD_SUPPORT_PROMPT_2),
+        help    = STRING_TOKEN(STR_IIO_VMD_SUPPORT_HELP),
+        // SKX_PO: disable VMD  for nwo since warm reset is not supported.      
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      suppressif  ideqval SOCKET_IIO_CONFIGURATION.VMDEnabled[2] == 0x00;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[8],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_8),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[9],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_9),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[10],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_10),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[11],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_11),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDHotPlugEnable[2],
+          prompt  = STRING_TOKEN(STR_VMD_HOTPLUGENABLE_PROMPT_2),
+          help    = STRING_TOKEN(STR_VMD_HOTPLUGENABLE_HELP_2),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        
+        suppressif SMC_SETUP_STYLE;  //SMCPKG_SUPPORT S
+        numeric varid = SOCKET_IIO_CONFIGURATION.VMDCfgBarSz[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_CFGBARSZ_2_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_CFGBARSZ_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 20,
+          maximum = 27,
+          step    = 1,
+          default = 25, defaultstore = MyStandardDefault,
+          default = 25, defaultstore = MyManufactureDefault,
+        endnumeric;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping < B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDCfgBarAttr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_CFGBARATTR_2_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_32BIT_NONPREFETCH), value = VMD_32BIT_NONPREFETCH, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          endoneof;
+        endif;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping >= B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDCfgBarAttr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_CFGBARATTR_2_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_32BIT_NONPREFETCH), value = VMD_32BIT_NONPREFETCH, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          endoneof;
+        endif;
+        numeric varid = SOCKET_IIO_CONFIGURATION.VMDMemBarSz1[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ1_2_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ1_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 20,
+          maximum = 39,
+          step    = 1,
+          default = 25, defaultstore = MyStandardDefault,
+          default = 25, defaultstore = MyManufactureDefault,
+        endnumeric;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDMemBar1Attr[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBAR1ATTR_2_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+          option text = STRING_TOKEN(STR_VMD_32BIT_NONPREFETCH), value = VMD_32BIT_NONPREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED ;
+        endoneof;
+        numeric varid = SOCKET_IIO_CONFIGURATION.VMDMemBarSz2[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ2_2_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ2_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 20,
+          maximum = 39,
+          step    = 1,
+          default = 20, defaultstore = MyStandardDefault,
+          default = 20, defaultstore = MyManufactureDefault,
+        endnumeric;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping >= B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDMemBar2Attr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBAR2ATTR_2_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_32BIT_NONPREFETCH), value = VMD_32BIT_NONPREFETCH, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED ;
+          endoneof;
+        endif;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping < B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDMemBar2Attr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBAR2ATTR_2_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED ;
+          endoneof;
+        endif;
+        endif;  //SMCPKG_SUPPORT E
+
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+      endif;
+    #endif // STACK == 2
+    #if (STACK == 3)
+      subtitle text = STRING_TOKEN(STR_IIO_VMD_IIO1_PSTACK0_SUB_TITLE);
+      subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+      oneof varid = SOCKET_IIO_CONFIGURATION.VMDEnabled[3],
+        prompt  = STRING_TOKEN(STR_IIO_VMD_SUPPORT_PROMPT_3),
+        help    = STRING_TOKEN(STR_IIO_VMD_SUPPORT_HELP),
+        // SKX_PO: disable VMD  for nwo since warm reset is not supported.      
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      suppressif  ideqval SOCKET_IIO_CONFIGURATION.VMDEnabled[3] == 0x00;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[12],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_12),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[13],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_13),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[14],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_14),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[15],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_15),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING  | DEFAULT ;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDHotPlugEnable[3],
+          prompt  = STRING_TOKEN(STR_VMD_HOTPLUGENABLE_PROMPT_3),
+          help    = STRING_TOKEN(STR_VMD_HOTPLUGENABLE_HELP_0),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        
+        suppressif SMC_SETUP_STYLE;  //SMCPKG_SUPPORT S
+        numeric varid = SOCKET_IIO_CONFIGURATION.VMDCfgBarSz[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_CFGBARSZ_3_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_CFGBARSZ_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 20,
+          maximum = 27,
+          step    = 1,
+          default = 25, defaultstore = MyStandardDefault,
+          default = 25, defaultstore = MyManufactureDefault,
+        endnumeric;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping < B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDCfgBarAttr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_CFGBARATTR_3_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          endoneof;
+        endif;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping >= B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDCfgBarAttr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_CFGBARATTR_3_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_32BIT_NONPREFETCH), value = VMD_32BIT_NONPREFETCH, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          endoneof;
+        endif;
+        numeric varid = SOCKET_IIO_CONFIGURATION.VMDMemBarSz1[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ1_3_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ1_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 20,
+          maximum = 39,
+          step    = 1,
+          default = 25, defaultstore = MyStandardDefault,
+          default = 25, defaultstore = MyManufactureDefault,
+        endnumeric;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDMemBar1Attr[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBAR1ATTR_3_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+          option text = STRING_TOKEN(STR_VMD_32BIT_NONPREFETCH), value = VMD_32BIT_NONPREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED ;
+        endoneof;
+        numeric varid = SOCKET_IIO_CONFIGURATION.VMDMemBarSz2[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ2_3_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ2_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 20,
+          maximum = 39,
+          step    = 1,
+          default = 20, defaultstore = MyStandardDefault,
+          default = 20, defaultstore = MyManufactureDefault,
+        endnumeric;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping >= B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDMemBar2Attr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBAR2ATTR_3_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_32BIT_NONPREFETCH), value = VMD_32BIT_NONPREFETCH, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED ;
+          endoneof;
+        endif;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping < B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDMemBar2Attr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBAR2ATTR_3_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED ;
+          endoneof;
+        endif;
+        endif;  //SMCPKG_SUPPORT E
+
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+      endif;
+    #endif // STACK == 3
+    #if (STACK == 4)
+      subtitle text = STRING_TOKEN(STR_IIO_VMD_IIO1_PSTACK1_SUB_TITLE);
+      subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+      oneof varid = SOCKET_IIO_CONFIGURATION.VMDEnabled[4],
+        prompt  = STRING_TOKEN(STR_IIO_VMD_SUPPORT_PROMPT_4),
+        help    = STRING_TOKEN(STR_IIO_VMD_SUPPORT_HELP),
+        // SKX_PO: disable VMD  for nwo since warm reset is not supported.      
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      suppressif  ideqval SOCKET_IIO_CONFIGURATION.VMDEnabled[4] == 0x00;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[16],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_16),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[17],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_17),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[18],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_18),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[19],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_19),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDHotPlugEnable[4],
+          prompt  = STRING_TOKEN(STR_VMD_HOTPLUGENABLE_PROMPT_4),
+          help    = STRING_TOKEN(STR_VMD_HOTPLUGENABLE_HELP_1),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        
+        suppressif SMC_SETUP_STYLE;  //SMCPKG_SUPPORT S
+        numeric varid = SOCKET_IIO_CONFIGURATION.VMDCfgBarSz[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_CFGBARSZ_4_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_CFGBARSZ_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 20,
+          maximum = 27,
+          step    = 1,
+          default = 25, defaultstore = MyStandardDefault,
+          default = 25, defaultstore = MyManufactureDefault,
+        endnumeric;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping < B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDCfgBarAttr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_CFGBARATTR_4_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          endoneof;
+        endif;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping >= B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDCfgBarAttr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_CFGBARATTR_4_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_32BIT_NONPREFETCH), value = VMD_32BIT_NONPREFETCH, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          endoneof;
+        endif;
+        numeric varid = SOCKET_IIO_CONFIGURATION.VMDMemBarSz1[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ1_4_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ1_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 20,
+          maximum = 39,
+          step    = 1,
+          default = 25, defaultstore = MyStandardDefault,
+          default = 25, defaultstore = MyManufactureDefault,
+        endnumeric;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDMemBar1Attr[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBAR1ATTR_4_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+          option text = STRING_TOKEN(STR_VMD_32BIT_NONPREFETCH), value = VMD_32BIT_NONPREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED ;
+        endoneof;
+        numeric varid = SOCKET_IIO_CONFIGURATION.VMDMemBarSz2[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ2_4_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ2_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 20,
+          maximum = 39,
+          step    = 1,
+          default = 20, defaultstore = MyStandardDefault,
+          default = 20, defaultstore = MyManufactureDefault,
+        endnumeric;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping >= B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDMemBar2Attr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBAR2ATTR_4_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_32BIT_NONPREFETCH), value = VMD_32BIT_NONPREFETCH, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED ;
+          endoneof;
+        endif;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping < B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDMemBar2Attr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBAR2ATTR_4_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED ;
+          endoneof;
+        endif;
+        endif;  //SMCPKG_SUPPORT E
+        
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+       endif;
+    #endif // STACK == 4
+    #if (STACK == 5)
+      subtitle text = STRING_TOKEN(STR_IIO_VMD_IIO1_PSTACK2_SUB_TITLE);
+      subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+      oneof varid = SOCKET_IIO_CONFIGURATION.VMDEnabled[5],
+        prompt  = STRING_TOKEN(STR_IIO_VMD_SUPPORT_PROMPT_5),
+        help    = STRING_TOKEN(STR_IIO_VMD_SUPPORT_HELP),
+        // SKX_PO: disable VMD  for nwo since warm reset is not supported.      
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      suppressif  ideqval SOCKET_IIO_CONFIGURATION.VMDEnabled[5] == 0x00;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[20],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_20),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[21],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_21),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[22],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_22),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[23],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_23),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDHotPlugEnable[5],
+          prompt  = STRING_TOKEN(STR_VMD_HOTPLUGENABLE_PROMPT_5),
+          help    = STRING_TOKEN(STR_VMD_HOTPLUGENABLE_HELP_2),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        
+        suppressif SMC_SETUP_STYLE;  //SMCPKG_SUPPORT S
+        numeric varid = SOCKET_IIO_CONFIGURATION.VMDCfgBarSz[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_CFGBARSZ_5_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_CFGBARSZ_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 20,
+          maximum = 27,
+          step    = 1,
+          default = 25, defaultstore = MyStandardDefault,
+          default = 25, defaultstore = MyManufactureDefault,
+        endnumeric;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping < B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDCfgBarAttr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_CFGBARATTR_5_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          endoneof;
+        endif;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping >= B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDCfgBarAttr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_CFGBARATTR_5_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_32BIT_NONPREFETCH), value = VMD_32BIT_NONPREFETCH, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          endoneof;
+        endif;
+        numeric varid = SOCKET_IIO_CONFIGURATION.VMDMemBarSz1[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ1_5_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ1_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 20,
+          maximum = 39,
+          step    = 1,
+          default = 25, defaultstore = MyStandardDefault,
+          default = 25, defaultstore = MyManufactureDefault,
+        endnumeric;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDMemBar1Attr[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBAR1ATTR_5_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+          option text = STRING_TOKEN(STR_VMD_32BIT_NONPREFETCH), value = VMD_32BIT_NONPREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED ;
+        endoneof;
+        numeric varid = SOCKET_IIO_CONFIGURATION.VMDMemBarSz2[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ2_5_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ2_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 20,
+          maximum = 39,
+          step    = 1,
+          default = 20, defaultstore = MyStandardDefault,
+          default = 20, defaultstore = MyManufactureDefault,
+        endnumeric;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping >= B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDMemBar2Attr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBAR2ATTR_5_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_32BIT_NONPREFETCH), value = VMD_32BIT_NONPREFETCH, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED ;
+          endoneof;
+        endif;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping < B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDMemBar2Attr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBAR2ATTR_5_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED ;
+          endoneof;
+        endif;
+        endif;  //SMCPKG_SUPPORT E
+        
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+     endif;
+    #endif // STACK == 5
+    #if (STACK == 6)
+      subtitle text = STRING_TOKEN(STR_IIO_VMD_IIO2_PSTACK0_SUB_TITLE);
+      subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+      oneof varid = SOCKET_IIO_CONFIGURATION.VMDEnabled[6],
+        prompt  = STRING_TOKEN(STR_IIO_VMD_SUPPORT_PROMPT_6),
+        help    = STRING_TOKEN(STR_IIO_VMD_SUPPORT_HELP),
+        // SKX_PO: disable VMD  for nwo since warm reset is not supported.      
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      suppressif  ideqval SOCKET_IIO_CONFIGURATION.VMDEnabled[6] == 0x00;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[24],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_24),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[25],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_25),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[26],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_26),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[27],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_27),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDHotPlugEnable[6],
+          prompt  = STRING_TOKEN(STR_VMD_HOTPLUGENABLE_PROMPT_6),
+          help    = STRING_TOKEN(STR_VMD_HOTPLUGENABLE_HELP_0),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;        
+        numeric varid = SOCKET_IIO_CONFIGURATION.VMDCfgBarSz[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_CFGBARSZ_6_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_CFGBARSZ_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 20,
+          maximum = 27,
+          step    = 1,
+          default = 25, defaultstore = MyStandardDefault,
+          default = 25, defaultstore = MyManufactureDefault,
+        endnumeric;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping < B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDCfgBarAttr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_CFGBARATTR_6_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          endoneof;
+        endif;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping >= B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDCfgBarAttr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_CFGBARATTR_6_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_32BIT_NONPREFETCH), value = VMD_32BIT_NONPREFETCH, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          endoneof;
+        endif;
+        numeric varid = SOCKET_IIO_CONFIGURATION.VMDMemBarSz1[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ1_6_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ1_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 20,
+          maximum = 39,
+          step    = 1,
+          default = 25, defaultstore = MyStandardDefault,
+          default = 25, defaultstore = MyManufactureDefault,
+        endnumeric;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDMemBar1Attr[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBAR1ATTR_6_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+          option text = STRING_TOKEN(STR_VMD_32BIT_NONPREFETCH), value = VMD_32BIT_NONPREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED ;
+        endoneof;
+        numeric varid = SOCKET_IIO_CONFIGURATION.VMDMemBarSz2[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ2_6_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ2_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 20,
+          maximum = 39,
+          step    = 1,
+          default = 20, defaultstore = MyStandardDefault,
+          default = 20, defaultstore = MyManufactureDefault,
+        endnumeric;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping >= B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDMemBar2Attr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBAR2ATTR_6_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_32BIT_NONPREFETCH), value = VMD_32BIT_NONPREFETCH, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED ;
+          endoneof;
+        endif;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping < B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDMemBar2Attr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBAR2ATTR_6_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED ;
+          endoneof;
+        endif;
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+      endif;
+    #endif // STACK == 6
+    #if (STACK == 7)
+      subtitle text = STRING_TOKEN(STR_IIO_VMD_IIO2_PSTACK1_SUB_TITLE);
+      subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+      oneof varid = SOCKET_IIO_CONFIGURATION.VMDEnabled[7],
+        prompt  = STRING_TOKEN(STR_IIO_VMD_SUPPORT_PROMPT_7),
+        help    = STRING_TOKEN(STR_IIO_VMD_SUPPORT_HELP),
+        // SKX_PO: disable VMD  for nwo since warm reset is not supported.      
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      suppressif  ideqval SOCKET_IIO_CONFIGURATION.VMDEnabled[7] == 0x00;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[28],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_28),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[29],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_29),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[30],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_30),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[31],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_31),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDHotPlugEnable[7],
+          prompt  = STRING_TOKEN(STR_VMD_HOTPLUGENABLE_PROMPT_7),
+          help    = STRING_TOKEN(STR_VMD_HOTPLUGENABLE_HELP_1),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;        
+        numeric varid = SOCKET_IIO_CONFIGURATION.VMDCfgBarSz[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_CFGBARSZ_7_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_CFGBARSZ_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 20,
+          maximum = 27,
+          step    = 1,
+          default = 25, defaultstore = MyStandardDefault,
+          default = 25, defaultstore = MyManufactureDefault,
+        endnumeric;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping < B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDCfgBarAttr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_CFGBARATTR_7_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          endoneof;
+        endif;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping >= B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDCfgBarAttr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_CFGBARATTR_7_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_32BIT_NONPREFETCH), value = VMD_32BIT_NONPREFETCH, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          endoneof;
+        endif;
+        numeric varid = SOCKET_IIO_CONFIGURATION.VMDMemBarSz1[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ1_7_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ1_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 20,
+          maximum = 39,
+          step    = 1,
+          default = 25, defaultstore = MyStandardDefault,
+          default = 25, defaultstore = MyManufactureDefault,
+        endnumeric;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDMemBar1Attr[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBAR1ATTR_7_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+          option text = STRING_TOKEN(STR_VMD_32BIT_NONPREFETCH), value = VMD_32BIT_NONPREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED ;
+        endoneof;
+        numeric varid = SOCKET_IIO_CONFIGURATION.VMDMemBarSz2[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ2_7_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ2_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 20,
+          maximum = 39,
+          step    = 1,
+          default = 20, defaultstore = MyStandardDefault,
+          default = 20, defaultstore = MyManufactureDefault,
+        endnumeric;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping >= B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDMemBar2Attr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBAR2ATTR_7_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_32BIT_NONPREFETCH), value = VMD_32BIT_NONPREFETCH, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED ;
+          endoneof;
+        endif;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping < B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDMemBar2Attr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBAR2ATTR_7_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED ;
+          endoneof;
+        endif;
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+      endif;
+    #endif // STACK == 7
+    #if (STACK == 8)
+      subtitle text = STRING_TOKEN(STR_IIO_VMD_IIO2_PSTACK2_SUB_TITLE);
+      subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+      oneof varid = SOCKET_IIO_CONFIGURATION.VMDEnabled[8],
+        prompt  = STRING_TOKEN(STR_IIO_VMD_SUPPORT_PROMPT_8),
+        help    = STRING_TOKEN(STR_IIO_VMD_SUPPORT_HELP),
+        // SKX_PO: disable VMD  for nwo since warm reset is not supported.      
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      suppressif  ideqval SOCKET_IIO_CONFIGURATION.VMDEnabled[8] == 0x00;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[32],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_32),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[33],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_33),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[34],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_34),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[35],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_35),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDHotPlugEnable[8],
+          prompt  = STRING_TOKEN(STR_VMD_HOTPLUGENABLE_PROMPT_8),
+          help    = STRING_TOKEN(STR_VMD_HOTPLUGENABLE_HELP_2),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;        
+        numeric varid = SOCKET_IIO_CONFIGURATION.VMDCfgBarSz[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_CFGBARSZ_8_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_CFGBARSZ_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 20,
+          maximum = 27,
+          step    = 1,
+          default = 25, defaultstore = MyStandardDefault,
+          default = 25, defaultstore = MyManufactureDefault,
+        endnumeric;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping < B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDCfgBarAttr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_CFGBARATTR_8_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          endoneof;
+        endif;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping >= B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDCfgBarAttr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_CFGBARATTR_8_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_32BIT_NONPREFETCH), value = VMD_32BIT_NONPREFETCH, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          endoneof;
+        endif;
+        numeric varid = SOCKET_IIO_CONFIGURATION.VMDMemBarSz1[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ1_8_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ1_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 20,
+          maximum = 39,
+          step    = 1,
+          default = 25, defaultstore = MyStandardDefault,
+          default = 25, defaultstore = MyManufactureDefault,
+        endnumeric;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDMemBar1Attr[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBAR1ATTR_8_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+          option text = STRING_TOKEN(STR_VMD_32BIT_NONPREFETCH), value = VMD_32BIT_NONPREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED ;
+        endoneof;
+        numeric varid = SOCKET_IIO_CONFIGURATION.VMDMemBarSz2[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ2_8_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ2_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 20,
+          maximum = 39,
+          step    = 1,
+          default = 20, defaultstore = MyStandardDefault,
+          default = 20, defaultstore = MyManufactureDefault,
+        endnumeric;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping >= B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDMemBar2Attr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBAR2ATTR_8_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_32BIT_NONPREFETCH), value = VMD_32BIT_NONPREFETCH, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED ;
+          endoneof;
+        endif;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping < B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDMemBar2Attr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBAR2ATTR_8_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED ;
+          endoneof;
+        endif;
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+      endif;
+    #endif // STACK == 8
+    #if (STACK == 9)
+      subtitle text = STRING_TOKEN(STR_IIO_VMD_IIO3_PSTACK0_SUB_TITLE);
+      subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+      oneof varid = SOCKET_IIO_CONFIGURATION.VMDEnabled[9],
+        prompt  = STRING_TOKEN(STR_IIO_VMD_SUPPORT_PROMPT_9),
+        help    = STRING_TOKEN(STR_IIO_VMD_SUPPORT_HELP),
+        // SKX_PO: disable VMD  for nwo since warm reset is not supported.      
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      suppressif  ideqval SOCKET_IIO_CONFIGURATION.VMDEnabled[9] == 0x00;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[36],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_36),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[37],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_37),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[38],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_38),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[39],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_39),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDHotPlugEnable[9],
+          prompt  = STRING_TOKEN(STR_VMD_HOTPLUGENABLE_PROMPT_9),
+          help    = STRING_TOKEN(STR_VMD_HOTPLUGENABLE_HELP_0),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;        
+        numeric varid = SOCKET_IIO_CONFIGURATION.VMDCfgBarSz[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_CFGBARSZ_9_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_CFGBARSZ_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 20,
+          maximum = 27,
+          step    = 1,
+          default = 25, defaultstore = MyStandardDefault,
+          default = 25, defaultstore = MyManufactureDefault,
+        endnumeric;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping < B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDCfgBarAttr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_CFGBARATTR_9_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          endoneof;
+        endif;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping >= B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDCfgBarAttr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_CFGBARATTR_9_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_32BIT_NONPREFETCH), value = VMD_32BIT_NONPREFETCH, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          endoneof;
+        endif;
+        numeric varid = SOCKET_IIO_CONFIGURATION.VMDMemBarSz1[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ1_9_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ1_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 20,
+          maximum = 39,
+          step    = 1,
+          default = 25, defaultstore = MyStandardDefault,
+          default = 25, defaultstore = MyManufactureDefault,
+        endnumeric;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDMemBar1Attr[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBAR1ATTR_9_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+          option text = STRING_TOKEN(STR_VMD_32BIT_NONPREFETCH), value = VMD_32BIT_NONPREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED ;
+        endoneof;
+        numeric varid = SOCKET_IIO_CONFIGURATION.VMDMemBarSz2[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ2_9_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ2_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 20,
+          maximum = 39,
+          step    = 1,
+          default = 20, defaultstore = MyStandardDefault,
+          default = 20, defaultstore = MyManufactureDefault,
+        endnumeric;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping >= B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDMemBar2Attr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBAR2ATTR_9_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_32BIT_NONPREFETCH), value = VMD_32BIT_NONPREFETCH, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED ;
+          endoneof;
+        endif;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping < B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDMemBar2Attr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBAR2ATTR_9_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED ;
+          endoneof;
+        endif;
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+      endif;
+    #endif // STACK == 9
+    #if (STACK == 10)
+      subtitle text = STRING_TOKEN(STR_IIO_VMD_IIO3_PSTACK1_SUB_TITLE);
+      subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+      oneof varid = SOCKET_IIO_CONFIGURATION.VMDEnabled[10],
+        prompt  = STRING_TOKEN(STR_IIO_VMD_SUPPORT_PROMPT_10),
+        help    = STRING_TOKEN(STR_IIO_VMD_SUPPORT_HELP),
+        // SKX_PO: disable VMD  for nwo since warm reset is not supported.      
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      suppressif  ideqval SOCKET_IIO_CONFIGURATION.VMDEnabled[10] == 0x00;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[40],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_40),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[41],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_41),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[42],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_42),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[43],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_43),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDHotPlugEnable[10],
+          prompt  = STRING_TOKEN(STR_VMD_HOTPLUGENABLE_PROMPT_10),
+          help    = STRING_TOKEN(STR_VMD_HOTPLUGENABLE_HELP_1),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;        
+        numeric varid = SOCKET_IIO_CONFIGURATION.VMDCfgBarSz[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_CFGBARSZ_10_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_CFGBARSZ_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 20,
+          maximum = 27,
+          step    = 1,
+          default = 25, defaultstore = MyStandardDefault,
+          default = 25, defaultstore = MyManufactureDefault,
+        endnumeric;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping < B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDCfgBarAttr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_CFGBARATTR_10_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          endoneof;
+        endif;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping >= B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDCfgBarAttr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_CFGBARATTR_10_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_32BIT_NONPREFETCH), value = VMD_32BIT_NONPREFETCH, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          endoneof;
+        endif;
+        numeric varid = SOCKET_IIO_CONFIGURATION.VMDMemBarSz1[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ1_10_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ1_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 20,
+          maximum = 39,
+          step    = 1,
+          default = 25, defaultstore = MyStandardDefault,
+          default = 25, defaultstore = MyManufactureDefault,
+        endnumeric;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDMemBar1Attr[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBAR1ATTR_10_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+          option text = STRING_TOKEN(STR_VMD_32BIT_NONPREFETCH), value = VMD_32BIT_NONPREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED ;
+        endoneof;
+        numeric varid = SOCKET_IIO_CONFIGURATION.VMDMemBarSz2[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ2_10_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ2_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 20,
+          maximum = 39,
+          step    = 1,
+          default = 20, defaultstore = MyStandardDefault,
+          default = 20, defaultstore = MyManufactureDefault,
+        endnumeric;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping >= B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDMemBar2Attr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBAR2ATTR_10_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_32BIT_NONPREFETCH), value = VMD_32BIT_NONPREFETCH, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED ;
+          endoneof;
+        endif;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping < B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDMemBar2Attr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBAR2ATTR_10_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED ;
+          endoneof;
+        endif;
+       subtitle text = STRING_TOKEN(STR_NULL_STRING);
+     endif;
+    #endif // STACK == 10
+    #if (STACK == 11)
+      subtitle text = STRING_TOKEN(STR_IIO_VMD_IIO3_PSTACK2_SUB_TITLE);
+      subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+      oneof varid = SOCKET_IIO_CONFIGURATION.VMDEnabled[11],
+        prompt  = STRING_TOKEN(STR_IIO_VMD_SUPPORT_PROMPT_11),
+        help    = STRING_TOKEN(STR_IIO_VMD_SUPPORT_HELP),
+        // SKX_PO: disable VMD  for nwo since warm reset is not supported.      
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      suppressif  ideqval SOCKET_IIO_CONFIGURATION.VMDEnabled[11] == 0x00;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[44],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_44),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[45],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_45),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[46],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_46),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDPortEnable[47],
+          prompt  = STRING_TOKEN(STR_VMDPORTENABLE_PROMPT_47),
+          help    = STRING_TOKEN(STR_VMDPORTENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDHotPlugEnable[11],
+          prompt  = STRING_TOKEN(STR_VMD_HOTPLUGENABLE_PROMPT_11),
+          help    = STRING_TOKEN(STR_VMD_HOTPLUGENABLE_HELP_2),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+        endoneof;        
+        numeric varid = SOCKET_IIO_CONFIGURATION.VMDCfgBarSz[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_CFGBARSZ_11_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_CFGBARSZ_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 20,
+          maximum = 27,
+          step    = 1,
+          default = 25, defaultstore = MyStandardDefault,
+          default = 25, defaultstore = MyManufactureDefault,
+        endnumeric;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping < B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDCfgBarAttr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_CFGBARATTR_11_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          endoneof;
+        endif;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping >= B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDCfgBarAttr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_CFGBARATTR_11_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_32BIT_NONPREFETCH), value = VMD_32BIT_NONPREFETCH, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          endoneof;
+        endif;
+        numeric varid = SOCKET_IIO_CONFIGURATION.VMDMemBarSz1[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ1_11_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ1_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 20,
+          maximum = 39,
+          step    = 1,
+          default = 25, defaultstore = MyStandardDefault,
+          default = 25, defaultstore = MyManufactureDefault,
+        endnumeric;
+        oneof varid = SOCKET_IIO_CONFIGURATION.VMDMemBar1Attr[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBAR1ATTR_11_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+          option text = STRING_TOKEN(STR_VMD_32BIT_NONPREFETCH), value = VMD_32BIT_NONPREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED ;
+        endoneof;
+        numeric varid = SOCKET_IIO_CONFIGURATION.VMDMemBarSz2[STACK],
+          prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ2_11_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VMD_MEMBARSZ2_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 20,
+          maximum = 39,
+          step    = 1,
+          default = 20, defaultstore = MyStandardDefault,
+          default = 20, defaultstore = MyManufactureDefault,
+        endnumeric;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping >= B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDMemBar2Attr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBAR2ATTR_11_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_32BIT_NONPREFETCH), value = VMD_32BIT_NONPREFETCH, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED ;
+          endoneof;
+        endif;
+        suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.CpuStepping < B0_REV_SKX;
+          oneof varid = SOCKET_IIO_CONFIGURATION.VMDMemBar2Attr[STACK],
+            prompt  = STRING_TOKEN(STR_IIO_VMD_MEMBAR2ATTR_11_PROMPT),
+            help    = STRING_TOKEN(STR_IIO_VMD_BARATTR_HELP),
+            option text = STRING_TOKEN(STR_VMD_64BIT_NONPREFETCH), value = VMD_64BIT_NONPREFETCH, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+            option text = STRING_TOKEN(STR_VMD_64BIT_PREFETCH),    value = VMD_64BIT_PREFETCH, flags = RESET_REQUIRED ;
+          endoneof;
+        endif;
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+      endif;
+    #endif // STACK == 11

@@ -1,0 +1,28 @@
+TOKEN
+	Name  = "SpsLibrary_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling Library support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "SpsPeiLibrary_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling Library support in the project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "SpsPeiLib"
+	File  = "SpsPeiLib\SpsPeiLib.inf"
+	Arch  = "IA32"
+	Package  = "PurleySktPkg"
+End
+
+LibraryMapping
+	Class  = "SpsPeiLib"
+	Instance  = "PurleySktPkg.SpsPeiLib"
+	Token = "SpsPeiLibrary_SUPPORT" "=" "1"
+	Token = "ME_ENABLE" "=" "1"
+End

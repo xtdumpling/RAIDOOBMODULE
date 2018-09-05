@@ -1,0 +1,157 @@
+TOKEN
+	Name  = "PurleyRpPkg_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling PurleyRpPkg support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "TOOL_DEFINITION_FILE"
+	Value  = "PurleyRpPkg/RC_MYTOOLS_DEF.txt"
+	Help  = "Name of the tool definition file.\This value goes to to auto-generated Conf/target.txt."
+	TokenType = Expression
+	TargetMAK = Yes
+End
+
+PcdMapping
+	Name  = "PcdUartDefaultBaudRate"
+	GuidSpace  = "gEfiMdePkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "115200"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdUartDefaultDataBits"
+	GuidSpace  = "gEfiMdePkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "8"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdUartDefaultParity"
+	GuidSpace  = "gEfiMdePkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "1"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdUartDefaultStopBits"
+	GuidSpace  = "gEfiMdePkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "1"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdDefaultTerminalType"
+	GuidSpace  = "gEfiMdePkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+    Name  = "PcdSrIovSupport"
+    GuidSpace  = "gEfiMdeModulePkgTokenSpaceGuid"
+    PcdType  = "PcdsDynamicDefault"
+    Value  = "TRUE"
+    Offset  = 00h
+    Length  = 00h
+    TargetDSC = Yes
+End
+
+PcdMapping
+    Name  = "PcdAriSupport"
+    GuidSpace  = "gEfiMdeModulePkgTokenSpaceGuid"
+    PcdType  = "PcdsDynamicDefault"
+    Value  = "TRUE"
+    Offset  = 00h
+    Length  = 00h
+    TargetDSC = Yes
+End
+
+PcdMapping
+    Name  = "PcdMrIovSupport"
+    GuidSpace  = "gEfiMdeModulePkgTokenSpaceGuid"
+    PcdType  = "PcdsDynamicDefault"
+    Value  = "FALSE"
+    Offset  = 00h
+    Length  = 00h
+    TargetDSC = Yes
+End
+
+PcdMapping
+    Name  = "PcdSrIovSystemPageSize"
+    GuidSpace  = "gEfiMdeModulePkgTokenSpaceGuid"
+    PcdType  = "PcdsDynamicDefault"
+    Value  = "0x1F"
+    Offset  = 00h
+    Length  = 00h
+    TargetDSC = Yes
+End
+
+PcdMapping
+    Name  = "PcdInstallAcpiSdtProtocol"
+    GuidSpace  = "gEfiMdeModulePkgTokenSpaceGuid"
+    PcdType  = "PcdsFeatureFlag"
+    Value  = "TRUE"
+    Arch  = "common"
+    Offset  = 00h
+    Length  = 00h
+    TargetDSC = Yes
+End
+
+PcdMapping
+    Name  = "PcdCpuInitIpiDelayInMicroSeconds"
+    GuidSpace  = "gUefiCpuPkgTokenSpaceGuid"
+    PcdType  = "PcdsFixedAtBuild"
+    Value  = "10"
+    Offset  = 00h
+    Length  = 00h
+    TargetDSC = Yes
+End
+
+PcdMapping
+    Name  = "PcdPropertiesTableEnable"
+    GuidSpace  = "gEfiMdeModulePkgTokenSpaceGuid"
+    PcdType  = "PcdsFixedAtBuild"
+    Value  = "FALSE"
+    Offset  = 00h
+    Length  = 00h
+    TargetDSC = Yes
+End
+
+ELINK
+    Name  = "PurleyRpPkg/PurleyFdfRules.txt"
+    Parent  = "FdfRules"
+    InvokeOrder = AfterParent
+End
+
+PcdMapping
+    Name  = "PcdMaxProcessorPhysicalAddressBits"
+    GuidSpace  = "gEfiCpuTokenSpaceGuid"
+    PcdType  = "PcdsFixedAtBuild"
+    Value  = "0x2E"
+    Offset  = 00h
+    Length  = 00h
+    TargetDSC = Yes
+End

@@ -1,0 +1,95 @@
+## @file
+#  JedecNvDimm Protocol
+#
+#  Copyright (c) 2009 - 2017, Intel Corporation. All rights reserved.<BR>
+#
+#  This program and the accompanying materials
+#  are licensed and made available under the terms and conditions of the BSD License
+#  which accompanies this distribution. The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.php
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+#
+##
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = JedecNvDimmSMM
+  FILE_GUID                      = AAD8B9F8-2C83-4e4b-96E8-C5B8B8AC56BF
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  VERSION_STRING                 = 1.0
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  ENTRY_POINT                    = JedecNvDimmStart
+
+[Sources]
+  JedecNvDimm.c
+  JedecNvDimm.h
+  Nfit.c
+  Nfit.h
+  NvDimmAccess.c
+  MemAddrTranslation.c
+  MemAddrTranslation.h
+
+[Packages]
+  PurleySktPkg/SocketPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  MdePkg/MdePkg.dec
+    # APTIOV_SERVER_OVERRIDE_START : #No PurleyPlatPkg/Override Acpi61.h available in MdePkg.
+  #PurleyPlatPkg/Override/MdePkg/MdePkg.dec
+    # APTIOV_SERVER_OVERRIDE_END : #No PurleyPlatPkg/Override Acpi61.h available in MdePkg.
+  MdeModulePkg/MdeModulePkg.dec
+  UefiCpuPkg/UefiCpuPkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  IA32FamilyCpuPkg/IA32FamilyCpuPkg.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  DebugLib
+  HobLib
+  IoLib
+  PciLib
+  BaseLib
+  TimerLib
+  PlatformHooksLib
+  LocalApicLib
+  PcdLib
+
+[Protocols]
+  gEfiJedecNvDimmGuid
+  gEfiJedecNvDimmSmmGuid
+  gEfiSmmBase2ProtocolGuid
+  gEfiMpServiceProtocolGuid
+  gEfiCpuCsrAccessGuid
+  gEfiSmbiosProtocolGuid
+  gEfiSmmSwDispatch2ProtocolGuid
+  gEfiNgnAcpiSmmInterfaceProtocolGuid
+  gAcpiPcatProtocolGuid
+  gEfiMemRasProtocolGuid
+  gEfiIioUdsProtocolGuid
+
+[Guids]
+  gEfiMemoryMapGuid
+  gEfiVolatileMemModeVariableGuid
+  gEfiNGNCfgOutGuid
+  gEfiNGNCfgCurGuid
+  gEfiPrevBootNGNDimmCfgVariableGuid
+
+[Pcd]
+  gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemId
+  gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemTableId
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[Depex]
+  gEfiJedecNvDimmGuid AND
+  gEfiCrystalRidgeSmmGuid AND
+  gEfiSmmBase2ProtocolGuid AND
+  gEfiMpServiceProtocolGuid AND
+  gEfiCpuCsrAccessGuid AND
+  gEfiSmmSwDispatch2ProtocolGuid
+

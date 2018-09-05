@@ -1,0 +1,41 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2017, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+[defines]
+  INF_VERSION          = 0x00010005
+  BASE_NAME            = WinCapsuleUpdate
+  FILE_GUID            = 6010BEA0-A051-408D-9A6E-B744D468A05D
+  MODULE_TYPE          = PEIM
+  VERSION_STRING       = 1.0
+  ENTRY_POINT          = WinCapsuleUpdateEntryPoint
+  
+[Sources]
+  WinCapsuleUpdate.c
+
+[Packages]  
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+
+[LibraryClasses]
+  PeimEntryPoint
+  PeiServicesLib
+  DebugLib
+  PrintLib
+
+[Ppis]
+  gEfiPeiCapsulePpiGuid
+  
+[Guids]
+
+[Depex]
+TRUE

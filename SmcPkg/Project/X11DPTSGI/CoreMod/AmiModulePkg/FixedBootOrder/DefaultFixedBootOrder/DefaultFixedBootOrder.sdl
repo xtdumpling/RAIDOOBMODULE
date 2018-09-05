@@ -1,0 +1,454 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#**                                                                        **
+#
+#****************************************************************************
+#  SGI File History
+#
+#  Rev. 1.00        
+#       Bug Fixed:  Set Boot priority as UEFI Network>> UEFI USB Key >> UEFI CD/DVD >> UEFI Hard Disk >>UEFI  AP:UEFI:Built-in EFI Shell
+#       Reason:
+#       Auditor:    Chen  Lin
+#       Date:       Nov/17/2016
+#
+#********************************************************************************************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.00        
+#       Bug Fixed:  Change the orders of FixedBootOrder. Legacy first.
+#       Reason:
+#       Auditor:    Jimmy Chiu
+#       Date:       Aug/24/2016
+#
+#****************************************************************************
+
+
+TOKEN
+    Name  = "DEFAULT_FIXED_BOOT_ORDER_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable module part support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+    Master = Yes
+End
+
+PATH
+	Name  = "DefaultFixedBootOrder_DIR"
+End
+
+MODULE
+    Help  = "Includes DefaultFixedBootOrder.mak to Project"
+    File  = "DefaultFixedBootOrder.mak"
+End
+
+TOKEN
+    Name  = "D_OR_SYMBOL"
+    Value  = "||"
+    Help  = "The Gawk.exe can't parsing |(or) symbol, so we need the macro to replace it in sd file."
+    TokenType = Expression
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "OR_SYMBOL"
+    Value  = "|"
+    Help  = "The Gawk.exe can't parsing |(or) symbol, so we need the macro to replace it in sd file."
+    TokenType = Expression
+    TargetH = Yes
+End
+
+ELINK
+    Name = "FIXED_BOOT_ORDER_DISPLAY_FORM_SET"
+    InvokeOrder = ReplaceParent
+End
+
+ELINK
+    Name  = "BOOT_FORM_SET,"
+    Parent  = "FIXED_BOOT_ORDER_DISPLAY_FORM_SET"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name = "FIXED_BOOT_ORDER_SETUP_INFORM"
+    InvokeOrder = ReplaceParent
+End
+
+ELINK
+    Name  = "{BOOT_FORM_SET_CLASS, BOOT_MAIN},"
+    Parent  = "FIXED_BOOT_ORDER_SETUP_INFORM"
+    InvokeOrder = AfterParent
+End
+
+TOKEN
+    Name  = "FBO_MULTI_HARD_DISK_GROUPS"
+    Value  = "0"
+    Help  = "1:enable the multi hard disk groups in setup/ 0: disable the multi hard disk groups in setup."
+    TokenType = Boolean
+    TargetH = Yes
+    TargetMAK = Yes
+End
+#SGI+
+TOKEN
+    Name  = "USB_GROUP"
+    Value  = "1"
+    Help  = "0 = No USB Group, 1 = All USB in one Group, 2 = USB in a specific Type Group"
+    TokenType = Expression
+    TargetH = Yes
+End
+#SGI-
+TOKEN
+    Name  = "EFI_DEVICE_IN_ONE_GROUP"
+    Value  = "0"
+    Help  = "1 =  All Efi Device will in one group"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "FBO_DUAL_MODE"
+    Value  = "1"
+    Help  = "1 = Legacy/Uefi mix display."
+    TokenType = Boolean
+    TargetH = Yes
+    TargetMAK = Yes
+    Token = "EFI_DEVICE_IN_ONE_GROUP" "=" "1"
+End
+
+TOKEN
+    Name  = "PUT_SATA_TO_USB_HDD_INTO_UEFI_USB_HDD_GROUP"
+    Value  = "0"
+    Help  = "Uefi Hdd with sata to usb adapter may be treated as fixed device and classified as UEFI HDD device, 1: classified as UEFI USB HDD device "
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+ELINK
+    Name = "FBO_UEFI_DEVICE"
+    InvokeOrder = ReplaceParent
+End
+
+ELINK
+    Name = "UEFI_DEVICE"
+    Parent = "FBO_UEFI_DEVICE"
+    InvokeOrder = AfterParent
+    Token = "EFI_DEVICE_IN_ONE_GROUP" "=" "1"
+End
+
+ELINK
+    Name = "UEFI_HDD,"
+    Parent = "FBO_UEFI_DEVICE"
+    InvokeOrder = AfterParent
+    Token = "EFI_DEVICE_IN_ONE_GROUP" "=" "0"
+End
+
+ELINK
+    Name = "UEFI_HDD1, UEFI_HDD2, UEFI_HDD3, UEFI_HDD4, UEFI_HDD5,"
+    Parent = "FBO_UEFI_DEVICE"
+    InvokeOrder = AfterParent
+    Token = "FBO_MULTI_HARD_DISK_GROUPS" "=" "1"
+    Token = "EFI_DEVICE_IN_ONE_GROUP" "=" "0"
+End
+
+ELINK
+    Name = "UEFI_APPLICATION,"
+    Parent = "FBO_UEFI_DEVICE"
+    InvokeOrder = AfterParent
+    Token = "SHELL_GROUP_SUPPORT" "=" "1"
+    Token = "EFI_DEVICE_IN_ONE_GROUP" "=" "0"
+End
+
+ELINK
+    Name = "UEFI_ODD,"
+    Parent = "FBO_UEFI_DEVICE"
+    InvokeOrder = AfterParent
+    Token = "EFI_DEVICE_IN_ONE_GROUP" "=" "0"
+End
+
+ELINK
+    Name = "UEFI_USBHDD, UEFI_USBODD, UEFI_USBKEY, UEFI_USBFDD, UEFI_USBLAN,"
+    Parent = "FBO_UEFI_DEVICE"
+    InvokeOrder = AfterParent
+    Token = "EFI_DEVICE_IN_ONE_GROUP" "=" "0"
+    Token = "USB_GROUP" "=" "2"
+End
+
+ELINK
+    Name = "UEFI_USB,"
+    Parent = "FBO_UEFI_DEVICE"
+    InvokeOrder = AfterParent
+    Token = "USB_GROUP" "=" "1"
+    Token = "EFI_DEVICE_IN_ONE_GROUP" "=" "0"
+End
+
+ELINK
+    Name = "UEFI_NETWORK,"
+    Parent = "FBO_UEFI_DEVICE"
+    InvokeOrder = AfterParent
+    Token = "EFI_DEVICE_IN_ONE_GROUP" "=" "0"
+End
+
+ELINK
+    Name = "FBO_LEGACY_DEVICE"
+    InvokeOrder = ReplaceParent
+End
+
+ELINK
+    Name = "HDD,"
+    Parent = "FBO_LEGACY_DEVICE"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name = "HDD1, HDD2, HDD3, HDD4, HDD5,"
+    Parent = "FBO_LEGACY_DEVICE"
+    InvokeOrder = AfterParent
+    Token = "FBO_MULTI_HARD_DISK_GROUPS" "=" "1"
+End
+
+ELINK
+    Name = "ODD,"
+    Parent = "FBO_LEGACY_DEVICE"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name = "USBHDD, USBODD, USBKEY, USBFDD, USBLAN,"
+    Parent = "FBO_LEGACY_DEVICE"
+    InvokeOrder = AfterParent
+    Token = "USB_GROUP" "=" "2"
+End
+
+ELINK
+    Name = "USB,"
+    Parent = "FBO_LEGACY_DEVICE"
+    InvokeOrder = AfterParent
+    Token = "USB_GROUP" "=" "1"
+End
+
+ELINK
+    Name = "NETWORK,"
+    Parent = "FBO_LEGACY_DEVICE"
+    InvokeOrder = AfterParent
+End
+
+
+ELINK
+    Name = "FBO_DUAL_DEVICE"
+    InvokeOrder = ReplaceParent
+End
+#SGI+
+ELINK
+    Name = "UEFI_NETWORK,"
+    Parent = "FBO_DUAL_DEVICE"
+    InvokeOrder = AfterParent
+    Token = "EFI_DEVICE_IN_ONE_GROUP" "=" "0"
+End
+
+ELINK
+    Name = "UEFI_USBKEY,"
+    Parent = "FBO_DUAL_DEVICE"
+    InvokeOrder = AfterParent
+    Token = "USB_GROUP" "=" "1"
+    Token = "EFI_DEVICE_IN_ONE_GROUP" "=" "0"
+End
+
+ELINK
+    Name = "UEFI_ODD,"
+    Parent = "FBO_DUAL_DEVICE"
+    InvokeOrder = AfterParent
+    Token = "EFI_DEVICE_IN_ONE_GROUP" "=" "0"
+End
+
+ELINK
+    Name = "UEFI_HDD,"
+    Parent = "FBO_DUAL_DEVICE"
+    InvokeOrder = AfterParent
+    Token = "EFI_DEVICE_IN_ONE_GROUP" "=" "0"
+End
+
+ELINK
+    Name = "UEFI_HDD1, UEFI_HDD2, UEFI_HDD3, UEFI_HDD4, UEFI_HDD5,"
+    Parent = "FBO_DUAL_DEVICE"
+    InvokeOrder = AfterParent
+    Token = "FBO_MULTI_HARD_DISK_GROUPS" "=" "1"
+    Token = "EFI_DEVICE_IN_ONE_GROUP" "=" "0"
+End
+
+ELINK
+    Name = "UEFI_APPLICATION,"
+    Parent = "FBO_DUAL_DEVICE"
+    InvokeOrder = AfterParent
+    Token = "SHELL_GROUP_SUPPORT" "=" "1"
+    Token = "EFI_DEVICE_IN_ONE_GROUP" "=" "0"
+End
+#SGI-
+ELINK
+    Name = "HDD,"
+    Parent = "FBO_DUAL_DEVICE"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name = "HDD1, HDD2, HDD3, HDD4, HDD5,"
+    Parent = "FBO_DUAL_DEVICE"
+    InvokeOrder = AfterParent
+    Token = "FBO_MULTI_HARD_DISK_GROUPS" "=" "1"
+End
+
+ELINK
+    Name = "ODD,"
+    Parent = "FBO_DUAL_DEVICE"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name = "USBHDD, USBODD, USBKEY, USBFDD, USBLAN,"
+    Parent = "FBO_DUAL_DEVICE"
+    InvokeOrder = AfterParent
+    Token = "USB_GROUP" "=" "2"
+End
+
+ELINK
+    Name = "USB,"
+    Parent = "FBO_DUAL_DEVICE"
+    InvokeOrder = AfterParent
+    Token = "USB_GROUP" "=" "1"
+End
+
+ELINK
+    Name = "NETWORK,"
+    Parent = "FBO_DUAL_DEVICE"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name = "UEFI_DEVICE,"
+    Parent = "FBO_DUAL_DEVICE"
+    InvokeOrder = AfterParent
+    Token = "EFI_DEVICE_IN_ONE_GROUP" "=" "1"
+End
+
+
+
+
+
+ELINK
+    Name = "UEFI_USBHDD, UEFI_USBODD, UEFI_USBKEY, UEFI_USBFDD, UEFI_USBLAN,"
+    Parent = "FBO_DUAL_DEVICE"
+    InvokeOrder = AfterParent
+    Token = "EFI_DEVICE_IN_ONE_GROUP" "=" "0"
+    Token = "USB_GROUP" "=" "2"
+End
+
+
+
+
+
+
+
+ELINK
+    Name  = "$(BUILD_DIR)\DefaultFixedBootOrder.sd"
+    Parent  = "SETUP_DEFINITIONS"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(DefaultFixedBootOrder_DIR)\DefaultFixedBootOrder.uni"
+    Parent  = "SetupStringFiles"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "DefaultFixedBootOrder_Init,"
+    Parent  = "UpdateBootOptionVariables,"
+    InvokeOrder = BeforeParent
+End
+
+ELINK
+    Name  = "DefaultFixedBootOrder_Init,"
+    Parent  = "FastBootAfterAllDriverConnctHook"
+    Token = "FAST_BOOT_SUPPORT" "=" "1"
+    Token = "CORE_COMBINED_VERSION" ">" "0x40280"
+    Priority = 1
+    InvokeOrder = BeforeParent
+End
+
+#ELINK
+    #Name  = "ChangeDefaultGroupMap,"
+    #Parent  = "DefaultFixedBootOrder_Init,"
+    #InvokeOrder = AfterParent 
+    #Token = "FBO_MULTI_HARD_DISK_GROUPS" "=" "0"
+#End
+
+ELINK
+    Name  = "FBO_SetBootOptionTags,"
+    Parent  = "SetBootOptionTags,"
+    InvokeOrder = ReplaceParent
+End
+
+ELINK
+    Name  = "FBO_AdjustDeviceName,"
+    Parent  = "SaveBootOptions,"
+    InvokeOrder = BeforeParent
+End
+
+ELINK
+    Name  = "FBO_ChangeDeviceNameFunctions"
+    InvokeOrder = ReplaceParent
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(BOOT_FORM_SET_CLASS,0,0x1001,FixedBootOrderFormCallBack),"
+    Parent  = "SetupItemCallbacks"
+    Token = "EFI_SPECIFICATION_VERSION" ">" "0x20000"
+    Token = "FBO_RUNTIME_CALLBACK_REGISTRATION" "=" "0"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name = "$(BUILD_DIR)\DefaultFixedBootOrder.sd"
+    Parent = "FIXED_BOOT_ORDER_SETUP_DEFINITIONS"
+    InvokeOrder = AfterParent
+End
+
+INFComponent
+    Name  = "DefaultFixedBootOrder"
+    File  = "DefaultFixedBootOrder.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_DRIVER"
+End
+
+LibraryMapping
+    Class  = "DefaultFixedBootOrder"
+    Instance  = "AmiModulePkg.DefaultFixedBootOrder"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiModulePkg.DefaultFixedBootOrder"
+    Override  = "AmiModulePkg.Bds"
+End
+
+ELINK
+    Name  = "ConstructGroupNameByFBO,"
+    Parent  = "BootOptionBuildNameFunctions"
+    Priority = 1
+    InvokeOrder = AfterParent
+End
+
+TOKEN
+    Name = "FBO_LEGACY_TYPE_TO_NAME"
+    Value  = '{BoTagLegacyUSBHardDisk, L"USB HDD"},{BoTagLegacyUSBCdrom, L"USB CD"},{BoTagLegacyUSBFloppy, L"USB Floppy"},{BoTagLegacyUSBKey, L"USB KEY"},{BoTagLegacyHardDisk1, L"Hard Drive1"},{BoTagLegacyHardDisk2, L"Hard Drive2"},{BoTagLegacyHardDisk3, L"Hard Drive3"},{BoTagLegacyHardDisk4, L"Hard Drive4"},{BoTagLegacyHardDisk5, L"Hard Drive5"}'
+    TokenType = Expression
+    TargetH = Yes
+End
+
+ELINK
+    Name  = "$(DefaultFixedBootOrder_DIR)/FboSetupPages.sd"
+    Parent  = "$(Setup_DIR)/AmiBootOrder.sd"
+    InvokeOrder = ReplaceParent
+End

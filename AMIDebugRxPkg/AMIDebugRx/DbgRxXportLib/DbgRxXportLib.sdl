@@ -1,0 +1,76 @@
+TOKEN
+	Name  = "DbgRxXportLib_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable DbgRxXportLib support in Project"
+	TokenType = Boolean
+	Master = Yes
+	Token = "USB_DEBUG_TRANSPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "DbgRxXportX64Lib_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable DbgRxXportX64Lib support in Project"
+	TokenType = Boolean
+	Token = "X64_SUPPORT" "=" "1"
+End
+
+PATH
+	Name  = "DbgRxXportLib_DIR"
+	Path  = "AMIDebugRxPkg\AMIDebugRx\DbgRxXportLib"
+End
+
+INFComponent
+	Name  = "CommonXportLib"
+	File  = "CommonXportLib.inf"
+	Package  = "AMIDebugRx"
+	Arch  = "common"
+	Path  = "DbgRxXportLib_DIR"
+End
+
+INFComponent
+	Name  = "DbgRxXportLib"
+	File  = "DbgRxXportLib.inf"
+	Package  = "AMIDebugRx"
+	Arch  = "common"
+	Path  = "DbgRxXportLib_DIR"
+End
+
+INFComponent
+	Name  = "DbgRxXportX64Lib"
+	File  = "DbgRxXportX64Lib.inf"
+	Package  = "AMIDebugRx"
+	Arch  = "common"
+	Path  = "DbgRxXportLib_DIR"
+	Token = "DbgRxXportX64Lib_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "CommonXportLib"
+	Instance  = "AMIDebugRx.CommonXportLib"
+End
+
+LibraryMapping
+	Class  = "PeiDebugXportLib"
+	Instance  = "AMIDebugRx.DbgRxXportLib"
+	Arch  = "IA32"
+End
+
+LibraryMapping
+	Class  = "PeiDebugXportLib"
+	Instance  = "AMIDebugRx.DbgRxXportX64Lib"
+	Arch  = "X64"
+	Token = "DbgRxXportX64Lib_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "DxeDebugXportLib"
+	Instance  = "AMIDebugRx.DbgRxXportLib"
+	Token = "X64_SUPPORT" "=" "0"
+End
+
+LibraryMapping
+	Class  = "DxeDebugXportLib"
+	Instance  = "AMIDebugRx.DbgRxXportX64Lib"
+	Token = "DbgRxXportX64Lib_SUPPORT" "=" "1"
+End

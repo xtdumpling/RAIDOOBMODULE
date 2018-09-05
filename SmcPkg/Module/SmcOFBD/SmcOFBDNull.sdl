@@ -1,0 +1,43 @@
+#***************************************************************************
+#***************************************************************************
+#**                                                                       **
+#**       (C)Copyright 1993-2016 Supermicro Computer, Inc.                **
+#**                                                                       **
+#***************************************************************************
+#***************************************************************************
+#
+#  History
+#
+#  Rev. 1.00
+#    Bug Fix : Renew.
+#    Reason  : Move from Greenlow
+#    Auditor : Kasber Chen
+#    Date    : Aug/17/2016
+#
+#****************************************************************************
+
+TOKEN
+	Name        = "SMC_OFBD_NULL_SUPPORT"
+	Value       = "1"
+	TokenType   = Boolean
+	TargetEQU   = Yes
+	TargetMAK   = Yes
+	#Master      = Yes
+	Help        = "The setting should be enabled when SMC_PLATFORM_ACPI_SUPPORT is disabled"
+	Token = "SMC_OFBD_SUPPORT" "=" "0"
+End
+
+INFComponent
+    Name  = "SmcOFBDNull"
+    File  = "SmcOFBDNull.inf"
+    Package  = "SmcPkg"
+    ModuleTypes  = "BASE"
+End
+
+LibraryMapping
+	Class  = "SmcOFBDLib"
+	Instance  = "SmcPkg.SmcOFBDNull"
+End
+
+##****************************************************************************
+

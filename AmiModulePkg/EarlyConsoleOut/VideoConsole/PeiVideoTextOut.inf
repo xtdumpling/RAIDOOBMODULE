@@ -1,0 +1,64 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+
+## @file PeiVideoTextOut.inf
+#  This PEIM produces PPI for Video display and creates the HOB for the 
+#  Video Controller to Pass the data from PEI to DXE. 
+##
+
+[defines]
+  INF_VERSION       = 0x00010005
+  BASE_NAME         = PeiVideoTextOut
+  FILE_GUID         = AE2020DF-C175-4344-B755-BBA47744F8B1
+  MODULE_TYPE       = PEIM
+  VERSION_STRING    = 1.0
+  ENTRY_POINT       = PeiVideoTextOutEntryPoint
+
+[Sources]
+  PeiVideoTextOut.c
+  PeiVideoTextOut.h
+
+[Packages]  
+  AmiModulePkg/AmiModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec 
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiModulePkg/EarlyConsoleOut/AmiEarlyConsoleOutPkg.dec 
+ 
+[LibraryClasses]
+  AmiPeiLib
+  PeimEntryPoint
+  DebugLib
+  HobLib
+  PrintLib
+
+[Ppis]
+  gAmiPeiTextOutPpiGuid
+
+[Depex]
+  TRUE
+
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************

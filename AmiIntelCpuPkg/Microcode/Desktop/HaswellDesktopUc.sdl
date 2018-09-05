@@ -1,0 +1,54 @@
+TOKEN
+    Name  = "DESKTOP_306CX"
+    Value = "0"
+    Help  = "Intel(R) Haswell"
+    TokenType = Boolean
+    Master = Yes
+End
+
+TOKEN
+    Name  = "DESKTOP_M32306C1"
+    Value  = "1"
+    Help  = "Intel(R) Haswell Processor A-0"
+    TokenType = Boolean
+    Token = "NON_PRODUCTION_MICROCODE" "=" "1"
+End
+
+TOKEN
+    Name  = "DESKTOP_M32306C2"
+    Value  = "1"
+    Help  = "Intel(R) Haswell Processor B-0"
+    TokenType = Boolean
+    Token = "NON_PRODUCTION_MICROCODE" "=" "1"
+End
+
+TOKEN
+    Name  = "DESKTOP_M32306C3"
+    Value  = "1"
+    Help  = "Intel(R) Haswell Processor C-0"
+    TokenType = Boolean
+End
+
+ELINK
+    Name  = "$(MICROCODE_DESKTOP_DIR)/M32306C1_FFFF0013.mcb"
+    Parent  = "MICROCODE_FILES"
+    Help  = "Intel(R) Haswell Processor A-0"
+    Token = "DESKTOP_M32306C1" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(MICROCODE_DESKTOP_DIR)/M32306C2_FFFF0006.mcb"
+    Parent  = "MICROCODE_FILES"
+    Help  = "Intel(R) Haswell Processor B-0"
+    Token = "DESKTOP_M32306C2" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(MICROCODE_DESKTOP_DIR)/M32306C3_00000021.mcb"
+    Parent  = "MICROCODE_FILES"
+    Help  = "Intel(R) Haswell Processor C-0"
+    Token = "DESKTOP_M32306C3" "=" "1"
+    InvokeOrder = AfterParent
+End

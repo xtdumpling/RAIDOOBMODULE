@@ -1,0 +1,53 @@
+TOKEN
+	Name  = "ShellBinPkg_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable ShellBinPkg support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "USE_FULL_SHELL"
+	Value  = "1"
+	Help  = "Selects whether to use full or minimal shell binary.\Full shell has more commands but larger in size.\"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "BUILT_IN_SHELL_SUPPORT"
+	Value  = "1"
+	Help  = "This SDL token defines if built-in Shell is supported in the project.\It controls installation of the boot option for a built-in Shell."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+INFComponent
+	Name  = "FullShell"
+	File  = "FullShell/FullShell.inf"
+	Package  = "ShellBinPkg"
+	Arch  = "IA32 X64 ARM AARCH64"
+	ModuleTypes  = "UEFI_APPLICATION"
+	Token = "USE_FULL_SHELL" "=" "1"
+End
+
+INFComponent
+	Name  = "MinShell"
+	File  = "MinimumShell/MinimumShell.inf"
+	Package  = "ShellBinPkg"
+	Arch  = "IA32 X64 ARM AARCH64"
+	ModuleTypes  = "UEFI_APPLICATION"
+	Token = "USE_FULL_SHELL" "=" "0"
+End
+
+PcdMapping
+	Name  = "PcdShellFile"
+	GuidSpace  = "gEfiIntelFrameworkModulePkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "{ 0x83, 0xA5, 0x04, 0x7C, 0x3E, 0x9E, 0x1C, 0x4F, 0xAD, 0x65, 0xE0, 0x52, 0x68, 0xD0, 0xB4, 0xD1 }"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End

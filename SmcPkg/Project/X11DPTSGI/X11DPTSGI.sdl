@@ -1,0 +1,1644 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.14
+#    Bug Fix:  Send HideItem and RiserCard data to sum.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Sep/23/2016
+#
+#  Rev. 1.13
+#       Bug Fix  :   
+#       Reason   : Get CPLD version Command update by BMC
+#       Auditor  : Sunny Yang
+#       Date     : Sep/08/2016
+#
+#  Rev. 1.12
+#       Bug Fix  : add CPLD version support
+#       Reason   : Get CPLD version from BMC
+#       Auditor  : Sunny Yang
+#       Date     : Sep/01/2016
+#
+#  Rev. 1.11
+#       Bug fixed: Fix PXE EFI ROM doesn't work.
+#       Reason   : 
+#       Auditor  : Sunny Yang
+#       Date     : Aug/29/2016
+#
+#  Rev. 1.10
+#       Bug fixed: Fix building errors when enabling DEBUG_MODE.
+#       Reason   : 
+#       Auditor  : Hartmann Hsieh
+#       Date     : Aug/22/2016
+#
+#  Rev. 1.09
+#       Bug fixed: Update SMBIOS type 8.
+#       Reason   : 
+#       Auditor  : Hartmann Hsieh
+#       Date     : Aug/22/2016
+#
+#  Rev. 1.08
+#       Bug fixed: Disable PORT61H_EMULATION temporarily for hanging at video OPROM.
+#       Reason   : Wait for B0 PCH to enable again.
+#       Auditor  : Hartmann Hsieh
+#       Date     : Aug/03/2016
+#
+#  Rev. 1.08
+#       Bug fixed: Correct SMBIOS map.
+#       Reason   : 
+#       Auditor  : Hartmann Hsieh
+#       Date     : Aug/03/2016
+#
+#  Rev. 1.07
+#       Bug fixed: Update USB2 IOBP for Lab's requirement.
+#       Reason   : 
+#       Auditor  : Hartmann Hsieh
+#       Date     : Jul/22/2016
+#
+#  Rev. 1.06
+#       Bug fixed: Add USB2.0 & USB3.0 OC settings.
+#       Reason   : 
+#       Auditor  : Hartmann Hsieh
+#       Date     : Jul/19/2016
+#
+#  Rev. 1.05
+#       Bug fixed: Update I-SATA and S-SATA IOBP for Lab's requirement.
+#       Reason   : 
+#       Auditor  : Hartmann Hsieh
+#       Date     : Jul/15/2016
+#
+#  Rev. 1.04
+#       Bug fixed: Add 32MB ROM part support.
+#       Reason   : Modify BIOS_SIZE to "0x2000000" in "Project.SDL" and modify some lines in "BuildSps.bat".
+#       Auditor  : Hartmann Hsieh
+#       Date     : Jun/23/2016
+#
+#  Rev. 1.03
+#       Bug fixed:   Add Intel X540 PXE OPROM.
+#       Reason:      
+#       Auditor:     Hartmann Hsieh
+#       Date:        Jun/16/2016
+#
+#  Rev. 1.01
+#       Bug fixed:   Enable GPI NMI function.
+#       Reason:      Use GPP_D_3 as GPI_NMI
+#       Auditor:     Jimmy Chiu
+#       Date:        Jun/13/2016
+#
+#  Rev. 1.00
+#       Bug fixed:   Initialize revision
+#       Reason:      Clone from Sample folder.
+#       Auditor:     Jacker Yeh
+#       Date:        Feb/02/2016
+#
+#****************************************************************************
+
+TOKEN
+	Name  = "X11DPTSGI_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable BOARD1 support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+TOKEN
+    Name  = "SGI_B_BOARD"
+    Value  = "0"
+    Help  = "Switch project board from SGI A to SGI B board "
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes    
+End
+
+TOKEN
+	Name  = "Sample_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable BOARD1 support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "PROJECT_TAG"
+	Value  = "10937"
+	TokenType = Expression
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "SGI_B_BOARD" "=" "0"
+End
+
+TOKEN
+	Name  = "PROJECT_TAG"
+	Value  = "10938"
+	TokenType = Expression
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "SGI_B_BOARD" "=" "1"
+End
+
+
+TOKEN
+	Name  = "OFFICIAL_RELEASE"
+	Value  = "0"
+	Help  = "Switch token for official BIOS release. Please copy to your own project board to enable/disable it."
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "RELEASE_VER"
+	Value  = "4256"
+	Help  = "SGI Release version format. month:Day:Year,e.g: B244:11/24/2014"
+	TokenType = Expression
+	TargetMAK = Yes
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+
+TOKEN
+    Name  = "BIOS_VERSION"
+    Value  = "SAED$(RELEASE_VER)"
+    Help  = "Identifies the major release of the System BIOS."
+    TokenType = Expression
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+    Token = "SGI_B_BOARD" "=" "0"
+End
+
+
+TOKEN
+    Name  = "BIOS_VERSION"
+    Value  = "SBED$(RELEASE_VER)"
+    Help  = "Identifies the major release of the System BIOS."
+    TokenType = Expression
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+    Token = "SGI_B_BOARD" "=" "1"
+End
+
+TOKEN
+	Name  = "PROJECT_MAJOR_VERSION"
+	Value  = "0x01"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PROJECT_MINOR_VERSION"
+	Value  = "0x00"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+  	Name      = "PROJECT_BOARD_NAME"
+  	Value     = "X11DPT-SA-SG0007"
+  	Help      = "Specifies the Project Board Name"
+  	TokenType = Expression
+  	TargetEQU = Yes
+  	TargetMAK = Yes
+  	TargetH   = Yes
+  	Token = "SGI_B_BOARD" "=" "0"
+End
+
+TOKEN
+  	Name      = "PROJECT_BOARD_NAME"
+  	Value     = "X11DPT-SB-SG0007"
+  	Help      = "Specifies the Project Board Name"
+  	TokenType = Expression
+  	TargetEQU = Yes
+  	TargetMAK = Yes
+  	TargetH   = Yes
+  	Token = "SGI_B_BOARD" "=" "1"
+End
+
+TOKEN
+	Name  = "CRB1_SSID"
+	Value  = "0x093715D9"
+	Help  = "This an example, Bit00-15: Vendor ID/Bit16-31:Device ID."
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "SGI_B_BOARD" "=" "0"
+End
+
+TOKEN
+	Name  = "CRB1_SSID"
+	Value  = "0x093815D9"
+	Help  = "This an example, Bit00-15: Vendor ID/Bit16-31:Device ID."
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "SGI_B_BOARD" "=" "1"
+End
+
+TOKEN
+	Name  = "SMC_SSID"
+	Value  = "$(CRB1_SSID)"
+	Help  = "This an example, Bit00-15: Vendor ID/Bit16-31:Device ID."
+	TokenType = Integer
+	TargetH = Yes
+	TargetMAK = Yes
+End
+
+PATH
+	Name  = "X11DPTSGI_PROJECT_DIR"
+End
+
+PATH
+	Name  = "OVERRIDE_X11DPTSGI_DIR"
+	Path  = "$(X11DPTSGI_PROJECT_DIR)\CoreMod"
+End
+
+
+
+TOKEN
+	Name  = "********** logo and screen Settings **********"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "STYLE_CLEAR_SCREEN_COLOR"
+	Value  = "((UINT8)(EFI_BACKGROUND_BLACK) | EFI_WHITE)"
+	Help  = "Background color of the Help Title Frame"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PAGE_BGCOLOR"
+	Value  = "(UINT8)(EFI_BACKGROUND_BLACK)"
+	Help  = "Background Color of the main area (Main, Help, and Navigation Frames) in a page."
+	TokenType = Expression
+	TargetH = Yes
+	Range  = "0x0-0x0f"
+End
+
+TOKEN
+	Name  = "PAGE_FGCOLOR"
+	Value  = "(UINT8)(EFI_LIGHTGRAY)"
+	Help  = "Foreground and Border Color of main area in a page (Default EFI_BLUE)"
+	TokenType = Expression
+	TargetH = Yes
+	Range  = "0x0-0x0f"
+End
+
+TOKEN
+	Name  = "TITLE_BGCOLOR"
+	Value  = "(UINT8)(EFI_BACKGROUND_BLACK)"
+	Help  = "Background Color of the Title bar frame."
+	TokenType = Expression
+	TargetH = Yes
+	Range  = "0x0-0x0f"
+End
+
+TOKEN
+	Name  = "MENU_BGCOLOR"
+	Value  = "(UINT8)(EFI_BACKGROUND_BLACK)"
+	Help  = "Background color of the Menu bar frame"
+	TokenType = Expression
+	TargetH = Yes
+	Range  = "0x0-0x0f"
+End
+
+TOKEN
+	Name  = "SELECTED_MENU_FGCOLOR"
+	Value  = "(UINT8)(EFI_WHITE)"
+	Help  = "Foreground Color of the Selected Menu in the Menu bar frame"
+	TokenType = Expression
+	TargetH = Yes
+	Range  = "0x0-0x0f"
+End
+
+TOKEN
+	Name  = "HELPTITLE_BGCOLOR"
+	Value  = "(UINT8)(EFI_BACKGROUND_BLACK)"
+	Help  = "Background color of the Help Title Frame"
+	TokenType = Expression
+	TargetH = Yes
+	Range  = "0x0-0x0f"
+End
+
+TOKEN
+	Name  = "POPUP_BGCOLOR"
+	Value  = "(UINT8)(EFI_BACKGROUND_BLACK)"
+	Help  = "Background Color of Popup Windows, and Message Boxes (Default EFI_BACKGROUND_BLUE)"
+	TokenType = Expression
+	TargetH = Yes
+	Range  = "0x0-0x0f"
+End
+
+TOKEN
+	Name  = "POPUP_FGCOLOR"
+	Value  = "(UINT8)(PAGE_FGCOLOR)"
+	Help  = "Foreground Color of Popup Windows, and Message Boxes (Default EFI_WHITE)"
+	TokenType = Expression
+	TargetH = Yes
+	Range  = "0x0-0x0f"
+End
+
+TOKEN
+	Name  = "EDIT_BGCOLOR"
+	Value  = "(UINT8)(EFI_BACKGROUND_BLACK)"
+	Help  = "Background color of focused edit controls"
+	TokenType = Expression
+	TargetH = Yes
+	Range  = "0x0-0x0f"
+End
+
+TOKEN
+	Name  = "TEXT_COLOR"
+	Value  = "(UINT8)(EFI_LIGHTGRAY)"
+	Help  = "Foreround color of text controls"
+	TokenType = Expression
+	TargetH = Yes
+	Range  = "0x0-0x0f"
+End
+
+TOKEN	
+	Name  = "STYLE_COLOR_GRAYOUT"
+	Value = "(UINT8)(EFI_LIGHTGRAY)"
+	Help  = " Item grayout colour "
+	TokenType = Expression
+	TargetH = Yes
+	Range  = "0x0-0x0f"
+End
+
+TOKEN
+	Name  = "MEMO_COLOR"
+	Value  = "(UINT8)(EFI_LIGHTGRAY)"
+	Help  = "Foreground color of Memo controls"
+	TokenType = Expression
+	TargetH = Yes
+	Range  = "0x0-0x0f"
+End
+
+TOKEN
+	Name  = "LOGO_FILE_NAME"
+	Value  = "SmcPkg\Project\X11DPTSGI\Addon\Logo.bmp"
+	TokenType = Expression
+	TargetMAK = Yes
+	TargetFDF = Yes
+End
+
+
+FFS_FILE
+	Name  = "AmiTseLogoFfsFdfFileStatement"
+	FD_AREA  = "FV_MAIN"
+	FILE_Stmt  = "SmcPkg\Project\X11DPTSGI\Addon\Logoffs.txt"
+	Token = "TSE_ROMHOLE_SUPPORT" "=" "0"
+	Token = "TSE_OEM_POSTLOGO_SUPPORT" "=" "1"
+End
+
+ELINK
+	Name  = "DisplayQuietBootHotKeyMessages,"
+	Parent  = "DrawQuietBootLogoHook,"
+	InvokeOrder = AfterParent
+	Disable = Yes
+End
+
+TOKEN
+	Name  = "EarlyVideo_Logo_Mode"
+	Value  = "0"
+	Help  = "Default value for Early Video mode."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0 - Only information, 1 - Show SMC logo"
+End
+
+TOKEN
+	Name  = "********** Debug Settings **********"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "BIOS_SIZE"
+	Value  = "0x2000000"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+End
+
+
+TOKEN
+	Name  = "DEBUG_MODE"
+	Value  = "0"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+
+TOKEN
+	Name  = "SameDebug_SUPPORT"
+	Value  = "0"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+
+TOKEN
+	Name  = "SIO_DEBUG_MESSAGES"
+	Value  = "0"
+	Help  = "Switch to enable SIO DEBUG MESSAGES in SIO MODULE."
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "DEBUG_MODE" "=" "1"
+End
+
+TOKEN
+	Name  = "FAULT_TOLERANT_NVRAM_UPDATE"
+	Value  = "0"
+	Help  = "Enables/disables fault tolerant NVRAM garbage collection.\If FAULT_TOLERANT_NVRAM_UPDATE is 1, the NVRAM driver uses redundant flash area of size NVRAM_SIZE to perform a failsafe garbage collection. \No data will be lost in case of a power failure.\If FAULT_TOLERANT_NVRAM_UPDATE is 0, the values of some or all NVRAM variables may be lost in case of a power failure during the garbage collection."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+        Token = "DEBUG_MODE" "=" "1"	
+End
+
+
+
+TOKEN
+    Name  = "SERVER_IPMI_DEBUG_MESSAGE_SUPPORT"
+    Value  = "0"
+    Help  = "Enables/Disables Debug message support from AMI IPMI PKG. Default is disabled. This token is provided to track flow of the modules when IPMI module is not working as expected. "
+    TokenType = Boolean
+    TargetH = Yes
+    Token = "DEBUG_MODE" "=" "1"
+End
+
+TOKEN
+    Name  = "PCI_BUS_DEBUG_MESSAGES"
+    Value  = "0"
+    Help  = "A switch to enable PciBus Driver Debug messages over Serial Port."
+    TokenType = Boolean
+    TargetH = Yes
+    Token = "DEBUG_CODE" "=" "1"
+End
+
+TOKEN
+    Name  = "USB_DEBUG_MESSAGES"
+    Value  = "0"
+    Help  = "A switch to enable PciBus Driver Debug messages over Serial Port."
+    TokenType = Boolean
+    TargetH = Yes
+    Token = "DEBUG_CODE" "=" "1"
+End
+
+TOKEN
+	Name  = "SMC_OOB_DEBUG_MESSAGE_SUPPORT"
+	Value  = "0"
+	Help  = "Enables/Disables Debug message support from AMI IPMI PKG. Default is disabled. This token is provided to track flow of the modules when IPMI module is not working as expected. "
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "DEBUG_MODE" "=" "1"
+End
+
+TOKEN
+	Name      = "SMC_ACPI_DEBUG_SUPPORT"
+	Value     = "0"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Help      = "Main switch to enable Smc Acpi Debug support in Project"
+End
+
+TOKEN
+	Name  = "SameDebug_SUPPORT"
+	Value  = "1"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "SMC_ACPI_DEBUG_SUPPORT" "=" "1"
+End
+
+
+
+
+TOKEN
+	Name  = "********** SMBIOS Settings **********"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "CPU1_DIMM_NUM"
+	Value  = "{1, 1, 1}"
+	Help = "{P1_DIMMA_D, P1_DIMMB_E, P1_DIMMC_F}"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "CPU2_DIMM_NUM"
+	Value  = "{1, 1, 1}"
+	Help = "{P2_DIMMA_D, P2_DIMMB_E, P2_DIMMC_F}"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+
+TOKEN
+	Name  = "NUMBER_OF_ONBOARD_DEVICES"
+	Value  = "3"
+	Help  = "Number of Onboard Devices Present in the System."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "ONBOARD_DEVICE_EXT_COUNT"
+	Value  = "1"
+	Help  = "Number of Onboard Devices"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "NUMBER_OF_SYSTEM_SLOTS"
+	Value  = "2"
+	Help  = "Identifies the number of system slots available on the platform."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+
+TOKEN
+	Name  = "SYSTEM_MANUFACTURER"
+	Value  = "SGI.COM"
+	Help  = "Specifies the System Manufacturer Name."
+	TokenType = Expression
+	TargetEQU = Yes
+        TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+  	Name      = "SYSTEM_PRODUCT_NAME"
+  	Value     = "ICE-X-Saxon-IP157"
+  	Help      = "Specifies the System Product Name"
+  	TokenType = Expression
+  	TargetEQU = Yes
+  	TargetMAK = Yes
+  	TargetH   = Yes
+	Token     = "SGI_B_BOARD" "=" "0"  	
+End
+
+TOKEN
+  	Name      = "SYSTEM_PRODUCT_NAME"
+  	Value     = "ICE-X-Saxon-IP159"
+  	Help      = "Specifies the System Product Name"
+  	TokenType = Expression
+  	TargetEQU = Yes
+  	TargetMAK = Yes
+  	TargetH   = Yes
+  	Token     = "SGI_B_BOARD" "=" "1"
+End
+
+TOKEN
+        Name  = "SYSTEM_VERSION"
+        Value  = "ICE-XA"
+        Help  = "Specifies the System Product Version."
+        TokenType = Expression
+        TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "BASE_BOARD_MANUFACTURER"
+	Value  = "Silicon Graphics International"
+	Help  = "Specifies the Board Manufacturer."
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "BASE_BOARD_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "BASE_BOARD_PRODUCT_NAME"
+	Value  = "X11DPT-SA-SG007"
+	Help  = "Specifies the Product Name"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "BASE_BOARD_INFO" "=" "1"
+	Token     = "SGI_B_BOARD" "=" "0"
+End
+
+TOKEN
+	Name  = "BASE_BOARD_PRODUCT_NAME"
+	Value  = "X11DPT-SB-SG007"
+	Help  = "Specifies the Product Name"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "BASE_BOARD_INFO" "=" "1"
+    Token     = "SGI_B_BOARD" "=" "1"
+End
+
+TOKEN
+	Name  = "BASE_BOARD_SERIAL_NUMBER"
+	Value  = "To be filled by O.E.M."
+	Help  = "Specifies the Product Serial Number."
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "BASE_BOARD_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "SYSTEM_SERIAL_NUMBER"
+	Value  = "To be filled by O.E.M."
+	Help  = "Specifies the System Serial Number."
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+
+
+TOKEN
+	Name  = "BASE_BOARD_VERSION"
+	Value  = "To be filled by O.E.M."
+	Help  = "Specifies the Product Version."
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "BASE_BOARD_INFO" "=" "1"
+	Token = "NUMBER_OF_BASEBOARDS" "=" "1"
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_MANUFACTURER_1"
+	Value  = "SGI.COM"
+	Help  = "Specifies the System Chassis Manufacturer."
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_VERSION_1"
+	Value  = "P0004328-00x"
+	Help  = "Specifies the Chassis Version"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token     = "SGI_B_BOARD" "=" "0"
+End
+
+
+TOKEN
+	Name  = "SYS_CHASSIS_VERSION_1"
+	Value  = "P0004331-00x"
+	Help  = "Specifies the Chassis Version"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token     = "SGI_B_BOARD" "=" "1"
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_SERIAL_NUM_1"
+	Value  = "To be filled by O.E.M."
+	Help  = "Specifies the Chassis Serial number"
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "OEM_STRING_1"
+	Value  = "SGI.COM"
+	Help  = "Specifies the OEM STRING"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "OEM_STRING_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "OEM_STRING_2"
+	Value  = " "
+	Help  = "Specifies the OEM STRING"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "OEM_STRING_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "********** Other Settings **********"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "HOTPLUG_SUPPORT"
+	Value  = "1"
+	Help  = "Enables / Disables Pci Bus Driver Native PCI Hotplug support"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "IpmiRedirFru_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable IpmiRedirFru support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes    
+End
+
+TOKEN
+	Name  = "NWSTACK_DEFAULT_VALUE"
+	Value  = "1"
+	Help  = "Token to set default value of Network stack Enabled or Disabled."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "NETWORKSTACK_IPV4_PXE_SUPPORT"
+	Value  = "1"
+	Help  = "Token to set default value of PXE_Ipv4 Support Enabled or Disabled."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "NETWORKSTACK_IPV4_HTTP_SUPPORT"
+	Value  = "1"
+	Help  = "Token to set default value of HTTP_Ipv4 Support Enabled or Disabled."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "DEFAULT_XHCI_HANDOFF_OPTION"
+	Value  = "1"
+	Help  = "Default value of the XHCI Hand-off option."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "********** GPIO Settings **********"
+	TokenType = Expression
+End
+
+
+TOKEN
+	Name  = "SGI_NODE_1_PIN"
+	Value  = "$(SMC_GPP_C) + 12"
+	Help  = "The Number of GPIO pin which should be routed to cause SMI. \0xFF: no such Pin."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+
+TOKEN
+	Name  = "  ====== IOBP Setting Adjust ======  "
+	TokenType = Integer
+End
+
+#
+# Format:{PordId, LanNum, PhyMode, Offset, Value, BitMask}
+#
+TOKEN
+	Name  = "HSIO12T6"
+	Value  = "{0xA9, 12, 0x02, 0x0498, 0x00280000, ~0x003F0000},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIO13T6"
+	Value  = "{0xA9, 13, 0x02, 0x0698, 0x00280000, ~0x003F0000},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIO14T6"
+	Value  = "{0xA9, 14, 0x02, 0x0898, 0x00280000, ~0x003F0000},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIO15T6"
+	Value  = "{0xA9, 15, 0x02, 0x0A98, 0x00280000, ~0x003F0000},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIO16T6"
+	Value  = "{0xA9, 16, 0x02, 0x0C98, 0x00280000, ~0x003F0000},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIO17T6"
+	Value  = "{0xA9, 17, 0x02, 0x0E98, 0x00280000, ~0x003F0000},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIO18T6"
+	Value  = "{0xA9, 18, 0x02, 0x1098, 0x00280000, ~0x003F0000},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIO19T6"
+	Value  = "{0xA9, 19, 0x02, 0x1298, 0x00280000, ~0x003F0000},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIO20T6"
+	Value  = "{0xA9, 20, 0x02, 0x1498, 0x00280000, ~0x003F0000},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIO21T6"
+	Value  = "{0xA9, 21, 0x02, 0x1698, 0x00280000, ~0x003F0000},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIO22T6"
+	Value  = "{0xA9, 22, 0x02, 0x1898, 0x00280000, ~0x003F0000},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIO23T6"
+	Value  = "{0xA9, 23, 0x02, 0x1A98, 0x00280000, ~0x003F0000},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIO24T6"
+	Value  = "{0xA9, 24, 0x02, 0x1C98, 0x00280000, ~0x003F0000},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIO25T6"
+	Value  = "{0xA9, 25, 0x02, 0x1E98, 0x00280000, ~0x003F0000},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIOPCPP1" # USB2PP1 Port C
+	Value  = "{0xCA, 0, 0x08, 0x4C00, 0x0000D800, ~0x0000FF00},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIOPDPP1" # USB2PP1 Port D
+	Value  = "{0xCA, 0, 0x08, 0x4D00, 0x0000D800, ~0x0000FF00},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIOPAPP1" # USB2PP1 Port A
+	Value  = "{0xCA, 0, 0x08, 0x4A00, 0x0000C500, ~0x0000FF00},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIOP8PP1" # USB2PP1 Port 8
+	Value  = "{0xCA, 0, 0x08, 0x4800, 0x0000D800, ~0x0000FF00},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIOP9PP1" # USB2PP1 Port 9
+	Value  = "{0xCA, 0, 0x08, 0x4900, 0x0000D800, ~0x0000FF00},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIOPAPP2" # USB2PP2 Port A
+	Value  = "{0xCA, 0, 0x08, 0x4A26, 0x00820000, ~0xFFFF0000},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "SB_OEM_PTSS_TABLE_LIST"
+	Value  = "$(HSIO12T6)$(HSIO13T6)$(HSIO14T6)$(HSIO15T6)$(HSIO16T6)$(HSIO17T6)$(HSIO18T6)$(HSIO19T6)$(HSIO20T6)$(HSIO21T6)$(HSIO22T6)$(HSIO23T6)$(HSIO24T6)$(HSIO25T6)$(HSIOPCPP1)$(HSIOPDPP1)$(HSIOPAPP1)$(HSIOP8PP1)$(HSIOP9PP1)$(HSIOPAPP2){0xFF, 0xFF, 0x02, 0x1098, 0x002A0000, ~0x003F0000},"
+	Help  = "Format:{PordId, LanNum, PhyMode, Offset, Value, BitMask}, PordId: ignored, LanNum: HSIO Lan#(Start from 0), PhyMode: 0:PCIEDMI/1:USB3/2:SATA/8:USB2, For USB2 set LanNum to 0."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "********** Aspeed VGA Settings **********"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "Root_Port_Fun"
+	Value  = "5"
+	Help  = "Aspeed chip root port function of ICH/PCH"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0 - 7"
+End
+
+
+TOKEN
+	Name  = "********** Riser Settings **********"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "SmcRiserCard_SUPPORT"
+	Value  = "0"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "WIO_SUPPORT"
+	Value  = "0"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "ULIO_SUPPORT"
+	Value  = "0"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "********** Slot Settings **********"
+	TokenType = Expression
+End
+
+# A0 node x16 riser second CPU port1A
+PcdMapping
+	Name  = "PcdSmcSLOT1BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x00210000"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+# A1 node x16 riser  First CPU port3A
+PcdMapping
+	Name  = "PcdSmcSLOT2BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x00130000"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+TOKEN
+	Name  = "********** Lan Settings **********"
+	TokenType = Expression
+End
+
+TOKEN
+	Name      = "SMC_ONBOARD_LAN_DID1"
+	Value     = "0x1537"
+	Help      = "Smc Onboard Lan Option Rom Agent Did"
+	TokenType = Integer
+	TargetH   = Yes
+	Range     = "2 byte length"
+End
+
+PcdMapping
+	Name  = "PcdSmcOBLan1BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x000000E3"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+
+
+TOKEN
+	Name  = "MultiFuncLAN"
+	Value = "1"
+	Help  = "1:Single port, 2:Dual port, 4:Quad port, <Note> Can't be 0"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+#default is for A0   NVMe1 : CPU1 port 2A   NVMe2 : CPU0 port1A
+PcdMapping
+        Name  = "PcdSmcOBNVMe1BDF"
+        GuidSpace  = "gSmcPkgTokenSpaceGuid"
+        PcdType  = "PcdsDynamicDefault"
+        Value  = "0x00220000"
+        Arch  = "common"
+        Offset  = 00h
+        Length  = 00h
+        TargetDSC = Yes
+End
+
+PcdMapping
+        Name  = "PcdSmcOBNVMe2BDF"
+        GuidSpace  = "gSmcPkgTokenSpaceGuid"
+        PcdType  = "PcdsDynamicDefault"
+        Value  = "0x00110000"
+        Arch  = "common"
+        Offset  = 00h
+        Length  = 00h
+        TargetDSC = Yes
+End
+
+
+TOKEN
+	Name  = "********** USB OC Settings **********"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "USB2_OC_PIN"
+	Value  = "{8, 8, 8, 8, 8, 8, 8, 4, 4, 3, 8, 5, 5, 8, 8, 8}"
+	Help = "0: OC_PIN_1, 1: OC_PIN_2, 2: OC_PIN_3, ~~ 8: OC_PIN_SKIP"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "USB3_OC_PIN"
+	Value  = "{5, 5, 4, 4, 8, 3, 8, 8, 8, 8}"
+	Help = "0: OC_PIN_1, 1: OC_PIN_2, 2: OC_PIN_3, ~~ 8: OC_PIN_SKIP"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "********** Disabled items from CRB **********"
+	TokenType = Expression
+End
+
+
+TOKEN
+	Name  = DsmAsl_SUPPORT
+	Value  = "0"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes	
+	Help  = "Main switch to enable DsmAsl support in Project"
+End
+
+FFS_FILE
+	Name  = "VmdVrocDriverEfi"
+	FD_AREA  = "FV_MAIN"
+	FILE_Stmt  = "AmiCRBPkg\VMDVROCDriverFdfFileStatement.txt"
+    Disable = Yes
+End
+
+TOKEN
+	Name  = "********** DSM define **********"
+	TokenType = Expression
+End
+
+
+TOKEN
+	Name  = "********** Override setup **********"
+	TokenType = Expression
+End
+
+ELINK
+	Name  = "$(X11DPTSGI_PROJECT_DIR)\OverrideSetup.uni"
+	Parent  = "SetupStringFiles"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name = "$(SMC_POST_MSG_HOT_KEY_DIR)\SmcPostMsgHotKey.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	InvokeOrder = BeforeParent
+	#Token = "SUPER_M_SETUP_SUPPORT" "!=" "1"
+	Disable = Yes 
+End
+
+ELINK
+	Name = "$(OVERRIDE_X11DPTSGI_DIR)\$(SMC_POST_MSG_HOT_KEY_DIR)\SmcPostMsgHotKey.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	InvokeOrder = BeforeParent
+End
+
+ELINK
+	Name  = "$(PCIBUS_DIR)/PciStaticSetup.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	InvokeOrder = AfterParent
+	Token = "SMC_SETUP_STYLE" "=" "1"
+	Disable = Yes 
+End
+
+ELINK
+	Name  = "$(OVERRIDE_X11DPTSGI_DIR)/$(PCIBUS_DIR)/PciStaticSetup.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	InvokeOrder = AfterParent
+	Token = "SMC_SETUP_STYLE" "=" "1"
+End
+
+ELINK
+    Name  = "$(SmbiosElogSetupScreen_DIR)/SmbiosElogSetupScreenVfr.sd"
+    Parent  = "EVENT_LOGS_SETUP_DEFINITIONS"
+    Priority  = 40
+    InvokeOrder = AfterParent
+    Disable = Yes
+    Help  = "ELink to include SmbiosElogSetupScreenVfr.sd to Event Logs Setup data definitions"
+End
+
+ELINK
+    Name  = "$(OVERRIDE_X11DPTSGI_DIR)/$(SmbiosElogSetupScreen_DIR)/SmbiosElogSetupScreenVfr.sd"
+    Parent  = "EVENT_LOGS_SETUP_DEFINITIONS"
+    Priority  = 40
+    InvokeOrder = AfterParent
+    Help  = "ELink to include SmbiosElogSetupScreenVfr.sd to Event Logs Setup data definitions"
+End
+
+ELINK
+	Name  = "$(SmcSetPowerStatus_DIR)\SmcSetPowerStatus.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	InvokeOrder = AfterParent
+	Disable = Yes
+End
+
+ELINK
+	Name  = "$(OVERRIDE_X11DPTSGI_DIR)\$(SmcSetPowerStatus_DIR)\SmcSetPowerStatus.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	InvokeOrder = AfterParent
+End
+
+
+ELINK
+	Name  = "$(SmcOpromCtrl_DIR)/SmcOpromCtrl.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	InvokeOrder = AfterParent
+	Disable = Yes
+End
+
+ELINK
+	Name  = "$(OVERRIDE_X11DPTSGI_DIR)/$(SmcOpromCtrl_DIR)/SmcOpromCtrl.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(Setup_DIR)/AmiBiosInfo.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	InvokeOrder = BeforeParent
+	Disable = Yes
+End
+
+ELINK
+	Name  = "$(OVERRIDE_X11DPTSGI_DIR)/$(Setup_DIR)/AmiBiosInfo.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	InvokeOrder = BeforeParent
+End
+
+ELINK
+	Name  = "$(NB_BOARD_DIR)/Nb.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	InvokeOrder = AfterParent
+    Disable = Yes
+	Token = "SMC_SETUP_STYLE" "=" "1"
+End
+
+ELINK
+	Name  = "$(OVERRIDE_X11DPTSGI_DIR)/$(NB_BOARD_DIR)/Nb.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	InvokeOrder = BeforeParent
+	Token = "SMC_SETUP_STYLE" "=" "1"
+End
+
+ELINK
+	Name  = "$(TERMINAL_DIR)/Terminal.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	InvokeOrder = AfterParent
+	Disable = Yes
+	Token = "SMC_SETUP_STYLE" "=" "1"
+End
+
+ELINK
+	Name  = "$(OVERRIDE_X11DPTSGI_DIR)/$(TERMINAL_DIR)/Terminal.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	InvokeOrder = AfterParent
+	Token = "SMC_SETUP_STYLE" "=" "1"
+End
+
+
+TOKEN
+	Name  = "********** SuperM Board Driver **********"
+	TokenType = Expression
+End
+
+FFS_FILE
+	Name  = "X11DPTSGIPeiDriver"
+	FD_AREA  = "FV_BB"
+	INFComponent  = "SmcPkg.X11DPTSGIPeiDriver"
+	Apriori_Index  = "1"
+End
+
+FFS_FILE
+	Name  = "X11DPTSGIDxeDriver"
+	FD_AREA  = "FV_MAIN"
+	INFComponent  = "SmcPkg.X11DPTSGIDxeDriver"
+	Apriori_Index  = "3"
+End
+
+INFComponent
+	Name  = "X11DPTSGIDxeDriver"
+	File  = "X11DPTSGIDxeDriver.inf"
+	Package  = "SmcPkg"
+	ModuleTypes = "DXE_DRIVER"
+End
+
+INFComponent
+	Name  = "X11DPTSGIPeiDriver"
+	File  = "X11DPTSGIPeiDriver.inf"
+	Package  = "SmcPkg"
+	ModuleTypes  = "PEIM"
+End
+
+INFComponent
+        Name  = "X11DPTSGISmmDriver"
+        File  = "X11DPTSGISmmDriver.inf"
+        Package  = "SmcPkg"
+        ModuleTypes  = "DXE_SMM_DRIVER"
+End
+
+#TOKEN
+#    Name  = "GBE_NVM_BIN"
+#    Value  = "GBE\I219_Nahum7_Purley_LM_No-LAN-Switch_Rev_0.2.bin"
+#    Help  = "GBE NVM Binary "
+#    TokenType = Expression
+#    TargetMAK = Yes
+#    Disable = Yes    
+#End
+TOKEN
+	Name  = "********** PCIE device sdl setting **********"
+	TokenType = Expression
+End
+
+PCIDEVICE
+    Title  = "On Board Video"
+    Parent  = "Video Bridge"
+    Attribute  = "0x0"
+    Dev_type  = "PciDevice"
+    Dev  = 00h
+    Fun  = 00h
+    SleepNum  = 01h
+    ROMFile  = "SmcPkg\Binary\ASTVBIOS.ROM"
+    IntA =  LNKA; 16
+    IntB =  LNKB; 17
+    IntC =  LNKC; 18
+    IntD =  LNKD; 19
+    DeviceType = OnBoard
+    PCIBusSize = 32bit
+    OptionROM = Yes
+    ROMMain = No
+    PCIExpress = Yes
+    LegacyRom = Yes
+    FFSFileName  = "ROM Storage"
+    ROMSectionGuid  = "577dc59e-5260-4783-bf52-7301ec9d6be5"
+End
+
+
+PCIDEVICE
+	Title  = "UEFI Video"
+	Parent  = "Video Bridge"
+	Attribute  = "0x0"
+	Dev_type  = "Container"
+	Dev  = 00h
+	Fun  = 00h
+	SleepNum  = 01h
+	ROMFile  = "SmcPkg\Binary\ASPEEDGraphicsDxe.efi"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	OptionROM = Yes
+	ROMMain = No
+	Virtual = Yes
+	UefiRom = Yes
+	FFSFileName  = "ROM Storage"
+	ROMSectionGuid  = "27858c44-bc60-405a-ab17-30255f853c58"
+End
+
+PCIDEVICE
+	Title  = "Intel I210 LAN"
+	Parent  = "PCIE PCH Root Port #4"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+    Fun  = 00h
+	SleepNum  = 01h
+	ROMFile  = "SmcPkg\Project\X11DPTSGI\Addon\BA1553L2.LOM"
+	DeviceID  = 01537h
+	VendorID  = 08086h	
+	IntA = 	LNKA; 16
+	IntB = 	LNKB; 17
+	IntC = 	LNKC; 18
+	IntD = 	LNKD; 19
+	ASLdeviceName  = "LAN1"	
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	OptionROM = Yes
+	ROMMain = No
+	PCIExpress = Yes
+	LegacyRom = Yes
+	FFSFileName  = "ROM Storage"
+	ROMSectionGuid  = "8711152d-3e0c-465e-b51f-7672407911ae"
+End
+
+
+PCIDEVICE
+	Title  = "Intel I210 iSCSI"
+	Parent  = "PCIE PCH Root Port #4"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Fun  = 00h
+	SleepNum  = 01h
+	ROMFile  = "SmcPkg\Project\X11DPTSGI\Addon\153750.LOM"
+	DeviceID  = 01537h
+	VendorID  = 08086h	
+	IntA = 	LNKA; 16
+	IntB = 	LNKB; 17
+	IntC = 	LNKC; 18
+	IntD = 	LNKD; 19
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	OptionROM = Yes
+	ROMMain = No
+	PCIExpress = Yes
+	LegacyRom = Yes
+	FFSFileName  = "ROM Storage"
+	ROMSectionGuid  = "2dc6f1df-a42b-4a1a-b059-2e65de5de6db"
+End
+
+
+PCIDEVICE
+	Title  = "Onboard I210 UEFI"
+	Parent  = "PCIE PCH Root Port #4"
+	Attribute  = "0x0"
+	Dev_type  = "Container"
+	Dev  = 00h
+	Fun  = 00h
+	SleepNum  = 01h
+	ROMFile  = "IntelGigabitLanPkg\X64\IntelGigabitLan.efi"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	OptionROM = Yes
+	ROMMain = No
+	Virtual = Yes
+	UefiRom = Yes
+	FFSFileName  = "ROM Storage"
+	ROMSectionGuid  = "5b321384-858e-2f6e-b956-9454373fd992"
+End
+
+##########################################
+#
+#  A0 side
+#
+
+#On board NVMe CPU0 Port1A x4 , CPU1 Port2A x4
+
+
+
+PCIDEVICE
+	Title  = "SFF-8639 DISK1"
+	Parent  = "PCI Express Port 1A on PC01"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 02h
+	SleepNum  = 04h
+	IntA = 	LNKA; 32
+	IntB = 	LNKB; 36
+	IntC = 	LNKC; 37
+	IntD = 	LNKD; 38
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "SFF-8639 DISK0"
+	Parent  = "PCI Express Port 2A on PC08"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 01h
+	SleepNum  = 04h
+	IntA = 	LNKA; 88
+	IntB = 	LNKB; 92
+	IntC = 	LNKC; 93
+	IntD = 	LNKD; 94
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+#PCIe Riser x16 -- CPU1 port1A
+
+
+PCIDEVICE
+	Title  = "PCIe Riser A0"
+	Parent  = "PCI Express Port 1A on PC07"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 04h
+	SleepNum  = 04h
+	IntA = 	LNKA; 80
+	IntB = 	LNKB; 84
+	IntC = 	LNKC; 85
+	IntD = 	LNKD; 86
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+ 
+
+#HIROSE MEZZ   -- CPU0 Port3A, CPU1 Port3A 
+PCIDEVICE
+	Title  = "HIROSE MEZZ A0#1"
+	Parent  = "PCI Express Port 3A on PC03"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 05h
+	SleepNum  = 04h
+	IntA = 	LNKA; 48
+	IntB = 	LNKB; 52
+	IntC = 	LNKC; 53
+	IntD = 	LNKD; 54
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End 
+
+PCIDEVICE
+	Title  = "HIROSE MEZZ A0#2"
+	Parent  = "PCI Express Port 3A on PC09"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 06h
+	SleepNum  = 04h
+	IntA = 	LNKA; 96
+	IntB = 	LNKB; 100
+	IntC = 	LNKC; 101
+	IntD = 	LNKD; 102
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+#############################
+#
+#  A1 side
+#
+
+#On board NVMe  CPU0 Port2A x4 , CPU1 Port2A x4
+
+PCIDEVICE
+	Title  = "PCI Express Port 2A on PC08"
+	Parent  = "Socket 1 Root bridge (Stack 2)"
+	Attribute  = "0"
+	Dev_type  = "Pci2PciBridge"
+	Dev  = 00h
+	Fun  = 00h
+	ASLfile  = "'PurleyPlatPkg\Acpi\AcpiTables\Dsdt\PcieHp.asi','PurleyPlatPkg\Acpi\AcpiTables\Dsdt\PcieHpDev.asi','PurleyPlatPkg\Acpi\AcpiTables\Dsdt\PC06Ejd.asi'"
+	ASLdeviceName  = "QR2A"
+	IntA = 	LNKA; 16
+	Token = "NB_IOxAPIC_SUPPORT" "=" "0"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+	InitRoutine  = "PcieRootPortInitCallback"
+End
+
+PCIDEVICE
+	Title  = "SFF-8639 DISK3"
+	Parent  = "PCI Express Port 2A on PC02"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 02h
+	SleepNum  = 04h
+	IntA = 	LNKA; 40
+	IntB = 	LNKB; 44
+	IntC = 	LNKC; 45
+	IntD = 	LNKD; 46
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "SFF-8639 DISK2"
+	Parent  = "PCI Express Port 2A on PC08"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 01h
+	SleepNum  = 00h
+	IntA = 	LNKA; 88
+	IntB = 	LNKB; 92
+	IntC = 	LNKC; 93
+	IntD = 	LNKD; 94
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+#PCIe Riser x16 -- CPU0 port3A
+PCIDEVICE
+	Title  = "PCIe Riser A1"
+	Parent  = "PCI Express Port 3A on PC03"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 04h
+	SleepNum  = 04h
+	IntA = 	LNKA; 48
+	IntB = 	LNKB; 52
+	IntC = 	LNKC; 53
+	IntD = 	LNKD; 54
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+ 
+
+#HIROSE MEZZ   -- CPU0 Port1A, CPU1 Port3A 
+PCIDEVICE
+	Title  = "HIROSE MEZZ A1#1"
+	Parent  = "PCI Express Port 1A on PC01"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 05h
+	SleepNum  = 04h
+	IntA = 	LNKA; 32
+	IntB = 	LNKB; 36
+	IntC = 	LNKC; 37
+	IntD = 	LNKD; 38
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End 
+
+PCIDEVICE
+	Title  = "HIROSE MEZZ A1#2"
+	Parent  = "PCI Express Port 3A on PC09"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 06h
+	SleepNum  = 04h
+	IntA = 	LNKA; 96
+	IntB = 	LNKB; 100
+	IntC = 	LNKC; 101
+	IntD = 	LNKD; 102
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+TOKEN
+    Name = "PORT61H_EMULATION"
+    Value = "0"
+    Help = "0 - Disable Port 61h emulation, 1 - Enable Port 61h emulation"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+
+
+

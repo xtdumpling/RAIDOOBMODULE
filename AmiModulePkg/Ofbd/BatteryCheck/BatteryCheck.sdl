@@ -1,0 +1,48 @@
+TOKEN
+	Name  = "AC_BATTERY_CHECK_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable AC/Battery Check support in Project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "[AC/Battery Check Sample Code Section]"
+	Help  = "See detail description in each token's help box."
+	TokenType = Expression
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "BATTERYCHECK_SAMPLE_TEST"
+	Value  = "1"
+	Help  = "Test AC/Battery Check Function"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "AC_BATTERY_CHECK_SUPPORT" "=" "1"
+End
+
+PATH
+	Name  = "OFBD_BATTERYCHECK_DIR"
+End
+
+ELINK
+	Name  = "$(OFBD_BATTERYCHECK_DIR)/BatteryCheck.h"
+	Parent  = "OFBD_FUNC_INCLUDE_FILES"
+	InvokeOrder = BeforeParent
+End
+
+ELINK
+	Name  = "$(OFBD_BATTERYCHECK_DIR)/BatteryCheck.c"
+	Parent  = "OFBD_FUNC_SOURCES_FILES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "BatteryCheckEntry,"
+	Parent  = "OFBD_INIT_FUNC_LIST"
+	Token = "AC_BATTERY_CHECK_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+

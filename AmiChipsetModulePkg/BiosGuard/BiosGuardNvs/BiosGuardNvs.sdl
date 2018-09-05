@@ -1,0 +1,57 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+TOKEN
+    Name  = "BIOS_GUARD_NVS_SUPPORT"
+    Value  = "1"
+    Help  = "Switch for Enabling BIOS_GUARD_NVS support in the project"
+    TokenType = Boolean
+    Master = Yes
+End
+
+PCIDEVICE
+    Title = "BIOS GUARD NVS"
+    Parent = "PciHost (Virtual)"
+    Attribute = "0x0"
+    Dev_type = "Container"
+    Dev = 00h
+    Fun = 00h
+    SleepNum = 01h
+    ASLfile = "'AmiChipsetModulePkg/BiosGuard/BiosGuardNVS/BiosGuardNvs.asl;After Pci Tree'"
+    DeviceType = OnBoard
+    PCIBusSize = 32bit
+    ROMMain = No
+    Virtual = Yes
+End
+
+INFComponent
+    Name = "BiosGuardNvs"
+    File = "BiosGuardNvs.inf"
+    Package = "AmiChipsetModulePkg"
+    ModuleTypes="DXE_DRIVER"
+End
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

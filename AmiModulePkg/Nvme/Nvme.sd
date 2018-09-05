@@ -1,0 +1,129 @@
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
+
+/** @file Nvme.sd
+    Nvme Driver Setup Page
+
+**/
+
+#ifdef FORM_SET_TYPEDEF
+
+//---------------------------------------------------------------------------
+
+#include "NvmeStaticSetup.h"
+
+//---------------------------------------------------------------------------
+
+#endif 
+
+#ifdef SETUP_DATA_DEFINITION
+// These definitions will be converted by the build process
+// to a definitions of SETUP_DATA fields.
+#endif
+
+#ifdef FORM_SET_VARSTORE
+
+    varstore NVME_DEVICE_MANAGER,
+        key  = AUTO_ID(NVME_DEVICE_MANAGER_KEY),
+        name = NvmeDriverManager,
+        guid = NVME_DEVICE_MANAGER_GUID;
+#endif
+
+#if defined(VFRCOMPILE) && !defined(CONTROLS_ARE_DEFINED)
+    #define CONTROL_DEFINITION
+#endif
+
+#ifdef CONTROL_DEFINITION
+    #define NVME_INFO_DISPLAY(HELP_STRING, CONTROLLER_STRING, DEVICE_STRING, INDEX)\
+        suppressif ideqval NVME_DEVICE_MANAGER.ShowNvmeDrive[INDEX] == 0; \
+        text \
+        help   = HELP_STRING, \
+        text   = CONTROLLER_STRING, \
+        text   = DEVICE_STRING, \
+        flags  = 0, \
+        key    = 0;\
+    endif;
+    
+    #define NVME_SIZE_DISPLAY(SIZE_STRING, INDEX)\
+    suppressif ideqval NVME_DEVICE_MANAGER.ShowNvmeDrive[INDEX] == 0; \
+        text \
+        help   = STRING_TOKEN(STR_EMPTY), \
+        text   = STRING_TOKEN(STR_NVME_SIZE), \
+        text   = SIZE_STRING, \
+        flags  = 0, \
+        key    = 0;\
+    endif;
+#endif 
+
+//Select Top level menu item (form set) for you pages
+#ifdef ADVANCED_FORM_SET 
+
+    #ifdef FORM_SET_GOTO
+        // Define forms
+    
+        // Define goto commands for the forms defined in this file
+        goto   NVME_CONFIG_FORM_ID,
+        prompt = STRING_TOKEN (STR_NVME_CONFIG_FORM),
+        help   = STRING_TOKEN (STR_NVME_CONFIG_FORM_HELP);
+    
+    #endif
+
+    #ifdef FORM_SET_FORM
+
+        #ifndef NVME_FORM_NVME_CONFIG
+            #define NVME_FORM_NVME_CONFIG
+
+            form formid = AUTO_ID(NVME_CONFIG_FORM_ID),
+            title     = STRING_TOKEN (STR_NVME_CONFIG_FORM);
+        
+                SUBTITLE(STRING_TOKEN(STR_NVME_SUBTITLE_STRING))
+                SEPARATOR
+                suppressif NOT ideqval NVME_DEVICE_MANAGER.DeviceCount == 0x00;
+                SUBTITLE(STRING_TOKEN(STR_NO_NVME_DEVICE))
+                endif;
+                
+                NVME_INFO_DISPLAY(STRING_TOKEN(STR_NVME_HELP_STRING), STRING_TOKEN(STR_NVME0_CONTROLLER), STRING_TOKEN(STR_NVME0_NAME), 0) \
+                NVME_SIZE_DISPLAY(STRING_TOKEN(STR_NVME0_SIZE), 0)\
+                SEPARATOR
+                NVME_INFO_DISPLAY(STRING_TOKEN(STR_NVME_HELP_STRING), STRING_TOKEN(STR_NVME1_CONTROLLER), STRING_TOKEN(STR_NVME1_NAME), 1) \
+                NVME_SIZE_DISPLAY(STRING_TOKEN(STR_NVME1_SIZE), 1)\
+                SEPARATOR
+                NVME_INFO_DISPLAY(STRING_TOKEN(STR_NVME_HELP_STRING), STRING_TOKEN(STR_NVME2_CONTROLLER), STRING_TOKEN(STR_NVME2_NAME), 2) \
+                NVME_SIZE_DISPLAY(STRING_TOKEN(STR_NVME2_SIZE), 2)\
+                SEPARATOR
+                NVME_INFO_DISPLAY(STRING_TOKEN(STR_NVME_HELP_STRING), STRING_TOKEN(STR_NVME3_CONTROLLER), STRING_TOKEN(STR_NVME3_NAME), 3) \
+                NVME_SIZE_DISPLAY(STRING_TOKEN(STR_NVME3_SIZE), 3)\
+                          
+            endform; // End of NVME_CONFIG_FORM_ID
+
+        #endif // End of NVME_FORM_NVME_CONFIG
+          
+    #endif // End of FORM_SET_FORM
+
+#endif // End of ADVANCED_FORM_SET
+
+
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************

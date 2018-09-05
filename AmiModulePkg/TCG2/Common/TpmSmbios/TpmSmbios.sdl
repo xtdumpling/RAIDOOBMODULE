@@ -1,0 +1,118 @@
+TOKEN
+    Name  = "TpmSmbios_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable TpmSmbios support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes
+    Master = Yes
+End
+
+TOKEN
+    Name  = "TPM_SMBIOS_VERBOSE_PRINT"
+    Value  = "0"
+    Help  = "Make sure PcdDebugPrintErrorLevel is set to PcdsPatchableInModule. Search in all SDL files."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "CHECK_TPM_SMBIOS_VERSION_SUPPORT"
+    Value  = "1"
+    Help  = "0:Don't check Smbios version and add the TPM smbios entry,1:check Smbios version and add the TPM smbios entry"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+PATH
+    Name = "TpmSmbios_DIR"
+End
+
+TOKEN
+    Name  = "DEBUG_ERROR_LEVEL_MASK"
+    Value  = "0x80400044"
+    Help  = "Used to control the debug message printed from this module. Look into DebugLib.h for the definition."
+    TokenType = Integer
+    TargetH = Yes
+    Token = "TPM_SMBIOS_VERBOSE_PRINT" "=" "1"
+End
+
+ELINK
+    Name  = "$(TpmSmbios_DIR)"
+    Parent  = "PLATFORM_DSC_INCLUDE_PATHS"
+    InvokeOrder = AfterParent
+End
+
+INFComponent
+    Name  = "TpmSmbiosDxe"
+    File  = "TpmSmbiosDxe.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_DRIVER"
+End
+
+PcdMapping
+    Name  = "PcdTpmSmbiosCharacteristicSupport"
+    GuidSpace  = "gAmiTcgPkgTokenSpaceGuid"
+    PcdType  = "PcdsDynamicDefault"
+    DataType  = "BOOLEAN"
+    Value  = "TRUE"
+    Offset  = 00h
+    Length  = 01h
+    TargetDSC = Yes
+End
+
+PcdMapping
+    Name  = "PcdTpmSmbiosConfigFirmware"
+    GuidSpace  = "gAmiTcgPkgTokenSpaceGuid"
+    PcdType  = "PcdsDynamicDefault"
+    DataType  = "BOOLEAN"
+    Value  = "FALSE"
+    Offset  = 00h
+    Length  = 01h
+    TargetDSC = Yes
+End
+
+PcdMapping
+    Name  = "PcdTpmSmbiosConfigSoftware"
+    GuidSpace  = "gAmiTcgPkgTokenSpaceGuid"
+    PcdType  = "PcdsDynamicDefault"
+    DataType  = "BOOLEAN"
+    Value  = "TRUE"
+    Offset  = 00h
+    Length  = 01h
+    TargetDSC = Yes
+End
+
+PcdMapping
+    Name  = "PcdTpmSmbiosConfigOem"
+    GuidSpace  = "gAmiTcgPkgTokenSpaceGuid"
+    PcdType  = "PcdsDynamicDefault"
+    DataType  = "BOOLEAN"
+    Value  = "FALSE"
+    Offset  = 00h
+    Length  = 01h
+    TargetDSC = Yes
+End
+
+PcdMapping
+    Name  = "PcdTpmSmbiosOemDefined"
+    GuidSpace  = "gAmiTcgPkgTokenSpaceGuid"
+    PcdType  = "PcdsDynamicDefault"
+    DataType  = "UINT32"
+    Value  = "0x00000"
+    Offset  = 00h
+    Length  = 04h
+    TargetDSC = Yes
+End
+
+PcdMapping
+    Name  = "PcdDebugPrintErrorLevel"
+    GuidSpace  = "gEfiMdePkgTokenSpaceGuid"
+    PcdType  = "PcdsFixedAtBuild"
+    Value  = "0x80400044"
+    Override  = "AmiModulePkg.TpmSmbiosDxe"
+    Offset  = 00h
+    Length  = 00h
+    TargetDSC = Yes
+    Token = "TPM_SMBIOS_VERBOSE_PRINT" "=" "1"
+End

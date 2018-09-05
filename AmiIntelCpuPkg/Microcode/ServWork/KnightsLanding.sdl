@@ -1,0 +1,40 @@
+TOKEN
+    Name  = "SERVWORK_5067X"
+    Value = "0"
+    Help  = "Intel(R) Knights Landing Server"
+    TokenType = Boolean
+    Master = Yes
+End
+
+TOKEN
+    Name  = "SERVWORK_M0850670"
+    Value  = "1"
+    Help  = "Intel(R) Knights Landing Processor A-0 Stepping"
+    TokenType = Boolean
+    Token = "NON_PRODUCTION_MICROCODE" "=" "1"
+End
+
+TOKEN
+    Name  = "SERVWORK_M7850671"
+    Value  = "1"
+    Help  = "Intel(R) Knights Landing Processor B-0 Stepping"
+    TokenType = Boolean
+End
+
+ELINK
+    Name  = "$(MICROCODE_SERVWORK_DIR)/M0850670_FFFF002D.mcb"
+    Parent  = "MICROCODE_FILES"
+    Help  = "Intel(R) Knights Landing Processor A-0 Stepping"
+    Token = "SERVWORK_M0850670" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(MICROCODE_SERVWORK_DIR)/M7850671_000001AC.mcb"
+    Parent  = "MICROCODE_FILES"
+    Help  = "Intel(R) Knights Landing Processor B-0 Stepping"
+    Token = "SERVWORK_M7850671" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+

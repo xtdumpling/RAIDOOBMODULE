@@ -1,0 +1,33 @@
+TOKEN
+	Name  = "Library_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling Library support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+INFComponent
+	Name  = "DxeAmtLib"
+        File  = "DxeAmtLib\DxeAmtLib.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "DXE_DRIVER"
+End
+
+INFComponent
+	Name  = "AmtPlatformLib"
+	File  = "AmtPlatformLib\AmtPlatformLib.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "DXE_DRIVER"
+End
+
+LibraryMapping
+	Class  = "DxeAmtLib"
+	Instance  = "PurleyPlatPkg.DxeAmtLib"
+	ModuleTypes  = "DXE_DRIVER"
+End
+
+LibraryMapping
+	Class  = "AmtPlatformLib"
+	Instance  = "PurleyPlatPkg.AmtPlatformLib"
+End
+

@@ -1,0 +1,505 @@
+//****************************************************************************
+//**                                                                        **
+//**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+//**                                                                        **
+//****************************************************************************
+//****************************************************************************
+//
+//    Rev.  1.00
+//       Bug fixed:     Draft template.
+//       Reason:
+//       Auditor:       Kasber Chen
+//       Issue Date:    Nov/04/2016
+//
+//****************************************************************************
+//
+// This file contains an 'Intel Peripheral Driver' and is
+// licensed for Intel CPUs and chipsets under the terms of your
+// license agreement with Intel or your vendor.  This file may
+// be modified by the user, subject to additional terms of the
+// license agreement
+//
+// /*++
+// Copyright (c) 2016 Intel Corporation. All rights reserved.
+// This software and associated documentation (if any) is furnished
+// under a license and may only be used or copied in accordance
+// with the terms of the license. Except as permitted by such
+// license, no part of this software or documentation may be
+// reproduced, stored in a retrieval system, or transmitted in any
+// form or by any means without the express written consent of
+// Intel Corporation.
+// --*/
+
+#if (defined(SPS_SUPPORT) && SPS_SUPPORT)
+
+#include "Configuration.h"
+#include "SetupMisc.h"
+#include <Config/MeConfig.h>
+#include <Config/MeSpsConfig.h>
+
+
+#ifndef INVENTORY
+#define INVENTORY(Name,Value) \
+    text \
+      help  = STRING_TOKEN(STR_EMPTY_STRING), \
+      text  = Name, \
+      text  = Value, \
+      flags = 0, \
+      key   = 0;
+#endif // INVENTORY
+
+suppressif NOT ideqval ME_RC_CONFIGURATION.MeType == METYPE_SPS;
+
+//**********************************************************************
+//                 Server ME Configuration Form
+//**********************************************************************
+  form formid = VFR_FORMID_SPS_ME,
+    title   = STRING_TOKEN(STR_SPS_FORM_TITLE);
+    subtitle text = STRING_TOKEN(STR_SPS_FORM_SUBTITLE);
+
+    suppressif NOT ideqval ME_RC_CONFIGURATION.MeFirmwareMode == 0xFF;
+      INVENTORY(STRING_TOKEN(STR_ME_FW_TYPE_PROMPT),STRING_TOKEN(STR_ME_FW_TYPE_SPS))
+      INVENTORY(STRING_TOKEN(STR_ME_FW_TYPE_PROMPT),STRING_TOKEN(STR_ME_FW_TYPE_UNKNOWN))
+    endif;
+  
+    suppressif TRUE;
+      // Set MeType default value
+      numeric varid   = ME_RC_CONFIGURATION.MeType,
+        prompt  = STRING_TOKEN(STR_ME_FW_TYPE_PROMPT),
+        help    = STRING_TOKEN(STR_NULL_STRING),
+        flags   = DISPLAY_UINT_HEX | RESET_REQUIRED,
+        minimum = 0,
+        maximum = 0xFF,
+        step    = 0,
+        default = METYPE_SPS, defaultstore = MyStandardDefault,
+        default = METYPE_SPS, defaultstore = MyManufactureDefault,
+      endnumeric;
+    endif; // suppressif TRUE
+  
+    //
+    // Display the ME Firmware Version available in MKHI interface
+    //
+    text
+      help  = STRING_TOKEN(STR_ME_FWVER_OPERATIONAL_HELP),
+      text  = STRING_TOKEN(STR_ME_FWVER_OPERATIONAL_PROMPT),
+      text  = STRING_TOKEN(STR_ME_FWVER_OPERATIONAL_VALUE),
+      flags = 0,
+      key   = 0;
+  
+    text
+      help  = STRING_TOKEN(STR_ME_FWVER_BACKUP_HELP),
+      text  = STRING_TOKEN(STR_ME_FWVER_BACKUP_PROMPT),
+      text  = STRING_TOKEN(STR_ME_FWVER_BACKUP_VALUE),
+      flags = 0,
+      key   = 0;
+  
+    text
+      help  = STRING_TOKEN(STR_ME_FWVER_RECOVERY_HELP),
+      text  = STRING_TOKEN(STR_ME_FWVER_RECOVERY_PROMPT),
+      text  = STRING_TOKEN(STR_ME_FWVER_RECOVERY_VALUE),
+      flags = 0,
+      key   = 0;
+  
+    text
+      help  = STRING_TOKEN(STR_ME_FWSTS1_HELP),
+      text  = STRING_TOKEN(STR_ME_FWSTS1_PROMPT),
+      text  = STRING_TOKEN(STR_ME_FWSTS1_VALUE),
+      flags = 0,
+      key   = 0;
+
+    text
+      help  = STRING_TOKEN(STR_ME_FWSTS2_HELP),
+      text  = STRING_TOKEN(STR_ME_FWSTS2_PROMPT),
+      text  = STRING_TOKEN(STR_ME_FWSTS2_VALUE),
+      flags = 0,
+      key   = 0;
+  
+    text
+      help  = STRING_TOKEN(STR_ME_FWCURSTE_HELP),
+      text  = STRING_TOKEN(STR_ME_FWCURSTE_PROMPT),
+      text  = STRING_TOKEN(STR_ME_FWCURSTE_VALUE),
+      flags = 0,
+      key   = 0;
+  
+    text
+      help  = STRING_TOKEN(STR_ME_FWERRCODE_HELP),
+      text  = STRING_TOKEN(STR_ME_FWERRCODE_PROMPT),
+      text  = STRING_TOKEN(STR_ME_FWERRCODE_VALUE),
+      flags = 0,
+      key   = 0;
+
+    suppressif SMC_SETUP_STYLE;  //SMCPKG_SUPPORT S
+    text
+      help  = STRING_TOKEN(STR_ME_RCVCAUSE_HELP),
+      text  = STRING_TOKEN(STR_ME_RCVCAUSE_PROMPT),
+      text  = STRING_TOKEN(STR_ME_RCVCAUSE_VALUE),
+      flags = 0,
+      key   = 0;
+
+    grayoutif ideqval ME_RC_CONFIGURATION.MePttSupported == 0;
+      oneof varid   = ME_RC_CONFIGURATION.MePttEnabled,
+        prompt      = STRING_TOKEN(STR_SPS_PTT_ENABLED_PROMPT),
+        help        = STRING_TOKEN(STR_SPS_PTT_ENABLED_HELP),
+        option text = STRING_TOKEN(STR_DISABLED_STRING), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED_STRING), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+  
+    numeric varid = ME_RC_CONFIGURATION.SpsAltitude,
+      prompt      = STRING_TOKEN(STR_SPS_ALTITUDE_PROMPT),
+      help        = STRING_TOKEN(STR_SPS_ALTITUDE_HELP),
+      flags       = DISPLAY_UINT_HEX | RESET_REQUIRED,
+      minimum     = 0,
+      maximum     = 0xFFFF,
+      step        = 0,          // Stepping of 0 equates to a manual entering
+      default     = ME_SPS_ALTITUDE_NONE, defaultstore = MyStandardDefault, 
+      default     = ME_SPS_ALTITUDE_NONE, defaultstore = MyManufactureDefault,
+    endnumeric;
+  
+    numeric varid = ME_RC_CONFIGURATION.SpsMctpBusOwner,
+      prompt      = STRING_TOKEN(STR_SPS_MCTP_BUS_OWNER_PROMPT),
+      help        = STRING_TOKEN(STR_SPS_MCTP_BUS_OWNER_HELP),
+      flags       = DISPLAY_UINT_HEX | RESET_REQUIRED,
+      minimum     = 0,
+      maximum     = 0xFFFF,
+      step        = 0,
+      default     = ME_SPS_MCTP_BUS_OWNER_NONE, defaultstore = MyStandardDefault, 
+      default     = ME_SPS_MCTP_BUS_OWNER_NONE, defaultstore = MyManufactureDefault,
+    endnumeric;
+
+    text
+      help  = STRING_TOKEN(STR_SPS_FEATURES_HELP),
+      text  = STRING_TOKEN(STR_SPS_FEATURES_PROMPT),
+      text  = STRING_TOKEN(STR_SPS_FEATURES_VALUE),
+      flags = 0,
+      key   = 0;
+    endif;      //SMCPKG_SUPPORT E
+  endform; // VFR_FORMID_SPS_ME
+
+#if ME_TESTMENU_FLAG
+
+//**********************************************************************
+//                 Server ME Debug Configuration Form
+//**********************************************************************
+  form formid = VFR_FORMID_SPS_FWDEBUG,
+    title = STRING_TOKEN(STR_SPS_FWDEBUG_FORM_TITLE);
+
+    goto VFR_FORMID_SPS_FWDEBUG_GEN,
+      prompt = STRING_TOKEN(STR_SPS_FWDEBUG_GEN_FORM),
+      help   = STRING_TOKEN(STR_SPS_FWDEBUG_GEN_FORM_HELP);
+      
+    subtitle text = STRING_TOKEN(STR_EMPTY_STRING);
+  
+    goto VFR_FORMID_SPS_FWDEBUG_NM,
+      prompt  = STRING_TOKEN(STR_SPS_FWDEBUG_NM_FORM),
+      help    = STRING_TOKEN(STR_SPS_FWDEBUG_NM_FORM_HELP);
+
+  endform; // VFR_FORMID_SPS_FWDEBUG
+
+//**********************************************************************
+//                 Server ME General Debug Configuration Form
+//**********************************************************************
+  form formid = VFR_FORMID_SPS_FWDEBUG_GEN,
+    title = STRING_TOKEN(STR_SPS_FWDEBUG_GEN_FORM_TITLE);
+
+    numeric varid = ME_RC_CONFIGURATION.MeTimeout,
+      prompt      = STRING_TOKEN(STR_ME_TIMEOUT_PROMPT),
+      help        = STRING_TOKEN(STR_ME_TIMEOUT_HELP),
+      flags       = 0 | RESET_REQUIRED,
+      minimum     = 0,
+      maximum     = 12,
+      step        = 1,
+      default     = ME_SPS_INIT_TIMEOUT, defaultstore = MyStandardDefault,
+      default     = ME_SPS_INIT_TIMEOUT, defaultstore = MyManufactureDefault,
+    endnumeric;
+  
+    oneof varid   = ME_RC_CONFIGURATION.HsioMessagingEnabled,
+      prompt   = STRING_TOKEN(STR_ME_HSIO_ENABLE_PROMPT),
+      help     = STRING_TOKEN(STR_ME_HSIO_ENABLE_HELP),
+      option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = 0;
+      option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = 0 | DEFAULT | MANUFACTURING;
+    endoneof;
+  
+    checkbox varid = ME_RC_CONFIGURATION.MeDidEnabled,
+      prompt       = STRING_TOKEN(STR_ME_DID_ENABLE_PROMPT),
+      help         = STRING_TOKEN(STR_ME_DID_ENABLE_HELP),
+      // Flags behavior for checkbox is overloaded so that it equals
+      // a DEFAULT value.  CHECKBOX_DEFAULT = ON, 0 = off
+      flags        = CHECKBOX_DEFAULT | CHECKBOX_DEFAULT_MFG | RESET_REQUIRED,
+      key          = 0,
+    endcheckbox;
+  
+    grayoutif ideqval ME_RC_CONFIGURATION.MeDidEnabled == 0;
+      oneof varid   = ME_RC_CONFIGURATION.MeDidInitStat,
+        prompt      = STRING_TOKEN(STR_ME_DID_INIT_STAT_PROMPT),
+        help        = STRING_TOKEN(STR_ME_DID_INIT_STAT_HELP),
+        option text = STRING_TOKEN(STR_ME_DID_INIT_STAT_AUTO), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ME_DID_INIT_STAT_0), value = 1, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ME_DID_INIT_STAT_1), value = 2, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ME_DID_INIT_STAT_2), value = 3, flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+  
+    checkbox varid = ME_RC_CONFIGURATION.HostResetNotification,
+      prompt       = STRING_TOKEN(STR_ME_HRW_ENABLE_PROMPT),
+      help         = STRING_TOKEN(STR_ME_HRW_ENABLE_HELP),
+      // Flags behavior for checkbox is overloaded so that it equals
+      // a DEFAULT value.  CHECKBOX_DEFAULT = ON, 0 = off
+      flags        = CHECKBOX_DEFAULT | CHECKBOX_DEFAULT_MFG | RESET_REQUIRED,
+      key          = 0,
+    endcheckbox;
+
+    checkbox varid = ME_RC_CONFIGURATION.PreDidMeResetEnabled,
+      prompt       = STRING_TOKEN(STR_SPS_PRE_DID_ME_RESET_PROMPT),
+      help         = STRING_TOKEN(STR_SPS_PRE_DID_ME_RESET_HELP),
+      // Flags behavior for checkbox is overloaded so that it equals
+      // a DEFAULT value.  CHECKBOX_DEFAULT = ON, 0 = off
+      flags        = 0 | RESET_REQUIRED,
+      key          = 0,
+    endcheckbox;
+
+    goto VFR_FORMID_SPS_ICC_OVERRIDE,
+      questionid = ICC_OVERRIDE_FORM_SPS_QUESTIONID,
+      prompt  = STRING_TOKEN(STR_ME_ICC_OVERRIDE_FORM),
+      help    = STRING_TOKEN(STR_ME_ICC_OVERRIDE_FORM_HELP),
+      flags   = INTERACTIVE;
+
+    oneof varid   = ME_RC_CONFIGURATION.MeHmrfpoLockEnabled,
+      prompt      = STRING_TOKEN(STR_ME_HMRFPOLOCK_PROMPT),
+      help        = STRING_TOKEN(STR_ME_HMRFPOLOCK_HELP),
+      option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = 0;
+      option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = 0 | DEFAULT | MANUFACTURING;
+    endoneof;
+  
+    grayoutif ideqval ME_RC_CONFIGURATION.MeHmrfpoLockEnabled == 0;
+      oneof varid   = ME_RC_CONFIGURATION.MeHmrfpoEnableEnabled,
+        prompt      = STRING_TOKEN(STR_ME_HMRFPOENABLE_PROMPT),
+        help        = STRING_TOKEN(STR_ME_HMRFPOENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = 0 | DEFAULT | MANUFACTURING;
+        option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = 0;
+      endoneof;
+    endif;
+  
+    oneof varid   = ME_RC_CONFIGURATION.MeEndOfPostEnabled,
+      prompt      = STRING_TOKEN(STR_ME_ENDOFPOST_PROMPT),
+      help        = STRING_TOKEN(STR_ME_ENDOFPOST_HELP),
+      option text = STRING_TOKEN(STR_DISABLED), value = EOP_DISABLED, flags = 0;
+      option text = STRING_TOKEN(STR_ENABLED),  value = EOP_SEND_IN_DXE, flags = 0 | DEFAULT | MANUFACTURING;
+    endoneof;
+
+    oneof varid   = ME_RC_CONFIGURATION.MeGrPromotionEnabled,
+      prompt      = STRING_TOKEN(STR_ME_GRPROMOTION_PROMPT),
+      help        = STRING_TOKEN(STR_ME_GRPROMOTION_HELP),
+      option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = 0 | DEFAULT | MANUFACTURING;
+      option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = 0;
+    endoneof;
+
+    oneof varid   = ME_RC_CONFIGURATION.MeGrLockEnabled,
+      prompt      = STRING_TOKEN(STR_ME_GRLOCK_PROMPT),
+      help        = STRING_TOKEN(STR_ME_GRLOCK_HELP),
+      option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = 0 | DEFAULT | MANUFACTURING;
+      option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = 0;
+    endoneof;
+
+    oneof varid   = ME_RC_CONFIGURATION.MeHeci1Enabled,
+      prompt      = STRING_TOKEN(STR_ME_HECI1ENABLE_PROMPT),
+      help        = STRING_TOKEN(STR_ME_HECI1ENABLE_HELP),
+      option text = STRING_TOKEN(STR_DISABLED), value = ME_DEVICE_DISABLED, flags = 0;
+      option text = STRING_TOKEN(STR_ENABLED),  value = ME_DEVICE_ENABLED, flags = 0;
+      option text = STRING_TOKEN(STR_AUTO),     value = ME_DEVICE_AUTO, flags = 0 | DEFAULT | MANUFACTURING | RESET_REQUIRED;
+    endoneof;
+  
+    oneof varid   = ME_RC_CONFIGURATION.MeHeci2Enabled,
+      prompt      = STRING_TOKEN(STR_ME_HECI2ENABLE_PROMPT),
+      help        = STRING_TOKEN(STR_ME_HECI2ENABLE_HELP),
+      option text = STRING_TOKEN(STR_DISABLED), value = ME_DEVICE_DISABLED, flags = 0;
+      option text = STRING_TOKEN(STR_ENABLED),  value = ME_DEVICE_ENABLED, flags = 0;
+      option text = STRING_TOKEN(STR_AUTO),     value = ME_DEVICE_AUTO, flags = 0 | DEFAULT | MANUFACTURING | RESET_REQUIRED;
+    endoneof;
+  
+    oneof varid   = ME_RC_CONFIGURATION.MeHeci3Enabled,
+      prompt      = STRING_TOKEN(STR_ME_HECI3ENABLE_PROMPT),
+      help        = STRING_TOKEN(STR_ME_HECI3ENABLE_HELP),
+      option text = STRING_TOKEN(STR_DISABLED), value = ME_DEVICE_DISABLED, flags = 0;
+      option text = STRING_TOKEN(STR_ENABLED),  value = ME_DEVICE_ENABLED, flags = 0;
+      option text = STRING_TOKEN(STR_AUTO),     value = ME_DEVICE_AUTO, flags = 0 | DEFAULT | MANUFACTURING | RESET_REQUIRED;
+    endoneof;
+  
+    oneof varid   = ME_RC_CONFIGURATION.MeIderEnabled,
+      prompt      = STRING_TOKEN(STR_ME_IDERENABLE_PROMPT),
+      help        = STRING_TOKEN(STR_ME_IDERENABLE_HELP),
+      option text = STRING_TOKEN(STR_DISABLED), value = ME_DEVICE_DISABLED, flags = 0;
+      option text = STRING_TOKEN(STR_ENABLED),  value = ME_DEVICE_ENABLED, flags = 0;
+      option text = STRING_TOKEN(STR_AUTO),     value = ME_DEVICE_AUTO, flags = 0 | DEFAULT | MANUFACTURING | RESET_REQUIRED;
+    endoneof;
+  
+    oneof varid   = ME_RC_CONFIGURATION.MeKtEnabled,
+      prompt      = STRING_TOKEN(STR_ME_KTENABLE_PROMPT),
+      help        = STRING_TOKEN(STR_ME_KTENABLE_HELP),
+      option text = STRING_TOKEN(STR_DISABLED), value = ME_DEVICE_DISABLED, flags = 0;
+      option text = STRING_TOKEN(STR_ENABLED),  value = ME_DEVICE_ENABLED, flags = 0;
+      option text = STRING_TOKEN(STR_AUTO),     value = ME_DEVICE_AUTO, flags = 0 | DEFAULT | MANUFACTURING | RESET_REQUIRED;
+    endoneof;
+
+    grayoutif ideqval ME_RC_CONFIGURATION.MeHmrfpoLockEnabled == 0;
+    
+      grayoutif ideqval ME_RC_CONFIGURATION.MeHeci1Enabled == 0;
+        oneof varid   = ME_RC_CONFIGURATION.MeHeci1HideInMe,
+          prompt      = STRING_TOKEN(STR_ME_HECI1HIDEINME_PROMPT),
+          help        = STRING_TOKEN(STR_ME_HECI1HIDEINME_HELP),
+          option text = STRING_TOKEN(STR_OFF),     value = ME_SPS_HECI_IN_ME_OFF, flags = 0 | RESET_REQUIRED | DEFAULT | MANUFACTURING;
+          option text = STRING_TOKEN(STR_HIDE),    value = ME_SPS_HECI_IN_ME_HIDE, flags = 0;
+          option text = STRING_TOKEN(STR_DISABLE), value = ME_SPS_HECI_IN_ME_DISABLE, flags = 0;
+        endoneof;
+      endif; // grayoutif
+      
+      grayoutif ideqval ME_RC_CONFIGURATION.MeHeci2Enabled == 0;
+        oneof varid   = ME_RC_CONFIGURATION.MeHeci2HideInMe,
+          prompt      = STRING_TOKEN(STR_ME_HECI2HIDEINME_PROMPT),
+          help        = STRING_TOKEN(STR_ME_HECI2HIDEINME_HELP),
+          option text = STRING_TOKEN(STR_OFF),     value = ME_SPS_HECI_IN_ME_OFF, flags = 0 | RESET_REQUIRED | DEFAULT | MANUFACTURING;
+          option text = STRING_TOKEN(STR_HIDE),    value = ME_SPS_HECI_IN_ME_HIDE, flags = 0;
+          option text = STRING_TOKEN(STR_DISABLE), value = ME_SPS_HECI_IN_ME_DISABLE, flags = 0;
+        endoneof;
+      endif; // grayoutif
+      
+      grayoutif ideqval ME_RC_CONFIGURATION.MeHeci3Enabled == 0;
+        oneof varid   = ME_RC_CONFIGURATION.MeHeci3HideInMe,
+          prompt      = STRING_TOKEN(STR_ME_HECI3HIDEINME_PROMPT),
+          help        = STRING_TOKEN(STR_ME_HECI3HIDEINME_HELP),
+          option text = STRING_TOKEN(STR_OFF),     value = ME_SPS_HECI_IN_ME_OFF, flags = 0 | RESET_REQUIRED | DEFAULT | MANUFACTURING;
+          option text = STRING_TOKEN(STR_HIDE),    value = ME_SPS_HECI_IN_ME_HIDE, flags = 0;
+          option text = STRING_TOKEN(STR_DISABLE), value = ME_SPS_HECI_IN_ME_DISABLE, flags = 0;
+        endoneof;
+      endif; // grayoutif
+      
+    endif; // grayoutif !MeHmrfpoLockEnabled
+
+    oneof varid   = ME_RC_CONFIGURATION.DisableD0I3SettingForHeci,
+      prompt      = STRING_TOKEN(STR_D0I3_SETTING_DISABLE_PROMPT),
+      help        = STRING_TOKEN(STR_D0I3_SETTING_DISABLE_HELP),
+      option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = 0 | DEFAULT | MANUFACTURING;
+      option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = 0;
+    endoneof;
+
+    checkbox varid = ME_RC_CONFIGURATION.BreakRtcEnabled,
+      prompt       = STRING_TOKEN(STR_SPS_BREAK_RTC_ENABLE_PROMPT),
+      help         = STRING_TOKEN(STR_SPS_BREAK_RTC_ENABLE_HELP),
+      flags        = 0 | RESET_REQUIRED,
+      key          = 0,
+    endcheckbox;
+
+  endform; // VFR_FORMID_SPS_FWDEBUG_GEN
+
+//**********************************************************************
+//                 Server ME ICC Clock Settings Override Form
+//**********************************************************************  
+  form formid = VFR_FORMID_SPS_ICC_OVERRIDE,
+    title = STRING_TOKEN(STR_ME_ICC_OVERRIDE_FORM_TITLE);
+
+    suppressif NOT ideqval ME_RC_CONFIGURATION.MeType == METYPE_SPS;
+      checkbox varid = ME_RC_CONFIGURATION.SpsIccClkOverride,
+        prompt       = STRING_TOKEN(STR_ME_ICC_OVERRIDE_PROMPT),
+        help         = STRING_TOKEN(STR_ME_ICC_OVERRIDE_HELP),
+        flags        = 0 | RESET_REQUIRED,
+        key          = 0,
+      endcheckbox;
+    
+      grayoutif ideqval ME_RC_CONFIGURATION.SpsIccClkOverride == 0;
+        checkbox varid = ME_RC_CONFIGURATION.SpsIccClkSscSetting,
+          prompt       = STRING_TOKEN(STR_SPS_ICC_CLK_SSC_SETTING_PROMPT),
+          help         = STRING_TOKEN(STR_SPS_ICC_CLK_SSC_SETTING_HELP),
+          flags        = 0 | RESET_REQUIRED, 
+          key          = 0,
+          default      = 0,
+        endcheckbox;
+      endif; //grayoutif ideqval ME_RC_CONFIGURATION.SpsIccClkOverride == 0;
+    endif;
+  endform; // VFR_FORMID_SPS_ICC_OVERRIDE
+
+//**********************************************************************
+//                 Server ME NM Debug Configuration Form
+//**********************************************************************
+  form formid = VFR_FORMID_SPS_FWDEBUG_NM,
+    title = STRING_TOKEN(STR_SPS_FWDEBUG_NM_FORM_TITLE);
+    
+    checkbox varid   = ME_RC_CONFIGURATION.NmPwrOptBootOverride,
+      prompt      = STRING_TOKEN(STR_SPS_BOOT_MODE_OVERRIDE_PROMPT),
+      help        = STRING_TOKEN(STR_SPS_BOOT_MODE_OVERRIDE_HELP),
+      flags       = 0 | RESET_REQUIRED,
+      key         = 0,
+    endcheckbox;
+  
+    grayoutif ideqval ME_RC_CONFIGURATION.NmPwrOptBootOverride == 0;
+      oneof varid   = ME_RC_CONFIGURATION.NmPwrOptBoot,
+        prompt      = STRING_TOKEN(STR_SPS_BOOT_MODE_PROMPT),
+        help        = STRING_TOKEN(STR_SPS_BOOT_MODE_HELP),
+        option text = STRING_TOKEN(STR_SPS_BOOT_MODE_PERF_OPTIMIZED),  value = 0, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+        option text = STRING_TOKEN(STR_SPS_BOOT_MODE_POWER_OPTIMIZED), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+  
+    checkbox varid   = ME_RC_CONFIGURATION.NmCores2DisableOverride,
+      prompt      = STRING_TOKEN(STR_SPS_CORES_DISABLE_OVERRIDE_PROMPT),
+      help        = STRING_TOKEN(STR_SPS_CORES_DISABLE_OVERRIDE_HELP),
+      flags       = 0 | RESET_REQUIRED,
+      key         = 0,
+    endcheckbox;
+  
+    grayoutif ideqval ME_RC_CONFIGURATION.NmCores2DisableOverride == 0;
+      numeric varid   = ME_RC_CONFIGURATION.NmCores2Disable,
+        prompt  = STRING_TOKEN(STR_SPS_CORES_DISABLE_PROMPT),
+        help    = STRING_TOKEN(STR_SPS_CORES_DISABLE_HELP),
+        flags   = 0 | RESET_REQUIRED | DISPLAY_UINT_HEX,
+        minimum = 0,
+        maximum = 0x7F,
+        step    = 1,
+        default = 0, defaultstore = MyStandardDefault,
+        default = 0, defaultstore = MyManufactureDefault,
+      endnumeric;
+    endif;
+  
+    checkbox varid   = ME_RC_CONFIGURATION.NmPowerMsmtOverride,
+      prompt      = STRING_TOKEN(STR_SPS_POWERMSMT_OVERRIDE_PROMPT),
+      help        = STRING_TOKEN(STR_SPS_POWERMSMT_OVERRIDE_HELP),
+      flags       = 0 | RESET_REQUIRED,
+      key         = 0,
+    endcheckbox;
+  
+    grayoutif ideqval ME_RC_CONFIGURATION.NmPowerMsmtOverride == 0;
+      oneof varid   = ME_RC_CONFIGURATION.NmPowerMsmtSupport,
+        prompt      = STRING_TOKEN(STR_SPS_POWERMSMT_SUPPORT_PROMPT),
+        help        = STRING_TOKEN(STR_SPS_POWERMSMT_SUPPORT_HELP),
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = 0 | RESET_REQUIRED | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = 0 | RESET_REQUIRED;
+      endoneof;
+    endif;
+  
+    checkbox varid   = ME_RC_CONFIGURATION.NmHwChangeOverride,
+      prompt      = STRING_TOKEN(STR_SPS_HWCHANGE_OVERRIDE_PROMPT),
+      help        = STRING_TOKEN(STR_SPS_HWCHANGE_OVERRIDE_HELP),
+      flags       = 0 | RESET_REQUIRED,
+      key         = 0,
+    endcheckbox;
+  
+    grayoutif ideqval ME_RC_CONFIGURATION.NmHwChangeOverride == 0;
+      oneof varid   = ME_RC_CONFIGURATION.NmHwChangeStatus,
+        prompt      = STRING_TOKEN(STR_SPS_HWCHANGE_STATUS_PROMPT),
+        help        = STRING_TOKEN(STR_SPS_HWCHANGE_STATUS_HELP),
+        option text = STRING_TOKEN(STR_NO),  value = 0, flags = 0 | RESET_REQUIRED | DEFAULT;
+        option text = STRING_TOKEN(STR_YES), value = 1, flags = 0 | RESET_REQUIRED;
+      endoneof;
+    endif;
+  
+    checkbox varid   = ME_RC_CONFIGURATION.NmPtuLoadOverride,
+      prompt      = STRING_TOKEN(STR_SPS_PTULOAD_OVERRIDE_PROMPT),
+      help        = STRING_TOKEN(STR_SPS_PTULOAD_OVERRIDE_HELP),
+      flags       = 0 | RESET_REQUIRED,
+      key         = 0,
+    endcheckbox;
+  
+  endform; // VFR_FORMID_SPS_FWDEBUG_NM
+#endif // ME_TESTMENU_FLAG
+
+endif; // Suppress if MeType != SPS
+#endif // SPS_SUPPORT

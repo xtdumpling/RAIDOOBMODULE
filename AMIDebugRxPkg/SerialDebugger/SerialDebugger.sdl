@@ -1,0 +1,271 @@
+TOKEN
+	Name  = "SERIAL_DEBUGGER_SUPPORT"
+	Value  = "0"
+	Help  = "Switch for Enabling Serial Debugger support in the project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "SERIAL_SEC_DBG_SUPPORT"
+	Value  = "0"
+	Help  = "When OFF Debugger is supported from PEI phase, Turn ON to support Debugger from SEC phase"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PeiDebugger_SUPPORT"
+	Value  = "1"
+	Help  = "Main Token to enable/disable PEI Debugging"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "USB_DEBUG_TRANSPORT"
+	Value  = "0"
+	Help  = "Default value, do not change"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "REDIRECTION_ONLY_MODE"
+	Value  = "0"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Range  = "0-1"
+End
+
+TOKEN
+	Name  = "SEND_CHECKPOINT_SUPPORT"
+	Value  = "1"
+	Help  = "Token to enable/disable Checkpoint sending support."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SEND_DEBUG_MESSAGE_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable/disable Debug messages redirection"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "DEBUG_IDT_PRESERVATION_WITH_CPU_ARCH_PROTOCOL"
+	Value  = "1"
+	Help  = " Token to enable the Debugger related IDT preservation based on CpuArchProtocol, can be valid only if SerialDebugger is enabled"
+	TokenType = Integer
+	TargetH = Yes
+	Token = "REDIRECTION_ONLY_MODE" "!=" "1"
+End
+
+TOKEN
+	Name  = "DBG_WRITE_IO_80_SUPPORT"
+	Value  = "1"
+	Help  = "Token switch to 1:Enable\0:Disable the port 80 checkpoints from SerialDebugger module."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "DbgSMIReadHdl"
+	Value  = "96"
+	Help  = "SMM handle 60h used to move to B2 port.This is the SMI handle used by debugger to read the memory in SMM"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "CONSOLE_REDIRECTION_SUPPORT"
+	Value  = "1"
+	Help  = "Main token switch to enable Console Redirection support."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "SMM_DEBUG_SUPPORT" "!=" "1"
+End
+
+TOKEN
+	Name  = "DBG_PERFORMANCE_RECORDS"
+	Value  = "1"
+	Help  = "SDL token to have Debugger PM Records added"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "PerformanceMeasurement_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "SMM_DEBUG_SUPPORT"
+	Value  = "1"					
+	Help  = "Main token switch to enable the SMM Debug support."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+#;Value  = "1"
+TOKEN
+	Name  = "SERIAL_STATUS_SUPPORT"
+	Value  = "0"
+	Help  = "Enables/Disables serail port status code routine"
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "STRING_STATUS_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "SerialIo_SUPPORT"
+	Value  = "0"
+	TokenType = Boolean
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "Terminal_SUPPORT"
+	Value  = "0"
+	Help  = "Porting switch to support Debugger in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Token = "CONSOLE_REDIRECTION_SUPPORT" "!=" "1"
+End
+
+TOKEN
+	Name  = "LEGACYSREDIR_SUPPORT"
+	Value  = "0"
+	Help  = "Porting switch to support Debugger in Project. It writes it to the serial port directly. So Don't include it for Serial Debugger"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "SEND_SMM_CHECKPOINT_SUPPORT"
+	Value  = "1"
+	Help  = "Token to enable/disable Checkpoint sending support."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SEND_SMM_DEBUG_MESSAGE_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable/disable Debug messages redirection"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SEND_SERIAL_INIT_MSG_SUPPORT"
+	Value  = "0"
+	Help  = "When OFF Debugger will NOT send a Serial Message after SerialPort is Initialized"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "AMI_DEBUG_MAJOR_VERSION"
+	Value  = "3"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "AMI_DEBUG_MINOR_VERSION"
+	Value  = "03"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "AMI_DEBUG_BUILD"
+	Value  = "0022"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+PATH
+	Name  = "SERIAL_DEBUGGER_DIR"
+	Path  = "AMIDebugRxPkg\SerialDebugger"
+End
+
+ELINK
+	Name  = " "
+	Parent  = "SerialOutput,"
+	Token = "USB_DEBUG_TRANSPORT" "=" "0"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = " "
+	Parent  = "RUNTIME(SerialOutput),"
+	Token = "USB_DEBUG_TRANSPORT" "=" "0"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = " "
+	Parent  = "SerialCheckpoint,"
+	Token = "USB_DEBUG_TRANSPORT" "=" "0"
+	InvokeOrder = ReplaceParent
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "SerialDebugger.DxeDebugStatusCodeLib"
+	Override  = "AmiModulePkg.StatusCodeDxe"
+End
+
+
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "SerialDebugger.DebuggerLib"
+	Override  = "AmiModulePkg.StatusCodeDxe"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "SerialDebugger.PeiDebugStatusCodeLib"
+	Override  = "AmiModulePkg.StatusCodePei"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "SerialDebugger.DbgSerInitLib"
+	Override  = "AmiModulePkg.StatusCodePei"
+	Token = "SERIAL_SEC_DBG_SUPPORT" "=" "0"
+	Token = "PeiDebugger_SUPPORT" "=" "1"
+End
+
+PcdMapping
+	Name  = "PcdSerialUseHardwareFlowControl"
+	GuidSpace  = "gEfiMdeModulePkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "FALSE"
+	TargetDSC = Yes
+End

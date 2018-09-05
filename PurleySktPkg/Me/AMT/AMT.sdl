@@ -1,0 +1,35 @@
+TOKEN
+	Name  = "AMT_ENABLE"
+	Value  = "1"
+	Help  = "Switch for Enabling AMT support in the project"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes	
+	Master = Yes
+	Token = "WORKSTATION_SUPPORT" "=" "1"
+End
+
+INFComponent
+    Name  = "PeiActiveManagementLib"
+    File  = "LibraryPrivate\PeiActiveManagementLib\PeiActiveManagementLib.inf"
+    Package  = "PurleySktPkg"
+    ModuleTypes  = "PEIM"
+End
+
+INFComponent
+    Name  = "PeiDxeAlertStandardFormatLib"
+    File  = "LibraryPrivate/PeiDxeAlertStandardFormatLib/PeiDxeAlertStandardFormatLib.inf"
+    Package  = "PurleySktPkg"
+End
+
+LibraryMapping
+	Class  = "ActiveManagementLib"
+	Instance  = "PurleySktPkg.PeiActiveManagementLib"
+	ModuleTypes  = "PEIM"
+End
+
+LibraryMapping
+	Class  = "AlertStandardFormatLib"
+	Instance  = "PurleySktPkg.PeiDxeAlertStandardFormatLib"
+    Arch  = "IA32 X64"
+End

@@ -1,0 +1,96 @@
+#****************************************************************************
+#**       (C)Copyright 1993-2012 Supermicro Computer, Inc.                 **
+#****************************************************************************
+#
+#  File History
+#
+#  Rev. 1.00
+#    Bug Fix:  Implement SMC BCP boot order style.
+#    Reason:   None.
+#    Auditor:  Jacker Yeh
+#    Date:     Jul/09/13
+#
+#****************************************************************************
+TOKEN
+    Name  = "BcpBootOrder_SUPPORT"
+    Value = "1"
+    Help  = "Main switch to enable BcpBootOrder support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes    
+    Master = Yes
+End
+
+TOKEN
+    Name  = "BCP_DEFAULT_BOOT_ORDER"
+    Value = "BCP_USB_FDD,BCP_USB_HDD,BCP_PM_HDD,BCP_PS_HDD,BCP_SM_HDD,BCP_SS_HDD,BCP_SATA0_HDD,BCP_SATA1_HDD,BCP_SATA2_HDD,BCP_SATA3_HDD,BCP_SATA4_HDD,BCP_SATA5_HDD,BCP_SATA6_HDD,BCP_SATA7_HDD,BCP_PM_CD,BCP_PS_CD,BCP_SM_CD,BCP_SS_CD,BCP_SATA0_CD,BCP_SATA1_CD,BCP_SATA2_CD,BCP_SATA3_CD,BCP_SATA4_CD,BCP_SATA5_CD,BCP_SATA6_CD,BCP_SATA7_CD,BCP_USB_CD"
+    Help  = "This is default BCP Boot Order"
+    TokenType = Expression
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "BCP_DEFAULT_BOOT_ORDER_LENGTH"
+    Value = "27"
+    Help  = "The size of BCP_DEFAULT_BOOT_ORDER"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+	Name  = "BOOT_ORDER_STYLE_SUPPORT"
+	Value = "1"
+	Help  = "0: The new detect devices will follow BOOT_OPTION_TAG_PRIORITIES. 1: The new detect devices will follow SmcBootStyle option to set boot priorityput to last priority."
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+	TargetMAK = Yes
+End
+
+ELINK
+	Name   = "CheckBootOrderStyle,"
+	Parent = "CreateBootOptionsForNewBootDevices,"
+	InvokeOrder = AfterParent
+	Token = "BOOT_ORDER_STYLE_SUPPORT" "=" "1"
+End
+
+ELINK
+    Name   = "CheckIfFirstBoot,"
+    Parent = "CreateBootOptionsForNewBootDevices,"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name   = "SetDefaultBcpBootOptionPriorities,"
+    Parent = "/*Process Boot Option List*/"
+    InvokeOrder = AfterParent
+End
+
+INFComponent
+    Name = "BcpBootOrder"
+    File = "BcpBootOrder.inf"
+    Package = "AmiModulePkg"
+    ModuleTypes = "USER_DEFINED"
+End
+
+INFComponent
+    Name = "BootOrderSection"
+    File = "BootOrderSection.inf"
+    Package = "AmiModulePkg"
+    ModuleTypes = "USER_DEFINED"
+End
+
+FFS_FILE
+    Name = "BootOrderSection"
+    FD_AREA = "FV_MAIN"
+    INFComponent = "AmiModulePkg.BootOrderSection"
+    Rule_Override = "SubtypeGuidUnCompressed"
+End
+
+LibraryMapping
+    Class = "NULL"
+    Instance = "AmiModulePkg.BcpBootOrder"
+    Override = "AmiModulePkg.Bds"
+End
+

@@ -1,0 +1,115 @@
+#
+# This file contains an 'Intel Peripheral Driver' and is
+# licensed for Intel CPUs and chipsets under the terms of your
+# license agreement with Intel or your vendor.  This file may
+# be modified by the user, subject to additional terms of the
+# license agreement
+#
+#++
+#
+#  Copyright (c) 2010 - 2016, Intel Corporation. All rights reserved
+#  This software and associated documentation (if any) is furnished
+#  under a license and may only be used or copied in accordance
+#  with the terms of the license. Except as permitted by such
+#  license, no part of this software or documentation may be
+#  reproduced, stored in a retrieval system, or transmitted in any
+#  form or by any means without the express written consent of
+#  Intel Corporation.
+#
+#
+##
+
+
+[defines]
+  INF_VERSION          = 0x00010005
+  BASE_NAME            = AmtWrapperDxe
+  FILE_GUID            = D77C900D-A1C7-41c5-B989-0C3D37FCA432
+  MODULE_TYPE          = DXE_DRIVER
+  VERSION_STRING       = 1.0
+  ENTRY_POINT          = AmtWrapperDxeEntryPoint
+
+[sources.common]
+  AmtWrapperDxe.c
+  AmtWrapperDxe.h
+  AsfSupport.c
+  AsfSupport.h
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  DxeServicesTableLib
+  BaseLib
+  UefiLib
+  MemoryAllocationLib
+  BaseMemoryLib
+  DevicePathLib
+  DebugLib
+  PrintLib
+  DxeAmtLib
+  DxeSpsPolicyLib
+  AmtPlatformLib
+  MeTypeLib
+  PchInfoLib
+  SetupLib                          # SERVER_BIOS_FLAG
+# APTIOV_SERVER_OVERRIDE_RC_START
+  UefiBootManagerLib
+# APTIOV_SERVER_OVERRIDE_RC_END
+
+[Guids]
+# APTIOV_SERVER_OVERRIDE_RC_START
+#  gEfiSecureBootEnableDisableGuid
+# APTIOV_SERVER_OVERRIDE_RC_END
+  gMeBiosPayloadHobGuid
+  gEfiSetupEnterGuid
+  gEfiSetupVariableGuid             # SERVER_BIOS_FLAG
+# APTIOV_SERVER_OVERRIDE_RC_START : For USB diskinfo
+  gEfiLegacyDevOrderVariableGuid
+  gEfiDiskInfoUsbInterfaceGuid
+# APTIOV_SERVER_OVERRIDE_RC_END : For USB diskinfo
+
+[Protocols]
+  gEfiAmtWrapperProtocolGuid
+  gEfiSimpleFileSystemProtocolGuid
+  gAlertStandardFormatProtocolGuid
+  gEfiLegacyBiosProtocolGuid
+  gEfiPciIoProtocolGuid
+# APTIOV_SERVER_OVERRIDE_RC_START
+  gEfiSecurity2ArchProtocolGuid
+  gAmtReadyToBootProtocolGuid
+# APTIOV_SERVER_OVERRIDE_RC_END
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpPlatPkg/CpPlatPkg.dec
+  ServerCommonPkg/ServerCommonPkg.dec                       # SERVER_BIOS_FLAG
+  PurleySktPkg/Me/MePkg.dec                                 # SERVER_BIOS_FLAG
+  PurleySktPkg/SocketPkg.dec                                # SERVER_BIOS_FLAG
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+# APTIOV_SERVER_OVERRIDE_RC_START
+  #SecurityPkg/SecurityPkg.dec
+  #BpCommonPkg/BpCommonPkg.dec
+# APTIOV_SERVER_OVERRIDE_RC_END
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec                 # SERVER_BIOS_FLAG
+  PurleyPlatPkg/PlatPkg.dec                                 # SERVER_BIOS_FLAG
+  CpRcPkg/RcPlatPurley.dec                                  # SERVER_BIOS_FLAG
+# APTIOV_SERVER_OVERRIDE_RC_START
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+# APTIOV_SERVER_OVERRIDE_RC_END
+
+[Pcd]
+  gEfiIntelFrameworkModulePkgTokenSpaceGuid.PcdShellFile
+  gServerCommonTokenSpaceGuid.PcdUefiOptimizedBoot          # SERVER_BIOS_FLAG
+
+[Depex]
+  gSpsPolicyProtocolGuid AND
+  gEfiPciRootBridgeIoProtocolGuid AND
+  gActiveManagementProtocolGuid AND
+  gAlertStandardFormatProtocolGuid
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+

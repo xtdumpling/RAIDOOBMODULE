@@ -1,0 +1,62 @@
+TOKEN
+    Name  = "ReportStatusConout_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable ReportStatusConOut support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    Master = Yes
+End
+
+INFComponent
+    Name  = "PeiProgressErrorCodeLib"
+    File  = "ProgressErrorCodeLib.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "PEIM"
+End
+
+INFComponent
+    Name  = "DxeProgressErrorCodeLib"
+    File  = "ProgressErrorCodeLib.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_DRIVER"
+End
+
+LibraryMapping
+    Class  = "PeiProgressErrorCodeLib"
+    Instance  = "AmiModulePkg.PeiProgressErrorCodeLib"
+    ModuleTypes  = "PEIM"
+End
+
+LibraryMapping
+    Class  = "DxeProgressErrorCodeLib"
+    Instance  = "AmiModulePkg.DxeProgressErrorCodeLib"
+    ModuleTypes  = "DXE_DRIVER"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiModulePkg.PeiProgressErrorCodeLib"
+    ModuleTypes  = "PEIM"
+    Override  = "AmiModulePkg.PeiReportStatusConOut"
+End
+
+INFComponent
+    Name  = "PeiReportStatusConOut"
+    File  = "PeiReportStatusConOut.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "PEIM"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiModulePkg.DxeProgressErrorCodeLib"
+    ModuleTypes  = "PEIM"
+    Override  = "AmiModulePkg.DxeReportStatusConOut"
+End
+
+INFComponent
+    Name  = "DxeReportStatusConOut"
+    File  = "DxeReportStatusConOut.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_DRIVER"
+End

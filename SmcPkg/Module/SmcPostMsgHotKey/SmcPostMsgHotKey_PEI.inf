@@ -1,0 +1,100 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#
+#  Rev. 1.04
+#       Bug Fix: Fixed still show warning message on POST screen at first boot after changing VGA priority from Offboard to Onboard.                
+#       Reason : 
+#       Auditor: Chen Lin
+#       Date   : June/23/2017
+#
+#
+#  Rev. 1.03
+#    Bug Fix:  Early Graphic Logo Support.
+#    Reason:   
+#    Auditor:  Isaac Hsu
+#    Date:     Mar/14/2017
+#
+#  Rev. 1.02
+#    Bug Fix:  Display BMC IP at early POST.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Jun/22/2016
+#
+#  Rev. 1.01
+#    Bug Fix:  Use AMIBCP to disable boot procedure messages displaying.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Jun/21/2016
+#
+#     Rev. 1.00
+#       Reason:		Rewrite SmcPostMsgHotKey
+#       Auditor:	Leon Xu 
+#       Date:		Dec/19/2014
+#
+#****************************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SmcPostMsgHotKey_PEI
+  FILE_GUID                      = d2846adb-b41b-4103-871f-e2235f4778c7
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = SmcPostMsgHotKey_PEI_Init
+
+[Sources]
+  SmcPostMsgHotKey_PEI.c
+
+[Packages]
+  AmiModulePkg/AmiModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiIpmiPkg/AmiIpmiPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  SmcPkg/SmcPkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  
+[LibraryClasses]
+  PeimEntryPoint
+  AmiPeiLib
+  AmiCspLib
+  ReportStatusCodeLib
+#  PcdLib
+#  PeiServicesLib
+#  HobLib
+
+[Ppis]
+  gEfiPeiRscHandlerPpiGuid
+  gEfiPeiStallPpiGuid
+  gEfiPeiReadOnlyVariable2PpiGuid                ## PRODUCES   
+  gEfiPeiIpmiTransportPpiGuid
+
+[Guids]
+  gEfiSocketMpLinkVariableGuid
+  gEfiSetupVariableGuid
+[Pcd]
+  gSmcPkgTokenSpaceGuid.PcdSmcColor
+
+[Depex]
+  gEfiPeiRscHandlerPpiGuid
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**         5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

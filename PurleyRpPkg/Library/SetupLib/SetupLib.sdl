@@ -1,0 +1,32 @@
+TOKEN
+    Name  = "SetupLib_SUPPORT"
+    Value  = "1"
+    Help  = "Switch for Enabling SetupLib support in the project"
+    TokenType = Boolean
+    Master = Yes
+End
+
+INFComponent
+    Name  = "DxeSetupLib"
+    File  = "DxeSetupLib.inf"
+    Package  = "PurleyRpPkg"
+    ModuleTypes  = "BASE"
+End
+
+LibraryMapping
+    Class  = "SetupLib"
+    Instance  = "PurleyRpPkg.DxeSetupLib"
+End
+
+INFComponent
+    Name  = "PeiSetupLib"
+    File  = "PeiSetupLib.inf"
+    Package  = "PurleyRpPkg"
+    ModuleTypes  = "PEIM"
+End
+
+LibraryMapping
+    Class  = "SetupLib"
+    Instance  = "PurleyRpPkg.PeiSetupLib"
+    ModuleTypes  = "PEIM"
+End

@@ -1,0 +1,452 @@
+##****************************************************************************
+##****************************************************************************
+##**                                                                        **
+##**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+##**                                                                        **
+##****************************************************************************
+##****************************************************************************
+#
+#  File History
+#
+#  Rev. 1.05
+#    Bug Fix : N/A.
+#    Reason  : Based on Purley_Setup_Mapping_Language_Draft_20170301_Joe.xlsx 
+#              and Official_BIOS_SOP_Revised_Draft_20170301_Mapping_Language_Joe.xlsx 
+#              to implement HII mapping language for BIOS setting preservation.
+#    Auditor : Joe Jhang
+#    Date    : Mar/02/2017
+#
+#  Rev. 1.04
+#    Bug Fix:  Support 6 NVMe
+#    Reason:   
+#    Auditor:  Kasber Chen
+#    Date:     Jul/14/2016
+#
+#  Rev. 1.03
+#    Bug Fix:  Modify PcdSmcMultiFuncLAN to PcdSmcMultiFuncLanChip1 
+#              and add a new PCD PcdSmcMultiFuncLanChip2.
+#    Reason:   Two different function number chips in a project.
+#    Auditor:  Kasber Chen
+#    Date:     Jul/27/2015
+#  
+#  Rev. 1.02
+#    Bug Fix:  Fixed UEFI oprom control no function
+#    Reason:
+#    Auditor:  Kasber Chen
+#    Date:     Mar/23/2015
+#
+#  Rev. 1.01
+#    Bug Fix:  Change Slot BDF define to PCD
+#    Reason:
+#    Auditor:  Kasber Chen
+#    Date:     Feb/13/2015
+#
+#  Rev. 1.00
+#    Bug Fix:  Initialize revision
+#    Reason:   Get base code from Grantley
+#    Auditor:  Salmon Chen
+#    Date:     Dec/09/2014
+#
+#****************************************************************************
+#****************************************************************************
+TOKEN
+	Name  = "SmcOpromCtrl_SUPPORT"
+	Value  = "1"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "OptionRomPolicy_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable Option ROM Dispatch Policy support in Project"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name      = "ROCKET_RAID_WORKAROUND"
+	Help      = "Workaround to dispatch Rocket Raid OP ROM before others"
+	Value     = "1"
+	TokenType = Boolean
+	TargetH	  = Yes
+End
+
+TOKEN
+	Name  = "Workaround_Addon_Card_List"
+	Value  = "{0x1103, 0xFFFF},{0x00,0x00}"
+	Help  = "Add-on card list which apply to the workaround, leave {0x00, 0x00} as the last entry. Device ID 0xFFFF - apply to all devices with specific Vendor ID."
+	TokenType = Expression
+	TargetH = Yes
+	Token = "ROCKET_RAID_WORKAROUND" "=" "1"
+End
+
+PATH
+	Name  = "SmcOpromCtrl_DIR"
+End
+
+TOKEN
+	Name      = "ONBOARD_VGA_DID"
+	Value     = "0x00000000"
+	Help      = "Onboard VGA Option Rom Agent Did"
+	TokenType = Integer
+	TargetH   = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcSLOT1BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x00000000"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcSLOT2BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x00000000"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcSLOT3BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x00000000"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcSLOT4BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x00000000"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcSLOT5BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x00000000"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcSLOT6BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x00000000"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcSLOT7BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x00000000"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcSLOT8BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x00000000"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcSLOT9BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x00000000"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcSLOT10BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x00000000"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcSLOT11BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x00000000"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcOBLan1BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x00000000"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcOBLan2BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x00000000"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcOBLan3BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x00000000"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcOBLan4BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x00000000"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcMultiFuncLanChip1"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Help  = "for LAN1 and LAN2."
+	Value  = "0x01"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 01h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcMultiFuncLanChip2"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Help  = "for LAN3 and LAN4."
+	Value  = "0x01"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 01h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcOBSASBDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x00000000"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcOBNVMe1BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x00000000"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcOBNVMe2BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x00000000"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcOBNVMe3BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x00000000"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcOBNVMe4BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x00000000"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcOBNVMe5BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x00000000"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcOBNVMe6BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x00000000"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+TOKEN
+	Name  = "PCI_DEV_LIST"
+	Value  = "0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff"
+	Help  = "PCI Device Number List based on slot number. 0xff: pcie slot, others are pci slot"
+	TokenType = Expression
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+ELINK
+	Name  = "SmcOpromCtrl_INCLUDES"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "/I$(SmcOpromCtrl_DIR)"
+	Parent  = "SmcOpromCtrl_INCLUDES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "SmcOpRomCtrl_Entry,"
+	Parent  = "SignalConnectDriversEvent,"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "SmcUefiOpRomCtrl,"
+	Parent  = "CSM_CHECK_UEFI_OPROM_POLICY"
+	InvokeOrder = AfterParent
+End
+
+INFComponent
+        Name  = "SmcOpromCtrl"
+        File  = "SmcOpromCtrl.inf"
+        Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "AmiModulePkg.SmcOpromCtrl"
+	Override  = "AmiModulePkg.Bds"
+End
+
+ELINK
+	Name  = "$(SmcOpromCtrl_DIR)/SmcOpromCtrl.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(SmcOpromCtrl_DIR)\SmcOpromCtrl.uni"
+	Parent  = "SetupStringFiles"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name        = "SmcRocketRaidWorkaround,"
+	Parent      = "ConnectEverything,"
+	InvokeOrder = BeforeParent
+	Token = "ROCKET_RAID_WORKAROUND" "=" "1"
+End
+
+ELINK
+	Name  = "$(SmcOpromCtrl_DIR)/SmcOpromCtrlSetupXAmiStringIncludes.uni"
+	Parent  = "SetupStringFiles"
+	InvokeOrder = AfterParent
+End
+
+OUTPUTREGISTER
+	Name = "SmcOpromCtrlSetupXAmiStrings"
+	File = "SmcOpromCtrlSetupXAmiStrings.uni"
+	Path = "Build"    
+	Template = "SmcOpromCtrlSetup.txt"
+End
+
+ELINK
+	Name  = "SMC_OPROM_CTRL_SETUP_MAPPING_LANGUAGE_FILES"
+	Help  = "This is a list of UNI files added by OEM to include the mapping language strings."
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "SmcOpromCtrlXAmi.uni"
+	Parent = "SMC_OPROM_CTRL_SETUP_MAPPING_LANGUAGE_FILES"
+	InvokeOrder = AfterParent
+End

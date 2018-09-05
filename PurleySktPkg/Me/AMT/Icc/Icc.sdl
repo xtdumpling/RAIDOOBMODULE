@@ -1,0 +1,40 @@
+TOKEN
+	Name  = "Icc_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling Icc support in the project"
+	TokenType = Boolean
+	TargetMAK = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "IccPlatform_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable IccPlatform support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "IccOverClocking_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable IccOverClocking support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "IccPlatform"
+	File  = "Dxe\IccPlatform.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "IccPlatform_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "IccOverClocking"
+	File  = "OverClocking\IccOverClocking.inf"
+	Package  = "PurleySktPkg"
+	Arch  = "X64"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "IccOverClocking_SUPPORT" "=" "1"
+End
+

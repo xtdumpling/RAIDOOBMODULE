@@ -1,0 +1,67 @@
+TOKEN
+	Name  = "TSE_BOARD_MODULE_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable TSE Board Module"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "TSE_BOARD_SOURCE_SUPPORT"
+	Value  = "1"
+	Help  = "Allow to use Board module sources"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "AMITSEBoard_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable AMITSEBoard support in Project"
+	TokenType = Boolean
+End
+
+PATH
+	Name  = "TSE_BOARD_DIR"
+End
+
+
+ELINK
+	Name  = "$(TSE_BOARD_DIR)/OemTokens.c"
+	Parent  = "TSE_STRING_CONSUMERS_LIST"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(TSE_BOARD_DIR)/TseOem.uni"
+	Parent  = "TSE_STRING_FILES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(TSE_BOARD_DIR)/TseOem.h"
+	Parent  = "AMITSE_OEM_HEADER_LIST"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "AMITSEBoard"
+	Parent  = "ADDITIONAL_AMITSE_LibraryClasses"
+	InvokeOrder = AfterParent
+End
+
+INFComponent
+	Name  = "AMITSEBoard"
+	File  = "AMITSEBoard.inf"
+	Package  = "AmiTsePkg"
+End
+
+LibraryMapping
+	Class  = "AMITSEBoard"
+	Instance  = "AmiTsePkg.AMITSEBoard"
+#	Arch  = "X64"
+End
+

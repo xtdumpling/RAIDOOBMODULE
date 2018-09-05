@@ -1,0 +1,2085 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.25
+#    Bug Fix:  Fixed memory error LED can't turn on for runtime memory error.
+#    Reason:   
+#    Auditor:  Jimmy Chiu
+#    Date:     Aug/24/2017
+#
+#  Rev. 1.24
+#    Bug Fix:  Add memory error LED function.
+#    Reason:   
+#    Auditor:  Jimmy Chiu
+#    Date:     Jul/03/2017
+#
+#  Rev. 1.23
+#    Bug Fix:  Update Re-driver for AOC-SLG3-2E4R(PB issue #80517).
+#    Reason:   
+#    Auditor:  Jimmy Chiu
+#    Date:     Jun/28/2017
+#
+#  Rev. 1.22
+#    Bug Fix:  Program Re-driver for AOC-2UR6N4-i4XT.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Jan/26/2017
+#
+#  Rev. 1.21
+#    Bug Fix:  Fix Re-driver didn't be updated for AOC-URN6-I2XT.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Jan/17/2017
+#
+#  Rev. 1.20
+#    Bug Fix:  Optimize Re-driver for AOC-URN6-I2XT.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Jan/13/2017
+#
+#  Rev. 1.19
+#    Bug Fix:  Program Re-driver for AOC-URN6-I2XT.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Jan/13/2017
+#
+#  Rev. 1.18
+#    Bug Fix:  Change board name from X11DPU+ to X11DPU.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Jan/09/2017
+#
+#  Rev. 1.17
+#    Bug Fix:  Disable "SR-IOV Support" by default for NVMe unstable issues.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Jan/05/2017
+#
+#  Rev. 1.16
+#    Bug Fix:  Update SATA IOBP for PB issue #74940.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Nov/04/2016
+#
+#  Rev. 1.15
+#    Bug Fix:  Enable PORT61H_EMULATION for some addon cards.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Oct/06/2016
+#
+#  Rev. 1.14
+#    Bug Fix:  Send HideItem and RiserCard data to sum.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Sep/23/2016
+#
+#  Rev. 1.13
+#       Bug Fix  :   
+#       Reason   : Get CPLD version Command update by BMC
+#       Auditor  : Sunny Yang
+#       Date     : Sep/08/2016
+#
+#  Rev. 1.12
+#       Bug Fix  : add CPLD version support
+#       Reason   : Get CPLD version from BMC
+#       Auditor  : Sunny Yang
+#       Date     : Sep/01/2016
+#
+#  Rev. 1.11
+#       Bug fixed: Fix PXE EFI ROM doesn't work.
+#       Reason   : 
+#       Auditor  : Sunny Yang
+#       Date     : Aug/29/2016
+#
+#  Rev. 1.10
+#       Bug fixed: Fix building errors when enabling DEBUG_MODE.
+#       Reason   : 
+#       Auditor  : Hartmann Hsieh
+#       Date     : Aug/22/2016
+#
+#  Rev. 1.09
+#       Bug fixed: Update SMBIOS type 8.
+#       Reason   : 
+#       Auditor  : Hartmann Hsieh
+#       Date     : Aug/22/2016
+#
+#  Rev. 1.08
+#       Bug fixed: Disable PORT61H_EMULATION temporarily for hanging at video OPROM.
+#       Reason   : Wait for B0 PCH to enable again.
+#       Auditor  : Hartmann Hsieh
+#       Date     : Aug/03/2016
+#
+#  Rev. 1.08
+#       Bug fixed: Correct SMBIOS map.
+#       Reason   : 
+#       Auditor  : Hartmann Hsieh
+#       Date     : Aug/03/2016
+#
+#  Rev. 1.07
+#       Bug fixed: Update USB2 IOBP for Lab's requirement.
+#       Reason   : 
+#       Auditor  : Hartmann Hsieh
+#       Date     : Jul/22/2016
+#
+#  Rev. 1.06
+#       Bug fixed: Add USB2.0 & USB3.0 OC settings.
+#       Reason   : 
+#       Auditor  : Hartmann Hsieh
+#       Date     : Jul/19/2016
+#
+#  Rev. 1.05
+#       Bug fixed: Update I-SATA and S-SATA IOBP for Lab's requirement.
+#       Reason   : 
+#       Auditor  : Hartmann Hsieh
+#       Date     : Jul/15/2016
+#
+#  Rev. 1.04
+#       Bug fixed: Add 32MB ROM part support.
+#       Reason   : Modify BIOS_SIZE to "0x2000000" in "Project.SDL" and modify some lines in "BuildSps.bat".
+#       Auditor  : Hartmann Hsieh
+#       Date     : Jun/23/2016
+#
+#  Rev. 1.03
+#       Bug fixed:   Add Intel X540 PXE OPROM.
+#       Reason:      
+#       Auditor:     Hartmann Hsieh
+#       Date:        Jun/16/2016
+#
+#  Rev. 1.01
+#       Bug fixed:   Enable GPI NMI function.
+#       Reason:      Use GPP_D_3 as GPI_NMI
+#       Auditor:     Jimmy Chiu
+#       Date:        Jun/13/2016
+#
+#  Rev. 1.00
+#       Bug fixed:   Initialize revision
+#       Reason:      Clone from Sample folder.
+#       Auditor:     Jacker Yeh
+#       Date:        Feb/02/2016
+#
+#****************************************************************************
+
+TOKEN
+	Name  = "X11DPU_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable BOARD1 support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "PROJECT_TAG"
+	Value  = "1091C"
+	TokenType = Expression
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "OFFICIAL_RELEASE"
+	Value  = "1"
+	Help  = "Switch token for official BIOS release. Please copy to your own project board to enable/disable it."
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "BIOS_VERSION"
+	Value  = "1.0b"
+	Help  = "Identifies the major release of the System BIOS."
+	TokenType = Expression
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PROJECT_MAJOR_VERSION"
+	Value  = "0x01"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PROJECT_MINOR_VERSION"
+	Value  = "0x0B"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+  	Name      = "PROJECT_BOARD_NAME"
+  	Value     = "X11DPU"
+  	Help      = "Specifies the Project Board Name"
+  	TokenType = Expression
+  	TargetEQU = Yes
+  	TargetMAK = Yes
+  	TargetH   = Yes
+End
+
+TOKEN
+	Name  = "CRB1_SSID"
+	Value  = "0x091C15D9"
+	Help  = "This an example, Bit00-15: Vendor ID/Bit16-31:Device ID."
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SMC_SSID"
+	Value  = "$(CRB1_SSID)"
+	Help  = "This an example, Bit00-15: Vendor ID/Bit16-31:Device ID."
+	TokenType = Integer
+	TargetH = Yes
+	TargetMAK = Yes
+End
+
+PATH
+	Name  = "X11DPU_PROJECT_DIR"
+End
+
+TOKEN
+	Name  = "********** Debug Settings **********"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "DEBUG_MODE"
+	Value  = "0"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+        Name  = "DEBUG_FROM_SOL"
+        Value  = "0"
+        Help  = "Output debug message through SOL"
+        TokenType = Boolean
+        TargetH = Yes
+        Range  = "ON or OFF default is OFF"
+End
+
+TOKEN
+	Name  = "FAULT_TOLERANT_NVRAM_UPDATE"
+	Value  = "0"
+	Help  = "Enables/disables fault tolerant NVRAM garbage collection.\If FAULT_TOLERANT_NVRAM_UPDATE is 1, the NVRAM driver uses redundant flash area of size NVRAM_SIZE to perform a failsafe garbage collection. \No data will be lost in case of a power failure.\If FAULT_TOLERANT_NVRAM_UPDATE is 0, the values of some or all NVRAM variables may be lost in case of a power failure during the garbage collection."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+        Token = "BIOS_SIZE" "=" "0x1000000" # 16MB	
+        Token = "DEBUG_MODE" "=" "1"
+End
+
+TOKEN
+	Name  = "IntelGigabitLan_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable Intel Gigabit Lan network chip support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+        Token = "BIOS_SIZE" "=" "0x1000000" # 16MB	
+        Token = "DEBUG_MODE" "=" "1"
+End
+
+TOKEN
+	Name  = "ShellBinPkg_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable ShellBinPkg support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+        Token = "BIOS_SIZE" "=" "0x1000000" # 16MB	
+        Token = "DEBUG_MODE" "=" "1"
+End
+
+PCIDEVICE
+    Title  = "Wolf River HFI on PC04"
+    Parent  = "PCI Express Port 4 on PC04"
+    Attribute  = "0x0"
+    Dev_type  = "PciDevice"
+    Dev  = 00h
+    Fun  = 00h
+    SleepNum  = 00h
+    ASLdeviceName  = "WF04"
+    #ROMFile  = "AmiCRBPkg\HfiPcieGen3.efi"
+    IntA =      LNKA; 56
+    IntB =      LNKB; 60
+    IntC =      LNKC; 61
+    IntD =      LNKD; 62
+    Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+    DeviceType = OnBoard
+    PCIBusSize = 32bit
+    #OptionROM = Yes
+    ROMMain = No
+    PCIExpress = Yes
+    #UefiRom = Yes
+    #FFSFileName  = "ROM Storage"
+    #ROMSectionGuid  = "7949f6dc-9987-42a4-91e9-420e7dcd4f05"
+    Token = "BIOS_SIZE" "=" "0x1000000" # 16MB	
+    Token = "DEBUG_MODE" "=" "1"
+End
+
+TOKEN
+	Name  = "INTEL_BOOT_GUARD_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable Intel Boot Guard in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "BIOS_SIZE" "=" "0x1000000" # 16MB	
+	Token = "DEBUG_MODE" "=" "1"
+End
+
+TOKEN
+	Name  = "SameDebug_SUPPORT"
+	Value  = "0"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TSE_DEBUG_MESSAGES"
+	Value  = "0x0"
+	Help  = "A switch to enable TSE Debug messages: Bit0: Uefi functions, Bit1: HiiCallbacks, Bit2: HiiNotifications, Bit3: HiiParsing"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SIO_DEBUG_MESSAGES"
+	Value  = "0"
+	Help  = "Switch to enable SIO DEBUG MESSAGES in SIO MODULE."
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "DEBUG_MODE" "=" "1"
+End
+
+TOKEN
+    Name  = "SERVER_IPMI_DEBUG_MESSAGE_SUPPORT"
+    Value  = "0"
+    Help  = "Enables/Disables Debug message support from AMI IPMI PKG. Default is disabled. This token is provided to track flow of the modules when IPMI module is not working as expected. "
+    TokenType = Boolean
+    TargetH = Yes
+    Token = "DEBUG_MODE" "=" "1"
+End
+
+TOKEN
+    Name  = "PCI_BUS_DEBUG_MESSAGES"
+    Value  = "0"
+    Help  = "A switch to enable PciBus Driver Debug messages over Serial Port."
+    TokenType = Boolean
+    TargetH = Yes
+    Token = "DEBUG_CODE" "=" "1"
+End
+
+TOKEN
+    Name  = "USB_DEBUG_MESSAGES"
+    Value  = "0"
+    Help  = "A switch to enable PciBus Driver Debug messages over Serial Port."
+    TokenType = Boolean
+    TargetH = Yes
+    Token = "DEBUG_CODE" "=" "1"
+End
+
+TOKEN
+	Name  = "SMC_OOB_DEBUG_MESSAGE_SUPPORT"
+	Value  = "1"
+	Help  = "Enables/Disables Debug message support from AMI IPMI PKG. Default is disabled. This token is provided to track flow of the modules when IPMI module is not working as expected. "
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "DEBUG_MODE" "=" "1"
+End
+
+TOKEN
+	Name  = "SameDebug_SUPPORT"
+	Value  = "1"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "SMC_ACPI_DEBUG_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name      = "SMC_ACPI_DEBUG_SUPPORT"
+	Value     = "0"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Help      = "Main switch to enable Smc Acpi Debug support in Project"
+End
+
+TOKEN
+	Name  = "********** SMBIOS Settings **********"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "NUMBER_OF_ONBOARD_DEVICES"
+	Value  = "3"
+	Help  = "Number of Onboard Devices Present in the System."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "NUMBER_OF_EXT_PORT_CONNECTORS"
+	Value  = "6"
+	Help  = "Number of External Port Connectors in the Sytem."
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "0 - 20"
+End
+
+TOKEN
+	Name  = "ONBOARD_DEVICE_EXT_COUNT"
+	Value  = "1"
+	Help  = "Number of Onboard Devices"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "********** Other Settings **********"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "********** GPIO Settings **********"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "  ====== IOBP Setting Adjust ======  "
+	TokenType = Integer
+End
+
+#
+# Format:{PordId, LanNum, PhyMode, Offset, Value, BitMask}
+#
+TOKEN
+	Name  = "HSIO12T6"
+	Value  = "{0xA9, 12, 0x02, 0x0498, 0x00280000, ~0x003F0000},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIO13T6"
+	Value  = "{0xA9, 13, 0x02, 0x0698, 0x00280000, ~0x003F0000},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIO14T6"
+	Value  = "{0xA9, 14, 0x02, 0x0898, 0x00280000, ~0x003F0000},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIO15T6"
+	Value  = "{0xA9, 15, 0x02, 0x0A98, 0x00260000, ~0x003F0000},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIO16T6"
+	Value  = "{0xA9, 16, 0x02, 0x0C98, 0x00280000, ~0x003F0000},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIO17T6"
+	Value  = "{0xA9, 17, 0x02, 0x0E98, 0x00280000, ~0x003F0000},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIO18T6"
+	Value  = "{0xA9, 18, 0x02, 0x1098, 0x00280000, ~0x003F0000},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIO19T6"
+	Value  = "{0xA9, 19, 0x02, 0x1298, 0x00280000, ~0x003F0000},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIO20T6"
+	Value  = "{0xA9, 20, 0x02, 0x1498, 0x00280000, ~0x003F0000},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIO21T6"
+	Value  = "{0xA9, 21, 0x02, 0x1698, 0x00280000, ~0x003F0000},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIO22T6"
+	Value  = "{0xA9, 22, 0x02, 0x1898, 0x00280000, ~0x003F0000},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIO23T6"
+	Value  = "{0xA9, 23, 0x02, 0x1A98, 0x00280000, ~0x003F0000},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIO24T6"
+	Value  = "{0xA9, 24, 0x02, 0x1C98, 0x00280000, ~0x003F0000},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIO25T6"
+	Value  = "{0xA9, 25, 0x02, 0x1E98, 0x00260000, ~0x003F0000},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIO13R20"
+	Value  = "{0xA9, 13, 0x02, 0x0750, 0x04000000, ~0x3F000000},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIO21R20"
+	Value  = "{0xA9, 21, 0x02, 0x1750, 0x04000000, ~0x3F000000},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIO24R20"
+	Value  = "{0xA9, 24, 0x02, 0x1D50, 0x04000000, ~0x3F000000},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIO25R20"
+	Value  = "{0xA9, 25, 0x02, 0x1F50, 0x04000000, ~0x3F000000},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIOPCPP1" # USB2PP1 Port C
+	Value  = "{0xCA, 0, 0x08, 0x4C00, 0x0000D800, ~0x0000FF00},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIOPDPP1" # USB2PP1 Port D
+	Value  = "{0xCA, 0, 0x08, 0x4D00, 0x0000D800, ~0x0000FF00},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIOPAPP1" # USB2PP1 Port A
+	Value  = "{0xCA, 0, 0x08, 0x4A00, 0x0000C500, ~0x0000FF00},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIOP8PP1" # USB2PP1 Port 8
+	Value  = "{0xCA, 0, 0x08, 0x4800, 0x0000D800, ~0x0000FF00},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIOP9PP1" # USB2PP1 Port 9
+	Value  = "{0xCA, 0, 0x08, 0x4900, 0x0000D800, ~0x0000FF00},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "HSIOPAPP2" # USB2PP2 Port A
+	Value  = "{0xCA, 0, 0x08, 0x4A26, 0x00820000, ~0xFFFF0000},"
+	TokenType = Expression
+End
+TOKEN
+	Name  = "SB_OEM_PTSS_TABLE_LIST"
+	Value  = "$(HSIO12T6)$(HSIO13T6)$(HSIO14T6)$(HSIO15T6)$(HSIO16T6)$(HSIO17T6)$(HSIO18T6)$(HSIO19T6)$(HSIO20T6)$(HSIO21T6)$(HSIO22T6)$(HSIO23T6)$(HSIO24T6)$(HSIO25T6)$(HSIO13R20)$(HSIO21R20)$(HSIO24R20)$(HSIO25R20)$(HSIOPCPP1)$(HSIOPDPP1)$(HSIOPAPP1)$(HSIOP8PP1)$(HSIOP9PP1)$(HSIOPAPP2){0xFF, 0xFF, 0x02, 0x1098, 0x002A0000, ~0x003F0000},"
+	Help  = "Format:{PordId, LanNum, PhyMode, Offset, Value, BitMask}, PordId: ignored, LanNum: HSIO Lan#(Start from 0), PhyMode: 0:PCIEDMI/1:USB3/2:SATA/8:USB2, For USB2 set LanNum to 0."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "********** Aspeed VGA Settings **********"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "Root_Port_Fun"
+	Value  = "5"
+	Help  = "Aspeed chip root port function of ICH/PCH"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0 - 7"
+End
+
+TOKEN
+	Name  = "********** Riser Settings **********"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "SmcRiserCard_SUPPORT"
+	Value  = "1"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SXB1_GPIO_Tbl"
+	Value  = "{$(SMC_GPP_G), $(SMC_GPP_G)+1, $(SMC_GPP_G)+2, $(SMC_GPP_G)+3}"
+	Help = "SXB1 GPIO define in the token."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SXB2_GPIO_Tbl"
+	Value  = "{$(SMC_GPP_G)+4, $(SMC_GPP_G)+5, $(SMC_GPP_G)+6}"
+	Help = "SXB2 GPIO define in the token."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SXB3_GPIO_Tbl"
+	Value  = "{$(SMC_GPP_G)+7, $(SMC_GPP_G)+8, $(SMC_GPP_G)+9, $(SMC_GPP_G)+10, $(SMC_GPP_G)+11}"
+	Help = "SXB2 GPIO define in the token."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "BOARD_PCIE_PORT_SXB1"
+	Value  = "{0x00220018, 0x00220010, 0x00220008, 0x00220000, 0x00230000, 0x00230008, 0x00230010, 0x00230018, 0xffffffff, 0xffffffff}"
+	Help  = "SXB1 slot port mapping."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "BOARD_PCIE_PORT_SXB2"
+	Value  = "{0x00210000, 0x00210008, 0x000000E0, 0x00200000, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff}"
+	Help  = "SXB2 slot port mapping."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "BOARD_PCIE_PORT_SXB3"
+	Value  = "{0x00110000, 0x00110008, 0x00130000, 0x00130008, 0x00130010, 0x00130018, 0x00120000, 0x00120008, 0x00120010, 0x00120018}"
+	Help  = "SXB3 slot port mapping."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+        Name  = "WIO_SUPPORT"
+        Value  = "1"
+        TokenType = Boolean
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "ULIO_SUPPORT"
+        Value  = "1"
+        TokenType = Boolean
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "********** Redriver Settings **********"
+        TokenType = Expression
+End
+
+TOKEN
+        Name  = "RC_URN6_i2XT_1" # AOC-URN6-I2XT 0xB4
+        Value  = "{{0x06,0x18},{0x0f,0x00},{0x10,0xab},{0x11,0xE1},{0x16,0x00},{0x17,0xab},{0x18,0xe1},{0x1d,0x00},{0x1e,0xab},{0x1f,0xe1},{0x24,0x00},{0x25,0xab},{0x26,0xe1},{0x2C,0x03},{0x2D,0xAF},{0x2E,0xE0},{0x33,0x03},{0x34,0xAF},{0x35,0xE0},{0x3A,0x03},{0x3B,0xAF},{0x3C,0xE0},{0x41,0x03},{0x42,0xAF},{0x43,0xE0}}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "RC_URN6_i2XT_2" # AOC-URN6-I2XT 0xB6
+        Value  = "{{0x06,0x18},{0x0f,0x00},{0x10,0xab},{0x11,0xE1},{0x16,0x00},{0x17,0xab},{0x18,0xe1},{0x1d,0x00},{0x1e,0xab},{0x1f,0xe1},{0x24,0x00},{0x25,0xab},{0x26,0xe1},{0x2C,0x03},{0x2D,0xAF},{0x2E,0xE0},{0x33,0x03},{0x34,0xAF},{0x35,0xE0},{0x3A,0x03},{0x3B,0xAF},{0x3C,0xE0},{0x41,0x03},{0x42,0xAF},{0x43,0xE0}}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "RC_URN6_i2XT_3" # AOC-URN6-I2XT 0xB8
+        Value  = "{{0x06,0x18},{0x0f,0x00},{0x10,0xab},{0x11,0xE1},{0x16,0x00},{0x17,0xab},{0x18,0xe1},{0x1d,0x00},{0x1e,0xab},{0x1f,0xe1},{0x24,0x00},{0x25,0xab},{0x26,0xe1},{0x2C,0x03},{0x2D,0xAF},{0x2E,0xE0},{0x33,0x03},{0x34,0xAF},{0x35,0xE0},{0x3A,0x03},{0x3B,0xAF},{0x3C,0xE0},{0x41,0x03},{0x42,0xAF},{0x43,0xE0}}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "RC_URN6_i2XT_4" # AOC-URN6-I2XT 0xBA
+        Value  = "{{0x06,0x18},{0x0f,0x00},{0x10,0xab},{0x11,0xE1},{0x16,0x00},{0x17,0xab},{0x18,0xe1},{0x1d,0x00},{0x1e,0xab},{0x1f,0xe1},{0x24,0x00},{0x25,0xab},{0x26,0xe1},{0x2C,0x03},{0x2D,0xAF},{0x2E,0xE0},{0x33,0x03},{0x34,0xAF},{0x35,0xE0},{0x3A,0x03},{0x3B,0xAF},{0x3C,0xE0},{0x41,0x03},{0x42,0xAF},{0x43,0xE0}}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "RC_URN6_i2XT_5" # AOC-URN6-I2XT 0xB0
+        Value  = "{{0x06,0x18},{0x0f,0x00},{0x10,0xab},{0x11,0xE1},{0x16,0x00},{0x17,0xab},{0x18,0xe1},{0x1d,0x00},{0x1e,0xab},{0x1f,0xe1},{0x24,0x00},{0x25,0xab},{0x26,0xe1},{0x2C,0x03},{0x2D,0xAF},{0x2E,0xE0},{0x33,0x03},{0x34,0xAF},{0x35,0xE0},{0x3A,0x03},{0x3B,0xAF},{0x3C,0xE0},{0x41,0x03},{0x42,0xAF},{0x43,0xE0}}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "RC_URN6_i2XT_6" # AOC-URN6-I2XT 0xB2
+        Value  = "{{0x06,0x18},{0x0f,0x00},{0x10,0xab},{0x11,0xE1},{0x16,0x00},{0x17,0xab},{0x18,0xe1},{0x1d,0x00},{0x1e,0xab},{0x1f,0xe1},{0x24,0x00},{0x25,0xab},{0x26,0xe1},{0x2C,0x03},{0x2D,0xAF},{0x2E,0xE0},{0x33,0x03},{0x34,0xAF},{0x35,0xE0},{0x3A,0x03},{0x3B,0xAF},{0x3C,0xE0},{0x41,0x03},{0x42,0xAF},{0x43,0xE0}}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "RC_2UR6N4_i4XT_1" # AOC-2UR6N4-i4XT B0/NVMe#0
+        Value  = "{{0x06,0x18},{0x0F,0x00},{0x10,0xAB},{0x11,0xE1},{0x16,0x00},{0x17,0xAB},{0x18,0xE1},{0x1D,0x00},{0x1E,0xAB},{0x1F,0xE1},{0x24,0x00},{0x25,0xAB},{0x26,0xE1},{0x2C,0x03},{0x2D,0xAF},{0x2E,0xE0},{0x33,0x03},{0x34,0xAF},{0x35,0xE0},{0x3A,0x03},{0x3B,0xAF},{0x3C,0xE0},{0x41,0x03},{0x42,0xAF},{0x43,0xE0}}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "RC_2UR6N4_i4XT_2" # AOC-2UR6N4-i4XT B2/NVMe#1
+        Value  = "{{0x06,0x18},{0x0F,0x00},{0x10,0xAB},{0x11,0xE1},{0x16,0x00},{0x17,0xAB},{0x18,0xE1},{0x1D,0x00},{0x1E,0xAB},{0x1F,0xE1},{0x24,0x00},{0x25,0xAB},{0x26,0xE1},{0x2C,0x03},{0x2D,0xAF},{0x2E,0xE0},{0x33,0x03},{0x34,0xAF},{0x35,0xE0},{0x3A,0x03},{0x3B,0xAF},{0x3C,0xE0},{0x41,0x03},{0x42,0xAF},{0x43,0xE0}}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "RC_2UR6N4_i4XT_3" # AOC-2UR6N4-i4XT B4/NVMe#2
+        Value  = "{{0x06,0x18},{0x0F,0x00},{0x10,0xAB},{0x11,0xE1},{0x16,0x00},{0x17,0xAB},{0x18,0xE1},{0x1D,0x00},{0x1E,0xAB},{0x1F,0xE1},{0x24,0x00},{0x25,0xAB},{0x26,0xE1},{0x2C,0x03},{0x2D,0xAF},{0x2E,0xE0},{0x33,0x03},{0x34,0xAF},{0x35,0xE0},{0x3A,0x03},{0x3B,0xAF},{0x3C,0xE0},{0x41,0x03},{0x42,0xAF},{0x43,0xE0}}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "RC_2UR6N4_i4XT_4" # AOC-2UR6N4-i4XT B6/NVMe#3
+        Value  = "{{0x06,0x18},{0x0F,0x00},{0x10,0xAB},{0x11,0xE1},{0x16,0x00},{0x17,0xAB},{0x18,0xE1},{0x1D,0x00},{0x1E,0xAB},{0x1F,0xE1},{0x24,0x00},{0x25,0xAB},{0x26,0xE1},{0x2C,0x03},{0x2D,0xAF},{0x2E,0xE0},{0x33,0x03},{0x34,0xAF},{0x35,0xE0},{0x3A,0x03},{0x3B,0xAF},{0x3C,0xE0},{0x41,0x03},{0x42,0xAF},{0x43,0xE0}}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "RC_U2N4_1" # AOC-U2N4 B0/NVMe#0
+        Value  = "{{0x06,0x18},{0x0F,0x00},{0x10,0xAB},{0x11,0xE1},{0x16,0x00},{0x17,0xAB},{0x18,0xE1},{0x1D,0x00},{0x1E,0xAB},{0x1F,0xE1},{0x24,0x00},{0x25,0xAB},{0x26,0xE1},{0x2C,0x03},{0x2D,0xAF},{0x2E,0xE0},{0x33,0x03},{0x34,0xAF},{0x35,0xE0},{0x3A,0x03},{0x3B,0xAF},{0x3C,0xE0},{0x41,0x03},{0x42,0xAF},{0x43,0xE0}}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "RC_U2N4_2" # AOC-U2N4 B2/NVMe#1
+        Value  = "{{0x06,0x18},{0x0F,0x00},{0x10,0xAB},{0x11,0xE1},{0x16,0x00},{0x17,0xAB},{0x18,0xE1},{0x1D,0x00},{0x1E,0xAB},{0x1F,0xE1},{0x24,0x00},{0x25,0xAB},{0x26,0xE1},{0x2C,0x03},{0x2D,0xAF},{0x2E,0xE0},{0x33,0x03},{0x34,0xAF},{0x35,0xE0},{0x3A,0x03},{0x3B,0xAF},{0x3C,0xE0},{0x41,0x03},{0x42,0xAF},{0x43,0xE0}}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "RC_U2N4_3" # AOC-U2N4 B4/NVMe#2
+        Value  = "{{0x06,0x18},{0x0F,0x00},{0x10,0xAB},{0x11,0xE1},{0x16,0x00},{0x17,0xAB},{0x18,0xE1},{0x1D,0x00},{0x1E,0xAB},{0x1F,0xE1},{0x24,0x00},{0x25,0xAB},{0x26,0xE1},{0x2C,0x03},{0x2D,0xAF},{0x2E,0xE0},{0x33,0x03},{0x34,0xAF},{0x35,0xE0},{0x3A,0x03},{0x3B,0xAF},{0x3C,0xE0},{0x41,0x03},{0x42,0xAF},{0x43,0xE0}}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "RC_U2N4_4" # AOC-U2N4 B6/NVMe#3
+        Value  = "{{0x06,0x18},{0x0F,0x00},{0x10,0xAB},{0x11,0xE1},{0x16,0x00},{0x17,0xAB},{0x18,0xE1},{0x1D,0x00},{0x1E,0xAB},{0x1F,0xE1},{0x24,0x00},{0x25,0xAB},{0x26,0xE1},{0x2C,0x03},{0x2D,0xAF},{0x2E,0xE0},{0x33,0x03},{0x34,0xAF},{0x35,0xE0},{0x3A,0x03},{0x3B,0xAF},{0x3C,0xE0},{0x41,0x03},{0x42,0xAF},{0x43,0xE0}}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "AOC_SLG3_2E4R"
+        Value  = "{{0x06, 0x18}, {0x0f, 0x00}, {0x10, 0xab}, {0x11, 0xe1}, {0x16, 0x00}, {0x17, 0xab}, {0x18, 0xe1}, {0x1d, 0x00}, {0x1e, 0xab}, {0x1f, 0xe1}, {0x24, 0x00}, {0x25, 0xab}, {0x26, 0xe1}, {0x2c, 0x03}, {0x2d, 0xaf}, {0x2e, 0xe0}, {0x33, 0x03}, {0x34, 0xaf}, {0x35, 0xe0}, {0x3a, 0x03}, {0x3b, 0xaf}, {0x3c, 0xe0}, {0x41, 0x03}, {0x42, 0xaf}, {0x43, 0xe0}}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+	Name  = "********** Lan Settings **********"
+	TokenType = Expression
+End
+
+TOKEN
+	Name      = "SMC_ONBOARD_LAN_DID1"
+	Value     = "0x1521"
+	Help      = "Smc Onboard Lan Option Rom Agent Did"
+	TokenType = Integer
+	TargetH   = Yes
+	Range     = "2 byte length"
+End
+
+TOKEN
+	Name      = "SMC_ONBOARD_LAN_DID2"
+	Value     = "0x1528"
+	Help      = "Smc Onboard Lan Option Rom Agent Did"
+	TokenType = Integer
+	TargetH   = Yes
+	Range     = "2 byte length"
+End
+
+TOKEN
+	Name      = "SMC_ONBOARD_LAN_DID3"
+	Value     = "0x10FB"
+	Help      = "Smc Onboard Lan Option Rom Agent Did"
+	TokenType = Integer
+	TargetH   = Yes
+	Range     = "2 byte length"
+End
+
+TOKEN
+	Name      = "SMC_ONBOARD_LAN_DID4"
+	Value     = "0x1563"
+	Help      = "Smc Onboard Lan Option Rom Agent Did"
+	TokenType = Integer
+	TargetH   = Yes
+	Range     = "2 byte length"
+End
+
+PcdMapping
+        Name  = "PcdSmcOBNVMe1BDF"
+        GuidSpace  = "gSmcPkgTokenSpaceGuid"
+        PcdType  = "PcdsDynamicDefault"
+        Value  = "0x00110010"
+        Arch  = "common"
+        Offset  = 00h
+        Length  = 00h
+        TargetDSC = Yes
+End
+
+PcdMapping
+        Name  = "PcdSmcOBNVMe2BDF"
+        GuidSpace  = "gSmcPkgTokenSpaceGuid"
+        PcdType  = "PcdsDynamicDefault"
+        Value  = "0x00110018"
+        Arch  = "common"
+        Offset  = 00h
+        Length  = 00h
+        TargetDSC = Yes
+End
+
+PcdMapping
+        Name  = "PcdSmcOBNVMe3BDF"
+        GuidSpace  = "gSmcPkgTokenSpaceGuid"
+        PcdType  = "PcdsDynamicDefault"
+        Value  = "0x00210010"
+        Arch  = "common"
+        Offset  = 00h
+        Length  = 00h
+        TargetDSC = Yes
+End
+
+PcdMapping
+        Name  = "PcdSmcOBNVMe4BDF"
+        GuidSpace  = "gSmcPkgTokenSpaceGuid"
+        PcdType  = "PcdsDynamicDefault"
+        Value  = "0x00210018"
+        Arch  = "common"
+        Offset  = 00h
+        Length  = 00h
+        TargetDSC = Yes
+End
+
+TOKEN
+	Name  = "********** USB OC Settings **********"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "USB2_OC_PIN"
+	Value  = "{8, 8, 8, 8, 8, 8, 8, 4, 4, 3, 8, 5, 5, 8, 8, 8}"
+	Help = "0: OC_PIN_1, 1: OC_PIN_2, 2: OC_PIN_3, ~~ 8: OC_PIN_SKIP"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "USB3_OC_PIN"
+	Value  = "{5, 5, 4, 4, 8, 3, 8, 8, 8, 8}"
+	Help = "0: OC_PIN_1, 1: OC_PIN_2, 2: OC_PIN_3, ~~ 8: OC_PIN_SKIP"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "********** Disabled items from CRB **********"
+	TokenType = Expression
+End
+
+
+TOKEN
+	Name  = "********** DSM define **********"
+	TokenType = Expression
+End
+
+ELINK
+	Name  = "PCI_SLOT_DSM(0x15, SXB2 QRP0, \_SB.PC06.QRP0),"
+	Parent  = "DsmAsl"
+	Help  = "eLink for creating platform device names with DSM method. Specify Slot number, name and current device scope"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "PCI_SLOT_DSM(0x16, SXB2 QR1A, \_SB.PC07.QR1A),"
+	Parent  = "DsmAsl"
+	Help  = "eLink for creating platform device names with DSM method. Specify Slot number, name and current device scope"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "PCI_SLOT_DSM(0x17, SXB2 QR1B, \_SB.PC07.QR1B),"
+	Parent  = "DsmAsl"
+	Help  = "eLink for creating platform device names with DSM method. Specify Slot number, name and current device scope"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "PCI_SLOT_DSM(0x1A, SXB1 QR2A, \_SB.PC08.QR2A),"
+	Parent  = "DsmAsl"
+	Help  = "eLink for creating platform device names with DSM method. Specify Slot number, name and current device scope"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "PCI_SLOT_DSM(0x1B, SXB1 QR2B, \_SB.PC08.QR2B),"
+	Parent  = "DsmAsl"
+	Help  = "eLink for creating platform device names with DSM method. Specify Slot number, name and current device scope"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "PCI_SLOT_DSM(0x1C, SXB1 QR2C, \_SB.PC08.QR2C),"
+	Parent  = "DsmAsl"
+	Help  = "eLink for creating platform device names with DSM method. Specify Slot number, name and current device scope"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "PCI_SLOT_DSM(0x1D, SXB1 QR2D, \_SB.PC08.QR2D),"
+	Parent  = "DsmAsl"
+	Help  = "eLink for creating platform device names with DSM method. Specify Slot number, name and current device scope"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "PCI_SLOT_DSM(0x1E, SXB1 QR3A, \_SB.PC09.QR3A),"
+	Parent  = "DsmAsl"
+	Help  = "eLink for creating platform device names with DSM method. Specify Slot number, name and current device scope"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "PCI_SLOT_DSM(0x1F, SXB1 QR3B, \_SB.PC09.QR3B),"
+	Parent  = "DsmAsl"
+	Help  = "eLink for creating platform device names with DSM method. Specify Slot number, name and current device scope"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "PCI_SLOT_DSM(0x20, SXB1 QR3C, \_SB.PC09.QR3C),"
+	Parent  = "DsmAsl"
+	Help  = "eLink for creating platform device names with DSM method. Specify Slot number, name and current device scope"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "PCI_SLOT_DSM(0x21, SXB1 QR3D, \_SB.PC09.QR3D),"
+	Parent  = "DsmAsl"
+	Help  = "eLink for creating platform device names with DSM method. Specify Slot number, name and current device scope"
+	InvokeOrder = AfterParent
+End
+
+TOKEN
+	Name  = "********** Override setup **********"
+	TokenType = Expression
+End
+
+ELINK
+	Name  = "$(X11DPU_PROJECT_DIR)\OverrideSetup.uni"
+	Parent  = "SetupStringFiles"
+	InvokeOrder = AfterParent
+End
+
+TOKEN
+	Name  = "********** SuperM Board Driver **********"
+	TokenType = Expression
+End
+
+FFS_FILE
+	Name  = "X11DPUPeiDriver"
+	FD_AREA  = "FV_BB"
+	INFComponent  = "SmcPkg.X11DPUPeiDriver"
+	Apriori_Index  = "1"
+End
+
+FFS_FILE
+	Name  = "X11DPUDxeDriver"
+	FD_AREA  = "FV_MAIN"
+	INFComponent  = "SmcPkg.X11DPUDxeDriver"
+	Apriori_Index  = "3"
+End
+
+INFComponent
+	Name  = "X11DPUDxeDriver"
+	File  = "X11DPUDxeDriver.inf"
+	Package  = "SmcPkg"
+	ModuleTypes = "DXE_DRIVER"
+End
+
+INFComponent
+	Name  = "X11DPUPeiDriver"
+	File  = "X11DPUPeiDriver.inf"
+	Package  = "SmcPkg"
+	ModuleTypes  = "PEIM"
+End
+
+INFComponent
+        Name  = "X11DPUSmmDriver"
+        File  = "X11DPUSmmDriver.inf"
+        Package  = "SmcPkg"
+        ModuleTypes  = "DXE_SMM_DRIVER"
+End
+
+PCIDEVICE
+    Title  = "On Board Video"
+    Parent  = "Video Bridge"
+    Attribute  = "0x0"
+    Dev_type  = "PciDevice"
+    Dev  = 00h
+    Fun  = 00h
+    SleepNum  = 01h
+    ROMFile  = "SmcPkg\Binary\ASTVBIOS.ROM"
+    IntA =  LNKB; 17
+    IntB =  LNKC; 18
+    IntC =  LNKD; 19
+    IntD =  LNKA; 16
+    DeviceType = OnBoard
+    PCIBusSize = 32bit
+    OptionROM = Yes
+    ROMMain = No
+    PCIExpress = Yes
+    LegacyRom = Yes
+    FFSFileName  = "ROM Storage"
+    ROMSectionGuid  = "577dc59e-5260-4783-bf52-7301ec9d6be5"
+End
+
+PCIDEVICE
+        Title  = "UEFI Video"
+        Parent  = "Video Bridge"
+        Attribute  = "0x0"
+        Dev_type  = "Container"
+        Dev  = 00h
+        Fun  = 00h
+        SleepNum  = 01h
+        ROMFile  = "SmcPkg\Binary\ASPEEDGraphicsDxe.efi"
+        DeviceType = OnBoard
+        PCIBusSize = 32bit
+        OptionROM = Yes
+        ROMMain = No
+        Virtual = Yes
+        UefiRom = Yes
+        FFSFileName  = "ROM Storage"
+        ROMSectionGuid  = "27858c44-bc60-405a-ab17-30255f853c58"
+End
+
+PCIDEVICE
+    Title  = "GbE Controller on PCH"
+    Parent  = "Socket 0 Root bridge (Stack 0)"
+    Attribute  = "0x0"
+    Dev_type  = "PciDevice"
+    Dev  = 01fh
+    Fun  = 06h
+    SleepNum  = 00h
+    ASLdeviceName  = "GBE1"
+    IntA = 	LNKA; 16
+    DeviceType = OnBoard
+    PCIBusSize = 32bit
+    ROMMain = No
+End
+
+PCIDEVICE
+	Title  = "Intel i350 LAN1"
+	Parent  = "PCI Express Port 1A on PC01"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Fun  = 00h
+	SleepNum  = 04h
+	ROMFile  = "SmcPkg\Binary\BA1513L2.LOM"
+	DeviceID  = 01521h
+	VendorID  = 08086h
+	IntA = 	LNKA; 32
+	IntB = 	LNKB; 36
+	IntC = 	LNKC; 37
+	IntD = 	LNKD; 38
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	OptionROM = Yes
+	ROMMain = No
+	PCIExpress = Yes
+	LegacyRom = Yes
+	FFSFileName  = "ROM Storage"
+	ROMSectionGuid  = "68a2a68c-2f59-4ab8-87d3-f18f1bfc4801"
+End
+
+PCIDEVICE
+	Title  = "Intel i350 LAN2"
+	Parent  = "PCI Express Port 1A on PC01"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Fun  = 01h
+	SleepNum  = 04h
+	LinkDeviceName  = "Intel i350 LAN1"
+	DeviceID  = 01521h
+	VendorID  = 08086h
+	IntA = 	LNKA; 32
+	IntB = 	LNKB; 36
+	IntC = 	LNKC; 37
+	IntD = 	LNKD; 38
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	OptionROM = Yes
+	ROMMain = No
+	PCIExpress = Yes
+	LegacyRom = Yes
+	LinkDevice = Yes
+End
+
+PCIDEVICE
+	Title  = "Intel i350 LAN3"
+	Parent  = "PCI Express Port 1A on PC01"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Fun  = 02h
+	SleepNum  = 04h
+	LinkDeviceName  = "Intel i350 LAN1"
+	DeviceID  = 01521h
+	VendorID  = 08086h
+	IntA = 	LNKA; 32
+	IntB = 	LNKB; 36
+	IntC = 	LNKC; 37
+	IntD = 	LNKD; 38
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	OptionROM = Yes
+	ROMMain = No
+	PCIExpress = Yes
+	LegacyRom = Yes
+	LinkDevice = Yes
+End
+
+PCIDEVICE
+	Title  = "Intel i350 LAN4"
+	Parent  = "PCI Express Port 1A on PC01"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Fun  = 03h
+	SleepNum  = 04h
+	LinkDeviceName  = "Intel i350 LAN1"
+	DeviceID  = 01521h
+	VendorID  = 08086h
+	IntA = 	LNKA; 32
+	IntB = 	LNKB; 36
+	IntC = 	LNKC; 37
+	IntD = 	LNKD; 38
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	OptionROM = Yes
+	ROMMain = No
+	PCIExpress = Yes
+	LegacyRom = Yes
+	LinkDevice = Yes
+End
+
+PCIDEVICE
+	Title  = "Intel i350 iSCSI"
+	Parent  = "PCI Express Port 1A on PC01"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Fun  = 00h
+	SleepNum  = 04h
+	ROMFile  = "SmcPkg\Binary\152150.LOM"
+	DeviceID  = 01521h
+	VendorID  = 08086h
+	IntA = 	LNKA; 32
+	IntB = 	LNKB; 36
+	IntC = 	LNKC; 37
+	IntD = 	LNKD; 38
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	OptionROM = Yes
+	ROMMain = No
+	PCIExpress = Yes
+	LegacyRom = Yes
+	FFSFileName  = "ROM Storage"
+	ROMSectionGuid  = "8f0f9333-6ffa-4174-b02c-8213f62fab10"
+End
+
+PCIDEVICE
+        Title  = "Intel X540 LAN1 EFI"
+        Parent  = "PCI Express Port 1A on PC01"
+        Attribute  = "0x0"
+        Dev_type  = "PciDevice"
+        Dev  = 00h
+        Fun  = 00h
+        SleepNum  = 04h 
+        DeviceType = OnBoard
+        PCIBusSize = 32bit
+        PCIExpress = Yes
+        ROMFile  = "Intel10GLanPkg\Intel10GLan.efi"     
+        OptionROM = Yes
+        ROMMain = No
+        Virtual = Yes
+        UefiRom = Yes
+        FFSFileName  = "ROM Storage"
+        ROMSectionGuid  = "f0e9d620-3e9f-4f6b-8f26-6214feab6695"
+End
+
+PCIDEVICE
+        Title  = "Intel i350 LAN1 EFI"
+        Parent  = "PCI Express Port 1A on PC01"
+        Attribute  = "0x0"
+        Dev_type  = "PciDevice"
+        Dev  = 00h
+        Fun  = 01h
+        SleepNum  = 04h 
+        DeviceType = OnBoard
+        PCIBusSize = 32bit
+	PCIExpress = Yes
+        ROMFile  = "IntelGigabitLanPkg\X64\IntelGigabitLan.efi"     
+        OptionROM = Yes
+        ROMMain = No
+        Virtual = Yes
+        UefiRom = Yes
+        FFSFileName  = "ROM Storage"
+        ROMSectionGuid  = "f0e9d620-3e9f-4f6b-8f26-6214feab6697"
+End
+
+PCIDEVICE
+	Title  = "Intel X540 LAN1"
+	Parent  = "PCI Express Port 1A on PC01"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Fun  = 00h
+	SleepNum  = 04h
+	ROMFile  = "SmcPkg\Binary\152803.LOM"
+	DeviceID  = 01528h
+	VendorID  = 08086h
+	IntA = 	LNKA; 32
+	IntB = 	LNKB; 36
+	IntC = 	LNKC; 37
+	IntD = 	LNKD; 38
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	OptionROM = Yes
+	ROMMain = No
+	PCIExpress = Yes
+	LegacyRom = Yes
+	FFSFileName  = "ROM Storage"
+	ROMSectionGuid  = "e22b5051-d427-4da5-9dea-fabf9d56b16d"
+End
+
+PCIDEVICE
+	Title  = "Intel X540 LAN2"
+	Parent  = "PCI Express Port 1A on PC01"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Fun  = 01h
+	SleepNum  = 04h
+	LinkDeviceName  = "Intel X540 LAN1"
+	DeviceID  = 01528h
+	VendorID  = 08086h
+	IntA = 	LNKA; 32
+	IntB = 	LNKB; 36
+	IntC = 	LNKC; 37
+	IntD = 	LNKD; 38
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	OptionROM = Yes
+	ROMMain = No
+	PCIExpress = Yes
+	LegacyRom = Yes
+	LinkDevice = Yes
+End
+
+PCIDEVICE
+	Title  = "Intel X540 iSCSI"
+	Parent  = "PCI Express Port 1A on PC01"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Fun  = 00h
+	SleepNum  = 04h
+	ROMFile  = "SmcPkg\Binary\152850.LOM"
+	DeviceID  = 01528h
+	VendorID  = 08086h
+	IntA = 	LNKA; 32
+	IntB = 	LNKB; 36
+	IntC = 	LNKC; 37
+	IntD = 	LNKD; 38
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	OptionROM = Yes
+	ROMMain = No
+	PCIExpress = Yes
+	LegacyRom = Yes
+	FFSFileName  = "ROM Storage"
+	ROMSectionGuid  = "d7eda949-c07d-49c4-8deb-b93dc7f85a3e"
+End
+
+PCIDEVICE
+	Title  = "Intel X540 FCoE"
+	Parent  = "PCI Express Port 1A on PC01"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Fun  = 00h
+	SleepNum  = 04h
+	ROMFile  = "SmcPkg\Binary\152820.LOM"
+	DeviceID  = 01528h
+	VendorID  = 08086h
+	IntA = 	LNKA; 32
+	IntB = 	LNKB; 36
+	IntC = 	LNKC; 37
+	IntD = 	LNKD; 38
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	OptionROM = Yes
+	ROMMain = No
+	PCIExpress = Yes
+	LegacyRom = Yes
+	FFSFileName  = "ROM Storage"
+	ROMSectionGuid  = "065eb4f5-cfd3-47df-98e2-347f55aebdeb"
+End
+
+PCIDEVICE
+	Title  = "Intel X540 LAN3"
+	Parent  = "PCI Express Port 2A on PC02"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Fun  = 00h
+	SleepNum  = 04h
+	LinkDeviceName  = "Intel X540 LAN1"
+	DeviceID  = 01528h
+	VendorID  = 08086h
+	IntA = 	LNKA; 40
+	IntB = 	LNKB; 44
+	IntC = 	LNKC; 45
+	IntD = 	LNKD; 46
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	OptionROM = Yes
+	ROMMain = No
+	PCIExpress = Yes
+	LegacyRom = Yes
+	LinkDevice = Yes
+End
+
+PCIDEVICE
+	Title  = "Intel X540 LAN4"
+	Parent  = "PCI Express Port 2A on PC02"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Fun  = 01h
+	SleepNum  = 04h
+	LinkDeviceName  = "Intel X540 LAN1"
+	DeviceID  = 01528h
+	VendorID  = 08086h
+	IntA = 	LNKA; 40
+	IntB = 	LNKB; 44
+	IntC = 	LNKC; 45
+	IntD = 	LNKD; 46
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	OptionROM = Yes
+	ROMMain = No
+	PCIExpress = Yes
+	LegacyRom = Yes
+	LinkDevice = Yes
+End
+
+PCIDEVICE
+	Title  = "Intel X540 LAN5"
+	Parent  = "PCI Express Port 3A on PC03"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Fun  = 00h
+	SleepNum  = 04h
+	LinkDeviceName  = "Intel X540 LAN1"
+	DeviceID  = 01528h
+	VendorID  = 08086h
+	IntA = 	LNKA; 48
+	IntB = 	LNKB; 52
+	IntC = 	LNKC; 53
+	IntD = 	LNKD; 54
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	OptionROM = Yes
+	ROMMain = No
+	PCIExpress = Yes
+	LegacyRom = Yes
+	LinkDevice = Yes
+End
+
+PCIDEVICE
+	Title  = "Intel X540 LAN6"
+	Parent  = "PCI Express Port 3A on PC03"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Fun  = 01h
+	SleepNum  = 04h
+	LinkDeviceName  = "Intel X540 LAN1"
+	DeviceID  = 01528h
+	VendorID  = 08086h
+	IntA = 	LNKA; 48
+	IntB = 	LNKB; 52
+	IntC = 	LNKC; 53
+	IntD = 	LNKD; 54
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	OptionROM = Yes
+	ROMMain = No
+	PCIExpress = Yes
+	LegacyRom = Yes
+	LinkDevice = Yes
+End
+
+PCIDEVICE
+	Title  = "Intel X550 LAN1"
+	Parent  = "PCI Express Port 1A on PC01"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Fun  = 00h
+	SleepNum  = 04h
+	ROMFile  = "SmcPkg\Binary\156303.LOM"
+	DeviceID  = 01563h
+	VendorID  = 08086h
+	IntA = 	LNKA; 32
+	IntB = 	LNKB; 36
+	IntC = 	LNKC; 37
+	IntD = 	LNKD; 38
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	OptionROM = Yes
+	ROMMain = No
+	PCIExpress = Yes
+	LegacyRom = Yes
+	FFSFileName  = "ROM Storage"
+	ROMSectionGuid  = "4621596c-d1f7-42f4-a35b-94d5336dae6a"
+End
+
+PCIDEVICE
+	Title  = "Intel X550 LAN2"
+	Parent  = "PCI Express Port 1A on PC01"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Fun  = 01h
+	SleepNum  = 04h
+	LinkDeviceName  = "Intel X550 LAN1"
+	DeviceID  = 01563h
+	VendorID  = 08086h
+	IntA = 	LNKA; 32
+	IntB = 	LNKB; 36
+	IntC = 	LNKC; 37
+	IntD = 	LNKD; 38
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	OptionROM = Yes
+	ROMMain = No
+	PCIExpress = Yes
+	LegacyRom = Yes
+	LinkDevice = Yes
+End
+
+PCIDEVICE
+	Title  = "Intel X550 LAN3"
+	Parent  = "PCI Express Port 1B on PC01"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Fun  = 00h
+	SleepNum  = 04h
+	LinkDeviceName  = "Intel X550 LAN1"
+	DeviceID  = 01563h
+	VendorID  = 08086h
+	IntA = 	LNKA; 33
+	IntB = 	LNKB; 38
+	IntC = 	LNKC; 36
+	IntD = 	LNKD; 37
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	OptionROM = Yes
+	ROMMain = No
+	PCIExpress = Yes
+	LegacyRom = Yes
+	LinkDevice = Yes
+End
+
+PCIDEVICE
+	Title  = "Intel X550 LAN4"
+	Parent  = "PCI Express Port 1B on PC01"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Fun  = 01h
+	SleepNum  = 04h
+	LinkDeviceName  = "Intel X550 LAN1"
+	DeviceID  = 01563h
+	VendorID  = 08086h
+	IntA = 	LNKA; 33
+	IntB = 	LNKB; 38
+	IntC = 	LNKC; 36
+	IntD = 	LNKD; 37
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	OptionROM = Yes
+	ROMMain = No
+	PCIExpress = Yes
+	LegacyRom = Yes
+	LinkDevice = Yes
+End
+
+PCIDEVICE
+	Title  = "Intel X550 iSCSI"
+	Parent  = "PCI Express Port 1A on PC01"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Fun  = 00h
+	SleepNum  = 04h
+	ROMFile  = "SmcPkg\Binary\156310N7.LOM"
+	DeviceID  = 01563h
+	VendorID  = 08086h
+	IntA = 	LNKA; 32
+	IntB = 	LNKB; 36
+	IntC = 	LNKC; 37
+	IntD = 	LNKD; 38
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	OptionROM = Yes
+	ROMMain = No
+	PCIExpress = Yes
+	LegacyRom = Yes
+	FFSFileName  = "ROM Storage"
+	ROMSectionGuid  = "905aec5b-de7e-4931-a755-fe70e5127127"
+End
+
+PCIDEVICE
+	Title  = "Intel X550 FCoE"
+	Parent  = "PCI Express Port 1A on PC01"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Fun  = 00h
+	SleepNum  = 04h
+	ROMFile  = "SmcPkg\Binary\156320.LOM"
+	DeviceID  = 01563h
+	VendorID  = 08086h
+	IntA = 	LNKA; 32
+	IntB = 	LNKB; 36
+	IntC = 	LNKC; 37
+	IntD = 	LNKD; 38
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	OptionROM = Yes
+	ROMMain = No
+	PCIExpress = Yes
+	LegacyRom = Yes
+	FFSFileName  = "ROM Storage"
+	ROMSectionGuid  = "4b045619-00cd-4481-989f-8f7d62bc1e7d"
+End
+
+PCIDEVICE
+	Title  = "Intel 82599EN LAN1"
+	Parent  = "PCI Express Port 3A on PC03"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Fun  = 00h
+	SleepNum  = 04h
+	ROMFile  = "SmcPkg\Binary\10FB03.LOM"
+	DeviceID  = 010FBh
+	VendorID  = 08086h
+	IntA = 	LNKA; 48
+	IntB = 	LNKB; 52
+	IntC = 	LNKC; 53
+	IntD = 	LNKD; 54
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	OptionROM = Yes
+	ROMMain = No
+	PCIExpress = Yes
+	LegacyRom = Yes
+	FFSFileName  = "ROM Storage"
+	ROMSectionGuid  = "320fa238-6311-4e8f-b45e-52a32fe139e9"
+End
+
+PCIDEVICE
+	Title  = "Intel 82599EN iSCSI"
+	Parent  = "PCI Express Port 3A on PC03"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Fun  = 00h
+	SleepNum  = 04h
+	ROMFile  = "SmcPkg\Binary\10FB10.LOM"
+	DeviceID  = 010FBh
+	VendorID  = 08086h
+	IntA = 	LNKA; 48
+	IntB = 	LNKB; 52
+	IntC = 	LNKC; 53
+	IntD = 	LNKD; 54
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	OptionROM = Yes
+	ROMMain = No
+	PCIExpress = Yes
+	LegacyRom = Yes
+	FFSFileName  = "ROM Storage"
+	ROMSectionGuid  = "d8199944-fa42-4b54-b9c1-9ce9071b1995"
+End
+
+PCIDEVICE
+	Title  = "Intel 82599EN FCoE"
+	Parent  = "PCI Express Port 3A on PC03"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Fun  = 00h
+	SleepNum  = 04h
+	ROMFile  = "SmcPkg\Binary\10FB20.LOM"
+	DeviceID  = 010FBh
+	VendorID  = 08086h
+	IntA = 	LNKA; 48
+	IntB = 	LNKB; 52
+	IntC = 	LNKC; 53
+	IntD = 	LNKD; 54
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	OptionROM = Yes
+	ROMMain = No
+	PCIExpress = Yes
+	LegacyRom = Yes
+	FFSFileName  = "ROM Storage"
+	ROMSectionGuid  = "d2568549-329d-41ba-9217-a7490a535b7a"
+End
+
+PCIDEVICE
+	Title  = "SXB1 P1PE2A"
+	Parent  = "PCI Express Port 2A on PC08"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 14h
+	SleepNum  = 04h
+	IntA = 	LNKA; 88
+	IntB = 	LNKB; 92
+	IntC = 	LNKC; 93
+	IntD = 	LNKD; 94
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "SXB1 P1PE2B"
+	Parent  = "PCI Express Port 2B on PC08"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 015h
+	SleepNum  = 04h
+	IntA = 	LNKA; 89
+	IntB = 	LNKB; 94
+	IntC = 	LNKC; 92
+	IntD = 	LNKD; 93
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "SXB1 P1PE2C"
+	Parent  = "PCI Express Port 2C on PC08"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 016h
+	SleepNum  = 04h
+	IntA = 	LNKA; 90
+	IntB = 	LNKB; 93
+	IntC = 	LNKC; 94
+	IntD = 	LNKD; 92
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "SXB1 P1PE2D"
+	Parent  = "PCI Express Port 2D on PC08"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 017h
+	SleepNum  = 04h
+	IntA = 	LNKA; 91
+	IntB = 	LNKB; 94
+	IntC = 	LNKC; 92
+	IntD = 	LNKD; 93
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "SXB1 P1PE3A"
+	Parent  = "PCI Express Port 3A on PC09"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 18h
+	SleepNum  = 04h
+	IntA = 	LNKA; 96
+	IntB = 	LNKB; 100
+	IntC = 	LNKC; 101
+	IntD = 	LNKD; 102
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "SXB1 P1PE3B"
+	Parent  = "PCI Express Port 3B on PC09"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 019h
+	SleepNum  = 04h
+	IntA = 	LNKA; 97
+	IntB = 	LNKB; 102
+	IntC = 	LNKC; 100
+	IntD = 	LNKD; 101
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "SXB1 P1PE3C"
+	Parent  = "PCI Express Port 3C on PC09"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 1ah
+	SleepNum  = 04h
+	IntA = 	LNKA; 98
+	IntB = 	LNKB; 101
+	IntC = 	LNKC; 102
+	IntD = 	LNKD; 100
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "SXB1 P1PE3D"
+	Parent  = "PCI Express Port 3D on PC09"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 01bh
+	SleepNum  = 04h
+	IntA = 	LNKA; 99
+	IntB = 	LNKB; 102
+	IntC = 	LNKC; 100
+	IntD = 	LNKD; 101
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "SXB2 P1PE1A"
+	Parent  = "PCI Express Port 1A on PC07"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 10h
+	SleepNum  = 04h
+	IntA = 	LNKA; 80
+	IntB = 	LNKB; 84
+	IntC = 	LNKC; 85
+	IntD = 	LNKD; 86
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "SXB2 P1PE1B"
+	Parent  = "PCI Express Port 1B on PC07"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 011h
+	SleepNum  = 04h
+	IntA = 	LNKA; 81
+	IntB = 	LNKB; 86
+	IntC = 	LNKC; 84
+	IntD = 	LNKD; 85
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "SXB2 P1PE0A"
+	Parent  = "PCI Express Port 0 on PC06"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 0Fh
+	SleepNum  = 04h
+	IntA = 	LNKA; 72
+	IntB = 	LNKB; 76
+	IntC = 	LNKC; 77
+	IntD = 	LNKD; 78
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+TOKEN
+	Name  = "BIOS_SIZE"
+	Value  = "0x2000000"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "EarlyVideo_Mode"
+	Value  = "0"
+	TokenType = Boolean
+	TargetH = Yes
+	TargetMAK = Yes
+	Help  = "0: Text Mode;1: Graphic Mode"
+End
+
+TOKEN
+        Name  = "B2_WORKAROUND_SUPPORT"
+        Value  = "1"
+        TokenType = Boolean
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "ONBORAD_LAN_DROP_CHECK"
+        Value  = "1"
+        TokenType = Boolean
+        TargetH = Yes
+End
+
+TOKEN
+	Name  = "RtErrLogSmc_Overide"
+	Value  = "1"
+	Help  = "Switch to enable RtErrorLogSmc support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+End
+
+TOKEN
+        Name  = "MemoryErrLED_SUPPORT"
+        Value  = "1"
+        Help  = " Memory Map Out support"
+        TokenType = Integer
+        TargetH = Yes
+	TargetEQU = Yes
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "CMOS_MEM_ERR_FLAG_0"
+	Value  = "0x70"
+	Help = "CMOS Flag to identify memory error occurr."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "CMOS_MEM_ERR_FLAG_1"
+	Value  = "0x71"
+	Help = "CMOS Flag to identify error DIMM location."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "CMOS_ERR_DIMM_LOC0"
+	Value  = "0x72"
+	Help = "CMOS Flag to identify error DIMM location."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "CMOS_ERR_DIMM_LOC1"
+	Value  = "0x73"
+	Help = "CMOS Flag to identify error DIMM location."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "CMOS_ERR_DIMM_LOC2"
+	Value  = "0x74"
+	Help = "CMOS Flag to identify error DIMM location."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "CMOS_ERR_DIMM_LOC3"
+	Value  = "0x75"
+	Help = "CMOS Flag to identify error DIMM location."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+ELINK
+	Name  = "SmcClrMemErrCmosFlag,"
+	Parent  = "SMIFlashEndUpdateList"
+	InvokeOrder = AfterParent
+	Token = "RtErrLogSmc_Overide" "=" "1"
+End
+
+ELINK
+        Name  = "$(X11DPU_PROJECT_DIR)\X11DPU.ssp"
+        Parent  = "ADDON_SSP_FILES"
+        InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "HandleMemErrLED,"
+	Parent  = "MemErrorHandlers"
+	InvokeOrder = AfterParent
+	Token = "MemoryErrLED_SUPPORT" "=" "1"
+	Token = "RtErrLogSmc_Overide" "=" "1"
+End
+
+INFComponent
+	Name  = "RtErrorLogSmcLib"
+	File  = "X11DPURtErrorLog.inf"
+	Package  = "SmcPkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "RtErrLogSmc_Overide" "=" "1"
+End
+
+LibraryMapping
+	Class  = "RtErrorLogSmcLib"
+	Instance  = "SmcPkg.RtErrorLogSmcLib"
+	Arch  = "common"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "RtErrLogSmc_Overide" "=" "1"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "SmcPkg.RtErrorLogSmcLib"
+	Override = "AmiModulePkg.SMIFlash"
+	Token = "RtErrLogSmc_Overide" "=" "1"
+End
+
+TOKEN
+	Name  = "SmcOptimize_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable BOARD1 support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SMC_OPTIMIZE_CPU2006"
+	Value  = "0xF1"
+	Help  = "0 - Disable; 0xF1 - For CPU 2006 test"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End

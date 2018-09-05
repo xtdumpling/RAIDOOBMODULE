@@ -1,0 +1,63 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#     Rev. 1.00        Add always turbo mode function.
+#       Bug Fix:
+#       Reason:        Reference from Grantlley, control by TOKEN "MAX_PERFORMANCE_OPTION", default disabled.
+#       Auditor:       Jimmy Chiu
+#       Date:          May/16/2016
+#
+#****************************************************************************
+
+#
+# This file contains code for North Bridge initialization in the DXE stage.
+#
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = AcpiModeEnable
+  FILE_GUID                      = 750890A6-7ACF-4f4f-81BD-B400C2BEA95A
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  VERSION_STRING                 = 1.0
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  ENTRY_POINT                    = AcpiModeEnableInit
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+#  HOB Guid C Name: gEfiHtBistHobGuid Hob Type: GUID_EXTENSION
+#
+
+[Sources]	
+  AcpiModeEnable.c
+
+[Packages]
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  AmiCRBPkg/AmiCRBPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  
+[LibraryClasses]
+  AmiDxeLib
+  UefiDriverEntryPoint
+  AmiCspLib
+  BaseLib #SMCPKG_SUPPORT
+
+[Protocols]
+  gEfiSmmSwDispatch2ProtocolGuid
+  gEfiSmmPeriodicTimerDispatch2ProtocolGuid
+  
+[Depex]
+  gEfiSmmSwDispatch2ProtocolGuid
+

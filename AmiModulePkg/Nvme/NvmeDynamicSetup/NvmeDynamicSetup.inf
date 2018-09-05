@@ -1,0 +1,69 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+## @file NvmeDynamicSetup.inf
+#  Component description file for NvmeDynamicSetup module.
+##
+
+[Defines]
+  INF_VERSION                   = 0x00010005
+  VERSION_STRING                = 1.0
+  BASE_NAME                     = NvmeDynamicSetup
+  MODULE_TYPE                   = DXE_DRIVER
+  FILE_GUID                     = 668706B2-BCFC-4ad4-A185-75E79F3FE169
+  ENTRY_POINT                   = NvmeDynamicSetupEntryPoint
+  UEFI_HII_RESOURCE_SECTION     = TRUE
+
+[Sources]
+  NvmeDynamicSetup.c
+  NvmeDynamicSetup.h
+  NvmeDynamicSetup.uni
+  NvmeDynamicSetup.vfr
+  
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+
+[LibraryClasses]
+  AmiDxeLib
+  UefiDriverEntryPoint
+  HiiLib
+  AmiHiiUpdateLib
+
+[Protocols]
+  gEfiHiiStringProtocolGuid
+  gAmiNvmeControllerProtocolGuid
+  gEfiComponentName2ProtocolGuid
+  gEfiPciIoProtocolGuid
+  
+[Guids]
+  gEfiIfrTianoGuid
+
+[Depex]
+  gEfiHiiDatabaseProtocolGuid
+  
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************

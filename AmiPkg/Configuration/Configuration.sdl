@@ -1,0 +1,683 @@
+TOKEN
+	Name  = "CORE_MAJOR_VERSION"
+	Value  = "5"
+	Help  = "Version of this product family.\Do not change."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Lock = Yes
+	Range  = "Must be 5"
+End
+
+TOKEN
+	Name  = "AMI_PKG_VERSION"
+	Value  = "20"
+	Help  = "AmiPkg version.\Do not change."
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "CORE_VENDOR"
+	Value  = "American Megatrends"
+	Help  = "Core vendor. This goes to UEFI System Table."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "DEBUG_MODE"
+	Value  = "0"
+	Help  = "Main switch to enable/disable debug mode.\When this switch is off, all debugging capabilities are disabled."
+	TokenType = Boolean
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "OPTIMIZATION"
+	Value  = "0"
+	Help  = "Enables/disables C compiler optimization."
+	TokenType = Boolean
+	TargetMAK = Yes
+	Token = "DEBUG_MODE" "=" "1"
+End
+
+TOKEN
+	Name  = "DEBUG_CODE"
+	Value  = "1"
+	Help  = "Enables/disables debug-specific code such as debug messages and assert statements."
+	TokenType = Boolean
+	TargetMAK = Yes
+	Token = "DEBUG_MODE" "=" "1"
+End
+
+TOKEN
+	Name  = "SILENT"
+	Value  = "1"
+	Help  = "Enables/disables silent build mode.\In silent build mode executed commands are not displayed, and certain auxiliary build process messages are suppressed or displayed in a condensed format.\In non-silent build mode executed command are displayed prior to execution, and all auxiliary messages are visible.\Silent build mode is typically faster because less information goes into a build log.\Non-silent mode is useful for debugging of the build issues."
+	TokenType = Boolean
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "STRICT_BUILD_MODE"
+	Value  = "0"
+	Help  = "Enables/disables strict build mode.\In strict build mode stricter warning settings are used."
+	TokenType = Boolean
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "ACTIVE_PLATFORM"
+	Value  = "Build/Platform.dsc"
+	Help  = "Name of the description (.dsc) file for the active platform.\Must be the same as the name specified in the PLATFORM_DSC or <Arch-Type>_PLATFORM_DSC SDL output directive."
+	TokenType = Expression
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "TOOL_CHAIN_TAG"
+	Value  = "MYTOOLS"
+	Help  = "Tool chain tag"
+	TokenType = Expression
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "TOOL_DEFINITION_FILE"
+	Value  = "$(CONFIGURATION_DIR)$(TOOL_CHAIN_TAG)_DEF.txt"
+	Help  = "Name of the tool definition file.\This value goes to to auto-generated Conf/target.txt."
+	TokenType = Expression
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "BUILD_RULE_FILE"
+	Value  = "$(CONFIGURATION_DIR)build_rule.txt"
+	Help  = "Name of the build rules file.\Default: $(CONFIGURATION_DIR)build_rule.txt\This value goes to to auto-generated Conf/target.txt."
+	TokenType = Expression
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "NUMBER_OF_BUILD_PROCESS_THREADS"
+	Value  = "$(NUMBER_OF_PROCESSORS)"
+	Help  = "Number of build process threads. \Set to 1 to disable multi-threaded build (useful to debug build issues).\Set to $(NUMBER_OF_PROCESSORS) for optimal performance.\This value goes to to auto-generated Conf/target.txt."
+	TokenType = Expression
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "EXTERNAL_CC_FLAGS"
+	Value  = "-D PI_SPECIFICATION_VERSION=0x10028 -D EFI_SPECIFICATION_VERSION=0x20032"
+	Help  = "C compiler flags that will be appended to the standard C flags in tools_def.txt"
+	TokenType = Expression
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "PLATFORM_GUID"
+	Value  = "INVALID"
+	Help  = "The unique platform GUID that does into the description file.\MUST BE CLONED IN EVERY PROJECT!"
+	TokenType = Expression
+	TargetMAK = Yes
+	TargetDSC = Yes
+	TargetH = Yes
+	Range  = "Unique GUID in the XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX format."
+End
+
+TOKEN
+	Name  = "SUPPORTED_ARCHITECTURES"
+	Value  = "INVALID"
+	Help  = "One or more CPU architecture supported by the platform.\MUST BE CLONED BY THE CPU ARCHITECTURE MODULE."
+	TokenType = Expression
+	TargetMAK = Yes
+	TargetDSC = Yes
+End
+
+TOKEN
+	Name  = "PLATFORM_VERSION"
+	Value  = "1"
+	TokenType = Expression
+	TargetDSC = Yes
+End
+
+TOKEN
+	Name  = "PLATFORM_NAME"
+	Value  = "AptioV"
+	TokenType = Expression
+	TargetMAK = Yes
+	TargetDSC = Yes
+End
+
+TOKEN
+	Name  = "BUILD_TARGETS"
+	Value  = "RELEASE | DEBUG"
+	TokenType = Expression
+	TargetDSC = Yes
+End
+
+TOKEN
+	Name  = "OUTPUT_DIRECTORY"
+	Value  = "Build/$(PLATFORM_NAME)"
+	TokenType = Expression
+	TargetMAK = Yes
+	TargetDSC = Yes
+End
+
+TOKEN
+	Name  = "PCI_SUPPORT"
+	Value  = "1"
+	Help  = "Enables/disabled PCI support."
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "PCI_EXPRESS_SUPPORT"
+	Value  = "1"
+	Help  = "Enables/disabled PCI Express support."
+	TokenType = Boolean
+	Token = "PCI_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "SUPPORTED_LANGUAGES"
+	Value  = "$(DEFAULT_LANGUAGE)"
+	Help  = "Semicolon separated list of names of the languages that the firmware supports in RFC 4646 format.\These are human readable languages that the end user will see in Setup.\Use RFC_LANGUAGES token to add configuration languages."
+	TokenType = Expression
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "DEFAULT_LANGUAGE"
+	Value  = "en-US"
+	Help  = "Name of the default system language in RFC4646 format.\"
+	TokenType = Expression
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "RFC_LANGUAGES"
+	Value  = '"$(SUPPORTED_LANGUAGES)"'
+	Help  = "Semicolon separated list of human readable and configuration languages. The build process will strip out strings for languages that are not listed here.\Typically should be set to '$(SUPPORTED_LANGUAGES)' (Don't forget the quotes!).\If project uses configuration languages such as x-AMI, add them after $(SUPPORTED_LANGUAGES) and before the ending quote.\Do not add human readable languages here. Use SUPPORTED_LANGUAGES instead."
+	TokenType = Expression
+	TargetDSC = Yes
+End
+
+TOKEN
+	Name  = "LANGUAGE_FONT_LIST"
+	Value  = "drawing;$(SUPPORTED_LANGUAGES)"
+	Help  = "Semicolon separated list of language identifiers. \The fonts for these languages will be included into the ROM image.\Should be set to 'drawing;$(SUPPORTED_LANGUAGES)'.\'drawing' is a pseudo language that includes drawing characters mandated by UEFI specification."
+	TokenType = Expression
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "FLASH_SIZE"
+	Value  = "0x100000"
+	Help  = "Size of the Flash Device in bytes"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FLASH_BLOCK_SIZE"
+	Value  = "0x1000"
+	Help  = "Size of the Flash Device Block"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FLASH_ADDRESS"
+	Value  = "0xFFFFFFFF - $(FLASH_SIZE) + 1"
+	Help  = "Starting address of the Flash Device."
+	TokenType = Integer
+End
+
+TOKEN
+	Name  = "ROM_IMAGE_SIZE"
+	Value  = "$(FLASH_SIZE)"
+	Help  = "Size of the final ROM image file.\By default defined as $(FLASH_SIZE)."
+	TokenType = Integer
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "NVRAM_SIZE"
+	Value  = "0x10000"
+	Help  = "Size of NVRAM area"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Range  = "From: 1 To: FLASH_SIZE - FV_MAIN_BLOCKS*FLASH_BLOCK_SIZE"
+End
+
+TOKEN
+	Name  = "NVRAM_OFFSET"
+	Value  = "0"
+	Help  = "Offset of NVRAM Area from the start of the rom image"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Range  = "From: 0 To: FLASH_SIZE - NVRAM_SIZE"
+End
+
+TOKEN
+	Name  = "FV_BB_SIZE"
+	Value  = "0xC0000"
+	Help  = "Size of the FV_BB area"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Range  = "From: 0 To: FLASH_SIZE - NVRAM_SIZE - FV_MAIN_SIZE"
+End
+
+TOKEN
+	Name  = "FV_MAIN_OFFSET"
+	Value  = "$(NVRAM_OFFSET)+$(NVRAM_SIZE)"
+	Help  = "Offset to the start of the FV_MAIN area from the start of the ROM image"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Range  = "From: 0 To: FLASH_SIZE - NVRAM_SIZE - FV_MAIN_SIZE"
+End
+
+TOKEN
+	Name  = "FV_MAIN_OFFSET"
+	Value  = "$(NVRAM_OFFSET)+$(NVRAM_SIZE)*2"
+	Help  = "Offset to the start of the FV_MAIN area from the start of the ROM image"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Range  = "From: 0 To: FLASH_SIZE - NVRAM_SIZE - FV_MAIN_SIZE"
+	Token = "FAULT_TOLERANT_NVRAM_UPDATE" "=" "1"
+End
+
+TOKEN
+	Name  = "FV_MAIN_SIZE"
+	Value  = "$(FLASH_SIZE) - $(FV_BB_SIZE) - $(FV_MAIN_OFFSET)"
+	Help  = "Size of the FV_MAIN area"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Range  = "From: 0 To: FLASH_SIZE - FV_BB - FV_MAIN_OFFSET"
+End
+
+TOKEN
+	Name  = "NESTED_FV_MAIN"
+	Value  = "0"
+	Help  = "Use this to turn on FV nesting for FV_MAIN"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+	Range  = "0: Disable FV_MAIN nesting; 1: Enable FV_MAIN nesting"
+End
+
+TOKEN
+	Name  = "LZMA_SUPPORT"
+	Value  = "0"
+	Help  = "Use this to turn on LZMA compression.\When LZMA compression is disabled, standard UEFI compression is used."
+	TokenType = Boolean
+	TargetFDF = Yes
+End
+
+TOKEN
+	Name  = "LZMAF86_SUPPORT"
+	Value  = "0"
+	Help  = "This token enables flavor of the LZMA compression algorithm(LZMAF86) optimized for IA32/X64 instruction set.\LZMAF86 has a better compression ratio but longer decompression time."
+	TokenType = Boolean
+	Token = "LZMA_SUPPORT" "=" "1"
+	Token = "INTEL_ARCHITECTURE_SUPPORT" "=" "1"
+	Token = "INTEL_FRAMEWORK_MODULE_PKG_VERSION" ">=" "5"
+End
+
+TOKEN
+	Name  = "USE_TE_SECTION_FOR_UNCOMPRESSED_PEI_EXECUTABLES"
+	Value  = "1"
+	Help  = "When this token is enabled, uncompressed PEI executables with default packaging are packaged into a TE FFS section.\When the token is disabled, the executables are packaged into a PE section.\\"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "UNCOMPRESSED_PEI_EXECUTABLES_ALIGNMENT"
+	Value  = " "
+	Help  = "Defines alignment of the uncompressed PEI executables.\Blank value (default) sets 4-byte alignment (PI spec. requirement)\If value is not blank, it must have 'Align = X' format.\X must be one of: Auto, 8, 16, 32, 64, 128, 512, 1K, 4K, 32K, 64K.\'Align = Auto' sets alignment based on PE image header section alignment."
+	TokenType = Expression
+	TargetFDF = Yes
+	Range  = "Blank or 'Align = X', X is one of: Auto, 8, 16, 32, 64, 128, 512, 1K, 4K, 32K, 64K"
+End
+
+TOKEN
+	Name  = "SEC_CORE_EXECUTABLE_ALIGNMENT"
+	Value  = "Align = 8"
+	Help  = "Defines alignment of the SEC Core executable.\Blank value sets 4-byte alignment (PI spec. requirement)\If value is not blank, it must have 'Align = X' format.\X must be one of: Auto, 8, 16, 32, 64, 128, 512, 1K, 4K, 32K, 64K.\'Align = Auto' sets alignment based on PE image header section alignment."
+	TokenType = Expression
+	TargetFDF = Yes
+	Range  = "Blank or 'Align = X', X is one of: Auto, 8, 16, 32, 64, 128, 512, 1K, 4K, 32K, 64K"
+End
+
+TOKEN
+	Name  = "PERFORMANCE_MEASUREMENTS_SUPPORT"
+	Value  = "0"
+	Help  = "Activates performance measurement infrastructure."
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "FLASH_DEFINITION"
+	Value  = "Build/Platform.fdf"
+	Help  = "Name of the flash definition file (.fdf) for the platform.\Must be the same as the name specified in the PLATFORM_FDF SDL output directive."
+	TokenType = Expression
+	TargetDSC = Yes
+End
+
+TOKEN
+	Name  = "EXTERNAL_DMA_CAPABLE_DEVICES_SUPPORT"
+	Value  = "0"
+	Help  = "This token enables/disables boot time support of the external devices with a built-in DMA controller\such as Thunderbolt, InfiniBand, or IEEE1394 devices.\NOTE: When this token is set to 'On', a system may become vulnerable to DMA attacks.\NOTE: This token does not affect eSATA or USB devices because these devices are using internal DMA controllers\(a DMA controller is a part of the system, not a part of the device).\NOTE: The Core behavior is not affected by this token. This token is used by drivers managing external devices with a built-in DMA controller.\A master token of such drivers should have dependency on this token.\"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "ROM_IMAGE_DIRECTORY"
+	Value  = "$(subst /,$(PATH_SLASH),$(OUTPUT_DIRECTORY))$(PATH_SLASH)$(TARGET)_$(TOOL_CHAIN_TAG)$(PATH_SLASH)ROM"
+	Help  = "Defines directory where all final firmware image binaries are placed."
+	TokenType = Expression
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "ROM_FILE_NAME"
+	Value  = "$(subst /,$(PATH_SLASH),$(OUTPUT_DIRECTORY))$(PATH_SLASH)$(TARGET)_$(TOOL_CHAIN_TAG)$(PATH_SLASH)FV$(PATH_SLASH)AMIROM.fd"
+	Help  = "Name of the ROM image produced by EDKII build system.\NOTE: The file name used here must be the same as the name of the FD_INFO object."
+	TokenType = Expression
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "FONT_INI_FILE"
+	Value  = "$(TOOLS_DIR)/Fontcfg.ini"
+	Help  = "Name of the font tool initialization file(absolute path).\Use $(WORKSPACE) to refer to a project directory.\Use $(TOOLS_DIR) to refer to a built tools directory."
+	TokenType = Expression
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "FFS_FILE_CHECKSUM_SUPPORT"
+	Value  = "0"
+	Help  = "Use this switch to enable/disable FFS file check-sum."
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "ASL_COMPILER"
+	Value  = "iasl"
+	Help  = "Name of the iasl compiler executable located in the $(TOOLS_DIR).\Supported values:\  iasl5 - newer ACPI 5.0 compliant compiler. May cause compatibility issues with older OS.\  iasl - older ACPI 3.0a compliant compiler. May not support features introduced by the newer versions of the ACPI specification."
+	TokenType = Expression
+	TargetMAK = Yes
+	Range  = "iasl, iasl5"
+End
+
+TOKEN
+	Name  = "COMPRESSION_SECTION"
+	Value  = "COMPRESS PI_STD"
+	Help  = "Compression type.\Do not modify this token.\A proper value is automatically selected based on value of the\LZMA_SUPPORT and LZMAF86_SUPPORT SDL tokens."
+	TokenType = Expression
+	TargetFDF = Yes
+	Token = "LZMA_SUPPORT" "=" "0"
+End
+
+TOKEN
+	Name  = "COMPRESSION_SECTION"
+	Value  = "GUIDED EE4E5898-3914-4259-9D6E-DC7BD79403CF PROCESSING_REQUIRED = TRUE"
+	Help  = "Compression type.\Do not modify this token.\A proper value is automatically selected based on value of the\LZMA_SUPPORT and LZMAF86_SUPPORT SDL tokens."
+	TokenType = Expression
+	TargetFDF = Yes
+	Token = "LZMA_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "COMPRESSION_SECTION"
+	Value  = "GUIDED D42AE6BD-1352-4bfb-909A-CA72A6EAE889 PROCESSING_REQUIRED = TRUE"
+	Help  = "Compression type.\Do not modify this token.\A proper value is automatically selected based on value of the\LZMA_SUPPORT and LZMAF86_SUPPORT SDL tokens."
+	TokenType = Expression
+	TargetFDF = Yes
+	Token = "LZMAF86_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "PEI_COMPRESSION_SECTION"
+	Value  = "$(COMPRESSION_SECTION)"
+	Help  = "Compression type that is used to package PEI modules.\Do not modify this token.\A proper value is automatically selected based on value of the\LZMA_SUPPORT, LZMAF86_SUPPORT, and NESTED_FV_MAIN SDL tokens."
+	TokenType = Expression
+	TargetFDF = Yes
+End
+
+TOKEN
+	Name  = "DXE_COMPRESSION_SECTION"
+	Value  = "$(PEI_COMPRESSION_SECTION)"
+	Help  = "Compression type that is used to package DXE modules.\Do not modify this token.\A proper value is automatically selected based on value of the\LZMA_SUPPORT, LZMAF86_SUPPORT, and NESTED_FV_MAIN SDL tokens."
+	TokenType = Expression
+	TargetFDF = Yes
+	Token = "NESTED_FV_MAIN" "=" "0"
+End
+
+TOKEN
+	Name  = "DXE_COMPRESSION_SECTION"
+	Value  = "NONE"
+	Help  = "Compression type that is used to package DXE modules.\Do not modify this token.\A proper value is automatically selected based on value of the\LZMA_SUPPORT, LZMAF86_SUPPORT, and NESTED_FV_MAIN SDL tokens."
+	TokenType = Expression
+	TargetFDF = Yes
+	Token = "NESTED_FV_MAIN" "=" "1"
+End
+
+TOKEN
+	Name  = "UNCOMPRESSED_PEI_EXECUTABLE_SECTION"
+	Value  = "TE TE"
+	Help  = "FFS section that is used to package uncompressed PEI executables.\Do not modify this token.\A proper value is automatically selected based on the value of the\USE_TE_SECTION_FOR_UNCOMPRESSED_PEI_EXECUTABLES SDL token.\\"
+	TokenType = Expression
+	TargetFDF = Yes
+	Lock = Yes
+	Token = "USE_TE_SECTION_FOR_UNCOMPRESSED_PEI_EXECUTABLES" "=" "1"
+End
+
+TOKEN
+	Name  = "UNCOMPRESSED_PEI_EXECUTABLE_SECTION"
+	Value  = "PE32 PE32"
+	Help  = "FFS section that is used to package uncompressed PEI executables.\Do not modify this token.\A proper value is automatically selected based on the value of the\USE_TE_SECTION_FOR_UNCOMPRESSED_PEI_EXECUTABLES SDL token.\\"
+	TokenType = Expression
+	TargetFDF = Yes
+	Lock = Yes
+	Token = "USE_TE_SECTION_FOR_UNCOMPRESSED_PEI_EXECUTABLES" "=" "0"
+End
+
+TOKEN
+	Name  = "FFS_FILE_CHECKSUM_KEYWORD"
+	Value  = "Checksum"
+	Help  = "Keyword that is emitted into FDF file to enable FFS file checksum.\Do not modify this token.\A proper value is automatically selected based on the value of the\FFS_FILE_CHECKSUM_SUPPORT SDL token."
+	TokenType = Expression
+	TargetFDF = Yes
+	Lock = Yes
+	Token = "FFS_FILE_CHECKSUM_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "FFS_FILE_CHECKSUM_KEYWORD"
+	Value  = " "
+	Help  = "Keyword that is emitted into FDF file to enable FFS file checksum.\Do not modify this token.\A proper value is automatically selected based on the value of the\FFS_FILE_CHECKSUM_SUPPORT SDL token."
+	TokenType = Expression
+	TargetFDF = Yes
+	Lock = Yes
+	Token = "FFS_FILE_CHECKSUM_SUPPORT" "=" "0"
+End
+
+ELINK
+	Name  = "AmiPkg/Configuration/FdfRules.txt"
+	Parent  = "FdfRules"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "FdfRules"
+	Type  = "Rule"
+	InvokeOrder = ReplaceParent
+	OutFDF = Yes
+End
+
+OUTPUTREGISTER
+	Name  = "TOKEN_H"
+	Path  = "Build"
+	File  = "Token.h"
+	Lock = Yes
+End
+
+OUTPUTREGISTER
+	Name  = "TOKEN_MAK"
+	Path  = "Build"
+	File  = "Token.mak"
+	Lock = Yes
+End
+
+OUTPUTREGISTER
+	Name  = "TOKEN_EQU"
+	Path  = "Build"
+	File  = "Token.equ"
+	Lock = Yes
+End
+
+OUTPUTREGISTER
+	Name  = "MODULE_MAK"
+	Help  = "list of make files for enabled components"
+	Path  = "Build"
+	File  = "module.mak"
+	Lock = Yes
+	GCC_Compatible = Yes
+End
+
+OUTPUTREGISTER
+	Name  = "PLATFORM_FDF"
+	Path  = "Build"
+	File  = "Platform.fdf"
+End
+
+FD_INFO
+	Name  = "AMIROM"
+	Size  = "$(FLASH_SIZE)"
+	Blk_Size  = "$(FLASH_BLOCK_SIZE)"
+	Address  = "$(FLASH_ADDRESS)"
+	ErasePolarity  = "0x01"
+End
+
+FFS_FILE
+	Name  = "DXE Modules"
+	FD_AREA  = "FV_MAIN"
+	Module_Type  = "DXE_CORE,DXE_DRIVER,DXE_RUNTIME_DRIVER,UEFI_DRIVER,SMM_CORE,DXE_SMM_DRIVER,UEFI_APPLICATION,USER_DEFINED"
+End
+
+FFS_FILE
+	Name  = "PEI Modules"
+	FD_AREA  = "FV_BB"
+	Module_Type  = "PEI_CORE,PEIM,SEC"
+End
+
+FFS_FILE
+	Name  = "FvMainCompressed"
+	FD_AREA  = "FV_MAIN_WRAPPER"
+	FILE_Stmt  = "AmiPkg/Configuration/NestedFvMainFdfFileStatement.txt"
+End
+
+FFS_FILE
+	Name  = "FontFile"
+	FD_AREA  = "FV_MAIN"
+	FILE_Stmt  = "AmiPkg/Configuration/FontFileStatement.txt"
+End
+
+FD_AREA
+	Name  = "NVRAM"
+	TYPE  = "FV"
+	FD_INFO  = "AMIROM"
+	Offset  = "$(NVRAM_OFFSET)"
+	Size  = "$(NVRAM_SIZE)"
+	Layout_Attribute  = "0xd00"
+	Attributes  = "0xffff"
+	Alignment  = "16"
+	Token = "NVRAM_VERSION" "<" "7"
+End
+
+FD_AREA
+	Name  = "NVRAM_BACKUP"
+	TYPE  = "RAW"
+	FD_INFO  = "AMIROM"
+	Offset  = "$(NVRAM_OFFSET)+$(NVRAM_SIZE)"
+	Size  = "$(NVRAM_SIZE)"
+	Layout_Attribute  = "0xd00"
+	Attributes  = "0x0"
+	Token = "FAULT_TOLERANT_NVRAM_UPDATE" "=" "1"
+	Token = "NVRAM_VERSION" "<" "7"
+End
+
+FD_AREA
+	Name  = "FV_MAIN"
+	TYPE  = "FV"
+	FD_INFO  = "AMIROM"
+	Offset  = "$(FV_MAIN_OFFSET)"
+	Size  = "$(FV_MAIN_SIZE)"
+	Layout_Attribute  = "0xd09"
+	Attributes  = "0xffff"
+	Alignment  = "16"
+	Guid  = "5C60F367-A505-419A-859E-2A4FF6CA6FE5"
+	Token = "NESTED_FV_MAIN" "=" "0"
+End
+
+FD_AREA
+	Name  = "FV_MAIN_WRAPPER"
+	TYPE  = "FV"
+	FD_INFO  = "AMIROM"
+	Offset  = "$(FV_MAIN_OFFSET)"
+	Size  = "$(FV_MAIN_SIZE)"
+	Layout_Attribute  = "0x109"
+	Attributes  = "0xffff"
+	Alignment  = "16"
+	Guid  = "4f1c52d3-d824-4d2a-a2f0-ec40c23c5916"
+	Token = "NESTED_FV_MAIN" "=" "1"
+End
+
+FD_AREA
+	Name  = "FV_MAIN"
+	TYPE  = "StandAlone"
+	FD_INFO  = "AMIROM"
+	Offset  = "$(FV_MAIN_OFFSET)"
+	Size  = "0"
+	Layout_Attribute  = "0x109"
+	Attributes  = "0xffff"
+	Alignment  = "16"
+	Guid  = "5C60F367-A505-419A-859E-2A4FF6CA6FE5"
+	Token = "NESTED_FV_MAIN" "=" "1"
+End
+
+FD_AREA
+	Name  = "FV_BB"
+	TYPE  = "FV"
+	FD_INFO  = "AMIROM"
+	Offset  = "$(FLASH_SIZE) - $(FV_BB_SIZE)"
+	Size  = "$(FV_BB_SIZE)"
+	Layout_Attribute  = "0xd89"
+	Attributes  = "0xffff"
+	Alignment  = "16"
+	Guid  = "61C0F511-A691-4F54-974F-B9A42172CE53"
+End
+

@@ -1,0 +1,391 @@
+//
+// This file contains an 'Intel Peripheral Driver' and is
+// licensed for Intel CPUs and chipsets under the terms of your
+// license agreement with Intel or your vendor.  This file may
+// be modified by the user, subject to additional terms of the
+// license agreement
+//
+// *++
+//
+// Copyright (c) 1999 - 2015 Intel Corporation. All rights reserved
+// This software and associated documentation (if any) is furnished
+// under a license and may only be used or copied in accordance
+// with the terms of the license. Except as permitted by such
+// license, no part of this software or documentation may be
+// reproduced, stored in a retrieval system, or transmitted in any
+// form or by any means without the express written consent of
+// Intel Corporation.
+//
+//
+// Module Name:
+//
+//   KtiPerSocketConfig.hfr
+//
+// Abstract:
+//
+//   KTI Setup formset.
+//
+// Revision History:
+//
+// --*/
+#include <KtiSetupDefinitions.h>
+
+//--------------------------------------------------------------------------------------
+//PerSocket configuration
+//--------------------------------------------------------------------------------------
+
+form formid = VFR_FORMID_KTIPERSOCKET,
+
+    title   = STRING_TOKEN(STR_KTI_PERSOCKET_FORM_TITLE);
+
+    subtitle text = STRING_TOKEN(STR_KTI_PERSOCKET_FORM_TITLE);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+
+    goto VFR_FID_KTI_CPU0,
+        prompt  = STRING_TOKEN(STR_KTI_CPU0_TITLE),
+        help    = STRING_TOKEN(STR_KTI_CPU0_HELP);
+
+#if MAX_SOCKET > 1
+    goto VFR_FID_KTI_CPU1,
+        prompt  = STRING_TOKEN(STR_KTI_CPU1_TITLE),
+        help    = STRING_TOKEN(STR_KTI_CPU1_HELP);
+#endif
+
+#if MAX_SOCKET > 2
+    goto VFR_FID_KTI_CPU2,
+        prompt  = STRING_TOKEN(STR_KTI_CPU2_TITLE),
+        help    = STRING_TOKEN(STR_KTI_CPU2_HELP);
+#endif
+#if MAX_SOCKET > 3
+    goto VFR_FID_KTI_CPU3,
+        prompt  = STRING_TOKEN(STR_KTI_CPU3_TITLE),
+        help    = STRING_TOKEN(STR_KTI_CPU3_HELP);
+#endif
+#if MAX_SOCKET > 4
+    goto VFR_FID_KTI_CPU4,
+        prompt  = STRING_TOKEN(STR_KTI_CPU4_TITLE),
+        help    = STRING_TOKEN(STR_KTI_CPU4_HELP);
+#endif
+#if MAX_SOCKET > 5
+    goto VFR_FID_KTI_CPU5,
+        prompt  = STRING_TOKEN(STR_KTI_CPU5_TITLE),
+        help    = STRING_TOKEN(STR_KTI_CPU5_HELP);
+#endif
+#if MAX_SOCKET > 6
+    goto VFR_FID_KTI_CPU6,
+        prompt  = STRING_TOKEN(STR_KTI_CPU6_TITLE),
+        help    = STRING_TOKEN(STR_KTI_CPU6_HELP);
+#endif
+#if MAX_SOCKET > 7
+    goto VFR_FID_KTI_CPU7,
+        prompt  = STRING_TOKEN(STR_KTI_CPU7_TITLE),
+        help    = STRING_TOKEN(STR_KTI_CPU7_HELP);
+#endif
+endform;
+
+//--------------------------------------------------------------------------------------
+//PerCPU configuration
+//--------------------------------------------------------------------------------------
+
+//
+// SKX KTI Per Socket Config
+//
+
+#define PERSOCKET_KTI_CONFIG(SKT) \
+    numeric varid = SOCKET_MP_LINK_CONFIGURATION.BusRatio[ SKT ],                          \
+        prompt  = STRING_TOKEN (STR_KTI_BUS_RATIO),                                        \
+        help    = STRING_TOKEN (STR_KTI_BUS_RATIO_HELP),                                   \
+        flags   = 0 | RESET_REQUIRED,                                                      \
+        minimum = BUS_RATIO_MIN,                                                           \
+        maximum = BUS_RATIO_MAX,                                                           \
+        step    = 1,                                                                       \
+        default = BUS_RATIO_DFLT, defaultstore = MyStandardDefault,                        \
+        default = BUS_RATIO_DFLT, defaultstore = MyManufactureDefault,                     \
+    endnumeric;
+
+form formid = VFR_FID_KTI_CPU0,
+    title   = STRING_TOKEN(STR_KTI_CPU0_TITLE);
+    subtitle text = STRING_TOKEN(STR_KTI_CPU0_TITLE);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+
+    goto VFR_FID_KTI_CPU0_LINK0,
+        prompt  = STRING_TOKEN(STR_KTI_CPU0_LINK0),
+        help    = STRING_TOKEN(STR_KTI_CPU0_LINK0_HELP);
+
+    goto VFR_FID_KTI_DFX_CPU0_LINK0,
+        prompt  = STRING_TOKEN(STR_KTI_DFX_CPU0_LINK0),
+        help    = STRING_TOKEN(STR_KTI_DFX_CPU0_LINK0_HELP);
+
+    goto VFR_FID_KTI_CPU0_LINK1,
+        prompt  = STRING_TOKEN(STR_KTI_CPU0_LINK1),
+        help    = STRING_TOKEN(STR_KTI_CPU0_LINK1_HELP);
+
+    goto VFR_FID_KTI_DFX_CPU0_LINK1,
+        prompt  = STRING_TOKEN(STR_KTI_DFX_CPU0_LINK1),
+        help    = STRING_TOKEN(STR_KTI_DFX_CPU0_LINK1_HELP);
+
+    goto VFR_FID_KTI_CPU0_LINK2,
+        prompt  = STRING_TOKEN(STR_KTI_CPU0_LINK2),
+        help    = STRING_TOKEN(STR_KTI_CPU0_LINK2_HELP);
+
+    goto VFR_FID_KTI_DFX_CPU0_LINK2,
+        prompt  = STRING_TOKEN(STR_KTI_DFX_CPU0_LINK2),
+        help    = STRING_TOKEN(STR_KTI_DFX_CPU0_LINK2_HELP);
+
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+    PERSOCKET_KTI_CONFIG(0)
+endform;
+
+#if MAX_SOCKET > 1
+form formid = VFR_FID_KTI_CPU1,
+    title   = STRING_TOKEN(STR_KTI_CPU1_TITLE);
+    subtitle text = STRING_TOKEN(STR_KTI_CPU1_TITLE);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+
+    goto VFR_FID_KTI_CPU1_LINK0,
+        prompt  = STRING_TOKEN(STR_KTI_CPU1_LINK0),
+        help    = STRING_TOKEN(STR_KTI_CPU1_LINK0_HELP);
+
+    goto VFR_FID_KTI_DFX_CPU1_LINK0,
+        prompt  = STRING_TOKEN(STR_KTI_DFX_CPU1_LINK0),
+        help    = STRING_TOKEN(STR_KTI_DFX_CPU1_LINK0_HELP);
+
+    goto VFR_FID_KTI_CPU1_LINK1,
+        prompt  = STRING_TOKEN(STR_KTI_CPU1_LINK1),
+        help    = STRING_TOKEN(STR_KTI_CPU1_LINK1_HELP);
+
+    goto VFR_FID_KTI_DFX_CPU1_LINK1,
+        prompt  = STRING_TOKEN(STR_KTI_DFX_CPU1_LINK1),
+        help    = STRING_TOKEN(STR_KTI_DFX_CPU1_LINK1_HELP);
+
+    goto VFR_FID_KTI_CPU1_LINK2,
+        prompt  = STRING_TOKEN(STR_KTI_CPU1_LINK2),
+        help    = STRING_TOKEN(STR_KTI_CPU1_LINK2_HELP);
+
+    goto VFR_FID_KTI_DFX_CPU1_LINK2,
+        prompt  = STRING_TOKEN(STR_KTI_DFX_CPU1_LINK2),
+        help    = STRING_TOKEN(STR_KTI_DFX_CPU1_LINK2_HELP);
+
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+    PERSOCKET_KTI_CONFIG(1)
+endform;
+#endif
+
+#if MAX_SOCKET > 2
+form formid = VFR_FID_KTI_CPU2,
+    title   = STRING_TOKEN(STR_KTI_CPU2_TITLE);
+    subtitle text = STRING_TOKEN(STR_KTI_CPU2_TITLE);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+
+    goto VFR_FID_KTI_CPU2_LINK0,
+        prompt  = STRING_TOKEN(STR_KTI_CPU2_LINK0),
+        help    = STRING_TOKEN(STR_KTI_CPU2_LINK0_HELP);
+
+    goto VFR_FID_KTI_DFX_CPU2_LINK0,
+        prompt  = STRING_TOKEN(STR_KTI_DFX_CPU2_LINK0),
+        help    = STRING_TOKEN(STR_KTI_DFX_CPU2_LINK0_HELP);
+
+    goto VFR_FID_KTI_CPU2_LINK1,
+        prompt  = STRING_TOKEN(STR_KTI_CPU2_LINK1),
+        help    = STRING_TOKEN(STR_KTI_CPU2_LINK1_HELP);
+
+    goto VFR_FID_KTI_DFX_CPU2_LINK1,
+        prompt  = STRING_TOKEN(STR_KTI_DFX_CPU2_LINK1),
+        help    = STRING_TOKEN(STR_KTI_DFX_CPU2_LINK1_HELP);
+
+    goto VFR_FID_KTI_CPU2_LINK2,
+        prompt  = STRING_TOKEN(STR_KTI_CPU2_LINK2),
+        help    = STRING_TOKEN(STR_KTI_CPU2_LINK2_HELP);
+
+    goto VFR_FID_KTI_DFX_CPU2_LINK2,
+        prompt  = STRING_TOKEN(STR_KTI_DFX_CPU2_LINK2),
+        help    = STRING_TOKEN(STR_KTI_DFX_CPU2_LINK2_HELP);
+
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+    PERSOCKET_KTI_CONFIG(2)
+endform;
+#endif
+
+#if MAX_SOCKET > 3
+form formid = VFR_FID_KTI_CPU3,
+    title   = STRING_TOKEN(STR_KTI_CPU3_TITLE);
+    subtitle text = STRING_TOKEN(STR_KTI_CPU3_TITLE);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+
+    goto VFR_FID_KTI_CPU3_LINK0,
+        prompt  = STRING_TOKEN(STR_KTI_CPU3_LINK0),
+        help    = STRING_TOKEN(STR_KTI_CPU3_LINK0_HELP);
+
+    goto VFR_FID_KTI_DFX_CPU3_LINK0,
+        prompt  = STRING_TOKEN(STR_KTI_DFX_CPU3_LINK0),
+        help    = STRING_TOKEN(STR_KTI_DFX_CPU3_LINK0_HELP);
+
+    goto VFR_FID_KTI_CPU3_LINK1,
+        prompt  = STRING_TOKEN(STR_KTI_CPU3_LINK1),
+        help    = STRING_TOKEN(STR_KTI_CPU3_LINK1_HELP);
+
+    goto VFR_FID_KTI_DFX_CPU3_LINK1,
+        prompt  = STRING_TOKEN(STR_KTI_DFX_CPU3_LINK1),
+        help    = STRING_TOKEN(STR_KTI_DFX_CPU3_LINK1_HELP);
+
+    goto VFR_FID_KTI_CPU3_LINK2,
+        prompt  = STRING_TOKEN(STR_KTI_CPU3_LINK2),
+        help    = STRING_TOKEN(STR_KTI_CPU3_LINK2_HELP);
+
+    goto VFR_FID_KTI_DFX_CPU3_LINK2,
+        prompt  = STRING_TOKEN(STR_KTI_DFX_CPU3_LINK2),
+        help    = STRING_TOKEN(STR_KTI_DFX_CPU3_LINK2_HELP);
+
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+    PERSOCKET_KTI_CONFIG(3)
+endform;
+#endif
+
+#if MAX_SOCKET > 4
+form formid = VFR_FID_KTI_CPU4,
+    title   = STRING_TOKEN(STR_KTI_CPU4_TITLE);
+    subtitle text = STRING_TOKEN(STR_KTI_CPU4_TITLE);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+
+    goto VFR_FID_KTI_CPU4_LINK0,
+        prompt  = STRING_TOKEN(STR_KTI_CPU4_LINK0),
+        help    = STRING_TOKEN(STR_KTI_CPU4_LINK0_HELP);
+
+    goto VFR_FID_KTI_DFX_CPU4_LINK0,
+        prompt  = STRING_TOKEN(STR_KTI_DFX_CPU4_LINK0),
+        help    = STRING_TOKEN(STR_KTI_DFX_CPU4_LINK0_HELP);
+
+    goto VFR_FID_KTI_CPU4_LINK1,
+        prompt  = STRING_TOKEN(STR_KTI_CPU4_LINK1),
+        help    = STRING_TOKEN(STR_KTI_CPU4_LINK1_HELP);
+
+    goto VFR_FID_KTI_DFX_CPU4_LINK1,
+        prompt  = STRING_TOKEN(STR_KTI_DFX_CPU4_LINK1),
+        help    = STRING_TOKEN(STR_KTI_DFX_CPU4_LINK1_HELP);
+
+    goto VFR_FID_KTI_CPU4_LINK2,
+        prompt  = STRING_TOKEN(STR_KTI_CPU4_LINK2),
+        help    = STRING_TOKEN(STR_KTI_CPU4_LINK2_HELP);
+
+    goto VFR_FID_KTI_DFX_CPU4_LINK2,
+        prompt  = STRING_TOKEN(STR_KTI_DFX_CPU4_LINK2),
+        help    = STRING_TOKEN(STR_KTI_DFX_CPU4_LINK2_HELP);
+
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+    PERSOCKET_KTI_CONFIG(4)
+endform;
+#endif
+
+#if MAX_SOCKET > 5
+form formid = VFR_FID_KTI_CPU5,
+    title   = STRING_TOKEN(STR_KTI_CPU5_TITLE);
+    subtitle text = STRING_TOKEN(STR_KTI_CPU5_TITLE);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+
+    goto VFR_FID_KTI_CPU5_LINK0,
+        prompt  = STRING_TOKEN(STR_KTI_CPU5_LINK0),
+        help    = STRING_TOKEN(STR_KTI_CPU5_LINK0_HELP);
+
+    goto VFR_FID_KTI_DFX_CPU5_LINK0,
+        prompt  = STRING_TOKEN(STR_KTI_DFX_CPU5_LINK0),
+        help    = STRING_TOKEN(STR_KTI_DFX_CPU5_LINK0_HELP);
+
+    goto VFR_FID_KTI_CPU5_LINK1,
+        prompt  = STRING_TOKEN(STR_KTI_CPU5_LINK1),
+        help    = STRING_TOKEN(STR_KTI_CPU5_LINK1_HELP);
+
+    goto VFR_FID_KTI_DFX_CPU5_LINK1,
+        prompt  = STRING_TOKEN(STR_KTI_DFX_CPU5_LINK1),
+        help    = STRING_TOKEN(STR_KTI_DFX_CPU5_LINK1_HELP);
+
+    goto VFR_FID_KTI_CPU5_LINK2,
+        prompt  = STRING_TOKEN(STR_KTI_CPU5_LINK2),
+        help    = STRING_TOKEN(STR_KTI_CPU5_LINK2_HELP);
+
+    goto VFR_FID_KTI_DFX_CPU5_LINK2,
+        prompt  = STRING_TOKEN(STR_KTI_DFX_CPU5_LINK2),
+        help    = STRING_TOKEN(STR_KTI_DFX_CPU5_LINK2_HELP);
+
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+    PERSOCKET_KTI_CONFIG(5)
+endform;
+#endif
+
+#if MAX_SOCKET > 6
+form formid = VFR_FID_KTI_CPU6,
+    title   = STRING_TOKEN(STR_KTI_CPU6_TITLE);
+    subtitle text = STRING_TOKEN(STR_KTI_CPU6_TITLE);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+
+    goto VFR_FID_KTI_CPU6_LINK0,
+        prompt  = STRING_TOKEN(STR_KTI_CPU6_LINK0),
+        help    = STRING_TOKEN(STR_KTI_CPU6_LINK0_HELP);
+
+    goto VFR_FID_KTI_DFX_CPU6_LINK0,
+        prompt  = STRING_TOKEN(STR_KTI_DFX_CPU6_LINK0),
+        help    = STRING_TOKEN(STR_KTI_DFX_CPU6_LINK0_HELP);
+
+    goto VFR_FID_KTI_CPU6_LINK1,
+        prompt  = STRING_TOKEN(STR_KTI_CPU6_LINK1),
+        help    = STRING_TOKEN(STR_KTI_CPU6_LINK1_HELP);
+
+    goto VFR_FID_KTI_DFX_CPU6_LINK1,
+        prompt  = STRING_TOKEN(STR_KTI_DFX_CPU6_LINK1),
+        help    = STRING_TOKEN(STR_KTI_DFX_CPU6_LINK1_HELP);
+
+    goto VFR_FID_KTI_CPU6_LINK2,
+        prompt  = STRING_TOKEN(STR_KTI_CPU6_LINK2),
+        help    = STRING_TOKEN(STR_KTI_CPU6_LINK2_HELP);
+
+    goto VFR_FID_KTI_DFX_CPU6_LINK2,
+        prompt  = STRING_TOKEN(STR_KTI_DFX_CPU6_LINK2),
+        help    = STRING_TOKEN(STR_KTI_DFX_CPU6_LINK2_HELP);
+
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+    PERSOCKET_KTI_CONFIG(6)
+endform;
+#endif
+
+#if MAX_SOCKET > 7
+form formid = VFR_FID_KTI_CPU7,
+    title   = STRING_TOKEN(STR_KTI_CPU7_TITLE);
+    subtitle text = STRING_TOKEN(STR_KTI_CPU7_TITLE);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+
+    goto VFR_FID_KTI_CPU7_LINK0,
+        prompt  = STRING_TOKEN(STR_KTI_CPU7_LINK0),
+        help    = STRING_TOKEN(STR_KTI_CPU7_LINK0_HELP);
+
+    goto VFR_FID_KTI_DFX_CPU7_LINK0,
+        prompt  = STRING_TOKEN(STR_KTI_DFX_CPU7_LINK0),
+        help    = STRING_TOKEN(STR_KTI_DFX_CPU7_LINK0_HELP);
+
+    goto VFR_FID_KTI_CPU7_LINK1,
+        prompt  = STRING_TOKEN(STR_KTI_CPU7_LINK1),
+        help    = STRING_TOKEN(STR_KTI_CPU7_LINK1_HELP);
+
+    goto VFR_FID_KTI_DFX_CPU7_LINK1,
+        prompt  = STRING_TOKEN(STR_KTI_DFX_CPU7_LINK1),
+        help    = STRING_TOKEN(STR_KTI_DFX_CPU7_LINK1_HELP);
+
+    goto VFR_FID_KTI_CPU7_LINK2,
+        prompt  = STRING_TOKEN(STR_KTI_CPU7_LINK2),
+        help    = STRING_TOKEN(STR_KTI_CPU7_LINK2_HELP);
+
+    goto VFR_FID_KTI_DFX_CPU7_LINK2,
+        prompt  = STRING_TOKEN(STR_KTI_DFX_CPU7_LINK2),
+        help    = STRING_TOKEN(STR_KTI_DFX_CPU7_LINK2_HELP);
+
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+    PERSOCKET_KTI_CONFIG(7)
+endform;
+#endif
+

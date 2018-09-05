@@ -1,0 +1,105 @@
+//*************************************************************************
+//*************************************************************************
+//**                                                                     **
+//**        (C)Copyright 1985-2015, American Megatrends, Inc.            **
+//**                                                                     **
+//**                       All Rights Reserved.                          **
+//**                                                                     **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+//**                                                                     **
+//**                       Phone: (770)-246-8600                         **
+//**                                                                     **
+//*************************************************************************
+//*************************************************************************
+
+//*****************************************************************************
+/** @file 
+    This file contains the Firmware Version Data Structure definition.  This structure
+    is filled out a build time token definitions that give information about the current 
+    BIOS code.
+*/
+
+// Module specific Includes
+#include <Token.h>
+#include <TimeStamp.h>
+#include <AmiLib.h>
+#include <Fid.h>
+
+/// macro defined to convert a integer value to a string
+#define THREE_CHAR_ARRAY(x) {(x)/10+'0',(x)%10+'0',0}
+#define CREATOR_ID_MS 0x5446534D  //"TFSM""MSFT"(Microsoft)
+
+#define	CREATOR_REV_MS 0x00010013
+
+#define CREATOR_ID_AMI 0x20494D41  //" IMA""AMI "(AMI)
+
+#pragma pack(push, 1)
+
+typedef struct _FW_VERSION_ACPI {
+    UINT32      Signature;
+    UINT32      Length;
+    UINT8       Revision;
+    UINT8       Checksum;
+    UINT8       OemId[6]; 
+    UINT8       OemTblId[8];
+    UINT32      OemRev;
+    UINT32      CreatorId;
+    UINT32      CreatorRev;
+    FW_VERSION  Fid;
+} FW_VERSION_ACPI;
+
+/// This data structure is completed at build time and stored in a binary file in the ROM image.
+FW_VERSION_ACPI  AcpiFwVersionTbl = {
+    	0x54444946,  					//"FIDT" $FID Table
+    	sizeof(FW_VERSION_ACPI),
+    	1,						//Revision = 1
+    	0, 						//Checksum
+    	CONVERT_TO_STRING(T_ACPI_OEM_ID),     		//OemId[6] 
+    	CONVERT_TO_STRING(T_ACPI_OEM_TBL_ID),		//OemTblId[8]
+    	ACPI_OEM_REV,					//OemRev
+    	CREATOR_ID_AMI,					//CreatorId
+    	CREATOR_REV_MS,					//CreatorRev						
+    {
+    	"$FID",                                     	//$FID signature of the FW VERSION STRUCTURE
+    	0x04,                                       	//Version 4
+    	sizeof(FW_VERSION),                         	//Size of this structure
+    	CONVERT_TO_STRING(BIOS_TAG),                	//8 character BIOS Tag, Plus NULL Cahracter at the end
+    	FW_VERSION_GUID,                            	//FW Version GUID
+    	THREE_CHAR_ARRAY(CORE_MAJOR_VERSION),       	//Core Major Version from BIOS Parameters
+    	THREE_CHAR_ARRAY(CORE_BUILD_NUMBER),        	//Core Build Number from BIOS Parameters
+    	THREE_CHAR_ARRAY(PROJECT_MAJOR_VERSION),    	//Project Major Version from BIOS Parameters
+    	THREE_CHAR_ARRAY(PROJECT_MINOR_VERSION),    	//Project Minor Version from BIOS Parameters
+    	FOUR_DIGIT_YEAR_INT,
+    	TWO_DIGIT_MONTH_INT,
+    	TWO_DIGIT_DAY_INT,
+    	TWO_DIGIT_HOUR_INT,
+    	TWO_DIGIT_MINUTE_INT,
+    	TWO_DIGIT_SECOND_INT,
+    	0xffff,
+    	CONVERT_TO_STRING(T_ACPI_OEM_ID),
+    	CONVERT_TO_STRING(T_ACPI_OEM_TBL_ID),
+    	49,
+    	{ 
+            0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,
+            0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,
+            0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,
+            0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,
+            0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff
+    	}
+    }
+};
+#pragma pack(pop)
+
+//*************************************************************************
+//*************************************************************************
+//**                                                                     **
+//**        (C)Copyright 1985-2015, American Megatrends, Inc.            **
+//**                                                                     **
+//**                       All Rights Reserved.                          **
+//**                                                                     **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+//**                                                                     **
+//**                       Phone: (770)-246-8600                         **
+//**                                                                     **
+//*************************************************************************
+//*************************************************************************

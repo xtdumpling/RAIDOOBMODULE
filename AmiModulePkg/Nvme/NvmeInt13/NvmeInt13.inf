@@ -1,0 +1,69 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+## @file NvmeInt13.inf
+#  Component description file for NvmeInt13 module.
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010015
+  VERSION_STRING                 = 1.0
+  BASE_NAME                      = NvmeInt13
+  MODULE_TYPE                    = DXE_DRIVER
+  FILE_GUID                      = C9A6DE36-FDFF-4FAF-8343-85D9E3470F43
+  ENTRY_POINT                    = NvmeInt13EntryPoint
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+#
+
+[Sources]
+  NvmeInt13.c
+  NvmeInt13.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  
+[LibraryClasses]
+  UefiDriverEntryPoint 
+  ReportStatusCodeLib
+  IoLib
+
+[Protocols]
+  gEfiLegacyBiosExtProtocolGuid
+  gAmiNvmeLegacyProtocolGuid
+
+[Depex]
+  gEfiLegacyBiosProtocolGuid AND
+  gEfiLegacyBiosExtProtocolGuid
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

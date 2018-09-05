@@ -1,0 +1,38 @@
+//
+// This file contains 'Framework Code' and is licensed as such
+// under the terms of your license agreement with Intel or your
+// vendor.  This file may not be modified, except as allowed by
+// additional terms of your license agreement.
+//
+/** @file
+  Uba Liarary Definition Header File.
+
+  Copyright (c) 2014 -2016, Intel Corporation. All rights reserved.<BR>
+  This software and associated documentation (if any) is furnished
+  under a license and may only be used or copied in accordance
+  with the terms of the license. Except as permitted by such
+  license, no part of this software or documentation may be
+  reproduced, stored in a retrieval system, or transmitted in any
+  form or by any means without the express written consent of
+  Intel Corporation.
+**/
+
+#ifndef _UBA_PLAT_LIB_H_
+#define _UBA_PLAT_LIB_H_
+
+#include "UbaAcpiUpdateLib.h"
+#include "UbaOpromUpdateLib.h"
+#include "UbaPchEarlyUpdateLib.h"
+#include "UbaPirqUpdateLib.h"
+#include "UbaSetupUpdateLib.h"
+#include "UbaClkGenUpdateLib.h"
+#include "UbaGpioUpdateLib.h"
+#include "UbaMpTableUpdateLib.h"
+#include "UbaPcdUpdateLib.h"
+#include "UbaSmbiosUpdateLib.h"
+#include "UbaSoftStrapUpdateLib.h"
+#include "UbaSsidSvidUpdateLib.h"
+#include "UbaIioConfigLib.h"
+#include "UbaSlotUpdateLib.h"
+
+#endif _UBA_PLAT_LIB_H_

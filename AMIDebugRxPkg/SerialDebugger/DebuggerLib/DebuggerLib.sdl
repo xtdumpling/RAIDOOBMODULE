@@ -1,0 +1,90 @@
+TOKEN
+	Name  = "DebuggerLib_COM_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling DebuggerLib support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+PATH
+	Name  = "COMDebuggerLib_DIR"
+	Path  = "AMIDebugRxPkg\SerialDebugger\DebuggerLib"
+End
+
+INFComponent
+	Name  = "DebuggerLib"
+	File  = "DebuggerLib.inf"
+	Package  = "SerialDebugger"
+	Arch  = "common Ia32 X64"
+	Path  = "COMDebuggerLib_DIR"
+End
+
+INFComponent
+	Name  = "CommonDebugPortLib"
+	File  = "CommonDebugPortLib.inf"
+	Package  = "SerialDebugger"
+	Arch  = "common Ia32 X64"
+	Path  = "COMDebuggerLib_DIR"
+End
+
+LibraryMapping
+	Class  = "DebuggerLib"
+	Instance  = "SerialDebugger.DebuggerLib"
+	ModuleTypes  = "DXE_DRIVER DXE_CORE DXE_RUNTIME_DRIVER"
+End
+
+LibraryMapping
+	Class  = "CommonDebugPortLib"
+	Instance  = "SerialDebugger.CommonDebugPortLib"
+	ModuleTypes  = "DXE_DRIVER DXE_CORE DXE_RUNTIME_DRIVER"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "MdeModulePkg.DebugAgentLibNull"
+	Override  = "AmiModulePkg.StatusCodeDxe"
+End
+
+ELINK
+	Name  = "Init_AMI_USBDebugPort_HOB,"
+	Parent  = "DxeStatusCodeInitialize"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "CallbackForDbgIDT,"
+	Parent  = "DxeStatusCodeInitialize"
+	InvokeOrder = AfterParent
+	Token = "DEBUG_IDT_PRESERVATION_WITH_CPU_ARCH_PROTOCOL" "=" "1"
+End
+
+ELINK
+	Name  = "UpdateSMMData,"
+	Parent  = "DxeStatusCodeInitialize"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "ReadyToBootFunc,"
+	Parent  = "DxeStatusCodeInitialize"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "EnableDisableDbgSupport,"
+	Parent  = "CSM_16_CALL_COMPANION_FUNCTIONS"
+	InvokeOrder = AfterParent
+	Token = "REDIRECTION_ONLY_MODE" "=" "0"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "SerialDebugger.DebuggerLib"
+	Override  = "AmiModulePkg.StatusCodeDxe"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "SerialDebugger.DebuggerLib"
+	Override  = "AmiModulePkg.CsmDxe"
+End

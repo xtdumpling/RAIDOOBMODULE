@@ -1,0 +1,37 @@
+[Defines]
+  INF_VERSION			= 0x00010005
+  BASE_NAME			    = FboGroupForm
+  FILE_GUID				= a3ad355a-13d0-4dcf-9c21-3d2c5f1bad5f
+  MODULE_TYPE			= DXE_DRIVER
+  VERSION_STRING		= 1.0
+  ENTRY_POINT           = FboGroupFormEntryPoint
+  UEFI_HII_RESOURCE_SECTION      = TRUE
+
+## DO NOT MODIFY CODE IF YOU DON'T UNDERSTAND !! ##
+[Sources]
+FboGroupForm.c
+FboGroupForm.vfr
+FixedBootOrderHii.h
+FixedBootOrderHii.c
+##FBO_TAG DefaultFixedBootOrder.uni##
+
+
+[Packages]
+    MdePkg/MdePkg.dec
+    IntelFrameworkPkg/IntelFrameworkPkg.dec
+    AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+    AmiModulePkg/AmiModulePkg.dec
+    AmiTsePkg/AmiTsePkg.dec
+    Build/FboGroupForm.dec
+[LibraryClasses]
+    AmiDxeLib
+    UefiLib
+    UefiDriverEntryPoint
+[Protocols]
+    gEfiHiiStringProtocolGuid
+    gEfiHiiDatabaseProtocolGuid
+[Depex]
+    TRUE
+    
+[BuildOptions]
+    *_*_*_BUILD_FLAGS=-s

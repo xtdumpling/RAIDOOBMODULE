@@ -1,0 +1,251 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.00
+#    Bug Fix : Add a SMC feature - JPME2_Jumpless_SUPPORT
+#    Reason  : It is one of SMC features.
+#    Auditor : Hartmann Hsieh
+#    Date    : Jun/08/2016
+#
+#****************************************************************************
+TOKEN
+	Name  = "OFBD_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling OFBD support in the project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "OFBD_SW_SMI_VALUE"
+	Value  = "0x26"
+	Help  = "Sw SMI value of OFBD item change"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0-0xff"
+End
+
+TOKEN
+	Name  = "OFBD_VERSION"
+	Value  = "0x0210"
+	Help  = "OFBD Version"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "OFBD_FOR_ARM_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling OFBD for ARM (AFRI) support in the project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "AFRI_PASS_TO_SMM_COMMUNICATION" "=" "1"	
+End
+
+TOKEN
+	Name  = "OFBD_FOR_ARM_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling OFBD for ARM (AFRI) support in the project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "AFRI_PASS_TO_AFRI_PROTOCOL" "=" "1"
+End
+
+PATH
+	Name  = "OFBD_DIR"
+	Help  = "AMI OFBD files source directory"
+End
+
+MODULE
+	Help  = "Includes Ofbd.mak into project"
+	Path  = "$(OFBD_DIR)"
+	File  = "Ofbd.mak"
+End
+
+ELINK
+	Name  = "$(OFBD_DIR)/Ofbd.h"
+	Parent  = "OFBD_FUNC_INCLUDE_FILES"
+	InvokeOrder = BeforeParent
+End
+
+ELINK
+    Name  = "DXE_SMM_DRIVER"
+    Parent  = "OFBD_MODULE_TYPES"
+    Token = "AFRI_PASS_TO_AFRI_PROTOCOL" "=" "0"
+    InvokeOrder = BeforeParent
+End
+
+ELINK
+    Name  = "DXE_RUNTIME_DRIVER"
+    Parent  = "OFBD_MODULE_TYPES"
+    Token = "AFRI_PASS_TO_AFRI_PROTOCOL" "=" "1"
+    InvokeOrder = BeforeParent
+End
+
+ELINK
+	Name  = "OFBD_INIT_FUNC_LIST"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "OFBD_IN_SMM_FUNC_LIST"
+	Token = "OFBD_FOR_ARM_SUPPORT" "=" "0"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "OFBD_NOT_SMM_FUNC_LIST"
+	Token = "OFBD_FOR_ARM_SUPPORT" "=" "0"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+    Name  = "gEfiSmmBase2ProtocolGuid"
+    Parent  = "AMI_OFBD_PROTOCOLS"
+    Token = "AFRI_PASS_TO_AFRI_PROTOCOL" "=" "0"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "gEfiSmmSwDispatch2ProtocolGuid"
+    Parent  = "AMI_OFBD_PROTOCOLS"
+    Token = "AFRI_PASS_TO_AFRI_PROTOCOL" "=" "0"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "gAmiFriProtocolGuid"
+    Parent  = "AMI_OFBD_PROTOCOLS"
+    Token = "AFRI_PASS_TO_AFRI_PROTOCOL" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "AmiBufferValidationLib"
+	Parent  = "AMI_OFBD_LIBRARIES"
+	Token = "OFBD_FOR_ARM_SUPPORT" "=" "0"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "gEfiEventVirtualAddressChangeGuid"
+	Parent  = "AMI_OFBD_GUIDS"
+	Token = "OFBD_FOR_ARM_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "gAmiFriProtocolGuid"
+	Parent  = "AMI_OFBD_DEPEX"
+    Priority  = 65536	
+	Token = "AFRI_PASS_TO_AFRI_PROTOCOL" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "gEfiSmmBase2ProtocolGuid "
+    Parent  = "AMI_OFBD_DEPEX"
+    Priority  = 65535    
+    Token = "AFRI_PASS_TO_AFRI_PROTOCOL" "=" "0"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "gEfiSmmSwDispatch2ProtocolGuid"
+    Parent  = "AMI_OFBD_DEPEX"
+    Priority  = 65536
+    Token = "AFRI_PASS_TO_AFRI_PROTOCOL" "=" "0"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "OFBD_FUNC_INCLUDE_FILES"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "OFBD_FUNC_SOURCES_FILES"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "AMI_OFBD_PACKAGES"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "AMI_OFBD_LIBRARIES"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "AMI_OFBD_GUIDS"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "AMI_OFBD_PROTOCOLS"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "AMI_OFBD_DEPEX"
+	InvokeOrder = ReplaceParent
+End
+
+# JPME2_Jumpless_SUPPORT start
+ELINK
+	Name  = "$(OFBD_DIR)\SmcOFBD.ssp"
+	Parent  = "ADDON_SSP_FILES"
+	InvokeOrder = AfterParent
+	Token = "SMCPKG_SUPPORT" "=" "1"
+End
+
+ELINK
+	Name  = "SmcPkg\SmcPkg.dec"
+	Parent  = "AMI_OFBD_PACKAGES"
+	InvokeOrder = AfterParent
+	Token = "SMCPKG_SUPPORT" "=" "1"
+End
+
+ELINK
+	Name  = "SmcLib"
+	Parent  = "AMI_OFBD_LIBRARIES"
+	InvokeOrder = AfterParent
+	Token = "SMCPKG_SUPPORT" "=" "1"
+End
+# JPME2_Jumpless_SUPPORT end
+
+ELINK
+	Name  = "OFBD_MODULE_TYPES"
+	InvokeOrder = ReplaceParent
+End
+
+INFComponent
+	Name  = "Ofbd"
+	File  = "../../Build/Ofbd.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "OFBD_SUPPORT" "=" "1"
+	Token = "AFRI_PASS_TO_AFRI_PROTOCOL" "=" "0"
+End
+
+INFComponent
+	Name  = "Ofbd"
+	File  = "../../Build/Ofbd.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "DXE_RUNTIME_DRIVER"
+	Token = "OFBD_SUPPORT" "=" "1"
+	Token = "AFRI_PASS_TO_AFRI_PROTOCOL" "=" "1"
+End

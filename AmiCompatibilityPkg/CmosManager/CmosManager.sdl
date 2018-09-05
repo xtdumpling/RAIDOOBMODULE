@@ -1,0 +1,352 @@
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**         5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+#
+#**********************************************************************
+# $Header: $
+#
+# $Revision: $
+#
+# $Date: $
+#**********************************************************************
+#<AMI_FHDR_START>
+#-----------------------------------------------------------------------
+#
+# Name:         CmosManager.sdl
+#
+# Description:  This AMI SDL file defines porting constants used in
+#               the CMOS Manager module.  Please see CmosBoard.sdl for
+#               SDL Tokens/eLinks that are expected to be cloned/added
+#               for project-level porting.
+#
+#-----------------------------------------------------------------------
+#<AMI_FHDR_END>
+#<AMI_SHDR_START>
+#----------------------------------------------------------------------------
+#
+# Name:    CMOS_MANAGER_SUPPORT
+#
+# Description:
+#      This token is the main switch to enable CMOS manager support in Project
+#
+#----------------------------------------------------------------------------
+#<AMI_SHDR_END>
+#<AMI_SHDR_START>
+#----------------------------------------------------------------------------
+#
+# Name:    CMOS_RTC_STATUS_REGISTER
+#
+# Description:
+#
+#       Default value is 0xd
+#
+#       This is the RTC status register. Bit 7 is the battery status. 
+#       (Do not set the NMI bit as this is a policy to be implmeneted by 
+#       the ReadWrite function.)
+#
+#----------------------------------------------------------------------------
+#<AMI_SHDR_END>
+#<AMI_SHDR_START>
+#----------------------------------------------------------------------------
+#
+# Name:    CMOS_DIAGNOSTIC_STATUS_REGISTER
+#
+# Description:
+#
+#       Default value is 0xe
+#
+#       This is the diagnostic status register. (Do not set the NMI bit as 
+#       this is a policy to be implmeneted by the ReadWrite function.)
+#
+#----------------------------------------------------------------------------
+#<AMI_SHDR_END>
+#<AMI_SHDR_START>
+#----------------------------------------------------------------------------
+#
+# Name:    CMOS_ACCESS_API_BYTE3
+#
+# Description:
+#
+#       Default value is 0x42
+#
+#       The high byte of the CMOS Access API pointer registers.
+#                  1) These registers are in range: 0x10-0x7f. 
+#                  2) If you change this token, you must modify CmosManager.ssp.
+#                  3) Do not set the NMI bit as this is a policy to be
+#                     implemented by the ReadWrite function.
+#
+#----------------------------------------------------------------------------
+#<AMI_SHDR_END>
+#<AMI_SHDR_START>
+#----------------------------------------------------------------------------
+#
+# Name:    SSP
+#
+# Description:
+#
+#       Default value is AMISSP2.exe
+#
+#       Defines the location of AmiSsp2.exe, which is used to generate
+#       the header files containing CMOS information.
+#      
+#----------------------------------------------------------------------------
+#<AMI_SHDR_END>
+#<AMI_SHDR_START>
+#----------------------------------------------------------------------------
+#
+# Name:     ADDON_SSP_FILES
+#
+# Description:
+#
+#       There are no default eLinks
+#
+#       This eLink is used to update the list of CMOS Token definition files
+#       to be processed by AmiSsp2.exe during the build process.  
+#
+#       For example, the following eLink will add AgesaCmosTokens.ssp to the 
+#       list of CMOS Token definition files:
+#
+#                   ELINK
+#                       Name = "$(AGESA_EFI_DIR)\AgesaCmosTokens.ssp"
+#                       Parent  = "ADDON_SSP_FILES"
+#                       InvokeOrder = AfterParent
+#                   End
+#      
+#----------------------------------------------------------------------------
+#<AMI_SHDR_END>
+
+
+TOKEN
+	Name  = "CMOS_MANAGER_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable CMOS manager support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "CMOS_MANAGER_SOURCE_VERSION"
+	Value  = "41"
+	Help  = "This source version number will increase with each release of CMOS Manager."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "CMOS_RTC_STATUS_REGISTER"
+	Value  = "0xd"
+	Help  = "This is the Battery status register. (Do not set NMI bit)."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "CMOS_DIAGNOSTIC_STATUS_REGISTER"
+	Value  = "0xe"
+	Help  = "This is the diagnostic status register. (Do not set NMI bit)."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SSP"
+	Value  = "AMISSP2.exe"
+	Help  = "Setup Script Processor executable"
+	TokenType = Expression
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "SRSI"
+	Value  = "$(SW_SMI_IO_ADDRESS)"
+	TokenType = Integer
+	TargetASL = Yes
+    Token = "CMOS_MANAGER_ASL_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "CSMI"
+	Value  = "0x61"
+	TokenType = Integer
+	TargetASL = Yes
+	TargetH = Yes
+End
+
+PATH
+	Name  = "CMOS_MANAGER_DIR"
+End
+
+MODULE
+	Help  = "Includes CmosManager.mak to Project"
+	Path  = "$(CMOS_MANAGER_DIR)"
+	File  = "CmosManager.mak"
+End
+
+ELINK
+	Name  = "$(CMOS_MANAGER_DIR)/CmosBoardPei.c"
+	Parent  = "AMI_CSP_PEI_SOURCES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(CMOS_MANAGER_DIR)/CmosBoard.c"
+	Parent  = "AMI_CSP_DXE_SOURCES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "ADDON_SSP_FILES"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "CMOS_MGR_CFLAGS"
+	Help  = "CMOS Manager command line options of the C compiler"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "CMOS_PORT_MAPPING"
+	Help  = "Associate a CMOS address range with an \8-bit index/data port pair or a board-specific access function:\\{Index, Data, Low, High, FunctionName},\\This function is typicall provided by the Southbridge for CMOS addresses above 0x7f."
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "CMOS_BATTERY_TEST_MAPPING"
+	Help  = "Returns BOOLEAN (TRUE=1, FALSE=0) value specifying whether or not the battery is good. This function is implemented by CMOS Manager but can be overriden, typically by the Southbridge."
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "CMOS_IS_FIRST_BOOT_MAPPING"
+	Help  = "Returns BOOLEAN (TRUE=1, FALSE=0) value specifying whether or not the this is the first boot. This function is implemented by CMOS Manager but can be overriden, typically by the Southbridge."
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "CMOS_IS_BSP_MAPPING"
+	Help  = "Returns BOOLEAN (TRUE=1, FALSE=0) value specifying whether or not BSP is currently executing. This function is implemented by CMOS Manager but can be overriden by another module."
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "CMOS_IS_COLD_BOOT_MAPPING"
+	Help  = "Returns BOOLEAN (TRUE=1, FALSE=0) value specifying whether or not the platform is currently executing a cold boot. This function is implemented by CMOS Manager but can be overriden by another module."
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "CMOS_IS_USABLE_MAPPING"
+	Help  = "Returns BOOLEAN (TRUE=1, FALSE=0) value specifying whether or not the CMOS hardware is usable. This function is implemented by CMOS Manager but can be overriden by another module."
+	InvokeOrder = ReplaceParent
+End
+
+
+INFComponent
+	Name  = "CmosPei"
+	File  = "CmosManagerPei.inf"
+	Package  = "AmiCompatibilityPkg"
+    ModuleTypes  = "PEIM"
+End
+
+INFComponent
+    Name  = "CmosManagerPeiLib"
+    File  = "CmosManagerPeiLib.inf"
+    Package  = "AmiCompatibilityPkg"
+    ModuleTypes  = "PEIM"
+End
+
+LibraryMapping
+    Class  = "CmosManagerLib"
+    Instance  = "AmiCompatibilityPkg.CmosManagerPeiLib"
+    ModuleTypes  = "PEIM"
+End
+
+INFComponent
+	Name  = "CmosDxe"
+	File  = "CmosManagerDxe.inf"
+	Package  = "AmiCompatibilityPkg"
+	ModuleTypes  = "DXE_DRIVER"
+End
+
+INFComponent
+    Name  = "CmosManagerDxeLib"
+    File  = "CmosManagerDxeLib.inf"
+    Package  = "AmiCompatibilityPkg"
+End
+
+LibraryMapping
+    Class  = "CmosManagerLib"
+    Instance  = "AmiCompatibilityPkg.CmosManagerDxeLib"
+    ModuleTypes  = "DXE_DRIVER"
+End
+
+INFComponent
+	Name  = "CmosSmm"
+	File  = "CmosManagerSmm.inf"
+	Package  = "AmiCompatibilityPkg"
+    ModuleTypes  = "DXE_SMM_DRIVER"
+    Token = "CMOS_SMM_SUPPORT" "=" "1"
+End
+
+INFComponent
+    Name  = "CmosManagerSmmLib"
+    File  = "CmosManagerSmmLib.inf"
+    Package  = "AmiCompatibilityPkg"
+    Token = "CMOS_SMM_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+    Class  = "CmosManagerLib"
+    Instance  = "AmiCompatibilityPkg.CmosManagerSmmLib"
+    ModuleTypes  = "DXE_SMM_DRIVER"
+    Token = "CMOS_SMM_SUPPORT" "=" "1"
+End
+
+FFS_FILE
+	Name  = "CmosPei"
+	FD_AREA  = "FV_BB"
+	INFComponent  = "AmiCompatibilityPkg.CmosPei"
+	Apriori_Index  = "10"
+End
+
+FFS_FILE
+	Name  = "CmosDxe"
+	FD_AREA  = "FV_MAIN"
+	INFComponent  = "AmiCompatibilityPkg.CmosDxe"
+	Apriori_Index  = "10"
+End
+
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**         5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+

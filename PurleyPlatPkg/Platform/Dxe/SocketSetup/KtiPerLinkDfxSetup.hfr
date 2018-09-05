@@ -1,0 +1,108 @@
+//
+// This file contains an 'Intel Peripheral Driver' and is
+// licensed for Intel CPUs and chipsets under the terms of your
+// license agreement with Intel or your vendor.  This file may
+// be modified by the user, subject to additional terms of the
+// license agreement
+//
+// *++
+//
+// Copyright (c) 1999 - 2015 Intel Corporation. All rights reserved
+// This software and associated documentation (if any) is furnished
+// under a license and may only be used or copied in accordance
+// with the terms of the license. Except as permitted by such
+// license, no part of this software or documentation may be
+// reproduced, stored in a retrieval system, or transmitted in any
+// form or by any means without the express written consent of
+// Intel Corporation.
+//
+//
+// Module Name:
+//
+//   KtiCpu0DfxSetup.hfr
+//
+// Abstract:
+//
+//   KTI per-link DFX formset.
+//
+// Revision History:
+//
+// --*/
+
+#include <KtiSetupDefinitions.h>
+
+// good comment about ## here
+
+#define PERLINK_DFX_CONFIG(SKT, PRT) \
+  form formid = VFR_FID_KTI_DFX_CPU ## SKT ## _LINK ## PRT , \
+      title   = STRING_TOKEN(STR_KTI_DFX_CPU ## SKT ## _LINK ## PRT ); \
+      subtitle text = STRING_TOKEN(STR_KTI_DFX_CPU ## SKT ## _LINK ## PRT ); \
+      subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE); \
+      oneof varid = SOCKET_MP_LINK_CONFIGURATION.Cpu ## SKT ## P ## PRT ## DfxCrcMode, \
+          prompt  = STRING_TOKEN(STR_DFX_KTI_CRC_MODE), \
+          help    = STRING_TOKEN(STR_DFX_KTI_CRC_MODE_HELP), \
+          option text = STRING_TOKEN(STR_DFX_KTI_16BIT_CRC),     value = CRC_MODE_16BIT,         flags = RESET_REQUIRED; \
+          option text = STRING_TOKEN(STR_DFX_KTI_32BIT_ROLLING), value = CRC_MODE_ROLLING_32BIT, flags = RESET_REQUIRED; \
+          option text = STRING_TOKEN(STR_KTI_AUTO),              value = CRC_MODE_AUTO,          flags = RESET_REQUIRED | MANUFACTURING | DEFAULT; \
+      endoneof; \
+      oneof varid = SOCKET_MP_LINK_CONFIGURATION.Cpu ## SKT ## P ## PRT ## DfxL0pEnable, \
+          prompt  = STRING_TOKEN(STR_DFX_KTI_L0P), \
+          help    = STRING_TOKEN(STR_DFX_KTI_L0P_HELP), \
+          option text = STRING_TOKEN(STR_KTI_DISABLE),         value = KTI_DISABLE,  flags = RESET_REQUIRED; \
+          option text = STRING_TOKEN(STR_KTI_ENABLE),          value = KTI_ENABLE,   flags = RESET_REQUIRED; \
+          option text = STRING_TOKEN(STR_KTI_AUTO),            value = KTI_AUTO,     flags = RESET_REQUIRED | MANUFACTURING | DEFAULT; \
+      endoneof; \
+      oneof varid = SOCKET_MP_LINK_CONFIGURATION.Cpu ## SKT ## P ## PRT ## DfxL1Enable, \
+          prompt  = STRING_TOKEN(STR_DFX_KTI_L1), \
+          help    = STRING_TOKEN(STR_DFX_KTI_L1_HELP), \
+          option text = STRING_TOKEN(STR_KTI_DISABLE),         value = KTI_DISABLE,   flags = RESET_REQUIRED; \
+          option text = STRING_TOKEN(STR_KTI_ENABLE),          value = KTI_ENABLE,    flags = RESET_REQUIRED; \
+          option text = STRING_TOKEN(STR_KTI_AUTO),            value = KTI_AUTO,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT; \
+      endoneof; \
+      oneof varid = SOCKET_MP_LINK_CONFIGURATION.Cpu ## SKT ## P ## PRT ## DfxKtiFailoverEn, \
+          prompt  = STRING_TOKEN(STR_DFX_KTI_FAILOVER_ENABLE), \
+          help    = STRING_TOKEN(STR_DFX_KTI_FAILOVER_ENABLE_HELP), \
+          option text = STRING_TOKEN(STR_KTI_DISABLE), value = KTI_DISABLE, flags = RESET_REQUIRED; \
+          option text = STRING_TOKEN(STR_KTI_ENABLE),  value = KTI_ENABLE,  flags = RESET_REQUIRED; \
+          option text = STRING_TOKEN(STR_KTI_AUTO),    value = KTI_AUTO,    flags = RESET_REQUIRED | MANUFACTURING | DEFAULT; \
+      endoneof; \
+  endform;
+
+PERLINK_DFX_CONFIG(0,0)
+PERLINK_DFX_CONFIG(0,1)
+PERLINK_DFX_CONFIG(0,2)
+#if MAX_SOCKET > 1
+PERLINK_DFX_CONFIG(1,0)
+PERLINK_DFX_CONFIG(1,1)
+PERLINK_DFX_CONFIG(1,2)
+#endif
+#if MAX_SOCKET > 2
+PERLINK_DFX_CONFIG(2,0)
+PERLINK_DFX_CONFIG(2,1)
+PERLINK_DFX_CONFIG(2,2)
+#endif
+#if MAX_SOCKET > 3
+PERLINK_DFX_CONFIG(3,0)
+PERLINK_DFX_CONFIG(3,1)
+PERLINK_DFX_CONFIG(3,2)
+#endif
+#if MAX_SOCKET > 4
+PERLINK_DFX_CONFIG(4,0)
+PERLINK_DFX_CONFIG(4,1)
+PERLINK_DFX_CONFIG(4,2)
+#endif
+#if MAX_SOCKET > 5
+PERLINK_DFX_CONFIG(5,0)
+PERLINK_DFX_CONFIG(5,1)
+PERLINK_DFX_CONFIG(5,2)
+#endif
+#if MAX_SOCKET > 6
+PERLINK_DFX_CONFIG(6,0)
+PERLINK_DFX_CONFIG(6,1)
+PERLINK_DFX_CONFIG(6,2)
+#endif
+#if MAX_SOCKET > 7
+PERLINK_DFX_CONFIG(7,0)
+PERLINK_DFX_CONFIG(7,1)
+PERLINK_DFX_CONFIG(7,2)
+#endif

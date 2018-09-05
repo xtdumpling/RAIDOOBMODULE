@@ -1,0 +1,1074 @@
+##****************************************************************************
+##****************************************************************************
+##**                                                                        **
+##**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+##**                                                                        **
+##****************************************************************************
+##****************************************************************************
+#
+#  File History
+#
+#  Rev. 1.30
+#    Bug Fixed: Default enable TOKEN "PRESERVE_PASSWORDS" to presave password 
+#               when user update/downgrade Password.
+#    Reason   : Fix Password Preservation Test fail due to password did not preservation
+#    Auditor  : Van Lee
+#    Date     : Aug/07/2017
+#
+#
+#  Rev. 1.29
+#    Bug Fixed: Added "ONBORAD_LAN_DROP_CHECK" default token
+#    Reason   : 
+#    Auditor  : Stephen Chen
+#    Date     : Aug/01/2017
+#
+#  Rev. 1.28
+#    Bug Fixed: Default enable TOKEN "MAX_PERFORMANCE_OPTION"
+#    Reason   : 
+#    Auditor  : Jimmy Chiu
+#    Date     : Jul/19/2017
+#
+#  Rev. 1.27
+#    Bug Fixed: Remove Ctrl home feature.
+#    Reason   : 
+#    Auditor  : Chen Lin
+#    Date     : Jul/17/2017
+#
+#  Rev. 1.26
+#    Bug Fix : Fix secure default key can't enroll correctly.
+#    Reason  : 
+#    Auditor : Kasber Chen
+#    Date    : Jul/04/2017
+#
+#  Rev. 1.25
+#    Bug Fix : Disable SMC_MEM_PFA by default.
+#    Reason  : 
+#    Auditor : Chen Lin
+#    Date    : Jun/28/2017
+#
+#  Rev. 1.24
+#    Bug Fix : IDTP, ICDP refer "IPMI_KCS_DATA_PORT" for IPMI _CRS as ca2, ca3
+#    Reason  : 
+#    Auditor : Jimmy Chiu (Refer Greenlow - Sunny Yang)
+#    Date    : Jun/12/2017
+#
+#  Rev. 1.23
+#    Bug Fix : Del User Password when Admin Password del.
+#    Reason  : SMC Policy from Naples
+#    Auditor : Kasber Chen
+#    Date    : Jun/05/2017
+#
+#  Rev. 1.22
+#    Bug Fix : N/A
+#    Reason  : Added PC 0xB2 W/A for system stops at PXE option ROM.
+#              (Refer to Grangeville Trunk revision #32.)
+#    Auditor : Joe Jhang
+#    Date    : May/17/2017
+#
+#  Rev. 1.21
+#    Bug Fix:  Enable SMC_MEM_PFA.
+#    Reason:   
+#    Auditor:  Chen Lin
+#    Date:     Apr/17/2017
+#
+#  Rev. 1.20
+#    Bug Fix:  Remove CHIPSET_VERSION override.
+#    Reason:   
+#    Auditor:  Kasber Chen
+#    Date:     Mar/16/2017
+#
+#  Rev. 1.19
+#    Bug Fix:  Set VMD to PV version.
+#    Reason:   
+#    Auditor:  Kasber Chen
+#    Date:     Mar/10/2017
+#
+#  Rev. 1.18
+#    Bug Fix:  Disable BUILT_IN_SHELL_SUPPORT when ShellBinPkg_SUPPORT = 0
+#    Reason:   To avoid EFI shell boot still show in setup menu even disable ShellBinPkg_SUPPORT.
+#    Auditor:  Jacker Yeh
+#    Date:     Mar/08/2017
+#
+#  Rev. 1.17
+#    Bug Fix:   Add SMC_MEM_PFA token for SMC Memory Predictive Failure Analysis.  Disable it by default.
+#    Reason:   
+#    Auditor:  Chen Lin
+#    Date:     Feb/22/2017
+#
+#  Rev. 1.16
+#    Bug Fix:  Enable CHIPSET_VERSION for TXT when OFFICIAL_RELEASE == 1.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Feb/07/2017
+#
+#  Rev. 1.15
+#       Bug Fix:  Temporary set CHIPSET_VERSION = 0
+#       Reason:   System will keep reboot with QS PCH when CHIPSET_VERSION = 1 + H0 CPU,
+#                 older PCH no such symptom.
+#       Auditor:  Stephen Chen
+#       Date:     Jan/24/2017
+#
+#  Rev. 1.14
+#       Bug Fix:  1. Enhance SMC debug card function code.
+#       Reason:   
+#       Auditor:  Jacker Yeh
+#       Date:     Jan/21/2017
+#
+#  Rev. 1.13
+#       Bug Fix:  Don't restore boot settings when flashing BIOS.
+#       Reason:   
+#       Auditor:  Hartmann Hsieh
+#       Date:     Jan/19/2017
+#
+#  Rev. 1.12
+#       Bug Fix:     1. Default disable EIP290865_WORKAROUND since not able to see MCE bank 9/10/11 with latest code base.
+#       Reason:	     
+#       Auditor:     Jacker Yeh
+#       Date:        Jan/07/2017
+#
+#  Rev. 1.11
+#       Bug Fix:     Remove MAX_ADDITIONAL_P2P_BRIDGES override
+#       Reason:	     CRB.SDL set the value to 255.
+#       Auditor:     Stephen Chen
+#       Date:        Dec/30/2016
+#
+#  Rev. 1.10
+#       Bug Fix:     Change LOGO resolution to 1024 x 768.
+#       Reason:	     
+#       Auditor:     Kasber Chen
+#       Date:        Oct/28/2016
+#
+#  Rev. 1.09
+#       Bug Fix:     Add token to enable/disable EIP 290865 workaround.
+#       Reason:	     To patch Intel CPU bug cause MCE BANK 9/10/11 error when enter OS.
+#       Auditor:     Jacker Yeh
+#       Date:        Sep/12/2016
+#
+#  Rev. 1.08
+#       Bug Fix:     add CPLD version support
+#       Reason:	     Get CPLD version from BMC
+#       Auditor:     Sunny Yang
+#       Date:        Sep/01/2016
+#
+#  Rev. 1.07         Set TOKEN "LEGACY_TO_EFI_DEFAULT" to 1
+#       Bug fixed:   
+#       Reason:      
+#       Auditor:     Jimmy Chiu
+#       Date:        Aug/24/2016
+#
+#  Rev. 1.06         Fixed boot devices name cannot display in boot menu when set to LEGACY/UEFI mode problem.
+#       Bug fixed:   
+#       Reason:      
+#       Auditor:     Jacker Yeh
+#       Date:        Jul/25/2016
+#
+#  Rev. 1.05         Set TOKEN "DEFAULT_VIDEO_OPROM_POLICY", "DEFAULT_MASS_STORAGE_OPROM_POLICY",
+#                    "DEFAULT_PXE_OPROM_POLICY", "DEFAULT_OLD_OPROM_POLICY" to "3" for OPROM only 
+#                    controlled by SmcOpromCtrl module.
+#       Bug fixed:   
+#       Reason:      Set CSM OPROM policy to 3(all OpROMs are enabled).
+#       Auditor:     Jimmy Chiu
+#       Date:        Jun/21/2016
+#
+#  Rev. 1.04
+#       Bug fixed:   To fix system hang at PEI stage when enable debug mode and SmcRiserCard_SUPPORT problem.
+#       Reason:      
+#       Auditor:     Jacker Yeh
+#       Date:        Jun/18/2016
+#
+#  Rev. 1.03
+#       Bug fixed:   Add "Max Performance" option for always turbo feature.
+#       Reason:      Reference from Grantlley, control by TOKEN "MAX_PERFORMANCE_OPTION", default disabled.
+#       Auditor:     Jimmy Chiu
+#       Date:        May/16/2016
+#
+#  Rev. 1.02
+#       Bug fixed:   Fix build CRB BIOS fail after disable SMCPKG_Support
+#       Reason:      
+#       Auditor:     Salmon Chen
+#       Date:        Apr/21/2016
+#
+#  Rev. 1.01
+#       Bug fixed:   Define CMOS_CTRL_HOME_FLAG for CTRL+HOME support
+#       Reason:      From Grantley
+#       Auditor:     Jimmy Chiu
+#       Date:        Apr/20/2015
+#
+#  Rev. 1.00
+#       Bug fixed:   Initialize revision
+#       Reason:      Get base code from Grantley
+#       Auditor:     Salmon Chen
+#       Date:        Dec/01/2014
+#
+#****************************************************************************
+#****************************************************************************
+#      AMI module request list for SmcPkg
+#
+#    1.TSE source
+#    2.AmiGpnvErrorLoggingPkg and GpnvErrorLogging
+#    3.FixedBootOrder
+#    4.EFI OS BootOptionNames
+#    5.FfsIntegrityCheck
+#    6.HddSmart
+#    7.RtErrorLogGpnv
+#    8.UsbPei
+#
+#*****************************************************************************
+TOKEN
+	Name  = "SMCPKG_SUPPORT"
+	Value  = "1"
+	Help  = "The file is for common settings."
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "OFFICIAL_RELEASE"
+	Value  = "0"
+	Help  = "Switch token for official BIOS release. Please copy to your own project board to enable/disable it."
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SMC_SSID"
+	Value  = "0x15d9FFFF"
+	Help  = "This an example, Bit00-15: Vendor ID/Bit16-31:Device ID."
+	TokenType = Integer
+	TargetH = Yes
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "====== Tokens clone from Kernel default ======================"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "BIOS_VERSION"
+	Value  = "1.0                  "
+	Help  = "Identifies the major release of the System BIOS."
+        TokenType = Expression
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "BIOS_TAG"
+	Value  = "$(PROJECT_TAG)0000"
+	Help  = "BIOS Tag inserted into Firmware ID structure.\9 characters. \5 characters of project tag followed by 3 characters of project version and terminating zero"
+	TokenType = Expression
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PROJECT_MAJOR_VERSION"
+	Value  = "0x01"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PROJECT_MINOR_VERSION"
+	Value  = "0x00"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+ELINK
+	Name  = "SmcPkg/SmcPkg.dec"
+	Parent  = "AMI_CSP_PACKAGES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "SmcPkg/SmcPkg.dec"
+	Parent  = "AdditionalSetupPackages"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "gSmcPkgTokenSpaceGuid.PcdSmcCPLDRevision"
+	Parent  = "AdditionalSetupPcds"
+	InvokeOrder = AfterParent	
+End
+
+ELINK
+	Name  = "PcdLib"
+	Parent  = "AdditionalSetupLibraryClasses"
+	InvokeOrder = AfterParent
+End
+
+TOKEN
+	Name  = "T_ACPI_OEM_ID"
+	Value  = "SUPERM"
+	Help  = "ACPI OEM Id -\a string value to be filled into ACPI table headers"
+	TokenType = Expression
+	TargetMAK = Yes
+	TargetH = Yes
+	Range  = "1-6 characters"
+End
+
+TOKEN
+	Name  = "T_ACPI_OEM_TBL_ID"
+	Value  = "SMCI--MB"
+	Help  = "ACPI OEM Id -\a string value to be filled into ACPI table headers"
+	TokenType = Expression
+	TargetMAK = Yes
+	TargetH = Yes
+	Range  = "1-8 characters"
+End
+
+TOKEN
+	Name  = "CLEAN_ERROR_LOG_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable Clean Gpnv Error Log support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "SecureMod_SUPPORT"
+	Value  = "0"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FULL_VERTICAL_MAIN_DIVIDER"
+	Value  = "(UINT8)(STYLE_FULL_MAX_COLS*69/100)"
+	Help  = "Vertical divider (border) position between the MainFrame window and (helper and Navigation) frame windows."
+	TokenType = Expression
+	TargetH = Yes
+		
+End
+
+TOKEN
+	Name  = "FULL_HORIZONTAL_HELP_DIVIDER"
+	Value  = "(UINT8)((STYLE_FULL_MAX_ROWS+7)/2)"
+	Help  = "Horizontal divider (border) position between Help and Navigation frame windows."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FULL_STYLE_CONTROL_LEFT_MARGIN"
+	Value  = "42"
+	Help  = "Control column left margin in full screen mode"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "STYLE_CONTROL_LEFT_MARGIN"
+	Value  = "30"
+	Help  = "Control column left margin"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TSE_SUPPORT_NATIVE_RESOLUTION"
+	Value  = "0"
+	Help  = "Sets the graphics mode for quiet boot from EDID. 1 - Defaultly enable make 0 to disable the feature"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "GC_MODE0"
+	Value  = "{ 0, 80, 25, 1024, 768 }"
+	Help  = "Parameters of the graphical console text mode 0.\NOTE: Text resolution of the mode 0 must be 80 by 25\Format: {ModeNumber, TextColomns,TextRows, HorizontalPixels,VerticalPixels}"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+PcdMapping
+	Name  = "PcdRecoveryImageSize"
+	GuidSpace  = "gAmiModulePkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	DataType  = "Uint32"
+	Value  = "$(BIOS_SIZE)"
+	Offset  = 00h
+	Length  = 04h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdRecoveryImageName"
+	GuidSpace  = "gAmiModulePkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+    	DataType  = "Pointer"	
+	Value  = '"SUPER.ROM"'
+	Offset  = 00h
+	Length  = 01ah
+	TargetDSC = Yes
+End
+
+TOKEN
+	Name  = "IPMI_SEPARATE_DXE_SMM_INTERFACES"
+	Value  = "1"
+	Help  = "If turned on, enables separate interfaces/protocols for DXE and SMM use.  ACPI and SMBIOS tables will reflect DXE interface. This is enabled only for KCS interface"
+	TOKEN = "IPMI_SYSTEM_INTERFACE" "=" "$(KCS_INTERFACE)"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "IPMI_KCS_SMM_BASE_ADDRESS"
+	Value  = "0xCA4"
+	Help  = "BMC SMM Base Address"
+	TOKEN = "IPMI_SEPARATE_DXE_SMM_INTERFACES" "!=" "0"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name = "IPMI_SMM_KCS_DATA_PORT"
+	Value  = "$(IPMI_KCS_SMM_BASE_ADDRESS)+0"
+	Help = "SMM KCS BMC Data port Address"
+	TOKEN = "IPMI_SEPARATE_DXE_SMM_INTERFACES" "!=" "0"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "IPMI_SMM_KCS_COMMAND_PORT"
+	Value  = "$(IPMI_KCS_SMM_BASE_ADDRESS)+1"
+	Help  = "SMM KCS BMC command port Address"
+	TOKEN = "IPMI_SEPARATE_DXE_SMM_INTERFACES" "!=" "0"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "IDTP"
+	Value  = "$(IPMI_KCS_DATA_PORT)"
+	Help  = "Aligned base address for IPMI KCS Data Port."
+	TokenType = Integer
+	TargetASL = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "ICDP"
+	Value  = "$(IPMI_KCS_COMMAND_PORT)"
+	Help  = "Aligned base address for IPMI KCS Command Port."
+	TokenType = Integer
+	TargetASL = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "IpmiRedirFru_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable IpmiRedirFru support in Project"
+	TokenType = Boolean
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "PeiFrb_SUPPORT"
+	Value  = "0"
+	Help  = "Switch for Enabling PeiFrb support in the project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "DxeFrb_SUPPORT"
+	Value  = "0"
+	Help  = "Switch for Enabling DxeFrb support in the project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "FRU_DEVICE_ID"
+	Value  = "0x01"
+	Help  = "Device ID of FRU that has Manufacturer, Base Board & Chassis info for SMBIOS."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "IPMI_KCS_SHORT_DELAY_PER_RETRY"
+	Value  = "500"
+	Help  = "IPMI_KCS_DELAY_PER_RETRY is given as argument for MicroSecondDelay function in KcsBmc.c file.MicroSecondDelay(1) = 1us delay. By default, delay is given as 5ms."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "OEM_MANF_ID"
+	Value  = "0x2A7C"
+	Help  = "Manufacturer ID of OEM in IPMI 'Get Device ID' command. This is same as 'Enterprise Numbers' from IANA website. Default value: 0x51EE (AMI)."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "BmcUserSettings_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable BmcUserSettings support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = BMC_LAN_COUNT
+	Value  = "1"
+	TokenType = Integer
+	TargetH = Yes
+        Range  = "1-2"
+	Help  = "Number of LAN ports available for BMC use"
+End
+
+TOKEN
+	Name  = "DEFAULT_VIDEO_OPROM_POLICY"
+	Value  = "3"
+	Help  = "Default value of Launch Video OpROM policy setup control"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0 - Do not launch, 1 - Launch UEFI OpROM only, 2 - Launch Legacy OpROM only, 3 - Launch Legacy before UEFI, 4 - Launch Legacy after UEFI"
+End
+
+TOKEN
+	Name = "FORCE_COMMON_MODE_FOR_DEVICES"
+	Value = "0"
+	TokenType = Boolean
+	Help = "As the console splitter binds on top of additional devices this token will force all devices to operate in a common mode.
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "DEFAULT_MASS_STORAGE_OPROM_POLICY"
+	Value  = "3"
+	Help  = "Default value of Launch Storage OpROM policy setup control"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0 - Do not launch, 1 - Launch UEFI OpROM only, 2 - Launch Legacy OpROM only, 3 - Launch Legacy before UEFI, 4 - Launch Legacy after UEFI"
+End
+
+TOKEN
+	Name  = "DEFAULT_PXE_OPROM_POLICY"
+	Value  = "3"
+	Help  = "Default value of Launch PXE OpROM policy setup control"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0 - Do not launch, 1 - Launch UEFI OpROM only, 2 - Launch Legacy OpROM only, 3 - Launch Legacy before UEFI, 4 - Launch Legacy after UEFI"
+End
+
+TOKEN
+	Name  = "DEFAULT_OLD_OPROM_POLICY"
+	Value  = "3"
+	Help  = "Default value of Launch OLD OpROM policy setup control"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0 - Do not launch, 1 - Launch UEFI OpROM only, 2 - Launch Legacy OpROM only, 3 - Launch Legacy before UEFI, 4 - Launch Legacy after UEFI"
+End
+
+TOKEN
+	Name  = "LOAD_DEFAULTS_ON_CMOS_CLEAR"
+	Value  = "1"
+	Help  = "Project level control to enable or disable setup page ordering.  If enabled all top level pages must be reported through child elinks of AMITSE_ROOT_PAGE_ORDER, otherwise they will not appear in AMITSE"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SETUP_PASSWORD_NON_CASE_SENSITIVE"
+	Value  = "0"
+	Help  = "Allow to use of case sensitive password. Note:This token should be OFF with SETUP_STORE_KEYCODE_PASSWORD value 1 or 2."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SERIAL_STATUS_SUPPORT"
+	Value  = "0"
+	Help  = "Enables/Disables serail port status code routine"
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "DEBUG_MODE" "=" "0"
+End
+
+TOKEN
+	Name  = "DEFAULT_SMART_SELFTEST"
+	Value  = "1"
+	Help  = "Default setup value of HDD SMART status check:\1 - Check SMART status during POST\0 - Do not Check SMART status during POST "
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "DEFAULT_STRING"
+	Value  = "To be filled by O.E.M."
+	Help  = "Default unported strings in Smbios static table"
+	TokenType = Expression
+End
+
+TOKEN
+    Name  = "DBT_include"
+    Value  = "1"
+    TokenType = Boolean
+    TargetMAK = Yes
+    TargetFDF = Yes
+End
+
+TOKEN
+    Name  = "DBR_include"
+    Value  = "1"
+    TokenType = Boolean
+    TargetMAK = Yes
+    TargetFDF = Yes
+End
+
+TOKEN
+    Name  = "Certificates_SUPPORT"
+    Value  = "0"
+    Help  = "Main switch to enable build rules to create secure variables in Project"
+    TokenType = Boolean
+    TargetMAK = Yes
+    TargetH = Yes
+End
+
+TOKEN
+	Name  = "********** Boot Order Settings **********"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "DISPLAY_FULL_OPTION_NAME_WITH_FBO"
+	Value  = "0"
+	Help  = "Display full boot option name with Fixed Boot Order, such as: Windows Boot Manager(P0 DeviceName)."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FBO_DUAL_MODE"
+	Value  = "1"
+	Help  = "1 = Legacy/Uefi mix display."
+	TokenType = Boolean
+	TargetH = Yes
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "LEGACY_TO_EFI_DEFAULT"
+	Value  = "1"
+	Help  = "Default setting for legacy to EFI feature.\Enabled: legacy boot options can be mixed with UEFI. Disabled: if legacy boot fails, next boot attempts are limited to legacy devices only - no UEFI boot will be tried."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "USE_BCP_DEFAULT_PRIORITIES"
+	Value  = "1"
+	Help  = "1 => Use file .sd BcpDefaultPriorities[] set default boot sequence."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SHELL_GROUP_SUPPORT"
+	Value  = "1"
+	Help  = "1 = Shell Group Support 0 = Shell Grop Not Support."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "BcpBootOrder_SUPPORT"
+	Value = "0"
+	Help  = "Main switch to enable BcpBootOrder support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes    
+End
+
+TOKEN
+	Name  = "POPUP_MENU_SHOW_ALL_BBS_DEVICES"
+	Value  = "1"
+	Help  = "1 => Shows all BBS devices in BBS POPup menu. 0 => Shows only the first device of a BBS type in BBS POPUP menu."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SETUP_SHOW_ALL_BBS_DEVICES"
+	Value  = "1"
+	Help  = "1 => Shows all BBS devices in boot override menu. 0 => Shows only the first device of a BBS type in override menu."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SETUP_SUPPORT_ADD_BOOT_OPTION"
+	Value  = "1"
+	Help  = "Set to enable Add/Delete boot option."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "BOOT_FLOW_NORMAL_LAUNCH_DEFAULT_BOOTIMAGE"
+	Value = "0"
+	Help  = "Support for UEFI specification v 2.3.1 section 3.4.1.1 and 3.4.1.2 to load the default boot image (efi\boot\boot####.efi) from any of the available file system if no boot option found. 1 = Enabling default image boot and 0 = Disabling default image boot."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "BOOT_FLOW_NORMAL_INFINITE_LOOP"
+	Value = "1"
+	Help  = "1 = TSE tries to loads all the boot options and all fails checks for SETUP_ENTRY keys if found then enters the setup else TSE tries to load all the boot options once again and continues the mentioned procedure infinitely and 0 = Neglects the SETUP_ENTRY key check, always tries to load all the boot options infinitely."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SETUP_HIDE_DISABLE_BOOT_OPTIONS"
+	Value  = "1"
+	Help  = "1 => Hide the disabled boot options in boot override menu. 0 => Shows all boot options boot override menu."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "POPUP_MENU_HIDE_DISABLE_BOOT_OPTIONS"
+	Value  = "1"
+	Help  = "1 => Hide the disabled boot options in BBS POPup menu. 0 => Shows all boot options in BBS POPup menu."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+    Name  = "RESTORE_FBO_VARIABLES"
+    Value = "0"
+    Help  = "Enable Restore Fixed Boot Order module related variables"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+	Name  = "BUILT_IN_SHELL_SUPPORT"
+	Value  = "0"
+	Help  = "This SDL token defines if built-in Shell is supported in the project.\It controls installation of the boot option for a built-in Shell."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "ShellBinPkg_SUPPORT" "=" "0"
+End
+
+TOKEN
+	Name  = "********** Other **********"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "DEFCFG_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling AFU Default Command Configuration support in the project"
+	TokenType = Boolean
+	Token = "OFBD_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name      = "SMC_ONBOARD_LAN_DID1"
+	Value     = "0xFFFF"
+	Help      = "Smc Onboard Lan Option Rom Agent Did"
+	TokenType = Integer
+	TargetH   = Yes
+	Range     = "2 byte length"
+End
+
+TOKEN
+	Name      = "SMC_ONBOARD_LAN_DID2"
+	Value     = "0xFFFF"
+	Help      = "Smc Onboard Lan Option Rom Agent Did"
+	TokenType = Integer
+	TargetH   = Yes
+	Range     = "2 byte length"
+End
+
+TOKEN
+	Name  = "ALWAYS_PUBLISH_HII_RESOURCES"
+	Value  = "1"
+	Help  = "This token controls loading of the Setup related HII resources \(setup screens and strings). If this token is ?? setup resources are \only published into HII database if the user enters setup. If \this token is ?? setup resources are always published into the HiiDatabase. Keep it off for speed \optimization.  Set it to on if Runtime resources processing support is required."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "********** SMC Setting **********"
+	TokenType = Expression
+End
+
+#TOKEN
+#	Name  = "CMOS_CTRL_HOME_FLAG"
+#	Value  = "0x5D"
+#	Help = "CMOS Flag to save ctrl+home status for BIOS force recovery function."
+#	TokenType = Integer
+#	TargetEQU = Yes
+#	TargetH = Yes
+#End
+
+LibraryMapping
+       Class  = "NULL"
+       Instance  = "SmcPkg.SmcLib"
+       Override  = "AmiIpmiPkg.DxeIpmiInitialize"
+End
+
+TOKEN
+	Name  = "NVME_SETUP"
+	Value  = "0"
+	Help  = "Enable if NVMe setup controls from NVME eModule needs to be displayed in setup"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "MAX_PERFORMANCE_OPTION"
+	Value  = "1"
+	Help  = "Enable/Disable Max Performance option of setup item Power Technology "
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+PcdMapping
+	Name  = "PcdPeiCoreMaxPeimPerFv"
+	GuidSpace  = "gEfiMdeModulePkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	DataType  = "Uint32"
+	Value  = "100"
+	Override  = "MdeModulePkg.PeiMain"
+	Offset  = 00h
+	Length  = 04h
+	TargetDSC = Yes
+End
+
+TOKEN
+	Name  = "SMC_DEBUG_ADDRESS"
+	Value  = "0xFED40F80"
+	Help  = "Memory address for X11 DP debug card"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes	
+End
+
+TOKEN
+    Name  = "PRESERVE_PASSWORDS"
+    Value  = "1"
+    Help  = "1 - Preserve passwords through flashing. 0 - Do not preserve passwords."
+    TokenType = Boolean
+    TargetMAK = Yes
+    TargetH = Yes
+End
+
+TOKEN
+	Name  = "********** SMBIOS **********"
+	TokenType = Expression
+End
+
+TOKEN
+    Name  = "SMBIOS_DYNAMIC_UPDATE_TPL"
+    Value  = "16"
+    Help  = "SmbiosDynamicUpdate callback registration level \8 = TPL_CALLBACK \16 = TPL_NOTIFY"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+	Name  = "********** Workaround **********"
+	TokenType = Expression
+End
+
+TOKEN
+    Name  = "EIP290865_WORKAROUND"
+    Value  = "0"
+    Help  = "Token to enable EIP 290865 workaround to patch MCE Bank 9/10/11."
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetMAK = Yes    
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "B2_WORKAROUND_SUPPORT"
+    Value  = "0"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+        Name  = "ONBORAD_LAN_DROP_CHECK"
+        Value  = "0"
+        TokenType = Boolean
+        TargetH = Yes
+End
+
+TOKEN
+	Name  = "SMC_SETUP_STYLE"
+	Value  = "1"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SMC_MEM_PFA"
+	Value  = "0"
+	Help  = "SMC Memory Predictive Failure Analysis "
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "GetCpuInfo_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable GetCpuInfo support in Project"
+	TokenType = Boolean
+	Token = "SMC_SETUP_STYLE" "=" "1"
+End
+
+TOKEN
+        Name = "CHOOSE_TPM_STACK_QUESTION"
+        Value  = "0"
+        Help  = "Question to Shoe TPM 1.2 or 2.0 question"
+        TokenType = Boolean
+        TargetEQU = Yes
+        TargetH   = Yes
+        TargetMAK = Yes
+        Token = "SMC_SETUP_STYLE" "=" "1"
+End
+
+TOKEN
+	  Name  = "TSE_CLEAR_USERPW_WITH_ADMINPW"
+	  Value  = "1"
+	  Help  = "Support to clear the User password if Admin password is empty"
+	  TokenType = Boolean
+	  TargetEQU = Yes
+	  TargetH = Yes
+End
+
+ELINK
+	Name  = "$(Setup_DIR)/AmiBiosInfo.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	InvokeOrder = BeforeParent
+	Disable = Yes
+	Token = "SMC_SETUP_STYLE" "=" "1"
+End
+
+ELINK
+	Name  = "$(NB_BOARD_DIR)/Nb.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	InvokeOrder = AfterParent
+	Disable = Yes
+	Token = "SMC_SETUP_STYLE" "=" "1"
+End
+
+ELINK
+	Name  = "$(PCIBUS_DIR)/PciStaticSetup.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	InvokeOrder = AfterParent
+	Token = "SMC_SETUP_STYLE" "=" "1"
+End
+
+ELINK
+	Name  = "$(AST2500_DIR)\AST2500Setup.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	InvokeOrder = AfterParent
+	Token = "SIO_SETUP_USE_APTIO_4_STYLE" "=" "1"
+	Token = "SMC_SETUP_STYLE" "=" "1"
+End
+
+ELINK
+	Name  = "$(TERMINAL_DIR)/Terminal.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	InvokeOrder = AfterParent
+	Token = "SMC_SETUP_STYLE" "=" "1"
+End
+
+ELINK
+	Name  = "$(ACPI_BOARD_DIR)/ACPI.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	InvokeOrder = AfterParent
+	Token = "SMC_SETUP_STYLE" "=" "1"
+End
+
+ELINK
+	Name  = "$(TCG_SETUP_DIR)\TcgSetup.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	InvokeOrder = AfterParent
+	Token = "SMC_SETUP_STYLE" "=" "1"
+End
+
+ELINK
+	Name  = "$(Setup_DIR)/AmiTse.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	Token = "AMITSE_SUPPORT" "=" "1"
+	Token = "SMC_SETUP_STYLE" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "{  { 0xec87d643, 0xeba4, 0x4bb5, 0xa1, 0xe5, 0x3f, 0x3e, 0x36, 0xb2, 0xd, 0xa9 }, VFR_FORMID_INTELRCSETUP, NULL},"
+	Parent  = "{ SETUP_ROOT_PAGE_ORDER_GUID, BOOT_FLOW_CONDITION_NORMAL, NULL},"
+	Priority  = 12
+	InvokeOrder = AfterParent
+	Disable = Yes
+	Token = "SMC_SETUP_STYLE" "=" "1"
+End
+
+ELINK
+	Name  = "{  { 0x516d5a04, 0xc0d5, 0x4657, 0xb9, 0x8, 0xe4, 0xfb, 0x1d, 0x93, 0x5e, 0xf0 }, VFR_FORMID_SOCKET, NULL},"
+	Parent  = "{ SETUP_ROOT_PAGE_ORDER_GUID, BOOT_FLOW_CONDITION_NORMAL, NULL},"
+	Priority  = 12
+	InvokeOrder = AfterParent
+	Disable = Yes
+	Token = "SMC_SETUP_STYLE" "=" "1"
+End
+
+ELINK
+        Name  = "$(Setup_DIR)/AmiBootOrder.sd"
+        Parent  = "SETUP_DEFINITIONS"
+        InvokeOrder = BeforeParent
+        Disable = Yes
+End
+
+ELINK
+        Name  = "$(DefaultFixedBootOrder_DIR)/FboSetupPages.sd"
+        Parent  = "$(Setup_DIR)/AmiBootOrder.sd"
+        InvokeOrder = ReplaceParent
+        Disable = Yes
+End
+
+ELINK
+        Name  = "$(DefaultFixedBootOrder_DIR)/FboSetupPages.sd"
+        Parent  = "SETUP_DEFINITIONS"
+        InvokeOrder = AfterParent
+End
+

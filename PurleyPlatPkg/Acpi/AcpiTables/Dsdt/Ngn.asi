@@ -1,0 +1,527 @@
+//****************************************************************************
+//**                                                                        **
+//**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+//**                                                                        **
+//****************************************************************************
+//  File History
+//
+//  Rev. 1.00
+//    Bug Fix:  Fix _DSM failed.
+//    Reason:   
+//    Auditor:  Leon Xu
+//    Date:     Apr/25/2017
+//
+//****************************************************************************
+
+/*++
+  This file contains 'Framework Code' and is licensed as such
+  under the terms of your license agreement with Intel or your
+  vendor.  This file may not be modified, except as allowed by
+  additional terms of your license agreement.
+--*/
+/*++
+
+Copyright (c) 2016 Intel Corporation. All rights reserved
+This source code and any documentation accompanying it ("Material") is furnished
+under license and may only be used or copied in accordance with the terms of that
+license.  No license, express or implied, by estoppel or otherwise, to any
+intellectual property rights is granted to you by disclosure or delivery of these
+Materials.  The Materials are subject to change without notice and should not be
+construed as a commitment by Intel Corporation to market, license, sell or support
+any product or technology.  Unless otherwise provided for in the license under which
+this Material is provided, the Material is provided AS IS, with no warranties of
+any kind, express or implied, including without limitation the implied warranties
+of fitness, merchantability, or non-infringement.  Except as expressly permitted by
+the license for the Material, neither Intel Corporation nor its suppliers assumes
+any responsibility for any errors or inaccuracies that may appear herein.  Except
+as expressly permitted by the license for the Material, no part of the Material
+may be reproduced, stored in a retrieval system, transmitted in any form, or
+distributed by any means without the express written consent of Intel Corporation.
+
+
+Module Name:
+
+  Ngn.asi
+
+Abstract:
+
+  NGN specific initialization
+
+--*/
+
+// Used to generate NVD entry for each DIMM
+#define  NVD_ENTRY(socket, channel, dimm)                        \
+  Device (N##socket##channel##dimm) {                            \
+    Method (_ADR, 0) {                                           \
+      Store (0x##socket##0##channel##dimm, Local0)               \
+      if (LGreater (channel, 2)) {                               \
+        Store (channel, Local1)                                  \
+        Subtract (Local1, 3, Local1)                             \
+        ShiftLeft (Local1, 4, Local1)                            \
+        And (Local0, 0xFF0F, Local0)                             \
+        Or (Local0, Local1, Local0)                              \
+        Or (Local0, 0x100, Local0)                               \
+      }                                                          \
+      Return (Local0)                                            \
+    }                                                            \
+    Method (_DSM, 4, Serialized) {                               \
+      if (LEqual (AEPP, 1)) {                                    \
+        Return (NVDD (Arg0, Arg1, Arg2, Arg3, _ADR))             \
+      } else {                                                   \
+        Return (JNVD (Arg0, Arg1, Arg2, Arg3, _ADR))             \
+      }                                                          \
+    }                                                            \
+  }
+
+// Generates an NVD entry for each DIMM on the particular channel
+// MAX_DIMM = 2
+#define  DIMM_LIST(socket, channel) \
+  NVD_ENTRY (socket, channel, 0)    \
+  NVD_ENTRY (socket, channel, 1)
+
+// Generates entries for each channel on the socket
+// MAX_CH = 6
+#define  CHANNEL_LIST(socket) \
+  DIMM_LIST (socket, 0)       \
+  DIMM_LIST (socket, 1)       \
+  DIMM_LIST (socket, 2)       \
+  DIMM_LIST (socket, 3)       \
+  DIMM_LIST (socket, 4)       \
+  DIMM_LIST (socket, 5)
+
+#define NVDIMM_NOTIFY(socket, channel, dimm)          \
+  If(LNotEqual(NVDP(socket, channel, dimm), 0x00)) {  \
+    Notify(\_SB.NVDR.N##socket##channel##dimm, 0x81)  \
+  }
+
+#define DIMM_NOTIFY_LIST(socket, channel) \
+  NVDIMM_NOTIFY (socket, channel, 0)      \
+  NVDIMM_NOTIFY (socket, channel, 1)
+
+#define CHANNEL_NOTIFY_LIST(socket)   \
+  DIMM_NOTIFY_LIST (socket, 0)        \
+  DIMM_NOTIFY_LIST (socket, 1)        \
+  DIMM_NOTIFY_LIST (socket, 2)        \
+  DIMM_NOTIFY_LIST (socket, 3)        \
+  DIMM_NOTIFY_LIST (socket, 4)        \
+  DIMM_NOTIFY_LIST (socket, 5)
+
+#define NVDIMM_NOTIFY_LIST  \
+  CHANNEL_NOTIFY_LIST (0)   \
+  CHANNEL_NOTIFY_LIST (1)   \
+  CHANNEL_NOTIFY_LIST (2)   \
+  CHANNEL_NOTIFY_LIST (3)   \
+  CHANNEL_NOTIFY_LIST (4)   \
+  CHANNEL_NOTIFY_LIST (5)   \
+  CHANNEL_NOTIFY_LIST (6)   \
+  CHANNEL_NOTIFY_LIST (7)
+
+  Method (NVDP, 3, Serialized) { 
+    // Arg0: socket  0-3
+    // Arg1: channel 0-5
+    // Arg2: dimm    0-1
+    Add (Multiply (ToInteger (Arg0), 16), Multiply (ToInteger (Arg1), 2), Local0)
+    Add (Local0, ToInteger (Arg2), Local0)
+    if (LGreater (ToInteger (Arg0), 3)) {
+      ShiftRight (DBM1, Subtract (Local0, 64), Local0)
+    } else {
+      ShiftRight (DBM0, Local0, Local0)
+    }
+    if (LEqual (And (Local0, 0x01), 0x00)) {
+      Return(0x00)
+    } else {
+      Return(0x0F)
+    }
+  }
+
+  // NVDIMM Health Event Notify
+  Method (NVHN, 0) {
+    NVDIMM_NOTIFY_LIST
+  }
+
+  // AEP NVD _DSM functionality
+  Method (NVDD, 5, Serialized) {
+    // CR commands supported
+    // Function Index 1 - SMART and Health Info
+    // Input - NULL
+    // Output - 132 bytes (Status - 4 bytes, SMART and Health Data - 128 bytes)
+    // Function Index 2 - Get SMART Threshold
+    // Input - NULL
+    // Output - 12 bytes (Status - 4 bytes, SMART Threshold Data - 8 bytes)
+    // Function Index 3 - Get Block NVDIMM Flags
+    // Input - NULL
+    // Output - 8 bytes (Status - 4 bytes, NVDIMM Flags - 4 bytes)
+    // Function Index 4 - Get Namespace Label Size
+    // Input - NULL
+    // Output - 12 bytes (Status - 4 bytes, Size of Namespace Label Area - 4 bytes, Max Namespace Label Data Length)
+    // Function Index 5 - Get Namespace Label Data
+    // Input - 8 bytes (Offset - 4 bytes, Length - 4 bytes)
+    // Output - 4 bytes + buffer size (Status - 4 bytes, Data in Namespace Label Data Area - buffer size)
+    // Function Index 6 - Set Namespace Label Data
+    // Input - 8 bytes + buffer size (Offset - 4 bytes, Length - 4 bytes, Namespace Data - buffer size)
+    // Output - 4 bytes (Status - 4 bytes)
+    // Function Index 7 - Get Vendor Specific Command Effect Log Size
+    // Input - NULL
+    // Output - 8 bytes (Status - 4 bytes, Max Command Effect Log Data Length - 4 bytes)
+    // Function Index 8 - Get Vendor Specific Command Effect Log
+    // Input - NULL
+    // Output - 8 bytes + buffer size (Status - 4 bytes, Opcode Count - 2 bytes, Reserved - 2 bytes, Command Effect Data - buffer size)
+    // Function Index 9 - Vendor Specific Command
+    // Input - 8 bytes + buffer size (OpCode - 4 bytes, OpCode Paramaters Data Length - 4 bytes, OpCode Paramaters Data - buffer size)
+    // Output - 8 bytes + buffer size (Status - 4 bytes, Output Data Length - 4 bytes, Output Data - buffer size)
+
+
+    If (LEqual (Arg0, ToUUID ("4309AC30-0D11-11E4-9191-0800200C9A66"))) { // Make sure correct UUID
+      If (LEqual (ToInteger (Arg1), 1)) {                                 // Make sure revision is 1
+        If (LEqual (ToInteger (Arg2), 0)) {
+          // Return bitmap of supported functions
+          Return (Buffer() {0xFF, 0x03})
+        }
+
+        // Only process the supported function indexes
+        If (LLess (ToInteger (Arg2), 10)) {
+          // Store Function Index and NFIT Device Handle
+          Store (ToInteger (Arg2), FUNI)
+          Store (ToInteger (Arg4), NFHD)
+
+          // Map Arg3 into separate elements of structure
+          If (LOr (LEqual (FUNI, 5), LEqual (FUNI, 6))) {
+            // Function Index 5 - Get Namespace Label Data
+            // Function Index 6 - Set Namespace Label Data
+            CreateDwordField (DeRefOf (Index (Arg3, 0)), 0x00, BOFF)  // Buffer Offset
+            CreateDwordField (DeRefOf (Index (Arg3, 0)), 0x04, BLEN)  // Buffer Length
+            Store (BOFF, INPO)
+            Store (BLEN, INPL)
+            If (LEqual (FUNI, 6)) {
+              CreateField (DeRefOf (Index (Arg3, 0)), 0x40, Multiply (BLEN, 8), IBUF) // Input buffer
+              Mid (IBUF, 0, BLEN, INPB)
+            }
+          } Else {
+            If (LEqual (FUNI, 9)) {
+              // Function Index 9 - Vendor Specific Command
+              CreateDwordField (DeRefOf (Index (Arg3, 0)), 0x00, OPCD)                // OpCode
+              CreateDwordField (DeRefOf (Index (Arg3, 0)), 0x04, OPDL)                // OpCode Parameters Data Length
+              CreateField (DeRefOf (Index (Arg3, 0)), 0x40, Multiply (OPDL, 8), OPDB) // OpCode Parameters Data
+              Store (OPCD, INOC)
+              Store (OPDL, INPL)
+              Mid (OPDB, 0, OPDL, INPB)
+            }
+          }
+
+          // Generate SMI
+          Store (0xFC, \_SB.SMIC)
+
+          // Create Return Buffer
+          If (LEqual (FUNI, 9)) {
+            // If Function Index 9, then we need to include Output Length & Status in the Output Buffer
+            Name (RETA, Buffer (Add (OUTL, 8)) {} )
+
+            // Update Status
+            CreateDwordField (RETA, 0x00, STAA) // Status
+            Store (NFST, STAA)
+
+            CreateDwordField (RETA, 0x04, OPLN) // Output Length
+            Store (OUTL, OPLN)
+
+            // Copy buffer
+            If (LNotEqual (OUTL, 0)) {
+              CreateField (RETA, 0x40, Multiply (OUTL, 8), DATA)
+              Mid (OUTB, 0, OUTL, DATA)
+            }
+
+            // Return buffer
+            Return (RETA)
+          }
+          else {
+            Name (RETB, Buffer (Add (OUTL, 4)) {} )
+
+            // Update Status
+            CreateDwordField (RETB, 0x00, STAT) // Status
+            Store (NFST, STAT)
+
+            // Copy buffer
+            If (LNotEqual (OUTL, 0)) {
+              CreateField (RETB, 0x20, Multiply (OUTL, 8), DATB)
+              Mid (OUTB, 0, OUTL, DATB)
+            }
+
+            // Return buffer
+            Return (RETB)
+          }
+        }
+        Return (Buffer() {0x01}) // Indicate command not supported
+      }
+    }
+    Return (Buffer() {0x03}) // Indicate invalid input parameter (this value is different for root and NVDIMM)
+  }
+
+  // JEDEC NVD _DSM functionality
+  Method (JNVD, 5, Serialized) {
+    // CR commands supported
+    // Arg0: DSM GUID Supported
+    // Arg1: Revision
+    // Arg2: Function Index
+    // Arg3: Input Buffer
+    // Arg4: _ADR in a form of 0x##socket##0##channel##dimm
+    // RETA: Returned Buffer
+
+    // _DSM Interface for Byte Addressable Energy Backed Function Class, Function Interface 1
+    If (LEqual (Arg0, ToUUID ("1EE68B36-D4BD-4a1a-9A16-4F8E53D46E05"))) {   // Make sure correct UUID
+      If (LEqual (ToInteger (Arg1), 1)) {                                  // Make sure revision is 1
+        If (LEqual (ToInteger (Arg2), 0)) {
+          Return (Buffer() {0xff, 0xff, 0xff, 0xff})
+        }
+
+        // Only process the supported function indexes
+        If (LLess (ToInteger (Arg2), 32)) {
+          // Store Function Index and NFIT Device Handle (DIMM location)
+          Store (ToInteger (Arg4), NFHD)            // Store ADR handler
+          Store (ToInteger (Arg2), FUNI)            // Store Function Index
+
+          Store (0xFEC20340, Local0)                // Store all SET functions
+          Store (0x00000001, Local1)
+          ShiftLeft (Local1, FUNI, Local1)
+
+          And (Local0, Local1, Local0)
+          If (LGreater(Local0, 0)) {
+// SMCPKG_SUPPORT Remove it 	Store (ToInteger (Arg3), INPL)          // Store input length
+// SMCPKG_SUPPORT > +
+// Based on Microsoft _DSM spec.
+// https://msdn.microsoft.com/en-us/library/windows/hardware/mt604741(v=vs.85).aspx
+            Switch(ToInteger(Arg2)) {
+               Case(6) {
+                  Store (1, INPL)
+               }
+
+               Case(8) {
+                  Store (1, INPL)
+               }
+
+               Case(9) {
+                  Store (1, INPL)
+               }
+
+               Case(17) {
+                  Store (4, INPL)
+               }
+
+               Case(22) {
+                  Store (1, INPL)
+               }
+
+               Case(23) {	// Send Firmware Update Data (Function Index 23)
+                  CreateDwordField (DeRefOf (Index (Arg3, 0)), 0x00, BLEN)  // Firmware Data Length
+                  Add (BLEN, 7, INPL)	// FW data length + 4 (Region Length) + 2 (Region ID) + 1 (Block ID)
+               }
+
+               Case(25) {
+                  Store (1, INPL)
+               }
+               
+               Case(26) {
+                  Store (1, INPL)
+               }
+
+               Case(27) {
+                  Store (2, INPL)
+               }
+
+               Case(28) {
+                  Store (3, INPL)
+               }
+
+               Case(29) {
+                  Store (4, INPL)
+               }
+
+               Case(30) {
+                  Store (36, INPL)
+               }
+               
+               Case(31) {
+                  Store (2, INPL)
+               }
+
+               Default {
+
+               }
+            }
+// SMCPKG_SUPPORT < +
+            CreateField (DeRefOf (Index (Arg3, 0)), 0x00, Multiply (INPL, 8), IBUF) // Create Input buffer
+            Mid (IBUF, 0, INPL, INPB)
+          }
+
+          Store (4, NFST)                                  // Assume Function ERROR
+
+          // Generate SMI
+          Store (0xFD, \_SB.SMIC)
+
+          // Create Return Buffer
+          // We need to include Output Length & Status in the Output Buffer
+          Name (RETA, Buffer (Add (OUTL, 4)) {} )
+
+          // Update Status from ACPI Exchange
+          CreateDwordField (RETA, 0x00, STAA) // Status
+          Store (NFST, STAA)
+
+          // Copy buffer from OUTL length in bytes starting at DATA (offset 4 bytes from Buffer)
+          If (LNotEqual (OUTL, 0)) {
+            CreateField (RETA, 0x20, Multiply (OUTL, 8), DATA)
+            Mid (OUTB, 0, OUTL, DATA)
+          }
+          //Else {
+          //       If (LNotEqual (NFST, 0)) {
+          //              If (LEqual (FUNI, 10)) {
+          //                     Name (RETB, Buffer (5) {0x00, 0x00, 0x00, 0x00, 0x00} )
+          //                     Return (RETB)
+          //              }
+
+          //              If (LEqual (FUNI, 11)) {
+          //                     Name (RETC, Buffer (13) {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1C, 0x1C, 0x0A, 0x0A, 0x63, 0x00, 0x00} )
+          //                     Return (RETC)
+          //              }
+
+          //              If (LEqual (FUNI, 12)) {
+          //                     Name (RETD, Buffer (11) {0x00, 0x00, 0x00, 0x00, 0x64, 0x1C, 0x1C, 0x02, 0x02, 0x00, 0x00} )
+          //                     Return (RETD)
+          //              }
+          //       }
+          // }
+
+          // Return buffer
+          Return (RETA)
+        } // if func valid
+
+        Return (Buffer() {0x01})      // Indicate command not supported (invalid func)
+      } // if revision 1
+
+      Return (Buffer() {0x01})    // Indicate command not supported (invalid revision)
+    } // GUID Check
+
+    Return (Buffer() {0x01})           // Indicate command not supported (invalid GUID)
+  } // End of Method
+
+  Device (NVDR) {
+    Name (_HID, "ACPI0012")
+
+    Method (_STA) {
+      if (LAnd(LEqual(DBM0, 0), LEqual(DBM1, 0))) {
+        Return (0x00)
+      } else {
+        Return (0x0F)
+      }
+    }
+
+    Method (_DSM, 4, Serialized) {
+      // CR commands supported
+      // Function Index 1 - Query Address range scrubbing capabilities
+      // Input - 16 bytes (ARS Start SPA Address - 8 bytes, ARS Length - 8 bytes)
+      // Output - 8 bytes (Status - 4 bytes, Max ARS Data Size)
+      //
+      // Function Index 2 - Start address range scrubbing
+      // Input - 24 bytes (ARS Start Address - 8 bytes, ARS length - 8 bytes, Type - 2 bytes, Flags - 1 byte, Reserved - 5 bytes)
+      // Output - 8 bytes (Status - 4 bytes, Estimated Time for Scrub - 4 bytes)
+      //
+      // Function Index 3 - Query Adress range scrubbing status
+      // Input - NULL
+      // Output - varies (Status - 4 bytes, ARS Data - 4k)
+      //
+      // Function Index 4 - Clear Uncorrectable Error
+      // Input - 16 bytes (Clear Uncorrectable Error SPA Range Base - 8 bytes, Clear Uncorrectable Error Range Length - 8 bytes)
+      // Output - 16 bytes (Status - 4 bytes, Reserved - 4 bytes, Cleared Uncorrectable Error Range Length - 8 bytes)
+
+      If (LEqual (Arg0, ToUUID ("2F10E7A4-9E91-11E4-89D3-123B93F75CBA"))) {  // Make sure correct UUID
+        If (LEqual (ToInteger (Arg1), 1)) {                                  // Make sure revision is 1
+          If (LEqual (ToInteger (Arg2), 0)) {
+              //0,1,2,3,4 function is supported
+              Return (Buffer() {0x1F})
+          }
+
+          // Only process the supported function indexes
+          If (LLessEqual (ToInteger (Arg2), 4)) {
+            // Store Function Index and NFIT Device Handle
+            Store (ToInteger (Arg2), FUNI)
+            Store (0xFFFFFFFF, NFHD)  // Specify call is being made from NVDR
+
+            // Map Arg3 into separate elements of structure
+            If (LOr (LEqual (FUNI, 1), LOr (LEqual (FUNI, 2), LEqual (FUNI, 4)))) {
+              // Function Index 1 - Query Address range scrubbing capabilities
+              // Function Index 2 - Start address range scrubbing
+              // Function Index 4 - Clear Uncorrectable Error
+              CreateQwordField (DeRefOf (Index (Arg3, 0)), 0x00, ASTA)  // ARS Start Address
+              CreateQwordField (DeRefOf (Index (Arg3, 0)), 0x08, ALEN)  // ARS Length
+              Store (ASTA, ARSA)
+              Store (ALEN, ARSL)
+
+            }
+
+            If (LEqual (FUNI, 2)) {
+              // Function Index 2 - Start address range scrubbing
+              CreateWordField (DeRefOf (Index (Arg3, 0)), 0x10, ATYP) // ARS Type
+              CreateByteField (DeRefOf (Index (Arg3, 0)), 0x12, AFLA) // ARS Flags
+              Store (ATYP, ARST)
+              Store (AFLA, ARSF)
+            }
+
+            // Generate SMI
+            if (LEqual (AEPP, 1)) {
+              Store (0xFC, \_SB.SMIC)
+            } else {
+              Store (0xFD, \_SB.SMIC)
+            }
+
+            // Create Return Buffer
+            Name (RETB, Buffer (Add (OUTL, 4)) {} )
+
+            // Update Status
+            CreateDwordField (RETB, 0x00, STAT) // Status
+            Store (NFST, STAT)
+
+            // Copy buffer
+            If (LNotEqual (OUTL, 0)) {
+              CreateField (RETB, 0x20, Multiply (OUTL, 8), DATB)
+              Mid (OUTB, 0, OUTL, DATB)
+            }
+
+            // Return buffer
+            Return (RETB)
+          }
+          Return (Buffer() {0x01}) // Indicate command not supported
+        }
+      }
+      Return (Buffer() {0x02}) // Indicate invalid input parameter (this value is different for root and NVDIMM)
+    }
+
+    // supports MAX_SOCKET = 8
+    CHANNEL_LIST (0)
+    CHANNEL_LIST (1)
+    CHANNEL_LIST (2)
+    CHANNEL_LIST (3)
+    CHANNEL_LIST (4)
+    CHANNEL_LIST (5)
+    CHANNEL_LIST (6)
+    CHANNEL_LIST (7)
+  }
+
+  // (IMPORTANT NOTE: When updating this structure please update NGN_ACPI_SMM_INTERFACE in PurleySktPkg\Include\Protocol\NgnAcpiSmmProtocol.h, this structure is shared between ACPI and SMM)
+  OperationRegion (CRCM, SystemMemory, 0x41584946, 0x2090) // (FIXA - Patched by ACPI Platform Driver during POST)
+  Field (CRCM, ByteAcc, NoLock, Preserve) {
+    DBM0   ,    64,    // Device Bitmap for sockets 0 - 3.  Bit position = (socket * 16) + (channel * 2) + dimm
+    DBM1   ,    64,    // Device Bitmap for sockets 4 - 7.  Bit position = (socket * 16) + (channel * 2) + dimm - 64
+    ESP0   ,    64,    // Energy Source Policy in sockets 0 thru 3
+    ESP1   ,    64,    // Energy Source Policy in sockets 4 thru 7
+    FUNI   ,    32,    // Function Index
+    NFHD   ,    32,    // NFIT Device Handle
+    INPO   ,    32,    // Input Offset
+    INOC   ,    32,    // Input Opcode
+    INPL   ,    32,    // Input Length
+    OUTL   ,    32,    // Output Length
+    ARSA   ,    64,    // ARS Start Address
+    ARSL   ,    64,    // ARS Length
+    ARST   ,    16,    // ARS Start Type
+    ARSF   ,     8,    // ARS Start Flags
+    AEPP   ,     8,    // If AEP NVDIMM present, should be set to 1
+    NFST   ,    32,    // Status
+    INPB   , 33024,    // Input Buffer in bits (not bytes)
+    OUTB   , 33024     // Output Buffer in bits
+  }

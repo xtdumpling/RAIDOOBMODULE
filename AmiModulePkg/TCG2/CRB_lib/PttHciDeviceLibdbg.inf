@@ -1,0 +1,74 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2010, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**     5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093            **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+#**********************************************************************
+# $Header: /Alaska/SOURCE/Modules/TcgNext/Libraries/Tpm20CrbLib/Tpm20CRBLib.mak 1     10/08/13 11:59a Fredericko $
+#
+# $Revision: 1 $
+#
+# $Date: 10/08/13 11:59a $
+#*************************************************************************
+# Revision History
+# ----------------
+# $Log: /Alaska/SOURCE/Modules/TcgNext/Libraries/Tpm20CrbLib/Tpm20CRBLib.mak $
+# 
+# 1     10/08/13 11:59a Fredericko
+# Initial Check-In for Tpm-Next module
+# 
+# 2     10/03/13 1:48p Fredericko
+# 
+# 1     7/10/13 5:50p Fredericko
+# [TAG]  		EIP120969
+# [Category]  	New Feature
+# [Description]  	TCG (TPM20)
+# 
+#**********************************************************************
+#<AMI_FHDR_START>
+#
+# Name:		Tpm20CrbLib.mak
+#
+# Description:	Make file for the Tpm20CrbLib component
+#
+#<AMI_FHDR_END>
+#**********************************************************************
+
+[Defines]
+INF_VERSION 	= 0x00010015
+VERSION_STRING 	= 1.0
+BASE_NAME 		= PttHciDeviceLibdbg
+MODULE_TYPE 	= BASE
+LIBRARY_CLASS 	= PttHciDeviceLib
+FILE_GUID 		= EC2D4954-D45F-4ac3-83A7-F1EB94445DD7
+
+[binaries.IA32]
+LIB | PttHciDevicePeiLibdbg.lib
+
+
+[binaries.X64]
+LIB | PttHciDeviceDxeLibdbg.lib
+
+
+[LibraryClasses]
+  PciLib
+  BaseLib
+  BaseMemoryLib
+  DebugLib
+  IoLib
+  TimerLib
+  PerformanceLib
+
+[Packages]
+AmiCompatibilityPkg\AmiCompatibilityPkg.dec
+MdePkg\MdePkg.dec
+AmiModulePkg\AmiModulePkg.dec
+MdeModulePkg\MdeModulePkg.dec

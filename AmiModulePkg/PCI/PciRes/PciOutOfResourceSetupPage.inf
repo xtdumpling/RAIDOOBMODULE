@@ -1,0 +1,77 @@
+#
+# This file contains 'Framework Code' and is licensed as such
+# under the terms of your license agreement with Intel or your
+# vendor.  This file may not be modified, except as allowed by
+# additional terms of your license agreement.
+#
+## @file
+#
+#  Component description file for Fintek81866 DXE Init Module
+#
+#  This is the main routine for initializing the Graphics Console support routines.
+#
+#  Copyright (c) 2006 - 2010, Intel Corporation. All rights reserved.<BR>
+#  This program and the accompanying materials
+#  are licensed and made available under the terms and conditions of the BSD License
+#  which accompanies this distribution. The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.php
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+#
+##
+#[BuildOptions]
+#*_*_*_CC_FLAGS = /FI $(WORKSPACE)/Build/SIOElink.h
+
+
+[Defines]
+INF_VERSION = 0x00010005
+VERSION_STRING = 1.0
+BASE_NAME = PciOutOfResourceSetupPage
+MODULE_TYPE = DXE_DRIVER
+FILE_GUID = cdc1c80d-e6d3-4a42-9229-75f3befcf109
+
+ENTRY_POINT = PciOutOfResourceSetupPageEntry
+
+#
+#  This flag specifies whether HII resource section is generated into PE image.
+#
+    UEFI_HII_RESOURCE_SECTION       = TRUE
+    
+[Sources]
+PciOutOfResourceSetupPage.c
+PciOutOfResourceSetupPage.h
+PciOutOfResourceSetupPage.vfr
+PciOutOfResourceSetupPage.uni
+
+[LibraryClasses]
+AmiDxeLib
+UefiDriverEntryPoint
+#AmiSdlLib
+#AmiPciBusLib
+#PciAccessCspLib
+
+
+[Protocols]
+#gEfiDevicePathProtocolGuid
+#gEfiSimpleTextOutProtocolGuid
+#gEfiGraphicsOutputProtocolGuid
+#gEfiUgaDrawProtocolGuid
+#gEfiHiiFontProtocolGuid
+gEfiHiiDatabaseProtocolGuid
+#gEfiDriverBindingProtocolGuid
+#gAmiBoardPciInitProtocolGuid
+
+[Packages]
+MdePkg/MdePkg.dec
+#MdeModulePkg/MdeModulePkg.dec
+#IntelFrameworkPkg/IntelFrameworkPkg.dec
+#IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+#AmiModulePkg/AmiModulePkg.dec
+
+[Depex]
+    gEfiHiiDatabaseProtocolGuid
+
+[BuildOptions]
+    *_*_*_BUILD_FLAGS=-s

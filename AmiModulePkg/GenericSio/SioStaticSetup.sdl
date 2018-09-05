@@ -1,0 +1,51 @@
+TOKEN
+	Name  = "SioStaticSetup_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable StaticSIO Setup support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+PATH
+	Name  = "SioStaticSetup_DIR"
+End
+
+ELINK
+	Name  = "$(SioStaticSetup_DIR)/SioStaticSetup.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	Priority  = 40
+	Token = "SIO_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "SioSetupStringsInit,"
+	Parent  = "SetupStringInit"
+	Token = "SIO_SETUP_USE_APTIO_4_STYLE" "=" "1"
+	Token = "SIO_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(SioStaticSetup_DIR)/SioStaticSetup.uni"
+	Parent  = "SetupStringFiles"
+	Token = "SIO_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(SioStaticSetup_DIR)/SioStaticSetup.c"
+	Parent  = "SetupCallbackFiles"
+	Token = "SIO_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "SetupStrTableList"
+	Token = "SIO_SETUP_USE_APTIO_4_STYLE" "=" "1"
+	Token = "SIO_SUPPORT" "=" "1"
+	InvokeOrder = ReplaceParent
+End
+

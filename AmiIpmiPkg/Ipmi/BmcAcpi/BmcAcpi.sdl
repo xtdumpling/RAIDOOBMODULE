@@ -1,0 +1,55 @@
+TOKEN
+    Name  = "BmcAcpi_SUPPORT"
+    Value  = "1"
+    Help  = "Switch for Enabling BmcAcpi support in the project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    Master = Yes
+End
+
+INFComponent
+    Name  = "BmcAcpi"
+    File  = "BmcAcpi.inf"
+    Package  = "AmiIpmiPkg"
+    ModuleTypes  = "DXE_SMM_DRIVER"
+    Help  = "Includes BmcAcpi.inf to Project."
+End
+
+TOKEN
+    Name  = "BMC_ACPI_SWSMI"
+    Value  = "0xC0"
+    Help  = "Start value of Data to be written to SW SMI port to invoke BMC ACPI SW SMI handler."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "BMC_ACPI_SWSMI_MAX"
+    Value  = "0xC6"
+    Help  = "Max. value of Data to be written to SW SMI port to invoke BMC ACPI SW SMI handler."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "BSMI"
+    Value  = "$(BMC_ACPI_SWSMI)"
+    Help  = "Start value of Data to be written to SW SMI port to invoke BMC ACPI SW SMI handler."
+    TokenType = Integer
+    TargetASL = Yes
+    TargetH = Yes
+End
+
+PCIDEVICE
+    Title  = "Bmc Acpi Asl Container"
+    Parent  = "PciHost (Virtual)"
+    Attribute  = "0x0"
+    Dev_type  = "Container"
+    Dev  = 00h
+    ASLfile  = "'AmiIpmiPkg/Ipmi/BmcAcpi/BmcAcpi.asl;After Pci Tree'"
+    Virtual = Yes
+    ASL_PTS  = "Method;SPMI_SCOPE.SPMI.BMCS(Arg0)"
+    ASL_WAK  = "Method;SPMI_SCOPE.SPMI.BMCW()"
+    Help  = "BMCS(Arg0): Bmc ACPI Prepare to sleep routine. \Arg0 is a sleep state the System is targeted for. \BMCW(): Bmc ACPI Wake up routine. \Defined in BmcAcpi.ASL"
+End

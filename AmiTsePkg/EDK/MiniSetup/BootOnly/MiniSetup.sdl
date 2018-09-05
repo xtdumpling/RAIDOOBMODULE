@@ -1,0 +1,114 @@
+TOKEN
+	Name  = "MiniSetup_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable MiniSetup support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "SETUP_USE_GRAPHICS_OUTPUT_PROTOCOL"
+	Value  = "1"
+	Help  = "1 => Uses Graphics output protocol. 0 => Uses UgaDraw protocol."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TSE_USE_EDK_LIBRARY"
+	Value  = "0"
+	Help  = "Turn on to Depend on the EDK Libraries, OFF makes use of Aptio Libaray"
+	TokenType = Boolean
+	TargetH = Yes
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "SETUP_OEM_SPECIAL_CONTROL_SUPPORT"
+	Value  = "0"
+	Help  = "Turn on to have OEM Special Control Support."
+	TokenType = Boolean
+	TargetH = Yes
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "SETUP_USE_GUIDED_SECTION"
+	Value  = "0"
+	Help  = "Enable to have BCP compatibility in Aptio 3.x"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TSE_MAX_DRIVE_NAME"
+	Value  = "51"
+	Help  = "Set the value to dispaly number of characters for Drive name"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TSE_BEST_HORIZONTAL_RESOLUTION"
+	Value  = "800"
+	Help  = "800 is Standard horizontal resolution for TSE. This will be valid only when TSE_BEST_TEXT_GOP_MODE is enabled"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TSE_BEST_VERTICAL_RESOLUTION"
+	Value  = "600"
+	Help  = "600 is Standard vertical resolution for TSE. This will be valid only when TSE_BEST_TEXT_GOP_MODE is enabled."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+PATH
+	Name  = "TSESRC_DIR"
+End
+
+ELINK
+	Name  = "Minisetup"
+	Parent  = "MinisetupBin"
+	InvokeOrder = ReplaceParent
+End
+
+INFComponent
+	Name  = "Minisetup"
+	File  = "Minisetup.inf"
+	Package  = "AmiTsePkg"
+End
+
+LibraryMapping
+	Class  = "Minisetup"
+	Instance  = "AmiTsePkg.Minisetup"
+#	Arch  = "X64"
+End
+
+ELINK
+	Name  = "TsePasswordEncode"
+	Parent  = "TsePasswordEncodeBin"
+	InvokeOrder = ReplaceParent
+End
+
+INFComponent
+	Name  = "TsePasswordEncode"
+	File  = "PasswordEncode/TsePasswordEncode.inf"
+	Package  = "AmiTsePkg"
+End
+
+LibraryMapping
+	Class  = "TsePasswordEncode"
+	Instance  = "AmiTsePkg.TsePasswordEncode"
+#	Arch  = "X64"
+End
+
+LibraryMapping
+	Class  = "TsePasswordEncodeBin"
+	Instance  = "AmiTsePkg.TsePasswordEncode"
+	Token = "TSE_SOURCES_SUPPORT" "=" "1"
+End

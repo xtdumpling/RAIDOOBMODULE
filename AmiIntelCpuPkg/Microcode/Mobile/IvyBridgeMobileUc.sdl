@@ -1,0 +1,89 @@
+TOKEN
+	Name  = "MOBILE_306AX"
+	Value  = "0"
+    Help = "Intel(R) Ivy Bridge"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "MOBILE_M12306A2"
+	Value  = "1"
+	Help  = "Intel(R) Ivy Bridge Processor B-0"
+	TokenType = Boolean
+	Token = "NON_PRODUCTION_MICROCODE" "=" "1"
+End
+
+TOKEN
+	Name  = "MOBILE_M12306A4"
+	Value  = "1"
+	Help  = "Intel(R) Ivy Bridge Processor C-0"
+	TokenType = Boolean
+	Token = "NON_PRODUCTION_MICROCODE" "=" "1"
+End
+
+TOKEN
+	Name  = "MOBILE_M12306A5"
+	Value  = "1"
+	Help  = "Intel(R) Ivy Bridge Processor K-0"
+	TokenType = Boolean
+	Token = "NON_PRODUCTION_MICROCODE" "=" "1"
+End
+
+
+TOKEN
+	Name  = "MOBILE_M12306A8"
+	Value  = "1"
+	Help  = "Intel(R) Ivy Bridge E-0 and L-0"
+	TokenType = Boolean
+	Token = "NON_PRODUCTION_MICROCODE" "=" "1"
+End
+
+
+TOKEN
+	Name  = "MOBILE_M12306A9"
+	Value  = "1"
+	Help  = "Intel(R) Ivy Bridge E-1, L-1, and N-0"
+	TokenType = Boolean
+	Token = "MOBILE_306AX" "=" "1"
+End
+
+ELINK
+	Name  = "$(MICROCODE_MOBILE_DIR)/M12306A2_00000008.mcb"
+	Parent  = "MICROCODE_FILES"
+	Help  = "Intel(R) Ivy Bridge B-0"
+	Token = "MOBILE_M12306A2" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(MICROCODE_MOBILE_DIR)/M12306A4_00000007.mcb"
+	Parent  = "MICROCODE_FILES"
+	Help  = "Intel(R) Ivy Bridge C-0"
+	Token = "MOBILE_M12306A4" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(MICROCODE_MOBILE_DIR)/M12306A5_00000007.mcb"
+	Parent  = "MICROCODE_FILES"
+	Help  = "Intel(R) Ivy Bridge K-0"
+	Token = "MOBILE_M12306A5" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(MICROCODE_MOBILE_DIR)/M12306A8_00000010.mcb"
+	Parent  = "MICROCODE_FILES"
+	Help  = "Intel(R) Ivy Bridge E-0 and L-0"
+	Token = "MOBILE_M12306A8" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(MICROCODE_MOBILE_DIR)/M12306A9_0000001C.mcb"
+	Parent  = "MICROCODE_FILES"
+	Help  = "Intel(R) Ivy Bridge E-1, L-1, and N-0"
+	Token = "MOBILE_M12306A9" "=" "1"
+	InvokeOrder = AfterParent
+End

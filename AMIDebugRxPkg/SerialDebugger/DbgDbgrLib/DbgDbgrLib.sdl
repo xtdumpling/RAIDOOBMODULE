@@ -1,0 +1,83 @@
+TOKEN
+	Name  = "DbgrLib_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling DbgDbgrLib\DbgDbgrX64Lib support in the project"
+	TokenType = Boolean
+	Master = Yes
+	Token = "REDIRECTION_ONLY_MODE" "=" "0"
+End
+
+TOKEN
+	Name  = "DbgDbgrLib_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable DbgDbgrLib support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "DbgDbgrX64Lib_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable DbgDbgrX64Lib support in Project"
+	TokenType = Boolean
+	Token = "X64_SUPPORT" "=" "1"
+End
+
+PATH
+	Name  = "COMDbgDbgrLib_DIR"
+	Path  = "AMIDebugRxPkg\SerialDebugger\DbgDbgrLib"
+End
+
+INFComponent
+	Name  = "DbgDbgrLib"
+	File  = "DbgDbgrLib.inf"
+	Package  = "SerialDebugger"
+	Arch  = "common"
+	Path  = "COMDbgDbgrLib_DIR"
+End
+
+INFComponent
+	Name  = "DbgDbgrX64Lib"
+	File  = "DbgDbgrX64Lib.inf"
+	Package  = "SerialDebugger"
+	Arch  = "common"
+	Path  = "COMDbgDbgrLib_DIR"
+	Token = "DbgDbgrX64Lib_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "CommonDbgDbgrLib"
+	File  = "CommonDbgDbgrLib.inf"
+	Package  = "SerialDebugger"
+	Arch  = "common"
+	Path  = "COMDbgDbgrLib_DIR"
+End
+
+LibraryMapping
+	Class  = "PeiDebugDbgrLib"
+	Instance  = "SerialDebugger.DbgDbgrLib"
+	Arch  = "IA32"
+End
+
+LibraryMapping
+	Class  = "PeiDebugDbgrLib"
+	Instance  = "SerialDebugger.DbgDbgrX64Lib"
+	Arch  = "X64"
+	Token = "DbgDbgrX64Lib_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "DxeDebugDbgrLib"
+	Instance  = "SerialDebugger.DbgDbgrLib"
+	Token = "X64_SUPPORT" "=" "0"
+End
+
+LibraryMapping
+	Class  = "DxeDebugDbgrLib"
+	Instance  = "SerialDebugger.DbgDbgrX64Lib"
+	Token = "DbgDbgrX64Lib_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "CommonDbgDbgrLib"
+	Instance  = "SerialDebugger.CommonDbgDbgrLib"
+End

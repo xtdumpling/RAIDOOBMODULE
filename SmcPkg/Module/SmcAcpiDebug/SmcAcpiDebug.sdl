@@ -1,0 +1,87 @@
+#***************************************************************************
+#***************************************************************************
+#**                                                                       **
+#**       (C)Copyright 1993-2016 Supermicro Computer, Inc.                **
+#**                                                                       **
+#**                                                                       **
+#***************************************************************************
+#***************************************************************************
+#
+#  File History
+#
+#  Rev. 1.00
+#    Bug Fix:  ACPI Debug Feature.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Apr/07/2016
+#
+#***************************************************************************
+
+TOKEN
+	Name      = "SMC_ACPI_DEBUG_SUPPORT"
+	Value     = "0"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master    = Yes
+	Help      = "Main switch to enable Smc Acpi Debug support in Project"
+End
+
+PATH
+	Name = "SMC_ACPI_DEBUG_DIR"
+End
+
+TOKEN
+        Name = "SWSMI_SMC_ACPI_DEBUG"
+        Value = "0x66"
+        Help = "Sw Smi E9 for SPI write"
+        TargetEQU = Yes
+        TargetH = Yes
+End
+
+TOKEN
+	Name  = "SameDebug_SUPPORT"
+	Value  = "1"
+	Help  = "Enables/Disables A7_DEBUG"
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "SMC_ACPI_DEBUG_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "A7_SMM_DEBUG"
+	Value  = "1"
+	Help  = "Enables/Disables A7_SMM_DEBUG"
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "SMC_ACPI_DEBUG_SUPPORT" "=" "1"
+End
+
+PCIDEVICE
+	Title  = "Acpi Debug ASL Files"
+	Parent  = "PciHost (Virtual)"
+	Attribute  = "0x0"
+	Dev_type  = "Container"
+	Dev  = 00h
+	SleepNum  = 01h
+	ASLfile  = "'SmcPkg\Module\SmcAcpiDebug\AcpiDebugExternal.asl;Before Pci Tree'"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	Virtual = Yes
+End
+
+INFComponent
+	Name  = "AcpiDebugTables"
+	File  = "AcpiDebugTables.inf"
+	Package  = "SmcPkg"
+	ModuleTypes  = "USER_DEFINED"
+End
+
+INFComponent
+    Name  = "AcpiDebugSmm"
+    File  = "AcpiDebugSmm.inf"
+    Package  = "SmcPkg"
+    ModuleTypes = "DXE_SMM_DRIVER"
+End
+

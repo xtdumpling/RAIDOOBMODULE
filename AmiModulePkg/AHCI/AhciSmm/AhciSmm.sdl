@@ -1,0 +1,45 @@
+TOKEN
+    Name  = "AhciSmm_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable AhciSmm  support in Project"
+    TokenType = Boolean
+    Master = Yes
+End
+
+PATH
+    Name  = "AHCI_SMM_DIR"
+End
+
+TOKEN
+    Name  = "ICH_SATA_BUS_NUMBER"
+    Value  = "0x0"
+    Help  = "Sata BUS number"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+
+TOKEN
+    Name  = "ICH_SATA_DEVICE_NUMBER"
+    Value  = "0x1F"
+    Help  = "Sata Device Number"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+
+TOKEN
+    Name  = "ICH_SATA_FUNCTION_NUMBER"
+    Value  = "0x2"
+    Help  = "SATA Function No"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+INFComponent
+    Name  = "AhciSmm"
+    File  = "AhciSmm.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_SMM_DRIVER"
+End
+

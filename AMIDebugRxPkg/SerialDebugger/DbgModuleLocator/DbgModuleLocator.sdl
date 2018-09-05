@@ -1,0 +1,91 @@
+TOKEN
+	Name  = "DbgModuleLocator_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable DbgModuleLocator support in Project"
+	TokenType = Boolean
+	Master = Yes
+	TargetH = Yes
+	Token = "REDIRECTION_ONLY_MODE" "=" "0"
+End
+
+PATH
+	Name  = "COMDbgModuleLocator_DIR"
+	Path  = "AMIDebugRxPkg\SerialDebugger\DbgModuleLocator"
+	Token = "REDIRECTION_ONLY_MODE" "=" "0"
+End
+
+INFComponent
+	Name  = "CommonDbgMLLib"
+	File  = "CommonDbgMLLib.inf"
+	Package  = "SerialDebugger"
+	Arch  = "common"
+	Path  = "COMDbgModuleLocator_DIR"
+	Token = "REDIRECTION_ONLY_MODE" "=" "0"
+End
+
+INFComponent
+	Name  = "PeiDbgModuleLocator"
+	File  = "PeiDbgModuleLocator.inf"
+	Package  = "SerialDebugger"
+	Arch  = "common"
+	Path  = "COMDbgModuleLocator_DIR"
+	ModuleTypes  = "PEIM PEI_CORE"
+	Token = "REDIRECTION_ONLY_MODE" "=" "0"
+End
+
+INFComponent
+	Name  = "DxeDbgModuleLocator"
+	File  = "DxeDbgModuleLocator.inf"
+	Package  = "SerialDebugger"
+	Arch  = "common"
+	Path  = "COMDbgModuleLocator_DIR"
+	ModuleTypes  = "DXE_CORE DXE_DRIVER DXE_RUNTIME_DRIVER SMM_CORE DXE_SMM_DRIVER UEFI_DRIVER UEFI_APPLICATION"
+	Token = "REDIRECTION_ONLY_MODE" "=" "0"
+End
+
+LibraryMapping
+	Class  = "CommonDbgMLLib"
+	Instance  = "SerialDebugger.CommonDbgMLLib"
+	Token = "REDIRECTION_ONLY_MODE" "=" "0"
+End
+
+LibraryMapping
+	Class  = "DbgModuleLocator"
+	Instance  = "SerialDebugger.PeiDbgModuleLocator"
+	ModuleTypes  = "PEIM PEI_CORE"
+	Token = "REDIRECTION_ONLY_MODE" "=" "0"
+End
+
+LibraryMapping
+	Class  = "DbgModuleLocator"
+	Instance  = "SerialDebugger.DxeDbgModuleLocator"
+	ModuleTypes  = "DXE_CORE DXE_DRIVER DXE_RUNTIME_DRIVER SMM_CORE DXE_SMM_DRIVER UEFI_DRIVER UEFI_APPLICATION"
+	Token = "REDIRECTION_ONLY_MODE" "=" "0"
+End
+
+LibraryMapping
+    Class = "NULL"
+    Instance = "SerialDebugger.PeiDbgModuleLocator"
+    Override = "AmiModulePkg.StatusCodePei"
+End
+
+LibraryMapping
+    Class = "NULL"
+    Instance = "SerialDebugger.DxeDbgModuleLocator"
+    Override = "AmiModulePkg.StatusCodeDxe"
+End
+
+ELINK
+	Name  = "InitDbgLdImageNotifyPPI,"
+	Parent  = "PeiStatusCodeInitialize"
+	InvokeOrder = AfterParent
+	Token = "REDIRECTION_ONLY_MODE" "=" "0"
+End
+
+ELINK
+	Name  = "InitDbgLdImageNotify,"
+	Parent  = "DxeStatusCodeInitialize"
+	InvokeOrder = AfterParent
+	Token = "REDIRECTION_ONLY_MODE" "=" "0"
+End
+

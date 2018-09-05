@@ -1,0 +1,80 @@
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = DxeAMIDebugAgentLib
+  FILE_GUID                      = 25FEFE01-56AE-4875-8F32-8D8AD4F91D62
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 0.1
+  LIBRARY_CLASS                  = DebugAgentLib|DXE_CORE DXE_DRIVER DXE_RUNTIME_DRIVER UEFI_APPLICATION
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+[Binaries.Ia32]
+  BIN | DxeAMIDebugAgent/DxeAMIDebugAgentLibx86.lib
+  
+[Binaries.X64]
+  BIN | DxeAMIDebugAgent/DxeAMIDebugAgentLibx64.lib
+
+[Sources.common]
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  UefiCpuPkg/UefiCpuPkg.dec
+  AMIDebugRxPkg/AMIDebugRxPkg.dec
+
+[LibraryClasses]
+  BaseLib
+  BaseMemoryLib
+  IoLib
+  HobLib
+  ###DXE DBG Libs
+  DxeDebugPortLib
+  DxeDebugXportLib
+  DxeDebugDbgrLib
+  ###DXE DBG Libs
+  UefiBootServicesTableLib
+  UefiLib
+  PcdLib
+  SynchronizationLib
+  MemoryAllocationLib
+  LocalApicLib
+  TimerLib
+  CommonDebugAgentLib
+  AmiDxeLib
+  PeCoffGetEntryPointLib
+  PeCoffExtraActionLib
+  InitializeLocalApicLib
+
+[Guids]
+ 
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdFSBClock                                  ## CONSUMES
+  gEfiAMIDebugRxPkgTokenSpaceGuid.PcdExceptionsIgnoredByDebugger  ## CONSUMES
+
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************

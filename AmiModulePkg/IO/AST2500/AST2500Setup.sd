@@ -1,0 +1,299 @@
+//***************************************************************************
+//**                                                                       **
+//**       (C)Copyright 1993-2016 Supermicro Computer, Inc.                **
+//**                                                                       **
+//**                                                                       **
+//***************************************************************************
+//***************************************************************************
+//
+//  File History
+//
+//  Rev. 1.00
+//    Bug Fix:  Add setup item to conrol COM2 for SOL or Uart
+//    Reason:   
+//    Auditor:  Kasber Chen
+//    Date:     Jun/14/2016
+//
+//***************************************************************************
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
+//**********************************************************************
+//<AMI_FHDR_START>
+//
+// Name:  <AST2500Setup.sd>
+//
+// Description: SIO form template, setup screen definition file.
+//
+//<AMI_FHDR_END>
+//**********************************************************************
+#ifdef SETUP_DATA_DEFINITION
+    UINT8	SmcUART2Mode;	//SMCPKG_SUPPORT
+/***********************************************************/
+/* Put NVRAM data definitions here.
+/* For example:    UINT8 Data1;
+/* These definitions will be converted by the build process
+/* to a definitions of SETUP_DATA fields.
+/***********************************************************/
+#endif //SETUP_DATA_DEFINITION
+
+//----------------------------------------------------------------------
+//Select Top level menu itmem (forset) for you pages
+//----------------------------------------------------------------------
+#ifdef ADVANCED_FORM_SET
+
+//----------------------------------------------------------------------
+//If you need any additional type definitions add them here
+//----------------------------------------------------------------------
+#ifdef FORM_SET_TYPEDEF
+    #include "AST2500Setup.h"
+    #include "Token.h"
+#endif
+
+//----------------------------------------------------------------------
+//If you need custom varstore's define them here
+//----------------------------------------------------------------------
+#ifdef FORM_SET_VARSTORE
+    #ifdef SETUP_DATA_DEFINITION
+    AUTO_ID(COMA_V_DATA_KEY)
+    AUTO_ID(COMA_NV_DATA_KEY)
+    AUTO_ID(COMB_V_DATA_KEY)
+    AUTO_ID(COMB_NV_DATA_KEY)
+    AUTO_ID(COMC_V_DATA_KEY)
+    AUTO_ID(COMC_NV_DATA_KEY)
+    AUTO_ID(COMD_V_DATA_KEY)
+    AUTO_ID(COMD_NV_DATA_KEY)
+    #endif //#ifdef SETUP_DATA_DEFINITION
+    AMI_SIO_VARSTORE(COMA, PNP0501_0)
+    AMI_SIO_VARSTORE(COMB, PNP0501_1)
+    AMI_SIO_VARSTORE(COMC, PNP0501_2)
+    AMI_SIO_VARSTORE(COMD, PNP0501_3)
+#endif
+
+//----------------------------------------------------------------------
+//Define controls to be added to the top level page of the formset
+//----------------------------------------------------------------------
+#ifdef FORM_SET_ITEM
+#endif
+
+//----------------------------------------------------------------------
+//Define goto commands for the forms defined in this file
+//----------------------------------------------------------------------
+#ifdef FORM_SET_GOTO
+    goto AST2500_FORM_ID,
+    prompt  = STRING_TOKEN(STR_AST2500_SIO_FORM),
+    help    = STRING_TOKEN(STR_AST2500_SIO_FORM_HELP);
+#endif
+
+//----------------------------------------------------------------------
+//Define forms
+//----------------------------------------------------------------------
+#ifdef FORM_SET_FORM
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////Define SIO formset form////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    form formid = AUTO_ID(AST2500_FORM_ID),
+        title = STRING_TOKEN(STR_AST2500_SIO_FORM);
+        SUBTITLE(STRING_TOKEN(STR_AST2500_SIO_FORM))
+    
+        SEPARATOR
+    
+        text
+        help   = STRING_TOKEN(STR_AST2500_SIO_FORM_HELP),
+        text   = STRING_TOKEN(STR_AST2500_SIO_PROMPT),
+        text   = STRING_TOKEN(STR_AST2500),
+        flags  = 0,
+        key    = 0;
+    
+        //Goto Serial 1 Form
+        #if AST2500_SERIAL_PORT1_PRESENT
+        suppressif ideqval COMA_V_DATA.DevImplemented == 0x00;
+            goto AST2500_SERIAL1_FORM_ID,
+            prompt  = STRING_TOKEN(STR_SERIAL1_FORM),
+            help    = STRING_TOKEN(STR_SERIAL1_FORM_HELP);
+        endif;
+        #endif
+    
+        //Goto Serial 2 Form
+        #if AST2500_SERIAL_PORT2_PRESENT
+        suppressif ideqval COMB_V_DATA.DevImplemented == 0x00;
+            goto AST2500_SERIAL2_FORM_ID,
+            prompt  = STRING_TOKEN(STR_SERIAL2_FORM),
+            help    = STRING_TOKEN(STR_SERIAL2_FORM_HELP);
+        endif;
+        #endif
+    
+        //Goto Serial 3 Form
+        #if AST2500_SERIAL_PORT3_PRESENT
+        suppressif ideqval COMC_V_DATA.DevImplemented == 0x00;
+            goto AST2500_SERIAL3_FORM_ID,
+            prompt  = STRING_TOKEN(STR_SERIAL3_FORM),
+            help    = STRING_TOKEN(STR_SERIAL3_FORM_HELP);
+        endif;
+        #endif
+    
+        //Goto Serial 4 Form
+        #if AST2500_SERIAL_PORT4_PRESENT
+        suppressif ideqval COMD_V_DATA.DevImplemented == 0x00;
+            goto AST2500_SERIAL4_FORM_ID,
+            prompt  = STRING_TOKEN(STR_SERIAL4_FORM),
+            help    = STRING_TOKEN(STR_SERIAL4_FORM_HELP);
+        endif;
+        #endif
+    
+      endform;//SIO Form
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////Define SP1 formset form////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    #if AST2500_SERIAL_PORT1_PRESENT
+    form formid = AUTO_ID(AST2500_SERIAL1_FORM_ID),
+        title = STRING_TOKEN(STR_SERIAL1_FORM);
+        SUBTITLE(STRING_TOKEN(STR_SERIAL1_FORM))
+    
+        SEPARATOR
+    
+        COMA_CHECKBOX_DEVEN
+    
+        suppressif ideqval COMA_NV_DATA.DevEnable == 0x00;
+        COMA_TEXT_CURRENT
+        endif;    //suppressif SIO_SETUP_VAR.ComAEnable == 0x00;
+    
+        SEPARATOR
+    
+        suppressif ideqval COMA_NV_DATA.DevEnable == 0x00;
+        COMA_ONEOF_PRSID
+        endif;    //suppressif SIO_SETUP_VAR.ComAEnable == 0x00;
+
+    endform;  //Serial 1 Form
+    #endif //#if AST2500_SERIAL_PORT1_PRESENT
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////Define SP2 formset form////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    #if AST2500_SERIAL_PORT2_PRESENT
+    form formid = AUTO_ID(AST2500_SERIAL2_FORM_ID),
+        title = STRING_TOKEN(STR_SERIAL2_FORM);
+        SUBTITLE(STRING_TOKEN(STR_SERIAL2_FORM))
+    
+        SEPARATOR
+        COMB_CHECKBOX_DEVEN    
+    
+        suppressif ideqval COMB_NV_DATA.DevEnable == 0x00;
+        COMB_TEXT_CURRENT
+        endif;    //suppressif SIO_SETUP_VAR.ComBEnable == 0x00;
+    
+        SEPARATOR
+    
+        suppressif ideqval COMB_NV_DATA.DevEnable == 0x00;
+        COMB_ONEOF_PRSID
+        endif;    //suppressif SIO_SETUP_VAR.ComBEnable == 0x00;
+
+#if SMCPKG_SUPPORT
+	oneof varid = SETUP_DATA.SmcUART2Mode ,
+        	prompt  = STRING_TOKEN(STR_UART2_MODE),
+        	help    = STRING_TOKEN(STR_UART2_MODE_HELP),
+        	option text = STRING_TOKEN (STR_SOL),   value = 3, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        	option text = STRING_TOKEN (STR_COM),   value = 1, flags = RESET_REQUIRED;
+    	endoneof;
+#endif
+
+    endform;  //Serial 2 Form
+    #endif //#if AST2500_SERIAL_PORT2_PRESENT
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////Define SP3 formset form////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    #if AST2500_SERIAL_PORT3_PRESENT
+    form formid = AUTO_ID(AST2500_SERIAL3_FORM_ID),
+        title = STRING_TOKEN(STR_SERIAL3_FORM);
+        SUBTITLE(STRING_TOKEN(STR_SERIAL3_FORM))
+    
+        SEPARATOR
+    
+        COMC_CHECKBOX_DEVEN    
+
+        suppressif ideqval COMC_NV_DATA.DevEnable == 0x00;
+        COMC_TEXT_CURRENT
+        endif;    //suppressif SIO_SETUP_VAR.ComCEnable == 0x00;
+    
+        SEPARATOR
+    
+        suppressif ideqval COMC_NV_DATA.DevEnable == 0x00;
+        oneof varid     = COMC_NV_DATA.DevPrsId,\
+            prompt      = STRING_TOKEN(STR_CHANGE_CONFIG),\
+            help        = STRING_TOKEN(STR_SETTINGS_HELP),\
+            option text = STRING_TOKEN(STR_AUTO), value = 0, flags = DEFAULT | RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_AST2500_SERIAL_IO3E8_IRQ7), value = 1, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_AST2500_SERIAL_IO3E8_IRQX), value = 2, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_AST2500_SERIAL_IO2E8_IRQX), value = 3, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_AST2500_SERIAL_IO2F0_IRQX), value = 4, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_AST2500_SERIAL_IO2E0_IRQX), value = 5, flags = RESET_REQUIRED;\
+        endoneof;        
+        endif;    //suppressif SIO_SETUP_VAR.ComCEnable == 0x00;
+
+    endform;  //Serial 3 Form
+    #endif //#if AST2500_SERIAL_PORT3_PRESENT
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////Define SP4 formset form////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    #if AST2500_SERIAL_PORT4_PRESENT
+    form formid = AUTO_ID(AST2500_SERIAL4_FORM_ID),
+        title = STRING_TOKEN(STR_SERIAL4_FORM);
+        SUBTITLE(STRING_TOKEN(STR_SERIAL4_FORM))
+    
+        SEPARATOR
+    
+        COMD_CHECKBOX_DEVEN    
+    
+        suppressif ideqval COMD_NV_DATA.DevEnable == 0x00;
+        COMD_TEXT_CURRENT
+        endif;    //suppressif SIO_SETUP_VAR.ComDEnable == 0x00;
+    
+        SEPARATOR
+    
+        suppressif ideqval COMD_NV_DATA.DevEnable == 0x00;
+        oneof varid     = COMD_NV_DATA.DevPrsId,\
+            prompt      = STRING_TOKEN(STR_CHANGE_CONFIG),\
+            help        = STRING_TOKEN(STR_SETTINGS_HELP),\
+            option text = STRING_TOKEN(STR_AUTO), value = 0, flags = DEFAULT | RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_AST2500_SERIAL_IO2E8_IRQ7), value = 1, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_AST2500_SERIAL_IO3E8_IRQX), value = 2, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_AST2500_SERIAL_IO2E8_IRQX), value = 3, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_AST2500_SERIAL_IO2F0_IRQX), value = 4, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_AST2500_SERIAL_IO2E0_IRQX), value = 5, flags = RESET_REQUIRED;\
+        endoneof;        
+        endif;    //suppressif SIO_SETUP_VAR.ComDEnable == 0x00;
+
+    endform;  //Serial 4 Form
+    #endif //#if AST2500_SERIAL_PORT4_PRESENT
+
+#endif //FORM_SET_FORM
+
+#endif//ADVANCED_FORM_SET
+
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
+

@@ -1,0 +1,157 @@
+TOKEN
+        Name  = "AmiMrcHooksWrapperLib_SUPPORT"
+        Value  = "1"
+        Help  = "Switch for Enabling SerialPortLib support in the project"
+        TokenType = Boolean
+        Master = Yes
+End
+
+# Hook to provide interface to add OEM code while handling MRC warnings and errors.
+ELINK
+        Name = "OVERRIDE_PLATFORM_LOG_WARNING_HOOK"
+        InvokeOrder = ReplaceParent
+End
+
+#Sample elink
+#ELINK
+#    Name  = "OemPlatformLogWarning,"
+#    Parent  = "OVERRIDE_PLATFORM_LOG_WARNING_HOOK"
+#    InvokeOrder = AfterParent
+#End
+
+# Hook to override MRC input parameters
+ELINK
+        Name = "OVERRIDE_MRC_INPUT_PARAMETERS_HOOK"
+        InvokeOrder = ReplaceParent
+End
+
+#Sample elink
+#ELINK
+#    Name  = "OemModifyMrcParameters,"
+#    Parent  = "OVERRIDE_MRC_INPUT_PARAMETERS_HOOK"
+#    InvokeOrder = AfterParent
+#End
+
+# Hook to override MRC frequency table
+ELINK
+        Name = "OVERRIDE_MRC_SPEED_FREQUENCY_HOOK"
+        InvokeOrder = ReplaceParent
+End
+
+#Sample elink
+#ELINK
+#    Name  = "OemModifyMrcParameters,"
+#    Parent  = "OVERRIDE_MRC_SPEED_FREQUENCY_HOOK"
+#    InvokeOrder = AfterParent
+#End
+
+# Hook to override KTI parameters
+ELINK
+        Name = "OVERRIDE_KTI_PARAMETER_HOOK"
+        InvokeOrder = ReplaceParent
+End
+
+#Sample elink
+#ELINK
+#    Name  = "OemModifyKtiParameters,"
+#    Parent  = "OVERRIDE_KTI_PARAMETER_HOOK"
+#    InvokeOrder = AfterParent
+#End
+
+# Hook to provide interface to add OEM code while handling MRC fatal errors.
+ELINK
+        Name = "OVERRIDE_PLATFORM_LOG_FATAL_ERROR_HOOK"
+        InvokeOrder = ReplaceParent
+End
+
+#Sample elink
+#ELINK
+#    Name  = "OemLogFatalError,"
+#    Parent  = "OVERRIDE_PLATFORM_LOG_FATAL_ERROR_HOOK"
+#    InvokeOrder = AfterParent
+#End
+
+# Hook to provide interface to add OEM code while handling KTI warnings.
+ELINK
+        Name = "OVERRIDE_KTI_LOG_WARNING_HOOK"
+        InvokeOrder = ReplaceParent
+End
+
+#Sample elink
+#ELINK
+#    Name  = "OemKtiLogWarning,"
+#    Parent  = "OVERRIDE_KTI_LOG_WARNING_HOOK"
+#    InvokeOrder = AfterParent
+#End
+
+# Hook to override MRC frequency table
+ELINK
+        Name = "OVERRIDE_KTI_CHECKPOINT_HOOK"
+        InvokeOrder = ReplaceParent
+End
+
+ELINK
+        Name = "OVERRIDE_KTI_LOG_WARNING_HOOK"
+        InvokeOrder = ReplaceParent
+End
+
+ELINK
+        Name = "OVERRIDE_KTI_GET_EPARAMS_HOOK"
+        InvokeOrder = ReplaceParent
+End
+
+ELINK
+        Name = "OVERRIDE_PUBLISH_HOB_DATA_HOOK"
+        InvokeOrder = ReplaceParent
+End
+
+ELINK
+        Name = "OVERRIDE_PLATFORM_OUTPUT_ERR_HOOK"
+        InvokeOrder = ReplaceParent
+End
+
+ELINK
+        Name = "OVERRIDE_PLATFORM_OUTPUT_WAR_HOOK"
+        InvokeOrder = ReplaceParent
+End
+
+ELINK
+        Name = "OVERRIDE_PLATFORM_DATA_HOOK"
+        InvokeOrder = ReplaceParent
+End
+
+ELINK
+        Name = "AMI_MRC_HOOK_LIB"
+        InvokeOrder = ReplaceParent
+End
+
+ELINK
+        Name = "OVERRIDE_GET_RESOURCEMAP_UPDATE_HOOK"
+        InvokeOrder = ReplaceParent
+End
+
+ELINK
+        Name = "OVERRIDE_TURN_AROUND_TIMINGS_HOOK"
+        InvokeOrder = ReplaceParent
+        Help = "Hook to override TurnAroundTiming method"
+End
+
+OUTPUTREGISTER
+        Name = "PLATFORM_HOOKS_ELINK_AUTOGEN_H"
+        Path = "Build"
+        File = "PlatformHooksElinkAutoGen.h"
+        Template = "PlatformHooksElinkAutoGenTempl.txt"
+End
+
+INFComponent
+        Name  = "AmiMrcHooksWrapperLib"
+        File  = "AmiMrcHooksWrapperLib.inf"
+        Package  = "PurleyPlatPkg"
+        ModuleTypes  = "BASE"
+        PreProcess  = Yes
+End
+
+LibraryMapping
+        Class  = "AmiMrcHooksWrapperLib"
+        Instance  = "PurleyPlatPkg.AmiMrcHooksWrapperLib"
+End

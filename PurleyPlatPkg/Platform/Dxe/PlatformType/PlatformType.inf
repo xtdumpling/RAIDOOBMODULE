@@ -1,0 +1,68 @@
+## @file
+#
+#  Copyright (c) 2009 - 2016, Intel Corporation. All rights reserved.<BR>
+#
+#  This program and the accompanying materials
+#  are licensed and made available under the terms and conditions of the BSD License
+#  which accompanies this distribution. The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.php
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = PlatformType
+  FILE_GUID                      = 2E6A521C-F697-402d-9774-98B2B7E140F3
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = PlatformTypeInit
+
+[Sources]
+  PlatformTypes.c
+ # APTIOV_SERVER_OVERRIDE_RC_START : Add missing file
+  PlatformTypes.h
+ # APTIOV_SERVER_OVERRIDE_RC_END : Add missing file
+
+[Packages]
+  MdePkg/MdePkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  CpPlatPkg/CpPlatPkg.dec
+
+[LibraryClasses]
+  PcdLib
+  BaseLib
+  HobLib
+  DebugLib
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  MmPciLib
+  SetupLib
+
+ [Protocols]
+  gEfiPlatformTypeProtocolGuid     ## Produces
+  gEfiIioUdsProtocolGuid
+  gEfiDxeSystemBoardProtocolGuid
+
+[Guids]
+  gEfiPlatformInfoGuid
+  gEfiSetupVariableGuid
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[Depex]
+ # APTIOV_SERVER_OVERRIDE_RC_START
+  gEfiDxeSystemBoardProtocolGuid
+ # APTIOV_SERVER_OVERRIDE_RC_END
+
+[FixedPcd.common]

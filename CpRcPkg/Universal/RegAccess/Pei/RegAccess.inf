@@ -1,0 +1,60 @@
+# 
+#  This file contains 'Framework Code' and is licensed as such
+#  under the terms of your license agreement with Intel or your
+#  vendor.  This file may not be modified, except as allowed by
+#  additional terms of your license agreement.
+#                                     
+#
+## @file
+#
+#  Unified Silicon Register Access PPI Installation
+#
+#  Copyright (c) 2011 - 2014, Intel Corporation. All rights reserved.<BR>
+#  This software and associated documentation (if any) is furnished
+#  under a license and may only be used or copied in accordance
+#  with the terms of the license. Except as permitted by such
+#  license, no part of this software or documentation may be
+#  reproduced, stored in a retrieval system, or transmitted in any
+#  form or by any means without the express written consent of
+#  Intel Corporation.
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = RegAccessPeim
+  FILE_GUID                      = 2C6CACC6-6C3C-4AA7-B2DE-384DAE2B0352
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = UsarPeimInit
+
+## {2C6CACC6-6C3C-4AA7-B2DE-384DAE2B0352}
+## { 0x2c6cacc6, 0x6c3c, 0x4aa7, { 0xb2, 0xde, 0x38, 0x4d, 0xae, 0x2b, 0x3, 0x52 } };
+
+[Sources]
+  RegAccess.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  CpRcPkg/CpRcPkg.dec
+
+
+[LibraryClasses]
+  SiliconAccessLib
+  PeiServicesLib
+  PeimEntryPoint
+  HobLib
+  BaseLib
+
+[Protocols]
+
+[Guids]
+
+[Ppis]
+  gUsraPpiGuid
+
+[Depex]
+  TRUE
+
+
+

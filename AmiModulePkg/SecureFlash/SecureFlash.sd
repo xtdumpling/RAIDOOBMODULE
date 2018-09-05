@@ -1,0 +1,261 @@
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**        5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093         **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
+
+//<AMI_FHDR_START>
+//----------------------------------------------------------------------------
+//
+// Name:        SecureFlash.sd
+//
+// Description:    
+//
+//----------------------------------------------------------------------------
+//<AMI_FHDR_END>
+
+#ifdef SETUP_DATA_DEFINITION
+/***********************************************************/
+/* Put NVRAM data definitions here.
+/* For example:    UINT8 Data1;
+/* These definitions will be converted by the build process
+/* to a definitions of SETUP_DATA fields.
+/***********************************************************/
+#endif
+
+#ifdef SECURITY_FORM_SET
+
+  #ifdef FORM_SET_TYPEDEF
+	#include "SecureFlash.h"
+ #endif
+
+  #ifdef FORM_SET_VARSTORE
+    varstore SECURE_FLASH_SETUP_VAR,
+        key   = AUTO_ID(SECURE_FLASH_MODE_ID),
+        name  = SecureFlashSetup,
+        guid  = AMI_SECURE_FLASH_SETUP_VAR_GUID;
+  #endif
+
+//  #ifdef FORM_SET_ITEM
+    // Define controls to be added to the main page of the formset
+  #ifdef FORM_SET_GOTO
+    //
+    // Define goto commands for the forms defined in this file
+    //
+//    SEPARATOR
+    goto SECURE_FLASH_SUBMENU_FORM_ID,
+    prompt  = STRING_TOKEN(SECURE_FLASH_MENU_FORM_TITLE),
+    help    = STRING_TOKEN(SECURE_FLASH_MENU_FORM_HELP),
+    flags   = INTERACTIVE, key = AUTO_ID(SECURE_FLASH_MENU_REFRESH);
+
+  #endif
+
+  #ifdef FORM_SET_FORM
+    //
+    // Define forms
+    //
+    form formid = AUTO_ID(SECURE_FLASH_SUBMENU_FORM_ID),
+    title     = STRING_TOKEN(SECURE_FLASH_MENU_FORM_TITLE);
+
+//        SEPARATOR
+// Secure Flash
+        suppressif ideqvallist SECURE_FLASH_SETUP_VAR.Type == 0 1;
+            text 
+                help   = STRING_TOKEN(STR_EMPTY),
+                text   = STRING_TOKEN(STR_SECURE_FLASH_MODE),
+                text   = STRING_TOKEN(STR_ENABLED),
+                flags  = 0,
+                key    = 0;
+        endif;
+        suppressif NOT ideqvallist SECURE_FLASH_SETUP_VAR.Type == 0 1;
+            text 
+                help   = STRING_TOKEN(STR_EMPTY),
+                text   = STRING_TOKEN(STR_SECURE_FLASH_MODE),
+                text   = STRING_TOKEN(STR_DISABLED),
+                flags  = 0,
+                key    = 0;
+        endif;
+// Key store
+// Signature Type
+        suppressif NOT ideqval SECURE_FLASH_SETUP_VAR.Key == 0;
+            text 
+                help   = STRING_TOKEN(STR_EMPTY),
+                text   = STRING_TOKEN(STR_SECURE_FLASH_KEY_STORE),
+                text   = STRING_TOKEN(STR_KEY_FILE_NA),
+                flags  = 0,
+                key    = 0;
+        endif;
+        suppressif NOT ideqval SECURE_FLASH_SETUP_VAR.Key == 1;
+            text 
+                help   = STRING_TOKEN(STR_EMPTY),
+                text   = STRING_TOKEN(STR_SECURE_FLASH_KEY_STORE),
+                text   = STRING_TOKEN(STR_KEY_FILE_RSA2048),
+                flags  = 0,
+                key    = 0;
+        endif;
+        suppressif NOT ideqval SECURE_FLASH_SETUP_VAR.Key == 2;
+            text 
+                help   = STRING_TOKEN(STR_EMPTY),
+                text   = STRING_TOKEN(STR_SECURE_FLASH_KEY_STORE),
+                text   = STRING_TOKEN(STR_KEY_FILE_SHA256),
+                flags  = 0,
+                key    = 0;
+        endif;
+        suppressif NOT ideqval SECURE_FLASH_SETUP_VAR.Key == 3;
+            text 
+                help   = STRING_TOKEN(STR_EMPTY),
+                text   = STRING_TOKEN(STR_SECURE_FLASH_KEY_STORE),
+                text   = STRING_TOKEN(STR_KEY_FILE_X509),
+                flags  = 0,
+                key    = 0;
+        endif;
+// Key validity
+        suppressif NOT ideqval SECURE_FLASH_SETUP_VAR.Type == 1;
+            text 
+                help   = STRING_TOKEN(STR_EMPTY),
+                text   = STRING_TOKEN(STR_SECURE_FLASH_KEY_TYPE),
+                text   = STRING_TOKEN(STR_SECURE_FLASH_KEY_DUMMY),
+                flags  = 0,
+                key    = 0;
+        endif;
+        suppressif NOT ideqval SECURE_FLASH_SETUP_VAR.Type == 2;
+            text 
+                help   = STRING_TOKEN(STR_EMPTY),
+                text   = STRING_TOKEN(STR_SECURE_FLASH_KEY_TYPE),
+                text   = STRING_TOKEN(STR_SECURE_FLASH_KEY_AMITEST),
+                flags  = 0,
+                key    = 0;
+        endif;
+        suppressif NOT ideqval SECURE_FLASH_SETUP_VAR.Type == 3;
+            text 
+                help   = STRING_TOKEN(STR_EMPTY),
+                text   = STRING_TOKEN(STR_SECURE_FLASH_KEY_TYPE),
+                text   = STRING_TOKEN(STR_SECURE_FLASH_KEY_OEM),
+                flags  = 0,
+                key    = 0;
+        endif;
+// Flash Upd Mode
+        suppressif NOT ideqval SECURE_FLASH_SETUP_VAR.Mode == 0;
+            text 
+                help   = STRING_TOKEN(STR_EMPTY),
+                text   = STRING_TOKEN(STR_SECURE_FLASH_UPDATE_MODES),
+                text   = STRING_TOKEN(STR_KEY_FILE_NA),
+                flags  = 0,
+                key    = 0;
+        endif;
+        suppressif NOT ideqval SECURE_FLASH_SETUP_VAR.Mode == 1;
+            text 
+                help   = STRING_TOKEN(STR_EMPTY),
+                text   = STRING_TOKEN(STR_SECURE_FLASH_UPDATE_MODES),
+                text   = STRING_TOKEN(STR_SECURE_FLASH_UPDATE_MODE1),
+                flags  = 0,
+                key    = 0;
+        endif;
+        suppressif NOT ideqval SECURE_FLASH_SETUP_VAR.Mode == 2;
+            text 
+                help   = STRING_TOKEN(STR_EMPTY),
+                text   = STRING_TOKEN(STR_SECURE_FLASH_UPDATE_MODES),
+                text   = STRING_TOKEN(STR_SECURE_FLASH_UPDATE_MODE2),
+                flags  = 0,
+                key    = 0;
+        endif;
+        suppressif NOT ideqval SECURE_FLASH_SETUP_VAR.Mode == 3;
+            text 
+                help   = STRING_TOKEN(STR_EMPTY),
+                text   = STRING_TOKEN(STR_SECURE_FLASH_UPDATE_MODES),
+                text   = STRING_TOKEN(STR_SECURE_FLASH_UPDATE_MODE3),
+                flags  = 0,
+                key    = 0;
+        endif;
+        suppressif NOT ideqval SECURE_FLASH_SETUP_VAR.Mode == 4;
+            text 
+                help   = STRING_TOKEN(STR_EMPTY),
+                text   = STRING_TOKEN(STR_SECURE_FLASH_UPDATE_MODES),
+                text   = STRING_TOKEN(STR_SECURE_FLASH_UPDATE_MODE4),
+                flags  = 0,
+                key    = 0;
+        endif;
+        suppressif NOT ideqval SECURE_FLASH_SETUP_VAR.Mode == 5;
+            text 
+                help   = STRING_TOKEN(STR_EMPTY),
+                text   = STRING_TOKEN(STR_SECURE_FLASH_UPDATE_MODES),
+                text   = STRING_TOKEN(STR_SECURE_FLASH_UPDATE_MODE5),
+                flags  = 0,
+                key    = 0;
+        endif;
+// Rollback protection
+        suppressif NOT ideqval SECURE_FLASH_SETUP_VAR.Rollback == 0;
+            text 
+                help   = STRING_TOKEN(STR_EMPTY),
+                text   = STRING_TOKEN(STR_SECURE_FLASH_ROLLBACK),
+                text   = STRING_TOKEN(STR_KEY_FILE_NA),
+                flags  = 0,
+                key    = 0;
+        endif;
+        suppressif NOT ideqval SECURE_FLASH_SETUP_VAR.Rollback == 1;
+            text 
+                help   = STRING_TOKEN(STR_EMPTY),
+                text   = STRING_TOKEN(STR_SECURE_FLASH_ROLLBACK),
+                text   = STRING_TOKEN(STR_ENABLED),
+                flags  = 0,
+                key    = 0;
+        endif;
+        suppressif NOT ideqval SECURE_FLASH_SETUP_VAR.Rollback == 2;
+            text 
+                help   = STRING_TOKEN(STR_EMPTY),
+                text   = STRING_TOKEN(STR_SECURE_FLASH_ROLLBACK),
+                text   = STRING_TOKEN(STR_DISABLED),
+                flags  = 0,
+                key    = 0;
+        endif;
+        SEPARATOR
+// Flash Lock
+        suppressif NOT ideqval SECURE_FLASH_SETUP_VAR.Lock == 0;
+            text 
+                help   = STRING_TOKEN(STR_EMPTY),
+                text   = STRING_TOKEN(STR_SECURE_FLASH_LOCK),
+                text   = STRING_TOKEN(STR_KEY_FILE_NA),
+                flags  = 0,
+                key    = 0;
+        endif;
+        suppressif NOT ideqval SECURE_FLASH_SETUP_VAR.Lock == 1;
+            text 
+                help   = STRING_TOKEN(STR_EMPTY),
+                text   = STRING_TOKEN(STR_SECURE_FLASH_LOCK),
+                text   = STRING_TOKEN(STR_DISABLED),
+                flags  = 0,
+                key    = 0;
+        endif;
+        suppressif NOT ideqval SECURE_FLASH_SETUP_VAR.Lock == 2;
+            text 
+                help   = STRING_TOKEN(STR_EMPTY),
+                text   = STRING_TOKEN(STR_SECURE_FLASH_LOCK),
+                text   = STRING_TOKEN(STR_ENABLED),
+                flags  = 0,
+                key    = 0;
+        endif;
+    endform;	    
+    #endif // FORM_SET_
+#endif // SECURITY_FORM_SET
+
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**        5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093         **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************

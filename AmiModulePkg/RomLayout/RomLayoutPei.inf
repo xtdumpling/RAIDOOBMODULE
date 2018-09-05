@@ -1,0 +1,73 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+## @file
+#   ROM Layout PEIM.
+#   This PEIM must be in the PEI Core FV (boot FV).
+##
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = RomLayoutPei
+  FILE_GUID                      = 7EB7126D-C45E-4BD0-9357-7F507C5C9CF9
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = RomLayoutPeiEntryPoint
+  
+[Sources]
+  RomLayoutPei.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+
+[LibraryClasses]
+  PeimEntryPoint
+  HobLib
+  PerformanceLib
+  BaseMemoryLib
+  DebugLib
+  AmiRomLayoutLib
+  
+[Guids]
+  gAmiRecoveryImageHobGuid
+  gAmiRomLayoutFfsFileGuid
+  gAmiRomLayoutGuid
+  
+[Ppis]
+  gEfiPeiFirmwareVolumeInfoPpiGuid
+  gEfiPeiBootInRecoveryModePpiGuid  ## PRODUCES
+  gEfiPeiMemoryDiscoveredPpiGuid    ## CONSUMES
+  gAmiReadyToLoadDxeCorePpiGuid     ## CONSUMES
+  
+[Pcd]
+  gAmiModulePkgTokenSpaceGuid.PcdUseNewImageOnFlashUpdate
+  gAmiModulePkgTokenSpaceGuid.PcdForceSetupOnFailedRecovery
+
+[Depex]
+  TRUE 
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

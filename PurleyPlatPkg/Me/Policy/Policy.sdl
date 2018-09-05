@@ -1,0 +1,38 @@
+TOKEN
+	Name  = "Policy_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling Policy support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "MeDxePolicyInit_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable MeDxePolicyInit support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "MePolicyInitPei_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable MePolicyInitPei support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "MeDxePolicyInit"
+	File  = "Dxe\MePolicyInitDxe.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "MeDxePolicyInit_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "MePolicyInitPei"
+	File  = "Pei\MePolicyInitPei.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "PEIM"
+	Token = "MePolicyInitPei_SUPPORT" "=" "1"
+End
+

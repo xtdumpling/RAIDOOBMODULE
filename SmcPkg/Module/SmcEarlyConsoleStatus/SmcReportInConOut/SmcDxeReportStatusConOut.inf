@@ -1,0 +1,93 @@
+#***************************************************************************
+#**                                                                       **
+#**       (C)Copyright 1993-2017 Supermicro Computer, Inc.                **
+#**                                                                       **
+#**                                                                       **
+#***************************************************************************
+#***************************************************************************
+#  File History
+#
+#   Rev. 1.00
+#     Bug Fix: Fix kernel panic with SUSE 12 SP1 intermittently.
+#     Reason:  Some kernel will use boot service memory area which maybe cause 
+#              code of boot serivce area corrupt.
+#              Based on UEFI spec, UEFI runtime service should not call boot service
+#              routine.
+#              Verify SUSE 12 SP1 & RHEL 7.3 & WIN2016
+#     Auditor: Leon Xu
+#     Date:    May/26/2017
+#***************************************************************************
+
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+
+## @file DxeReportStatusConOut.inf
+#  DXE driver that displays the Status code in the Con out devices
+##
+
+
+[Defines]
+  INF_VERSION               = 0x00010005
+  VERSION_STRING            = 1.0
+  BASE_NAME                 = SmcDxeReportStatusConOut
+  MODULE_TYPE               = DXE_DRIVER
+  FILE_GUID                 = EFFE004D-706E-4336-BF0A-B82274E4FBBB
+  ENTRY_POINT               = SmcInitializeDxeReportStatus
+
+[Sources]
+  SmcDxeReportStatusConOut.c
+  SmcDxeReportStatusConOut.h
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  DebugLib
+  PrintLib
+  UefiLib
+  ReportStatusCodeLib
+
+[Protocols]
+  gEfiRscHandlerProtocolGuid           
+  gAmiDxeTextOutProtocolGuid           
+  gAmiDxeConsplitterTextOutProtocolGuid
+  gEfiSimpleTextOutProtocolGuid
+          
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/EarlyConsoleOut/AmiEarlyConsoleOutPkg.dec 
+
+[Guids]
+  gEfiEventExitBootServicesGuid  
+  
+[Depex]
+  gEfiRscHandlerProtocolGuid AND
+  gAmiDxeTextOutProtocolGuid
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+  

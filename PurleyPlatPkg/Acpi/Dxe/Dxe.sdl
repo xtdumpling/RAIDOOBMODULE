@@ -1,0 +1,53 @@
+TOKEN
+	Name  = "Dxe_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling Dxe support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "AcpiVTD_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable AcpiVTD support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "AcpiPlatform_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable AcpiPlatform support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "AcpiPlatform"
+	File  = "AcpiPlatform\AcpiPlatform.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "AcpiPlatform_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "AcpiVTD"
+	File  = "AcpiVtd\AcpiVTD.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "AcpiVTD_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "PcdLib"
+	Instance  = "MdePkg.DxePcdLib"
+	Override  = "PurleyPlatPkg.AcpiPlatform"
+	Token = "AcpiPlatform_SUPPORT" "=" "1"	
+End
+
+LibraryMapping
+	Class  = "AcpiPlatformTableLib"
+	Instance  = "PurleyRpPkg.AcpiPlatformTableLib"
+	Override  = "PurleyPlatPkg.AcpiPlatform"
+	Token = "AcpiPlatform_SUPPORT" "=" "1"	
+End
+
+

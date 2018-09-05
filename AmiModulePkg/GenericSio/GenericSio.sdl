@@ -1,0 +1,200 @@
+TOKEN
+	Name  = "GenericSio_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable AMI Generic SIO support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+	Token = "SIO_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "AMI_SIO_MAJOR_VERSION"
+	Value  = "0xA5"
+	Help  = "AMI SIO Driver Major Version"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "AMI_SIO_MINOR_VERSION"
+	Value  = "7"
+	Help  = "AMI SIO Driver Minor Version"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "AMI_SIO_REVISION"
+	Value  = "3"
+	Help  = "AMI SIO Driver Minor Version"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "AMI_SIO_VER_COMBINED"
+	Value  = "$(AMI_SIO_MAJOR_VERSION)*100+ $(AMI_SIO_MINOR_VERSION)*10"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "SIO_DEBUG_MESSAGES"
+	Value  = "0"
+	Help  = "Switch to enable SIO DEBUG MESSAGES in SIO MODULE."
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "DEBUG_CODE" "=" "1"
+End
+
+TOKEN
+	Name  = "SIO_SETUP_USE_APTIO_4_STYLE"
+	Value  = "0"
+	Help  = "Main switch to enable Aptio 4.x Static Setup Screen Instead of Auto generated Setup in Aptio V."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SIO_SETUP_USE_UID_AS_NUMBERS"
+	Value  = "0"
+	Help  = "If multiple number of same type devices shown in Setup\this will tell to use LDs UID as Device Number in Setup\If set to OFF 1 base ordering numbers will be used."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SIO_SETUP_LD_TYPE_ORDER"
+	Value  = "dsUART, dsCIR, dsLPT, dsPS2CK, dsPS2CM, dsPS2K, dsPS2M, dsFDC"
+	Help  = "This Defines order of the goto items\at SIO Main Setup Screen.\It must be 8 items in that array!\Default is: {dsLPT,dsUART,dsCIR,dsPS2CK,dsPS2CM,dsPS2K,dsPS2M,dsFDC} "
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SioBdsPlugin_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable SioBdsPlugin support in Project"
+	TokenType = Boolean
+End
+
+PATH
+	Name  = "GenericSio_DIR"
+	Help  = "Path to AMI Board Info Module in Project"
+End
+
+ELINK
+	Name  = "{ {0x941BC855, 0xBF7E, 0x4fcb, { 0x88, 0x2F, 0x7A, 0xEA, 0xD1, 0x5C, 0x9D, 0x47 }}, 0, NULL },"
+	Parent  = "AMITSE_HIDDEN_PAGE_LIST"
+	Help  = "Provide GUIDs of dynmaic formset to suppress. Terminate entry with comma"
+	Token = "SIO_SETUP_USE_APTIO_4_STYLE" "=" "0"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(GenericSio_DIR)/SioDynamicSetup.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	Token = "SIO_SETUP_USE_APTIO_4_STYLE" "=" "0"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(GenericSio_DIR)/SioDynamicSetup.uni"
+	Parent  = "SetupStringFiles"
+	Token = "SIO_SETUP_USE_APTIO_4_STYLE" "=" "0"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "ConnectSio,"
+	Parent  = "ConnectRootBridgeHandlesBeforeEndOfDxe,"
+	InvokeOrder = AfterParent
+	Token = "SioBdsPlugin_SUPPORT" "=" "1"
+End
+
+ELINK
+	Name  = "SIO_PEI_TABLE_DEFINITIONS"
+	InvokeOrder = ReplaceParent
+End
+
+OUTPUTREGISTER
+	Name  = "APTIO_V_SIOINIT"
+	Path  = "Build"
+	File  = "GSIODXEINIT.h"
+	Token = "SIO_SUPPORT" "=" "1"
+End
+
+OUTPUTREGISTER
+	Name  = "APTIO_V_SIO_SETUP_VAR"
+	Path  = "Build"
+	File  = "GSIOSETUPVAR.H"
+	Token = "SIO_SETUP_USE_APTIO_4_STYLE" "=" "0"
+	Token = "SIO_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "GenericSio"
+	File  = "GenericSio.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "UEFI_DRIVER"
+	Token = "SIO_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "SioDxeInit"
+	File  = "SioDxeInit.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "SIO_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "SioDynamicSetup"
+	File  = "SioDynamicSetup.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "SIO_SETUP_USE_APTIO_4_STYLE" "=" "0"
+	Token = "SIO_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "SmmGenericSio"
+	File  = "SmmGenericSio.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "SMM_SUPPORT" "=" "1"
+	Token = "SIO_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "SioBdsPlugin"
+	File  = "SioBdsPlugin.inf"
+	Package  = "AmiModulePkg"
+	Token = "SioBdsPlugin_SUPPORT" "=" "1"
+	Token = "SIO_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "AmiModulePkg.SioBdsPlugin"
+	Override  = "AmiModulePkg.Bds"
+	Token = "SioBdsPlugin_SUPPORT" "=" "1"
+	Token = "SIO_SUPPORT" "=" "1"
+End
+

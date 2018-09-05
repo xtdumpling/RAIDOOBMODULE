@@ -1,0 +1,127 @@
+TOKEN
+    Name  = MEUD_SUPPORT
+    Value  = "1"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    Master = Yes
+    Help  = "Main switch to enable ME Firmware Update support in Project"
+End
+
+TOKEN
+    Name  = "[OFBD ME Firmware Update]"
+    Help  = "See detail description in each token's help box."
+    TokenType = Expression
+    Lock = Yes
+End
+
+PATH
+    Name  = "OFBD_MEUD_DIR"
+End
+
+TOKEN
+    Name  = "Disable_ME_SW_SMI"
+    Value  = "0x29"
+    TokenType = Expression
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = ME_SECOVR_MEI_MSG_SUPPORT
+    Value  = "0"
+    TokenType = Boolean
+    TargetH = Yes
+    TargetMAK = Yes
+    Help  = "Support ME update when ME in SECOVR_MEI_MSG mode,BayTrail please Ensable this."
+End
+
+ELINK
+    Name  = "MeudEntry,"
+    Parent  = "OFBD_INIT_FUNC_LIST"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "MeudInSmm,"
+    Parent  = "OFBD_IN_SMM_FUNC_LIST"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(BUILD_DIR)/Meud.sdb"
+    Parent  = "SETUP_SDBS"
+    Priority  = 40
+    Token = "ME_SECOVR_MEI_MSG_SUPPORT" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(OFBD_MEUD_DIR)/Setup/Meud.sd"
+    Parent  = "SETUP_DEFINITIONS"
+    Priority  = 40
+    Token = "ME_SECOVR_MEI_MSG_SUPPORT" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(OFBD_MEUD_DIR)/Setup/Meud.uni"
+    Parent  = "SetupStringFiles"
+    InvokeOrder = AfterParent
+End
+
+
+ELINK
+    Name  = "$(OFBD_MEUD_DIR)/Setup/InitMeudString.c"
+    Parent  = "SetupCallbackFiles"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "InitMEUDInfo,"
+    Parent  = "SetupStringInit"
+    Token = "ME_SECOVR_MEI_MSG_SUPPORT" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(OFBD_MEUD_DIR)/Meud.h"
+    Parent  = "OFBD_FUNC_INCLUDE_FILES"
+    InvokeOrder = BeforeParent
+End
+
+ELINK
+    Name  = "$(OFBD_MEUD_DIR)/Meud.c"
+    Parent  = "OFBD_FUNC_SOURCES_FILES"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(OFBD_MEUD_DIR)/MeudMsg.c"
+    Parent  = "OFBD_FUNC_SOURCES_FILES"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "DebugLib"
+    Parent  = "AMI_OFBD_LIBRARIES"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(EXIT_FORM_SET_CLASS,0,AMITSESETUP_KEY,MEUDSetupCallbackFunction),"
+    Parent  = "SetupItemCallbacks"
+    Token = "ME_SECOVR_MEI_MSG_SUPPORT" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "FlashLib"
+    Parent  = "AMI_OFBD_LIBRARIES"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "PciLib"
+    Parent  = "AMI_OFBD_LIBRARIES"
+    InvokeOrder = AfterParent
+End

@@ -1,0 +1,29 @@
+TOKEN
+	Name  = "OemVtdRmrr_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling OemVtdRmrr support in the project"
+	TokenType = Boolean
+	TargetH = Yes
+	Master = Yes
+End
+
+PATH
+    Name = "OemVtdRmrr_DIR"
+End
+
+MODULE
+    Help  = "Includes OemVtdRmrr.mak to Project"
+    File  = "OemVtdRmrr.mak"
+End
+
+ELINK
+    Name  = "OEM_VTD_RMRR_HOOK"
+    InvokeOrder = ReplaceParent
+End
+
+INFComponent
+	Name  = "OemVtdRmrr"
+	File  = "OemVtdRmrr.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "DXE_DRIVER"
+End

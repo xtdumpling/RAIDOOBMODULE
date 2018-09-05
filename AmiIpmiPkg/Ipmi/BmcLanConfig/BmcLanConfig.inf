@@ -1,0 +1,73 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+#
+# @file  BmcLanConfig.inf
+#
+#  INF description file for BmcLanConfig driver
+#
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = BmcLanConfig
+  FILE_GUID                      = BC0B9FB8-97CF-4b17-9A9E-F574E62CBCC4
+  MODULE_TYPE                    = DXE_DRIVER
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = InitializeBmcLanConfig
+
+[Sources]
+  BmcLanConfig.h
+  BmcLanConfig.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  AmiIpmiPkg/AmiIpmiPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  MemoryAllocationLib
+  BaseLib
+  DebugLib
+  BaseMemoryLib
+
+[Protocols]
+  gEfiDxeIpmiTransportProtocolGuid        #CONSUMES
+
+[Guids]
+  gEfiServerMgmtSetupVariableGuid
+  
+[Pcd]
+
+[Depex]
+  gEfiDxeIpmiTransportProtocolGuid
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**         5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093     **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

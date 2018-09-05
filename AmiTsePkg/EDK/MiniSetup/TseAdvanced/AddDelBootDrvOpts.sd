@@ -1,0 +1,266 @@
+//*****************************************************************//
+//*****************************************************************//
+//*****************************************************************//
+//**                                                             **//
+//**         (C)Copyright 2012, American Megatrends, Inc.        **//
+//**                                                             **//
+//**                     All Rights Reserved.                    **//
+//**                                                             **//
+//**   5555 Oakbrook Pkwy, Building 200,Norcross, Georgia 30093  **//
+//**                                                             **//
+//**                     Phone (770)-246-8600                    **//
+//**                                                             **//
+//*****************************************************************//
+//*****************************************************************//
+//*****************************************************************//
+// $Header: /Alaska/BIN/Modules/AMITSE2_0/AMITSE/TseAdvanced/AddDelBootDrvOpts.sd 1     2/03/12 2:27a Arunsb $
+//
+// $Revision: 1 $
+//
+// $Date: 2/03/12 2:27a $
+//**********************************************************************
+//<AMI_FHDR_START>
+//
+// Name: AMITSE.sd
+//
+// Description: SD File for Add/Del Boot/Driver options to show in setup
+//
+//<AMI_FHDR_END>
+//***************************************************************************
+
+#ifdef BOOT_FORM_SET
+
+#ifdef FORM_SET_VARSTORE
+
+	varstore DRIVER_MANAGER,
+	key = DRIVER_MANAGER_KEY_ID,
+	name = DriverManager,
+	guid = DRIVER_MANAGER_GUID;
+
+	varstore DRIVER_ORDER,
+	key = DRIVER_ORDER_KEY_ID,
+	name = DriverOrder,
+	guid = EFI_GLOBAL_VARIABLE_GUID;
+
+#if SETUP_SUPPORT_ADD_DRIVER_OPTION
+	varstore NEW_DRIVER_OPTION,
+	key = NEW_DRIVER_OPTION_KEY_ID,
+	name = AddDriverOption,
+	guid = ADD_DRIVER_OPTION_GUID;
+
+	varstore DEL_DRIVER_OPTION,
+	key = DEL_DRIVER_OPTION_KEY_ID,
+	name = DelDriverOption,
+	guid = DEL_DRIVER_OPTION_GUID;
+#endif
+#endif
+
+//Add/Del new boot option starts
+#if SETUP_SUPPORT_ADD_BOOT_OPTION
+#ifdef FORM_SET_GOTO
+	SEPARATOR
+	suppressif ideqval NEW_BOOT_OPTION.FsCount == 0;
+		goto ADD_FORM_ID,
+			prompt = STRING_TOKEN (STR_ADD_BOOT_OPTION),
+			help = STRING_TOKEN (STR_ADD_BOOT_OPTION_HELP);
+	endif;
+	
+	goto DEL_FORM_ID,
+		prompt = STRING_TOKEN(STR_DEL_BOOT_OPTION),
+		help = STRING_TOKEN(STR_DEL_BOOT_OPTION_HELP),
+		flags  = 0, key    = 0;
+#endif
+#ifdef FORM_SET_FORM
+    form
+		formid = ADD_FORM_ID,
+		title = STRING_TOKEN(STR_ADD_BOOT_OPTION);
+
+		subtitle text = STRING_TOKEN(STR_ADD_BOOT_OPTION);
+		subtitle text = STRING_TOKEN(STR_EMPTY);
+
+		string    varid    = NEW_BOOT_OPTION.Label,
+			prompt   = STRING_TOKEN(STR_ADD_BOOT_LABEL),
+			help     = STRING_TOKEN(STR_BOOT_LABEL_HELP),
+			flags    = 0,
+			key      = 0,
+			minsize  = 3,
+			maxsize  = 20,
+		endstring;
+
+		suppressif ideqval AMI_CALLBACK.Value == LAUNCH_FILE_PATH;
+			goto ADD_FORM_ID,
+			prompt = STRING_TOKEN(STR_ADD_BOOT_PATH),
+			help = STRING_TOKEN(STR_BOOT_PATH_HELP);
+		endif;
+
+		grayoutif ideqid NEW_BOOT_OPTION.FsCount == NEW_BOOT_OPTION.FsCount;
+		string    varid    = NEW_BOOT_OPTION.Path,
+			prompt   = STRING_TOKEN(STR_NEW_BOOT_FILE_PATH),
+			help     = STRING_TOKEN(STR_NEW_BOOT_FILE_PATH_HELP),
+			flags    = 0,
+			key      = 0,
+			minsize  = 0,
+			maxsize  = 120,
+			endstring;
+		endif;
+
+		suppressif ideqval AMI_CALLBACK.Value == SAVE_BOOT_OPTION;
+			goto ADD_FORM_ID,
+      	prompt = STRING_TOKEN(STR_SAVE_BOOT_OPTION),
+			help = STRING_TOKEN(STR_SAVE_BOOT_OPTION_HELP);
+		endif;
+	endform;
+
+	form
+		formid = DEL_FORM_ID,
+		title = STRING_TOKEN(STR_DEL_BOOT_OPTION);
+
+		subtitle text = STRING_TOKEN(STR_DEL_BOOT_OPTION);
+		subtitle text = STRING_TOKEN(STR_EMPTY);
+
+		suppressif ideqvallist BOOT_MANAGER.BootCount == 0xFFFF;
+			oneof
+                varid     = DEL_BOOT_OPTION.Option,
+                prompt    = STRING_TOKEN(STR_DEL_BOOT_OPTION),
+                help      = STRING_TOKEN(STR_DEL_BOOT_OPTION_HELP),
+                option
+                    text  = STRING_TOKEN(STR_SELECT_TO_DEL),
+                    value = 0xFFFF,
+                    flags = DEFAULT | MANUFACTURING;
+                option
+                    text  = STRING_TOKEN(STR_EMPTY),
+                    value = 0,
+                    flags = 0;
+            endoneof;
+		endif;
+	endform;
+#endif
+#endif
+//Add/Del new boot option ends
+
+//For driver order priorities starts
+#ifdef FORM_SET_ITEM
+	SEPARATOR
+		suppressif ideqvallist DRIVER_MANAGER.DriverCount == 0;
+		SUBTITLE(STRING_TOKEN(STR_DRIVER_ORDER_SUBTITLE))
+		endif;
+		suppressif ideqvallist DRIVER_MANAGER.DriverCount == 0xFFFF;
+			oneof varid = DRIVER_ORDER.Value,
+				prompt = STRING_TOKEN(STR_DRIVER_ORDER_X),
+				help = STRING_TOKEN(STR_DRIVER_ORDER_HELP),
+				option
+				text = STRING_TOKEN(STR_EMPTY),
+				value = 0,
+				flags = DEFAULT | MANUFACTURING;
+				option
+				text = STRING_TOKEN(STR_EMPTY),
+				value = 1,
+				flags = 0;
+			endoneof;
+		endif;
+#endif
+//For driver order priorities ends
+
+//Add/Del new driver option starts
+#if SETUP_SUPPORT_ADD_DRIVER_OPTION
+#ifdef FORM_SET_GOTO
+	SEPARATOR
+	suppressif ideqval NEW_DRIVER_OPTION.FsCount == 0;        
+		goto ADD_DRIVER_FORM_ID,
+			prompt = STRING_TOKEN(STR_ADD_DRIVER_OPTION),
+			help = STRING_TOKEN(STR_ADD_DRIVER_OPTION_HELP);
+ 	endif;
+
+	goto DEL_DRIVER_FORM_ID,
+		prompt = STRING_TOKEN(STR_DEL_DRIVER_OPTION),
+		help = STRING_TOKEN(STR_DEL_DRIVER_OPTION_HELP),
+		flags  = 0, key    = 0;	
+#endif
+#ifdef FORM_SET_FORM
+	form
+		formid = ADD_DRIVER_FORM_ID,
+		title = STRING_TOKEN(STR_ADD_DRIVER_OPTION);
+
+		subtitle text = STRING_TOKEN(STR_ADD_DRIVER_OPTION);
+		subtitle text = STRING_TOKEN(STR_EMPTY);
+
+		string    varid    = NEW_DRIVER_OPTION.Label,
+			prompt   = STRING_TOKEN(STR_ADD_DRIVER_LABEL),
+			help     = STRING_TOKEN(STR_DRIVER_LABEL_HELP),
+			flags    = 0,
+			key      = 0,
+			minsize  = 3,
+			maxsize  = 20,
+		endstring;
+
+		suppressif ideqval AMI_CALLBACK.Value == LAUNCH_FILE_PATH_DRIVER;
+			goto ADD_DRIVER_FORM_ID,
+			prompt = STRING_TOKEN(STR_ADD_DRIVER_PATH),
+			help = STRING_TOKEN(STR_DRIVER_PATH_HELP);
+		endif;
+
+		grayoutif ideqid NEW_DRIVER_OPTION.FsCount == NEW_DRIVER_OPTION.FsCount;
+		string    varid    = NEW_DRIVER_OPTION.DriverPath,
+			prompt   = STRING_TOKEN (STR_NEW_DRIVER_FILE_PATH),
+			help     = STRING_TOKEN (STR_NEW_DRIVER_FILE_PATH_HELP),
+			flags    = 0,
+			key      = 0,
+			minsize  = 0,
+			maxsize  = 120,
+			endstring;
+		endif;
+
+		suppressif ideqval AMI_CALLBACK.Value == SAVE_DRIVER_OPTION;
+			goto ADD_DRIVER_FORM_ID,
+			prompt = STRING_TOKEN(STR_SAVE_BOOT_OPTION),
+			help = STRING_TOKEN(STR_SAVE_DRIVER_OPTION_HELP);
+		endif;
+
+	endform;
+
+	form
+		formid = DEL_DRIVER_FORM_ID,
+		title = STRING_TOKEN(STR_DEL_DRIVER_OPTION);
+
+		subtitle text = STRING_TOKEN(STR_DEL_DRIVER_OPTION);
+		subtitle text = STRING_TOKEN(STR_EMPTY);
+
+		suppressif ideqvallist DRIVER_MANAGER.DriverCount == 0xFFFF;
+		oneof
+                varid     = DEL_DRIVER_OPTION.Option,
+                prompt    = STRING_TOKEN(STR_DEL_DRIVER_OPTION),
+                help      = STRING_TOKEN(STR_DEL_DRIVER_OPTION_HELP),
+                option
+                    text  = STRING_TOKEN(STR_SELECT_TO_DEL),
+                    value = 0xFFFF,
+                    flags = DEFAULT | MANUFACTURING;
+                option
+                    text  = STRING_TOKEN(STR_EMPTY),
+                    value = 0,
+                    flags = 0;
+            endoneof;
+		endif;
+
+	endform;
+
+#endif
+#endif
+//Add/Del new driver option ends
+
+#endif //ifdef ADVANCED_FORM_SET
+
+//*****************************************************************//
+//*****************************************************************//
+//*****************************************************************//
+//**                                                             **//
+//**         (C)Copyright 2012, American Megatrends, Inc.        **//
+//**                                                             **//
+//**                     All Rights Reserved.                    **//
+//**                                                             **//
+//**   5555 Oakbrook Pkwy, Building 200,Norcross, Georgia 30093  **//
+//**                                                             **//
+//**                     Phone (770)-246-8600                    **//
+//**                                                             **//
+//*****************************************************************//
+//*****************************************************************//
+//*****************************************************************//

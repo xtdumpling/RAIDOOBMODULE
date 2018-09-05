@@ -1,0 +1,67 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.00
+#       Bug fixed:   Initialize revision
+#       Reason:      Clone from Sample folder.
+#       Auditor:     Leon Xu
+#       Date:        20-Jul-2017
+#
+#****************************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SmcOptimizePei
+  FILE_GUID                      = 40fdf4fc-b7cc-4ac5-9ba2-a050d26656a7
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = SmcOptimizePeiInit
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+#
+
+[Sources]
+  SmcOptimizePei.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  SmcPkg/SmcPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  AmiIpmiPkg/AmiIpmiPkg.dec
+  PurleyRpPkg/PlatformPkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  
+[LibraryClasses]
+  IoLib
+  PeimEntryPoint
+  AmiPeiLib
+  SmcCspLib
+  SmcLib
+  PciLib
+  SetupLib
+  
+[Guids]
+  
+[Ppis]
+  gEfiPeiIpmiTransportPpiGuid
+  gEfiPeiReadOnlyVariable2PpiGuid  
+
+[Pcd]
+  
+[Depex]
+  TRUE
+
+#**********************************************************************

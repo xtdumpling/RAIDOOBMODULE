@@ -1,0 +1,52 @@
+TOKEN
+	Name  = "DbgPerformanceLib_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling DbgPerformanceLib support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+Token
+	Name = "DbgPerformanceMode_Support"
+	Value = "1"
+	Help = "Switch for Debug Performance Mode Check"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "PerformanceMeasurement_SUPPORT" "=" "1"
+End
+
+PATH
+	Name  = "DbgPerformanceLib_DIR"
+	Path  = "AMIDebugRxPkg\Debugger\DbgPerformanceLib"
+End
+
+INFComponent
+	Name  = "DbgPEIPerformanceLib"
+	File  = "DbgPEIPerformanceLib.inf"
+	Package  = "Debugger"
+	Path  = "DbgPerformanceLib_DIR"
+End
+
+INFComponent
+	Name  = "DbgDXEPerformanceLib"
+	File  = "DbgDXEPerformanceLib.inf"
+	Package  = "Debugger"
+	Arch  = "common"
+	Path  = "DbgPerformanceLib_DIR"
+End
+
+LibraryMapping
+	Class  = "DbgPerformanceLib"
+	Instance  = "Debugger.DbgPEIPerformanceLib"
+	ModuleTypes  = "SEC PEIM PEI_CORE"
+	Arch  = "common"
+End
+
+LibraryMapping
+	Class  = "DbgPerformanceLib"
+	Instance  = "Debugger.DbgDXEPerformanceLib"
+	ModuleTypes  = "DXE_CORE DXE_DRIVER DXE_RUNTIME_DRIVER SMM_CORE DXE_SMM_DRIVER UEFI_APPLICATION UEFI_DRIVER"
+	Arch  = "common"
+End

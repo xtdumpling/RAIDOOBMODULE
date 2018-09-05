@@ -1,0 +1,104 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+## @file
+#   This driver installs BDS Architectural Protocol
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = Bds
+  FILE_GUID                      = 8F4B8F82-9B91-4028-86E6-F4DB7D4C1DFF
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = BdsInit
+#
+#  This flag specifies whether HII resource section is generated into PE image.
+#
+  UEFI_HII_RESOURCE_SECTION      = TRUE
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF EBC
+#
+
+[Sources]
+  BootOptions.c
+  Bds.c
+  BdsBoard.c
+  Bds.uni
+
+[Packages]
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+
+[LibraryClasses]
+  AmiDxeLib
+  UefiDriverEntryPoint
+  PcdLib
+  BaseLib
+  
+[Protocols]
+  gEfiBdsArchProtocolGuid             ## PRODUCES
+  gEfiLoadFileProtocolGuid            ## PRODUCES, CONSUMES
+  gEfiPciRootBridgeIoProtocolGuid     ## CONSUMES
+  gEfiPciIoProtocolGuid               ## CONSUMES
+  gEfiBlockIoProtocolGuid             ## CONSUMES
+  gEfiFirmwareVolume2ProtocolGuid     ## CONSUMES
+  gEfiSimpleFileSystemProtocolGuid    ## CONSUMES
+  gEfiDevicePathProtocolGuid          ## CONSUMES
+  gEfiLegacyBiosProtocolGuid          ## CONSUMES
+  gEfiDiskInfoProtocolGuid            ## CONSUMES
+  gEfiUsbIoProtocolGuid               ## CONSUMES
+  gEfiDxeSmmReadyToLockProtocolGuid   ## PRODUCES
+  gEfiAcpiS3SaveProtocolGuid          ## CONSUMES
+  gEfiBootManagerPolicyProtocolGuid   ## PRODUCES
+  gAmiBdsConnectPolicyProtocolGuid    ## PRODUCES
+  gAmiOptionRomPolicyProtocolGuid     ## CONSUMES
+  gEsrtManagementProtocolGuid         ## CONSUMES
+  
+[Guids]
+  gEfiEventReadyToBootGuid
+  gEfiMemoryTypeInformationGuid
+  gEfiEndOfDxeEventGroupGuid
+  gEfiGlobalVariableGuid
+  gEfiCapsuleVendorGuid
+  gEfiBootManagerPolicyConsoleGuid
+  gEfiBootManagerPolicyNetworkGuid
+  gEfiBootManagerPolicyConnectAllGuid
+  
+[Pcd]
+  gEfiMdeModulePkgTokenSpaceGuid.PcdResetOnMemoryTypeInformationChange
+  gEfiIntelFrameworkModulePkgTokenSpaceGuid.PcdShellFile
+
+[Depex]
+  TRUE 
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

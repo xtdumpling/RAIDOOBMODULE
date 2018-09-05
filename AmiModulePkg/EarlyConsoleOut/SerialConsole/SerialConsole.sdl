@@ -1,0 +1,63 @@
+TOKEN
+    Name  = "SerialConsole_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable Serial Console device for the early display and status report in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes        
+    Master = Yes
+End
+
+INFComponent
+    Name  = "PeiSerialTextOutLib"
+    File  = "SerialTextOutLib.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "PEIM"
+End
+
+INFComponent
+    Name  = "DxeSerialTextOutLib"
+    File  = "SerialTextOutLib.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_DRIVER"
+End
+
+LibraryMapping
+    Class  = "PeiSerialTextOutLib"
+    Instance  = "AmiModulePkg.PeiSerialTextOutLib"
+    ModuleTypes  = "PEIM"
+End
+
+LibraryMapping
+    Class  = "DxeSerialTextOutLib"
+    Instance  = "AmiModulePkg.DxeSerialTextOutLib"
+    ModuleTypes  = "DXE_DRIVER"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiModulePkg.PeiSerialTextOutLib"
+    ModuleTypes  = "PEIM"
+    Override  = "AmiModulePkg.PeiSerialTextOut"
+End
+
+INFComponent
+    Name  = "PeiSerialTextOut"
+    File  = "PeiSerialTextOut.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "PEIM"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiModulePkg.DxeSerialTextOutLib"
+    ModuleTypes  = "DXE_DRIVER"
+    Override  = "AmiModulePkg.DxeSerialTextOut"
+End
+
+INFComponent
+    Name  = "DxeSerialTextOut"
+    File  = "DxeSerialTextOut.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_DRIVER"
+End

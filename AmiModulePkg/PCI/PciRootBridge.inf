@@ -1,0 +1,57 @@
+## @file
+#  PciRootBridge implementation INF file
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = PciRootBridge
+  FILE_GUID                      = 80E66E0A-CCD1-43FA-A7B1-2D5EE0F13910
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = InitializePCIHostBridge
+
+  
+[Sources]
+  PciHostBridge.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+
+[LibraryClasses]
+  UefiBootServicesTableLib
+  UefiDriverEntryPoint
+  AmiDxeLib
+  AmiCspLib
+  AmiPciBusLib
+  AmiSdlLib
+  AmiPciHotPlugLib
+  PciAccessCspLib
+  PcdLib
+
+[Protocols]
+  gEfiPciRootBridgeIoProtocolGuid   			#PRODUCE
+  gEfiComponentName2ProtocolGuid			#PRODUCE
+  gEfiDevicePathProtocolGuid	    			#PRODUCE
+  gEfiPciHostBridgeResourceAllocationProtocolGuid 	#PRODUCE
+  gEfiPciHotPlugInitProtocolGuid                        #PRODUCE
+  gAmiPciSmmHandoffProtocolGuid                         #PRODUCE
+
+[Depex] 
+  gEfiCpuArchProtocolGuid AND
+  gEfiVariableArchProtocolGuid  AND
+  gEfiVariableWriteArchProtocolGuid AND
+  gAmiBoardInfo2ProtocolGuid AND
+  gEfiAcpiTableProtocolGuid #AMI
+  
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+  gAmiModulePkgTokenSpaceGuid.AmiPcdPcieBaseAddressBuffer
+  gAmiModulePkgTokenSpaceGuid.AmiPcdMaxSegmentSupported
+# APTIOV_SERVER_OVERRIDE_START
+  gAmiModulePkgTokenSpaceGuid.AmiPcdPciOutOfResourcesStatus
+# APTIOV_SERVER_OVERRIDE_END
+  

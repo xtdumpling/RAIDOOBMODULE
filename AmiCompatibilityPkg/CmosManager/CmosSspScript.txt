@@ -1,0 +1,7 @@
+BEGIN { RS = "[[:space:]]" }
+{
+	print gensub(\
+		/(.+)/,\
+		"include \"\\1\"", "g"\
+	)
+}

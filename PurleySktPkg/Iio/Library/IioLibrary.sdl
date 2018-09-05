@@ -1,0 +1,47 @@
+TOKEN
+	Name  = "IioLibrary_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling IIO Library support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+
+INFComponent
+	Name  = "IioInitLib"
+	File  = "PeiDxeCommonIioInitLib/IioInitLib.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "BASE"
+End
+
+INFComponent
+	Name  = "IioInitPeiLib"
+	File  = "PeiIioInitLib/IioInitPeiLib.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "BASE"
+End
+
+INFComponent
+	Name  = "IioInitDxeLib"
+	File  = "DxeIioInitLib/IioInitDxeLib.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "BASE"
+End
+
+LibraryMapping
+	Class  = "IioInitLib"
+	Instance  = "PurleySktPkg.IioInitLib"
+    ModuleTypes  = "PEIM DXE_DRIVER DXE_SMM_DRIVER"
+End
+
+LibraryMapping
+	Class  = "IioInitPeiLib"
+	Instance  = "PurleySktPkg.IioInitPeiLib"
+    ModuleTypes  = "PEIM"
+End
+
+LibraryMapping
+	Class  = "IioInitDxeLib"
+	Instance  = "PurleySktPkg.IioInitDxeLib"
+    ModuleTypes  = "DXE_DRIVER DXE_SMM_DRIVER"
+End

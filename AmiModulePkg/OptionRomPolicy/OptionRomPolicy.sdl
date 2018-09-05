@@ -1,0 +1,145 @@
+TOKEN
+	Name  = "OptionRomPolicy_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable Option ROM Dispatch Policy support in Project"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "ROM_SETUP_SHOW_SLOTS_FIRST"
+	Value  = "0"
+	Help  = "Switch to determine in what order PCI Devices with Option ROMs\ will be dispalyed on OptionRom Setup Screen.\If set to ON first will go Slots, than OnBord devices..."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "DEVICE_CLASS_POLICY_OVERRIDE"
+	Value  = "0"
+	Help  = "Switch to determine what look and fill will be used for Op Rom Setup Page:\ CSM defined Device Class Group Policy Dispatch Options\ or Hide Selection On CSM Page and use [Disable]; Legacy; UEFI Rom Options."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "POLICY_OVERRIDE_MODE"
+	Value  = "0"
+	Help  = "Switch to determine type of group dispatch policy override:\ 0 = No Group policy used, only ROM Policy Controls\ 1 = Use Group Policy and ROM Policy Controls."
+	TokenType = Integer
+	TargetH = Yes
+	Token = "DEVICE_CLASS_POLICY_OVERRIDE" "=" "1"
+End
+
+TOKEN
+	Name  = "DEFAULT_NETWORK_OPROM_POLICY_VALUE"
+	Value  = "1"
+	Help  = "Defines Setup Default for Mass Storage Class PCI Devices Group:\ 0 = Disable ROM Execution;\ 1 = UEFI ROM will be launched;\ 2 = Legacy ROM will be launched;"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "DEFAULT_STORAGE_OPROM_POLICY_VALUE"
+	Value  = "1"
+	Help  = "Defines Setup Default for Mass Storage Class PCI Devices Group:\ 0 = Disable ROM Execution;\ 1 = UEFI ROM will be launched;\ 2 = Legacy ROM will be launched;"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "DEFAULT_DISPLAY_OPROM_POLICY_VALUE"
+	Value  = "2"
+	Help  = "Defines Setup Default for Display Class PCI Devices Group:\ 0 = Disable ROM Execution;\ 1 = UEFI ROM will be launched;\ 2 = Legacy ROM will be launched;"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "DEFAULT_OTHER_OPROM_POLICY_VALUE"
+	Value  = "1"
+	Help  = "Defines Setup Default for Other PCI Devices Group:\ 0 = Disable ROM Execution;\ 1 = UEFI ROM will be launched;\ 2 = Legacy ROM will be launched;"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "DEFAULT_SUPRESS_VGA_VALUE"
+	Value  = "1"
+	Help  = "Defines Setup Default for 'Primary Video Ignore' Setup Option:\ 0 = Disable;\ 1 = Enable;"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "DEFAULT_RESET_POLICY_VALUE"
+	Value  = "1"
+	Help  = "Defines Setup Default for 'Restore if Failure' Setup Option:\ 0 = Disable;\ 1 = Enable;"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "ROM_SETUP_HIDE_NOTFOUND_ONBOARD"
+	Value  = "1"
+	Help  = "Switch to Expose or Hide (not found or Disabled) OnBoard devices..."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "ROM_SETUP_HIDE_ITEM_PARENT_IDX"
+	Value  = "0xFFFF"
+	Help  = "Value of AMI_SDL_PCI_DEV_INFO->ParentIndex to have Setup Item hidden."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "ROM_SETUP_SLOTS_TO_SHOW"
+	Value  = "1,17,24,50,51,52,53"
+	Help  = "List of Slot Numbers to be shown in Option ROM Dispatch Policy Setup Screen."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "MAX_NUMBER_OF_ROM_ITEMS"
+	Value  = "0x10"
+	Help  = "Maximum number of Setup items with Option ROMs will be displayed on OptionRom Setup Screen.\Includes invisible slots. Affects size of NVRAM variable."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+PATH
+	Name  = "OptionRomPolicy_DIR"
+End
+
+ELINK
+	Name  = "{{0x97cdc6be, 0x7792, 0x4782, {0xba, 0x6d, 0xe6, 0xe3, 0xbb, 0x56, 0xac, 0xd8}}, 0, NULL},"
+	Parent  = "AMITSE_HIDDEN_PAGE_LIST"
+	Help  = "Provide GUIDs of dynmaic formset to suppress. Terminate entry with comma"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(OptionRomPolicy_DIR)/OptionRomPolicy.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(OptionRomPolicy_DIR)/OptionRomPolicy.uni"
+	Parent  = "SetupStringFiles"
+	InvokeOrder = AfterParent
+End
+
+INFComponent
+	Name  = "OptionRomPolicy"
+	File  = "OptionRomPolicy.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "DXE_DRIVER"
+End
+

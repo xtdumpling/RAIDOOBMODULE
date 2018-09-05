@@ -1,0 +1,66 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+## @file
+# S3BootScriptLib instance built on top of the S3SaveState protocol.
+#
+# It provides the following advantage over the MdeModulePkg.DxeS3BootScriptLib instance:
+#  - This instances is a wrappers around S3SaveState protocol. It produce much smaller binaries than MdeModulePkg instance.
+#  - MdeModulePkg instance can produce cyclic dependency.
+#      MdeModulePkg S3BootScriptLib instance has dependency from SmbusLib instance, 
+#      which typically has dependency from SmbusHc protocol. 
+#      The SmbusHc protocol is published by chipset specific driver which may use 
+#      S3BootScriptLib library thus producing a cyclic dependency:
+#      S3BootScriptLib -> SmbusLib -> SmbusHc Protocol -> S3BootScriptLib.
+#  NOTE: this instance does not support the following S3BootScriptLib library class functions:
+#    S3BootScriptCloseTable, S3BootScriptExecute, S3BootScriptMoveLastOpcode
+##
+[Defines]
+  INF_VERSION     = 0x00010005
+  BASE_NAME       = DxeS3BootScriptLibS3SaveStateProtocol
+  FILE_GUID       = 9CB0F5CC-B0F3-4ADD-8583-3C8AF6C00DE0
+  MODULE_TYPE     = DXE_DRIVER
+  LIBRARY_CLASS   = S3BootScriptLib|DXE_CORE DXE_DRIVER DXE_RUNTIME_DRIVER UEFI_DRIVER UEFI_APPLICATION
+  CONSTRUCTOR	  = DxeS3BootScriptLibS3SaveStateProtocolConstructor
+
+[Sources]
+  DxeS3BootScriptLibS3SaveStateProtocol.c
+  S3BootScriptLibS3SaveStateProtocol.c
+  
+[Packages]
+  MdePkg/MdePkg.dec
+
+[LibraryClasses]
+  UefiBootServicesTableLib
+  DebugLib
+  BaseLib
+  
+[Protocols]
+  gEfiS3SaveStateProtocolGuid                ## CONSUMES
+
+[Depex]
+  gEfiS3SaveStateProtocolGuid
+  
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

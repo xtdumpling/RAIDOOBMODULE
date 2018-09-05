@@ -1,0 +1,34 @@
+TOKEN
+    Name  = "KbcSb_SUPPORT"
+    Value  = "1"
+    Help  = "Switch for Enabling Kbc Emulation SB module part in the project"
+    TokenType = Boolean
+    Master = Yes
+    Token = "SB_EMUL_SUPPORT" "=" "1"
+End
+
+INFComponent
+    Name  = "KbcSb"
+    File  = "KbcSb.inf"
+    Package  = "AmiModulePkg"
+End
+
+INFComponent
+    Name  = "KbcSbDxe"
+    File  = "KbcSbDxe.inf"
+    Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiModulePkg.KbcSbDxe"
+    ModuleTypes  = "DXE_DRIVER"
+    Override  = "AmiModulePkg.KbcEmulDxe"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiModulePkg.KbcSb"
+    ModuleTypes  = "DXE_SMM_DRIVER"
+    Override  = "AmiModulePkg.KbcEmul"
+End

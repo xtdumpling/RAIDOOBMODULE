@@ -1,0 +1,81 @@
+## @file
+#
+#  Copyright (c) 2009 - 2017, Intel Corporation. All rights reserved.<BR>
+#
+#  This program and the accompanying materials
+#  are licensed and made available under the terms and conditions of the BSD License
+#  which accompanies this distribution. The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.php
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = PlatformAcpiTable
+  FILE_GUID                      = 7E374E25-8E01-4FEE-87F2-390C23C606CD
+  MODULE_TYPE                    = USER_DEFINED
+  VERSION_STRING                 = 1.0
+
+[Sources]
+# APTIOV_SERVER_OVERRIDE_RC_START : Use AMI FADT, FACS, MCFG, SSDT, SPCR & DSDT.
+#  Fadt/Fadt61.aslc
+#  Facs/Facs5.aslc
+#  Dsdt/EPRPPlatform.asl
+#  Dsdt/EXRPPlatform.asl
+# APTIOV_SERVER_OVERRIDE_RC_END: Use AMI FADT, FACS, MCFG, SSDT, SPCR & DSDT.
+  Madt/Madt4.aslc
+# APTIOV_SERVER_OVERRIDE_RC_START : Use AMI MCFG
+#  Mcfg/Mcfg.aslc
+# APTIOV_SERVER_OVERRIDE_RC_END: Use AMI MCFG
+  Rasf/Rasf.aslc  
+  Hpet/Hpet.aslc
+  NFIT/Nfit.aslc
+  PCAT/Pcat.aslc
+  SLIT/Slit1.aslc
+  SRAT/Srat2.aslc
+# APTIOV_SERVER_OVERRIDE_RC_START: Use AMI SPCR 
+# SPCR/Spcr.aslc
+# APTIOV_SERVER_OVERRIDE_RC_END: Use AMI SPCR 
+  Ssdt/CpuPm.asl
+  Ssdt/CpuEist.asl
+  Ssdt/CpuHwp.asl
+  Ssdt/CpuTst.asl
+  Ssdt/CpuCst.asl
+  Msct/Msct.aslc
+  Pcct/Pcct.aslc
+  Wddt/Wddt1.0.aslc
+  Bdat/Bdat.aslc
+  SsdtXhci/UsbPortXhciNcCrb.asl
+  Svos/Svos.aslc
+  Migt/Migt.aslc
+# APTIOV_SERVER_OVERRIDE_RC_START : Use AMI code.
+  Ssdt/ProcCst.asi   #Added File 
+  Ssdt/ProcTst.asi   #Added File
+# DBG2/DBG2.aslc
+# Spmi/Spmi.aslc
+# APTIOV_SERVER_OVERRIDE_RC_END: Use AMI code.
+  Pmtt/Pmtt.aslc
+# APTIOV_SERVER_OVERRIDE_RC_START
+#  Wsmt/Wsmt.aslc
+# APTIOV_SERVER_OVERRIDE_RC_END
+  
+[Packages]
+#APTIOV_SERVER_OVERRIDE_RC_START: Override folder is not avaiable
+#  PurleyPlatPkg/Override/MdePkg/MdePkg.dec
+#APTIOV_SERVER_OVERRIDE_RC_END: Override folder is not avaiable
+  MdePkg/MdePkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SocketPkg.dec
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[BuildOptions]  
+  *_*_*_ASL_FLAGS = -oi
+
+

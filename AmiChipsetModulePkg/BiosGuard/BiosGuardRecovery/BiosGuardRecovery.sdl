@@ -1,0 +1,212 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+TOKEN
+	Name = "BIOS_GUARD_RECOVERY_SUPPORT"
+	Value = "1"
+	Help = "Support Bios Guard recovery"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+	Token = "BiosGuard_SUPPORT" "=" "1"
+        Token = "SecureMod_SUPPORT" "=" "1"	
+End
+
+TOKEN
+        Name = "MAX_DEVICE_RECOVERY_MODULE"
+        Value = "8"
+        TokenType = Integer
+        TargetH = Yes
+End
+
+TOKEN
+        Name = "AMI_BIOSGUARD_RECOVERY_IMAGE_HOB_GUID"
+        Value = " { 0x3878f550, 0x1a55, 0x4e6e, {0x8c, 0x6f, 0x6a, 0x2a, 0xa1, 0x7e, 0xe, 0x65 }}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+INFComponent
+        Name = "BiosGuardRecovery"
+        File = "BiosGuardRecovery.inf"
+        Package = "AmiChipsetModulePkg"
+        Arch = "IA32"
+        ModuleTypes = "PEIM"
+End
+
+INFComponent
+        Name = "BiosGuardRecoveryWorker"
+        File = "BiosGuardRecoveryWorker.inf"
+        Package = "AmiChipsetModulePkg"
+End
+
+LibraryMapping
+        Class = "NULL"
+        Instance = "AmiChipsetModulePkg.BiosGuardRecoveryWorker"
+        Override = "AmiModulePkg.Reflash"
+End
+
+ELINK
+	Name  = "BiosGuardRecoveryBeforeFlash,"
+	Parent  = "OemBeforeFlashUpdateList"
+	InvokeOrder = AfterParent
+End
+
+FFS_FILE
+        Name  = "BiosGuardRecovery"
+        FD_AREA  = "FV_BB"
+        INFComponent  = "AmiChipsetModulePkg.BiosGuardRecovery"
+End
+
+OUTPUTREGISTER
+        Name = "BiosGuardRecoveryMap"
+        File = "BiosGuardRecoveryMapElink.h"
+        Path = "Build"
+        Template = "BiosGuardRecoveryMapElink.txt"
+End
+
+ELINK
+        Name = "BiosGuardRecoveryMapList"
+        Help = "The map Must match your ROM layout for BIOS Guard recovery"
+        InvokeOrder = ReplaceParent
+End
+
+ELINK
+        Name  = '{"/DESC",            0xff, 0, 0, 0},'
+        Parent  = "BiosGuardRecoveryMapList"
+        Help = "1st Name : Must match the BUILD_BIOS_MAP_SET, 2st Type(FvTypeMain, FvTypeBootBlock, FvTypeNvRam, FvTypeCustom, FvTypeMax), Others : Keep 0."
+        InvokeOrder = AfterParent
+End
+
+ELINK
+        Name  = '{"/PDR",             0xff, 0, 0, 0},'
+        Parent  = "BiosGuardRecoveryMapList"
+        Help = "1st Name : Must match the BUILD_BIOS_MAP_SET, 2st Type(FvTypeMain, FvTypeBootBlock, FvTypeNvRam, FvTypeCustom, FvTypeMax), Others : Keep 0."        
+        InvokeOrder = AfterParent
+End
+
+ELINK
+        Name  = '{"/GBE",             0xff, 0, 0, 0},'
+        Parent  = "BiosGuardRecoveryMapList"
+        Help = "1st Name : Must match the BUILD_BIOS_MAP_SET, 2st Type(FvTypeMain, FvTypeBootBlock, FvTypeNvRam, FvTypeCustom, FvTypeMax), Others : Keep 0."        
+        InvokeOrder = AfterParent
+End
+
+ELINK
+        Name  = '{"/ME",              0xff, 0, 0, 0},'
+        Parent  = "BiosGuardRecoveryMapList"
+        Help = "1st Name : Must match the BUILD_BIOS_MAP_SET, 2st Type(FvTypeMain, FvTypeBootBlock, FvTypeNvRam, FvTypeCustom, FvTypeMax), Others : Keep 0."        
+        InvokeOrder = AfterParent
+End
+
+ELINK
+        Name  = '{"/FP10GBE",         0xff, 0, 0, 0},'
+        Parent  = "BiosGuardRecoveryMapList"
+        Help = "1st Name : Must match the BUILD_BIOS_MAP_SET, 2st Type(FvTypeMain, FvTypeBootBlock, FvTypeNvRam, FvTypeCustom, FvTypeMax), Others : Keep 0."        
+        InvokeOrder = AfterParent
+End
+
+ELINK
+        Name  = '{"/N",        FvTypeNvRam, 0, 0, 0},'
+        Parent  = "BiosGuardRecoveryMapList"
+        Help = "1st Name : Must match the BUILD_BIOS_MAP_SET, 2st Type(FvTypeMain, FvTypeBootBlock, FvTypeNvRam, FvTypeCustom, FvTypeMax), Others : Keep 0."        
+        InvokeOrder = AfterParent
+End
+
+ELINK
+        Name  = '{"/NB",        FvTypeNvRam, 0, 0, 0},'
+        Parent  = "BiosGuardRecoveryMapList"
+        Help = "1st Name : Must match the BUILD_BIOS_MAP_SET, 2st Type(FvTypeMain, FvTypeBootBlock, FvTypeNvRam, FvTypeCustom, FvTypeMax), Others : Keep 0."        
+        InvokeOrder = AfterParent
+End
+
+ELINK
+        Name  = '{"/WHEA",            0xff, 0, 0, 0},'
+        Parent  = "BiosGuardRecoveryMapList"
+        Help = "1st Name : Must match the BUILD_BIOS_MAP_SET, 2st Type(FvTypeMain, FvTypeBootBlock, FvTypeNvRam, FvTypeCustom, FvTypeMax), Others : Keep 0."        
+        InvokeOrder = AfterParent
+        Token = "WHEA_SUPPORT" "=" "1"
+End
+
+ELINK
+        Name  = '{"/P",         FvTypeMain, 0, 0, 0},'
+        Parent  = "BiosGuardRecoveryMapList"
+        Help = "1st Name : Must match the BUILD_BIOS_MAP_SET, 2st Type(FvTypeMain, FvTypeBootBlock, FvTypeNvRam, FvTypeCustom, FvTypeMax), Others : Keep 0."        
+        InvokeOrder = AfterParent
+End
+
+ELINK
+        Name  = '{"/OA",              0xff, 0, 0, 0},'
+        Parent  = "BiosGuardRecoveryMapList"
+        Help = "1st Name : Must match the BUILD_BIOS_MAP_SET, 2st Type(FvTypeMain, FvTypeBootBlock, FvTypeNvRam, FvTypeCustom, FvTypeMax), Others : Keep 0."        
+        InvokeOrder = AfterParent
+        Token = "OEM_ACTIVATION_TABLE_LOCATION" "=" "1"
+End
+
+ELINK
+        Name  = '{"/FIT",  FvTypeBootBlock, 0, 0, 0},'
+        Parent  = "BiosGuardRecoveryMapList"
+        Help = "1st Name : Must match the BUILD_BIOS_MAP_SET, 2st Type(FvTypeMain, FvTypeBootBlock, FvTypeNvRam, FvTypeCustom, FvTypeMax), Others : Keep 0."        
+        InvokeOrder = AfterParent
+        Token = "IntelLtsxFit_SUPPORT" "=" "1"
+End
+
+ELINK
+        Name  = '{"/ACM",             0xff, 0, 0, 0},'
+        Parent  = "BiosGuardRecoveryMapList"
+        Help = "1st Name : Must match the BUILD_BIOS_MAP_SET, 2st Type(FvTypeMain, FvTypeBootBlock, FvTypeNvRam, FvTypeCustom, FvTypeMax), Others : Keep 0."        
+        InvokeOrder = AfterParent
+        Token = "INTEL_TXT_SUPPORT" "=" "1"
+End
+
+ELINK
+        Name  = '{"/B",    FvTypeBootBlock, 0, 0, 0},'
+        Parent  = "BiosGuardRecoveryMapList"
+        Help = "1st Name : Must match the BUILD_BIOS_MAP_SET, 2st Type(FvTypeMain, FvTypeBootBlock, FvTypeNvRam, FvTypeCustom, FvTypeMax), Others : Keep 0."        
+        InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "BiosGuardRecoveryHook,"
+    Parent  = "FsRecoveryList"
+    InvokeOrder = ReplaceParent
+End
+
+INFComponent
+    Name  = "BiosGuardRecoveryHook"
+    File  = "BiosGuardRecoveryHook.inf"
+    Package  = "AmiChipsetModulePkg"
+    ModuleTypes  = "PEIM"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiChipsetModulePkg.BiosGuardRecoveryHook"
+    Override  = "AmiModulePkg.FsRecovery"
+End
+
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************

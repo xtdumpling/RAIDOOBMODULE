@@ -1,0 +1,61 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+# @file DxeIpmiInterfaceLib.inf
+#
+# INF description file for DxeIpmiInterfaceLib Library
+#
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = DxeIpmiInterfaceLib
+  FILE_GUID                      = E99342E1-B01B-4f0f-A4A5-73D64A94EA92
+  MODULE_TYPE                    = DXE_DRIVER
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = IpmiInterfaceLib|DXE_DRIVER UEFI_APPLICATION
+  CONSTRUCTOR                    = IpmiInterfaceLibConstructor
+
+[Sources]
+  DxeIpmiInterfaceLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  AmiIpmiPkg/AmiIpmiPkg.dec
+
+[LibraryClasses]
+  BaseLib
+  DebugLib
+  UefiBootServicesTableLib
+
+[Protocols]
+  gEfiDxeIpmiTransportProtocolGuid      #CONSUMES
+  gEfiDxeIpmiUsbTransportProtocolGuid   #CONSUMES
+
+[Pcd]
+  gAmiIpmiPkgTokenSpaceGuid.BulkDataTransferInterfaceType
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**         5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093     **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

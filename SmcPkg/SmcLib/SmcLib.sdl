@@ -1,0 +1,87 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.02
+#    Bug Fix:  Re-write SmcOutBand module.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Aug/02/2016
+#
+#  Rev. 1.01
+#    Bug Fix:  Add IPMI video ram data transfer library.
+#    Reason:
+#    Auditor:  Hartmann Hsieh
+#    Date:     Jul/27/2016
+#
+#  Rev. 1.00
+#       Bug fixed:   Initialize revision
+#       Reason:      Get base code from Grantley
+#       Auditor:     Kasber Chen
+#       Date:        May/12/2016
+#****************************************************************************
+
+TOKEN
+  	Name        = "SMC_LIB_SUPPORT"
+  	Value       = "1"
+  	TokenType   = Boolean
+  	TargetEQU   = Yes
+  	TargetMAK   = Yes
+  	Master      = Yes
+  	Help        = "Main switch to enable SmcLib support in Project"
+End
+
+TOKEN
+	Name  = "********** BMC Lib setting **********"
+	TokenType = Expression
+End
+
+PATH
+  Name        = "SMC_LIB_DIR"
+End
+
+TOKEN
+	Name  = "IPMI_VGA_SVID"
+	Value  = "$(ONBOARD_VGA_DID)"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+	Token = "IPMI_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "IPMI_VIDEO_MEMORY_OFFSET"
+	Value  = "0xF00000"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+	Token = "IPMI_SUPPORT" "=" "1"
+End
+
+ELINK
+  Name        = "SMC_LIB"
+  InvokeOrder = ReplaceParent
+End
+
+ELINK
+  Name        = "$(BUILD_DIR)\SmcLib.lib"
+  Parent      = "SMC_LIB"
+  InvokeOrder = AfterParent
+End
+
+INFComponent
+        Name  = "SmcLib"
+        File  = "SmcLib.inf"
+        Package  = "SMCPkg"
+        ModuleTypes  = "BASE"
+End
+
+LibraryMapping
+	Class  = "SmcLib"
+	Instance  = "SmcPkg.SmcLib"
+	ModuleTypes  = "PEI_CORE DXE_CORE PEIM DXE_DRIVER DXE_RUNTIME_DRIVER DXE_SMM_DRIVER UEFI_DRIVER"
+End

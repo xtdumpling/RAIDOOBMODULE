@@ -1,0 +1,316 @@
+TOKEN
+    Name  = "SecureBoot_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable SecureBoot Module support in Project"
+    TokenType = Boolean
+    TargetH = Yes
+    Master = Yes
+    Token = "AmiCryptoPkg_SUPPORT" "=" "1" 
+    Token = "NVRAM_VERSION" ">=" "8"
+End
+
+TOKEN
+    Name  = "SECURE_BOOT_MODULE_REVISION"
+    Value  = "22"
+    Help  = "Version of Secure Boot module interfaces"
+    TokenType = Integer
+    TargetMAK = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "DEFAULT_SECURE_BOOT_ENABLE"
+    Value  = "0"
+    Help  = "Default value of Secure Boot Enable Control.\0-Secure Boot control option will be locked Disabled unless platform in User mode with CSM disabled "
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "DEFAULT_SECURE_BOOT_MODE"
+    Value  = "0"
+    Help  = "Default Secure Boot Mode selector.\0-Standard, 1-Custom Mode allows physically present users more flexibility changing Image Execution policy and Secure Boot Key management."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "DEFAULT_SECURE_BOOT_MODE"
+    Value  = "1"
+    TokenType = Boolean
+    TargetH = Yes
+    Token = "DEFAULT_SECURE_BOOT_ENABLE" "=" "0"
+End
+
+TOKEN
+    Name  = "DEFAULT_PROVISION_SECURE_VARS"
+    Value  = "0"
+    Help  = "Install factory default Secure Boot variables: PK, KEK, db, dbx, dbt and dbr.\Note: this setting will not override existing Secure Boot variables in NVRAM."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "DEFAULT_SECURE_BOOT_DEPLOYED_MODE"
+    Value  = "0"
+    Help  = "Force the System to enter Deployed Mode when default Secure Boot variables are provisioned.\Requires CUSTOMIZED_SECURE_BOOT_DEPLOYMENT set to 1"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "PRESERVE_SECURE_VARIABLES"
+    Value  = "1"
+    Help  = "1 - Preserve Secure Boot configuration across flash updates.\0 - Do not preserve Secure Boot configuration across flash updates."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+PATH
+    Name  = "SecureBoot_DIR"
+    Help  = "Path to SecureBoot Module Module in Project"
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SECURITY_FORM_SET_CLASS,0,SECURE_BOOT_MENU_REFRESH,ForceSetupModeCallback),"
+    Parent  = "SetupItemCallbacks"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SECURITY_FORM_SET_CLASS,0,KEY_MANAGEMENT_MENU_REFRESH,ForceSetupModeCallback),"
+    Parent  = "SetupItemCallbacks"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SECURITY_FORM_SET_CLASS,0,SECURE_BOOT_SUPPORT_CHANGE_KEY,ForceSetupModeCallback),"
+    Parent  = "SetupItemCallbacks"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SECURITY_FORM_SET_CLASS,0,SECURE_BOOT_MODE_CHANGE_KEY,ForceSetupModeCallback),"
+    Parent  = "SetupItemCallbacks"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SECURITY_FORM_SET_CLASS,0,FORCE_AUDIT_KEY,ForceSetupModeCallback),"
+    Parent  = "SetupItemCallbacks"
+    InvokeOrder = AfterParent
+    Token = "CUSTOMIZED_SECURE_BOOT_DEPLOYMENT" "=" "1"
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SECURITY_FORM_SET_CLASS,0,FORCE_DEPLOYED_KEY,ForceSetupModeCallback),"
+    Parent  = "SetupItemCallbacks"
+    InvokeOrder = AfterParent
+    Token = "CUSTOMIZED_SECURE_BOOT_DEPLOYMENT" "=" "1"
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SECURITY_FORM_SET_CLASS,0,FORCE_DEFAULT_KEY,ForceSetupModeCallback),"
+    Parent  = "SetupItemCallbacks"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SECURITY_FORM_SET_CLASS,0,FORCE_SETUP_KEY,ForceSetupModeCallback),"
+    Parent  = "SetupItemCallbacks"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SECURITY_FORM_SET_CLASS,0,KEY_PROVISION_CHANGE_KEY,ForceSetupModeCallback),"
+    Parent  = "SetupItemCallbacks"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SECURITY_FORM_SET_CLASS,0,GET_PK_KEY,GetSecureBootDBCallback),"
+    Parent  = "SetupItemCallbacks"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+   Name  = "ITEM_CALLBACK(SECURITY_FORM_SET_CLASS,0,ENROLL_EFI_IMAGE,EnrollCertificateToDbFromEfiImageCallback),"
+   Parent  = "SetupItemCallbacks"
+   InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SECURITY_FORM_SET_CLASS,0,MANAGE_PK_KEY,ManageSecureBootKeysCallback),"
+    Parent  = "SetupItemCallbacks"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SECURITY_FORM_SET_CLASS,0,MANAGE_KEK_KEY,ManageSecureBootKeysCallback),"
+    Parent  = "SetupItemCallbacks"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SECURITY_FORM_SET_CLASS,0,MANAGE_DB_KEY,ManageSecureBootKeysCallback),"
+    Parent  = "SetupItemCallbacks"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SECURITY_FORM_SET_CLASS,0,MANAGE_DBT_KEY,ManageSecureBootKeysCallback),"
+    Parent  = "SetupItemCallbacks"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SECURITY_FORM_SET_CLASS,0,MANAGE_DBX_KEY,ManageSecureBootKeysCallback),"
+    Parent  = "SetupItemCallbacks"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SECURITY_FORM_SET_CLASS,0,MANAGE_DBR_KEY,ManageSecureBootKeysCallback),"
+    Parent  = "SetupItemCallbacks"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "UpdateSecureVariableBrowserInfo,"
+    Parent  = "LoadedPreviousValuesHook,"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "UpdateSecureVariableBrowserInfo,"
+    Parent  = "LoadedConfigDefaults,"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(SecureBoot_DIR)$(PATH_SLASH)SecureBoot.c"
+    Parent  = "TSE_SOURCE_FILES"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(SecureBoot_DIR)$(PATH_SLASH)SecureBoot.sd"
+    Parent  = "SETUP_DEFINITIONS"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(SecureBoot_DIR)$(PATH_SLASH)SecureBoot.c"
+    Parent  = "SetupCallbackFiles"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(SecureBoot_DIR)$(PATH_SLASH)SecureBoot.uni"
+    Parent  = "SetupStringFiles"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "gEfiFirmwareVolume2ProtocolGuid gAmiPostManagerProtocolGuid gEfiSimpleFileSystemProtocolGuid gEfiLegacyBiosProtocolGuid gAmiDigitalSignatureProtocolGuid"
+    Parent  = "AdditionalSetupProtocols"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "AmiCryptoPkg$(PATH_SLASH)AmiCryptoPkg.dec IntelFrameworkPkg$(PATH_SLASH)IntelFrameworkPkg.dec"
+    Parent  = "AdditionalSetupPackages"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "AmiTsePkg$(PATH_SLASH)AmiTsePkg.dec"
+    Parent  = "AdditionalSetupPackages"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "AmiCryptLib"
+    Parent  = "AdditionalSetupLibraryClasses"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "AmiCryptoPkg$(PATH_SLASH)AmiCryptoPkg.dec"
+    Parent  = "ADDITIONAL_AMITSE_Packages"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "gAmiDigitalSignatureProtocolGuid"
+    Parent  = "ADDITIONAL_AMITSE_Protocols"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "gEfiImageSecurityDatabaseGuid gEfiGlobalVariableGuid gEfiCertX509Guid gEfiCertRsa2048Guid gEfiHashAlgorithmSha256Guid"
+    Parent  = "ADDITIONAL_AMITSE_Guids"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "gEfiGlobalVariableGuid gEfiImageSecurityDatabaseGuid gEfiCertPkcs7Guid gEfiCertX509Sha256Guid gEfiCertX509Sha384Guid gEfiCertX509Sha512Guid gEfiCertSha256Guid gEfiCertRsa2048Guid gEfiCertX509Guid gEfiHashAlgorithmSha256Guid"
+    Parent  = "AdditionalSetupGuids"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = '{L"DeploymentModeNv",{ 0x97e8965f, 0xc761, 0x4f48, {0xb6, 0xe4, 0x9f, 0xfa, 0x9c, 0xb2, 0xa2, 0xd6} } },'
+    Parent  = "NvramPersistentVariables"
+    InvokeOrder = AfterParent
+    Token = "PRESERVE_SECURE_VARIABLES" "=" "1"
+End
+
+ELINK
+    Name  = '{L"VendorKeysNv",{0x550e42e1, 0xb6fa, 0x4e99, {0xbb, 0xd9, 0x1a, 0x90, 0x1f, 0x0, 0x1d, 0x7a} } },'
+    Parent  = "NvramPersistentVariables"
+    InvokeOrder = AfterParent
+    Token = "PRESERVE_SECURE_VARIABLES" "=" "1"
+End
+
+ELINK
+    Name  = " "
+    Parent  = '{L"KEK",EFI_GLOBAL_VARIABLE},'
+    InvokeOrder = ReplaceParent
+    Token = "PRESERVE_SECURE_VARIABLES" "=" "0"
+End
+
+ELINK
+    Name  = " "
+    Parent  = '{L"PK",EFI_GLOBAL_VARIABLE},'
+    InvokeOrder = ReplaceParent
+    Token = "PRESERVE_SECURE_VARIABLES" "=" "0"
+End
+
+ELINK
+    Name  = " "
+    Parent  = '{L"*",EFI_IMAGE_SECURITY_DATABASE_GUID},'
+    InvokeOrder = ReplaceParent
+    Token = "PRESERVE_SECURE_VARIABLES" "=" "0"
+End
+
+ELINK
+    Name  = " "
+    Parent  = '{L"SecureBootSetup",{0x7B59104A, 0xC00D, 0x4158, {0x87, 0xFF, 0xF0, 0x4D, 0x63, 0x96, 0xA9, 0x15} } },'
+    InvokeOrder = ReplaceParent
+    Token = "PRESERVE_SECURE_VARIABLES" "=" "0"
+End
+
+INFComponent
+    Name  = "SecureBootDXE"
+    File  = "SecureBootDXE.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes = "DXE_RUNTIME_DRIVER"
+End
+
+FFS_FILE
+    Name  = "SecureBootDXE"
+    FD_AREA  = "FV_MAIN"
+    INFComponent  = "AmiModulePkg.SecureBootDXE"
+End
+

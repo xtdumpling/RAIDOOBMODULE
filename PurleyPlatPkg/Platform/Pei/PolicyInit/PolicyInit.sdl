@@ -1,0 +1,27 @@
+TOKEN
+	Name  = "PolicyInit_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling PolicyInit support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "PeiPolicyInit_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable PeiPolicyInit support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "PeiPolicyInit"
+	File  = "PeiPolicyInitLib.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "PEIM"
+End
+
+LibraryMapping
+	Class  = "PeiPolicyInit"
+	Instance  = "PurleyPlatPkg.PeiPolicyInit"
+End
+

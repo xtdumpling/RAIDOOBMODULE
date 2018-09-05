@@ -1,0 +1,25 @@
+#ifdef FORM_SET_TYPEDEF
+#include "PciSetup.h"
+#endif 
+    
+#ifdef SETUP_DATA_DEFINITION
+    #if ((defined CSM_SUPPORT) && (CSM_SUPPORT==1))    
+    #else
+        UINT8   CsmSupport;
+        UINT8   PxeOpRom;
+        UINT8   MassStorageOpRom;
+        UINT8   VideoOpRom;
+        UINT8   OldOpRom;
+    #endif    
+#endif
+
+#ifdef ADVANCED_FORM_SET
+    #ifdef FORM_SET_GOTO
+        goto
+            formsetguid = { 0x97cdc6be, 0x7792, 0x4782, { 0xba, 0x6d, 0xe6, 0xe3, 0xbb, 0x56, 0xac, 0xd8 } },
+            formid = ROM_MAIN_FORM_ID,
+            question = 0,
+            prompt = STRING_TOKEN(STR_ROM_FORM),
+            help = STRING_TOKEN(STR_ROM_FORM);
+    #endif
+#endif

@@ -1,0 +1,117 @@
+TOKEN
+	Name  = "CryptoProtocols_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling CryptoProtocols support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+    Name  = "CR_DXE_MAX_HEAP_SIZE"
+    Value  = "0x10000"
+    Help  = "Deprecated token. Use PCDMapping:AmiPcdCpMaxHeapSize to change a default heap size: 0x10000"
+    TokenType = Expression
+    Lock = Yes
+    TargetH = Yes
+    TargetMAK = Yes
+End
+
+TOKEN
+    Name  = "CR_PEI_MAX_HEAP_SIZE"
+    Value  = "0xC000"
+    Help  = "Deprecated token. Use PCDMapping:AmiPcdCpMaxHeapSize to change a default heap size: 0x10000"
+    TokenType = Expression
+    TargetH = Yes
+End
+
+TOKEN
+	Name  = "E_CONST"
+	Value  = "0x01, 0x00, 0x01"
+	Help  = "RSA2048. Predefined value of Public Exponent:E = 0x10001"
+	TokenType = Expression
+	TargetH = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "PSS_SIG_SALTLEN"
+	Value  = "8"
+	Help  = "PKCS_1 PSS Signature constant. Size of the Salt (random data) field in PSS signature."
+	TokenType = Integer
+	TargetH = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "PKCS7_MUTEX_LOCK"
+	Value  = "0"
+	Help  = "Turn on mutex functionality for Pkcs7Verify back to back operations.\Preserves parsed Pkcs7 cert context until mutex released/reset"
+	TokenType = Boolean
+	TargetH = Yes
+	Range  = "0-1"
+End
+
+TOKEN
+	Name  = "FWKEY_FV_HEADER_GUID"
+	Value  = "{ 0x61C0F511, 0xA691, 0x4F54, { 0x97, 0x4F, 0xB9, 0xA4, 0x21, 0x72, 0xCE, 0x53 }}"
+	Help  = "The GUID of the FV to locate FwKey ffs. By default FwKey is stored in Boot Block FV. The value must match the 'GUID' field in FD_AREA:FV_BB SDL object."
+	TokenType = Expression
+	TargetH = Yes
+	Range  = "GUID"
+End
+
+INFComponent
+	Name  = "CryptoDXE"
+	File  = "CryptoDXE.inf"
+	Package  = "AmiCryptoPkg"
+	ModuleTypes  = "DXE_RUNTIME_DRIVER"
+End
+
+INFComponent
+	Name  = "CryptoPPI"
+	File  = "CryptoPPI.inf"
+	Package  = "AmiCryptoPkg"
+	ModuleTypes  = "PEIM"
+End
+
+INFComponent
+	Name  = "CryptoSMM"
+	File  = "CryptoSMM.inf"
+	Package  = "AmiCryptoPkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "SMM_SUPPORT" "=" "1"
+End
+
+PcdMapping
+	Name  = "AmiPcdCpMaxHeapSize"
+	GuidSpace  = "gAmiCryptoPkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	DataType  = "Uint32"
+	Value  = "0x10000"
+	Offset  = 00h
+	Length  = 04h
+	TargetDSC = Yes
+	Help  = "Ami DxeCryptLib Optimized Mem manager.\Min 55kb for decrypt and validate Microsoft issued PKCS#7/X.509 signed certificates with Rsa4096 keys in Mode2(512b page aligned heap)"
+End
+
+PcdMapping
+	Name  = "AmiPcdCpMaxHeapSize"
+	GuidSpace  = "gAmiCryptoPkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	DataType  = "Uint32"
+	Value  = "0xC000"
+	Override  = "AmiCryptoPkg.CryptoPPI"
+	Offset  = 00h
+	Length  = 04h
+	TargetDSC = Yes
+	Help  = "Ami PeiCryptLib optimized mem manager.\Default 48kb. Min 15kb for rsa2048 decrypt in Mode2( page aligned heap)"
+End
+
+FFS_FILE
+	Name  = "CryptoPPI"
+	FD_AREA  = "FV_BB"
+	INFComponent  = "AmiCryptoPkg.CryptoPPI"
+	Rule_Override  = "Compressed"
+	Token = "CORE_BUILD_NUMBER" ">" "6"
+End
+

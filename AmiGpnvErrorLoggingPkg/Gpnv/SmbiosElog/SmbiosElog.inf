@@ -1,0 +1,98 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+
+## @file SmbiosElog.inf
+#    INF description file for SmbiosElog
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SmbiosElog
+  FILE_GUID                      = 13C5506E-8231-415e-9EBC-88DD115E3818
+  MODULE_TYPE                    = DXE_RUNTIME_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = InitializeSmbiosElog
+
+[Sources]
+  ../SmbiosElogCommonAccess/SmbiosElog.c
+  SmbiosElogInitFuncs.c
+  ../SmbiosElogCommonAccess/SmbiosElog.h
+  ../SmbiosElogCommonAccess/SmbiosElogFlashFuncs.c
+  ../SmbiosElogCommonAccess/SmbiosElogFlashFuncs.h
+  ../SmbiosElogCommonAccess/SmbiosElogRedirFuncs.c
+  SmbiosElogType15.c
+  ../SmbiosElogCommonAccess/SmbiosElogType15.h
+  DxeSmmRedirFucns.c
+  DxeSmmRedirFuncs.h
+ 
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiGpnvErrorLoggingPkg/AmiGpnvErrorLoggingPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint 
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  MemoryAllocationLib
+  DebugLib
+  AmiDxeLib
+  UefiLib
+  BaseMemoryLib
+  TimerLib
+  
+
+[Protocols] 
+  gEfiRedirElogProtocolGuid         #PRODUCES
+  gAmiSmbiosElogSupportGuid         #PRODUCES
+  gAmiSmbiosProtocolGuid            #CONSUMES
+  gFlashProtocolGuid                #CONSUMES
+  gEfiDataHubProtocolGuid           #CONSUMES
+  gEfiRscHandlerProtocolGuid	    #CONSUMES
+  gAmiSmmDummyProtocolRedirGuid     #CONSUMES
+  gEfiSmmCommunicationProtocolGuid  #CONSUMES
+  gEfiRealTimeClockArchProtocolGuid #CONSUMES
+
+[Guids]
+  gEfiDataHubStatusCodeRecordGuid   #CONSUMES
+  gEfiEventVirtualAddressChangeGuid #CONSUMES
+  
+
+[Pcd]
+  gEfiMdeModulePkgTokenSpaceGuid.PcdRealTimeClockUpdateTimeout         ## CONSUMES
+ 
+[Depex]
+  gFlashProtocolGuid AND
+  gEfiDataHubProtocolGuid AND
+  gEfiRscHandlerProtocolGuid AND
+  gEfiRealTimeClockArchProtocolGuid 
+  
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**         5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093     **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

@@ -1,0 +1,87 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+#**********************************************************************
+# $Header:  $
+#
+# $Revision:  $
+#
+# $Date:  $
+#**********************************************************************
+#<AMI_FHDR_START>
+#
+# Name:  PlatformPeiSystemInformation.inf
+#
+# Description:    INF description file for PlatformPeiSystemInformation driver
+#
+#<AMI_FHDR_END>
+#**********************************************************************
+
+[defines]
+  INF_VERSION          = 0x00010005
+  BASE_NAME            = PlatformPeiSystemInformation
+  FILE_GUID            = 442BE18B-CA6E-4a23-9A99-9AFE8A213A32
+  MODULE_TYPE          = PEIM
+  VERSION_STRING       = 1.0
+  ENTRY_POINT          = PeiSystemInformationEntryPoint
+  
+[Sources]
+  PlatformPeiSystemInformation.c
+  PlatformPeiSystemInformation.h
+  PlatformPeiSystemInfoCPU.c
+  PlatformPeiSystemInfoDIMM.c
+
+[Packages]  
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec 
+  AmiModulePkg/AmiModulePkg.dec  
+  AmiCRBPkg/AmiCRBPkg.dec 
+  PurleySktPkg/Me/MePkg.dec
+  PurleySktPkg/SocketPkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  AmiModulePkg/EarlyConsoleOut/AmiEarlyConsoleOutPkg.dec
+
+[LibraryClasses]
+  PeimEntryPoint
+  DebugLib
+  PrintLib
+  HobLib
+  PeiServicesLib
+  IoLib
+  PciLib   
+
+[Protocols]
+
+  
+[Ppis]
+  gHeciPpiGuid
+  gEfiEndOfPeiSignalPpiGuid
+  gEfiPeiMemoryDiscoveredPpiGuid
+  gAmiPeiTextOutPpiGuid
+  gAmiPeiConsplitterTextOutPpiGuid
+  gEfiSiliconRcHobsReadyPpi
+  
+[Guids]
+  gEfiMemoryMapGuid
+
+[Pcd]
+  gOemSkuTokenSpaceGuid.PcdOemSkuPlatformName
+  gOemSkuTokenSpaceGuid.PcdOemSkuPlatformNameSize
+  
+[Depex]
+  gVideoInitDoneSentGuid

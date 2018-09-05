@@ -1,0 +1,104 @@
+TOKEN
+    Name  = "AuthVariable_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable AuthVariable support in Project"
+    TokenType = Boolean
+    TargetH = Yes
+    Master = Yes
+End
+
+TOKEN
+    Name  = "CUSTOMIZED_SECURE_BOOT_DEPLOYMENT"
+    Value  = "0"
+    Help  = "Enable support for UEFIv2.5 Customized Deployment of Secure Boot"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "USER_MODE_POLICY_OVERRIDE"
+    Value  = "1"
+    Help  = "Ignore Variable Authentication rules until AuthVarLock(ready to boot) event\A back door for Administrative Users to modify Secure Variables from Key Management Setup Page"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "SELF_SIGNED_CERTIFICATE_IN_PRIVATE_VARIABLES"
+    Value  = "0"
+    Help  = "1-Enforce the rule for private variables signature to be verified with the keys from the self-signed certificates"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+PATH
+    Name  = "AuthVariable_DIR"
+    Help  = "Path to AuthVariable Module in Project"
+End
+
+ELINK
+    Name  = "SetSecureBootSetupVarHook,"
+    Parent  = "SetVariableHook"
+    Help  = "Called before SetVariable"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "SetSecureBootVariablesHook,"
+    Parent  = "SetVariableHook"
+    Help  = "Called before SetVariable"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "SetDeploymentModeVarHook,"
+    Parent  = "SetVariableHook"
+    Help  = "Called before SetVariable"
+    InvokeOrder = AfterParent
+    Token = "CUSTOMIZED_SECURE_BOOT_DEPLOYMENT" "=" "1"
+End
+
+ELINK
+    Name  = "SetAuthServicesNVVarHook,"
+    Parent  = "SetVariableHook"
+    Help  = "Called before SetVariable"
+    InvokeOrder = AfterParent
+End
+
+INFComponent
+    Name  = "AuthVariable"
+    File  = "AuthVariable.inf"
+    Package  = "AmiModulePkg"
+End
+
+INFComponent
+    Name  = "AuthVariableLink"
+    File  = "AuthVariableLink.inf"
+    Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiModulePkg.AuthVariableLink"
+    Override = "AmiModulePkg.NvramDxe"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiModulePkg.AuthVariableLink"
+    Override = "AmiModulePkg.NvramSmm"
+    Token = "SMM_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiModulePkg.AuthVariable"
+    Override = "AmiModulePkg.NvramDxe"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiModulePkg.AuthVariable"
+    Override = "AmiModulePkg.NvramSmm"
+    Token = "SMM_SUPPORT" "=" "1"
+End

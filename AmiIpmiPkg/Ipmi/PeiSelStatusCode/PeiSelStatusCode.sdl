@@ -1,0 +1,25 @@
+TOKEN
+    Name  = "PeiSelStatusCode_SUPPORT"
+    Value  = "1"
+    Help  = "Switch for Enabling PeiSelStatusCode support in the project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    Master = Yes
+End
+
+INFComponent
+    Name  = "PeiSelStatusCode"
+    File  = "PeiSelStatusCode.inf"
+    Package  = "AmiIpmiPkg"
+    ModuleTypes  = "PEIM"
+    Help  = "Includes PeiSelStatusCode.inf to Project."
+End
+
+FFS_FILE
+    Name  = "PeiSelStatusCode"
+    FD_AREA  = "FV_BB"
+    INFComponent  = "AmiIpmiPkg.PeiSelStatusCode"
+    Apriori_Index  = "4"
+    Help  = "Includes PeiSelStatusCode driver in FV_BB and dispatches based on a priori index."
+End

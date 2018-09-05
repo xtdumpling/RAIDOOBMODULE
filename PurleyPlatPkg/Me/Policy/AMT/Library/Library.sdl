@@ -1,0 +1,87 @@
+TOKEN
+	Name  = "Library_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling Library support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+INFComponent
+	Name  = "PeiMePolicyLib"
+	File  = "PeiMePolicyLib/PeiMePolicyLib.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "PEIM"
+End
+
+INFComponent
+	Name  = "PeiMePolicyUpdateLib"
+	File  = "PeiMePolicyUpdateLib/PeiMePolicyUpdateLib.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "PEIM"
+End
+
+INFComponent
+	Name  = "DxeMePolicyLib"
+	File  = "DxeMePolicyLib/DxeMePolicyLib.inf"
+	Package  = "PurleyPlatPkg"
+End
+
+INFComponent
+	Name  = "PeiAmtPolicyLib"
+	File  = "PeiAmtPolicyLib\PeiAmtPolicyLib.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "PEIM"
+    Token = "AMT_ENABLE" "=" "1"
+End
+
+INFComponent
+	Name  = "DxePolicyUpdateLib"
+	File  = "DxePolicyUpdateLib/DxePolicyUpdateLib.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "BASE"
+End
+
+INFComponent
+	Name  = "DxeAmtPolicyLib"
+	File  = "DxeAmtPolicyLib/DxeAmtPolicyLib.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "DXE_DRIVER"
+    Token = "AMT_ENABLE" "=" "1"
+End
+
+LibraryMapping
+	Class  = "PeiMePolicyLib"
+	Instance  = "PurleyPlatPkg.PeiMePolicyLib"
+	ModuleTypes  = "PEIM"
+End
+
+LibraryMapping
+	Class  = "PeiMePolicyUpdateLib"
+	Instance  = "PurleyPlatPkg.PeiMePolicyUpdateLib"
+	ModuleTypes  = "PEIM PEI_CORE SEC"
+End
+
+LibraryMapping
+	Class  = "PeiAmtPolicyLib"
+	Instance  = "PurleyPlatPkg.PeiAmtPolicyLib"
+	ModuleTypes  = "PEIM"
+    Token = "AMT_ENABLE" "=" "1"
+End
+
+LibraryMapping
+	Class  = "DxeMePolicyLib"
+	Instance  = "PurleyPlatPkg.DxeMePolicyLib"
+End
+
+LibraryMapping
+	Class  = "DxePolicyUpdateLib"
+	Instance  = "PurleyPlatPkg.DxePolicyUpdateLib"
+	ModuleTypes  = "DXE_DRIVER"
+End
+
+LibraryMapping
+	Class  = "DxeAmtPolicyLib"
+	Instance  = "PurleyPlatPkg.DxeAmtPolicyLib"
+	ModuleTypes  = "DXE_DRIVER"
+    Token = "AMT_ENABLE" "=" "1"
+End

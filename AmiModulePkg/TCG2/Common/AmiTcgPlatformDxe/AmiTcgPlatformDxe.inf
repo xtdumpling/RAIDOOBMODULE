@@ -1,0 +1,113 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+## @file
+#
+##
+[Defines]
+INF_VERSION 					= 0x00010005
+VERSION_STRING 					= 1.0
+BASE_NAME 						= AmiTcgPlatformDxe
+MODULE_TYPE 					= DXE_DRIVER
+FILE_GUID 						= A29A63E3-E4E7-495f-8A6A-07738300CBB3
+ENTRY_POINT 					= AmiTcgPlatformDXE_Entry
+
+
+UEFI_HII_RESOURCE_SECTION      = TRUE
+
+
+[Sources]
+AmiTcgPlatformDxe.c
+AmiTcgFakeTokens.c
+AmiTcgPlatformDxeString.uni
+
+
+[Packages]
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiTsePkg/AmiTsePkg.dec
+  AmiTcgPkg/AmiTcgPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  AmiTcgLibDxe
+  HiiLib
+  UefiLib
+  TcgAslLib
+  PcdLib
+  TpmReportStatusCodeWrapperLibDxe
+  
+[Guids]
+  gEfiGlobalVariableGuid	# the BootXXXX need to using Library
+  TcgPasswordAuthenticationGuid
+  gEfiImageSecurityDatabaseguid
+  FastBootVariableGuid
+  gTcgEfiGlobalVariableGuid
+  gEfiMemoryOverwriteControlDataGuid
+  FlagsStatusguid
+  AmiTseSetupGuid
+  AmitcgefiOsVariableGuid
+  gEfiAcpiTableGuid
+  gEfiSmbiosTableGuid
+  
+[Protocols]
+  gEfiTcgProtocolGuid
+  gAmiTcgPlatformProtocolguid
+  gEfiSimpleTextInProtocolGuid
+  gEfiPciIoProtocolGuid
+  gEfiFirmwareVolume2ProtocolGuid
+  gEfiLegacyBiosProtocolGuid
+  gEfiResetArchProtocolGuid
+  gTcgPlatformSetupPolicyGuid
+  gEfiHiiPackageListProtocolGuid
+  gOpromStartEndProtocolGuid
+  gEdkiiVariableLockProtocolGuid
+  gBdsAllDriversConnectedProtocolGuid
+  gEfiTpmDeviceProtocolGuid
+  gTcgPlatformSetupPolicyGuid
+  gEfiAcpiSupportGuid
+  gAmiPostManagerProtocolGuid
+
+[Guids]
+  gAmiMeasureCPUMicrocodeGuid
+  Tpm12PPILockOverrideguid
+  Tpm12MeasureConfigurationInfoFuncGuid
+  AmiSetTcgReadytobootGuid
+  AmiMeasurePciopromGuid
+  AmiBiosPpiFlagsManagementGuid
+  AmiProcessTcgSetupGuid
+  gAmiOsPpiConfirmationOverrideGuid
+  AmiProcessTcgPpiRequestGuid
+  gMicrocodeGuid
+  
+[Pcd]
+  gAmiTcgPkgTokenSpaceGuid.PcdPostStatusCheck
+    
+[Depex]
+  gEfiTcgProtocolGuid
+
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************

@@ -1,0 +1,85 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+#**********************************************************************
+# $Header:  $
+#
+# $Revision:  $
+#
+# $Date:  $
+#**********************************************************************
+#<AMI_FHDR_START>
+#
+# Name:  SmmGenericElog.inf
+#
+# Description:	INF description file for SmmGenericElog Driver
+#
+#<AMI_FHDR_END>
+#**********************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SmmGenericElog
+  FILE_GUID                      = 935D2F78-3A1F-4de6-B28D-123A40DD2DEC
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = InitializeSmmGenericElog
+
+[Sources]
+  SmmGenericElog.c
+  GenericElog.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  SmmServicesTableLib
+  MemoryAllocationLib
+  BaseLib  
+  DebugLib
+  BaseMemoryLib
+  UefiLib
+
+[Protocols]
+  gEfiGenericElogProtocolGuid                   #PRODUCES
+  gEfiGenericElogSmmProtocolInstallled          #PRODUCES
+  gEfiRedirElogProtocolGuid                     #CONSUMES
+
+[Guids]
+
+[Pcd]
+
+[Depex]
+  TRUE
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**         5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

@@ -1,0 +1,60 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+## @file
+#   This AMI PCI Express Lib
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SbPciHotPlugLib
+  FILE_GUID                      = 3022E512-B94A-4f12-806D-7EF1177899D8
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = SbPciHotPlugLib
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF EBC
+#
+
+[Sources]
+  SbPciHotPlugLib.c
+  SbPciHotPlugLib.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  
+[LibraryClasses]
+  AmiPciBusLib	
+  AmiPciExpressLib
+  AmiSdlLib
+  MemoryAllocationLib
+  PchPcieRpLib
+
+[Guids]
+  gEfiPchRcVariableGuid
+  gEfiSocketIioVariableGuid
+  
+[Protocols]
+  gEfiIioSystemProtocolGuid
+  gEfiPciHotPlugInitProtocolGuid

@@ -1,0 +1,61 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#** 5555 Oakbrook Parkway, Suite 200, Norcross,GA 30093              **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+## @file
+#   This  driver installs EFI Flash Upd PPI, SecureBoot PPI, RecoveryPPI
+##
+
+[Defines]
+  INF_VERSION                = 0x00010005
+  BASE_NAME                  = IsSecRecoveryPEI
+  FILE_GUID                  = CAC3FB95-33F5-4596-818B-68E024DDB67B
+  MODULE_TYPE                = PEIM
+  VERSION_STRING             = 1.0
+  PI_SPECIFICATION_VERSION   = 0x0001000A
+  ENTRY_POINT                = IsSecRecoveryPeimEntry
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 AARCH64 X64
+#
+
+[Sources]
+IsSecRecovery.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiCryptoPkg/AmiCryptoPkg.dec
+
+[LibraryClasses]
+  PeimEntryPoint
+  PeiServicesLib
+  AmiPeiLib
+    
+[Ppis]
+ gEfiPeiReadOnlyVariable2PpiGuid
+ gEfiPeiMasterBootModePpiGuid
+ gEfiPeiBootInRecoveryModePpiGuid
+ gFlashUpdBootModePpiGuid
+
+[Guids]
+ gEfiCapsuleVendorGuid
+ gAmiGlobalVariableGuid
+ 
+[Depex]
+ gEfiPeiReadOnlyVariable2PpiGuid        #MdePkg.dec 
+

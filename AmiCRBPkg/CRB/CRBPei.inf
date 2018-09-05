@@ -1,0 +1,55 @@
+
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = CRBPei
+  FILE_GUID                      = 0D1ED2F7-E92B-4562-92DD-5C82EC917EAE
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = CRBPEI_Init
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+#  HOB Guid C Name: gEfiHtBistHobGuid Hob Type: GUID_EXTENSION
+#
+
+[Sources]
+  CRBPEI.c
+
+[Packages]
+  MdePkg/MdePkg.dec 
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec 
+  AmiModulePkg/AmiModulePkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  AmiCRBPkg/AmiCRBPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  
+[LibraryClasses]
+  PeimEntryPoint
+  AmiPeiLib
+  AmiCspLib
+  AmiPcieSegBusLib
+  HobLib
+
+[Ppis]
+  gEfiPeiReadOnlyVariable2PpiGuid  
+  gEfiPeiSmbusPpiGuid
+  gEfiSiliconRcHobsReadyPpi
+  gEfiEndOfPeiSignalPpiGuid
+
+[Guids]
+  gPchPolicyHobGuid
+  
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress 
+  gAmiCRBPkgTokenSpaceGuid.PcdPcieSegBusTablePtr		
+   
+[Depex]
+  TRUE
+

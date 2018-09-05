@@ -1,0 +1,80 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2011, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+## @file
+#  AmiPeiLib library implementation
+#
+##
+
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = AmiPeiLib
+  FILE_GUID                      = 19f9d312-09c1-45ce-b7c1-f1b4e864cda3
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = AmiPeiLib|PEIM PEI_CORE SEC 
+
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+
+[Sources]
+PeLoader.c
+Debug.c
+StdLibC.c
+Misc.c
+Io.c
+LzmaDecode.c
+LinkedList.c
+PeiLib.c
+Tokens.c
+AmiLibNonMs.c | GCC
+AmiLibNonMs.c | RVCT
+
+[Sources.Ia32]
+Memory.c | MSFT
+IA32/Ia32CLib.c | MSFT
+IA32/IA32AsmLib/EnableLongMode.asm | MSFT
+IA32/IA32AsmLib/EnableMachineCheck.asm | MSFT
+IA32/IA32AsmLib/MemCpy.asm | MSFT
+IA32/IA32AsmLib/MemSet.asm | MSFT
+
+[Sources.X64]
+
+[Packages]
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  
+[LibraryClasses]
+  BaseLib
+  IoLib
+  PeiServicesTablePointerLib
+  BaseMemoryLib
+  PostCodeLib
+  BaseMemoryLib
+  PostCodeLib
+  DebugLib
+  DebugPrintErrorLevelLib
+
+[LibraryClasses.ARM, LibraryClasses.AARCH64]
+  TimerLib
+  CompilerIntrinsicsLib
+
+[Ppis]
+  gAmiDebugServicePpiGuid
+
+[Guids]
+  gAmiGlobalVariableGuid  

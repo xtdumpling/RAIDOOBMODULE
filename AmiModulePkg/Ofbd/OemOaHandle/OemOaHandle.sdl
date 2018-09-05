@@ -1,0 +1,49 @@
+TOKEN
+	Name  = "OEM_OA_DATA_HANDLE_SUPPORT"
+	Value  = "0"
+	Help  = "Switch for Enabling OEM OA Data Handle support in the project"
+	TokenType = Boolean
+	Master = Yes
+	Token = "OFBD_FOR_ARM_SUPPORT" "=" "0"	
+End
+
+TOKEN
+	Name  = "[OEM OA Data Handle Sample Code Section]"
+	Help  = "See detail description in each token's help box."
+	TokenType = Expression
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "OEM_OA_DATA_HANDLE_SAMPLE_TEST"
+	Value  = "1"
+	Help  = "Test OEM OA Data Handle Function"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "OEM_OA_DATA_HANDLE_SUPPORT" "=" "1"
+End
+
+PATH
+	Name  = "OFBD_OEM_OA_HANDLE_DIR"
+End
+
+ELINK
+	Name  = "$(OFBD_OEM_OA_HANDLE_DIR)/OemOaHandle.h"
+	Parent  = "OFBD_FUNC_INCLUDE_FILES"
+	InvokeOrder = BeforeParent
+End
+
+ELINK
+	Name  = "$(OFBD_OEM_OA_HANDLE_DIR)/OemOaHandle.c"
+	Parent  = "OFBD_FUNC_SOURCES_FILES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "OemOAHandleEntry,"
+	Parent  = "OFBD_INIT_FUNC_LIST"
+	Token = "OEM_OA_DATA_HANDLE_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+

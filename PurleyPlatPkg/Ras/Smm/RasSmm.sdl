@@ -1,0 +1,40 @@
+TOKEN
+	Name  = "RasSmm_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling Smm support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "HpIOXAccess_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable HpIOXAccess support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "PartialMirrorHandler_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable PartialMirrorHandler support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "HpIOXAccess"
+	File  = "HpIOXAccess\HpIOXAccess.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "HpIOXAccess_SUPPORT" "=" "1"
+	Token = "RAS_CPU_ONLINE_OFFLINE_ENABLE" "=" "1"
+End
+
+INFComponent
+	Name  = "PartialMirrorHandler"
+	File  = "PartialMirrorHandler\PartialMirrorHandler.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "PartialMirrorHandler_SUPPORT" "=" "1"
+End
+
+

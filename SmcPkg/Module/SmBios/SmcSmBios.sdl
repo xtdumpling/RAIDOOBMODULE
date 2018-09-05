@@ -1,0 +1,424 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.04
+#    Bug Fix:  Support a feature that Update SMBIOS Type 1 and 3 with Fru0.
+#    Reason:   
+#    Auditor:  Isaac Hsu
+#    Date:     May/12/2017
+#
+#  Rev. 1.03
+#    Bug Fix:  Disable type 8 ext. port define.
+#    Reason:   
+#    Auditor:  Kasber Chen
+#    Date:     Aug/19/2016
+#
+#  Rev. 1.02
+#    Bug Fix:  Add 2 bytes to make sure OEM string more than 32 bytes.
+#    Reason:   
+#    Auditor:  Kasber Chen
+#    Date:     Aug/09/2016
+#
+#  Rev. 1.01
+#    Bug Fix:  Add VPD data to type 40.
+#    Reason:   
+#    Auditor:  Kasber Chen
+#    Date:     Jul/26/2016
+#
+#  Rev. 1.00
+#    Bug Fix:  Renew the SMC ROM Hole.
+#    Reason:   Get base code from Grantley
+#    Auditor:  Kasber Chen
+#    Date:     May/04/2016
+#
+#****************************************************************************
+#****************************************************************************
+
+TOKEN
+  	Name        = "SMC_SM_BIOS_SUPPORT"
+  	Value       = "1"
+  	TokenType   = Boolean
+  	TargetEQU   = Yes
+  	TargetMAK   = Yes
+  	Master      = Yes
+  	Help        = "Main switch to enable SmcSmBios support in Project"
+End
+
+TOKEN
+	Name  = "SMBIOS_DMIEDIT_DATA_LOC"
+	Value  = "2"
+	Help  = "SMBIOS DMIEdit data location: \0 = Boot Block \2 = NVRAM"
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SMBIOS_PRESERVE_NVRAM"
+	Value  = "0"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "SMBIOS_DMIEDIT_DATA_LOC" "=" "2"
+End
+
+TOKEN
+	Name  = "OEMSETUP_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling OEM SETUP Preserve support in the project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "SYSTEM_MANUFACTURER"
+	Value  = "Supermicro"
+	Help  = "Specifies the System Manufacturer Name. Smbios Type 1"
+	TokenType = Expression
+	TargetEQU = Yes
+        TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+  	Name      = "SYSTEM_PRODUCT_NAME"
+  	Value     = "Super Server"
+  	Help      = "Specifies the System Product Name. Smbios Type 1"
+  	TokenType = Expression
+  	TargetEQU = Yes
+  	TargetMAK = Yes
+  	TargetH   = Yes
+End
+
+TOKEN
+	Name  = "SYSTEM_VERSION"
+	Value  = "0123456789"
+	Help  = "Specifies the System Product Version. Smbios Type 1"
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYSTEM_SERIAL_NUMBER"
+	Value  = "0123456789"
+	Help  = "Specifies the System Serial Number. Smbios Type 1"
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "BASE_BOARD_MANUFACTURER"
+	Value  = "Supermicro"
+	Help  = "Specifies the Board Manufacturer. Smbios Type 2"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "BASE_BOARD_INFO" "=" "1"
+End
+
+TOKEN
+  	Name      = "BASE_BOARD_PRODUCT_NAME"
+  	Value     = "$(PROJECT_BOARD_NAME)"
+  	Help      = "Specifies the Product Name. Smbios Type 2"
+  	TokenType = Expression
+  	TargetEQU = Yes
+  	Token     = "BASE_BOARD_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "BASE_BOARD_VERSION"
+	Value  = "0123456789"
+	Help  = "Specifies the Product Version. Smbios Type 2"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "BASE_BOARD_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "BASE_BOARD_SERIAL_NUMBER"
+	Value  = "0123456789"
+	Help  = "Specifies the Product Serial Number. Smbios Type 2"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "BASE_BOARD_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_MANUFACTURER_1"
+	Value  = "Supermicro"
+	Help  = "Specifies the System Chassis Manufacturer. Smbios Type 3"
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_TYPE_1"
+	Value  = "11h"
+	Help  = "Bits 6:0  -     Enumeration Value See Below.\01h     -     Other\02h     -     Unknown\03h     -     Desktop\04h     -     Low Profile Desktop\05h     -     Pizza Box\06h     -     Mini Tower\07h     -     Tower\08h     -     Portable\09h     -     Lap Top\0Ah     -     Notebook\0Bh     -     Hand Held\0Ch     -     Docking Station\0Dh     -     All in One\0Eh     -     Sub Notebook\0Fh     -     Space-saving\10h     -     Lunch Box\11h     -     Main Server Chassis\12h     -     Expansion Chassis\13h     -     Sub Chassis\14h     -     Bus Expansion Chassis\15h     -     Peripheral Chassis\16h     -     RAID Chassis\17h     -     Rack Mount Chassis\18h     -     Sealed-Case PC\19h     -     Multi-System Chassis. When this value is specified by an SMBIOS implementation, the physical chassis associated with this structure supports multiple, independently reporting physical systems\                 - regardless of the chassis' current configuration. Systems in the same physical chassis are required to report the same value in this structure's Serial Number field.\                 For a Chassis that may also be configured as either a single system or multiple physical systems, the Multi-System Chassis value is reported even if the chassis is currently configured as a \                 Single System. This allows management applications to recognize the multi-system potential of the chassis.\1Ah     -     CompactPCI\1Bh     -     AdvancedTCA\1Ch     -     Blade\1Dh     -     Blade Enclosure"
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "01h - 1Dh"
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_VERSION_1"
+	Value  = "0123456789"
+	Help  = "Specifies the Chassis Version. Smbios Type 3"
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_SERIAL_NUM_1"
+	Value  = "0123456789"
+	Help  = "Specifies the Chassis Serial number. Smbios Type 3"
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "NUMBER_OF_INT_PORT_CONNECTORS"
+	Value  = "0"
+	Help  = "Number of Internal Port Connectors in the System."
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "0 - 20"
+End
+
+TOKEN
+	Name  = "UPDATE_SLOT_TYPE9"
+	Value  = "0"
+	Help  = "update by SMCPKG.\ Enable/Disable System Slot Type 9 dynamic update. Smbios Type 9"
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "SYSTEM_SLOT_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "ONBOARD_DEVICE_INFO"
+	Value  = "0"
+	Help  = "ON  -> Onboard Device Information structure will be present\OFF -> OnBoard Device Information structure will not be present\The following information is needed only if ONBOARD_DEVICE_INFO = Present\Syntax:          ONBOARD_DEVICE_X    DEFINE  <Enabled or Disabled, Onboard Device Type, Descrition String>\                              Onboard device status  -> Describes the status(enabled/disabled) of on board device\                              On board device Type  -> Video, Audio, SCSI etc... for more detail search for On-board device Type equates in structure Type 10, refer SMB.EQU\                              Description String          -> Describes the on board device e.g.'Video', 'Audio' etc.."
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "OEM_STRING_1"
+	Value  = "Intel Skylake/Lewisburg/Purley  "
+	Help  = "Specifies the OEM STRING. Smbios Type 11"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "OEM_STRING_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "OEM_STRING_2"
+	Value  = "Supermicro motherboard-X11 Series"
+	Help  = "Specifies the OEM STRING. Smbios Type 11"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "OEM_STRING_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "NUMBER_OF_OEM_STRINGS"
+	Value  = "2"
+	Help  = "NUMBER OF OEM STRINGS\identifies the total number of OEM strings defined for this structure."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+	Range  = "0-5"
+End
+
+TOKEN
+	Name  = "SYSTEM_CONFIG_OPTION_INFO"
+	Value  = "0"
+	Help  = "ON  -> System Configuration Strings Information structure will be present\OFF -> System Configuration Strings Information structure will not be present\Please port necessary structures from file SMBDESC.DEF"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "BIOS_LANGUAGE_INFO"
+	Value  = "0"
+	Help  = "ON  -> Bios Language Information structure will be present\OFF -> Bios Language Information structure will not be present"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "EVENT_LOG_INFO"
+	Value  = "0"
+	Help  = "ON  -> Event-log Information structure will be present\OFF -> Event-log Information structure will not be present\"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "VOLTAGE_PROBE_INFO"
+	Value  = "0"
+	Help  = "ON  -> Voltage Probe Information (Type 26) structure will be present\OFF -> Voltage Probe Information (Type 26) structure will not be present"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "COOLING_DEVICE_INFO"
+	Value  = "0"
+	Help  = "ON  -> Cooling Device Information (Type 27) structure will be present\OFF -> Cooling Device Information (Type 27) structure will not be present"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TEMPERATURE_PROBE_INFO"
+	Value  = "0"
+	Help  = "ON  -> Temperature Probe Information (Type 28) structure will be present\OFF -> Temprature Probe Information (Type 28) structure will not be present"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "ELECTRICAL_PROBE_INFO"
+	Value  = "0"
+	Help  = "ON  -> Electrical Probe Information (Type 29) structure will be present\OFF -> Electrical Probe Information (Type 29) structure will not be present"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "MANAGEMENT_DEVICE_INFO"
+	Value  = "0"
+	Help  = "ON  -> Management Device Information (Type 34) structure will be present\OFF -> Management Device Information (Type 34) structure will not be present"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "IPMI_DEVICE_INFO"
+	Value  = "0"
+	Help  = "ON  ->IPMI Device Information structure will be present\OFF -> IPMI Device Information structure will not be present\"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+	Token     = "IPMI_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "IPMI_INTERFACE_TYPE"
+	Value  = "0x1"
+	Help  = "Baseboard Management Controller (BMC) interface type.\00h - Unknown\01h - KCS : Keyboard Controller Style\02h - SMIC : Server Management Interface Chip\03h - BT : Block Transfer\04h to 0FFh - Reserved for future assignment by this specification."
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "00 - 0FFh"
+End
+
+TOKEN
+	Name  = "IPMI_SPECIFICATION_REVISION"
+	Value  = "20h"
+	Help  = "Identifies the IPMI Specification Revision, in BCD format, to which the BMC was designed.\Bits 7:4 hold the most significant digit of the revision, while bits 3:0 hold the least significant bits.\eg. a value of 10h indicates revision 1.0"
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "00 - 99"
+End
+
+TOKEN
+	Name  = "SYSTEM_POWER_SUPPLY_INFO"
+	Value  = "1"
+	Help  = "Type 39 - System Power Supply\OFF -> System Power Supply will not be Present\ON  -> System Power Supply will be Present"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+	Token  = "IPMI_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "NUMBER_OF_POWER_SUPPLY"
+	Value  = "2"
+	Help  = "Number of Power Supplies Present in the System."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "UPDATE_DEVICE_EXT_TYPE41"
+	Value  = "0"
+	Help  = "update by SMCPKG.\ Enable/Disable OnBoard Devices Extended Type 41 dynamic update"
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "ONBOARD_DEVICE_EXTENDED_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "CPU1_DIMM_NUM"
+	Value  = "{2, 2, 2}"
+	Help = "{P1_DIMMA_D, P1_DIMMB_E, P1_DIMMC_F}"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "CPU2_DIMM_NUM"
+	Value  = "{2, 2, 2}"
+	Help = "{P2_DIMMA_D, P2_DIMMB_E, P2_DIMMC_F}"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "VPD_VERSION"
+	Value  = "0x02"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "AssetInfo_VERSION"
+	Value  = "0x01"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+    Name        = "SMC_UPDATE_DMI_WITH_FRU0_SUPPORT"
+    Value       = "0"
+    TokenType   = Boolean
+    TargetH     = Yes
+    Help        = "Update SMBIOS Type 1 and 3 with Fru0"
+End
+
+PATH
+  	Name = "SMC_SMBIOS_DIR"
+End
+
+FFS_FILE
+	Name  = "SmcSmBios"
+	FD_AREA  = "FV_MAIN"
+	INFComponent  = "SmcPkg.SmcSmBios"
+	Apriori_Index  = "5"
+End
+
+INFComponent
+        Name  = "SmcSmBios"
+        File  = "SmcSmBios.inf"
+        Package  = "SMCPkg"
+        ModuleTypes  = "DXE_DRIVER"
+        Token  = "SMC_SM_BIOS_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance = "SmcPkg.SmcRomHole"
+	Override  = "SmcPkg.SmcSmBios"
+	Token = "SmcRomHole_SUPPORT" "=" "1"
+End

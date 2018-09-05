@@ -1,0 +1,57 @@
+TOKEN
+	Name  = "FtRecovery_SUPPORT"
+	Value  = "1"
+	Help  = "Switch to enable Fault tolerant recovery support in Project"
+	TokenType = Boolean
+	TargetH = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+PATH
+    Name  = "FtRecovery_DIR"
+End
+
+TOKEN
+    Name  = "BUILD_TIME_BACKUP"
+    Value  = "1"
+    Help  = "If set to 1, then boot block back up image are present in ROM file"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+ELINK
+	Name  = "FtFvBeforePublishing"
+	Parent  = "PeiProcessFvBeforePublishing"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "IsTopSwapRecovery,"
+    Parent  = "IsRecovery"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(FtRecovery_DIR)/FtCspLib.c"
+    Parent  = "AMI_CSP_PEI_SOURCES"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(FtRecovery_DIR)/FtCspLib.c"
+    Parent  = "AMI_CSP_DXE_SOURCES"
+    InvokeOrder = AfterParent
+End
+
+INFComponent
+	Name  = "FtRecovery"
+	File  = "FtRecovery.inf"
+	Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "AmiModulePkg.FtRecovery"
+	Override  = "AmiModulePkg.RomLayoutPei"
+End

@@ -1,0 +1,79 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2013, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+## @file
+#   This driver installs SMI Flash Protocol
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SecSMIFlash
+  FILE_GUID                      = 3370A4BD-8C23-4565-A2A2-065FEEDE6080
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  VERSION_STRING                 = 1.0
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  ENTRY_POINT                    = SecSMIFlashDriverEntryPoint
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF EBC
+#
+
+[Sources]
+ SecSMIFlash.c
+ VerifyFwCapsule.c
+
+[Packages]
+ MdePkg/MdePkg.dec
+ MdeModulePkg/MdeModulePkg.dec
+ AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+ AmiModulePkg/AmiModulePkg.dec
+ AmiCryptoPkg/AmiCryptoPkg.dec
+
+[LibraryClasses]
+ AmiDxeLib
+ UefiDriverEntryPoint
+ AmiCspLib
+ AmiBufferValidationLib
+ DebugLib
+ BaseLib
+
+[Guids]
+ gEfiCertRsa2048Guid
+ gEfiHashAlgorithmSha256Guid
+ gEfiCertPkcs7Guid
+ gEfiCertX509Guid
+ gEfiCertSha256Guid
+ gEfiCapsuleVendorGuid
+ gAmiGlobalVariableGuid
+
+[Protocols]
+ gAmiSmmDigitalSignatureProtocolGuid
+ gSecureSMIFlashProtocolGuid
+ gEfiSmmCpuProtocolGuid
+ gEfiSmmSwDispatch2ProtocolGuid
+ gEfiSmmSxDispatch2ProtocolGuid
+ gFlashSmmProtocolGuid
+ gEfiFirmwareVolume2ProtocolGuid
+
+[Depex.common.DXE_SMM_DRIVER]
+ gAmiSmmDigitalSignatureProtocolGuid AND
+ gEfiSmmBase2ProtocolGuid       AND
+ gEfiSmmSwDispatch2ProtocolGuid AND
+ gEfiSmmSxDispatch2ProtocolGuid AND
+ gEfiSmmCpuProtocolGuid AND
+ gFlashSmmProtocolGuid
+
+ 

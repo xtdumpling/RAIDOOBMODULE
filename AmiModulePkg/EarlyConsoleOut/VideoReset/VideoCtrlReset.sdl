@@ -1,0 +1,27 @@
+TOKEN
+    Name  = "VideoCtrlReset"
+    Value  = "1"
+    Help  = "Main Switch for Enabling to VideoCtrlReset module that would disable/reset the Video device programming done in the PEI phase"
+    TokenType = Boolean
+    Master = Yes
+End
+
+INFComponent
+    Name  = "VideoCtrlResetLib"
+    File  = "VideoCtrlReset.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "PEIM"
+End
+
+LibraryMapping
+    Class  = "PeiVideoInitLib"
+    Instance  = "AmiModulePkg.PeiVideoInitLib"
+    ModuleTypes  = "DXE_DRIVER UEFI_DRIVER"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiModulePkg.VideoCtrlResetLib"
+    ModuleTypes  = "DXE_DRIVER UEFI_DRIVER"
+    Override  = "AmiModulePkg.DxeVideoTextOut"
+End

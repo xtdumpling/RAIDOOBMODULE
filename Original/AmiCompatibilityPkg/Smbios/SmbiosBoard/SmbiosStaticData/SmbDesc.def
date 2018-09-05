@@ -1,0 +1,2126 @@
+    ECHO  --Including: SMBDESC.DEF
+
+;****************************************************************************
+;****************************************************************************
+;**                                                                        **
+;**           (C)Copyright 1985-2013, American Megatrends, Inc.            **
+;**                                                                        **
+;**                          All Rights Reserved.                          **
+;**                                                                        **
+;**           5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093            **
+;**                                                                        **
+;**                          Phone: (770)-246-8600                         **
+;**                                                                        **
+;****************************************************************************
+;****************************************************************************
+
+;****************************************************************************
+; $Header: /Alaska/BIN/Modules/SMBIOS/SmbiosStaticData/Smbdesc.def 19    9/13/12 12:12p Davidd $
+;
+; $Revision: 19 $
+;
+; $Date: 9/13/12 12:12p $
+;****************************************************************************
+
+;----------------------------------------------------------------------------
+;    INCLUDE  equates.equ
+;----------------------------------------------------------------------------
+
+;!!NOTE!!
+; This file is used to port the static information required in the SMBIOS
+; Structures.
+;
+; While porting this file, please refer SMB.EQU for Enumerated Values.
+;
+; To dynamically update any structure you can add link to 'SMBIOSPostInitTable'
+; Refer to any of the current links for implementation detail.
+
+;----------------------------------------------------------------------------
+;    Structure Type 0 : BIOS INFORMATION
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;    Structure Type 1 : SYSTEM INFORMATION
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;    Structure Type 2 : BASEBOARD INFORMATION
+;----------------------------------------------------------------------------
+; NOTE: For single board system (NUMBER_OF_BASEBOARDS = 1), for backward 
+;       compatibility, porting is done with SDL tokens in SmbiosStaticData.sdl.
+;
+;       For multiple boards system (NUMBER_OF_BASEBOARDS > 1), porting is done
+;       here instead.
+;
+; Syntax:
+;    BASEBOARD_MANUFACTURER_1       DEFINE  <To be filled by O.E.M.>
+;    BASEBOARD_PRODUCT_1            DEFINE  <To be filled by O.E.M.>
+;    BASEBOARD_VERSION_1            DEFINE  <To be filled by O.E.M.>
+;    BASEBOARD_SERIAL_NUMBER_1      DEFINE  <To be filled by O.E.M.>
+;    BASEBOARD_ASSET_TAG_1          DEFINE  <To be filled by O.E.M.>
+;    BASEBOARD_FEATURE_FLAG_1       DEFINE  <01h>
+;    * Baseboard Feature Flags          ->  Bit 0   = Hosting board (ex. motherboard)
+;                                           Bit 1   = Board requires at least one daughter board
+;                                                     or auxiliary card to function properly
+;                                           Bit 2   = Board is removable
+;                                           Bit 3   = Board is replaceable
+;                                           Bit 4   = Board is hot swappable
+;                                           Bit 7-5 = Reserved
+;    BASEBOARD_LOCATION_1           DEFINE  <To be filled by O.E.M.>
+;    BASEBOARD_TYPE_1               DEFINE  <0Ah>
+;    * Baseboard Board Type             ->  01h = Unknown
+;                                           02h = Other
+;                                           03h = Server Blade
+;                                           04h = Connectivity Switch
+;                                           05h = System Management Module
+;                                           06h = Processor Module
+;                                           07h = I/O Module
+;                                           08h = Memory Module
+;                                           09h = Daughter Board
+;                                           0Ah = Motherboard (includes processor, memory, and I/O)
+;                                           0Bh = Processor/Memory Module
+;                                           0Ch = Processor/IO Module
+;                                           0Dh = Interconnect Board
+;----------------------------------------------------------------------------
+    BASEBOARD_MANUFACTURER_1        DEFINE  <To be filled by O.E.M. 1>
+    BASEBOARD_MANUFACTURER_2        DEFINE  <To be filled by O.E.M. 2>
+    BASEBOARD_MANUFACTURER_3        DEFINE  <To be filled by O.E.M. 3>
+    BASEBOARD_MANUFACTURER_4        DEFINE  <To be filled by O.E.M. 4>
+    BASEBOARD_MANUFACTURER_5        DEFINE  <To be filled by O.E.M. 5>
+
+    BASEBOARD_PRODUCT_1             DEFINE  <To be filled by O.E.M. 1>
+    BASEBOARD_PRODUCT_2             DEFINE  <To be filled by O.E.M. 2>
+    BASEBOARD_PRODUCT_3             DEFINE  <To be filled by O.E.M. 3>
+    BASEBOARD_PRODUCT_4             DEFINE  <To be filled by O.E.M. 4>
+    BASEBOARD_PRODUCT_5             DEFINE  <To be filled by O.E.M. 5>
+
+    BASEBOARD_VERSION_1             DEFINE  <To be filled by O.E.M. 1>
+    BASEBOARD_VERSION_2             DEFINE  <To be filled by O.E.M. 2>
+    BASEBOARD_VERSION_3             DEFINE  <To be filled by O.E.M. 3>
+    BASEBOARD_VERSION_4             DEFINE  <To be filled by O.E.M. 4>
+    BASEBOARD_VERSION_5             DEFINE  <To be filled by O.E.M. 5>
+
+    BASEBOARD_SERIAL_NUMBER_1       DEFINE  <To be filled by O.E.M. 1>
+    BASEBOARD_SERIAL_NUMBER_2       DEFINE  <To be filled by O.E.M. 2>
+    BASEBOARD_SERIAL_NUMBER_3       DEFINE  <To be filled by O.E.M. 3>
+    BASEBOARD_SERIAL_NUMBER_4       DEFINE  <To be filled by O.E.M. 4>
+    BASEBOARD_SERIAL_NUMBER_5       DEFINE  <To be filled by O.E.M. 5>
+
+    BASEBOARD_ASSET_TAG_1           DEFINE  <To be filled by O.E.M. 1>
+    BASEBOARD_ASSET_TAG_2           DEFINE  <To be filled by O.E.M. 2>
+    BASEBOARD_ASSET_TAG_3           DEFINE  <To be filled by O.E.M. 3>
+    BASEBOARD_ASSET_TAG_4           DEFINE  <To be filled by O.E.M. 4>
+    BASEBOARD_ASSET_TAG_5           DEFINE  <To be filled by O.E.M. 5>
+
+    BASEBOARD_FEATURE_FLAG_1        DEFINE  <01h>
+    BASEBOARD_FEATURE_FLAG_2        DEFINE  <01h>
+    BASEBOARD_FEATURE_FLAG_3        DEFINE  <01h>
+    BASEBOARD_FEATURE_FLAG_4        DEFINE  <01h>
+    BASEBOARD_FEATURE_FLAG_5        DEFINE  <01h>
+
+    BASEBOARD_LOCATION_1            DEFINE  <To be filled by O.E.M. 1>
+    BASEBOARD_LOCATION_2            DEFINE  <To be filled by O.E.M. 2>
+    BASEBOARD_LOCATION_3            DEFINE  <To be filled by O.E.M. 3>
+    BASEBOARD_LOCATION_4            DEFINE  <To be filled by O.E.M. 4>
+    BASEBOARD_LOCATION_5            DEFINE  <To be filled by O.E.M. 5>
+
+    BASEBOARD_TYPE_1                DEFINE  <0Ah>
+    BASEBOARD_TYPE_2                DEFINE  <0Ah>
+    BASEBOARD_TYPE_3                DEFINE  <0Ah>
+    BASEBOARD_TYPE_4                DEFINE  <0Ah>
+    BASEBOARD_TYPE_5                DEFINE  <0Ah>
+
+;----------------------------------------------------------------------------
+;    Structure Type 3 : SYSTEM ENCLOSURE OR CHASSIS
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;    Structure Type 4 : PROCESSOR INFORMATION
+;----------------------------------------------------------------------------
+;
+; The processor information is defined in the following two macros
+;    1. PROCESSOR_INFO_n
+;    2. PROCESSOR_VOLTAGE_n
+;       where n is the processor number
+;       (n = 1,2,3,4... for system having support for 1,2,3,4... processors)
+;
+; Syntax of PROCESSOR_INFO_n macro
+;  PROCESSOR_INFO_n    DEFINE  <String defining Slot, Maxm speed, Upgrade information>
+;    where  String defining Slot is a string
+;    Maxm Speed is a number specifying speed in MHz
+;
+; PROCESSOR UPGRADE INFORMATION
+; Refer SMB.EQU file for Processor Upgrade information
+;
+; Syntax of PROCESSOR_VOLTAGE_n macro
+;  PROCESSOR_VOLTAGE_n    DEFINE  <Format, List of Voltage capabilities>
+;    Format can be either STANDARD or USER_DEFINED
+;    If it is STANDARD, then the List of Voltage capabilities can have
+;    more than one values e.g. VOLT_29 (2.9V), VOLT_33 (3.3V), etc.
+;    If it is USER_DEFINED, then the List of Voltage capabilities can have
+;    only one value and the value needs to be calculated according to the
+;    following formula: Processor voltage * 10 i.e. if the processor
+;    voltage is 2.9V, then this value should be 29 decimal or 13h
+; Select the number of processors supported in the motherboard.
+; note that the PROCESSOR_INFO_n and PROCESSOR_VOLTAGE_n macros are defined
+; for upto 4 processor. If the number of processors exceeds 4, then the
+; corresponding PROCESSOR_INFO_n and PROCESSOR_VOLTAGE_n macros need to
+; be defined accordingly
+;----------------------------------------------------------------------------
+
+;!!PORT!!
+    PROC_SOC_DESIG_1  DEFINE  <CPU 1>
+    PROC_TYPE_1       DEFINE  <CPU_CENTRAL_PROCESSOR>
+    PROC_FAMILY_1     DEFINE  <FA_OTHER>
+    PROC_VOLTAGE_1    DEFINE  <STANDARD, VOLT_33>
+    PROC_MAX_SPEED_1  DEFINE  <0>
+    PROC_UPGRADE_1    DEFINE  <UPG_OTHER>
+    PROC_SERIAL_NO_1  DEFINE  <To Be Filled By O.E.M.>
+    PROC_ASSET_TAG_1  DEFINE  <To Be Filled By O.E.M.>
+    PROC_PART_NO_1    DEFINE  <To Be Filled By O.E.M.>
+    PROC_FAMILY_2_1   DEFINE  <FA_OTHER>
+
+    PROC_SOC_DESIG_2  DEFINE  <CPU 2>
+    PROC_TYPE_2       DEFINE  <CPU_CENTRAL_PROCESSOR>
+    PROC_FAMILY_2     DEFINE  <FA_OTHER>
+    PROC_VOLTAGE_2    DEFINE  <STANDARD, VOLT_33>
+    PROC_MAX_SPEED_2  DEFINE  <0>
+    PROC_UPGRADE_2    DEFINE  <UPG_OTHER>
+    PROC_SERIAL_NO_2  DEFINE  <To Be Filled By O.E.M.>
+    PROC_ASSET_TAG_2  DEFINE  <To Be Filled By O.E.M.>
+    PROC_PART_NO_2    DEFINE  <To Be Filled By O.E.M.>
+    PROC_FAMILY_2_2   DEFINE  <FA_OTHER>
+
+    PROC_SOC_DESIG_3  DEFINE  <CPU 3>
+    PROC_TYPE_3       DEFINE  <CPU_CENTRAL_PROCESSOR>
+    PROC_FAMILY_3     DEFINE  <FA_OTHER>
+    PROC_VOLTAGE_3    DEFINE  <STANDARD, VOLT_33>
+    PROC_MAX_SPEED_3  DEFINE  <0>
+    PROC_UPGRADE_3    DEFINE  <UPG_OTHER>
+    PROC_SERIAL_NO_3  DEFINE  <To Be Filled By O.E.M.>
+    PROC_ASSET_TAG_3  DEFINE  <To Be Filled By O.E.M.>
+    PROC_PART_NO_3    DEFINE  <To Be Filled By O.E.M.>
+    PROC_FAMILY_2_3   DEFINE  <FA_OTHER>
+
+    PROC_SOC_DESIG_4  DEFINE  <CPU 4>
+    PROC_TYPE_4       DEFINE  <CPU_CENTRAL_PROCESSOR>
+    PROC_FAMILY_4     DEFINE  <FA_OTHER>
+    PROC_VOLTAGE_4    DEFINE  <STANDARD, VOLT_33>
+    PROC_MAX_SPEED_4  DEFINE  <0>
+    PROC_UPGRADE_4    DEFINE  <UPG_OTHER>
+    PROC_SERIAL_NO_4  DEFINE  <To Be Filled By O.E.M.>
+    PROC_ASSET_TAG_4  DEFINE  <To Be Filled By O.E.M.>
+    PROC_PART_NO_4    DEFINE  <To Be Filled By O.E.M.>
+    PROC_FAMILY_2_4   DEFINE  <FA_OTHER>
+
+    PROC_SOC_DESIG_5  DEFINE  <CPU 5>
+    PROC_TYPE_5       DEFINE  <CPU_CENTRAL_PROCESSOR>
+    PROC_FAMILY_5     DEFINE  <FA_OTHER>
+    PROC_VOLTAGE_5    DEFINE  <STANDARD, VOLT_33>
+    PROC_MAX_SPEED_5  DEFINE  <0>
+    PROC_UPGRADE_5    DEFINE  <UPG_OTHER>
+    PROC_SERIAL_NO_5  DEFINE  <To Be Filled By O.E.M.>
+    PROC_ASSET_TAG_5  DEFINE  <To Be Filled By O.E.M.>
+    PROC_PART_NO_5    DEFINE  <To Be Filled By O.E.M.>
+    PROC_FAMILY_2_5   DEFINE  <FA_OTHER>
+
+    PROC_SOC_DESIG_6  DEFINE  <CPU 6>
+    PROC_TYPE_6       DEFINE  <CPU_CENTRAL_PROCESSOR>
+    PROC_FAMILY_6     DEFINE  <FA_OTHER>
+    PROC_VOLTAGE_6    DEFINE  <STANDARD, VOLT_33>
+    PROC_MAX_SPEED_6  DEFINE  <0>
+    PROC_UPGRADE_6    DEFINE  <UPG_OTHER>
+    PROC_SERIAL_NO_6  DEFINE  <To Be Filled By O.E.M.>
+    PROC_ASSET_TAG_6  DEFINE  <To Be Filled By O.E.M.>
+    PROC_PART_NO_6    DEFINE  <To Be Filled By O.E.M.>
+    PROC_FAMILY_2_6   DEFINE  <FA_OTHER>
+
+    PROC_SOC_DESIG_7  DEFINE  <CPU 7>
+    PROC_TYPE_7       DEFINE  <CPU_CENTRAL_PROCESSOR>
+    PROC_FAMILY_7     DEFINE  <FA_OTHER>
+    PROC_VOLTAGE_7    DEFINE  <STANDARD, VOLT_33>
+    PROC_MAX_SPEED_7  DEFINE  <0>
+    PROC_UPGRADE_7    DEFINE  <UPG_OTHER>
+    PROC_SERIAL_NO_7  DEFINE  <To Be Filled By O.E.M.>
+    PROC_ASSET_TAG_7  DEFINE  <To Be Filled By O.E.M.>
+    PROC_PART_NO_7    DEFINE  <To Be Filled By O.E.M.>
+    PROC_FAMILY_2_7   DEFINE  <FA_OTHER>
+
+    PROC_SOC_DESIG_8  DEFINE  <CPU 8>
+    PROC_TYPE_8       DEFINE  <CPU_CENTRAL_PROCESSOR>
+    PROC_FAMILY_8     DEFINE  <FA_OTHER>
+    PROC_VOLTAGE_8    DEFINE  <STANDARD, VOLT_33>
+    PROC_MAX_SPEED_8  DEFINE  <0>
+    PROC_UPGRADE_8    DEFINE  <UPG_OTHER>
+    PROC_SERIAL_NO_8  DEFINE  <To Be Filled By O.E.M.>
+    PROC_ASSET_TAG_8  DEFINE  <To Be Filled By O.E.M.>
+    PROC_PART_NO_8    DEFINE  <To Be Filled By O.E.M.>
+    PROC_FAMILY_2_8   DEFINE  <FA_OTHER>
+
+;----------------------------------------------------------------------------
+;    Structure Type 7: CACHE INFORMATION
+;----------------------------------------------------------------------------
+; Select the number of Caches present in the System. A value of 1 indicates
+; only L1 cache is present, a value of 2 indicates both L1 and L2 caches
+; are present, Note that these caches are internal or external to the processor.
+; The external cache (if present) is defined by EXTERNAL_CACHE_INFORMATION.
+;
+; Syntax:
+;  PROCESSOR_CACHE_INFO_L1  <Maximum Cache Size, Installed Cache Size, Supported SRAM Type, Current SRAM Type>
+;
+;  EXTERNAL_CACHE_INFO      <Maximum Cache Size, Installed Cache Size, Supported SRAM Type, Current SRAM Type>
+;
+;  * Maximum cache size and Installed cache size are WORD values.
+;    Bit-15  = Granularity
+;       0/1  = granularity ios 1K/64K
+;    Bit14-0 = Size
+;    For example, 256k cahe can be represented as 256*1024 with granularity of 1K
+;    OR as 8004h with granularity of 64k
+;  * For Supported/Current SRAM Type refer to SMB.EQU File. It is described
+;    in cache type equates
+;
+; Syntax:
+;  PROCESSOR_CACHE_CONFIG_L1          <String, Operational Mode, Enable or Disabled at BOOT time,
+;                                     Location relative to CPU, Socketed or Not Socketed, Cache Level Inoformation>
+;
+;  EXTERNAL_CACHE_CFG                 <String, Operational Mode, Enable or Disabled at BOOT time, Location relative to CPU,
+;                                     Socketed or Not Socketed, Cache Level Inoformation>
+;
+;  * String                       ->  This is a string describing the cache.
+;                                     e.g. "L-1 Cache"
+;  * Operational Mode             ->  Cache is Write back or write thru, etc...
+;                                     For more detail search for cache operational mode
+;                                     in Structure Type 7 details in SMB.EQU
+;  * Cache Enbled/Disable         ->  (at Boot time)
+;                                     For more detail search for Cache Enable or disable
+;                                     in structure Type 7 details in SMB.EQU
+;  * Location Relative to CPU     ->  Cache location is internal or external relative to CPU
+;                                     For more detail search for Cache Location in
+;                                     structure Type 7 details in SMB.EQU
+;  * Cache Socketed/Not Socketed  ->  Cache is socketed or Not socketed
+;                                     For more detail search for Cache socketed in structure
+;                                     Type 7 details in SMB.EQU
+;  * Cache Level Information      ->  L1, L2 etc...
+;                                     For more detail search for level inofrmation in structure
+;                                     Type 7 details in SMB.EQU
+; Syntax:
+;   PROCESSOR_CACHE_CHAR_L1           <Cache speed, Error Correction Type, System Cache Type, Cache Associativity>
+;
+;   EXTERNAL_CACHE_CHAR               <Cache speed, Error Correction Type, System Cache Type, Cache Associativity>
+;
+;  * Cache Speed                  ->  Cache Module speed in ns(nano second)
+;                                     the value is 0 if it is unknown
+;  * Error Correction Type        ->  Single-bit, Multi-bit, etc...
+;                                     For more detail search for Cache Error Correction in
+;                                     structure Type-7 details in SMB.EQU
+;  * System Cache Type            ->  Unified and etc...
+;                                     For more detail search for System Cache Type in structure
+;                                     Type-7 details in SMB.EQU
+;  * Cache Associativity          ->  One-way, Two-way Associativity and etc..
+;                                     For more detail search for Cache Associativity in structure
+;                                     Type-7 details in SMB.EQU
+;----------------------------------------------------------------------------
+; Use MKF_NUMBER_OF_PROC_CACHE to get the No. of Processor Cache in the system.
+
+;!!PORT!!
+
+    PROC_CACHE_INFO_L1  DEFINE <0, 0, CH_UNKNOWN, CH_UNKNOWN>
+    PROC_CACHE_CFG_L1   DEFINE <L1-Cache, CACHE_DISABLED, COM_UNKNOWN, CCL_INTERNAL, CS_NOT_SOCKETED, CL_L1>
+    PROC_CACHE_CHAR_L1  DEFINE <0, SR_UNKNOWN, SCT_UNKNOWN, CA_UNKNOWN>
+
+    PROC_CACHE_INFO_L2  DEFINE <0, 0, CH_UNKNOWN, CH_UNKNOWN>
+    PROC_CACHE_CFG_L2   DEFINE <L2-Cache, CACHE_DISABLED, COM_UNKNOWN, CCL_INTERNAL, CS_NOT_SOCKETED, CL_L2>
+    PROC_CACHE_CHAR_L2  DEFINE <0, SR_UNKNOWN, SCT_UNKNOWN, CA_UNKNOWN>
+
+    PROC_CACHE_INFO_L3  DEFINE <0, 0, CH_UNKNOWN, CH_UNKNOWN>
+    PROC_CACHE_CFG_L3   DEFINE <L3-Cache, CACHE_DISABLED, COM_UNKNOWN, CCL_INTERNAL, CS_NOT_SOCKETED, CL_L3>
+    PROC_CACHE_CHAR_L3  DEFINE <0, SR_UNKNOWN, SCT_UNKNOWN, CA_UNKNOWN>
+
+    EXTERNAL_CACHE_INFO DEFINE <32*1024, 32*1024, 00, 00>
+    EXTERNAL_CACHE_CFG  DEFINE <L2-Cache, 00, 00, 00, 00, CL_L2>
+    EXTERNAL_CACHE_CHAR DEFINE <40, 00, 00, 00>
+
+
+;----------------------------------------------------------------------------
+;       Structure Type 8 : PORT CONNECTOR INFORMATION
+;----------------------------------------------------------------------------
+
+;<Internal_ref_designator, Internal_connector_type, External_ref_designator,
+; External_connector_type, Port_type>
+
+;!!PORT!!
+        EXT_CONNECTOR_1         DEFINE  <J1A1,00H,PS2Mouse,0FH,0EH>
+        EXT_CONNECTOR_2         DEFINE  <J1A1,00H,Keyboard,0FH,0DH>
+        EXT_CONNECTOR_3         DEFINE  <J2A1,00H,TV Out,1DH,0FFH>
+        EXT_CONNECTOR_4         DEFINE  <J2A2A,00H,COM A,08H,09H>
+        EXT_CONNECTOR_5         DEFINE  <J2A2B,00H,Video,07H,1CH>
+        EXT_CONNECTOR_6         DEFINE  <J3A1,00H,USB1,12H,10H>
+        EXT_CONNECTOR_7         DEFINE  <J3A1,00H,USB2,12H,10H>
+        EXT_CONNECTOR_8         DEFINE  <J3A1,00H,USB3,12H,10H>
+        EXT_CONNECTOR_9         DEFINE  <J5A1,00H,LAN,0BH,1FH>
+        EXT_CONNECTOR_10        DEFINE  <J5A1,00H,USB4,12H,10H>
+        EXT_CONNECTOR_11        DEFINE  <J5A1,00H,USB5,12H,10H>
+        EXT_CONNECTOR_12        DEFINE  <J5A1,00H,USB6,12H,10H>
+        EXT_CONNECTOR_13        DEFINE  <J5A2,00H,USB7,12H,10H>
+        EXT_CONNECTOR_14        DEFINE  <J5A2,00H,USB8,12H,10H>
+        EXT_CONNECTOR_15        DEFINE  <J5A3,00H,USB9,12H,10H>
+        EXT_CONNECTOR_16        DEFINE  <J5A4,00H,USB10,12H,10H>
+        EXT_CONNECTOR_17        DEFINE  <J5A5,00H,USB11,12H,10H>
+        EXT_CONNECTOR_18        DEFINE  <J5A6,00H,USB12,12H,10H>
+        EXT_CONNECTOR_19        DEFINE  <J5A7,00H,USB13,12H,10H>
+        EXT_CONNECTOR_20        DEFINE  <J5A8,00H,USB14,12H,10H>
+        EXT_CONNECTOR_21        DEFINE  <J5A9,00H,USB15,12H,10H>
+        EXT_CONNECTOR_22        DEFINE  <J6A1,00H,USB16,12H,10H>
+        EXT_CONNECTOR_23        DEFINE  <J6A2,00H,USB17,12H,10H>
+        EXT_CONNECTOR_24        DEFINE  <J6A3,00H,USB18,12H,10H>
+        EXT_CONNECTOR_25        DEFINE  <J6A4,00H,USB19,12H,10H>
+        EXT_CONNECTOR_26        DEFINE  <J6A5,00H,USB20,12H,10H>
+        EXT_CONNECTOR_27        DEFINE  <J6A6,00H,USB21,12H,10H>
+        EXT_CONNECTOR_28        DEFINE  <J6A7,00H,USB22,12H,10H>
+        EXT_CONNECTOR_29        DEFINE  <J6A8,00H,USB23,12H,10H>
+        EXT_CONNECTOR_30        DEFINE  <J6A9,00H,USB24,12H,10H>
+        EXT_CONNECTOR_31        DEFINE  <J7A1,00H,USB25,12H,10H>
+        EXT_CONNECTOR_32        DEFINE  <J7A2,00H,USB26,12H,10H>
+
+;<Internal_ref_designator, Internal_connector_type, Internal_port_type>
+
+;!!PORT!!
+        INT_CONNECTOR_1         DEFINE <J9A1 - TPM HDR,0FFH,0FFH>
+        INT_CONNECTOR_2         DEFINE <J9C1 - PCIE DOCKING CONN,0FFH,0FFH>
+        INT_CONNECTOR_3         DEFINE <J2B3 - CPU FAN,0FFH,0FFH>
+        INT_CONNECTOR_4         DEFINE <J6C2 - EXT HDMI,0FFH,0FFH>
+        INT_CONNECTOR_5         DEFINE <J3C1 - GMCH FAN,0FFH,0FFH>
+        INT_CONNECTOR_6         DEFINE <J1D1 - ITP,0FFH,0FFH>
+        INT_CONNECTOR_7         DEFINE <J9E2 - MDC INTPSR,0FFH,0FFH>
+        INT_CONNECTOR_8         DEFINE <J9E4 - MDC INTPSR,0FFH,0FFH>
+        INT_CONNECTOR_9         DEFINE <J9E3 - LPC HOT DOCKING,0FFH,0FFH>
+        INT_CONNECTOR_10        DEFINE <J9E1 - SCAN MATRIX,0FFH,0FFH>
+        INT_CONNECTOR_11        DEFINE <J9G1 - LPC SIDE BAND,0FFH,0FFH>
+        INT_CONNECTOR_12        DEFINE <J8F1 - UNIFIED,0FFH,0FFH>
+        INT_CONNECTOR_13        DEFINE <J6F1 - LVDS,0FFH,0FFH>
+        INT_CONNECTOR_14        DEFINE <J2F1 - LAI FAN,0FFH,0FFH>
+        INT_CONNECTOR_15        DEFINE <J2G1 - GFX VID,0FFH,0FFH>
+        INT_CONNECTOR_16        DEFINE <J1G6 - AC JACK,0FFH,0FFH>
+        INT_CONNECTOR_17        DEFINE <J1G7 - BATT B,0FFH,0FFH>
+        INT_CONNECTOR_18        DEFINE <J1H1 - BATT A,0FFH,0FFH>
+        INT_CONNECTOR_19        DEFINE <J7H2 - SATA PWR,0FFH,0FFH>
+        INT_CONNECTOR_20        DEFINE <J7H1 - SATA PORT2,0FFH,0FFH>
+        INT_CONNECTOR_21        DEFINE <J7J3 - SATA PORT1,0FFH,0FFH>
+        INT_CONNECTOR_22        DEFINE <J8J1 - SATA PORT0,0FFH,0FFH>
+        INT_CONNECTOR_23        DEFINE <J7J4 - PATA,016H,0FFH>
+        INT_CONNECTOR_24        DEFINE <J7J5 - EMA,0FFH,0FFH>
+        INT_CONNECTOR_25        DEFINE <J4J1 - ATX PWR,0FFH,0FFH>
+        INT_CONNECTOR_26        DEFINE <J4J2 - PATA PWR,0FFH,0FFH>
+        INT_CONNECTOR_27        DEFINE <J5J1 - SAS PWR1,0FFH,0FFH>
+        INT_CONNECTOR_28        DEFINE <J5J2 - SAS1,0FFH,0FFH>
+        INT_CONNECTOR_29        DEFINE <J5J3 - SAS PWR2,0FFH,0FFH>
+        INT_CONNECTOR_30        DEFINE <J5J4 - SAS2,0FFH,0FFH>
+        INT_CONNECTOR_31        DEFINE <J5J5 - SAS PWR3,0FFH,0FFH>
+        INT_CONNECTOR_32        DEFINE <J5J6 - SAS3,0FFH,0FFH>
+
+;----------------------------------------------------------------------------
+;       Structure Type 9 : SYSTEM SLOT INFORMATION
+;----------------------------------------------------------------------------
+; The following information is needed only if SYS_SLOT_INFO = Present
+; Syntax:
+;    SYSTEM_SLOT_INFO_1   DEFINE  <String, Slot Type, Slot Data bus Width,
+;                                 Slot usage, Slot length, Slot ID>
+;    * String                 ->  System Slot designator string.
+;                                 e.g. "PCI1", "ISA1" etc..
+;    * System Slot Type       ->  PCI, ISA, VESA, AGP, etc...
+;                                 For more detail search for System Slot
+;                                 Type equates in structure Type 9, refer SMB.EQU
+;    * Slot Data Bus Width    ->  8bit, 16bit etc..
+;                                 For more detail search for System Slot Data Bus width
+;                                 equates in structure Type 9, refer SMB.EQU
+;    * Slot Usage             ->  Available, in use etc..
+;                                 For more detail search for System Slot Usage
+;                                 equates in structure TYPE 9 , refer SMB.EQU
+;                                 This is a Bit-field value.
+;    * Slot Length            ->  Half length, full length etc...
+;                                 For more detail search for System Slot Length
+;                                 equates in structure Type 9, refer SMB.EQU
+;    * Slot ID                ->  The slot ID field provides a mechanism to
+;                                 Correlate the physical attributes of the slot to
+;                                 its logical access method
+;
+;    * SYSTEM_SLOT_CHAR_1 DEFINE  <Slot Characteristic 1, SlotCharacteristic 2>
+;     Slot Characteristc 1    ->  For more detail search for system slot
+;                                 characteristic-1 in structure type 9, SMB.EQU
+;     Slot Characteristc 2    ->  For more detail search for system slot
+;                                 characteristic-2 in structure type 9, SMB.EQU
+;    * SEGGRP_BUS_DEV_FUNC_1 DEFINE  <Segment Group Number, Bus Number, Device Function Number>
+;     Segment Group Number    ->  Segment Group Number defined in the PCI Firmware Spec.
+;     Bus Number              ->  Bus Number
+;     Device Function Number  ->  Device / Function Number
+;----------------------------------------------------------------------------
+
+;!!NOTE!!
+; If AGP slot exists in the system then enter the AGP_BRIDGE_BUS_DEV_FUNC_NO in SMBIOS.SDL
+
+;!!PORT!!
+        SYSTEM_SLOT_INFO_1      DEFINE  <J6B2, SYS_SLOT_PCIE, DBW_16X, SCU_IN_USE, SL_LONG_LENGTH, 0>
+        SYSTEM_SLOT_CHAR_1      DEFINE  <SCH_33V, SCH_SHARED, SCH_PME>
+    	SEGGRP_BUS_DEV_FUNC_1   DEFINE  <0, 0, 8>
+
+        SYSTEM_SLOT_INFO_2      DEFINE  <J6B1, SYS_SLOT_PCIE, DBW_1X, SCU_IN_USE, SL_SHORT_LENGTH, 1>
+        SYSTEM_SLOT_CHAR_2      DEFINE  <SCH_33V, SCH_PME, SCH_SHARED>
+    	SEGGRP_BUS_DEV_FUNC_2   DEFINE  <0, 0, 0E3h>
+
+        SYSTEM_SLOT_INFO_3      DEFINE  <J6D1, SYS_SLOT_PCIE, DBW_1X, SCU_IN_USE, SL_SHORT_LENGTH, 2>
+        SYSTEM_SLOT_CHAR_3      DEFINE  <SCH_33V, SCH_PME, SCH_SHARED>
+    	SEGGRP_BUS_DEV_FUNC_3   DEFINE  <0, 0, 0E4h>
+
+        SYSTEM_SLOT_INFO_4      DEFINE  <J7B1, SYS_SLOT_PCIE, DBW_1X, SCU_IN_USE, SL_SHORT_LENGTH, 3>
+        SYSTEM_SLOT_CHAR_4      DEFINE  <SCH_33V, SCH_PME, SCH_SHARED>
+        SEGGRP_BUS_DEV_FUNC_4   DEFINE  <0, 0, 0E5h>
+
+        SYSTEM_SLOT_INFO_5      DEFINE  <J8B4, SYS_SLOT_PCIE, DBW_1X, SCU_IN_USE, SL_SHORT_LENGTH, 4>
+        SYSTEM_SLOT_CHAR_5      DEFINE  <SCH_33V, SCH_PME, SCH_SHARED>
+        SEGGRP_BUS_DEV_FUNC_5   DEFINE  <0, 0, 0E6h>
+
+        SYSTEM_SLOT_INFO_6      DEFINE  <J8D1, SYS_SLOT_PCIE, DBW_1X, SCU_IN_USE, SL_SHORT_LENGTH, 5>
+        SYSTEM_SLOT_CHAR_6      DEFINE  <SCH_33V, SCH_PME, SCH_SHARED>
+        SEGGRP_BUS_DEV_FUNC_6   DEFINE  <0, 0, 0E7h>
+
+        SYSTEM_SLOT_INFO_7      DEFINE  <J8B3, SYS_SLOT_PCI, DBW_32BIT, SCU_IN_USE, SL_SHORT_LENGTH, 6>
+        SYSTEM_SLOT_CHAR_7      DEFINE  <SCH_33V, SCH_PME, SCH_SHARED>
+        SEGGRP_BUS_DEV_FUNC_7   DEFINE  <0, 0, 0F0h>
+
+        SYSTEM_SLOT_INFO_8      DEFINE  <J9B1, SYS_SLOT_PCI, DBW_32BIT, SCU_IN_USE, SL_SHORT_LENGTH, 7>
+        SYSTEM_SLOT_CHAR_8      DEFINE  <SCH_33V, SCH_PME, SCH_SHARED>
+        SEGGRP_BUS_DEV_FUNC_8   DEFINE  <0, 0, 0F0h>
+
+        SYSTEM_SLOT_INFO_9      DEFINE  <J9B2, SYS_SLOT_PCI, DBW_32BIT, SCU_IN_USE, SL_SHORT_LENGTH, 8>
+        SYSTEM_SLOT_CHAR_9      DEFINE  <SCH_33V, SCH_PME, SCH_SHARED>
+        SEGGRP_BUS_DEV_FUNC_9   DEFINE  <0, 0, 0F0h>
+
+        SYSTEM_SLOT_INFO_10     DEFINE  <J9B3, SYS_SLOT_PCI, DBW_32BIT, SCU_IN_USE, SL_SHORT_LENGTH, 9>
+        SYSTEM_SLOT_CHAR_10     DEFINE  <SCH_33V, SCH_PME, SCH_SHARED>
+        SEGGRP_BUS_DEV_FUNC_10  DEFINE  <0, 0, 0F0h>
+
+        SYSTEM_SLOT_INFO_11     DEFINE  <J9B4, SYS_SLOT_PCI, DBW_32BIT, SCU_IN_USE, SL_SHORT_LENGTH, 10>
+        SYSTEM_SLOT_CHAR_11     DEFINE  <SCH_33V, SCH_PME, SCH_SHARED>
+        SEGGRP_BUS_DEV_FUNC_11  DEFINE  <0, 0, 0F0h>
+
+        SYSTEM_SLOT_INFO_12     DEFINE  <J9B5, SYS_SLOT_PCI, DBW_32BIT, SCU_IN_USE, SL_SHORT_LENGTH, 11>
+        SYSTEM_SLOT_CHAR_12     DEFINE  <SCH_33V, SCH_PME, SCH_SHARED>
+        SEGGRP_BUS_DEV_FUNC_12  DEFINE  <0, 0, 0F0h>
+
+        SYSTEM_SLOT_INFO_13     DEFINE  <J9B6, SYS_SLOT_PCI, DBW_32BIT, SCU_IN_USE, SL_SHORT_LENGTH, 12>
+        SYSTEM_SLOT_CHAR_13     DEFINE  <SCH_33V, SCH_PME, SCH_SHARED>
+        SEGGRP_BUS_DEV_FUNC_13  DEFINE  <0, 0, 0F0h>
+
+        SYSTEM_SLOT_INFO_14     DEFINE  <J9B7, SYS_SLOT_PCI, DBW_32BIT, SCU_IN_USE, SL_SHORT_LENGTH, 13>
+        SYSTEM_SLOT_CHAR_14     DEFINE  <SCH_33V, SCH_PME, SCH_SHARED>
+        SEGGRP_BUS_DEV_FUNC_14  DEFINE  <0, 0, 0F0h>
+
+        SYSTEM_SLOT_INFO_15     DEFINE  <J9B8, SYS_SLOT_PCI, DBW_32BIT, SCU_IN_USE, SL_SHORT_LENGTH, 14>
+        SYSTEM_SLOT_CHAR_15     DEFINE  <SCH_33V, SCH_PME, SCH_SHARED>
+        SEGGRP_BUS_DEV_FUNC_15  DEFINE  <0, 0, 0F0h>
+
+        SYSTEM_SLOT_INFO_16     DEFINE  <J9B9, SYS_SLOT_PCI, DBW_32BIT, SCU_IN_USE, SL_SHORT_LENGTH, 15>
+        SYSTEM_SLOT_CHAR_16     DEFINE  <SCH_33V, SCH_PME, SCH_SHARED>
+        SEGGRP_BUS_DEV_FUNC_16  DEFINE  <0, 0, 0F0h>
+
+        SYSTEM_SLOT_INFO_17     DEFINE  <J6B2, SYS_SLOT_PCIE, DBW_16X, SCU_IN_USE, SL_LONG_LENGTH, 16>
+        SYSTEM_SLOT_CHAR_17     DEFINE  <SCH_33V, SCH_SHARED, SCH_PME>
+    	SEGGRP_BUS_DEV_FUNC_17  DEFINE  <0, 0, 8>
+
+        SYSTEM_SLOT_INFO_18     DEFINE  <J6B1, SYS_SLOT_PCIE, DBW_1X, SCU_IN_USE, SL_SHORT_LENGTH, 17>
+        SYSTEM_SLOT_CHAR_18     DEFINE  <SCH_33V, SCH_PME, SCH_SHARED>
+    	SEGGRP_BUS_DEV_FUNC_18  DEFINE  <0, 0, 0E3h>
+
+        SYSTEM_SLOT_INFO_19     DEFINE  <J6D1, SYS_SLOT_PCIE, DBW_1X, SCU_IN_USE, SL_SHORT_LENGTH, 18>
+        SYSTEM_SLOT_CHAR_19     DEFINE  <SCH_33V, SCH_PME, SCH_SHARED>
+    	SEGGRP_BUS_DEV_FUNC_19  DEFINE  <0, 0, 0E4h>
+
+        SYSTEM_SLOT_INFO_20     DEFINE  <J7B1, SYS_SLOT_PCIE, DBW_1X, SCU_IN_USE, SL_SHORT_LENGTH, 19>
+        SYSTEM_SLOT_CHAR_20     DEFINE  <SCH_33V, SCH_PME, SCH_SHARED>
+        SEGGRP_BUS_DEV_FUNC_20  DEFINE  <0, 0, 0E5h>
+
+        SYSTEM_SLOT_INFO_21     DEFINE  <J8B4, SYS_SLOT_PCIE, DBW_1X, SCU_IN_USE, SL_SHORT_LENGTH, 20>
+        SYSTEM_SLOT_CHAR_21     DEFINE  <SCH_33V, SCH_PME, SCH_SHARED>
+        SEGGRP_BUS_DEV_FUNC_21  DEFINE  <0, 0, 0E6h>
+
+        SYSTEM_SLOT_INFO_22     DEFINE  <J8D1, SYS_SLOT_PCIE, DBW_1X, SCU_IN_USE, SL_SHORT_LENGTH, 21>
+        SYSTEM_SLOT_CHAR_22     DEFINE  <SCH_33V, SCH_PME, SCH_SHARED>
+        SEGGRP_BUS_DEV_FUNC_22  DEFINE  <0, 0, 0E7h>
+
+        SYSTEM_SLOT_INFO_23     DEFINE  <J8B3, SYS_SLOT_PCI, DBW_32BIT, SCU_IN_USE, SL_SHORT_LENGTH, 22>
+        SYSTEM_SLOT_CHAR_23     DEFINE  <SCH_33V, SCH_PME, SCH_SHARED>
+        SEGGRP_BUS_DEV_FUNC_23  DEFINE  <0, 0, 0F0h>
+
+        SYSTEM_SLOT_INFO_24     DEFINE  <J9B1, SYS_SLOT_PCI, DBW_32BIT, SCU_IN_USE, SL_SHORT_LENGTH, 23>
+        SYSTEM_SLOT_CHAR_24     DEFINE  <SCH_33V, SCH_PME, SCH_SHARED>
+        SEGGRP_BUS_DEV_FUNC_24  DEFINE  <0, 0, 0F0h>
+
+        SYSTEM_SLOT_INFO_25     DEFINE  <J9B2, SYS_SLOT_PCI, DBW_32BIT, SCU_IN_USE, SL_SHORT_LENGTH, 24>
+        SYSTEM_SLOT_CHAR_25     DEFINE  <SCH_33V, SCH_PME, SCH_SHARED>
+        SEGGRP_BUS_DEV_FUNC_25  DEFINE  <0, 0, 0F0h>
+
+        SYSTEM_SLOT_INFO_26     DEFINE  <J9B3, SYS_SLOT_PCI, DBW_32BIT, SCU_IN_USE, SL_SHORT_LENGTH, 25>
+        SYSTEM_SLOT_CHAR_26     DEFINE  <SCH_33V, SCH_PME, SCH_SHARED>
+        SEGGRP_BUS_DEV_FUNC_26  DEFINE  <0, 0, 0F0h>
+
+        SYSTEM_SLOT_INFO_27     DEFINE  <J9B4, SYS_SLOT_PCI, DBW_32BIT, SCU_IN_USE, SL_SHORT_LENGTH, 26>
+        SYSTEM_SLOT_CHAR_27     DEFINE  <SCH_33V, SCH_PME, SCH_SHARED>
+        SEGGRP_BUS_DEV_FUNC_27  DEFINE  <0, 0, 0F0h>
+
+        SYSTEM_SLOT_INFO_28     DEFINE  <J9B5, SYS_SLOT_PCI, DBW_32BIT, SCU_IN_USE, SL_SHORT_LENGTH, 27>
+        SYSTEM_SLOT_CHAR_28     DEFINE  <SCH_33V, SCH_PME, SCH_SHARED>
+        SEGGRP_BUS_DEV_FUNC_28  DEFINE  <0, 0, 0F0h>
+
+        SYSTEM_SLOT_INFO_29     DEFINE  <J9B6, SYS_SLOT_PCI, DBW_32BIT, SCU_IN_USE, SL_SHORT_LENGTH, 28>
+        SYSTEM_SLOT_CHAR_29     DEFINE  <SCH_33V, SCH_PME, SCH_SHARED>
+        SEGGRP_BUS_DEV_FUNC_29  DEFINE  <0, 0, 0F0h>
+
+        SYSTEM_SLOT_INFO_30     DEFINE  <J9B7, SYS_SLOT_PCI, DBW_32BIT, SCU_IN_USE, SL_SHORT_LENGTH, 29>
+        SYSTEM_SLOT_CHAR_30     DEFINE  <SCH_33V, SCH_PME, SCH_SHARED>
+        SEGGRP_BUS_DEV_FUNC_30  DEFINE  <0, 0, 0F0h>
+
+        SYSTEM_SLOT_INFO_31     DEFINE  <J9B8, SYS_SLOT_PCI, DBW_32BIT, SCU_IN_USE, SL_SHORT_LENGTH, 30>
+        SYSTEM_SLOT_CHAR_31     DEFINE  <SCH_33V, SCH_PME, SCH_SHARED>
+        SEGGRP_BUS_DEV_FUNC_31  DEFINE  <0, 0, 0F0h>
+
+        SYSTEM_SLOT_INFO_32     DEFINE  <J9B9, SYS_SLOT_PCI, DBW_32BIT, SCU_IN_USE, SL_SHORT_LENGTH, 31>
+        SYSTEM_SLOT_CHAR_32     DEFINE  <SCH_33V, SCH_PME, SCH_SHARED>
+        SEGGRP_BUS_DEV_FUNC_32  DEFINE  <0, 0, 0F0h>
+;----------------------------------------------------------------------------
+;       Structure Type 10 : ON BOARD DEVICES INFORMATION
+;----------------------------------------------------------------------------
+; The following information is needed only if ONBOARD_DEVICE_INFO = Present
+; Syntax:
+;    ONBOARD_DEVICE_1   DEFINE    <Enabled or Disabled, Onboard Device Type, Descrition String>
+;    * Onboard device status  ->  Describes the status(enabled/disabled) of on board device
+;    * On board device Type   ->  Video, Audio, SCSI etc...
+;                                 For more detail search for On-board device
+;                                 Type equates in structure Type 10, refer SMB.EQU
+;    * Description String     ->  Describes the on board device.
+;                                 e.g."Video", "Audio" etc..
+;----------------------------------------------------------------------------
+
+;!!PORT!!
+        ONBOARD_DEVICE_1        DEFINE  <ENABLED, OBD_VIDEO,   To Be Filled By O.E.M.>
+        ONBOARD_DEVICE_2        DEFINE  <ENABLED, OBD_ETHERNET,To Be Filled By O.E.M.>
+    	ONBOARD_DEVICE_3        DEFINE  <ENABLED, OBD_OTHER,   Onboard 1394>
+        ONBOARD_DEVICE_4        DEFINE  <ENABLED, OBD_SAS,   Onboard SAS>
+        ONBOARD_DEVICE_5        DEFINE  <ENABLED, OBD_SAS,   Onboard SAS>
+        ONBOARD_DEVICE_6        DEFINE  <ENABLED, OBD_SATA,   Onboard SATA>
+        ONBOARD_DEVICE_7        DEFINE  <ENABLED, OBD_SATA,   Onboard SATA>
+        ONBOARD_DEVICE_8        DEFINE  <ENABLED, OBD_SOUND,   Onboard Sound>
+        ONBOARD_DEVICE_9        DEFINE  <ENABLED, OBD_VIDEO,   To Be Filled By O.E.M.>
+        ONBOARD_DEVICE_10       DEFINE  <ENABLED, OBD_ETHERNET,To Be Filled By O.E.M.>
+    	ONBOARD_DEVICE_11       DEFINE  <ENABLED, OBD_OTHER,   Onboard 1394>
+        ONBOARD_DEVICE_12       DEFINE  <ENABLED, OBD_SAS,   Onboard SAS>
+        ONBOARD_DEVICE_13       DEFINE  <ENABLED, OBD_SAS,   Onboard SAS>
+        ONBOARD_DEVICE_14       DEFINE  <ENABLED, OBD_SATA,   Onboard SATA>
+        ONBOARD_DEVICE_15       DEFINE  <ENABLED, OBD_SATA,   Onboard SATA>
+        ONBOARD_DEVICE_16       DEFINE  <ENABLED, OBD_SOUND,   Onboard Sound>
+
+;----------------------------------------------------------------------------
+;       Structure Type 11 : OEM STRINGS INFORMATION
+;----------------------------------------------------------------------------
+; The following information is needed only if OEM_STRING_INFO = Present
+; Syntax:
+;    OEM_STRING_1         DEFINE  <String>
+;    * String                 ->  Identifies the OEM specific string.
+;                                 e.g. "SMBIOS2.3 support with HP extension"
+;----------------------------------------------------------------------------
+
+;!!PORT!!
+IFDEF MKF_OEM_STRING_INFO
+IF (MKF_OEM_STRING_INFO NE 0)
+	OEM_STRING_1    DEFINE	MKF_OEM_STRING_1
+	OEM_STRING_2    DEFINE	MKF_OEM_STRING_2
+	OEM_STRING_3    DEFINE	MKF_OEM_STRING_3
+	OEM_STRING_4    DEFINE  MKF_OEM_STRING_4
+	OEM_STRING_5    DEFINE  MKF_OEM_STRING_5
+	OEM_STRING_6    DEFINE  MKF_OEM_STRING_6
+    OEM_STRING_7    DEFINE  MKF_OEM_STRING_7
+    OEM_STRING_8    DEFINE  MKF_OEM_STRING_8
+    OEM_STRING_9    DEFINE  MKF_OEM_STRING_9
+    OEM_STRING_10   DEFINE  MKF_OEM_STRING_10
+    OEM_STRING_11   DEFINE  MKF_OEM_STRING_11
+    OEM_STRING_12   DEFINE  MKF_OEM_STRING_12
+    OEM_STRING_13   DEFINE  MKF_OEM_STRING_13
+    OEM_STRING_14   DEFINE  MKF_OEM_STRING_14
+    OEM_STRING_15   DEFINE  MKF_OEM_STRING_15
+    OEM_STRING_16   DEFINE  MKF_OEM_STRING_16
+	OEM_STRING_17   DEFINE	MKF_OEM_STRING_17
+	OEM_STRING_18   DEFINE	MKF_OEM_STRING_18
+	OEM_STRING_19   DEFINE	MKF_OEM_STRING_19
+	OEM_STRING_20   DEFINE  MKF_OEM_STRING_20
+	OEM_STRING_21   DEFINE  MKF_OEM_STRING_21
+	OEM_STRING_22   DEFINE  MKF_OEM_STRING_22
+    OEM_STRING_23   DEFINE  MKF_OEM_STRING_23
+    OEM_STRING_24   DEFINE  MKF_OEM_STRING_24
+    OEM_STRING_25   DEFINE  MKF_OEM_STRING_25
+    OEM_STRING_26   DEFINE  MKF_OEM_STRING_26
+    OEM_STRING_27   DEFINE  MKF_OEM_STRING_27
+    OEM_STRING_28   DEFINE  MKF_OEM_STRING_28
+    OEM_STRING_29   DEFINE  MKF_OEM_STRING_29
+    OEM_STRING_30   DEFINE  MKF_OEM_STRING_30
+    OEM_STRING_31   DEFINE  MKF_OEM_STRING_31
+    OEM_STRING_32   DEFINE  MKF_OEM_STRING_32
+ENDIF
+ENDIF
+
+;----------------------------------------------------------------------------
+;       Structure Type 12 : SYSTEM CONFIGURATION STRINGS INFORMATION
+;----------------------------------------------------------------------------
+; The following information is needed only if SYSTEM_CONFIG_OPTION_INFO = Present
+; Syntax:
+;    SYSTEM_CONFIG_STRING_1   DEFINE  <String>
+;    * String                     ->  Identifies the System Configuration Information string
+;                                     e.g. Jumper setting information on platform and etc...
+;----------------------------------------------------------------------------
+
+;!!PORT!!
+;!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+;!!!!!!!!!!!!!!!! MAKE SURE THE DESCRIPTION DOES NOT EXCEED 64 CHARACTERS !!!!!!!!!!!!!!!!!!!!!!!!!!!
+;!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+;;                                  <          1         2         3         4         5         6   >
+;;                                  <0123456789012345678901234567890123456789012345678901234567890123>
+IFDEF MKF_SYSTEM_CONFIG_OPTION_INFO
+IF (MKF_SYSTEM_CONFIG_OPTION_INFO NE 0)
+	SYSTEM_CONFIG_STRING_1		DEFINE	MKF_SYSTEM_CONFIG_STRING_1
+	SYSTEM_CONFIG_STRING_2		DEFINE	MKF_SYSTEM_CONFIG_STRING_2
+	SYSTEM_CONFIG_STRING_3		DEFINE	MKF_SYSTEM_CONFIG_STRING_3
+	SYSTEM_CONFIG_STRING_4		DEFINE	MKF_SYSTEM_CONFIG_STRING_4
+	SYSTEM_CONFIG_STRING_5		DEFINE	MKF_SYSTEM_CONFIG_STRING_5
+    SYSTEM_CONFIG_STRING_6      DEFINE  MKF_SYSTEM_CONFIG_STRING_6
+    SYSTEM_CONFIG_STRING_7      DEFINE  MKF_SYSTEM_CONFIG_STRING_7
+    SYSTEM_CONFIG_STRING_8      DEFINE  MKF_SYSTEM_CONFIG_STRING_8
+    SYSTEM_CONFIG_STRING_9      DEFINE  MKF_SYSTEM_CONFIG_STRING_9
+    SYSTEM_CONFIG_STRING_10     DEFINE  MKF_SYSTEM_CONFIG_STRING_10
+    SYSTEM_CONFIG_STRING_11     DEFINE  MKF_SYSTEM_CONFIG_STRING_11
+    SYSTEM_CONFIG_STRING_12     DEFINE  MKF_SYSTEM_CONFIG_STRING_12
+    SYSTEM_CONFIG_STRING_13     DEFINE  MKF_SYSTEM_CONFIG_STRING_13
+    SYSTEM_CONFIG_STRING_14     DEFINE  MKF_SYSTEM_CONFIG_STRING_14
+    SYSTEM_CONFIG_STRING_15     DEFINE  MKF_SYSTEM_CONFIG_STRING_15
+    SYSTEM_CONFIG_STRING_16     DEFINE  MKF_SYSTEM_CONFIG_STRING_16
+	SYSTEM_CONFIG_STRING_17 	DEFINE	MKF_SYSTEM_CONFIG_STRING_17
+	SYSTEM_CONFIG_STRING_18		DEFINE	MKF_SYSTEM_CONFIG_STRING_18
+	SYSTEM_CONFIG_STRING_19		DEFINE	MKF_SYSTEM_CONFIG_STRING_19
+	SYSTEM_CONFIG_STRING_20		DEFINE	MKF_SYSTEM_CONFIG_STRING_20
+	SYSTEM_CONFIG_STRING_21		DEFINE	MKF_SYSTEM_CONFIG_STRING_21
+    SYSTEM_CONFIG_STRING_22     DEFINE  MKF_SYSTEM_CONFIG_STRING_22
+    SYSTEM_CONFIG_STRING_23     DEFINE  MKF_SYSTEM_CONFIG_STRING_23
+    SYSTEM_CONFIG_STRING_24     DEFINE  MKF_SYSTEM_CONFIG_STRING_24
+    SYSTEM_CONFIG_STRING_25     DEFINE  MKF_SYSTEM_CONFIG_STRING_25
+    SYSTEM_CONFIG_STRING_26     DEFINE  MKF_SYSTEM_CONFIG_STRING_26
+    SYSTEM_CONFIG_STRING_27     DEFINE  MKF_SYSTEM_CONFIG_STRING_27
+    SYSTEM_CONFIG_STRING_28     DEFINE  MKF_SYSTEM_CONFIG_STRING_28
+    SYSTEM_CONFIG_STRING_29     DEFINE  MKF_SYSTEM_CONFIG_STRING_29
+    SYSTEM_CONFIG_STRING_30     DEFINE  MKF_SYSTEM_CONFIG_STRING_30
+    SYSTEM_CONFIG_STRING_31     DEFINE  MKF_SYSTEM_CONFIG_STRING_31
+    SYSTEM_CONFIG_STRING_32     DEFINE  MKF_SYSTEM_CONFIG_STRING_32
+ENDIF
+ENDIF
+
+;----------------------------------------------------------------------------
+;       Structure Type 14: GROUP ASSOCIATION INFORMATION
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;       Structure Type 15: EVENT LOG INFORMATION
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;       Structure Type 16: PHYSICAL MEMORY ARRAY INFORMATION
+;----------------------------------------------------------------------------
+; Syntax:
+;    ARRAY_LOC_1                      DEFINE  <Memory Array Location>
+;    * Memory Array Location              ->  01h = Other
+;                                             02h = Unknown
+;                                             03h = System Board or Motherboard
+;                                             04h = ISA add-on card
+;                                             05h = EISA add-on card
+;                                             06h = PCI add-on card
+;                                             07h = MCA add-on card
+;                                             08h = PCMCIA add-on card
+;                                             09h = Proprietary add-on card
+;                                             0Ah = NuBus
+;                                             A0h = PC-98/C20 add-on card
+;                                             A1h = PC-98/C24 add-on card
+;                                             A2h = PC-98/E add-on card
+;                                             A3h = PC-98/Local Bus add-on card
+;    ARRAY_USE_1                      DEFINE  <Memory Array Use>
+;    * Memory Array Use                   ->  01h = Other
+;                                             02h = Unknown
+;                                             03h = System memory
+;                                             04h = Video memory
+;                                             05h = Flash memory
+;                                             06h = Non-volatile RAM
+;                                             07h = Cache memory
+;    ARRAY_ERROR_COR_1                DEFINE  <Memory Array Error Corection Types>
+;    * Memory Array Error Corection Types ->  01h = Other
+;                                             02h = Unknown
+;                                             03h = None
+;                                             04h = Parity
+;                                             05h = Single-bit ECC
+;                                             06h = Multi-bit ECC
+;                                             07h = CRC
+;    MAX_MEM_CAP_1                    DEFINE  <Maximum Capacity>
+;    * Maximum Capacity                   ->  XXXXXXXXh = Maximum memory capacity in kilobytes
+;                                             80000000h = unknown
+;    EXT_MAX_MEM_CAP_1                DEFINE  <Extended Maximum Capacity> - Valid only when MAX_MEM_CAP_X = 80000000h
+;    * Extended Maximum Capacity          ->  XXXXXXXXXXXXXXXXh = Maximum memory capacity in bytes
+;																  (when MAX_MEM_CAP_X = 80000000h)
+;                                                    		 0h = When MAX_MEM_CAP_X <> 80000000h
+;----------------------------------------------------------------------------
+        ARRAY_LOC_1             DEFINE  <03h>
+        ARRAY_LOC_2             DEFINE  <03h>
+        ARRAY_LOC_3             DEFINE  <03h>
+        ARRAY_LOC_4             DEFINE  <03h>
+        ARRAY_LOC_5             DEFINE  <03h>
+
+        ARRAY_USE_1             DEFINE  <03h>
+        ARRAY_USE_2             DEFINE  <03h>
+        ARRAY_USE_3             DEFINE  <03h>
+        ARRAY_USE_4             DEFINE  <03h>
+        ARRAY_USE_5             DEFINE  <03h>
+
+        ARRAY_ERROR_COR_1       DEFINE  <03h>
+        ARRAY_ERROR_COR_2       DEFINE  <03h>
+        ARRAY_ERROR_COR_3       DEFINE  <03h>
+        ARRAY_ERROR_COR_4       DEFINE  <03h>
+        ARRAY_ERROR_COR_5       DEFINE  <03h>
+
+        MAX_MEM_CAP_1           DEFINE  <00800000h>
+        MAX_MEM_CAP_2           DEFINE  <00800000h>
+        MAX_MEM_CAP_3           DEFINE  <00800000h>
+        MAX_MEM_CAP_4           DEFINE  <00800000h>
+        MAX_MEM_CAP_5           DEFINE  <00800000h>
+
+        EXT_MAX_MEM_CAP_1       DEFINE  <0>
+        EXT_MAX_MEM_CAP_2       DEFINE  <0>
+        EXT_MAX_MEM_CAP_3       DEFINE  <0>
+        EXT_MAX_MEM_CAP_4       DEFINE  <0>
+        EXT_MAX_MEM_CAP_5       DEFINE  <0>
+
+;----------------------------------------------------------------------------
+;       Structure Type 17:  MEMORY DEVICE INFORMATION
+;----------------------------------------------------------------------------
+; Syntax:
+;   A1_DATAWIDTH            ->  Identifies the data width, in bits, of this
+;                               momory device
+;
+;   A1_FORMFACTOR           ->  Byte value - identifies the form factor of this
+;                               memory device
+;                               01h = Other
+;                               02h = Unknown
+;                               03h = SIMM
+;                               04h = SIP
+;                               05h = Chip
+;                               06h = DIP
+;                               07h = ZIP
+;                               08h = Proprietary Card
+;                               09h = DIMM
+;                               0Ah = TSOP
+;                               0Bh = Rows of chips
+;                               0Ch = RIMM
+;                               0Dh = SODIMM
+;                               0Eh = SRIMM
+;                               0Fh = FB-DIMM
+;
+;   A1_MEMORYTYPE           ->  Identifies the type of memory used in this device
+;                               01h = Other
+;                               02h = Unknown
+;                               03h = DRAM
+;                               04h = EDRAM
+;                               05h = VRAM
+;                               06h = SRAM
+;                               07h = RAM
+;                               08h = ROM
+;                               09h = FLASH
+;                               0Ah = EEPROM
+;                               0Bh = FEPROM
+;                               0Ch = EPROM
+;                               0Dh = CDRAM
+;                               0Eh = 3DRAM
+;                               0Fh = SDRAM
+;                               10h = SGRAM
+;                               11h = RDRAM
+;                               12h = DDR
+;                               13h = DDR2
+;                               14h = DDR2 FB-DIMM
+;                               18h = DDR3
+;                               19h = FBD2
+;
+;   A1_TYPEDETAIL           ->  Additional detail on the memory device type.
+;                               Multiple bits are set if more than one attributes applies
+;                               Bit 0  - Reserved, set to 0
+;                               Bit 1  - Other
+;                               Bit 2  - Unknown
+;                               Bit 3  - Fast-paged
+;                               Bit 4  - Static Column
+;                               Bit 5  - Pseudo-static
+;                               Bit 6  - RAMBUS
+;                               Bit 7  - Synchronous
+;                               Bit 8  - CMOS
+;                               Bit 9  - EDO
+;                               Bit 10 - Window DRAM
+;                               Bit 11 - Cache DRAM
+;                               Bit 12 - Non-volatile
+;                               Bit 13 - Registered (Buffered)
+;                               Bit 14 - Unbuffered (Unregistered)
+;                               Bit 15 - LRDIMM
+;
+;   A1_ATTRIBUTES           ->  Attributes.
+;                               Bits 3-0: Rank (value = 0 for unknown)
+;                               Bits 7-4: Reserved
+;
+;   A1_DEVICE_1     DEFINE      <Device Locator String, Bank Locator String, Manufacturer String,
+;                               Serial Number String, Asset Tag String, Part Number String>
+;
+;   * A1_DEVICE_1               Memory array #1, Device #1
+;   * Device Locator String ->  Identifies the physically-labeled socket or board position where
+;                               the memory device is located.
+;                               e.g."DIMM0"
+;   * Bank Locator String   ->  Identifies the physically-labeled bank where the memory device is located.
+;                               e.g."BANK0"
+;   * Manufacturer String   ->  Identifies the manufacturer of this memory device
+;   * Serial Number String  ->  Identifies the serial number of this memory device
+;   * Asset Tag String      ->  Identifies the Asset Tag String of this memory device
+;   * Part Number String    ->  Identifies the part number of this memory device
+;----------------------------------------------------------------------------
+
+;Number of device info structurs are equal to the no of memory modules specified.
+;!!PORT!!
+
+; Memory Array #1
+        A1_DATAWIDTH       EQU  0040h
+        A1_FORMFACTOR      EQU  09h
+        A1_MEMORYTYPE      EQU  13h
+        A1_TYPEDETAIL      EQU  0080h
+        A1_ATTRIBUTES      EQU  0
+
+        A1_DEVICE_1        DEFINE  <A1_DIMM0,A1_BANK0,A1_Manufacturer0,A1_SerNum0,A1_AssetTagNum0,Array1_PartNumber0>
+        A1_DEVICE_2        DEFINE  <A1_DIMM1,A1_BANK1,A1_Manufacturer1,A1_SerNum1,A1_AssetTagNum1,Array1_PartNumber1>
+        A1_DEVICE_3        DEFINE  <A1_DIMM2,A1_BANK2,A1_Manufacturer2,A1_SerNum2,A1_AssetTagNum2,Array1_PartNumber2>
+        A1_DEVICE_4        DEFINE  <A1_DIMM3,A1_BANK3,A1_Manufacturer3,A1_SerNum3,A1_AssetTagNum3,Array1_PartNumber3>
+        A1_DEVICE_5        DEFINE  <A1_DIMM4,A1_BANK4,A1_Manufacturer4,A1_SerNum4,A1_AssetTagNum4,Array1_PartNumber4>
+        A1_DEVICE_6        DEFINE  <A1_DIMM5,A1_BANK5,A1_Manufacturer5,A1_SerNum5,A1_AssetTagNum5,Array1_PartNumber5>
+        A1_DEVICE_7        DEFINE  <A1_DIMM6,A1_BANK6,A1_Manufacturer6,A1_SerNum6,A1_AssetTagNum6,Array1_PartNumber6>
+        A1_DEVICE_8        DEFINE  <A1_DIMM7,A1_BANK7,A1_Manufacturer7,A1_SerNum7,A1_AssetTagNum7,Array1_PartNumber7>
+        A1_DEVICE_9        DEFINE  <A1_DIMM8,A1_BANK8,A1_Manufacturer8,A1_SerNum8,A1_AssetTagNum8,Array1_PartNumber8>
+        A1_DEVICE_10       DEFINE  <A1_DIMM9,A1_BANK9,A1_Manufacturer9,A1_SerNum9,A1_AssetTagNum9,Array1_PartNumber9>
+        A1_DEVICE_11       DEFINE  <A1_DIMM10,A1_BANK10,A1_Manufacturer10,A1_SerNum10,A1_AssetTagNum10,Array1_PartNumber10>
+        A1_DEVICE_12       DEFINE  <A1_DIMM11,A1_BANK11,A1_Manufacturer11,A1_SerNum11,A1_AssetTagNum11,Array1_PartNumber11>
+        A1_DEVICE_13       DEFINE  <A1_DIMM12,A1_BANK12,A1_Manufacturer12,A1_SerNum12,A1_AssetTagNum12,Array1_PartNumber12>
+        A1_DEVICE_14       DEFINE  <A1_DIMM13,A1_BANK13,A1_Manufacturer13,A1_SerNum13,A1_AssetTagNum13,Array1_PartNumber13>
+        A1_DEVICE_15       DEFINE  <A1_DIMM14,A1_BANK14,A1_Manufacturer14,A1_SerNum14,A1_AssetTagNum14,Array1_PartNumber14>
+        A1_DEVICE_16       DEFINE  <A1_DIMM15,A1_BANK15,A1_Manufacturer15,A1_SerNum15,A1_AssetTagNum15,Array1_PartNumber15>
+        A1_DEVICE_17       DEFINE  <A1_DIMM16,A1_BANK16,A1_Manufacturer16,A1_SerNum16,A1_AssetTagNum16,Array1_PartNumber16>
+        A1_DEVICE_18       DEFINE  <A1_DIMM17,A1_BANK17,A1_Manufacturer17,A1_SerNum17,A1_AssetTagNum17,Array1_PartNumber17>
+        A1_DEVICE_19       DEFINE  <A1_DIMM18,A1_BANK18,A1_Manufacturer18,A1_SerNum18,A1_AssetTagNum18,Array1_PartNumber18>
+        A1_DEVICE_20       DEFINE  <A1_DIMM19,A1_BANK19,A1_Manufacturer19,A1_SerNum19,A1_AssetTagNum19,Array1_PartNumber19>
+        A1_DEVICE_21       DEFINE  <A1_DIMM20,A1_BANK20,A1_Manufacturer20,A1_SerNum20,A1_AssetTagNum20,Array1_PartNumber20>
+        A1_DEVICE_22       DEFINE  <A1_DIMM21,A1_BANK21,A1_Manufacturer21,A1_SerNum21,A1_AssetTagNum21,Array1_PartNumber21>
+        A1_DEVICE_23       DEFINE  <A1_DIMM22,A1_BANK22,A1_Manufacturer22,A1_SerNum22,A1_AssetTagNum22,Array1_PartNumber22>
+        A1_DEVICE_24       DEFINE  <A1_DIMM23,A1_BANK23,A1_Manufacturer23,A1_SerNum23,A1_AssetTagNum23,Array1_PartNumber23>
+        A1_DEVICE_25       DEFINE  <A1_DIMM24,A1_BANK24,A1_Manufacturer24,A1_SerNum24,A1_AssetTagNum24,Array1_PartNumber24>
+        A1_DEVICE_26       DEFINE  <A1_DIMM25,A1_BANK25,A1_Manufacturer25,A1_SerNum25,A1_AssetTagNum25,Array1_PartNumber25>
+        A1_DEVICE_27       DEFINE  <A1_DIMM26,A1_BANK26,A1_Manufacturer26,A1_SerNum26,A1_AssetTagNum26,Array1_PartNumber26>
+        A1_DEVICE_28       DEFINE  <A1_DIMM27,A1_BANK27,A1_Manufacturer27,A1_SerNum27,A1_AssetTagNum27,Array1_PartNumber27>
+        A1_DEVICE_29       DEFINE  <A1_DIMM28,A1_BANK28,A1_Manufacturer28,A1_SerNum28,A1_AssetTagNum28,Array1_PartNumber28>
+        A1_DEVICE_30       DEFINE  <A1_DIMM29,A1_BANK29,A1_Manufacturer29,A1_SerNum29,A1_AssetTagNum29,Array1_PartNumber29>
+        A1_DEVICE_31       DEFINE  <A1_DIMM30,A1_BANK30,A1_Manufacturer30,A1_SerNum30,A1_AssetTagNum30,Array1_PartNumber30>
+        A1_DEVICE_32       DEFINE  <A1_DIMM31,A1_BANK31,A1_Manufacturer31,A1_SerNum31,A1_AssetTagNum31,Array1_PartNumber31>
+
+; Memory Array #2
+        A2_DATAWIDTH       EQU  0040h
+        A2_FORMFACTOR      EQU  09h
+        A2_MEMORYTYPE      EQU  13h
+        A2_TYPEDETAIL      EQU  0080h
+        A2_ATTRIBUTES      EQU  0
+
+        A2_DEVICE_1        DEFINE  <A2_DIMM0,A2_BANK0,A2_Manufacturer0,A2_SerNum0,A2_AssetTagNum0,Array2_PartNumber0>
+        A2_DEVICE_2        DEFINE  <A2_DIMM1,A2_BANK1,A2_Manufacturer1,A2_SerNum1,A2_AssetTagNum1,Array2_PartNumber1>
+        A2_DEVICE_3        DEFINE  <A2_DIMM2,A2_BANK2,A2_Manufacturer2,A2_SerNum2,A2_AssetTagNum2,Array2_PartNumber2>
+        A2_DEVICE_4        DEFINE  <A2_DIMM3,A2_BANK3,A2_Manufacturer3,A2_SerNum3,A2_AssetTagNum3,Array2_PartNumber3>
+        A2_DEVICE_5        DEFINE  <A2_DIMM4,A2_BANK4,A2_Manufacturer4,A2_SerNum4,A2_AssetTagNum4,Array2_PartNumber4>
+        A2_DEVICE_6        DEFINE  <A2_DIMM5,A2_BANK5,A2_Manufacturer5,A2_SerNum5,A2_AssetTagNum5,Array2_PartNumber5>
+        A2_DEVICE_7        DEFINE  <A2_DIMM6,A2_BANK6,A2_Manufacturer6,A2_SerNum6,A2_AssetTagNum6,Array2_PartNumber6>
+        A2_DEVICE_8        DEFINE  <A2_DIMM7,A2_BANK7,A2_Manufacturer7,A2_SerNum7,A2_AssetTagNum7,Array2_PartNumber7>
+        A2_DEVICE_9        DEFINE  <A2_DIMM8,A2_BANK8,A2_Manufacturer8,A2_SerNum8,A2_AssetTagNum8,Array2_PartNumber8>
+        A2_DEVICE_10       DEFINE  <A2_DIMM9,A2_BANK9,A2_Manufacturer9,A2_SerNum9,A2_AssetTagNum9,Array2_PartNumber9>
+        A2_DEVICE_11       DEFINE  <A2_DIMM10,A2_BANK10,A2_Manufacturer10,A2_SerNum10,A2_AssetTagNum10,Array2_PartNumber10>
+        A2_DEVICE_12       DEFINE  <A2_DIMM11,A2_BANK11,A2_Manufacturer11,A2_SerNum11,A2_AssetTagNum11,Array2_PartNumber11>
+        A2_DEVICE_13       DEFINE  <A2_DIMM12,A2_BANK12,A2_Manufacturer12,A2_SerNum12,A2_AssetTagNum12,Array2_PartNumber12>
+        A2_DEVICE_14       DEFINE  <A2_DIMM13,A2_BANK13,A2_Manufacturer13,A2_SerNum13,A2_AssetTagNum13,Array2_PartNumber13>
+        A2_DEVICE_15       DEFINE  <A2_DIMM14,A2_BANK14,A2_Manufacturer14,A2_SerNum14,A2_AssetTagNum14,Array2_PartNumber14>
+        A2_DEVICE_16       DEFINE  <A2_DIMM15,A2_BANK15,A2_Manufacturer15,A2_SerNum15,A2_AssetTagNum15,Array2_PartNumber15>
+        A2_DEVICE_17       DEFINE  <A2_DIMM16,A2_BANK16,A2_Manufacturer16,A2_SerNum16,A2_AssetTagNum16,Array2_PartNumber16>
+        A2_DEVICE_18       DEFINE  <A2_DIMM17,A2_BANK17,A2_Manufacturer17,A2_SerNum17,A2_AssetTagNum17,Array2_PartNumber17>
+        A2_DEVICE_19       DEFINE  <A2_DIMM18,A2_BANK18,A2_Manufacturer18,A2_SerNum18,A2_AssetTagNum18,Array2_PartNumber18>
+        A2_DEVICE_20       DEFINE  <A2_DIMM19,A2_BANK19,A2_Manufacturer19,A2_SerNum19,A2_AssetTagNum19,Array2_PartNumber19>
+        A2_DEVICE_21       DEFINE  <A2_DIMM20,A2_BANK20,A2_Manufacturer20,A2_SerNum20,A2_AssetTagNum20,Array2_PartNumber20>
+        A2_DEVICE_22       DEFINE  <A2_DIMM21,A2_BANK21,A2_Manufacturer21,A2_SerNum21,A2_AssetTagNum21,Array2_PartNumber21>
+        A2_DEVICE_23       DEFINE  <A2_DIMM22,A2_BANK22,A2_Manufacturer22,A2_SerNum22,A2_AssetTagNum22,Array2_PartNumber22>
+        A2_DEVICE_24       DEFINE  <A2_DIMM23,A2_BANK23,A2_Manufacturer23,A2_SerNum23,A2_AssetTagNum23,Array2_PartNumber23>
+        A2_DEVICE_25       DEFINE  <A2_DIMM24,A2_BANK24,A2_Manufacturer24,A2_SerNum24,A2_AssetTagNum24,Array2_PartNumber24>
+        A2_DEVICE_26       DEFINE  <A2_DIMM25,A2_BANK25,A2_Manufacturer25,A2_SerNum25,A2_AssetTagNum25,Array2_PartNumber25>
+        A2_DEVICE_27       DEFINE  <A2_DIMM26,A2_BANK26,A2_Manufacturer26,A2_SerNum26,A2_AssetTagNum26,Array2_PartNumber26>
+        A2_DEVICE_28       DEFINE  <A2_DIMM27,A2_BANK27,A2_Manufacturer27,A2_SerNum27,A2_AssetTagNum27,Array2_PartNumber27>
+        A2_DEVICE_29       DEFINE  <A2_DIMM28,A2_BANK28,A2_Manufacturer28,A2_SerNum28,A2_AssetTagNum28,Array2_PartNumber28>
+        A2_DEVICE_30       DEFINE  <A2_DIMM29,A2_BANK29,A2_Manufacturer29,A2_SerNum29,A2_AssetTagNum29,Array2_PartNumber29>
+        A2_DEVICE_31       DEFINE  <A2_DIMM30,A2_BANK30,A2_Manufacturer30,A2_SerNum30,A2_AssetTagNum30,Array2_PartNumber30>
+        A2_DEVICE_32       DEFINE  <A2_DIMM31,A2_BANK31,A2_Manufacturer31,A2_SerNum31,A2_AssetTagNum31,Array2_PartNumber31>
+
+; Memory Array #3
+        A3_DATAWIDTH       EQU  0040h
+        A3_FORMFACTOR      EQU  09h
+        A3_MEMORYTYPE      EQU  13h
+        A3_TYPEDETAIL      EQU  0080h
+        A3_ATTRIBUTES      EQU  0
+
+        A3_DEVICE_1        DEFINE  <A3_DIMM0,A3_BANK0,A3_Manufacturer0,A3_SerNum0,A3_AssetTagNum0,Array3_PartNumber0>
+        A3_DEVICE_2        DEFINE  <A3_DIMM1,A3_BANK1,A3_Manufacturer1,A3_SerNum1,A3_AssetTagNum1,Array3_PartNumber1>
+        A3_DEVICE_3        DEFINE  <A3_DIMM2,A3_BANK2,A3_Manufacturer2,A3_SerNum2,A3_AssetTagNum2,Array3_PartNumber2>
+        A3_DEVICE_4        DEFINE  <A3_DIMM3,A3_BANK3,A3_Manufacturer3,A3_SerNum3,A3_AssetTagNum3,Array3_PartNumber3>
+        A3_DEVICE_5        DEFINE  <A3_DIMM4,A3_BANK4,A3_Manufacturer4,A3_SerNum4,A3_AssetTagNum4,Array3_PartNumber4>
+        A3_DEVICE_6        DEFINE  <A3_DIMM5,A3_BANK5,A3_Manufacturer5,A3_SerNum5,A3_AssetTagNum5,Array3_PartNumber5>
+        A3_DEVICE_7        DEFINE  <A3_DIMM6,A3_BANK6,A3_Manufacturer6,A3_SerNum6,A3_AssetTagNum6,Array3_PartNumber6>
+        A3_DEVICE_8        DEFINE  <A3_DIMM7,A3_BANK7,A3_Manufacturer7,A3_SerNum7,A3_AssetTagNum7,Array3_PartNumber7>
+        A3_DEVICE_9        DEFINE  <A3_DIMM8,A3_BANK8,A3_Manufacturer8,A3_SerNum8,A3_AssetTagNum8,Array3_PartNumber8>
+        A3_DEVICE_10       DEFINE  <A3_DIMM9,A3_BANK9,A3_Manufacturer9,A3_SerNum9,A3_AssetTagNum9,Array3_PartNumber9>
+        A3_DEVICE_11       DEFINE  <A3_DIMM10,A3_BANK10,A3_Manufacturer10,A3_SerNum10,A3_AssetTagNum10,Array3_PartNumber10>
+        A3_DEVICE_12       DEFINE  <A3_DIMM11,A3_BANK11,A3_Manufacturer11,A3_SerNum11,A3_AssetTagNum11,Array3_PartNumber11>
+        A3_DEVICE_13       DEFINE  <A3_DIMM12,A3_BANK12,A3_Manufacturer12,A3_SerNum12,A3_AssetTagNum12,Array3_PartNumber12>
+        A3_DEVICE_14       DEFINE  <A3_DIMM13,A3_BANK13,A3_Manufacturer13,A3_SerNum13,A3_AssetTagNum13,Array3_PartNumber13>
+        A3_DEVICE_15       DEFINE  <A3_DIMM14,A3_BANK14,A3_Manufacturer14,A3_SerNum14,A3_AssetTagNum14,Array3_PartNumber14>
+        A3_DEVICE_16       DEFINE  <A3_DIMM15,A3_BANK15,A3_Manufacturer15,A3_SerNum15,A3_AssetTagNum15,Array3_PartNumber15>
+        A3_DEVICE_17       DEFINE  <A3_DIMM16,A3_BANK16,A3_Manufacturer16,A3_SerNum16,A3_AssetTagNum16,Array3_PartNumber16>
+        A3_DEVICE_18       DEFINE  <A3_DIMM17,A3_BANK17,A3_Manufacturer17,A3_SerNum17,A3_AssetTagNum17,Array3_PartNumber17>
+        A3_DEVICE_19       DEFINE  <A3_DIMM18,A3_BANK18,A3_Manufacturer18,A3_SerNum18,A3_AssetTagNum18,Array3_PartNumber18>
+        A3_DEVICE_20       DEFINE  <A3_DIMM19,A3_BANK19,A3_Manufacturer19,A3_SerNum19,A3_AssetTagNum19,Array3_PartNumber19>
+        A3_DEVICE_21       DEFINE  <A3_DIMM20,A3_BANK20,A3_Manufacturer20,A3_SerNum20,A3_AssetTagNum20,Array3_PartNumber20>
+        A3_DEVICE_22       DEFINE  <A3_DIMM21,A3_BANK21,A3_Manufacturer21,A3_SerNum21,A3_AssetTagNum21,Array3_PartNumber21>
+        A3_DEVICE_23       DEFINE  <A3_DIMM22,A3_BANK22,A3_Manufacturer22,A3_SerNum22,A3_AssetTagNum22,Array3_PartNumber22>
+        A3_DEVICE_24       DEFINE  <A3_DIMM23,A3_BANK23,A3_Manufacturer23,A3_SerNum23,A3_AssetTagNum23,Array3_PartNumber23>
+        A3_DEVICE_25       DEFINE  <A3_DIMM24,A3_BANK24,A3_Manufacturer24,A3_SerNum24,A3_AssetTagNum24,Array3_PartNumber24>
+        A3_DEVICE_26       DEFINE  <A3_DIMM25,A3_BANK25,A3_Manufacturer25,A3_SerNum25,A3_AssetTagNum25,Array3_PartNumber25>
+        A3_DEVICE_27       DEFINE  <A3_DIMM26,A3_BANK26,A3_Manufacturer26,A3_SerNum26,A3_AssetTagNum26,Array3_PartNumber26>
+        A3_DEVICE_28       DEFINE  <A3_DIMM27,A3_BANK27,A3_Manufacturer27,A3_SerNum27,A3_AssetTagNum27,Array3_PartNumber27>
+        A3_DEVICE_29       DEFINE  <A3_DIMM28,A3_BANK28,A3_Manufacturer28,A3_SerNum28,A3_AssetTagNum28,Array3_PartNumber28>
+        A3_DEVICE_30       DEFINE  <A3_DIMM29,A3_BANK29,A3_Manufacturer29,A3_SerNum29,A3_AssetTagNum29,Array3_PartNumber29>
+        A3_DEVICE_31       DEFINE  <A3_DIMM30,A3_BANK30,A3_Manufacturer30,A3_SerNum30,A3_AssetTagNum30,Array3_PartNumber30>
+        A3_DEVICE_32       DEFINE  <A3_DIMM31,A3_BANK31,A3_Manufacturer31,A3_SerNum31,A3_AssetTagNum31,Array3_PartNumber31>
+
+; Memory Array #4
+        A4_DATAWIDTH       EQU  0040h
+        A4_FORMFACTOR      EQU  09h
+        A4_MEMORYTYPE      EQU  13h
+        A4_TYPEDETAIL      EQU  0080h
+        A4_ATTRIBUTES      EQU  0
+
+        A4_DEVICE_1        DEFINE  <A4_DIMM0,A4_BANK0,A4_Manufacturer0,A4_SerNum0,A4_AssetTagNum0,Array4_PartNumber0>
+        A4_DEVICE_2        DEFINE  <A4_DIMM1,A4_BANK1,A4_Manufacturer1,A4_SerNum1,A4_AssetTagNum1,Array4_PartNumber1>
+        A4_DEVICE_3        DEFINE  <A4_DIMM2,A4_BANK2,A4_Manufacturer2,A4_SerNum2,A4_AssetTagNum2,Array4_PartNumber2>
+        A4_DEVICE_4        DEFINE  <A4_DIMM3,A4_BANK3,A4_Manufacturer3,A4_SerNum3,A4_AssetTagNum3,Array4_PartNumber3>
+        A4_DEVICE_5        DEFINE  <A4_DIMM4,A4_BANK4,A4_Manufacturer4,A4_SerNum4,A4_AssetTagNum4,Array4_PartNumber4>
+        A4_DEVICE_6        DEFINE  <A4_DIMM5,A4_BANK5,A4_Manufacturer5,A4_SerNum5,A4_AssetTagNum5,Array4_PartNumber5>
+        A4_DEVICE_7        DEFINE  <A4_DIMM6,A4_BANK6,A4_Manufacturer6,A4_SerNum6,A4_AssetTagNum6,Array4_PartNumber6>
+        A4_DEVICE_8        DEFINE  <A4_DIMM7,A4_BANK7,A4_Manufacturer7,A4_SerNum7,A4_AssetTagNum7,Array4_PartNumber7>
+        A4_DEVICE_9        DEFINE  <A4_DIMM8,A4_BANK8,A4_Manufacturer8,A4_SerNum8,A4_AssetTagNum8,Array4_PartNumber8>
+        A4_DEVICE_10       DEFINE  <A4_DIMM9,A4_BANK9,A4_Manufacturer9,A4_SerNum9,A4_AssetTagNum9,Array4_PartNumber9>
+        A4_DEVICE_11       DEFINE  <A4_DIMM10,A4_BANK10,A4_Manufacturer10,A4_SerNum10,A4_AssetTagNum10,Array4_PartNumber10>
+        A4_DEVICE_12       DEFINE  <A4_DIMM11,A4_BANK11,A4_Manufacturer11,A4_SerNum11,A4_AssetTagNum11,Array4_PartNumber11>
+        A4_DEVICE_13       DEFINE  <A4_DIMM12,A4_BANK12,A4_Manufacturer12,A4_SerNum12,A4_AssetTagNum12,Array4_PartNumber12>
+        A4_DEVICE_14       DEFINE  <A4_DIMM13,A4_BANK13,A4_Manufacturer13,A4_SerNum13,A4_AssetTagNum13,Array4_PartNumber13>
+        A4_DEVICE_15       DEFINE  <A4_DIMM14,A4_BANK14,A4_Manufacturer14,A4_SerNum14,A4_AssetTagNum14,Array4_PartNumber14>
+        A4_DEVICE_16       DEFINE  <A4_DIMM15,A4_BANK15,A4_Manufacturer15,A4_SerNum15,A4_AssetTagNum15,Array4_PartNumber15>
+        A4_DEVICE_17       DEFINE  <A4_DIMM16,A4_BANK16,A4_Manufacturer16,A4_SerNum16,A4_AssetTagNum16,Array4_PartNumber16>
+        A4_DEVICE_18       DEFINE  <A4_DIMM17,A4_BANK17,A4_Manufacturer17,A4_SerNum17,A4_AssetTagNum17,Array4_PartNumber17>
+        A4_DEVICE_19       DEFINE  <A4_DIMM18,A4_BANK18,A4_Manufacturer18,A4_SerNum18,A4_AssetTagNum18,Array4_PartNumber18>
+        A4_DEVICE_20       DEFINE  <A4_DIMM19,A4_BANK19,A4_Manufacturer19,A4_SerNum19,A4_AssetTagNum19,Array4_PartNumber19>
+        A4_DEVICE_21       DEFINE  <A4_DIMM20,A4_BANK20,A4_Manufacturer20,A4_SerNum20,A4_AssetTagNum20,Array4_PartNumber20>
+        A4_DEVICE_22       DEFINE  <A4_DIMM21,A4_BANK21,A4_Manufacturer21,A4_SerNum21,A4_AssetTagNum21,Array4_PartNumber21>
+        A4_DEVICE_23       DEFINE  <A4_DIMM22,A4_BANK22,A4_Manufacturer22,A4_SerNum22,A4_AssetTagNum22,Array4_PartNumber22>
+        A4_DEVICE_24       DEFINE  <A4_DIMM23,A4_BANK23,A4_Manufacturer23,A4_SerNum23,A4_AssetTagNum23,Array4_PartNumber23>
+        A4_DEVICE_25       DEFINE  <A4_DIMM24,A4_BANK24,A4_Manufacturer24,A4_SerNum24,A4_AssetTagNum24,Array4_PartNumber24>
+        A4_DEVICE_26       DEFINE  <A4_DIMM25,A4_BANK25,A4_Manufacturer25,A4_SerNum25,A4_AssetTagNum25,Array4_PartNumber25>
+        A4_DEVICE_27       DEFINE  <A4_DIMM26,A4_BANK26,A4_Manufacturer26,A4_SerNum26,A4_AssetTagNum26,Array4_PartNumber26>
+        A4_DEVICE_28       DEFINE  <A4_DIMM27,A4_BANK27,A4_Manufacturer27,A4_SerNum27,A4_AssetTagNum27,Array4_PartNumber27>
+        A4_DEVICE_29       DEFINE  <A4_DIMM28,A4_BANK28,A4_Manufacturer28,A4_SerNum28,A4_AssetTagNum28,Array4_PartNumber28>
+        A4_DEVICE_30       DEFINE  <A4_DIMM29,A4_BANK29,A4_Manufacturer29,A4_SerNum29,A4_AssetTagNum29,Array4_PartNumber29>
+        A4_DEVICE_31       DEFINE  <A4_DIMM30,A4_BANK30,A4_Manufacturer30,A4_SerNum30,A4_AssetTagNum30,Array4_PartNumber30>
+        A4_DEVICE_32       DEFINE  <A4_DIMM31,A4_BANK31,A4_Manufacturer31,A4_SerNum31,A4_AssetTagNum31,Array4_PartNumber31>
+
+;----------------------------------------------------------------------------
+;       Structure Type 18:  MEMORY ERROR INFORMATION
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;       Structure Type 19:  MEMORY ARRAY MAPPED ADDRESS INFORMATION
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;       Structure Type 20:  MEMORY DEVICE MAPPED ADDRESS INFORMATION
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;       Structure Type 21:  BUILT-IN POINTING DEVICE INFORMATION
+;----------------------------------------------------------------------------
+; Syntax:
+;    POINTING_DEVICE_TYPE_1         DEFINE  <Pointing Device Type>
+;    * Pointing Device Type             ->  01h = Other
+;                                           02h = Unknown
+;                                           03h = Mouse
+;                                           04h = Track Ball
+;                                           05h = Track Point
+;                                           06h = Glide Point
+;                                           07h = Touch Pad
+;                                           08h = Touch Screen
+;                                           09h = Optical Sensor
+;    POINTING_DEVICE_INTERFACE_1    DEFINE  <Pointing Device Interface>
+;    * Pointing Device Interface        ->  01h = Other
+;                                           02h = Unknown
+;                                           03h = Serial
+;                                           04h = PS/2
+;                                           05h = Infrared
+;                                           06h = HP-HIL
+;                                           07h = Bus Mouse
+;                                           08h = ADB (Apple Desktop Bus)
+;                                           A0h = Bus Mouse DB-9
+;                                           A1h = Bus Mouse Micro-DIN
+;                                           A2h = USB
+;    POINTING_DEVICE_NUM_BUTTONS_1  DEFINE  <Number of Buttons>
+;----------------------------------------------------------------------------
+    POINTING_DEVICE_TYPE_1          DEFINE  <03h>
+    POINTING_DEVICE_TYPE_2          DEFINE  <07h>
+    POINTING_DEVICE_TYPE_3          DEFINE  <08h>
+    POINTING_DEVICE_TYPE_4          DEFINE  <04h>
+    POINTING_DEVICE_TYPE_5          DEFINE  <05h>
+
+    POINTING_DEVICE_INTERFACE_1     DEFINE  <04h>
+    POINTING_DEVICE_INTERFACE_2     DEFINE  <03h>
+    POINTING_DEVICE_INTERFACE_3     DEFINE  <07h>
+    POINTING_DEVICE_INTERFACE_4     DEFINE  <0A2h>
+    POINTING_DEVICE_INTERFACE_5     DEFINE  <01h>
+
+    POINTING_DEVICE_NUM_BUTTONS_1   DEFINE  <03h>
+    POINTING_DEVICE_NUM_BUTTONS_2   DEFINE  <03h>
+    POINTING_DEVICE_NUM_BUTTONS_3   DEFINE  <03h>
+    POINTING_DEVICE_NUM_BUTTONS_4   DEFINE  <03h>
+    POINTING_DEVICE_NUM_BUTTONS_5   DEFINE  <03h>
+
+;----------------------------------------------------------------------------
+;    Structure Type 22: PORTABLE BATTERY INFORMATION
+;----------------------------------------------------------------------------
+; Syntax:
+;    PORT_BAT_LOCATION_1            DEFINE  <Location of the battery>
+;    PORT_BAT_MANUFACTURER_1        DEFINE  <Battery Manufacturer>
+;    PORT_BAT_MANUFACTURE_DATE_1    DEFINE  <Battery Manufacturer Date>
+;    PORT_BAT_SERIAL_NUMBER_1       DEFINE  <Battery Serial Number>
+;    PORT_BAT_DEVICE_NAME_1         DEFINE  <Battery Device Name>
+;    DEVICE_CHEMISTRY_1             DEFINE  <Battery Device Chemistry>
+;    * Battery Device Chemistry         ->  01h = Other
+;                                           02h = Unknown
+;                                           03h = Lead Acid
+;                                           04h = Nickel Cadmium
+;                                           05h = Nickel Metal Hydride
+;                                           06h = Lithium-ion
+;                                           07h = Zinc Air
+;                                           08h = Lithium Polymer
+;    DESIGN_CAPACITY_1              DEFINE  <Design Capacity of the Battery in mWatt-hours>
+;    DESIGN_VOLTAGE_1               DEFINE  <Design Voltage of the Battery in mVolts>
+;    PORT_BAT_SBDS_VER_NO_1         DEFINE  <Smart Battery Data Specification Version Number>
+;    MAX_ERROR_IN_BAT_DATA_1        DEFINE  <Maximum Error (as percentage in the range 0-100)>
+;    PORT_BAT_SBDS_SERIAL_NO_1      DEFINE  <16-bit value - Identifies battery's serial number>
+;    PORT_BAT_SBDS_MAN_DATE_1       DEFINE  <Cell Pack Manufacture Date>
+;    * Cell Pack Manufacture Date       ->  Bits 15:9  Year, biased by 1980, in the range 0 to 127
+;                                           Bits 8:5   Month, in the range 1 to 12
+;                                           Bits 4:0   Date, in the range 1 to 31
+;    PORT_BAT_SBDS_DEV_CHEM_1       DEFINE  <Battery Chemistry>
+;    DESIGN_CAPACITY_MULTIPLIER_1   DEFINE  <Multiplication Factor of the Design Capacity>
+;    OEM_SPECIFIC_1                 DEFINE  <OEM or BIOS Vendor-specific Information>
+;----------------------------------------------------------------------------
+IFDEF MKF_PORTABLE_BATTERY_INFO
+IF (MKF_PORTABLE_BATTERY_INFO NE 0)
+    PORT_BAT_LOCATION_1             DEFINE  MKF_PORT_BAT_LOCATION_1
+    PORT_BAT_LOCATION_2             DEFINE  MKF_PORT_BAT_LOCATION_2
+    PORT_BAT_LOCATION_3             DEFINE  MKF_PORT_BAT_LOCATION_3
+    PORT_BAT_LOCATION_4             DEFINE  MKF_PORT_BAT_LOCATION_4
+    PORT_BAT_LOCATION_5             DEFINE  MKF_PORT_BAT_LOCATION_5
+
+    PORT_BAT_MANUFACTURER_1         DEFINE  MKF_PORT_BAT_MANUFACTURER_1
+    PORT_BAT_MANUFACTURER_2         DEFINE  MKF_PORT_BAT_MANUFACTURER_2
+    PORT_BAT_MANUFACTURER_3         DEFINE  MKF_PORT_BAT_MANUFACTURER_3
+    PORT_BAT_MANUFACTURER_4         DEFINE  MKF_PORT_BAT_MANUFACTURER_4
+    PORT_BAT_MANUFACTURER_5         DEFINE  MKF_PORT_BAT_MANUFACTURER_5
+
+    PORT_BAT_MANUFACTURE_DATE_1     DEFINE  MKF_PORT_BAT_MANUFACTURE_DATE_1
+    PORT_BAT_MANUFACTURE_DATE_2     DEFINE  MKF_PORT_BAT_MANUFACTURE_DATE_2
+    PORT_BAT_MANUFACTURE_DATE_3     DEFINE  MKF_PORT_BAT_MANUFACTURE_DATE_3
+    PORT_BAT_MANUFACTURE_DATE_4     DEFINE  MKF_PORT_BAT_MANUFACTURE_DATE_4
+    PORT_BAT_MANUFACTURE_DATE_5     DEFINE  MKF_PORT_BAT_MANUFACTURE_DATE_5
+
+    PORT_BAT_SERIAL_NUMBER_1        DEFINE  MKF_PORT_BAT_SERIAL_NUMBER_1
+    PORT_BAT_SERIAL_NUMBER_2        DEFINE  MKF_PORT_BAT_SERIAL_NUMBER_2
+    PORT_BAT_SERIAL_NUMBER_3        DEFINE  MKF_PORT_BAT_SERIAL_NUMBER_3
+    PORT_BAT_SERIAL_NUMBER_4        DEFINE  MKF_PORT_BAT_SERIAL_NUMBER_4
+    PORT_BAT_SERIAL_NUMBER_5        DEFINE  MKF_PORT_BAT_SERIAL_NUMBER_5
+
+    PORT_BAT_DEVICE_NAME_1          DEFINE  MKF_PORT_BAT_DEVICE_NAME_1
+    PORT_BAT_DEVICE_NAME_2          DEFINE  MKF_PORT_BAT_DEVICE_NAME_2
+    PORT_BAT_DEVICE_NAME_3          DEFINE  MKF_PORT_BAT_DEVICE_NAME_3
+    PORT_BAT_DEVICE_NAME_4          DEFINE  MKF_PORT_BAT_DEVICE_NAME_4
+    PORT_BAT_DEVICE_NAME_5          DEFINE  MKF_PORT_BAT_DEVICE_NAME_5
+
+    DEVICE_CHEMISTRY_1              DEFINE  MKF_DEVICE_CHEMISTRY_1
+    DEVICE_CHEMISTRY_2              DEFINE  MKF_DEVICE_CHEMISTRY_2
+    DEVICE_CHEMISTRY_3              DEFINE  MKF_DEVICE_CHEMISTRY_3
+    DEVICE_CHEMISTRY_4              DEFINE  MKF_DEVICE_CHEMISTRY_4
+    DEVICE_CHEMISTRY_5              DEFINE  MKF_DEVICE_CHEMISTRY_5
+
+    DESIGN_CAPACITY_1               DEFINE  MKF_DESIGN_CAPACITY_1
+    DESIGN_CAPACITY_2               DEFINE  MKF_DESIGN_CAPACITY_2
+    DESIGN_CAPACITY_3               DEFINE  MKF_DESIGN_CAPACITY_3
+    DESIGN_CAPACITY_4               DEFINE  MKF_DESIGN_CAPACITY_4
+    DESIGN_CAPACITY_5               DEFINE  MKF_DESIGN_CAPACITY_5
+
+    DESIGN_VOLTAGE_1                DEFINE  MKF_DESIGN_VOLTAGE_1
+    DESIGN_VOLTAGE_2                DEFINE  MKF_DESIGN_VOLTAGE_2
+    DESIGN_VOLTAGE_3                DEFINE  MKF_DESIGN_VOLTAGE_3
+    DESIGN_VOLTAGE_4                DEFINE  MKF_DESIGN_VOLTAGE_4
+    DESIGN_VOLTAGE_5                DEFINE  MKF_DESIGN_VOLTAGE_5
+
+    PORT_BAT_SBDS_VER_NO_1          DEFINE  MKF_PORT_BAT_SBDS_VER_NO_1
+    PORT_BAT_SBDS_VER_NO_2          DEFINE  MKF_PORT_BAT_SBDS_VER_NO_2
+    PORT_BAT_SBDS_VER_NO_3          DEFINE  MKF_PORT_BAT_SBDS_VER_NO_3
+    PORT_BAT_SBDS_VER_NO_4          DEFINE  MKF_PORT_BAT_SBDS_VER_NO_4
+    PORT_BAT_SBDS_VER_NO_5          DEFINE  MKF_PORT_BAT_SBDS_VER_NO_5
+
+    MAX_ERROR_IN_BAT_DATA_1         DEFINE  MKF_MAX_ERROR_IN_BAT_DATA_1
+    MAX_ERROR_IN_BAT_DATA_2         DEFINE  MKF_MAX_ERROR_IN_BAT_DATA_2
+    MAX_ERROR_IN_BAT_DATA_3         DEFINE  MKF_MAX_ERROR_IN_BAT_DATA_3
+    MAX_ERROR_IN_BAT_DATA_4         DEFINE  MKF_MAX_ERROR_IN_BAT_DATA_4
+    MAX_ERROR_IN_BAT_DATA_5         DEFINE  MKF_MAX_ERROR_IN_BAT_DATA_5
+
+    PORT_BAT_SBDS_SERIAL_NO_1       DEFINE  MKF_PORT_BAT_SBDS_SERIAL_NO_1
+    PORT_BAT_SBDS_SERIAL_NO_2       DEFINE  MKF_PORT_BAT_SBDS_SERIAL_NO_2
+    PORT_BAT_SBDS_SERIAL_NO_3       DEFINE  MKF_PORT_BAT_SBDS_SERIAL_NO_3
+    PORT_BAT_SBDS_SERIAL_NO_4       DEFINE  MKF_PORT_BAT_SBDS_SERIAL_NO_4
+    PORT_BAT_SBDS_SERIAL_NO_5       DEFINE  MKF_PORT_BAT_SBDS_SERIAL_NO_5
+
+    PORT_BAT_SBDS_MAN_DATE_1        DEFINE  MKF_PORT_BAT_SBDS_MAN_DATE_1
+    PORT_BAT_SBDS_MAN_DATE_2        DEFINE  MKF_PORT_BAT_SBDS_MAN_DATE_2
+    PORT_BAT_SBDS_MAN_DATE_3        DEFINE  MKF_PORT_BAT_SBDS_MAN_DATE_3
+    PORT_BAT_SBDS_MAN_DATE_4        DEFINE  MKF_PORT_BAT_SBDS_MAN_DATE_4
+    PORT_BAT_SBDS_MAN_DATE_5        DEFINE  MKF_PORT_BAT_SBDS_MAN_DATE_5
+
+    PORT_BAT_SBDS_DEV_CHEM_1        DEFINE  MKF_PORT_BAT_SBDS_DEV_CHEM_1
+    PORT_BAT_SBDS_DEV_CHEM_2        DEFINE  MKF_PORT_BAT_SBDS_DEV_CHEM_2
+    PORT_BAT_SBDS_DEV_CHEM_3        DEFINE  MKF_PORT_BAT_SBDS_DEV_CHEM_3
+    PORT_BAT_SBDS_DEV_CHEM_4        DEFINE  MKF_PORT_BAT_SBDS_DEV_CHEM_4
+    PORT_BAT_SBDS_DEV_CHEM_5        DEFINE  MKF_PORT_BAT_SBDS_DEV_CHEM_5
+
+    DESIGN_CAPACITY_MULTIPLIER_1    DEFINE  MKF_DESIGN_CAPACITY_MULTIPLIER_1
+    DESIGN_CAPACITY_MULTIPLIER_2    DEFINE  MKF_DESIGN_CAPACITY_MULTIPLIER_2
+    DESIGN_CAPACITY_MULTIPLIER_3    DEFINE  MKF_DESIGN_CAPACITY_MULTIPLIER_3
+    DESIGN_CAPACITY_MULTIPLIER_4    DEFINE  MKF_DESIGN_CAPACITY_MULTIPLIER_4
+    DESIGN_CAPACITY_MULTIPLIER_5    DEFINE  MKF_DESIGN_CAPACITY_MULTIPLIER_5
+
+    OEM_SPECIFIC_1                  DEFINE  MKF_OEM_SPECIFIC_1
+    OEM_SPECIFIC_2                  DEFINE  MKF_OEM_SPECIFIC_2
+    OEM_SPECIFIC_3                  DEFINE  MKF_OEM_SPECIFIC_3
+    OEM_SPECIFIC_4                  DEFINE  MKF_OEM_SPECIFIC_4
+    OEM_SPECIFIC_5                  DEFINE  MKF_OEM_SPECIFIC_5
+ENDIF
+ENDIF
+
+;----------------------------------------------------------------------------
+;       Structure Type 23: SYSTEM RESET INFORMATION
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+; RESET_CAPABILITIES : Identifies the system reset capabilities for the system
+;----------------------------------------------------------------------------
+
+;!!PORT!!
+    RESET_CAPABILITIES  = 00h
+
+;----------------------------------------------------------------------------
+; RESET_COUNT : Identifies the number of automatic system resets since
+;               the last intentional reset
+;     FFFFh ->  Unknown
+;----------------------------------------------------------------------------
+
+;!!PORT!!
+    RESET_COUNT = 0FFFFh
+
+;----------------------------------------------------------------------------
+; RESET_LIMIT : Identifies the number of consecutive times the system
+;               reset will be attempted
+;     FFFFh ->  Unknown
+;----------------------------------------------------------------------------
+
+;!!PORT!!
+    RESET_LIMIT = 0FFFFh
+
+;----------------------------------------------------------------------------
+; RESET_TIMER_INTERVAL :  Identifies the number of minutes to use for the
+;                         watchdog timer. If the timer is not reset within this
+;                         interval, the system reset timeout will begin.
+;     FFFFh -> Unknown
+;----------------------------------------------------------------------------
+
+;!!PORT!!
+      RESET_TIMER_INTERVAL  = 0FFFFh
+
+;----------------------------------------------------------------------------
+; RESET_TIMEOUT    :  identifies the number of minutes before the reboot is
+;                     initiated. It is used after a system power cycle,
+;                     system reset(local or remote), and automatic system reset.
+;     FFFFh -> Unknown
+;----------------------------------------------------------------------------
+
+;!!PORT!!
+    RESET_TIMEOUT   = 0FFFFh
+
+;----------------------------------------------------------------------------
+;       Structure Type 24: HARDWARE SECURITY INFORMATION
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;       Structure Type 25: SYSTEM POWER CONTROLS INFORMATION
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+; NEXT_SCHEDULED_POWERON_MONTH :  Contains the BCD value of the month on
+;                                 which the next scheduled power-on is to occur
+;                                 in the range of 01h to 12h.
+; Note: Any date or time field in the structure whose value is outside of
+; the field's specified range does not contribute to the total-seconds count.
+; e.g. if the month field contains the value 0xFF the next power-on is
+; scheduled to fall within the next month, perhaps on a specific
+; day-of-month and time.
+;----------------------------------------------------------------------------
+
+;!!PORT!!
+    NEXT_SCHEDULED_POWERON_MONTH  = 0FFh
+
+;----------------------------------------------------------------------------
+; NEXT_SCHEDULED_POWERON_DAY_OF_MONTH : Contains the BCD value of the day_of_month on
+;                                       which the next scheduled power-on is to occur
+;                                       in the range of 01h to 31h.
+; Note: Any date or time field in the structure whose value is outside of
+; the field's specified range does not contribute to the total-seconds count.
+; e.g. if the month field contains the value 0xFF the next power-on is
+; scheduled to fall within the next month, perhaps on a specific
+; day-of-month and time.
+;----------------------------------------------------------------------------
+
+;!!PORT!!
+    NEXT_SCHEDULED_POWERON_DAY_OF_MONTH = 0FFh
+
+;----------------------------------------------------------------------------
+; NEXT_SCHEDULED_POWERON_HOUR : Contains the BCD value of the hour on
+;                               which the next scheduled power-on is to occur
+;                               in the range of 00h to 23h.
+; Note: Any date or time field in the structure whose value is outside of
+; the field's specified range does not contribute to the total-seconds count.
+; e.g. if the month field contains the value 0xFF the next power-on is
+; scheduled to fall within the next month, perhaps on a specific
+; day-of-month and time.
+;----------------------------------------------------------------------------
+
+;!!PORT!!
+    NEXT_SCHEDULED_POWERON_HOUR = 0FFh
+
+;----------------------------------------------------------------------------
+; NEXT_SCHEDULED_POWERON_MINUTE : Contains the BCD value of the minute on
+;                                 which the next scheduled power-on is to occur
+;                                 in the range of 00h to 59h.
+; Note: Any date or time field in the structure whose value is outside of
+; the field's specified range does not contribute to the total-seconds count.
+; e.g. if the month field contains the value 0xFF the next power-on is
+; scheduled to fall within the next month, perhaps on a specific
+; day-of-month and time.
+;----------------------------------------------------------------------------
+
+;!!PORT!!
+    NEXT_SCHEDULED_POWERON_MINUTE = 0FFh
+
+;----------------------------------------------------------------------------
+; NEXT_SCHEDULED_POWERON_SECOND : Contains the BCD value of the second on
+;                                 which the next scheduled power-on is to occur
+;                                 in the range of 00h to 59h.
+; Note: Any date or time field in the structure whose value is outside of
+; the field's specified range does not contribute to the total-seconds count.
+; e.g. if the month field contains the value 0xFF the next power-on is
+; scheduled to fall within the next month, perhaps on a specific
+; day-of-month and time.
+;----------------------------------------------------------------------------
+
+;!!PORT!!
+    NEXT_SCHEDULED_POWERON_SECOND = 0FFh
+
+;----------------------------------------------------------------------------
+;       Structure Type 26:  VOLTAGE PROBE INFORMATION
+;----------------------------------------------------------------------------
+
+; Syntax:
+;    VOLTAGE_PROBE_INFO_1 DEFINE  <Voltage Probe String, Location
+;                                 and status, Maximum Value,
+;                                 Minimum Value, Resolution, Tolerance,
+;                                 Accuracy, Oem Defined, Nominal Value>
+;    * Voltage Probe String   ->  Identifies the descriptive information
+;                                 about the probe or its location
+;                                 e.g."LM78A"
+;    * Location and Status    ->  Defines the probe's physical location
+;                                 and status of the voltage monitored by this
+;                                 voltage probe
+;    * Maximum Value          ->  The max. voltage level readable by
+;                                 this probe in millivolt 0x8000h -> Unknown
+;    * Mimimum Value          ->  The Min. voltage level readable by
+;                                 this probe in millivolt 0x8000h -> Unknown
+;    * Resoltion              ->  The resolution for the probe's
+;                                 reading in tenths of millivolt 0x8000h->Unknown
+;    * Tolerance              ->  The tolerance for reading from this
+;                                 probe, in +/- millivolts. 0x8000h->Unknown
+;    * Accuracy               ->  The accuracy for reading from this
+;                                 probe, in +/- 1/100th of a percent
+;                                 0x8000h->Unknown
+;    * OEM-Defined            ->  Contains OEM- or BIOS Vaendor specific information
+;    * Nominal Value          ->  The nominal value for the probe's
+;                                 reading in millivolts. 0x8000h -> Unknown
+; Note: Nominal Value field is valid only if structure length is more than 14h
+;----------------------------------------------------------------------------
+
+;!!PORT!!
+        NUMBER_OF_VOLTAGE_PROBE_ASSOCIATED_MGMT_DEV_1 = 1
+        NUMBER_OF_VOLTAGE_PROBE_ASSOCIATED_MGMT_DEV_2 = 2
+        NUMBER_OF_VOLTAGE_PROBE_ASSOCIATED_MGMT_DEV_3 = 3
+
+;!!PORT!!
+        VOLTAGE_PROBE_INFO_1_1  DEFINE  <LM78A,0,08000h,08000h,08000h,08000h,08000h,0,08000h>
+        VOLTAGE_PROBE_INFO_2_1  DEFINE  <LM78B,0,08000h,08000h,08000h,08000h,08000h,0,08000h>
+        VOLTAGE_PROBE_INFO_2_2  DEFINE  <LM78B,0,08000h,08000h,08000h,08000h,08000h,0,08000h>
+        VOLTAGE_PROBE_INFO_3_1  DEFINE  <LM78C,0,08000h,08000h,08000h,08000h,08000h,0,08000h>
+        VOLTAGE_PROBE_INFO_3_2  DEFINE  <LM78C,0,08000h,08000h,08000h,08000h,08000h,0,08000h>
+        VOLTAGE_PROBE_INFO_3_3  DEFINE  <LM78C,0,08000h,08000h,08000h,08000h,08000h,0,08000h>
+
+;!!PORT!!
+        MANAGEMENT_DEV_VOLT_THRESHOLD_DATA_INFO_1_1     DEFINE  <01,02,03,04,05,06>
+        MANAGEMENT_DEV_VOLT_THRESHOLD_DATA_INFO_2_1     DEFINE  <07,08,08,0Ah,0Bh,0Ch>
+        MANAGEMENT_DEV_VOLT_THRESHOLD_DATA_INFO_2_2     DEFINE  <0Dh,0Eh,0Fh,10h,11h,12h>
+        MANAGEMENT_DEV_VOLT_THRESHOLD_DATA_INFO_3_1     DEFINE  <13h,14h,15h,16h,17h,18h>
+        MANAGEMENT_DEV_VOLT_THRESHOLD_DATA_INFO_3_2     DEFINE  <19h,02,03,04,05,06>
+        MANAGEMENT_DEV_VOLT_THRESHOLD_DATA_INFO_3_3     DEFINE  <01,02,03,04,05,06>
+
+;----------------------------------------------------------------------------
+;       Structure Type 27:  COOLING DEVICE INFORMATION
+;----------------------------------------------------------------------------
+;Syntax:
+;    COOLING_DEVICE_INFO_1  DEFINE  <Device type and status, Cooling unit group,
+;                                   Oem Defined, Nominal Value>
+;    * Device type and Status   ->  Identifies the cooling device type
+;                                   and status
+;    * Cooling Unit Group       ->  Identifies the cooling unit group
+;                                   to which this cooling device is associated.
+;                                   Multiple cooling devices in the same cooling
+;                                   unit implies a redudant configuration.
+;    * OEM-Defined              ->  Contains OEM- or BIOS Vaendor specific information
+;    * Nominal Value            ->  The nominal value for the cooling device
+;                                   speed in RPM. 0x8000h -> Unknown
+;Note: Nominal Value field is valid only if structure length is more than 0Ch
+;----------------------------------------------------------------------------
+; NUMBER_OF_COOLING_DEVICE_ASSOCIATED_TEMP_PROBE_1_1    = 2
+; This means Management Device number 1 and Temperature Probe Number 1 has
+; 2 cooling Device associated.
+
+;!!PORT!!
+    NUMBER_OF_COOLING_DEVICE_ASSOCIATED_TEMP_PROBE_1_1  = 2
+    NUMBER_OF_COOLING_DEVICE_ASSOCIATED_TEMP_PROBE_2_1  = 1
+    NUMBER_OF_COOLING_DEVICE_ASSOCIATED_TEMP_PROBE_2_2  = 1
+    NUMBER_OF_COOLING_DEVICE_ASSOCIATED_TEMP_PROBE_3_1  = 1
+    NUMBER_OF_COOLING_DEVICE_ASSOCIATED_TEMP_PROBE_3_2  = 1
+    NUMBER_OF_COOLING_DEVICE_ASSOCIATED_TEMP_PROBE_3_3  = 1
+
+;----------------------------------------------------------------------------
+; Syntax :
+; COOLING_DEVICE_INFO_1_1_1  DEFINE  <012h,01h,00000000h,08000h,>                No Description string
+; COOLING_DEVICE_INFO_1_1_1  DEFINE  <012h,01h,00000000h,08000h,Cooling Dev 1>   With Description string
+;   This means Cooling device info_1st Mangement Device_1st Temperature Probe_1st Cooling Device
+; COOLING_DEVICE_INFO_1_1_2  DEFINE  <012h,01h,00000000h,08000h>
+;   This means Cooling Device Info_1st Mangement Device_1st Temperature Probe_2nd Cooling Device no.2
+;----------------------------------------------------------------------------
+
+;!!PORT!!
+        COOLING_DEVICE_INFO_1_1_1       DEFINE  <012h,01h,00000000h,08000h,Cooling Dev 1>
+        COOLING_DEVICE_INFO_1_1_2       DEFINE  <012h,01h,00000000h,08000h,>    ;No Description string
+        COOLING_DEVICE_INFO_2_1_1       DEFINE  <012h,01h,00000000h,08000h,Cooling Dev 2>
+        COOLING_DEVICE_INFO_2_2_1       DEFINE  <012h,01h,00000000h,08000h,Cooling Dev 3>
+        COOLING_DEVICE_INFO_3_1_1       DEFINE  <012h,01h,00000000h,08000h,Cooling Dev 4>
+        COOLING_DEVICE_INFO_3_2_1       DEFINE  <012h,01h,00000000h,08000h,Cooling Dev 5>
+        COOLING_DEVICE_INFO_3_3_1       DEFINE  <012h,01h,00000000h,08000h,Cooling Dev 6>
+
+;----------------------------------------------------------------------------
+; Syntax :
+; MANAGEMENT_DEV_COOL_THRESHOLD_DATA_INFO_1_1_1  DEFINE  <01,02,03,04,05,06>
+;   This means Managemnt Device Info 1_Temperature Probe 1_Cooling Device Threshold 1
+; MANAGEMENT_DEV_COOL_THRESHOLD_DATA_INFO_1_1_2  DEFINE  <01,02,03,04,05,06>
+;   This means Managemnt Device Info 1_Temperature Probe 1_Cooling Device Threshold 2
+;----------------------------------------------------------------------------
+
+;!!PORT!!
+        MANAGEMENT_DEV_COOL_THRESHOLD_DATA_INFO_1_1_1   DEFINE  <01,02,03,04,05,06>
+        MANAGEMENT_DEV_COOL_THRESHOLD_DATA_INFO_1_1_2   DEFINE  <01,02,03,04,05,06>
+        MANAGEMENT_DEV_COOL_THRESHOLD_DATA_INFO_2_1_1   DEFINE  <01,02,03,04,05,06>
+        MANAGEMENT_DEV_COOL_THRESHOLD_DATA_INFO_2_2_1   DEFINE  <01,02,03,04,05,06>
+        MANAGEMENT_DEV_COOL_THRESHOLD_DATA_INFO_3_1_1   DEFINE  <01,02,03,04,05,06>
+        MANAGEMENT_DEV_COOL_THRESHOLD_DATA_INFO_3_2_1   DEFINE  <01,02,03,04,05,06>
+        MANAGEMENT_DEV_COOL_THRESHOLD_DATA_INFO_3_3_1   DEFINE  <01,02,03,04,05,06>
+
+;----------------------------------------------------------------------------
+;       Structure Type 28:  TEMPERATURE PROBE INFORMATION
+;----------------------------------------------------------------------------
+;
+; Syntax:
+;    TEMPERATURE_PROBE_INFO_1 DEFINE  <Tempature Probe String, Location
+;                                     and status, Maximum Value,
+;                                     Minimum Value, Resolution, Tolerance,
+;                                     Accuracy, Oem Defined, Nominal Value>
+;    * Voltage Probe String       ->  Identifies the descriptive information
+;                                     about the probe or its location
+;                                     e.g."LM78A"
+;    * Location and Status        ->  Defines the probe's physical location
+;                                     and status of the tempature monitored by this
+;                                     tempature probe
+;    * Maximum Value              ->  The max. tempature readable by
+;                                     this probe in 1/10th degree C. 0x8000h -> Unknown
+;    * Mimimum Value              ->  The Min. tempature readable by
+;                                     this probe in 1/10th degree C. 0x8000h -> Unknown
+;    * Resoltion                  ->  The resolution for the probe's
+;                                     reading in 1/1000th degree C. 0x8000h->Unknown
+;    * Tolerance                  ->  The tolerance for reading from this
+;                                     probe, in +/- 1/10th degree C.0x8000h->Unknown
+;    * Accuracy                   ->  The accuracy for reading from this
+;                                     probe, in +/- 1/100th of a percent
+;                                     0x8000h->Unknown
+;    * OEM-Defined                ->  Contains OEM- or BIOS Vaendor specific information
+;    * Nominal Value              ->  The nominal value for the probe's
+;                                     reading in 1/10th degree C. 0x8000h -> Unknown
+; Note: Nominal Value field is valid only if structure length is more than 14h
+;----------------------------------------------------------------------------
+
+;!!PORT!!
+        NUMBER_OF_TEMPERATURE_PROBE_ASSOCIATED_MGMT_DEV_1 = 1
+        NUMBER_OF_TEMPERATURE_PROBE_ASSOCIATED_MGMT_DEV_2 = 2
+        NUMBER_OF_TEMPERATURE_PROBE_ASSOCIATED_MGMT_DEV_3 = 3
+
+;!!PORT!!
+        TEMPERATURE_PROBE_INFO_1_1      DEFINE  <LM78A,0,08000h,08000h,08000h,08000h,08000h,0,08000h>
+        TEMPERATURE_PROBE_INFO_2_1      DEFINE  <LM78B,0,08000h,08000h,08000h,08000h,08000h,0,08000h>
+        TEMPERATURE_PROBE_INFO_2_2      DEFINE  <LM78B,0,08000h,08000h,08000h,08000h,08000h,0,08000h>
+
+;!!PORT!!
+        TEMPERATURE_PROBE_INFO_3_1      DEFINE  <LM78C,0,08000h,08000h,08000h,08000h,08000h,0,08000h>
+        TEMPERATURE_PROBE_INFO_3_2      DEFINE  <LM78C,0,08000h,08000h,08000h,08000h,08000h,0,08000h>
+        TEMPERATURE_PROBE_INFO_3_3      DEFINE  <LM78C,0,08000h,08000h,08000h,08000h,08000h,0,08000h>
+
+;!!PORT!!
+        MANAGEMENT_DEV_TEMP_THRESHOLD_DATA_INFO_1_1     DEFINE  <01,02,03,04,05,06>
+        MANAGEMENT_DEV_TEMP_THRESHOLD_DATA_INFO_2_1     DEFINE  <01,02,03,04,05,06>
+        MANAGEMENT_DEV_TEMP_THRESHOLD_DATA_INFO_2_2     DEFINE  <01,02,03,04,05,06>
+        MANAGEMENT_DEV_TEMP_THRESHOLD_DATA_INFO_3_1     DEFINE  <01,02,03,04,05,06>
+        MANAGEMENT_DEV_TEMP_THRESHOLD_DATA_INFO_3_2     DEFINE  <01,02,03,04,05,06>
+        MANAGEMENT_DEV_TEMP_THRESHOLD_DATA_INFO_3_3     DEFINE  <01,02,03,04,05,06>
+
+;----------------------------------------------------------------------------
+;       Structure Type 29:  ELECTRICAL PROBE INFORMATION
+;----------------------------------------------------------------------------
+;
+; Syntax :
+;    ELECTRICAL_PROBE_INFO_1        <Electrical Probe String, Location and status, Maximum Value, Minimum Value,
+;                                   Resolution, Tolerance, Accuracy, Oem Defined, Nominal Value>
+;    * Electrical Probe String  ->  Identifies the descriptive information about the probe or its location.
+;                                   e.g."ABC"
+;    * Location and Status      ->  Defines the probe's physical location and status of the current
+;                                   monitored by this electrical probe
+;    * Maximum Value            ->  The max. current readable by this probe in milliamps. 0x8000h -> Unknown
+;    * Mimimum Value            ->  The Min. current readable by this probe in milliamps. 0x8000h -> Unknown
+;    * Resoltion                ->  The resolution for the probe's reading in thenths of a milliamps.
+;                                   0x8000h->Unknown
+;    * Tolerance                ->  The tolerance for reading from this probe, in +/- milliamps.
+;                                   0x8000h->Unknown
+;    * Accuracy                 ->  The accuracy for reading from this probe, in +/- 1/100th of a percent.
+;                                   0x8000h->Unknown
+;    * OEM-Defined              ->  Contains OEM- or BIOS Vaendor specific information
+;    * Nominal Value            ->  The nominal value for the probe's reading in milliamps.
+;                                   0x8000h -> Unknown
+; Note: Nominal Value field is valid only if structure length is more than 14h
+;----------------------------------------------------------------------------
+;!!PORT!!
+        NUMBER_OF_ELECTRICAL_PROBE_ASSOCIATED_MGMT_DEV_1  = 1
+        NUMBER_OF_ELECTRICAL_PROBE_ASSOCIATED_MGMT_DEV_2  = 2
+        NUMBER_OF_ELECTRICAL_PROBE_ASSOCIATED_MGMT_DEV_3  = 3
+
+;!!PORT!!
+        ELECTRICAL_PROBE_INFO_1_1       DEFINE  <ABC,0,08000h,08000h,08000h,08000h,08000h,0,08000h>
+        ELECTRICAL_PROBE_INFO_2_1       DEFINE  <DEF,0,08000h,08000h,08000h,08000h,08000h,0,08000h>
+        ELECTRICAL_PROBE_INFO_2_2       DEFINE  <GHI,0,08000h,08000h,08000h,08000h,08000h,0,08000h>
+        ELECTRICAL_PROBE_INFO_3_1       DEFINE  <ABC,0,08000h,08000h,08000h,08000h,08000h,0,08000h>
+        ELECTRICAL_PROBE_INFO_3_2       DEFINE  <DEF,0,08000h,08000h,08000h,08000h,08000h,0,08000h>
+        ELECTRICAL_PROBE_INFO_3_3       DEFINE  <GHI,0,08000h,08000h,08000h,08000h,08000h,0,08000h>
+
+;!!PORT!!
+        MANAGEMENT_DEV_ELEC_THRESHOLD_DATA_INFO_1_1     DEFINE  <01,02,03,04,05,06>
+        MANAGEMENT_DEV_ELEC_THRESHOLD_DATA_INFO_2_1     DEFINE  <01,02,03,04,05,06>
+        MANAGEMENT_DEV_ELEC_THRESHOLD_DATA_INFO_2_2     DEFINE  <01,02,03,04,05,06>
+        MANAGEMENT_DEV_ELEC_THRESHOLD_DATA_INFO_3_1     DEFINE  <01,02,03,04,05,06>
+        MANAGEMENT_DEV_ELEC_THRESHOLD_DATA_INFO_3_2     DEFINE  <01,02,03,04,05,06>
+        MANAGEMENT_DEV_ELEC_THRESHOLD_DATA_INFO_3_3     DEFINE  <01,02,03,04,05,06>
+
+;----------------------------------------------------------------------------
+;       Structure Type 30:  OUT-OF-BAND REMOTE ACCESS INFORMATION
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;       Structure Type 32:  SYSTEM BOOT INFORMATION
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;       Structure Type 33:  64-BIT MEMORY ERROR INFORMATION
+;----------------------------------------------------------------------------
+; Note: For more detail refer TYPE 18 (MEMORY ERROR INFORMATION) in this
+;       file and SMB.EQU
+; In Case of 64 Bit Memory Error support following 2 fields are changed to Qword
+;----------------------------------------------------------------------------
+;!!PORT!!
+    MEM_ARR_ERR_ADD   equ   8000000000000000h
+    DEV_ERR_ADD       equ   8000000000000000h
+
+;----------------------------------------------------------------------------
+;       Structure Type 34:  MANAGEMENT DEVICE INFORMATION
+;----------------------------------------------------------------------------
+;    * Device String        ->  Identifies string information about device
+;    * Device Type          ->  Identifies the Device Type, for
+;                               more detail search for Management
+;                               Device Type,refer SMB.EQU
+;    * Device Address       ->  Defines Device Address.
+;    * Device Address Type  ->  Identifies the Address Type, for
+;                               more detail search for Management
+;                               Device Type Address, refer SMB.EQU
+;----------------------------------------------------------------------------
+;!!PORT!!
+        MANAGEMENT_DEVICE_STRING_1      DEFINE <LM78-1>
+        MANAGEMENT_DEVICE_TYPE_1        DEFINE <MGMT_DEVICE_TYPE_LM78>
+        MANAGEMENT_DEVICE_ADDR_1        = 00000000h
+        MANAGEMENT_DEVICE_ADDR_TYPE_1   DEFINE <MGMT_DEVICE_ADDRESS_TYPE_IO_PORT>
+
+        MANAGEMENT_DEVICE_STRING_2      DEFINE <LM78-2>
+        MANAGEMENT_DEVICE_TYPE_2        DEFINE <MGMT_DEVICE_TYPE_LM78>
+        MANAGEMENT_DEVICE_ADDR_2        = 00000000h
+        MANAGEMENT_DEVICE_ADDR_TYPE_2   DEFINE <MGMT_DEVICE_ADDRESS_TYPE_IO_PORT>
+
+        MANAGEMENT_DEVICE_STRING_3      DEFINE <LM75-0>
+        MANAGEMENT_DEVICE_TYPE_3        DEFINE <MGMT_DEVICE_TYPE_LM75>
+        MANAGEMENT_DEVICE_ADDR_3        = 00000000h
+        MANAGEMENT_DEVICE_ADDR_TYPE_3   DEFINE <MGMT_DEVICE_ADDRESS_TYPE_IO_PORT>
+
+;----------------------------------------------------------------------------
+;       Structure Type 36:  MANAGEMENT DEVICE THRESHOLD DATA INFORMATION
+;----------------------------------------------------------------------------
+; Management Device Threshold Data structure is associated with,
+; Voltage Probe, Temprature Probe, Cooling Device and Electrical Probe.
+; Each probe and cooling device has it's own Threshold data values.
+; Depends on number of probes in the system, there will be equal number
+; of Threshold Data structures will be there.
+;----------------------------------------------------------------------------
+; Lower Threshold Non-critical      -> The lower non-critical threshold for this component
+; Upper Threshold Non-critical      -> The upper non-critical threshold for this component
+; Lower Threshold Critical          -> The Lower critical threshold for this component
+; Upper Threshold Critical          -> The Upper critical threshold for this component
+; Lower Threshold Non-Recoverable   -> The Lower threshold non-recoverable for this component
+; Upper Threshold Non-Recoverable   -> The Upper threshold non-recoverable for this component
+;----------------------------------------------------------------------------
+
+;!!PORT!!
+        LOWER_THRESHOLD_NON_CRITICAL_1          = 8000h
+        UPPER_THRESHOLD_NON_CRITICAL_1          = 8000h
+        LOWER_THRESHOLD_CRITICAL_1              = 8000h
+        UPPER_THRESHOLD_CRITICAL_1              = 8000h
+        LOWER_THRESHOLD_NON_RECOVERABLE_1       = 8000h
+        UPPER_THRESHOLD_NON_RECOVERABLE_1       = 8000h
+
+        LOWER_THRESHOLD_NON_CRITICAL_2          = 8000h
+        UPPER_THRESHOLD_NON_CRITICAL_2          = 8000h
+        LOWER_THRESHOLD_CRITICAL_2              = 8000h
+        UPPER_THRESHOLD_CRITICAL_2              = 8000h
+        LOWER_THRESHOLD_NON_RECOVERABLE_2       = 8000h
+        UPPER_THRESHOLD_NON_RECOVERABLE_2       = 8000h
+
+        LOWER_THRESHOLD_NON_CRITICAL_3          = 8000h
+        UPPER_THRESHOLD_NON_CRITICAL_3          = 8000h
+        LOWER_THRESHOLD_CRITICAL_3              = 8000h
+        UPPER_THRESHOLD_CRITICAL_3              = 8000h
+        LOWER_THRESHOLD_NON_RECOVERABLE_3       = 8000h
+        UPPER_THRESHOLD_NON_RECOVERABLE_3       = 8000h
+
+        LOWER_THRESHOLD_NON_CRITICAL_4          = 8000h
+        UPPER_THRESHOLD_NON_CRITICAL_4          = 8000h
+        LOWER_THRESHOLD_CRITICAL_4              = 8000h
+        UPPER_THRESHOLD_CRITICAL_4              = 8000h
+        LOWER_THRESHOLD_NON_RECOVERABLE_4       = 8000h
+        UPPER_THRESHOLD_NON_RECOVERABLE_4       = 8000h
+
+;----------------------------------------------------------------------------
+;       Structure Type 37: MEMORY CHANNEL INFORMATION STRUCTURE
+;----------------------------------------------------------------------------
+;!!PORT!!
+
+        CHANNEL_1_TYPE                          = 03h
+        MAX_CHANNEL_1_LOAD                      = 32
+        NUMBER_OF_MEMORY_DEVICES_IN_CHANNEL_1   = 02
+        CHANNEL_1_MEMORY_DEVICE_1_NUM           = 01
+        CHANNEL_1_MEMORY_DEVICE_2_NUM           = 02
+
+        CHANNEL_2_TYPE                          = 03h
+        MAX_CHANNEL_2_LOAD                      = 32
+        NUMBER_OF_MEMORY_DEVICES_IN_CHANNEL_2   = 02
+        CHANNEL_2_MEMORY_DEVICE_1_NUM           = 03
+        CHANNEL_2_MEMORY_DEVICE_2_NUM           = 04
+
+;----------------------------------------------------------------------------
+;       Structure Type 38: IPMI DEVICE INFORMATION
+;----------------------------------------------------------------------------
+; Identifies the base address (either memory-mapped or I/O) of the BMC.
+; If the least-significant bit of the field is 1, the address is in I/O space;
+; otherwise, the address is memory-mapped. Refer IPMI Interface Specification.
+
+;!!PORT!!
+
+        IPMI_BASE_ADDRESS_LO    = 00000000h
+        IPMI_BASE_ADDRESS_HI    = 00000000h
+
+;----------------------------------------------------------------------------
+;       Structure Type 39: SYSTEM POWER SUPPLY
+;----------------------------------------------------------------------------
+; Syntax:
+;    * PWR_SUPPLY_UNIT_GROUP_X          ->  Identifies the power unit group to which
+;                                           this power supply is associated
+;    * PWR_SUPPLY_LOCATION_X            ->  String identifies the location of the
+;                                           power supply
+;    * PWR_SUPPLY_DEVICE_NAME_X         ->  String identifies the name of the power
+;                                           supply
+;    * PWR_SUPPLY_MANUFACTURER_X        ->  String identifies the name of the company
+;                                           that manufacturered the power supply
+;    * PWR_SUPPLY_SERIAL_NUMBER_X       ->  String identifies the serial number of
+;                                           the power supply
+;    * PWR_SUPPLY_ASSET_TAG_NUMBER_X    ->  String identifies the asset tag of
+;                                           the power supply
+;    * PWR_SUPPLY_MODEL_PART_NUMBER_X   ->  String identifies the OEM Part Order
+;                                           number of the power supply
+;    * PWR_SUPPLY_REVISION_LEVEL_X      ->  Power supply revision string
+;    * PWR_SUPPLY_MAX_POWER_CAPACITY_X  ->  Maximum sustained power output in Watts
+;                                           Set to 0x8000 if unknown
+;    * PWR_SUPPLY_CHARACTERISTICS_X     ->  Characteristics of the power supply
+;----------------------------------------------------------------------------
+
+;!!PORT!!
+        POWER_SUPPLY_UNIT_GROUP_1               = 1
+        POWER_SUPPLY_LOCATION_1                 DEFINE <To Be Filled By O.E.M.>
+        POWER_SUPPLY_DEVICE_NAME_1              DEFINE <To Be Filled By O.E.M.>
+        POWER_SUPPLY_MANUFACTURER_1             DEFINE <To Be Filled By O.E.M.>
+        POWER_SUPPLY_SERIAL_NUMBER_1            DEFINE <To Be Filled By O.E.M.>
+        POWER_SUPPLY_ASSET_TAG_NUMBER_1         DEFINE <To Be Filled By O.E.M.>
+        POWER_SUPPLY_MODEL_PART_NUMBER_1        DEFINE <To Be Filled By O.E.M.>
+        POWER_SUPPLY_REVISION_LEVEL_1           DEFINE <To Be Filled By O.E.M.>
+        POWER_SUPPLY_MAX_POWER_CAPACITY_1       = 8000h
+        POWER_SUPPLY_CHARACTERISTICS_1          = 11A2h
+
+        POWER_SUPPLY_UNIT_GROUP_2               = 2
+        POWER_SUPPLY_LOCATION_2                 DEFINE <To Be Filled By O.E.M.>
+        POWER_SUPPLY_DEVICE_NAME_2              DEFINE <To Be Filled By O.E.M.>
+        POWER_SUPPLY_MANUFACTURER_2             DEFINE <To Be Filled By O.E.M.>
+        POWER_SUPPLY_SERIAL_NUMBER_2            DEFINE <To Be Filled By O.E.M.>
+        POWER_SUPPLY_ASSET_TAG_NUMBER_2         DEFINE <To Be Filled By O.E.M.>
+        POWER_SUPPLY_MODEL_PART_NUMBER_2        DEFINE <To Be Filled By O.E.M.>
+        POWER_SUPPLY_REVISION_LEVEL_2           DEFINE <To Be Filled By O.E.M.>
+        POWER_SUPPLY_MAX_POWER_CAPACITY_2       = 8000h
+        POWER_SUPPLY_CHARACTERISTICS_2          = 11A2h
+
+;----------------------------------------------------------------------------
+;       Type 39 - Associated VOLTAGE PROBE Type 26
+;----------------------------------------------------------------------------
+; Syntax:
+;    VOLTAGE_PROBE_39_1 DEFINE    <Present, Voltage Probe String, Location
+;                                 and status, Maximum Value,
+;                                 Minimum Value, Resolution, Tolerance,
+;                                 Accuracy, Oem Defined, Nominal Value>
+;    * Present                ->  0 = Type 39 does not have Input Voltage Probe
+;                             ->  1 = Type 39 has Input Voltage Probe
+;
+; Followings are only valid when "Present = 1"
+;
+;    * Voltage Probe String   ->  Identifies the descriptive information
+;                                 about the probe or its location
+;                                 e.g."LM78A"
+;    * Location and Status    ->  Defines the probe's physical location
+;                                 and status of the voltage monitored by this
+;                                 voltage probe
+;    * Maximum Value          ->  The max. voltage level readable by
+;                                 this probe in millivolt 0x8000h -> Unknown
+;    * Mimimum Value          ->  The Min. voltage level readable by
+;                                 this probe in millivolt 0x8000h -> Unknown
+;    * Resoltion              ->  The resolution for the probe's
+;                                 reading in tenths of millivolt 0x8000h->Unknown
+;    * Tolerance              ->  The tolerance for reading from this
+;                                 probe, in +/- millivolts. 0x8000h->Unknown
+;    * Accuracy               ->  The accuracy for reading from this
+;                                 probe, in +/- 1/100th of a percent
+;                                 0x8000h->Unknown
+;    * OEM-Defined            ->  Contains OEM- or BIOS Vaendor specific information
+;    * Nominal Value          ->  The nominal value for the probe's
+;                                 reading in millivolts. 0x8000h -> Unknown
+;
+; Note: Nominal Value field is valid only if structure length is more than 14h
+;----------------------------------------------------------------------------
+
+;!!PORT!!
+        VOLTAGE_PROBE_39_1  DEFINE  <1,LM78A,6Ah,08000h,08000h,08000h,08000h,08000h,0,08000h>
+        VOLTAGE_PROBE_39_2  DEFINE  <0,LM78B,6Ah,08000h,08000h,08000h,08000h,08000h,0,08000h>
+
+;----------------------------------------------------------------------------
+;       Type 39 - Associated COOLING DEVICE Type 27
+;----------------------------------------------------------------------------
+;Syntax:
+;    COOLING_DEVICE_39_1  DEFINE    <Present, Device type and status, Cooling unit group,
+;                                   Oem Defined, Nominal Value>
+;    * Present                  ->  0 = Type 39 does not have Cooling Device
+;                               ->  1 = Type 39 has Cooling Device
+;
+; Followings are only valid when "Present = 1"
+;
+;    * Device type and Status   ->  Identifies the cooling device type
+;                                   and status
+;    * Cooling Unit Group       ->  Identifies the cooling unit group
+;                                   to which this cooling device is associated.
+;                                   Multiple cooling devices in the same cooling
+;                                   unit implies a redudant configuration.
+;    * OEM-Defined              ->  Contains OEM- or BIOS Vaendor specific information
+;    * Nominal Speed            ->  The nominal speed for the cooling device
+;                                   speed in RPM. 0x8000h -> Unknown
+;    * Description              ->  Descriptive information about the cooling device
+;
+;Note: Nominal Value field is valid only if structure length is more than 0Ch
+;----------------------------------------------------------------------------
+
+;!!PORT!!
+        COOLING_DEVICE_39_1       DEFINE  <1,67h,01h,00000000h,08000h,Cooling Dev 1>
+        COOLING_DEVICE_39_2       DEFINE  <0,67h,01h,00000000h,08000h,Cooling Dev 2>
+
+;----------------------------------------------------------------------------
+;       Type 39 - Associated Structure Type 28:  TEMPERATURE PROBE INFORMATION
+;----------------------------------------------------------------------------
+; Syntax:
+;    TEMPERATURE_PROBE_39_1 DEFINE    <Tempature Probe String, Location
+;                                     and status, Maximum Value,
+;                                     Minimum Value, Resolution, Tolerance,
+;                                     Accuracy, Oem Defined, Nominal Value>
+;    * Present                    ->  0 = Type 39/27 does not have Temperature Probe
+;                                 ->  1 = Type 39/27 has Temperature Probe
+;
+; Followings are only valid when "Present = 1"
+;
+;    * Voltage Probe String       ->  Identifies the descriptive information
+;                                     about the probe or its location
+;                                     e.g."LM78A"
+;    * Location and Status        ->  Defines the probe's physical location
+;                                     and status of the tempature monitored by this
+;                                     tempature probe
+;    * Maximum Value              ->  The max. tempature readable by
+;                                     this probe in 1/10th degree C. 0x8000h -> Unknown
+;    * Mimimum Value              ->  The Min. tempature readable by
+;                                     this probe in 1/10th degree C. 0x8000h -> Unknown
+;    * Resoltion                  ->  The resolution for the probe's
+;                                     reading in 1/1000th degree C. 0x8000h->Unknown
+;    * Tolerance                  ->  The tolerance for reading from this
+;                                     probe, in +/- 1/10th degree C.0x8000h->Unknown
+;    * Accuracy                   ->  The accuracy for reading from this
+;                                     probe, in +/- 1/100th of a percent
+;                                     0x8000h->Unknown
+;    * OEM-Defined                ->  Contains OEM- or BIOS Vaendor specific information
+;    * Nominal Value              ->  The nominal value for the probe's
+;                                     reading in 1/10th degree C. 0x8000h -> Unknown
+; Note: Nominal Value field is valid only if structure length is more than 14h
+;----------------------------------------------------------------------------
+
+;!!PORT!!
+        TEMPERATURE_PROBE_39_1  DEFINE  <1,LM78A,6Ah,08000h,08000h,08000h,08000h,08000h,0,08000h>
+        TEMPERATURE_PROBE_39_2  DEFINE  <0,LM78B,6Ah,08000h,08000h,08000h,08000h,08000h,0,08000h>
+
+;----------------------------------------------------------------------------
+;       Type 39 - Associated Structure Type 29:  ELECTRICAL PROBE INFORMATION
+;----------------------------------------------------------------------------
+; Syntax :
+;    ELECTRICAL_PROBE_39_1 DEFINE   <Present, Electrical Probe String, Location and status, Maximum Value,
+;                                   Minimum Value, Resolution, Tolerance, Accuracy, Oem Defined, Nominal Value>
+;    * Present                  ->  0 = Type 39 does not have Current Probe
+;                               ->  1 = Type 39 has Current Probe
+;
+; Followings are only valid when "Present = 1"
+;
+;    * Electrical Probe String  ->  Identifies the descriptive information about the probe or its location.
+;                                   e.g."ABC"
+;    * Location and Status      ->  Defines the probe's physical location and status of the current
+;                                   monitored by this electrical probe
+;    * Maximum Value            ->  The max. current readable by this probe in milliamps. 0x8000h -> Unknown
+;    * Mimimum Value            ->  The Min. current readable by this probe in milliamps. 0x8000h -> Unknown
+;    * Resoltion                ->  The resolution for the probe's reading in thenths of a milliamps.
+;                                   0x8000h->Unknown
+;    * Tolerance                ->  The tolerance for reading from this probe, in +/- milliamps.
+;                                   0x8000h->Unknown
+;    * Accuracy                 ->  The accuracy for reading from this probe, in +/- 1/100th of a percent.
+;                                   0x8000h->Unknown
+;    * OEM-Defined              ->  Contains OEM- or BIOS Vaendor specific information
+;    * Nominal Value            ->  The nominal value for the probe's reading in milliamps.
+;                                   0x8000h -> Unknown
+;
+; Note: Nominal Value field is valid only if structure length is more than 14h
+;----------------------------------------------------------------------------
+
+;!!PORT!!
+        ELECTRICAL_PROBE_39_1       DEFINE  <1,ABC,6Ah,08000h,08000h,08000h,08000h,08000h,0,08000h>
+        ELECTRICAL_PROBE_39_2       DEFINE  <0,DEF,6Ah,08000h,08000h,08000h,08000h,08000h,0,08000h>
+
+;----------------------------------------------------------------------------
+;       Structure Type 40: Additional Information
+;----------------------------------------------------------------------------
+; Provides additional information for handling unspecified enumerated values
+; and interim field updates in another structure.
+;
+; Syntax:
+;  REF_TYPE_1                   Structure Type for which additional
+;                               information is provided
+;
+;  REF_TYPE_INSTANCE_1          Structure Type instance for which additional
+;                               information is provided
+;
+;  REF_OFFSET_1                 Offset of the field within the structure
+;                               referenced above for which additional
+;                               information is provided
+;
+;  USE_STRING_1                 0 = String is not used, 1 = String is used
+;
+;  STRING_1                     When USE_STRING_1 = 1, specify string to be
+;                               associated with the field referenced above
+;
+;  VALUE_1                      Enumerated value or updated field content
+;
+;----------------------------------------------------------------------------
+;!!PORT!!
+
+        REF_TYPE_1                  = 10
+        REF_TYPE_INSTANCE_1         = 1
+        REF_OFFSET_1                = 1
+        USE_STRING_1                = 1
+        STRING_1                    DEFINE <To Be Filled By O.E.M. 1>
+        VALUE_1                     = 0
+
+        REF_TYPE_2                  = 1
+        REF_TYPE_INSTANCE_2         = 1
+        REF_OFFSET_2                = 15
+        USE_STRING_2                = 0
+        STRING_2                    DEFINE <To Be Filled By O.E.M. 2>
+        VALUE_2                     = 30
+
+        REF_TYPE_3                  = 7
+        REF_TYPE_INSTANCE_3         = 2
+        REF_OFFSET_3                = 1
+        USE_STRING_3                = 1
+        STRING_3                    DEFINE <To Be Filled By O.E.M. 3>
+        VALUE_3                     = 0
+
+        REF_TYPE_4                  = 1
+        REF_TYPE_INSTANCE_4         = 1
+        REF_OFFSET_4                = 1
+        USE_STRING_4                = 1
+        STRING_4                    DEFINE <To Be Filled By O.E.M.>
+        VALUE_4                     = 0
+
+;----------------------------------------------------------------------------
+;       Structure Type 41: Onboard Devices Extended Information
+;----------------------------------------------------------------------------
+; Defines the attributes of devices that are onboard (soldered onto) a system
+; element, usually the baseboard. In general, an entry in this table implies
+; that the BIOS has some level of control over the enabling of the associated
+; device for use by the system.
+;
+; NOTE: This structure replaces Onboard Device Information (Type 10) starting
+;       with versiob 2.6 of the SMBIOS specification. Both Type 10 and 41 can
+;       be implemented to allow existing SMBIOS browsers to properly display
+;       the system's onboard devices information.
+;
+; Syntax:
+;  ONBOARD_DEVICE_EXT_1   DEFINE <Enabled or Disabled, Onboard Device Type, Descrition String>
+;  * Onboard device status   ->  Describes the status(enabled/disabled) of on board device
+;  * On board device Type    ->  Video, Audio, SCSI etc...
+;                                For more detail search for On-board device
+;                                Type equates in structure Type 10, refer SMB.EQU
+;  * Device Type Instance    ->  A unique value (within a given onboard device type) used
+;                                to indicate the order the device is designated by the system.
+;                                e.g. A system with two identical Ethernet NICs may designate
+;                                one NIC (with higher Bus/Device/Function=15/0/0) as the first
+;                                onboard NIC (instance 1) and the other NIC (with lower
+;                                Bus/Device/Function=3/0/0) as the second onboard NIC (instance 2)
+;  * Description String      ->  Describes the on board device.
+;                                e.g."Video", "Audio" etc..
+;
+;  SEGGRP_BUS_DEVFN_EXT_1 DEFINE <Segment Group Number, Bus Number, Device Function Number>
+;  * Segment Group Number    ->  Segment Group Number defined in the PCI Firmware Spec.
+;  * Bus Number              ->  Bus Number
+;  * Device Function Number  ->  Device / Function Number
+;
+;----------------------------------------------------------------------------
+;!!PORT!!
+    ONBOARD_DEVICE_EXT_1    DEFINE  <ENABLED, OBD_VIDEO, 1, Onboard IGD>
+    SEGGRP_BUS_DEVFN_EXT_1  DEFINE  <0, 0, 10h>
+
+    ONBOARD_DEVICE_EXT_2    DEFINE  <ENABLED, OBD_ETHERNET, 1, Onboard LAN>
+    SEGGRP_BUS_DEVFN_EXT_2  DEFINE  <0, 0, 0C8h>
+
+    ONBOARD_DEVICE_EXT_3    DEFINE  <ENABLED, OBD_OTHER, 1, Onboard 1394>
+    SEGGRP_BUS_DEVFN_EXT_3  DEFINE  <0, 3, 0E2h>
+
+    ONBOARD_DEVICE_EXT_4    DEFINE  <ENABLED, OBD_SAS, 1, Onboard SAS>
+    SEGGRP_BUS_DEVFN_EXT_4  DEFINE  <0, 3, 0E2h>
+
+    ONBOARD_DEVICE_EXT_5    DEFINE  <ENABLED, OBD_SAS, 1, Onboard SAS>
+    SEGGRP_BUS_DEVFN_EXT_5  DEFINE  <0, 3, 0E2h>
+
+    ONBOARD_DEVICE_EXT_6    DEFINE  <ENABLED, OBD_SATA, 1, Onboard SATA>
+    SEGGRP_BUS_DEVFN_EXT_6  DEFINE  <0, 3, 0E2h>
+
+    ONBOARD_DEVICE_EXT_7    DEFINE  <ENABLED, OBD_SATA, 1, Onboard SATA>
+    SEGGRP_BUS_DEVFN_EXT_7  DEFINE  <0, 3, 0E2h>
+
+    ONBOARD_DEVICE_EXT_8    DEFINE  <ENABLED, OBD_SATA, 1, Onboard SATA>
+    SEGGRP_BUS_DEVFN_EXT_8  DEFINE  <0, 3, 0E2h>
+
+    ONBOARD_DEVICE_EXT_9    DEFINE  <ENABLED, OBD_VIDEO, 1, Onboard IGD>
+    SEGGRP_BUS_DEVFN_EXT_9  DEFINE  <0, 0, 10h>
+
+    ONBOARD_DEVICE_EXT_10   DEFINE  <ENABLED, OBD_ETHERNET, 1, Onboard LAN>
+    SEGGRP_BUS_DEVFN_EXT_10 DEFINE  <0, 0, 0C8h>
+
+    ONBOARD_DEVICE_EXT_11   DEFINE  <ENABLED, OBD_OTHER, 1, Onboard 1394>
+    SEGGRP_BUS_DEVFN_EXT_11 DEFINE  <0, 3, 0E2h>
+
+    ONBOARD_DEVICE_EXT_12   DEFINE  <ENABLED, OBD_SATA, 1, Onboard SATA>
+    SEGGRP_BUS_DEVFN_EXT_12 DEFINE  <0, 3, 0E2h>
+
+    ONBOARD_DEVICE_EXT_13   DEFINE  <ENABLED, OBD_SAS, 1, Onboard SAS>
+    SEGGRP_BUS_DEVFN_EXT_13 DEFINE  <0, 3, 0E2h>
+
+    ONBOARD_DEVICE_EXT_14   DEFINE  <ENABLED, OBD_SAS, 1, Onboard SAS>
+    SEGGRP_BUS_DEVFN_EXT_14 DEFINE  <0, 3, 0E2h>
+
+    ONBOARD_DEVICE_EXT_15   DEFINE  <ENABLED, OBD_SATA, 1, Onboard SATA>
+    SEGGRP_BUS_DEVFN_EXT_15 DEFINE  <0, 3, 0E2h>
+
+    ONBOARD_DEVICE_EXT_16   DEFINE  <ENABLED, OBD_SATA, 1, Onboard SATA>
+    SEGGRP_BUS_DEVFN_EXT_16 DEFINE  <0, 3, 0E2h>
+
+;----------------------------------------------------------------------------
+;       Structure Type 5 : MEMORY CONTROLLER INFORMATION
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;    Structure Type 6 : MEMORY MODULE INFORMATION
+;----------------------------------------------------------------------------
+; The following information is needed only if MEM_MODULE_INFO = Present
+; This structure (TYPE 6) is associated with MEMORY CONTROLLER Structure(TYPE 5)
+; Handle information of Type 6 is defined in TYPE 5 structure.
+; Syntax:
+;    MEMORY_TYPE_1            DEFINE  <Memory Type, Memory Type,...>
+;    * Memory Module Type ->  DIMM, SIMM, SDRAM etc...
+;                             Following describes Memory Module Type
+;                             supported. At any given time more than
+;                             one value can be selected. Select the
+;                             memory type list from the following
+;                             MM_TYPE_OTHER, MM_TYPE_UNKNOWN, MM_TYPE_STANDARD,
+;                             MM_TYPE_FAST_PAGE_MODE, MM_TYPE_EDO, MM_TYPE_PARITY, MM_TYPE_ECC,
+;                             MM_TYPE_SIMM, MM_TYPE_DIMM, MM_TYPE_BURST_EDO, MM_TYPE_SDRAM
+;                             for more detail search for Memory Module
+;                             Type equates in structure Type 6, refer SMB.EQU
+;                             This field is used in Memory Controller Structure
+;                             also. While porting, define the proper bit
+;                             field according to type of memory suppoted
+;                             on platform. This Bit-field is defined
+;                             above in TYPE 5 structure
+;
+;    MEMORY_INFO_1    DEFINE  <String, Bank Connection, Supported Speed,
+;                             Installed size, Enabled size, Bank connection>
+;    * String             ->  Memory Module designator string e.g. "DIMM1"
+;    * Bank connection    ->  RAS line information
+;                             for more detail refer search for Memory Module
+;                             Bank connection equate in SMB.EQU
+;    * Supported Speed    ->  The speed of the memory module is defined
+;                             in unit of ns(nano second). If this field is
+;                             unknown, the field is set to 0
+;    * Installed Size     ->  The installed size field identify the size
+;                             of memory module which is installed in the
+;                             socket. It is determined as under.
+;                             Bit0-6 : size(n) where 2**n is the size in MB.
+;                             7Dh-> Not determinable(installed size only)
+;                             7Eh-> Module is installed but not enabled
+;                             7Fh-> Not installed
+;                             Bit 7-> defines the single bank or double bank connection
+;    * Enabled Size       ->  Follow the same as installed size
+;    MEMORY_ERR_1     DEFINE  <0>
+;    * Error Status       ->  Currently always define 0
+;----------------------------------------------------------------------------
+
+;!!NOTE!!
+; PORT NBSMBIOS.ASM for all the memory related structures.
+; Also note that type 5, 6 and Type 16, 17, 18, 19 and 20 are related
+; even though type 5, 6 are not required by the 2.3.1 spec.
+; Make sure that the number of Memory Modules defined below are equal to
+; NUMBER_OF_MEM_MODULE in SMBIOS.SDL
+
+;!!PORT!!
+    MEMORY_TYPE_1   DEFINE  <MM_TYPE_SDRAM, MM_TYPE_DIMM>
+    MEMORY_INFO_1   DEFINE  <DIMM0, RAS_1, RAS_2, 60, 512*1024*1024, 512*1024*1024, MM_SINGLE_BANK>
+    MEMORY_ERR_1    DEFINE  <0>
+
+    MEMORY_TYPE_2   DEFINE  <MM_TYPE_SDRAM, MM_TYPE_DIMM>
+    MEMORY_INFO_2   DEFINE  <DIMM1, RAS_3, RAS_4, 60, 512*1024*1024, 512*1024*1024, MM_SINGLE_BANK>
+    MEMORY_ERR_2    DEFINE  <0>
+
+    MEMORY_TYPE_3   DEFINE  <MM_TYPE_SDRAM, MM_TYPE_DIMM>
+    MEMORY_INFO_3   DEFINE  <DIMM2, RAS_5, RAS_6, 60, 512*1024*1024, 512*1024*1024, MM_SINGLE_BANK>
+    MEMORY_ERR_3    DEFINE  <0>
+
+    MEMORY_TYPE_4   DEFINE  <MM_TYPE_SDRAM, MM_TYPE_DIMM>
+    MEMORY_INFO_4   DEFINE  <DIMM3, RAS_7, RAS_8, 60, 512*1024*1024, 512*1024*1024, MM_SINGLE_BANK>
+    MEMORY_ERR_4    DEFINE  <0>
+
+    MEMORY_TYPE_5   DEFINE  <MM_TYPE_SDRAM, MM_TYPE_DIMM>
+    MEMORY_INFO_5   DEFINE  <DIMM4, RAS_9, RAS_10, 60, 512*1024*1024, 512*1024*1024, MM_SINGLE_BANK>
+    MEMORY_ERR_5    DEFINE  <0>
+
+    MEMORY_TYPE_6   DEFINE  <MM_TYPE_SDRAM, MM_TYPE_DIMM>
+    MEMORY_INFO_6   DEFINE  <DIMM5, RAS_11, RAS_12, 60, 512*1024*1024, 512*1024*1024, MM_SINGLE_BANK>
+    MEMORY_ERR_6    DEFINE  <0>
+
+;----------------------------------------------------------------------------
+;****************************************************************************
+;****************************************************************************
+;**                                                                        **
+;**           (C)Copyright 1985-2013, American Megatrends, Inc.            **
+;**                                                                        **
+;**                          All Rights Reserved.                          **
+;**                                                                        **
+;**           5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093            **
+;**                                                                        **
+;**                          Phone: (770)-246-8600                         **
+;**                                                                        **
+;****************************************************************************
+;****************************************************************************

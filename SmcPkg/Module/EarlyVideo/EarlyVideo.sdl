@@ -1,0 +1,461 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.10
+#       Bug Fix: Fix EarlyGraphic malfunction when modify MMCFG Base sometimes.
+#       Reason : 
+#       Auditor: Isaac Hsu
+#       Date   : May/19/2017
+#
+#  Rev. 1.09
+#       Bug Fix: Fix POST hang up when set MMCFG Base to 3G.
+#       Reason : 
+#       Auditor: Isaac Hsu
+#       Date   : May/17/2017
+#
+#  Rev. 1.08
+#       Bug Fix: For EarlyGraphic, Change Font Style from 8x16 to 8x19.
+#       Reason : 
+#       Auditor: Isaac Hsu
+#       Date   : Apr/07/2017
+#
+#  Rev. 1.07
+#       Bug Fix: Add a token EarlyVideoBootGuard_Support to support BootGuard
+#                with EarlyVideo_Mode enabled.
+#       Reason : 
+#       Auditor: Isaac Hsu
+#       Date   : Mar/28/2017
+#
+#  Rev. 1.06
+#       Bug Fix: Fix POST shutdown due to BootGuard verified failure.
+#       Reason : 
+#       Auditor: Isaac Hsu
+#       Date   : Mar/27/2017
+#
+#  Rev. 1.05
+#       Bug Fix: Fix System always run recovery path when
+#                FfsIntegrityCheck_SUPPORT enabled.
+#       Reason : 
+#       Auditor: Isaac Hsu
+#       Date   : Mar/22/2017
+#
+#  Rev. 1.04
+#       Bug Fix: Fix Early Graphic Logo malfunction for DP platform.
+#       Reason : 
+#       Auditor: Isaac Hsu
+#       Date   : Mar/15/2017
+#
+#  Rev. 1.03
+#       Bug Fix: Early Graphic Logo Support.
+#       Reason : 
+#       Auditor: Isaac Hsu
+#       Date   : Mar/14/2017
+#
+#  Rev. 1.02
+#       Bug Fix: Change Root_Port_DID for QS PCH.
+#       Reason : 
+#       Auditor: Kasber Chen
+#       Date   : Dec/16/2016
+#
+#  Rev. 1.01
+#       Bug Fix: Turn on Early-Video in earlier PEI.
+#       Reason : To sync with Grantley
+#       Auditor: Yenhsin Cho
+#       Date   : May/27/2016
+#
+#  Rev. 1.00
+#       Bug fixed:   Initialize revision
+#       Reason:      Get base code from Grantley
+#       Auditor:     Salmon Chen
+#       Date:        Dec/03/2014
+#****************************************************************************
+#***************************************************************************
+
+TOKEN
+	Name  = "EarlyVideo_SUPPORT"
+	Value  = "1"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+	Help  = "Main switch to enable EarlyVideo support in Project"
+End
+
+TOKEN
+	Name  = "EarlyVideo_Mode"
+	Value  = "1"
+	TokenType = Boolean
+	TargetH = Yes
+	TargetMAK = Yes
+	Help  = "0: Text Mode;1: Graphic Mode"
+End
+
+TOKEN
+	Name  = "EarlyVideo_Mode"
+	Value  = "0"
+	TokenType = Boolean
+	TargetH = Yes
+	TargetMAK = Yes
+	Help  = "0: Text Mode;1: Graphic Mode"
+	Token = "BIOS_SIZE" "=" "0x1000000"
+	Token = "DEBUG_MODE" "=" "1"
+End
+
+TOKEN
+	Name  = "Skip_Integrity_Check_From_Lid"
+	Value  = "0"
+	TokenType = Boolean
+	TargetH = Yes
+	TargetMAK = Yes
+	Help  = "Enable it if you want skip integrity_Check_From_Lid procedure for some condition"
+	Token = "EarlyVideo_Mode" "=" "1"
+End
+
+
+TOKEN
+	Name  = "LOGO_Data_FV_Support"
+	Value  = "0"
+	TokenType = Boolean
+	TargetH = Yes
+	TargetMAK = Yes
+	Help  = "Enable it to save early graphic Logo data in additional FV fore some condition"
+	Token = "EarlyVideo_Mode" "=" "1"
+End
+
+MODULE
+    File  = "EarlyVideo.mak"
+    Token = "EarlyVideo_Mode" "=" "1"
+End
+
+TOKEN
+	Name  = "Root_Port_Dev"
+	Value  = "0x1C"
+	Help  = "Aspeed chip root port device of ICH/PCH"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0 - 31"
+End
+
+TOKEN
+	Name  = "Root_Port_Fun"
+	Value  = "5"
+	Help  = "Aspeed chip root port function of ICH/PCH"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0 - 7"
+End
+
+TOKEN
+	Name  = "Root_Port_DID"
+	Value  = "0xA195"
+	Help  = "Aspeed chip root port function of ICH/PCH"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0 - 0xFFFF"
+End
+
+TOKEN
+	Name  = "Aspeed_P2P_BUS"
+	Value  = "0x0f"
+	Help  = "Aspeed P2P bus number"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0 - 0xFF"
+End
+
+TOKEN
+	Name  = "Aspeed_VGA_BUS"
+	Value  = "0x10"
+	Help  = "Aspeed VGA bus number"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0 - 0xFF"
+End
+
+TOKEN
+	Name  = "MaxDeepPciBusNumber"
+	Value  = "0x10"
+	Help  = "Max Deep Pci Bus Number"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0 - 0xFF"
+End
+
+TOKEN
+	Name  = "MRC_SC_TYPE"
+	Value  = "0xFE"
+	Help  = "MRC Status Code Type"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0x 10 - FF"
+End
+
+TOKEN
+	Name  = "EarlyVideoLogo"
+	Value  = "1"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+PATH
+	Name  = "EarlyVideo_Logo_DIR"
+End
+
+TOKEN
+	Name  = "EarlyVideo_Logo_Mode"
+	Value  = "1"
+	Help  = "Default value for Early Video mode."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0 - Only information, 1 - Show SMC logo"
+End
+
+ELINK
+  Name        = "$(EarlyVideo_Logo_DIR)\EarlyVideo.sd"
+  Parent      = "SETUP_DEFINITIONS"
+  InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(EarlyVideo_Logo_DIR)\EarlyVideo.uni"
+    Parent  = "SetupStringFiles"
+    InvokeOrder = AfterParent
+End
+
+INFComponent
+        Name  = "EarlyVideoPei"
+        File  = "EarlyVideoPei.inf"
+        Package  = "SmcPkg"
+        ModuleTypes = "PEIM"
+End
+
+FFS_FILE
+	Name  = "EarlyVideoPei"
+	FD_AREA  = "FV_BB"
+	INFComponent  = "SmcPkg.EarlyVideoPei"
+	Apriori_Index  = "2"
+End
+
+INFComponent
+        Name  = "EarlyVideoDxe"
+        File  = "EarlyVideoDxe.inf"
+        Package  = "SmcPkg"
+        ModuleTypes = "DXE_RUNTIME_DRIVER"
+End
+
+FFS_FILE
+	Name  = "EarlyVideoDxe"
+	FD_AREA  = "FV_MAIN"
+	INFComponent  = "SmcPkg.EarlyVideoDxe"
+	Apriori_Index  = "2"
+End
+
+TOKEN
+	Name  = "VgaMmio"
+	Value  = "$(VgaMmio_2G)"
+	TokenType = Integer
+	TargetH = Yes
+	Token = "EarlyVideo_Mode" "=" "1"
+End
+
+TOKEN
+	Name  = "VgaMmio_1G"
+	Value  = "0x64000000"
+	TokenType = Integer
+	TargetH = Yes
+	Token = "EarlyVideo_Mode" "=" "1"
+End
+
+TOKEN
+	Name  = "VgaMmio_15G"
+	Value  = "0x80000000"
+	TokenType = Integer
+	TargetH = Yes
+	Token = "EarlyVideo_Mode" "=" "1"
+End
+
+TOKEN
+	Name  = "VgaMmio_175G"
+	Value  = "0x8E000000"
+	TokenType = Integer
+	TargetH = Yes
+	Token = "EarlyVideo_Mode" "=" "1"
+End
+
+TOKEN
+	Name  = "VgaMmio_2G"
+	Value  = "0x9C000000"
+	TokenType = Integer
+	TargetH = Yes
+	Token = "EarlyVideo_Mode" "=" "1"
+End
+
+TOKEN
+	Name  = "VgaMmio_225G"
+	Value  = "0xAA000000"
+	TokenType = Integer
+	TargetH = Yes
+	Token = "EarlyVideo_Mode" "=" "1"
+End
+
+TOKEN
+	Name  = "VgaMmio_3G"
+	Value  = "0xD4000000"
+	TokenType = Integer
+	TargetH = Yes
+	Token = "EarlyVideo_Mode" "=" "1"
+End
+
+TOKEN
+	Name  = "SMC_MAX_ROW"
+	Value  = "25"
+	Help  = "MAX ROW"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0 - 0xFF"
+	Token = "EarlyVideo_Mode" "=" "0"
+End
+
+TOKEN
+	Name  = "SMC_MAX_COL"
+	Value  = "80"
+	Help  = "MAX COL"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0 - 0xFF"
+	Token = "EarlyVideo_Mode" "=" "0"
+End
+
+TOKEN
+	Name  = "SMC_MAX_ROW"
+	Value  = "40"
+	Help  = "MAX ROW, 768/19 = 40"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0 - 0xFF"
+	Token = "EarlyVideo_Mode" "=" "1"
+End
+
+TOKEN
+	Name  = "SMC_MAX_COL"
+	Value  = "128"
+	Help  = "MAX COL, 1024/8 = 128"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0 - 0xFF"
+	Token = "EarlyVideo_Mode" "=" "1"
+End
+
+TOKEN
+	Name  = "FV_LOGO_SIZE"
+	Value  = "0x20000"
+	Help  = "Size of EarlyLogo area"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Range  = "From: 1 To: FLASH_SIZE - FV_MAIN_BLOCKS*FLASH_BLOCK_SIZE"
+	Token = "EarlyVideo_Mode" "=" "1"
+	Token = "LOGO_Data_FV_Support" "=" "1"
+End
+
+TOKEN
+	Name  = "FV_LOGO_BASE"
+	Value  = "$(FLASH_BASE) + $(FV_MAIN_OFFSET) + $(FV_MAIN_SIZE)"
+	Help  = "Base Address of the FV_LOGO"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Range  = "From: 4G - FLASH_SIZE To: 4G"
+	Token = "EarlyVideo_Mode" "=" "1"
+	Token = "LOGO_Data_FV_Support" "=" "1"
+End
+
+TOKEN
+	Name  = "SMC_xres"
+	Value  = "1024"
+	Help  = "xres"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0 - 0xFF"
+	Token = "EarlyVideo_Mode" "=" "1"
+End
+
+TOKEN
+	Name  = "SMC_yres"
+	Value  = "768"
+	Help  = "yres"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0 - 0xFF"
+	Token = "EarlyVideo_Mode" "=" "1"
+End
+
+TOKEN
+	Name  = "SMC_bpp"
+	Value  = "32"
+	Help  = "bpp"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0 - 0xFF"
+	Token = "EarlyVideo_Mode" "=" "1"
+End
+
+FFS_FILE
+	Name  = "FvBbSmcEarlyVideoLogoFdfFileStatement"
+	FD_AREA  = "FV_MAIN"
+	FILE_Stmt  = "SmcPkg/Module/EarlyVideo/Earlylogoffs.txt"
+	Token = "EarlyVideo_Mode" "=" "1"
+	Token = "LOGO_Data_FV_Support" "=" "0"
+End
+
+FFS_FILE
+	Name  = "FvBbSmcEarlyVideoLogoFdfFileStatement"
+	FD_AREA  = "FV_LOGO"
+	FILE_Stmt  = "SmcPkg/Module/EarlyVideo/Earlylogoffs.txt"
+	Token = "EarlyVideo_Mode" "=" "1"
+	Token = "LOGO_Data_FV_Support" "=" "1"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "MdeModulePkg.LzmaCustomDecompressLib"
+	Override  = "SmcPkg.EarlyVideoPei"
+	Token = "LZMA_SUPPORT" "=" "1"
+	Token = "EarlyVideo_Mode" "=" "1"
+End
+
+INFComponent
+	Name  = "Logoid"
+	File  = "LogoId\Logoid.inf"
+	Package  = "SmcPkg"
+	ModuleTypes  = "USER_DEFINED"
+	Token = "EarlyVideo_Mode" "=" "1"
+End
+
+FFS_FILE
+	Name  = "Logoid"
+	FD_AREA  = "FV_BB"
+	INFComponent  = "SmcPkg.Logoid"
+	Rule_Override  = "SubtypeGuidUncompressedNoChecksum"
+	Token = "EarlyVideo_Mode" "=" "1"
+	Token = "LOGO_Data_FV_Support" "=" "0"
+End
+
+FFS_FILE
+	Name  = "Logoid"
+	FD_AREA  = "FV_LOGO"
+	INFComponent  = "SmcPkg.Logoid"
+	Rule_Override  = "SubtypeGuidUncompressedNoChecksum"
+	Token = "EarlyVideo_Mode" "=" "1"
+	Token = "LOGO_Data_FV_Support" "=" "1"
+End
+
+

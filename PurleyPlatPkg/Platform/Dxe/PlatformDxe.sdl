@@ -1,0 +1,105 @@
+TOKEN
+	Name  = "PlatformDxe_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling Dxe support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "PlatformEarlyDxe_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable PlatformEarlyDxe support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "PlatformType_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable PlatformType support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "S3NvramSave_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable S3NvramSave support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "UuidDxe_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable UuidDxe support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "PlatformPowerButton_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable PlatformPowerButton support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "OpaPlatCfg_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable OpaPlatCfg support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "PlatformEarlyDxe"
+	File  = "PlatformEarlyDxe/PlatformEarlyDxe.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "PlatformEarlyDxe_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "PlatformType"
+	File  = "PlatformType/PlatformType.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "PlatformType_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "S3NvramSave"
+	File  = "S3NvramSave/S3NvramSave.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "S3NvramSave_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "UuidDxe"
+	File  = "UuidDxe/UuidDxe.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "UuidDxe_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "PlatformPowerButton"
+	File  = "PlatformPowerButton/PlatformPowerButton.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "PlatformPowerButton_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "OpaPlatCfg"
+	File  = "OpaPlatCfg/OpaPlatCfg.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "OpaPlatCfg_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "CompressDxeLib"
+	Instance  = "CpPlatPkg.CompressDxeLib"
+	Override  = "PurleyPlatPkg.S3NvramSave"
+	Token = "S3NvramSave_SUPPORT" "=" "1"
+End
+

@@ -1,0 +1,396 @@
+TOKEN
+	Name  = "USBSRC"
+	Value  = "1"
+	Help  = "Main switch to enable AMI USB source files."
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "USB_DEV_KBD"
+	Value  = "1"
+	Help  = "Enable/disable support for USB keyboards"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "USB_DEV_MOUSE"
+	Value  = "1"
+	Help  = "Enable/disable support for USB mice.\Note: This switch is not valid if USB_DEV_KBD is Off."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "USB_DEV_HUB"
+	Value  = "1"
+	Help  = "Enable/disable support for USB hubs"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "USB_DEV_MASS"
+	Value  = "1"
+	Help  = "Enable/disable support for USB storage devices"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "USB_DEV_POINT"
+	Value  = "1"
+	Help  = "Enable/disable support for USB point device"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "MEM_PAGE_COUNT"
+	Value  = "8"
+	Help  = "Number of memory pages"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "USB_SEND_COMMAND_TO_KBC"
+	Value  = "0x60"
+	Help  = "Some keyboard controllers will lock if send command (60h) is used. \Change this value to either 0D1h (for SiS based keyboard controllers) \or 0D4h depending on your need."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "USB_MOUSE_UPDATE_EBDA_DATA"
+	Value  = "1"
+	Help  = "Enables the direct update of EBDA from USB mouse driver. \Note that enabling this flag may cause a failure of those DOS mouse drivers that trap INT74 and do not use EBDA."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "EHCI_64BIT_DATA_STRUCTURE"
+	Value  = "1"
+	Help  = "Enables/Disables EHCI 64bit data structures. \Consult the chipset documents before enabling or disabling this value."
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "EHCI_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "EHCI_ASYNC_BELL_SUPPORT"
+	Value  = "0"
+	Help  = "Enables the EHCI interrupt on Asynchornous Advance feature.\For certain EHCI controllers this option has to be enabled."
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "EHCI_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "USB_DEV_HID_COUNT"
+	Value  = "15"
+	Help  = "Specifies the max number of USB HID devices (keyboard/mouse/pointer) present in the system."
+	TokenType = Integer
+	TargetH = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "USB_DEV_HUB_COUNT"
+	Value  = "12"
+	Help  = "Specifies the max number of USB HUB devices present in the system. \Note: the number of the hubs in the chain (connected one after another) can not exceed 5 according to USB specification."
+	TokenType = Integer
+	TargetH = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "USB_DEV_MASS_COUNT"
+	Value  = "6"
+	Help  = "Specify the maximum number of USB mass devices present in the system. \Currently the max value is 16."
+	TokenType = Integer
+	TargetH = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "USB_DEV_CCID"
+	Value  = "0"
+	Help  = "Enable/disable support for USB CCID devices"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "USB_DEV_CCID_COUNT"
+	Value  = "6"
+	Help  = "Specifies the max number of USB CCID devices present in the system."
+	TokenType = Integer
+	TargetH = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "USE_T0_T1_PROTOCOL"
+	Value  = "1"
+	Help  = "0 for T0 and 1 for T1. Used to select T0/T1 when CCID can support both T0 and T1"
+	TokenType = Integer
+	TargetH = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "CCID_USE_INTERRUPT_INSERTION_REMOVAL"
+	Value  = "1"
+	Help  = "0: Disable, 1 : Enable. Some SMARTD Card readers don't generate interrupt when card is insert/removed even though they declare it supported."
+	TokenType = Integer
+	TargetH = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "USB_DEV_UNSUPPORTED"
+	Value  = "16"
+	Help  = "Specify the maximum number of USB devices that may be connected and not supported by this driver. A placeholder will be created for these devices so that they can be started by other device drivers."
+	TokenType = Integer
+	TargetH = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "USB_START_UNIT_BEFORE_MSD_ENUMERATION"
+	Value  = "0"
+	Help  = "Enables/disables execution of START_STOP_UNIT command before accessing the mass storage device."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "USB_DEBUG_MESSAGES"
+	Value  = "0"
+	Help  = "A switch to enable debug messages of Usb module over debug Port.\0 - Disabled.\1 - Enabled without following DebugPrintErrorLevel.\2 - Enabled with following DebugPrintErrorLevel."
+	TokenType = Integer
+	TargetH = Yes
+	Token = "DEBUG_CODE" "=" "1"
+End
+
+TOKEN
+	Name  = "TopDebugLevel"
+	Value  = "3"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "BottomDebugLevel"
+	Value  = "3"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "USB_SWSMI"
+	Value  = "0x31"
+	Help  = "Data to be written to SW SMI port to invoke USB SW SMI handler."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "USB_BEEP_ENABLE"
+	Value  = "1"
+	Help  = "Enables/disables sounds on USB devices connection or removal."
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "BEEP_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "USB_MASS_EMULATION_NATIVE"
+	Value  = "1"
+	Help  = "Changes the policy of 'Auto' option of USB Mass storage devices emulation.\0 - 'Auto' makes an attempt to emulate a device with valid partition as floppy.\1- 'Auto' emulates devices depending on the media format: devices with valid partition table will be hard disks, otherwise floppies. Optical drives or drives without media will be emulated according to the type of device."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "USB_MASS_EMULATION_FOR_NO_MEDIA"
+	Value  = "1"
+	Help  = "Determine the USB mass storage device emulation type without media.\0 - 'Auto' makes an attempt to emulate a device without media as floppy.\1 - 'Auto' makes an attempt to emulate a device without media as hard disk.\Optical drives and floppies without media will be emulated according to the type of device."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "USB_MASS_EMULATION_BY_SIZE"
+	Value  = "0"
+	Help  = "Determine the USB mass storage device emulation type by size only."
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "USB_MASS_EMULATION_NATIVE" "=" "0"
+End
+
+TOKEN
+	Name  = "MAX_SIZE_FOR_USB_FLOPPY_EMULATION"
+	Value  = "530"
+	Help  = "If the device size is less than it assume FDD or else assume the emulation as HDD.\This token is valid when set USB_MASS_EMULATION_SIZE to On or set USB_MASS_EMULATION_NATIVE to Off.\The unit is MB."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "REMOVE_USB_STORAGE_FROM_BBS_IF_NO_MEDIA"
+	Value  = "0"
+	Help  = "This token control whether USB storage devices report to BBS depend on media present or not."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "REMOVE_CHECK_FOR_USB_FLOPPY_DRIVE"
+	Value  = "0"
+	Help  = "This token control whether USB FLOPPY drives report to BBS depend on media present or not."
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "REMOVE_USB_STORAGE_FROM_BBS_IF_NO_MEDIA" "!=" "0"
+End
+
+TOKEN
+	Name  = "HIGHSPEED_MAX_BULK_DATA_SIZE"
+	Value  = "0x4000"
+	Help  = "Maximum amount of data per EHCI BulkTransfer.\Note: If additional space is needed in USB data segment, the value can be changed to 0x200 without significant decrease in mass storage data transfer performance."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FULLSPEED_MAX_BULK_DATA_SIZE_PER_FRAME"
+	Value  = "896"
+	Help  = "Maximum amount of bulk data transferred by OHCI/UHCI controller within one millisecond frame.\Note: full speed device limit is ~1kB/ms; there should be a window left for processing the TD. The optimal size for 64 Bytes endpoint is 896 Bytes (14 transfers per millisecond). This value can not be less than MaxPkt size of Bulk endpoint (typically 64 Bytes)."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "64-960"
+End
+
+TOKEN
+	Name  = "EXTRA_CHECK_DEVICE_READY"
+	Value  = "0"
+	Help  = "This token controls the execution of the fix for EIP#15037. The USBMassCheckDeviceReady call in Mass Storage read/write functions is controlled by this token."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "USB_HID_KEYREPEAT_USE_SETIDLE"
+	Value  = "0"
+	Help  = "0-Use periodic SMI for key repeat 1-Use Set Idle command to implement Key Repeat action."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "USB_EFIMS_DIRECT_ACCESS"
+	Value  = "0"
+	Help  = "Setting this flag changes the behavior of EFI mouse driver: instead of using periodic TD for polling mouse data, EFI_SIMPLE_POINTER_PROTOCOL.GetState will execute IN transaction on a mouse device.\Note: this flag does not affect legacy mouse support, it only affects mouse operation under EFI."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "BOOT_PROTOCOL_SUPPORT"
+	Value  = "0"
+	Help  = "Use boot protocol.If enable,it will not get report protocol"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "CLEAR_USB_KB_BUFFER_AT_READYTOBOOT"
+	Value  = "0"
+	Help  = "ON   -> USB KB Buffer will be cleared at ReadyToBoot.\OFF  -> USB KB Buffer will not be cleared at ReadyToBoot."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SKIP_CARD_READER_CONNECT_BEEP_IF_NO_MEDIA"
+	Value  = "0"
+	Help  = "Disables sounds on USB card reader connection if no media present."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PCH_EHCI_OWNERSHIP_CHANGE_MECHANISM"
+	Value  = "0"
+	Help  = "EHCI ownership change mechanism for Intel PCH."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "LEGACY_USB_DISABLE_FOR_USB_MASS"
+	Value  = "0"
+	Help  = "When legacy usb support disable.\If this token set  'OFF'.\Usb mass can work under uefi application.\\"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "XHCI_COMPLIANCE_MODE_WORKAROUND"
+	Value  = "1"
+	Help  = "For some misbehaving USB 3.0 devices, we add the workaround that check the port link before reset the host controller, then a hot port reset is issued for that port while the link is in the compliance mode."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SHOW_SKIP_PORT_INFORMATION"
+	Value  = "0"
+	Help  = "Token DEBUG_CODE and USB_DEBUG_MESSAGES need open.\Serach tag SHOW_SKIP_PORT_INFORMATION."
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "DEBUG_CODE" "=" "1"
+	Token = "USB_DEBUG_MESSAGES" "!=" "0"
+End
+
+TOKEN
+	Name  = "EFI_USB_HC_INTERRUPT_OUT_SUPPORT"
+	Value  = "1"
+	Help  = "This token control whether support EFI_USB2_HC_PROTOCOL.SyncInterruptTransfer() on OUT endpoints.\According to the UEFI spec 2.3.1, EFI_INVALID_PARAMETER is returned if Data transfer direction indicated by EndPointAddress is other than EfiUsbDataIn, so SyncInterruptTransfe of the SCT are failed if we enable this token.\1127 USB Errata - unnecessary restriction on UEFI interrupt transfer types in UEFI spec 2.4B."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "USB_ACPI_ENABLE_WORKAROUND"
+	Value  = "1"
+	Help  = "The workaround for non XHCI/EHCI aware OSes, BIOS will stop XHCI/EHCI controller at ACPI enable call."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "AmiChipsetPkg_SUPPORT" "=" "1"
+	Token = "USB_RUNTIME_DRIVER_IN_SMM" "!=" "0"
+End
+
+TOKEN
+	Name  = "USB_IAD_PROTOCOL_SUPPORT"
+	Value  = "0"
+	Help  = "Interface Association Descriptor protocol installation."
+	TokenType = Boolean
+	TargetH = Yes
+	TargetMAK = Yes 
+End
+
+TOKEN
+	Name  = "USB_ISOCTRANSFER_SUPPORT"
+	Value  = "1"
+	Help  = "Enable/disable support for USB isochronous transfer."
+	TokenType = Boolean
+	TargetH = Yes
+End

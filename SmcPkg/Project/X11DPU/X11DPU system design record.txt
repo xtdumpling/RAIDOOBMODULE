@@ -1,0 +1,55 @@
+Date: May-17-2017
+1. LAB found x16 PCIE port in AOC-SLG3-2E4R always can't train to x16 in system (AOC-2UR6N4-i4XT + RSC-URM-8 + AOC-SLG3-2E4R).
+   The reason maybe is there are redriver in AOC-SLG3-2E4R and no redriver in onboard NVMe ports but we merge them to a X16 port.  
+   System PM decide to add a 24 NVMe system sku (AOC-2UR6N4-i4XT + RSC-U2N4-6). 
+   There are x16 PLX bridges in BPN, so BIOS set 4 NVMe port to X16 in two riser card.   
+
+Date: May-13-2017
+1. X550 and XL710 LAN chip issue and sometimes drop in cburn on/off so adding a workaround for it.
+   If ultra riser card LAN is X550 or XL710, system reboot when LAN chip can't be detected during POST.
+
+Date: May-05-2017
+1. 24 NVMe system sku (AOC-2UR6N4-i4XT + RSC-URM-8 + AOC-SLG3-2E4T).
+   There are x16 PLX bridge in BPN, the bridge enter a x16 pcie and output 12 x4 pcie port,
+   so BIOS set 4NVMe port to X16.  
+
+Date: Feb-06-2017
+
+BIOS can detect different raise card, then use different BMC I2C bus accordingly.
+
+Right now we have 5 models.
+ 
+1.	2 NVMe (Onboard header)
+  a.	Onboard CPU 1 NVMe 0: 80h
+  b.	Onboard CPU 1 NVMe 1: 81h
+  c.	Onboard CPU 2 NVMe 0: 00
+  d.	Onboard CPU 2 NVMe 1: 00
+2.	4 NVMe (Onboard header)
+  a.	Onboard CPU 1 NVMe 0: 80h
+  b.	Onboard CPU 1 NVMe 1: 81h
+  c.	Onboard CPU 2 NVMe 0: 80h
+  d.	Onboard CPU 2 NVMe 1: 81h
+3.	10 NVMe (URN6)
+  a.	Onboard CPU 1 NVMe 0/1: 00/00
+  b.	URN6 Por0~Port5: 80h~85h
+  c.	2 port NVMe AOC: 80h/81h
+  d.	Onboard CPU2 NVMe 0/1: 82h/83h
+4.	10 NVMe (URN4)
+  a.	Onboard CPU 1 NVMe 0/1: 80h/81h
+  b.	URN4 Por0~Port3: 82h~85h
+  c.	2 port NVMe AOC: 80h/81h
+  d.	Onboard CPU2 NVMe 0/1: 82h/83h
+5.	24 NVMe (2UR6N4), no VPP settings required
+  a.	Onboard CPU 1 NVMe 0: 00
+  b.	Onboard CPU 1 NVMe 1: 00
+  c.	Onboard CPU 2 NVMe 0: 00
+  d.	Onboard CPU 2 NVMe 1: 00
+
+Model 1 and model 2 use bus 7; model 3/4/5 use bus 3.
+--------------------------------------------------------------------------------
+Date: Feb-03-2017
+
+Normally the BP CPLD is accessed through BMC bus 7 (In raw command, it's 0x0d) from NVMe onboard header.
+But on 10NVMe system, the BP CPLD is accessed through SMBus from ultra riser card,
+i.e. bus 3 (In raw command, it's 0x5).
+Same thing for 24 NVMe system.

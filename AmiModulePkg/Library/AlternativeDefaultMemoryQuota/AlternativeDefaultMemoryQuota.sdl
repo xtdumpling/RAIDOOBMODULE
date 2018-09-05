@@ -1,0 +1,80 @@
+TOKEN
+    Name  = "AlternativeDefaultMemoryQuota_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable AlternativePageTables support in Project"
+    Master = Yes
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+INFComponent
+    Name  = "AlternativeDefaultMemoryQuota"
+    File  = "AlternativeDefaultMemoryQuota.inf"
+    Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiModulePkg.AlternativeDefaultMemoryQuota"
+    Override  = "MdeModulePkg.DxeIpl"
+End
+
+OUTPUTREGISTER
+    Name  = "AUTOGEN_ALTERNATE_DEFAULT_MEMORY_QUOTA_ELINKS"
+    Path  = "Build"
+    File  = "AlternativeDefaultMemoryQuota.h"
+    Template  = "AlternativeDefaultMemoryQuota.txt"
+End
+
+ELINK
+    Name  = "ALTERNATE_DEFAULT_MEMORY_QUOTA_LIST"
+    InvokeOrder = ReplaceParent
+End
+
+ELINK
+    Name  = "{ EfiRuntimeServicesCode,     0x120 },"
+    Parent  = "ALTERNATE_DEFAULT_MEMORY_QUOTA_LIST"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "{ EfiRuntimeServicesData,     0x1900 },"
+    Parent  = "ALTERNATE_DEFAULT_MEMORY_QUOTA_LIST"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "{ EfiACPIMemoryNVS,           0xA00 },"
+    Parent  = "ALTERNATE_DEFAULT_MEMORY_QUOTA_LIST"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "{ EfiACPIReclaimMemory,       0x50 },"
+    Parent  = "ALTERNATE_DEFAULT_MEMORY_QUOTA_LIST"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "{ EfiReservedMemoryType,      0x2100 },"
+    Parent  = "ALTERNATE_DEFAULT_MEMORY_QUOTA_LIST"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "{ EfiBootServicesCode,        0xA00 },"
+    Parent  = "ALTERNATE_DEFAULT_MEMORY_QUOTA_LIST"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "{ EfiBootServicesData,        0x7000 },"
+    Parent  = "ALTERNATE_DEFAULT_MEMORY_QUOTA_LIST"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "{ EfiMaxMemoryType,           0 }"
+    Parent  = "ALTERNATE_DEFAULT_MEMORY_QUOTA_LIST"
+    InvokeOrder = AfterParent
+End

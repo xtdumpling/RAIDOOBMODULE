@@ -1,0 +1,85 @@
+#****************************************************************************
+#****************************************************************************
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.02
+#    Bug Fix : N/A
+#    Reason  : Create a signal guid for OOB use after BDS connect all driver,
+#    			since original guid not all platform signaled.
+#    Auditor : Durant Lin
+#    Date    : Jan/04/2017
+#
+#    Rev.  1.01
+#     Bug Fix: Add sum load default function.
+#     Reason:	
+#     Auditor:	Hartmann Hsieh
+#     Date:  	Oct/11/2016
+#
+#  Rev. 1.00
+#    Bug Fix:  Compress and encipher HII data for sum.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Jul/25/2016
+#
+#****************************************************************************
+
+TOKEN
+	Name  = "OOB_Library_SUPPORT"
+	Value  = "1"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+End
+
+INFComponent
+    Name  = "BaseOobLibrary"
+    File  = "OobLibrary.inf"
+    Package  = "SmcPkg"
+End
+
+LibraryMapping
+	Class  = "OobLibrary"
+	Instance  = "SmcPkg.BaseOobLibrary"
+End
+
+ELINK
+    Name  = "SmcResetConfig,"
+    Parent  = "IsResetConfigMode"
+    InvokeOrder = AfterParent
+End
+
+INFComponent
+        Name  = "ResetConfigPeiLib"
+        File  = "ResetConfigPeiLib.inf"
+        Package  = "SmcPkg"
+        ModuleTypes  = "BASE"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "SmcPkg.ResetConfigPeiLib"
+	Override = "AmiModulePkg.NvramPei"
+End
+
+INFComponent
+    Name  = "OobSignalEventLib"
+    File  = "OobSignalEvent.inf"
+    Package  = "SmcPkg"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "SmcPkg.OobSignalEventLib"
+    Override  = "AmiModulePkg.Bds"
+End
+
+ELINK
+    Name  = "OobSignalEventAfterBdsConnect,"
+    Parent  = "SignalAllDriversConnectedEvent,"
+    InvokeOrder = AfterParent
+End

@@ -1,0 +1,740 @@
+	ECHO	--Including: SMBSTRUC.DEF
+
+;----------------------------------------------------------------------------
+;	Do not change any structure defination unless otherwise specified
+;----------------------------------------------------------------------------
+
+;****************************************************************************
+;****************************************************************************
+;**                                                                        **
+;**           (C)Copyright 1985-2017, American Megatrends, Inc.            **
+;**                                                                        **
+;**                          All Rights Reserved.                          **
+;**                                                                        **
+;**            5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093           **
+;**                                                                        **
+;**                          Phone: (770)-246-8600                         **
+;**                                                                        **
+;****************************************************************************
+;****************************************************************************
+
+;****************************************************************************
+; $Header: /Alaska/BIN/Modules/SMBIOS/SmbiosStaticData/SMBSTRUC.DEF 6     10/08/10 8:16p Davidd $
+;
+; $Revision: 6 $
+;
+; $Date: 10/08/10 8:16p $
+;****************************************************************************
+
+;----------------------------------------------------------------------------
+; This file defines all SMBIOS Version 2.4 specification Data Stuructures
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;Structure Header Format
+
+DMIHDR_STRUC                    STRUCT
+        bType                   BYTE  ?
+        bLength                 BYTE  ?
+        wHandle                 WORD  ?
+DMIHDR_STRUC                    ENDS
+;----------------------------------------------------------------------------
+BIOSINFO_STRUC                  STRUCT      ; 0
+        DMIHDR_STRUC            {}
+        bVendor                 BYTE  ?
+        bVerStrNum              BYTE  ?
+        wBiosStrtAddr           WORD  ?
+        bDate                   BYTE  ?
+        bBiosSize               BYTE  ?
+        dBiosChar               DWORD ?
+        dBiosChar1              DWORD ?
+        bExtByte                BYTE  ?
+        bExtByte2               BYTE  ?
+        bBiosMajor              BYTE  ?
+        bBiosMinor              BYTE  ?
+        bEmbCtrlMajor           BYTE  ?
+        bEmbCtrlMinor           BYTE  ?
+IF MKF_SMBIOS_SPEC_VERSION GT 300
+        wExtendedBiosRomSize    WORD  ?
+ENDIF
+BIOSINFO_STRUC          ENDS
+;----------------------------------------------------------------------------
+SYSINFO_STRUC                   STRUCT      ; 1
+        DMIHDR_STRUC            {}
+        bManufacturer           BYTE  ?
+        bProductName            BYTE  ?
+        bVersion                BYTE  ?
+        bSrNum                  BYTE  ?
+        bUUID                   BYTE  16 dup (?)
+        bWakeType               BYTE  ?
+        bSkuNumber              BYTE  ?
+        bFamily                 BYTE  ?
+SYSINFO_STRUC                   ENDS
+;----------------------------------------------------------------------------
+BASEBOARD_INFO_STRUC            STRUCT      ; 2
+        DMIHDR_STRUC            {,,}
+        bManufacturer           BYTE  ?
+        bProduct                BYTE  ?
+        bVersion                BYTE  ?
+        bSrNum                  BYTE  ?
+        bAssetTag               BYTE  ?
+        bFeatureFlags           BYTE  ?
+        bLocInChassis           BYTE  ?
+        wChassisHandle          WORD  ?
+        bBoardType              BYTE  ?
+        bNoOfObjectHndl         BYTE  ?
+BASEBOARD_INFO_STRUC            ENDS
+
+BASEBOARD_INFO_SUB_STRUC        STRUCT
+        wObjectHandle           BYTE  ?
+BASEBOARD_INFO_SUB_STRUC        ENDS
+;----------------------------------------------------------------------------
+SYSENC_STRUC                    STRUCT      ; 3
+        DMIHDR_STRUC            {,,}
+        bManufacturer           BYTE  ?
+        bSYSENC_Type            BYTE  ?
+        bVersion                BYTE  ?
+        bSrNum                  BYTE  ?
+        bAssTagNum              BYTE  ?
+        bBootState              BYTE  ?
+        bPwrState               BYTE  ?
+        bThermalState           BYTE  ?
+        bSecurityState          BYTE  ?
+        doemdefined             DWORD ?
+        bHeight                 BYTE  ?
+        bNoPwrCords             BYTE  ?
+        bNoContElements         BYTE  ?
+        bContElementLen         BYTE  ?
+        bSKU                    BYTE  ?
+SYSENC_STRUC                    ENDS
+
+SYSENC_STRUC_1                  STRUCT      ; 3
+        DMIHDR_STRUC            {,,}
+        bManufacturer           BYTE  ?
+        bSYSENC_Type            BYTE  ?
+        bVersion                BYTE  ?
+        bSrNum                  BYTE  ?
+        bAssTagNum              BYTE  ?
+        bBootState              BYTE  ?
+        bPwrState               BYTE  ?
+        bThermalState           BYTE  ?
+        bSecurityState          BYTE  ?
+        doemdefined             DWORD ?
+        bHeight                 BYTE  ?
+        bNoPwrCords             BYTE  ?
+        bNoContElements         BYTE  ?
+        bContElementLen         BYTE  ?
+        bContElement            BYTE  (MKF_ELEMENT_COUNT_1 * MKF_ELEMENT_LEN_1) dup (?)
+        bSKU                    BYTE  ?
+SYSENC_STRUC_1                  ENDS
+
+SYSENC_STRUC_2                  STRUCT      ; 3
+        DMIHDR_STRUC            {,,}
+        bManufacturer           BYTE  ?
+        bSYSENC_Type            BYTE  ?
+        bVersion                BYTE  ?
+        bSrNum                  BYTE  ?
+        bAssTagNum              BYTE  ?
+        bBootState              BYTE  ?
+        bPwrState               BYTE  ?
+        bThermalState           BYTE  ?
+        bSecurityState          BYTE  ?
+        doemdefined             DWORD ?
+        bHeight                 BYTE  ?
+        bNoPwrCords             BYTE  ?
+        bNoContElements         BYTE  ?
+        bContElementLen         BYTE  ?
+        bContElement            BYTE  (MKF_ELEMENT_COUNT_2 * MKF_ELEMENT_LEN_2) dup (?)
+        bSKU                    BYTE  ?
+SYSENC_STRUC_2                  ENDS
+
+SYSENC_STRUC_3                  STRUCT      ; 3
+        DMIHDR_STRUC            {,,}
+        bManufacturer           BYTE  ?
+        bSYSENC_Type            BYTE  ?
+        bVersion                BYTE  ?
+        bSrNum                  BYTE  ?
+        bAssTagNum              BYTE  ?
+        bBootState              BYTE  ?
+        bPwrState               BYTE  ?
+        bThermalState           BYTE  ?
+        bSecurityState          BYTE  ?
+        doemdefined             DWORD ?
+        bHeight                 BYTE  ?
+        bNoPwrCords             BYTE  ?
+        bNoContElements         BYTE  ?
+        bContElementLen         BYTE  ?
+        bContElement            BYTE  (MKF_ELEMENT_COUNT_3 * MKF_ELEMENT_LEN_3) dup (?)
+        bSKU                    BYTE  ?
+SYSENC_STRUC_3                  ENDS
+
+SYSENC_STRUC_4                  STRUCT      ; 3
+        DMIHDR_STRUC            {,,}
+        bManufacturer           BYTE  ?
+        bSYSENC_Type            BYTE  ?
+        bVersion                BYTE  ?
+        bSrNum                  BYTE  ?
+        bAssTagNum              BYTE  ?
+        bBootState              BYTE  ?
+        bPwrState               BYTE  ?
+        bThermalState           BYTE  ?
+        bSecurityState          BYTE  ?
+        doemdefined             DWORD ?
+        bHeight                 BYTE  ?
+        bNoPwrCords             BYTE  ?
+        bNoContElements         BYTE  ?
+        bContElementLen         BYTE  ?
+        bContElement            BYTE  (MKF_ELEMENT_COUNT_4 * MKF_ELEMENT_LEN_4) dup (?)
+        bSKU                    BYTE  ?
+SYSENC_STRUC_4                  ENDS
+
+SYSENC_STRUC_5                  STRUCT      ; 3
+        DMIHDR_STRUC            {,,}
+        bManufacturer           BYTE  ?
+        bSYSENC_Type            BYTE  ?
+        bVersion                BYTE  ?
+        bSrNum                  BYTE  ?
+        bAssTagNum              BYTE  ?
+        bBootState              BYTE  ?
+        bPwrState               BYTE  ?
+        bThermalState           BYTE  ?
+        bSecurityState          BYTE  ?
+        doemdefined             DWORD ?
+        bHeight                 BYTE  ?
+        bNoPwrCords             BYTE  ?
+        bNoContElements         BYTE  ?
+        bContElementLen         BYTE  ?
+        bContElement            BYTE  (MKF_ELEMENT_COUNT_5 * MKF_ELEMENT_LEN_5) dup (?)
+        bSKU                    BYTE  ?
+SYSENC_STRUC_5                  ENDS
+;----------------------------------------------------------------------------
+PROC_STRUC                      STRUCT      ; 4
+        DMIHDR_STRUC            {,,}
+        bSocketDesignation      BYTE  ?
+        bProcType               BYTE  ?
+        bProcFamily             BYTE  ?
+        bProcManufacturer       BYTE  ?
+        qProcID                 QWORD ?
+        bProcVersion            BYTE  ?
+        bVoltage                BYTE  ?
+        wExternalClock          WORD  ?
+        wMaxSpeed               WORD  ?
+        wCurrentSpeed           WORD  ?
+        bProcStatus             BYTE  ?
+        bProcUpgrade            BYTE  ?
+        wL1Cache                WORD  ?
+        wL2Cache                WORD  ?
+        wL3Cache                WORD  ?
+        bSerialNo               BYTE  ?
+        bAssetTag               BYTE  ?
+        bPartNo                 BYTE  ?
+        bCoreCount              BYTE  ?
+        bCoreEnabled            BYTE  ?
+        bThreadCount            BYTE  ?
+        wProcessorChar          WORD  ?
+        wProcFamily2            WORD  ?
+        wCoreCount2             WORD  ?
+        wCoreEnabled2           WORD  ?
+        wThreadCount2           WORD  ?
+PROC_STRUC                      ENDS
+;----------------------------------------------------------------------------
+MEMCTRL_STRUC                   STRUCT      ; 5
+        DMIHDR_STRUC            {,,}
+        bErrDetect              BYTE  ?
+        bEcc                    BYTE  ?
+        bSupInterleave          BYTE  ?
+        bCurrentInterleave      BYTE  ?
+        bMaxMemSize             BYTE  ?
+        wSupSpeeds              WORD  ?
+        wSupMemTypes            WORD  ?
+        bMemModVolt             BYTE  ?
+        bSlotNum                BYTE  ?
+MEMCTRL_STRUC                   ENDS
+;----------------------------------------------------------------------------
+MEMMOD_INFO_STRUC               STRUCT      ; 6
+        DMIHDR_STRUC            {,,}
+        bSocDes                 BYTE  ?
+        bBankCon                BYTE  ?
+        bCurrentSpd             BYTE  ?
+        wCurrentMemType         WORD  ?
+        bInstSize               BYTE  ?
+        bEnabledSize            BYTE  ?
+        bErrStatus              BYTE  ?
+MEMMOD_INFO_STRUC               ENDS
+;----------------------------------------------------------------------------
+CACHE_INFO_STRUC                STRUCT      ; 7
+        DMIHDR_STRUC            {,,}
+        bSocDes                 BYTE  ?
+        wCacheConfig            WORD  ?
+        wMaxCacheSize           WORD  ?
+        wInstSize               WORD  ?
+        wSupType                WORD  ?
+        wCurrentType            WORD  ?
+        bCacheSpd               BYTE  ?
+        bErrType                BYTE  ?
+        bSysCacheType           BYTE  ?
+        bAssociativity          BYTE  ?
+IF MKF_SMBIOS_SPEC_VERSION GT 300
+        dMaxCacheSize2          DWORD ?
+        dInstalledCacheSize2    DWORD ?
+ENDIF
+CACHE_INFO_STRUC                ENDS
+;----------------------------------------------------------------------------
+PORT_DEFINE_STRUC               STRUCT      ; 8
+        bInternalRefDes         BYTE  ?
+        bInternalConType        BYTE  ?
+        bExternalRefDes         BYTE  ?
+        bExternalConType        BYTE  ?
+        bPortType               BYTE  ?
+PORT_DEFINE_STRUC               ENDS
+
+PORT_CONNECTOR_STRUC            STRUCT
+        DMIHDR_STRUC            {,,}
+        PORT_DEFINE_STRUC       {}
+PORT_CONNECTOR_STRUC            ENDS
+;----------------------------------------------------------------------------
+SYSTEM_SLOT_INFO_STRUC          STRUCT      ; 9
+        DMIHDR_STRUC            {,,}
+        bSlotDes                BYTE  ?
+        bSlotType               BYTE  ?
+        bSlotBusWidth           BYTE  ?
+        bCurrentUsage           BYTE  ?
+        bSlotLength             BYTE  ?
+        wSlotId                 WORD  ?
+        bSlotChar1              BYTE  ?
+        bSlotChar2              BYTE  ?
+        wSegGroupNum            WORD  ?
+        bBusNum                 BYTE  ?
+        bDevFuncNum             BYTE  ?
+SYSTEM_SLOT_INFO_STRUC          ENDS
+;----------------------------------------------------------------------------
+ONBOARD_DEV_SUB_STRUC           STRUCT      ; 10
+        bDeviceType             BYTE  ?
+        bDescrStr               BYTE  ?
+ONBOARD_DEV_SUB_STRUC           ENDS
+
+ONBOARD_DEVICE_STRUC            STRUCT
+        DMIHDR_STRUC            {,,}
+        ONBOARD_DEV_SUB_STRUC	{,}
+ONBOARD_DEVICE_STRUC            ENDS
+;----------------------------------------------------------------------------
+OEM_STRING_STRUC                STRUCT      ; 11
+        DMIHDR_STRUC            {,,}
+        bCount                  BYTE  ?
+OEM_STRING_STRUC                ENDS
+;----------------------------------------------------------------------------
+SYSTEM_CONFIG_OPT_STRUC         STRUCT      ; 12
+        DMIHDR_STRUC            {,,}
+        bCount                  BYTE  ?
+SYSTEM_CONFIG_OPT_STRUC         ENDS
+;----------------------------------------------------------------------------
+RESERVED15_STRUC                STRUCT
+        bRes0                   BYTE  ?
+        bRes1                   BYTE  ?
+        bRes2                   BYTE  ?
+        bRes3                   BYTE  ?
+        bRes4                   BYTE  ?
+        bRes5                   BYTE  ?
+        bRes6                   BYTE  ?
+        bRes7                   BYTE  ?
+        bRes8                   BYTE  ?
+        bRes9                   BYTE  ?
+        bRes10                  BYTE  ?
+        bRes11                  BYTE  ?
+        bRes12                  BYTE  ?
+        bRes13                  BYTE  ?
+        bRes14                  BYTE  ?
+RESERVED15_STRUC                ENDS
+;----------------------------------------------------------------------------
+BIOS_LANGUAGE_INFO_STRUC        STRUCT      ; 13
+        DMIHDR_STRUC            {,,}
+        bInstallableLang        BYTE ?
+        bFlags                  BYTE ?
+        RESERVED15_STRUC        {}
+        bCurrentLang            BYTE ?
+BIOS_LANGUAGE_INFO_STRUC        ENDS
+;----------------------------------------------------------------------------
+GROUP_ASSOC_STRUC               STRUCT      ; 14
+        DMIHDR_STRUC            {,,}
+        bGroupName              BYTE    ?
+        bItemType               BYTE    ?
+        wItemHandle             WORD    ?
+GROUP_ASSOC_STRUC               ENDS
+;----------------------------------------------------------------------------
+EVENTLOG_INFO_STRUC                     STRUCT      ; 15
+        DMIHDR_STRUC                    {,,}
+        wLogAreaLength                  WORD   ?
+        wLogHeaderOffset                WORD   ?
+        wLogDataOffset                  WORD   ?
+        bAccessMethod                   BYTE   ?
+        bLogStatus                      BYTE   ?
+        dLogChangeToken                 DWORD  ?
+        dAccessMethodAddress            DWORD  ?
+        bLogHeaderFormat                BYTE   ?
+        bSupportedLogTypeDesc           BYTE   ?
+        bSupportedLogTypeDescLength     BYTE   ?
+EVENTLOG_INFO_STRUC                     ENDS
+;----------------------------------------------------------------------------
+PHY_MEM_ARRAY_STRUC             STRUCT      ; 16
+        DMIHDR_STRUC            {,,}
+        bLocation               BYTE    ?
+        bUse                    BYTE    ?
+        bMemErrCorrection       BYTE    ?
+        dMaxCapacity            DWORD   ?
+        wMemErrInfoHandle       WORD    ?
+        wMemdevice              WORD    ?
+        qExtendedMaxCap         QWORD   ?
+PHY_MEM_ARRAY_STRUC             ENDS
+;----------------------------------------------------------------------------
+MEMORY_DEVICE_STRUC             STRUCT      ; 17
+        DMIHDR_STRUC            {,,}
+        wMemoryArrayhandle      WORD    ?
+        wMemoryErrHandle        WORD    ?
+        wTotalWidth             WORD    ?
+        wDataWidth              WORD    ?
+        wSize                   WORD    ?
+        bFormFactor             BYTE    ?
+        bDeviceSet              BYTE    ?
+        bDeviceLocator          BYTE    ?
+        bBankLocator            BYTE    ?
+        bMemoryType             BYTE    ?
+        wTypeDetail             WORD    ?
+        wMemDevSpeed            WORD    ?
+        bManufacturer           BYTE    ?
+        bSerialNumber           BYTE    ?
+        bAssetTag               BYTE    ?
+        bPartNumber             BYTE    ?
+        bAttributes             BYTE    ?
+        dExtendedSize           DWORD   ?
+        wConfigMemClkSpeed      WORD    ?
+        wMinimumVoltage         WORD    ?
+        wMaximumVoltage         WORD    ?
+        wConfiguredVoltage      WORD    ?
+MEMORY_DEVICE_STRUC             ENDS
+;----------------------------------------------------------------------------
+MEMORY_ARRAY_ERR_STRUC          STRUCT      ; 18
+        DMIHDR_STRUC            {,,}
+        bErrtype                BYTE    ?
+        bErrGran                BYTE    ?
+        bErrOperation           BYTE    ?
+        dVendorSyndrome         DWORD   ?
+        dMemArrayErrAdd         DWORD   ?
+        dDevErrAdd              DWORD   ?
+        dErrResolution          DWORD   ?
+MEMORY_ARRAY_ERR_STRUC          ENDS
+;----------------------------------------------------------------------------
+MEMORY_ARRAY_MAPPED_ADDRESS_STRUC	STRUCT          ; 19
+        DMIHDR_STRUC                    {,,}
+        dStartingAddress                DWORD   ?
+        dEndingAddress                  DWORD   ?
+        wMemoryArrayHandle              WORD    ?
+        bPartitionWidth                 BYTE    ?
+		qExtendedStartingAddr			QWORD	?
+		qExtendedEndingAddr				QWORD	?
+MEMORY_ARRAY_MAPPED_ADDRESS_STRUC	ENDS
+;----------------------------------------------------------------------------
+MEMORY_DEVICE_MAPPED_ADDRESS_STRUC	STRUCT          ; 20
+        DMIHDR_STRUC                    {,,}
+        dStartingAddress                DWORD   ?
+        dEndingAddress                  DWORD   ?
+        wMemoryDeviceHandle             WORD    ?
+        wMemoryArrayMappedHandle        WORD    ?
+        bPartitionRowPosition           BYTE    ?
+        bInterLeavePosition             BYTE    ?
+        bInterLeaveDataDepth            BYTE    ?
+		qExtendedStaringAddr			QWORD	?
+		qExtendedEndingAddr				QWORD	?
+MEMORY_DEVICE_MAPPED_ADDRESS_STRUC	ENDS
+;----------------------------------------------------------------------------
+BUILTIN_POINT_DEV_STRUC         STRUCT      ; 21
+        DMIHDR_STRUC            {,,}
+        bBlt_Type               BYTE    ?
+        bInterface              BYTE    ?
+        bButtonNum              BYTE    ?
+BUILTIN_POINT_DEV_STRUC         ENDS
+;----------------------------------------------------------------------------
+PORTABLE_BATTERY_STRUC          STRUCT      ; 22
+        DMIHDR_STRUC            {,,}
+        bLocation               BYTE    ?
+        bManufacturer           BYTE    ?
+        bManufactDate           BYTE    ?
+        bSrNum                  BYTE    ?
+        bDevName                BYTE    ?
+        bDevChem                BYTE    ?
+        wDesignCapacity         WORD    ?
+        wDesignVoltage          WORD    ?
+        bSBDCVerNum             BYTE    ?
+        bMaxErrBattryData       BYTE    ?
+        wSBDSSrNumber           WORD    ?
+	wSBDSManufactureDate	WORD	?
+	bSBDSDeviceChemistry	BYTE	?
+        bDesignCapacityMul      BYTE    ?
+        dOEMSpecific            DWORD   ?
+PORTABLE_BATTERY_STRUC          ENDS
+;----------------------------------------------------------------------------
+SYSTEM_RESET_STRUC              STRUCT      ; 23
+        DMIHDR_STRUC            {,,}
+        bCapabilities           BYTE    ?
+        wResetCount             WORD    ?
+        wResetLimit             WORD    ?
+        wTimeInterval           WORD    ?
+        wTimeOut                WORD    ?
+SYSTEM_RESET_STRUC              ENDS
+;----------------------------------------------------------------------------
+HARDWARE_SECURITY_STRUC                 STRUCT      ; 24
+        DMIHDR_STRUC                    {,,}
+	bHardwareSecuritySettings	BYTE	?
+HARDWARE_SECURITY_STRUC                 ENDS
+;----------------------------------------------------------------------------
+SYSTEM_POWER_CONTROLS_STRUC             STRUCT      ; 25
+        DMIHDR_STRUC                    {,,}
+	bNextSchPowerOnMonth		BYTE	?
+	bNextSchPowerOnDayOfMonth	BYTE	?
+        bNextSchPowerOnHour             BYTE    ?
+	bNextSchPowerOnMinute		BYTE	?
+	bNextSchPowerOnSecond		BYTE	?
+SYSTEM_POWER_CONTROLS_STRUC             ENDS
+;----------------------------------------------------------------------------
+VOLTAGE_PROBE_STRUC             STRUCT      ; 26
+        DMIHDR_STRUC            {,,}
+	bDescription		BYTE	?
+	bLocationAndStatus	BYTE	?
+	wMaximumValue		WORD	?
+	wMinimumValue		WORD	?
+        wResolution             WORD    ?
+        wTolerance              WORD    ?
+        wAccuracy               WORD    ?
+        dOEMDefined             DWORD   ?
+	wNominalValue		WORD	?
+VOLTAGE_PROBE_STRUC             ENDS
+;----------------------------------------------------------------------------
+COOLING_DEVICE_STRUC            STRUCT      ; 27
+        DMIHDR_STRUC            {,,}
+        wTempProbeHandle        WORD    ?
+	bDeviceTypeAndStatus	BYTE	?
+        bCoolingUnitGroup       BYTE    ?
+        dOEMDefinedGroup        DWORD   ?
+        wNominalSpeed           WORD    ?
+        bDescription            BYTE    ?
+COOLING_DEVICE_STRUC            ENDS
+;----------------------------------------------------------------------------
+TEMPERATURE_PROBE_STRUC         STRUCT      ; 28
+        DMIHDR_STRUC            {,,}
+        bTpdescription          BYTE    ?
+        bLocationAndStatus      BYTE    ?
+        wMaximumValue           WORD    ?
+        wMinimumValue           WORD    ?
+        wResolution             WORD    ?
+        wTolerence              WORD    ?
+        wAccuracy               WORD    ?
+        dOEMDefined             DWORD   ?
+        wNominalValue           WORD    ?
+TEMPERATURE_PROBE_STRUC         ENDS
+;----------------------------------------------------------------------------
+ELECTRICAL_CURRENT_PROBE_STRUC	STRUCT      ; 29
+        DMIHDR_STRUC            {,,}
+        bEpdescription          BYTE    ?
+        bLocationAndStatus      BYTE    ?
+        wMaximumValue           WORD    ?
+        wMinimumValue           WORD    ?
+        wResolution             WORD    ?
+        wTolerence              WORD    ?
+        wAccuracy               WORD    ?
+        dOEMDefined             DWORD   ?
+        wNominalValue           WORD    ?
+ELECTRICAL_CURRENT_PROBE_STRUC	ENDS
+;----------------------------------------------------------------------------
+OUT_OF_BAND_REMOTE_ACCESS_STRUC STRUCT      ; 30
+        DMIHDR_STRUC            {,,}
+        bManufacturer           BYTE    ?
+        bConnections            BYTE    ?
+OUT_OF_BAND_REMOTE_ACCESS_STRUC ENDS
+;----------------------------------------------------------------------------
+BOOT_INTEGRITY_STRUC            STRUCT      ; 31
+        DMIHDR_STRUC            {,,}
+        bChecksum               BYTE    ?
+        bReserved               BYTE    ?
+        wReserved               WORD    ?
+        dBISEntrySt             DWORD   ?
+        dBISEntryTt             DWORD   ?
+        qReserved               QWORD   ?
+        dReserved               DWORD   ?
+BOOT_INTEGRITY_STRUC            ENDS
+;----------------------------------------------------------------------------
+SYS_BOOT_INFORMATION_STRUC      STRUCT      ; 32
+        DMIHDR_STRUC            {,,}
+        bReserved               BYTE    6 dup (0)
+        bBootStatus             BYTE    10 dup (?)
+SYS_BOOT_INFORMATION_STRUC      ENDS
+;----------------------------------------------------------------------------
+SIXTYFOUR_BIT_MEMORY_ARRAY_ERR_STRUC        STRUCT      ; 33
+        DMIHDR_STRUC                        {,,}
+        bErrtype                            BYTE    ?
+        bErrGran                            BYTE    ?
+        bErrOperation                       BYTE    ?
+        dVendorSyndrome                     DWORD   ?
+        qMemArrayErrAdd                     QWORD   ?
+        qDevErrAdd                          QWORD   ?
+        dErrResolution                      DWORD   ?
+SIXTYFOUR_BIT_MEMORY_ARRAY_ERR_STRUC        ENDS
+;----------------------------------------------------------------------------
+SIXTYFOUR_BIT_MEMORY_ARRAY_MAPPED_ADDRESS_STRUC     STRUCT      
+        DMIHDR_STRUC                                {,,}
+        qStartingAddress                            QWORD   ?
+        qEndingAddress                              QWORD   ?
+        wMemoryArrayHandle                          WORD    ?
+        bPartionWidth                               BYTE    ?
+SIXTYFOUR_BIT_MEMORY_ARRAY_MAPPED_ADDRESS_STRUC     ENDS
+;----------------------------------------------------------------------------
+SIXTYFOUR_BIT_MEMORY_DEVICE_MAPPED_ADDRESS_STRUC    STRUCT
+        DMIHDR_STRUC                                {,,}
+        qStartingAddress                            QWORD   ?
+        qEndingAddress                              QWORD   ?
+        wMemoryDeviceHandle                         WORD    ?
+        wMemoryArrayMappedHandle                    WORD    ?
+        bPartionRowPosition                         BYTE    ?
+        bInterLeavePosition                         BYTE    ?
+        bInterLeaveDataDepth                        BYTE    ?
+SIXTYFOUR_BIT_MEMORY_DEVICE_MAPPED_ADDRESS_STRUC    ENDS
+;----------------------------------------------------------------------------
+MANAGEMENT_DEVICE_STRUC                 STRUCT      ; 34
+        DMIHDR_STRUC                    {,,}
+        bDescription                    BYTE    ?
+        bManagementDevType              BYTE    ?
+        dAddress                        DWORD   ?
+        bAddressType                    BYTE    ?
+MANAGEMENT_DEVICE_STRUC                 ENDS
+;----------------------------------------------------------------------------
+MANAGEMENT_DEVICE_COMPONENT_STRUC	STRUCT          ; 35
+        DMIHDR_STRUC                    {,,}
+        bDescription                    BYTE    ?
+        wManagementDevHandle            WORD    ?
+        wComponentHandle                WORD    ?
+        wThresholdHandle                WORD    ?
+MANAGEMENT_DEVICE_COMPONENT_STRUC	ENDS
+;----------------------------------------------------------------------------
+MANAGEMENT_DEVICE_THRESHOLD_DATA_STRUC	STRUCT      ; 36
+        DMIHDR_STRUC                    {,,}
+        wLowerThresholdNonCritical      WORD    ?
+        wUpperThresholdNonCritical      WORD    ?
+        wLowerThresholdCritical         WORD    ?
+        wUpperThresholdCritical         WORD    ?
+        wLowerThresholdNonRecoverable   WORD    ?
+        wUpperThresholdNonRecoverable   WORD    ?
+MANAGEMENT_DEVICE_THRESHOLD_DATA_STRUC	ENDS
+;----------------------------------------------------------------------------
+MEMORY_CHANNEL_STRUC                    STRUCT      ; 37
+        DMIHDR_STRUC                    {,,}
+        bChannelType                    BYTE    ?
+        bMaxChannelLoad                 BYTE    ?
+        bMemDevCount                    BYTE    ?
+MEMORY_CHANNEL_STRUC                    ENDS
+;----------------------------------------------------------------------------
+IPMI_DEVICE_INFORMATION_STRUC           STRUCT      ; 38
+        DMIHDR_STRUC                    {,,}
+        bInterfaceType                  BYTE    ?
+        bIPMISpecRev                    BYTE    ?
+        bI2CSlaveAddr                   BYTE    ?
+        bNVStorageDeviceAddr            BYTE    ?
+        dBaseAddrLow                    DWORD   ?
+        dBaseAddrHigh                   DWORD   ?
+        bBaseAddrModIntInfo             BYTE    ?
+        bInterruptNumber                BYTE    ?
+IPMI_DEVICE_INFORMATION_STRUC           ENDS
+;----------------------------------------------------------------------------
+SYSTEM_POWER_SUPPLY_STRUC               STRUCT      ; 39
+        DMIHDR_STRUC                    {,,}
+        bPowerUnitGroup                 BYTE    ?
+        bLocation                       BYTE    ?
+        bDeviceName                     BYTE    ?
+        bManufacturer                   BYTE    ?
+        bSerialNumber                   BYTE    ?
+        bAssetTagNumber                 BYTE    ?
+        bModelPartNumber                BYTE    ?
+        bRevisionLevel                  BYTE    ?
+        wMaxCapacity                    WORD    ?
+        wPowerSupplyChar                WORD    ?
+        wIpVoltageProbeHandle           WORD    ?
+        wCoolingDevHandle               WORD    ?
+        wIpCurrentProbeHandle           WORD    ?
+SYSTEM_POWER_SUPPLY_STRUC               ENDS
+;----------------------------------------------------------------------------
+ADDITIONAL_INFO_STRUC                   STRUCT      ; 40
+        DMIHDR_STRUC                    {,,}
+        bNumAdditionalInfoEntries       BYTE    ?
+ADDITIONAL_INFO_STRUC                   ENDS
+
+ADDITIONAL_INFO_ENTRY_STRUC             STRUCT
+        bEntryLength                    BYTE    ?
+        wRefHandle                      WORD    ?
+        bRefOffset                      BYTE    ?
+        bString                         BYTE    ?
+                                        UNION
+        bValue                          BYTE    ?
+        wValue                          WORD    ?
+        dValue                          DWORD   ?
+                                        ENDS
+ADDITIONAL_INFO_ENTRY_STRUC             ENDS
+;----------------------------------------------------------------------------
+ONBOARD_DEVICE_EXTENDED_STRUC           STRUCT      ; 41
+        DMIHDR_STRUC                    {,,}
+        bRefDesignation                 BYTE  ?
+        bDeviceType                     BYTE  ?
+        bDeviceTypeInstance             BYTE  ?
+        wSegGroupNum                    WORD  ?
+        bBusNum                         BYTE  ?
+        bDevFuncNum                     BYTE  ?
+ONBOARD_DEVICE_EXTENDED_STRUC           ENDS
+;----------------------------------------------------------------------------
+INACTIVE_STRUC                          STRUCT      ; 126
+        DMIHDR_STRUC                    {,,}
+INACTIVE_STRUC                          ENDS
+;----------------------------------------------------------------------------
+END_OF_TABLE_STRUC                      STRUCT      ; 127
+        DMIHDR_STRUC                    {,,}
+END_OF_TABLE_STRUC                      ENDS
+
+;----------------------------------------------------------------------------
+;	OEM DEFINED GPNV STRUCTURE
+;----------------------------------------------------------------------------
+OEM_GPNV_STRUC                          STRUCT
+        DMIHDR_STRUC                    {,,}
+        bAccessMethod                   BYTE    ?
+        dAccessMethodAddress            DWORD   ?
+        wGPNVSize                       WORD    ?
+        wNoOfDataIdDescriptor           WORD    ?       ; #of dataid descritors present
+                                                        ; for data id descriptor, see below
+OEM_GPNV_STRUC                          ENDS
+
+; details of the dataid descriptor
+DATAID_DESCRIPTOR_STRUC                 STRUCT
+        wDataId                         WORD    ?
+        wHandle                         WORD    ?
+        wSize                           WORD    ?
+        wStartOffsetInGPNV              WORD    ?
+DATAID_DESCRIPTOR_STRUC                 ENDS
+
+;-----------------------------------------------------------------------;
+;			INTEL ASF STRUCTURE
+;-----------------------------------------------------------------------;
+INTEL_ASF_STRUC                         STRUCT      ; 129
+        DMIHDR_STRUC                    {,,}
+        bDescription                    BYTE    ?
+        bStructVer                      BYTE    ?
+        bStructID                       BYTE    ?
+        bAttr                           BYTE    ?
+INTEL_ASF_STRUC                         ENDS
+;----------------------------------------------------------------------------
+;****************************************************************************
+;****************************************************************************
+;**                                                                        **
+;**           (C)Copyright 1985-2017, American Megatrends, Inc.            **
+;**                                                                        **
+;**                          All Rights Reserved.                          **
+;**                                                                        **
+;**            5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093           **
+;**                                                                        **
+;**                          Phone: (770)-246-8600                         **
+;**                                                                        **
+;****************************************************************************
+;****************************************************************************

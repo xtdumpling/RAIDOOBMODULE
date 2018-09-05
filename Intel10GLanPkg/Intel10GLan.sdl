@@ -1,0 +1,43 @@
+TOKEN
+	Name  = "Intel10GLan_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable Intel 10G Lan network chip support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "Intel10GLanDependency"
+	Value  = "1"
+	Help  = "Switch dependency file to \0-Intel10GLanBinFdfFileStatement.txt,\1-Intel10GLan.inf"
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+	TOKEN = "Intel10GLan_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name = "Intel10GLan"
+	File = "Intel10GLan.inf"
+	Package = "Intel10GLanPkg"
+	ModuleTypes = "UEFI_DRIVER"	
+	TOKEN = "Intel10GLanDependency" "=" "1"
+End
+
+FFS_FILE
+	Name  = "Intel10GLan"
+	FD_AREA  = "FV_MAIN"
+	INFComponent  = "Intel10GLanPkg.Intel10GLan"
+#	Rule_Override = "EfiBinary"
+	Token = "Intel10GLanDependency" "=" "1"
+End
+
+FFS_FILE
+	Name  = "Intel10GLan"
+	FD_AREA  = "FV_MAIN"
+	FILE_Stmt  = "Intel10GLanPkg\Intel10GLanBinFdfFileStatement.txt"
+	Token = "Intel10GLanDependency" "=" "0"
+End

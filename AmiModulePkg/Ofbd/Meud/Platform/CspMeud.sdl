@@ -1,0 +1,40 @@
+TOKEN
+    Name  = CSP_MEUD_SUPPORT
+    Value  = "1"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    Master = Yes
+    Help  = "Main switch to enable ME Firmware Update Chipset function in Project"
+End
+
+TOKEN
+    Name  = "ME_DEFINITIONS"
+    Value  = "{$(SB_RCBA) + $(SPI_BASE_ADDRESS), 0xB0, 0xB4, 0, 0x16, 0, 0x40, $(SB_RCBA) + 0x3428, 2}"
+    Help  = "ME Relating Registers Configuration (ME 10 or earlier).\{SPI BAR, FDOC, FDOD, HECI Bus, HECI Device, HECI Function, HECI Host FW Status, ME/SeC Disable Bar, Disable Bit}"
+    TokenType = Expression
+    TargetH = Yes
+    Token = "SB_RCBA" "!=" "0"
+End
+
+TOKEN
+    Name  = "ME_DEFINITIONS"
+    Value  = "{$(SPI_BASE), 0xB4, 0xB8, 0, 0x16, 0, 0x40, 0, 256}"
+    Help  = "ME Relating Registers Configuration (ME 11.0).\{SPI BAR, FDOC, FDOD, HECI Bus, HECI Device, HECI Function, HECI Host FW Status, ME/SeC Disable Bar, Disable Bit}"
+    TokenType = Expression
+    TargetH = Yes
+    Token = "SPI_BASE" "!=" "0"
+End
+
+ELINK
+    Name  = "$(OFBD_MEUD_DIR)/Platform/CspMeud.c"
+    Parent  = "OFBD_FUNC_SOURCES_FILES"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "AmiCryptoPkg/AmiCryptoPkg.dec"
+    Parent  = "AMI_OFBD_PACKAGES"
+    InvokeOrder = AfterParent
+    Token = "SecSMIFlash_SUPPORT" "=" "1"
+End

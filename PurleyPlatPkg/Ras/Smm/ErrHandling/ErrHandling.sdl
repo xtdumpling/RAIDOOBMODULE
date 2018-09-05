@@ -1,0 +1,90 @@
+TOKEN
+	Name  = "ErrHandling_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling ErrHandling support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "MainErrorHandler_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable MainErrorHandler support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "PlatformErrorHandler_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable PlatformErrorHandler support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "ProcessorErrorHandler_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable ProcessorErrorHandler support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "AmiErrorHandler_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable AmiErrorHandler support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "MainErrorHandler"
+	File  = "MainErrorHandler\MainErrorHandler.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "MainErrorHandler_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "PlatformErrorHandler"
+	File  = "PlatformErrorHandler\PlatformErrorHandler.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "PlatformErrorHandler_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "ProcessorErrorHandler"
+	File  = "ProcessorErrorHandler\ProcessorErrorHandler.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "ProcessorErrorHandler_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "AmiErrorHandler"
+	File  = "AmiErrorHandler\AmiErrorHandlerMain.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "AmiErrorHandler_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "MODE1_MEM_ERROR_REPORTING"
+    Value  = "0"
+    Help  = "Enables iMC to log additional error information when Corrected Error is detected"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+	Name  = "FpgaErrorHandler_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable FpgaErrorHandler support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "FpgaErrorHandler"
+	File  = "FpgaErrorHandler\FpgaErrorHandler.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "FpgaErrorHandler_SUPPORT" "=" "1"
+End

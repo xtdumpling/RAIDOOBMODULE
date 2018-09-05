@@ -1,0 +1,108 @@
+PATH
+	Name  = "Foundation_DIR"
+End
+
+MODULE
+	Help  = "Includes Foundation.mak to Project"
+	File  = "Foundation.mak"
+End
+
+ELINK
+	Name  = "DxeCoreInitialize"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "PeiCoreInitialize"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "PeiCoreMemoryInstalled"
+	InvokeOrder = ReplaceParent
+End
+
+INFComponent
+	Name  = "DxeMain"
+	File  = "Dxe/DxeMain.inf"
+	Package  = "MdeModulePkg"
+	ModuleTypes  = "DXE_CORE"
+End
+
+INFComponent
+	Name  = "PeiMain"
+	File  = "Pei/PeiMain.inf"
+	Package  = "MdeModulePkg"
+	ModuleTypes  = "PEI_CORE"
+End
+
+INFComponent
+	Name  = "DxeIpl"
+	File  = "DxeIplPeim/DxeIpl.inf"
+	Package  = "MdeModulePkg"
+	ModuleTypes  = "PEIM"
+End
+
+INFComponent
+	Name  = "RuntimeDxe"
+	File  = "RuntimeDxe/RuntimeDxe.inf"
+	Package  = "MdeModulePkg"
+	ModuleTypes  = "DXE_RUNTIME_DRIVER"
+End
+
+INFComponent
+	Name  = "PiSmmCore"
+	File  = "PiSmmCore/PiSmmCore.inf"
+	Package  = "MdeModulePkg"
+	ModuleTypes  = "SMM_CORE"
+	Token = "SMM_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "PiSmmIpl"
+	File  = "PiSmmCore/PiSmmIpl.inf"
+	Package  = "MdeModulePkg"
+	ModuleTypes  = "DXE_RUNTIME_DRIVER"
+	Token = "SMM_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "MdeModulePkg.LzmaCustomDecompressLib"
+	Override  = "MdeModulePkg.DxeIpl"
+	Token = "LZMA_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "MdeModulePkg.LzmaCustomDecompressLib"
+	Override  = "MdeModulePkg.DxeMain"
+	Token = "LZMA_SUPPORT" "=" "1"
+End
+
+PcdMapping
+	Name  = "PcdDxeIplSwitchToLongMode"
+	GuidSpace  = "gEfiMdeModulePkgTokenSpaceGuid"
+	PcdType  = "PcdsFeatureFlag"
+	DataType  = "Boolean"
+	Value  = "TRUE"
+	Arch  = "IA32 X64"
+	Offset  = 00h
+	Length  = 01h
+	TargetDSC = Yes
+	Token = "X64_SUPPORT" "=" "1"
+End
+
+PcdMapping
+	Name  = "PcdDxeIplSwitchToLongMode"
+	GuidSpace  = "gEfiMdeModulePkgTokenSpaceGuid"
+	PcdType  = "PcdsFeatureFlag"
+	DataType  = "Boolean"
+	Value  = "FALSE"
+	Arch  = "IA32"
+	Offset  = 00h
+	Length  = 01h
+	TargetDSC = Yes
+	Token = "X64_SUPPORT" "=" "0"
+End
+

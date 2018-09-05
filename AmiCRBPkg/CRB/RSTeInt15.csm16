@@ -1,0 +1,209 @@
+
+	TITLE	RSTeInt15.ASM -- BIOS SERVICE TO EXTRACT THE RSTe BOOT INFO.
+
+;*************************************************************************  
+;*************************************************************************  
+;**                                                                     **  
+;**        (C)Copyright 1985-2014, American Megatrends, Inc.            **  
+;**                                                                     **  
+;**                       All Rights Reserved.                          **  
+;**                                                                     **  
+;**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **  
+;**                                                                     **  
+;**                       Phone: (770)-246-8600                         **  
+;**                                                                     **  
+;*************************************************************************  
+;*************************************************************************  
+  
+;*************************************************************************  
+; $Header: $  
+;  
+; $Revision: $  
+;  
+; $Date: $  
+;*************************************************************************  
+; Revision History  
+; ----------------  
+; $Log: $  
+;   
+;*************************************************************************  
+;<AMI_FHDR_START>  
+;  
+; Name: RSTeInt15.csm16  
+;  
+; Description:  
+;   BIOS service to extract the RSTe Boot Info
+;  
+;<AMI_FHDR_END>  
+;*************************************************************************  
+
+.386
+
+INCLUDE token.equ
+IF MKF_CMOS_MANAGER_SUPPORT
+INCLUDE TokenEqu.equ
+ENDIF
+
+Function_Not_Supported           EQU 86h	
+Get_RST_OROM_BOOT_INFO           EQU 4F450002h ; 4F450002h ('OE') + Sub Function
+BOOT_SIG                         EQU 424F4F54h ; 424F4F54h ('BOOT')
+
+CSMOEM_CSEG SEGMENT PARA PUBLIC 'CODE' USE16
+        ASSUME cs:CSMOEM_CSEG, ds:CSMOEM_CSEG
+
+OldIntHandler	LABEL DWORD
+        IntSegSav       dw      0
+        IntOfsSav       dw      0
+
+IF MKF_CMOS_MANAGER_SUPPORT
+READ_CMOS macro Register
+
+if Register LE 7fh
+        mov     al, Register or 80h
+        mov     dx, MKF_CMOS_ADDR_PORT
+        out     dx, al
+        inc     dx
+        in      al, dx
+else
+        mov     al, Register AND 7Fh
+        mov     dx, 72h
+        out     dx, al
+        inc     dx
+        in      al, dx
+endif
+
+endm
+ENDIF
+
+;<AMI_FHDR_START>
+;---------------------------------------------------------------------------
+;
+; Name:         RSTeInt15Proc
+;
+; Description:  BIOS services to extract the RSTe Boot Info.
+
+; 13.5.1.2 INT 15 / AX=F300h / BX=0002h (Get RSTe OROM Boot Info)
+; Description:
+; Through this function, BIOS provides user-settable RSTe boot information to the RSTe
+; legacy OROM driver. These values are visible to the user through the BIOS Setup
+; menus. The menu options should be linked to legacy OROM selections in the PCH-IO
+; section.
+; Inputs:
+;   AX = F300h (Function)
+;   BX = 0002h (Sub Function)
+;   EAX = 0000F300h
+;   EBX = 4F450002h ('OE') + Sub Function
+;   EDX = 424F4F54h ('BOOT')
+;
+; Output:
+;   Normal Outputs:
+;     CF = clear if successful
+;     EAX = 424F4F54h ('BOOT')
+;     BL = legacy_orom_boot_controller_selection:
+;          0000h : Both SATA nor sSATA controller is selected as boot controller.
+;          0001h : The sSATA controller is selected as boot controller.
+;          0002h : The SATA controller is selected as boot controller.
+;          0003h : Neither SATA nor sSATA controller is selected as boot controller.
+
+;   Error Outputs:
+;     CF = set on error
+;     AH = error code
+;     = 86h Function Not Supported = (boot_controller_selection = 0000h assumed)
+;
+;---------------------------------------------------------------------------
+;<AMI_FHDR_END>
+
+RSTeInt15Proc    PROC   PUBLIC
+        cmp     eax, 0000F300h
+        je      RSTe_BIOS_Services	
+
+        jmp     DWORD PTR cs:[OldIntHandler]
+
+; ---------------------------------------------------------------------
+; Int 15h, AH = 0F300h, BL = 2
+; ---------------------------------------------------------------------
+RSTe_BIOS_Services:
+        push    ds       
+
+        cmp     ebx, Get_RST_OROM_BOOT_INFO
+        jne     FunctionNotSupported
+              
+        ; Provide user set RSTe boot information to the RSTe legacy OROM driver.
+        cmp     edx, BOOT_SIG
+        jne     FunctionNotSupported          
+
+        ; Read legacy orom boot controller selection from CMOS
+        push    edx       ; push BOOT_SIG and pop into eax before return
+        xor     ebx, ebx  ; Default boot controller selection is 00 ( Both SATA and sSATA )
+
+IF MKF_CMOS_MANAGER_SUPPORT
+        READ_CMOS CMOSMGR_RSTE_BOOT_INFO_OFFSET_REG   ;al = Output
+        and     al, CMOSMGR_RSTE_BOOT_INFO_OFFSET_MASK     
+
+        xor     cl, cl  ; Clear counter     
+
+        test    al, al
+        jz      RetBootInfo
+
+        mov     bl, CMOSMGR_RSTE_BOOT_INFO_OFFSET_MASK
+        ; Get the boot info bits from masked data.
+@@:
+        test    bl, 01h
+        jnz     RetBootInfo
+        inc     cl   
+        shr     bl, 1
+        jmp     @B
+        
+RetBootInfo:  
+        shr     al, cl               
+        mov     bl, al  ; legacy_orom_boot_controller_selection 
+
+ENDIF
+        pop     eax   
+        clc
+        jmp     Exit     
+
+FunctionNotSupported:
+        mov     ah,  Function_Not_Supported  
+        stc 
+        jmp     Exit       
+
+Exit:
+        pop    ds                         ; Restore DS, stack now at start.
+        ; Restore IF flag, if Set before invoking Int15 RSTe sub function
+        push   ax                         ; Save AX.
+        pushf                             ; Save lower EFLAGS.
+        mov    ax, word ptr ss:[esp+8]    ; Read pre-int lower EFLAGS from stack.
+        and    ax, 1 shl 9                ; Clear all but interrupt flag.
+        test   ax, ax                     ; Check if interrupt flag is set.
+        jz     RSTeDoNotSetInt             ; IF is not set, skip down.
+        popf                              ; Restore lower EFLAGS (pre-test).
+        sti                               ; Set interrupts flag.
+        jmp    RSTeExitAfterInt            ; Go to exit.
+RSTeDoNotSetInt:
+        popf                              ; Restore lower EFLAGS (pre-test).
+        cli                               ; Clear interrupts flag.
+RSTeExitAfterInt:
+        pop    ax                         ; Restore AX.
+        retf   2                          ; Far ret and ++ sp, throw away
+                                          ; orginal flags.
+
+RSTeInt15Proc      ENDP
+
+CSMOEM_CSEG ENDS
+
+END
+
+;**********************************************************************
+;**********************************************************************
+;**                                                                  **
+;**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+;**                                                                  **
+;**                       All Rights Reserved.                       **
+;**                                                                  **
+;**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+;**                                                                  **
+;**                       Phone: (770)-246-8600                      **
+;**                                                                  **
+;**********************************************************************
+;**********************************************************************

@@ -1,0 +1,55 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.00
+#    Bug Fix : N/A
+#    Reason  : Create a signal guid for OOB use after BDS connect all driver,
+#    			since original guid not all platform signaled.
+#    Auditor : Durant Lin
+#    Date    : Jan/04/2018
+#
+#*****************************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = OobSignalEventLib
+  FILE_GUID                      = 9B9C36A4-2C11-Ad17-CD16-AE881ABC82E4
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = OobSignalEventLib|DXE_DRIVER
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+#  
+#
+
+[Sources]
+  OobSignalEvent.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec 
+  AmiModulePkg/AmiModulePkg.dec  
+  SmcPkg/SmcPkg.dec
+  SmcPkg/Module/SmcOOB/SmcOOB.dec
+  
+[LibraryClasses]
+  IoLib
+  UefiBootServicesTableLib
+  BaseMemoryLib
+  DebugLib
+  AmiDxeLib
+
+[Protocols]
+  gOobSignalEventAfterBdsConnect
+
+[Guids]

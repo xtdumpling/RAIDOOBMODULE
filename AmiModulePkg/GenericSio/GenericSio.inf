@@ -1,0 +1,48 @@
+## @file
+#  SIO Generic Driver implementation
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = GenericSio
+  FILE_GUID                      = 8EEF9AD2-463E-425f-A4FE-2F6783D6F97E
+  MODULE_TYPE                    = UEFI_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = GenericSioEntryPoint
+
+[Sources]
+  GenericSio.c	
+  
+
+[Packages]
+  MdePkg/MdePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+
+[Protocols]
+  gAmiBoardSioInitProtocolGuid
+  gEfiS3SaveStateProtocolGuid
+  gEfiSioProtocolGuid
+  gAmiSioPortCompatibilityProtocolGuid
+  gAmiSioSmmHandoffProtocolGuid
+  gEfiComponentName2ProtocolGuid
+  gEfiSmmCommunicationProtocolGuid
+  gEfiAmiSioProtocolGuid
+  gEfiDriverBindingProtocolGuid
+  gEfiDevicePathProtocolGuid
+  gEfiPciIoProtocolGuid
+  gEfiComponentName2ProtocolGuid
+  gEfiVariableWriteArchProtocolGuid
+  
+[Guids]
+  gEfiDxeServicesTableGuid
+  gEfiAcpiTableGuid
+  
+[LibraryClasses]
+  UefiDriverEntryPoint
+  AmiDxeLib
+  AmiCspLib
+  AmiSioDxeLib
+  AmiSdlLib	
+  BaseMemoryLib

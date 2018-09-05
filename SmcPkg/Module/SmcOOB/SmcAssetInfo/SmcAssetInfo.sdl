@@ -1,0 +1,65 @@
+#****************************************************************************
+#****************************************************************************
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.01
+#    Bug Fix:  Enable SmcAssetInfo module and change IPMI command.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Sep/10/2016
+#
+#  Rev. 1.00
+#    Bug Fix:  Initial revision.
+#    Reason:   
+#    Auditor:  Kasber Chen
+#    Date:     May/25/2016
+#
+#****************************************************************************
+
+TOKEN
+    Name          = "SmcAssetInfo_SUPPORT"
+    Value         = "1"
+    TokenType     = Boolean
+    TargetEQU     = Yes
+    TargetMAK     = Yes
+    TargetH       = Yes
+    Master        = Yes
+    Token         = "IPMI_SUPPORT" "=" "1"
+End
+
+PATH
+    Name          = "SmcAssetInfo_DIR"
+End
+
+INFComponent
+    Name          = "SmcAssetInfo"
+    File          = "SmcAssetInfoBin.inf"
+    Package       = "SmcPkg"
+    ModuleTypes   = "DXE_DRIVER"
+    Token         = "SMC_OOB_SOURCES" "=" "0"
+End
+
+INFComponent
+    Name          = "SmcAssetInfo"
+    File          = "SmcAssetInfoDbg.inf"
+    Package       = "SmcPkg"
+    ModuleTypes   = "DXE_DRIVER"
+    Token         = "SMC_OOB_SOURCES" "=" "1"
+End
+
+INFComponent
+    Name          = "SmcAssetInfo"
+    File          = "SmcAssetInfo.inf"
+    Package       = "SmcPkg"
+    ModuleTypes   = "DXE_DRIVER"
+    Token         = "SMC_OOB_SOURCES" "=" "2"
+End
+
+FFS_FILE
+    Name          = "SmcAssetInfo"
+    FD_AREA       = "FV_MAIN"
+    INFComponent  = "SmcPkg.SmcAssetInfo"
+End

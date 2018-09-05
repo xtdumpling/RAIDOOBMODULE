@@ -1,0 +1,149 @@
+TOKEN
+    Name  = "EMUL6064_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable KBC Emulation support in Project"
+    TokenType = Boolean
+    TargetH = Yes
+    Master = Yes
+    Token = "AMIUSB_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "KBCEMULATION_DRIVER_VERSION"
+    Value  = "4"
+    Help  = "KbcEmulation driver version.\Do not change."
+    TokenType = Integer
+    TargetMAK = Yes
+    TargetH = Yes
+    Lock = Yes
+End
+
+TOKEN
+    Name  = "UHCI_EMUL_SUPPORT"
+    Value  = "1"
+    Help  = "Switch to enable UHCI based Emulation support in Project"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "INTEL_LEGACY_USB_KBC_EMUL_CONTROL_REG_PCI_DEVICES"
+    Help  = "List of supported Legacy USB Control register PCI devices in the following format: {dev1, ITF, SCC, BCC, offset}, {dev2, ITF, SCC, BCC, offset},...,{devN, ITF, SCC, BCC, offset}\dev represents the location of Legacy USB control register PCI device on PCI bus: dev = Bus << 8 + Dev << 3 + Func.\ITF represents the interface type of PCI device, for UHCI it must be 0.\SCC represents the sub class code of PCI device, for UHCI it must be 0x03.\BCC represents the base class code of PCI device, for UHCI it must be 0x0C.\offset represents the offset of legacy usb control register, for UHCI it must be 0xC0."
+    TokenType = Expression
+    TargetH = Yes
+    Token = "UHCI_EMUL_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "OHCI_EMUL_SUPPORT"
+    Value  = "0"
+    Help  = "Switch to enable OHCI based Emulation support in Project"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "OHCI_EMUL_PCI_DEVICES"
+    Help  = "List of supported OHCI controllers in the following format: {type1, dev1, addr1}, {type2, dev2, addr2},...,{typeN, devN, addrN}\type represents the device type of emulation device is PceDevice or FixedMemory.\dev represents the location of OHCI controller on PCI bus: dev = Bus << 8 + Dev << 3 + Func.\addr represents the address of emulation registers if type is FixedMemory."
+    TokenType = Expression
+    TargetH = Yes
+    Token = "OHCI_EMUL_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "SB_EMUL_SUPPORT"
+    Value  = "0"
+    Help  = "Switch to enable KbcEmulation based on the SB driver - Some Chipset the Legacy USB control block doesn't belong to OHCI or UHCI and regsiters are kept in SB and that needs specific SB driver to handle it"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "IOTRAP_EMUL_SUPPORT"
+    Value  = "0"
+    Help  = "Switch to enable IO Trap based Emulation support in Project"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "ICH10_WORKAROUND"
+    Value  = "0"
+    Help  = "Switch to enable ICH10 Workaround. Emulation enabled and one of the USB controller disabled, We must clear the SMI status on disabled USB controller also"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "IRQ_EMUL_SUPPORT"
+    Value  = "1"
+    Help  = "Switch to enable software method of IRQ generation in Project"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "SW_IRQ_GENERATION_REG"
+    Value  = "$(PM_BASE_ADDRESS)+0x70"
+    Help  = "Software IRQ generation regsiter from SB to generate the IRQ12 and IRQ1."
+    TokenType = Integer
+    TargetH = Yes
+    Token = "IRQ_EMUL_SUPPORT" "=" "1"
+    Token = "UHCI_EMUL_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "SW_IRQ_GENERATION_REG"
+    Value  = "$(PM_BASE_ADDRESS)+0x70"
+    Help  = "Software IRQ generation regsiter from SB to generate the IRQ12 and IRQ1."
+    TokenType = Integer
+    TargetH = Yes
+    Token = "IRQ_EMUL_SUPPORT" "=" "1"
+    Token = "IOTRAP_EMUL_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "EMULATION_ACPI_ENABLE_DISPATCH"
+    Value  = "0"
+    Help  = "1-Emulation SMI's will be disabled in the USB controller on Acpi Mode Enable and Disable."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "KBCEMULACPI_PACKAGES"
+    Value = "AmiChipsetPkg/AmiChipsetPkg.dec"
+    Help  = "Package list that can be added under KbcEmulAcpi.inf file, this Package will be the Chipset Package in which AcpiModeEnable.h file is present in the project"
+    TokenType = Expression
+    TargetH = Yes
+    Token = "EMULATION_ACPI_ENABLE_DISPATCH" "=" "1"
+End
+
+TOKEN
+    Name  = "TRACK_PS2MOUSE_4BYTE_PACKET"
+    Value = "1"
+    Help  = "1- Synchronizes USB Packet data size with Ps2 Mouse,by tracking the 'Ps2 mouse Scroll Wheel' Support check by the Legacy Application.If Ps2 Mouse supports scroll wheel format,Emulated USB Packet data should be of 4 bytes."
+    TokenType = Boolean
+    TargetH = Yes
+End
+    
+ELINK
+    Name  = "KBCEMULLIB"
+    InvokeOrder = ReplaceParent
+End
+
+INFComponent
+    Name  = "KbcEmul"
+    File  = "KbcEmul.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_SMM_DRIVER"
+    Token = "SMM_SUPPORT" "=" "1"
+End
+
+INFComponent
+    Name  = "KbcEmulDxe"
+    File  = "KbcEmulDxe.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_DRIVER"
+End
+

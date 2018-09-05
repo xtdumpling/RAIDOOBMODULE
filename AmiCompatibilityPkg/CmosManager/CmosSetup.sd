@@ -1,0 +1,204 @@
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2012, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**     5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093            **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
+
+//**********************************************************************
+// $Header: $
+//
+// $Revision: $
+//
+// $Date: $
+//**********************************************************************
+
+//**********************************************************************
+//<AMI_FHDR_START>
+//
+// Name:    CmosManager.sd
+//
+// Description:    CMOS Form Template
+//
+//<AMI_FHDR_END>
+//**********************************************************************
+
+#ifdef SETUP_DATA_DEFINITION
+
+/***********************************************************/
+/* Put NVRAM data definitions here.
+/* For example: UINT8 Data1;
+/* These definitions will be converted by the build process
+/* to a definitions of SETUP_DATA fields.
+/***********************************************************/
+    UINT8 CmosNotUsable;            // do not remove   
+    UINT8 CmosFirstBootDetected;    // do not remove   
+    UINT8 CmosDefaultsLoaded;       // do not remove      
+    UINT8 CmosBatteryIsBad;         // do not remove      
+    UINT8 CmosCheckSumIsBad;        // do not remove      
+#endif
+
+
+#ifdef FORM_SET_TYPEDEF
+    // #include 
+
+    #ifndef SUPPRESS_GRAYOUT_ENDIF //old Core
+      #if EFI_SPECIFICATION_VERSION>0x20000
+        #define SUPPRESS_GRAYOUT_ENDIF endif; endif;
+      #else
+        #define SUPPRESS_GRAYOUT_ENDIF endif;
+      #endif
+    #endif
+#endif // FORM_SET_TYPEDEF
+
+//**********************************************************************
+//                  Compatibility Section
+//**********************************************************************
+
+#if defined(VFRCOMPILE) && !defined(CONTROLS_ARE_DEFINED)
+  #define CONTROL_DEFINITION
+#endif
+
+//**********************************************************************
+//                  Controls Section
+//
+// The following section contains control macros that can be overridden
+// in external files.  This allows customization of control content, 
+// while ensuring the control's data is available.
+//**********************************************************************
+
+#ifdef CONTROL_DEFINITION
+
+#define CMOS_MGR_NOT_USABLE \
+    oneof varid =   SETUP_DATA.CmosNotUsable,\
+        prompt = STRING_TOKEN(STR_UNUSABLE_CMOS_PROMPT),\
+        help = STRING_TOKEN(STR_EMPTY),\
+        option text = STRING_TOKEN(STR_FALSE), value = 0, flags = MANUFACTURING | DEFAULT;\
+        option text = STRING_TOKEN(STR_TRUE),  value = 1, flags = 0;\
+    endoneof;
+
+#define CMOS_MGR_BATTERY_IS_BAD \
+    oneof varid =   SETUP_DATA.CmosBatteryIsBad,\
+        prompt = STRING_TOKEN(STR_BAD_CMOS_BATTERY_PROMPT),\
+        help = STRING_TOKEN(STR_EMPTY),\
+        option text = STRING_TOKEN(STR_FALSE), value = 0, flags = MANUFACTURING | DEFAULT;\
+        option text = STRING_TOKEN(STR_TRUE),  value = 1, flags = 0;\
+    endoneof;
+
+#define CMOS_MGR_FIRST_BOOT_DETECTED \
+    oneof varid =   SETUP_DATA.CmosFirstBootDetected,\
+        prompt = STRING_TOKEN(STR_FIRST_BOOT_DETECTED_PROMPT),\
+        help = STRING_TOKEN(STR_EMPTY),\
+        option text = STRING_TOKEN(STR_FALSE), value = 0, flags = MANUFACTURING | DEFAULT;\
+        option text = STRING_TOKEN(STR_TRUE),  value = 1, flags = 0;\
+    endoneof;
+
+#define CMOS_MGR_DEFAULTS_LOADED \
+    oneof varid =   SETUP_DATA.CmosDefaultsLoaded,\
+        prompt = STRING_TOKEN(STR_DEFAULTS_LOADED_PROMPT),\
+        help = STRING_TOKEN(STR_EMPTY),\
+        option text = STRING_TOKEN(STR_FALSE), value = 0, flags = MANUFACTURING | DEFAULT;\
+        option text = STRING_TOKEN(STR_TRUE),  value = 1, flags = 0;\
+    endoneof;
+
+#define CMOS_MGR_CHECKSUM_IS_BAD \
+    oneof varid =   SETUP_DATA.CmosCheckSumIsBad,\
+        prompt = STRING_TOKEN(STR_BAD_CHECKSUM_PROMPT),\
+        help = STRING_TOKEN(STR_EMPTY),\
+        option text = STRING_TOKEN(STR_FALSE), value = 0, flags = MANUFACTURING | DEFAULT;\
+        option text = STRING_TOKEN(STR_TRUE),  value = 1, flags = 0;\
+    endoneof;
+
+#endif //#ifdef CONTROL_DEFINITION
+
+
+#ifdef CONTROLS_WITH_DEFAULTS
+    CMOS_MGR_NOT_USABLE
+    CMOS_MGR_BATTERY_IS_BAD
+    CMOS_MGR_FIRST_BOOT_DETECTED
+    CMOS_MGR_DEFAULTS_LOADED
+    CMOS_MGR_CHECKSUM_IS_BAD
+#endif //#ifdef CONTROLS_WITH_DEFAULTS
+
+
+#ifdef ADVANCED_FORM_SET
+
+    #ifdef FORM_SET_ITEM
+    // Define controls to be added to the main page of the formset
+    #endif
+
+    #ifdef FORM_SET_GOTO
+    // Define goto commands for the forms defined in this file
+        goto CMOS_FORM_ID, 
+        prompt = STRING_TOKEN(STR_CMOS_FORM),
+        help = STRING_TOKEN(STR_CMOS_FORM_HELP);
+    #endif
+
+    #ifdef FORM_SET_FORM
+
+
+      #ifndef CMOS_FORM_DEF
+      #define CMOS_FORM_DEF
+        // Define forms
+        form formid = AUTO_ID(CMOS_FORM_ID),
+
+        title = STRING_TOKEN(STR_CMOS_FORM);
+        SUBTITLE(STRING_TOKEN(STR_CMOS_FORM_HELP))
+    
+        SEPARATOR
+    
+        // grayout (for display only)
+        suppressif ideqval SETUP_DATA.CmosNotUsable == 0;
+        grayoutif ideqval SETUP_DATA.CmosNotUsable == 1;
+            CMOS_MGR_NOT_USABLE
+        SUPPRESS_GRAYOUT_ENDIF
+
+        grayoutif ideqval SETUP_DATA.CmosBatteryIsBad == 1 OR
+                  ideqval SETUP_DATA.CmosBatteryIsBad == 0;
+            CMOS_MGR_BATTERY_IS_BAD
+        endif;
+
+        grayoutif ideqval SETUP_DATA.CmosFirstBootDetected == 1 OR
+                  ideqval SETUP_DATA.CmosFirstBootDetected == 0;
+            CMOS_MGR_FIRST_BOOT_DETECTED
+        endif;
+
+        suppressif ideqval SETUP_DATA.CmosNotUsable == 1;
+        grayoutif ideqval SETUP_DATA.CmosDefaultsLoaded == 1 OR
+                  ideqval SETUP_DATA.CmosDefaultsLoaded == 0;
+            CMOS_MGR_DEFAULTS_LOADED
+        SUPPRESS_GRAYOUT_ENDIF
+
+        suppressif ideqval SETUP_DATA.CmosNotUsable == 1;
+        grayoutif ideqval SETUP_DATA.CmosCheckSumIsBad == 1 OR
+                  ideqval SETUP_DATA.CmosCheckSumIsBad == 0;
+            CMOS_MGR_CHECKSUM_IS_BAD
+        SUPPRESS_GRAYOUT_ENDIF
+
+        endform; 
+      #endif // #ifndef CMOS_FORM_DEF
+
+    #endif // FORM_SET_FORM
+
+#endif  // ADVANCED_FORM_SET
+
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2012, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**     5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093            **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************

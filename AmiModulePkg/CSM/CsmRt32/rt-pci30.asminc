@@ -1,0 +1,337 @@
+  	page	,132
+	title .				Run Time PCI Functions
+;**********************************************************************
+;**********************************************************************
+;**                                                                  **
+;**        (C)Copyright 1985-2013, American Megatrends, Inc.         **
+;**                                                                  **
+;**                       All Rights Reserved.                       **
+;**                                                                  **
+;**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+;**                                                                  **
+;**                       Phone: (770)-246-8600                      **
+;**                                                                  **
+;**********************************************************************
+;**********************************************************************
+;****************************************************************************;
+; $Header: /Alaska/SOURCE/Modules/CSM/Generic/RT32/rt-pci30.inc 2     8/16/10 3:24p Olegi $
+;
+; $Revision: 2 $
+;
+; $Date: 8/16/10 3:24p $
+;****************************************************************************;
+;****************************************************************************;
+
+
+;<AMI_PHDR_START>
+;------------------------------------------------------------------------------;
+; Procedure:        pci30_read_cfg_x                                           ;
+;                                                                              ;
+; Description:                                                                 ;
+;                                                                              ;
+; This function reads a byte from the configuration space of given device /    ;
+; function.                                                                    ;
+;                                                                              ;
+; Input:  BH = PCI Bus number                                                  ;
+;         BL = Device / Function number                                        ;
+;              Bits 7-3: PCI device number                                     ;
+;              Bits 2-0: Function number within the device                     ;
+;         DI = Register number > 256                                           ;
+;                                                                              ;
+; Output: ECX, CX, CL = Data read from configuration space (width depends on   ;
+;                       value of SI on entry)                                  ;
+;         CF = Set if error, cleared otherwise                                 ;
+;                                                                              ;
+; Destroys: Nothing                                                            ;
+;------------------------------------------------------------------------------;
+;<AMI_PHDR_END>
+
+pci30_read_cfg_x PROC PRIVATE
+	mov	ah, RT_PCI_BAD_REG_ADD ;Indicate invalid address
+					;(CORE0132.2)>
+	test	di, PCIE_ACCESS_BIT
+	jz	bad_add_exit	; Extended Config space access bit is not set
+				; return with error
+				;<(CORE0132.2)
+	;si - 0FF0Xh; X depends on byte/word/dword access
+	;relax si to allow 4K offset	
+	push	si
+				;(CORE0132.2)>
+;	and	si,0F00Fh	;si=0F00Xh
+	and	si,0700Fh	;si=0700Xh
+					;<(CORE0132.2)
+	test	di, si
+	pop	si
+	jz	@F		; proceed if address is valid
+	;--- offset is invalid: over 4K or not aligned properly
+bad_add_exit:
+	stc
+;	mov	ah, RT_PCI_BAD_REG_ADD ;Indicate invalid address
+	jmp	exit
+@@:
+				;(CORE0132.2)>
+	test	di, 00F00h
+	jz  	bad_add_exit	; br if <=255
+				;<(CORE0132.2)
+	;------ offset is good ---------
+	push 	edx
+	push	di
+	and	di, 0FFCh	; dword align offset
+
+	; calculate adress for memory mapped access to config space
+	; address =	base_address + 4K( func_number + 8*dev_number+256*bus_number) 
+	;			+ register
+	call 	get_pcix_addr32	
+	pop	di
+	test	edx,edx
+	jnz	@f 		; Br if support for extended acc mode is available
+	;------- base address is 0 - exended acc mode is unavailable
+	stc
+	mov	ah, RT_INVALID_FUNC ;Adresses above 256 are not supported
+	pop	edx
+	jmp 	exit
+@@:
+	;------- base address != 0 - extended acc. mode is supported
+	public RT_PCI30_read
+RT_PCI30_read::
+	nop
+	mov	eax, dword ptr es:[edx]		;read 32-bit value
+	mov	cx, di
+	and	cl, 03h
+	shl	cl, 3
+	shr	eax, cl
+	; prepare mask for byte/word/dword return value	
+	mov	edx, 0FFFFFF00h
+	mov	cx, si 
+        shl     cl,3
+	shl	edx, cl	
+	not	edx	
+	and	eax, edx
+	mov	ecx, eax
+
+
+	pop	edx
+	mov	ah, RT_NO_ERROR
+	clc
+exit:
+	ret
+pci30_read_cfg_x ENDP
+
+
+;<AMI_PHDR_START>
+;------------------------------------------------------------------------------;
+; Procedure:    pci30_write_cfg_x                                              ;
+;                                                                              ;
+; Description:                                                                 ;
+;                                                                              ;
+; This function writes a dword to the configuration space of given device /    ;
+; function using extended mode (memory mapped).                                ;
+; The bus number must be checked and carry should be set if the bus number is  ;
+; invalid.                                                                     ;
+;                                                                              ;
+; NOTE: This function should only be called from RT-PCI.ASM.  All other        ;
+; callers must call the rt_entry (in RT.ASM) with AH containing the proper     ;
+; function number (see RT.EQU).                                                ;
+;                                                                              ;
+; Input:  BH = PCI Bus number                                                  ;
+;         BL = Device / Function number                                        ;
+;              Bits 7-3: PCI device number                                     ;
+;              Bits 2-0: Function number within the device                     ;
+;         DI = Register number > 256                                           ;
+;              bit15 must 1 for extended config space access                   ;
+;         SI = One of the following values: PCI_REG_ADDRESS_BYTE               ;
+;              PCI_REG_ADDRESS_WORD, or PCI_REG_ADDRESS_DWORD                  ;
+;         ECX, CX, CL = Data to write to configuration space (width depends on ;
+;                       value of SI)                                           ;
+;                                                                              ;
+; Output: CF = Set if error, cleared otherwise                                 ;
+;                                                                              ;
+; Destroys: Nothing                                                            ;
+;------------------------------------------------------------------------------;
+;<AMI_PHDR_END>
+pci30_write_cfg_x PROC PRIVATE
+	mov	ah, RT_PCI_BAD_REG_ADD ;Indicate invalid address
+	;si - 0FF0Xh; X depends on byte/word/dword access
+	;relax si to allow 4K offset	
+	test	di, PCIE_ACCESS_BIT
+	jz	bad_add_exit	; Extended Config space access bit is not set
+				; return with error
+
+	push	si
+					;(CORE0132.2)>
+;	and		si,0F00Fh	;si=0F00Xh
+	and		si,0700Fh	;si=0700Xh
+					;<(CORE0132.2)
+	test	di, si
+	pop		si
+	jz		@F			; proceed if address is valid
+	;--- offset is invalid: over 4K or not aligned properly
+bad_add_exit:
+	stc
+;	mov	ah, RT_PCI_BAD_REG_ADD ;Indicate invalid address
+	jmp		exit
+@@:
+					;(CORE0132.2)>
+	test	di, 00F00h
+	jz  	bad_add_exit		; br if <=255
+					;<(CORE0132.2)
+	;------ offset is good ---------
+	push 	edx
+
+	; calculate adress for memory mapped access to config space
+	; address =	base_address + 4K( func_number + 8*dev_number+256*bus_number) 
+	;			+ register
+	call 	get_pcix_addr32		; address -> edx
+	test	edx,edx
+	jnz	@f 			; Br if support for extended acc mode is available
+	;------- base address is 0 - exended acc mode is unavailable
+	stc
+	mov	ah, RT_INVALID_FUNC ;Adresses above 256 are not supported
+	pop	edx
+	jmp 	exit
+@@:
+	;------- base address != 0 - extended acc. mode is supported
+ifndef RT32
+	push 	es
+	call 	go_to_big_real_mode
+	push	0
+	pop		es
+endif
+	public RT_PCI30_write
+RT_PCI30_write::
+;	int 3
+	cmp	si, PCI_REG_ADDRESS_BYTE
+	jne	write_cfg_not_byte
+	mov byte ptr es:[edx], cl
+	jmp	short write_cfg_done
+
+write_cfg_not_byte:
+	cmp	si, PCI_REG_ADDRESS_WORD
+	jne	write_cfg_dword
+	mov	word ptr es:[edx], cx
+	jmp	short write_cfg_done
+
+write_cfg_dword:
+ 	mov dword ptr es:[edx],ecx     
+
+write_cfg_done:
+
+ifndef RT32
+;	call 	go_to_normal_real_mode 
+	pop 	es
+endif
+
+	pop	edx
+	mov	ah, RT_NO_ERROR
+	clc
+exit:
+	ret
+pci30_write_cfg_x endp
+
+
+;<AMI_PHDR_START>
+;----------------------------------------------------------------------------
+;
+; Procedure:    get_pcix_addr32
+;
+; Description:  Converts bus, device, function, register to a 32-bit PCI
+;               address for extended mode configuration access.
+;
+; Input:  BH = PCI Bus number                                                  ;
+;         BL = Device / Function number                                        ;
+;              Bits 7-3: PCI device number                                     ;
+;              Bits 2-0: Function number within the device                     ;
+;         DI = Register number (must be dword aligned address, this value has  ;
+;              already been checked for validity)                              ;
+;
+; Output:   EDX  -   32-bit physical address of register
+;
+; Modified: EDX
+;
+;----------------------------------------------------------------------------
+;<AMI_PHDR_END>
+.586
+get_pcix_addr32 PROC PRIVATE
+;	mov	edx, MKF_PCIE_BASE_ADDRESS
+;	mov	edx, MKF_PCIEX_BASE_ADDRESS
+	mov	edx, DWORD PTR es:[0f005eh]
+	test	edx, edx
+	jz	exit		
+
+	movzx	edx, bx	
+	shl	edx, 16
+	mov	dx, di
+	
+; EDX[31:24] - PCI BUS number of device.
+; EDX[23:19] - PCI device #.
+; EDX[18:16] - PCI function # on device.
+; EDX[15:0]  - Register offset.
+
+	shl	dx, 4	;Register offset is maximum of 12 bits
+
+; EDX[31:24] - PCI BUS number of device.
+; EDX[23:19] - PCI device #.
+; EDX[18:16] - PCI function # on device.
+; EDX[15:4]  - Register offset.
+; EDX[3:0]   - Unused
+
+	xchg	dh, dl
+
+; EDX[31:24] - PCI BUS number of device.
+; EDX[23:19] - PCI device #.
+; EDX[18:16] - PCI function # on device.
+; EDX[15:12] - Lower 4 bits of register offset
+; EDX[11:8]  - Unused
+; EDX[7:0]   - Upper 8 bits of register offset
+	bswap	edx	;Offset in upper 16 bits
+			;Bus, device, function in lower 16
+
+; EDX[31:24] - Upper 8 bits of register offset
+; EDX[23:20] - Lower 4 bits of register offset
+; EDX[19:16] - Unused
+; EDX[15:8]  - PCI device and function #
+; EDX[7:0]   - PCI BUS number of device.
+
+	xchg	dh, dl	;Bus in dh, dev/function in dl
+
+; EDX[31:24] - Upper 8 bits of register offset
+; EDX[23:20] - Lower 4 bits of register offset
+; EDX[19:16] - Unused
+; EDX[15:8]  - PCI BUS number of device.
+; EDX[7:0]   - PCI device and function #
+
+	rol	edx, 12	;Bus/dev/function in upper, offset in lower
+
+; EDX[31:28] - Unused 
+; EDX[27:20] - PCI BUS number of device.
+; EDX[19:12] - PCI device and function #
+; EDX[11:4]  - Upper 8 bits of register offset
+; EDX[3:0]   - Lower 4 bits of register offset
+
+;	add	edx, MKF_PCIE_BASE_ADDRESS
+;	add	edx, MKF_PCIEX_BASE_ADDRESS
+	add	edx, DWORD PTR es:[0f005eh]
+
+; EDX[31:28] - PCI Express Base Address
+; EDX[27:20] - PCI BUS number of device.
+; EDX[19:12] - PCI device and function #
+; EDX[11:4]  - Upper 8 bits of register offset
+; EDX[3:0]   - Lower 4 bits of register offset
+exit:
+	ret
+	
+get_pcix_addr32 ENDP
+
+;**********************************************************************
+;**********************************************************************
+;**                                                                  **
+;**        (C)Copyright 1985-2013, American Megatrends, Inc.         **
+;**                                                                  **
+;**                       All Rights Reserved.                       **
+;**                                                                  **
+;**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+;**                                                                  **
+;**                       Phone: (770)-246-8600                      **
+;**                                                                  **
+;**********************************************************************
+;**********************************************************************

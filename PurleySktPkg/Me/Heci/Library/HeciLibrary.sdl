@@ -1,0 +1,142 @@
+TOKEN
+	Name  = "HeciLibrary_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable HeciLibrary support in Project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+INFComponent
+	Name  = "HeciCoreLib"
+	File  = "HeciCoreLib\HeciCoreLib.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "DXE_DRIVER"
+End
+
+INFComponent
+	Name  = "HeciMsgPeiLib"
+	File  = "HeciMsgPeiLib\HeciMsgPeiLib.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "PEIM"
+End
+
+INFComponent
+	Name  = "MeChipsetLib"
+	File  = "MeChipsetLib\MeChipsetLib.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "PEIM"
+End
+
+INFComponent
+	Name  = "MeDummyLib"
+	File  = "MeDummyLib\MeDummyLib.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "BASE"
+End
+
+LibraryMapping
+	Class  = "HeciCoreLib"
+	Instance  = "PurleySktPkg.HeciCoreLib"
+    Arch  = "IA32 X64"
+End
+
+LibraryMapping
+	Class  = "HeciMsgPeiLib"
+	Instance  = "PurleySktPkg.HeciMsgPeiLib"
+End
+
+LibraryMapping
+	Class  = "MeChipsetLib"
+	Instance  = "PurleySktPkg.MeChipsetLib"
+End
+
+LibraryMapping
+    Class  = "SpsPeiLib"
+    Instance  = "PurleySktPkg.MeDummyLib"
+    Token = "ME_ENABLE" "=" "0"
+End
+
+LibraryMapping
+    Class  = "SpsPeiLib"
+    Instance  = "PurleySktPkg.MeDummyLib"
+    Token = "SPS_ENABLE" "=" "0"
+End
+
+LibraryMapping
+    Class  = "AlertStandardFormatLib"
+    Instance  = "PurleySktPkg.MeDummyLib"
+    Token = "AMT_ENABLE" "!=" "1"
+End
+
+LibraryMapping
+    Class  = "ActiveManagementLib"
+    Instance  = "PurleySktPkg.MeDummyLib"
+    Token = "AMT_ENABLE" "!=" "1"
+End
+
+LibraryMapping
+    Class  = "PeiAmtLib"
+    Instance  = "PurleySktPkg.MeDummyLib"
+    Token = "AMT_ENABLE" "!=" "1"
+End
+
+LibraryMapping
+    Class  = "DxeMbpDataLib"
+    Instance  = "PurleySktPkg.MeDummyLib"
+    Token = "AMT_ENABLE" "!=" "1"
+End
+
+INFComponent
+	Name  = "MeUmaEinjLib"
+	File  = "MeUmaEinjLib\MeUmaEinjLib.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "UEFI_DRIVER"
+
+End
+
+LibraryMapping
+	Class  = "MeUmaEinjLib"
+	Instance  = "PurleySktPkg.MeUmaEinjLib"
+    Arch  = "X64"
+    Token = "SPS_ENABLE" "=" "1"
+End
+
+LibraryMapping
+	Class  = "MeUmaEinjLib"
+	Instance  = "PurleySktPkg.MeDummyLib"
+    Arch  = "X64"
+    Token = "SPS_ENABLE" "=" "0"
+End
+
+INFComponent
+	Name  = "PeiDxeMeShowBufferLib"
+	File  = "PeiDxeMeShowBufferLib\PeiDxeMeShowBufferLib.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "UEFI_DRIVER"
+    Token = "AMT_ENABLE" "=" "1"
+End
+
+LibraryMapping
+	Class  = "MeShowBufferLib"
+	Instance  = "PurleySktPkg.PeiDxeMeShowBufferLib"
+    Arch  = "IA32 X64"
+    Token = "AMT_ENABLE" "=" "1"
+End
+
+LibraryMapping
+    Class  = "DxeAmtLib"
+    Instance  = "PurleySktPkg.MeDummyLib"
+    Token = "AMT_ENABLE" "!=" "1"
+End
+
+LibraryMapping
+    Class  = "DxeAmtPolicyLib"
+    Instance  = "PurleySktPkg.MeDummyLib"
+    Token = "AMT_ENABLE" "!=" "1"
+End
+
+LibraryMapping
+    Class  = "PeiAmtPolicyLib"
+    Instance  = "PurleySktPkg.MeDummyLib"
+    Token = "AMT_ENABLE" "!=" "1"
+End

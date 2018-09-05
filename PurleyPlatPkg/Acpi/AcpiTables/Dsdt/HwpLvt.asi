@@ -1,0 +1,140 @@
+/*++
+  This file contains 'Framework Code' and is licensed as such
+  under the terms of your license agreement with Intel or your
+  vendor.  This file may not be modified, except as allowed by
+  additional terms of your license agreement.
+--*/
+/*++
+
+  Copyright (c) 2001 - 2016, Intel Corporation.  All rights reserved.
+
+  This software and associated documentation (if any) is furnished under 
+  a license and may only be used or copied in accordance with the terms 
+  of the license.  Except as permitted by such license, no part of this 
+  software or documentation may be reproduced, stored in a retrieval 
+  system, or transmitted in any form or by any means without the express 
+  written consent of Intel Corporation.
+
+  Module Name:
+
+    HwpLvt.asi
+
+  Abstract:
+
+    Contains HWP Notification
+
+--*/
+#include "MaxSocket.h"
+
+#define CPU_THREAD_NOTIFY(socket, thread)   \
+        Notify(\_SB.SCK##socket.CP##thread, 0x83)
+
+#define CPU_SOCKET_NOTIFY(socket)           \
+        CPU_THREAD_NOTIFY(socket, 00)       \
+        CPU_THREAD_NOTIFY(socket, 01)       \
+        CPU_THREAD_NOTIFY(socket, 02)       \
+        CPU_THREAD_NOTIFY(socket, 03)       \
+        CPU_THREAD_NOTIFY(socket, 04)       \
+        CPU_THREAD_NOTIFY(socket, 05)       \
+        CPU_THREAD_NOTIFY(socket, 06)       \
+        CPU_THREAD_NOTIFY(socket, 07)       \
+        CPU_THREAD_NOTIFY(socket, 08)       \
+        CPU_THREAD_NOTIFY(socket, 09)       \
+        CPU_THREAD_NOTIFY(socket, 0A)       \
+        CPU_THREAD_NOTIFY(socket, 0B)       \
+        CPU_THREAD_NOTIFY(socket, 0C)       \
+        CPU_THREAD_NOTIFY(socket, 0D)       \
+        CPU_THREAD_NOTIFY(socket, 0E)       \
+        CPU_THREAD_NOTIFY(socket, 0F)       \
+        CPU_THREAD_NOTIFY(socket, 10)       \
+        CPU_THREAD_NOTIFY(socket, 11)       \
+        CPU_THREAD_NOTIFY(socket, 12)       \
+        CPU_THREAD_NOTIFY(socket, 13)       \
+        CPU_THREAD_NOTIFY(socket, 14)       \
+        CPU_THREAD_NOTIFY(socket, 15)       \
+        CPU_THREAD_NOTIFY(socket, 16)       \
+        CPU_THREAD_NOTIFY(socket, 17)       \
+        CPU_THREAD_NOTIFY(socket, 18)       \
+        CPU_THREAD_NOTIFY(socket, 19)       \
+        CPU_THREAD_NOTIFY(socket, 1A)       \
+        CPU_THREAD_NOTIFY(socket, 1B)       \
+        CPU_THREAD_NOTIFY(socket, 1C)       \
+        CPU_THREAD_NOTIFY(socket, 1D)       \
+        CPU_THREAD_NOTIFY(socket, 1E)       \
+        CPU_THREAD_NOTIFY(socket, 1F)       \
+        CPU_THREAD_NOTIFY(socket, 20)       \
+        CPU_THREAD_NOTIFY(socket, 21)       \
+        CPU_THREAD_NOTIFY(socket, 22)       \
+        CPU_THREAD_NOTIFY(socket, 23)       \
+        CPU_THREAD_NOTIFY(socket, 24)       \
+        CPU_THREAD_NOTIFY(socket, 25)       \
+        CPU_THREAD_NOTIFY(socket, 26)       \
+        CPU_THREAD_NOTIFY(socket, 27)       \
+        CPU_THREAD_NOTIFY(socket, 28)       \
+        CPU_THREAD_NOTIFY(socket, 29)       \
+        CPU_THREAD_NOTIFY(socket, 2A)       \
+        CPU_THREAD_NOTIFY(socket, 2B)       \
+        CPU_THREAD_NOTIFY(socket, 2C)       \
+        CPU_THREAD_NOTIFY(socket, 2D)       \
+        CPU_THREAD_NOTIFY(socket, 2E)       \
+        CPU_THREAD_NOTIFY(socket, 2F)       \
+        CPU_THREAD_NOTIFY(socket, 30)       \
+        CPU_THREAD_NOTIFY(socket, 31)       \
+        CPU_THREAD_NOTIFY(socket, 32)       \
+        CPU_THREAD_NOTIFY(socket, 33)       \
+        CPU_THREAD_NOTIFY(socket, 34)       \
+        CPU_THREAD_NOTIFY(socket, 35)       \
+        CPU_THREAD_NOTIFY(socket, 36)       \
+        CPU_THREAD_NOTIFY(socket, 37)                                         
+
+Scope(\_GPE) {
+  Method(HLVT) {
+    If(And(HWPI, 1)) {
+      If (And(PRBM, 1)) {
+        CPU_SOCKET_NOTIFY(0)
+      }
+
+#if MAX_SOCKET > 1
+      If (And(PRBM, 2)) {
+        CPU_SOCKET_NOTIFY(1)
+      }
+#endif
+
+#if MAX_SOCKET > 2
+      If (And(PRBM, 4)) {
+        CPU_SOCKET_NOTIFY(2)
+      }
+#endif
+
+#if MAX_SOCKET > 3
+      If (And(PRBM, 8)) {
+        CPU_SOCKET_NOTIFY(3)
+      } 
+#endif
+
+#if MAX_SOCKET > 4
+      If (And(PRBM, 16)) {
+        CPU_SOCKET_NOTIFY(4)
+      } 
+#endif
+
+#if MAX_SOCKET > 5
+      If (And(PRBM, 32)) {
+        CPU_SOCKET_NOTIFY(5)
+      } 
+#endif
+
+#if MAX_SOCKET > 6
+      If (And(PRBM, 64)) {
+        CPU_SOCKET_NOTIFY(6)
+      } 
+#endif
+
+#if MAX_SOCKET > 7
+      If (And(PRBM, 128)) {
+        CPU_SOCKET_NOTIFY(7)
+      } 
+#endif
+    }
+  }
+}

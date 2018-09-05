@@ -1,0 +1,69 @@
+#****************************************************************************
+#****************************************************************************
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#  
+#  Rev. 1.00
+#    Bug Fix:  Add SmcBMCSMI module.
+#    Reason:
+#    Auditor:  Hartmann Hsieh
+#    Date:     Jul/13/2016
+#
+#****************************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SmcBMCSMI
+  FILE_GUID                      = E352725A-B84A-4EBC-A994-228E19224816
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  VERSION_STRING                 = 1.0
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  ENTRY_POINT                    = InitializeSmcBmcSMI
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+
+[Sources]  
+  SmcBMCSMI.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiIpmiPkg/AmiIpmiPkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  SmcPkg/SmcPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  SmmServicesTableLib
+  DebugLib
+  #PcdLib
+  GpioLib
+  SmcLib
+
+[Protocols]  
+  gEfiPciIoProtocolGuid
+  gEfiSmmIpmiTransportProtocolGuid              # PROTOCOL ALWAYS_CONSUMED
+  gEfiSmmGpiDispatch2ProtocolGuid                # PROTOCOL ALWAYS_CONSUMED
+  gEfiSmmBase2ProtocolGuid                              #CONSUMES
+
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+  gEfiPchTokenSpaceGuid.PcdTcoBaseAddress
+
+[Depex]
+  gEfiSmmIpmiTransportProtocolGuid AND
+  gEfiSmmGpiDispatch2ProtocolGuid AND
+  gEfiSmmBase2ProtocolGuid
+

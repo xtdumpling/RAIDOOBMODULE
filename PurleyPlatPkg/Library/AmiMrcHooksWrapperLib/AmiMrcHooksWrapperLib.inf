@@ -1,0 +1,95 @@
+
+#****************************************************************************
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.01
+#      Bug Fixed:  Early Graphic Logo Support.
+#      Reason:     
+#      Auditor:    Isaac Hsu
+#      Date:       Mar/14/2017
+#
+#  Rev. 1.00
+#      Bug Fixed:  add RC error log to BMC and report error DIMM To screen(refer to Grantley)
+#      Reason:     
+#      Auditor:    Timmy Wang
+#      Date:       May/26/2016
+#
+#*****************************************************************************
+
+
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+## @file AmiMrcHooksWrapperLib.inf
+# Contains wrapper methods for MRC Hooks.
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = AmiMrcHooksWrapperLib
+  FILE_GUID                      = A002EC7D-52A9-4F9B-8543-79AD1E70D3CB
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = AmiMrcHooksWrapperLib
+  
+[Sources]
+  AmiMrcHooksWrapperLib.c
+  AmiMrcHooksWrapperLib.h
+
+[Packages]
+  PurleySktPkg/SocketPkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  MdePkg/MdePkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  AmiIpmiPkg/AmiIpmiPkg.dec	#SMCPKG_SUPPORT
+  SmcPkg/SmcPkg.dec		#SMCPKG_SUPPORT
+
+[LibraryClasses]
+  BaseMemoryCoreLib
+  $(AMI_MRC_HOOK_LIB)
+  IoLib				#SMCPKG_SUPPORT
+  PcdLib                        #SMCPKG_SUPPORT
+
+[Protocols]
+
+[Guids]				#SMCPKG_SUPPORT
+  gSuperMPeiPrococolGuid	#SMCPKG_SUPPORT
+
+[Ppis]				#SMCPKG_SUPPORT
+  gEfiPeiIpmiTransportPpiGuid   #SMCPKG_SUPPORT
+
+[Pcd]                                #SMCPKG_SUPPORT
+  gSmcPkgTokenSpaceGuid.PcdSmcColor  #SMCPKG_SUPPORT
+
+[Depex]
+  TRUE
+
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************

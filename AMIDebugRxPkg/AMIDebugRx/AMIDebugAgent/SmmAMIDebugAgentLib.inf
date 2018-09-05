@@ -1,0 +1,82 @@
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SmmAMIDebugAgentLib
+  FILE_GUID                      = D781A600-DC15-4ce2-8C6F-2276B1DBE6D4
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  VERSION_STRING                 = 0.1
+  LIBRARY_CLASS                  = DebugAgentLib|SMM_CORE DXE_SMM_DRIVER
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+[Binaries.Ia32]
+  BIN | SmmAMIDebugAgent/SmmAMIDebugAgentLibx86.lib
+
+[Binaries.X64]
+  BIN | SmmAMIDebugAgent/SmmAMIDebugAgentLibx64.lib
+  
+[Sources.common]
+    
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  UefiCpuPkg/UefiCpuPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AMIDebugRxPkg/AMIDebugRxPkg.dec
+
+[LibraryClasses]
+  BaseLib
+  BaseMemoryLib
+  IoLib
+  UefiLib
+  PcdLib
+  SynchronizationLib
+  LocalApicLib
+  TimerLib
+  DxeDebugPortLib
+  DxeDebugXportLib
+  DxeDebugDbgrLib
+  CommonDebugAgentLib
+  PeCoffGetEntryPointLib
+  PeCoffExtraActionLib
+  InitializeLocalApicLib
+
+[Guids]
+
+[Protocols]
+  gEfiSmmBase2ProtocolGuid						##CONSUMES
+  gEfiSmmSwDispatch2ProtocolGuid					##CONSUMES
+  gEfiSmmCpuProtocolGuid						##CONSUMES
+  #gDbgSMMHandlerGuid							##PRODUCES
+  
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdFSBClock                             	## CONSUMES
+  gEfiAMIDebugRxPkgTokenSpaceGuid.PcdExceptionsIgnoredByDebugger  	## CONSUMES
+
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+#*************************************************************************

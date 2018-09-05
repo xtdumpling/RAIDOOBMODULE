@@ -1,0 +1,119 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2011, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+## @file
+#  AmiPeiLib library implementation
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = AmiDxeLib
+  FILE_GUID                      = 23047428-cbb1-4fb2-8f19-f8cbf8c40381
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = AmiDxeLib|DXE_CORE DXE_DRIVER DXE_RUNTIME_DRIVER SMM_CORE DXE_SMM_DRIVER UEFI_APPLICATION UEFI_DRIVER 
+
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+
+[Sources]
+PeLoader.c
+Debug.c
+StdLibC.c
+Misc.c
+Io.c
+LzmaDecode.c
+LinkedList.c
+EfiDbe.c
+EfiLib.c
+AcpiRes.c
+Print.c
+Tokens.c
+HiiUtilities.c
+AmiLibNonMs.c | GCC
+AmiLibNonMs.c | RVCT
+
+[Sources.Ia32]
+Memory.c | MSFT
+IA32/Ia32CLib.c | MSFT
+IA32/IA32AsmLib/EnableLongMode.asm | MSFT
+IA32/IA32AsmLib/EnableMachineCheck.asm | MSFT
+IA32/IA32AsmLib/MemCpy.asm | MSFT
+IA32/IA32AsmLib/MemSet.asm | MSFT
+
+[Sources.X64]
+Memory.c | MSFT
+x64/x64CLib.c | MSFT
+x64/x64AsmLib/checkpoint.asm | MSFT
+x64/x64AsmLib/CpuLib_CpuId.asm | MSFT
+x64/x64AsmLib/CpuLib_DisableInterrupt.asm | MSFT
+x64/x64AsmLib/CpuLib_EnableInterrupt.asm | MSFT
+x64/x64AsmLib/CpuLib_GetInterruptState.asm | MSFT
+x64/x64AsmLib/CpuLib_GetPageTable.asm | MSFT
+x64/x64AsmLib/CpuLib_LoadGdt.asm | MSFT
+x64/x64AsmLib/CpuLib_LoadIdt.asm | MSFT
+x64/x64AsmLib/CpuLib_LockByteDec.asm | MSFT
+x64/x64AsmLib/CpuLib_LockByteInc.asm | MSFT
+x64/x64AsmLib/CpuLib_Pause.asm | MSFT
+x64/x64AsmLib/CpuLib_SaveGdt.asm | MSFT
+x64/x64AsmLib/CpuLib_SaveIdt.asm | MSFT
+x64/x64AsmLib/DisableCacheInCr0.asm | MSFT
+x64/x64AsmLib/EnableCacheInCr0.asm | MSFT
+x64/x64AsmLib/EnableMachineCheck.asm | MSFT
+x64/x64AsmLib/GetCpuTimer.asm | MSFT
+x64/x64AsmLib/GetCsSegment.asm | MSFT
+x64/x64AsmLib/HltCpu.asm | MSFT
+x64/x64AsmLib/MemCpy32.asm | MSFT
+x64/x64AsmLib/MemCpy.asm | MSFT
+x64/x64AsmLib/MemRead32.asm | MSFT
+x64/x64AsmLib/MemReadWrite32.asm | MSFT
+x64/x64AsmLib/MemSet.asm | MSFT
+x64/x64AsmLib/ReadCr3.asm | MSFT
+x64/x64AsmLib/ReadMsr.asm | MSFT
+x64/x64AsmLib/ReadRtdsc.asm | MSFT
+x64/x64AsmLib/WaitForever.asm | MSFT
+x64/x64AsmLib/WaitForSemaphore.asm | MSFT
+x64/x64AsmLib/WaitUntilZero32.asm | MSFT
+x64/x64AsmLib/WaitUntilZero8.asm | MSFT
+x64/x64AsmLib/WriteCr3.asm | MSFT
+x64/x64AsmLib/WriteMsr.asm | MSFT
+
+[Packages]
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+
+[LibraryClasses]
+  BaseLib
+  IoLib
+  PerformanceLib
+  BaseMemoryLib
+  PostCodeLib
+  DebugPrintErrorLevelLib
+
+[LibraryClasses.ARM, LibraryClasses.AARCH64]
+  TimerLib
+  CompilerIntrinsicsLib
+
+[Protocols]
+  gAmiDebugServiceProtocolGuid
+  gAmiSmmDebugServiceProtocolGuid
+  
+[Guids]
+  gAmiGlobalVariableGuid  
+
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdDebugPrintErrorLevel

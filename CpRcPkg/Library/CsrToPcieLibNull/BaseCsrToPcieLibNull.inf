@@ -1,0 +1,81 @@
+# 
+#  This file contains 'Framework Code' and is licensed as such
+#  under the terms of your license agreement with Intel or your
+#  vendor.  This file may not be modified, except as allowed by
+#  additional terms of your license agreement.
+#                                     
+#
+## @file
+#
+#  CSR to PCIE Address type convertion Lib
+#
+#  Copyright (c) 2011 - 2014, Intel Corporation. All rights reserved.<BR>
+#  This software and associated documentation (if any) is furnished
+#  under a license and may only be used or copied in accordance
+#  with the terms of the license. Except as permitted by such
+#  license, no part of this software or documentation may be
+#  reproduced, stored in a retrieval system, or transmitted in any
+#  form or by any means without the express written consent of
+#  Intel Corporation.
+#
+#
+#
+################################################################################
+#
+# Defines Section - statements that will be processed to create a Makefile.
+#
+################################################################################
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = BaseCsrToPcieLibNull
+  FILE_GUID                      = 848E908E-BD11-428E-94F9-7A0EEFCD37A6
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = CsrToPcieLib
+
+##  {848E908E-BD11-428E-94F9-7A0EEFCD37A6}
+##{ 0x848e908e, 0xbd11, 0x428e, { 0x94, 0xf9, 0x7a, 0xe, 0xef, 0xcd, 0x37, 0xa6 } };
+
+
+[Sources]
+  CsrToPcieLib.c
+  
+################################################################################
+#
+# Package Dependency Section - list of Package files that are required for
+#                              this module.
+#
+################################################################################
+
+[Packages]
+  MdePkg/MdePkg.dec
+  CpRcPkg/CpRcPkg.dec
+
+
+################################################################################
+#
+# Library Class Section - list of Library Classes that are required for
+#                         this module.
+#
+################################################################################
+
+[LibraryClasses]
+  BaseLib
+  PcdLib
+
+
+[Guids]
+  gEfiCpRcPkgTokenSpaceGuid
+
+################################################################################
+#
+# Protocol C Name Section - list of Protocol and Protocol Notify C Names
+#                           that this module uses or produces.
+#
+################################################################################
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+  gEfiCpRcPkgTokenSpaceGuid.PcdPcieSegmentSize
+  gEfiCpRcPkgTokenSpaceGuid.PcdPcieMmcfgTablePtr
+
+

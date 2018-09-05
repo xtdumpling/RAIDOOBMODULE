@@ -1,0 +1,38 @@
+TOKEN
+	Name  = "UbaInit_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling UbaInit support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "UbaInitDxe_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable UbaInitDxe support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "UbaInitPei_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable UbaInitPei support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "UbaInitDxe"
+	File  = "Dxe\UbaInitDxe.inf"
+	Package  = "PurleyRpPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "UbaInitDxe_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "UbaInitPei"
+	File  = "Pei\UbaInitPei.inf"
+	Package  = "PurleyRpPkg"
+	ModuleTypes  = "PEIM"
+	Token = "UbaInitPei_SUPPORT" "=" "1"
+End
+

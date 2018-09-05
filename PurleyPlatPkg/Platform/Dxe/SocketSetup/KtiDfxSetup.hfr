@@ -1,0 +1,177 @@
+//
+// This file contains an 'Intel Peripheral Driver' and is
+// licensed for Intel CPUs and chipsets under the terms of your
+// license agreement with Intel or your vendor.  This file may
+// be modified by the user, subject to additional terms of the
+// license agreement
+//
+// *++
+//
+// Copyright (c) 1999 - 2016 Intel Corporation. All rights reserved
+// This software and associated documentation (if any) is furnished
+// under a license and may only be used or copied in accordance
+// with the terms of the license. Except as permitted by such
+// license, no part of this software or documentation may be
+// reproduced, stored in a retrieval system, or transmitted in any
+// form or by any means without the express written consent of
+// Intel Corporation.
+//
+//
+// Module Name:
+//
+//   KtiDfxSetup.hfr
+//
+// Abstract:
+//
+//   KTI Setup formset.
+//
+// Revision History:
+//
+// --*/
+#include <KtiSetupDefinitions.h>
+
+  //
+  // Kti Dfx Setup Options
+  //
+
+form formid = VFR_FORMID_KTI_DFX,
+    title   = STRING_TOKEN(STR_KTI_DFX_CONFIG_FORM_TITLE);
+
+    subtitle text = STRING_TOKEN(STR_KTI_DFX_CONFIG_FORM_TITLE);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+
+
+    oneof varid = SOCKET_MP_LINK_CONFIGURATION.DfxHaltLinkFailReset,
+        prompt  = STRING_TOKEN(STR_DFX_HALT_LINK_FAIL_RESET),
+        help    = STRING_TOKEN(STR_DFX_HALT_LINK_FAIL_RESET_HELP),
+        option text = STRING_TOKEN(STR_DISABLE),  value = KTI_DISABLE, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLE),   value = KTI_ENABLE,  flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_KTI_AUTO), value = KTI_AUTO,    flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+    endoneof;
+
+    oneof varid = SOCKET_MP_LINK_CONFIGURATION.DfxKtiMaxInitAbort,
+        prompt  = STRING_TOKEN(STR_DFX_KTI_MAX_INIT_ABORT),
+        help    = STRING_TOKEN(STR_DFX_KTI_MAX_INIT_ABORT_HELP),
+        option text = STRING_TOKEN(STR_DISABLE),  value = KTI_DISABLE, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLE),   value = KTI_ENABLE,  flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_KTI_AUTO), value = KTI_AUTO,    flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+    endoneof;
+
+    oneof varid = SOCKET_MP_LINK_CONFIGURATION.DfxLlcShareDrdCrd,
+       prompt  = STRING_TOKEN(STR_DFX_LLC_SHARE_DRD_CRD),
+       help    = STRING_TOKEN(STR_DFX_LLC_SHARE_DRD_CRD_HELP),
+       option text = STRING_TOKEN(STR_DISABLE),                 value = KTI_DISABLE, flags = RESET_REQUIRED;
+       option text = STRING_TOKEN(STR_ENABLE),                  value = KTI_ENABLE,  flags = RESET_REQUIRED;
+       option text = STRING_TOKEN(STR_KTI_AUTO),                value = KTI_AUTO,    flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+    endoneof;
+
+    oneof varid = SOCKET_MP_LINK_CONFIGURATION.DfxBiasFwdMode,
+       prompt  = STRING_TOKEN(STR_DFX_BIAS_FWD_MODE),
+       help    = STRING_TOKEN(STR_DFX_BIAS_FWD_MODE_HELP),
+       option text = STRING_TOKEN(STR_DFX_MODE0),               value = BIAS_FWD_MODE0, flags = RESET_REQUIRED;
+       option text = STRING_TOKEN(STR_DFX_MODE1),               value = BIAS_FWD_MODE1, flags = RESET_REQUIRED;
+       option text = STRING_TOKEN(STR_DFX_MODE2),               value = BIAS_FWD_MODE2, flags = RESET_REQUIRED;
+       option text = STRING_TOKEN(STR_DFX_MODE3),               value = BIAS_FWD_MODE3, flags = RESET_REQUIRED;
+       option text = STRING_TOKEN(STR_DFX_MODE4),               value = BIAS_FWD_MODE4, flags = RESET_REQUIRED;
+       option text = STRING_TOKEN(STR_KTI_AUTO),                value = BIAS_FWD_AUTO,  flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+    endoneof;
+
+    oneof varid = SOCKET_MP_LINK_CONFIGURATION.DfxSnoopFanoutEn,
+       prompt  = STRING_TOKEN(STR_DFX_SNOOP_FANOUT),
+       help    = STRING_TOKEN(STR_DFX_SNOOP_FANOUT_HELP),
+       option text = STRING_TOKEN(STR_DISABLE),                 value = 0, flags = RESET_REQUIRED;
+       option text = STRING_TOKEN(STR_ENABLE),                  value = 1, flags = RESET_REQUIRED;
+       option text = STRING_TOKEN(STR_KTI_AUTO),                value = 2, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+    endoneof;
+
+    oneof varid = SOCKET_MP_LINK_CONFIGURATION.DfxHitMeEn,
+       prompt  = STRING_TOKEN(STR_DFX_HITME),
+       help    = STRING_TOKEN(STR_DFX_HITME_HELP),
+       option text = STRING_TOKEN(STR_DISABLE),                 value = 0, flags = RESET_REQUIRED;
+       option text = STRING_TOKEN(STR_ENABLE),                  value = 1, flags = RESET_REQUIRED;
+       option text = STRING_TOKEN(STR_KTI_AUTO),                value = 2, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+    endoneof;
+
+    oneof varid = SOCKET_MP_LINK_CONFIGURATION.DfxFrcfwdinv,
+       prompt  = STRING_TOKEN(STR_DFX_FORCE_FWD_INV),
+       help    = STRING_TOKEN(STR_DFX_FORCE_FWD_INV_HELP),
+       option text = STRING_TOKEN(STR_DISABLE),                 value = KTI_DISABLE, flags = RESET_REQUIRED;
+       option text = STRING_TOKEN(STR_ENABLE),                  value = KTI_ENABLE,  flags = RESET_REQUIRED;
+       option text = STRING_TOKEN(STR_KTI_AUTO),                value = KTI_AUTO,    flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+    endoneof;
+
+    oneof varid = SOCKET_MP_LINK_CONFIGURATION.DfxDbpEnable,
+       prompt  = STRING_TOKEN(STR_DFX_DBP_ENABLE),
+       help    = STRING_TOKEN(STR_DFX_DBP_ENABLE_HELP),
+       option text = STRING_TOKEN(STR_DISABLE),                 value = KTI_DISABLE, flags = RESET_REQUIRED;
+       option text = STRING_TOKEN(STR_ENABLE),                  value = KTI_ENABLE,  flags = RESET_REQUIRED;
+       option text = STRING_TOKEN(STR_KTI_AUTO),                value = KTI_AUTO,    flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+    endoneof;
+
+    oneof varid = SOCKET_MP_LINK_CONFIGURATION.DfxOsbEn,
+       prompt  = STRING_TOKEN(STR_DFX_OSB_ENABLE),
+       help    = STRING_TOKEN(STR_DFX_OSB_ENABLE_HELP),
+       option text = STRING_TOKEN(STR_DISABLE),                 value = KTI_DISABLE, flags = RESET_REQUIRED;
+       option text = STRING_TOKEN(STR_ENABLE),                  value = KTI_ENABLE,  flags = RESET_REQUIRED;
+       option text = STRING_TOKEN(STR_KTI_AUTO),                value = KTI_AUTO,    flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+    endoneof;
+
+    oneof varid = SOCKET_MP_LINK_CONFIGURATION.DfxHitMeRfoDirsEn,
+       prompt  = STRING_TOKEN(STR_DFX_HITME_RFO_DIRS_ENABLE),
+       help    = STRING_TOKEN(STR_DFX_HITME_RFO_DIRS_ENABLE_HELP),
+       option text = STRING_TOKEN(STR_DISABLE),                 value = KTI_DISABLE, flags = RESET_REQUIRED;
+       option text = STRING_TOKEN(STR_ENABLE),                  value = KTI_ENABLE,  flags = RESET_REQUIRED;
+       option text = STRING_TOKEN(STR_KTI_AUTO),                value = KTI_AUTO,    flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+    endoneof;
+
+    oneof varid = SOCKET_MP_LINK_CONFIGURATION.DfxGateOsbIodcAllocEn,
+       prompt  = STRING_TOKEN(STR_DFX_GATE_OSB_IODC_ALLOC_ENABLE),
+       help    = STRING_TOKEN(STR_DFX_GATE_OSB_IODC_ALLOC_ENABLE_HELP),
+       option text = STRING_TOKEN(STR_DISABLE),                 value = KTI_DISABLE, flags = RESET_REQUIRED;
+       option text = STRING_TOKEN(STR_ENABLE),                  value = KTI_ENABLE,  flags = RESET_REQUIRED;
+       option text = STRING_TOKEN(STR_KTI_AUTO),                value = KTI_AUTO,    flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+    endoneof;
+
+    oneof varid = SOCKET_MP_LINK_CONFIGURATION.DfxDualLinksInterleavingMode,
+       prompt  = STRING_TOKEN(STR_DFX_DUAL_LINK_INTLV_MODE),
+       help    = STRING_TOKEN(STR_DFX_DUAL_LINK_INTLV_MODE_HELP),
+       option text = STRING_TOKEN(STR_DFX_CHA_INTLV),           value = DFX_DUAL_LINK_INTLV_MODE_CHA_INTLV,   flags = RESET_REQUIRED;
+       option text = STRING_TOKEN(STR_DFX_DISABLE_D2C),         value = DFX_DUAL_LINK_INTLV_MODE_DISABLE_D2C, flags = RESET_REQUIRED;
+       option text = STRING_TOKEN(STR_KTI_AUTO),                value = KTI_AUTO,                             flags = RESET_REQUIRED  | MANUFACTURING | DEFAULT;
+    endoneof;
+
+    oneof varid = SOCKET_MP_LINK_CONFIGURATION.DfxSystemDegradeMode,
+        prompt  = STRING_TOKEN(STR_KTI_DFX_SYSTEM_DEGRADE_MODE),
+        help    = STRING_TOKEN(STR_KTI_DFX_SYSTEM_DEGRADE_MODE_HELP),
+        option text = STRING_TOKEN(STR_DEGRADE_TO_1S),        value = DEGRADE_TOPOLOGY_1S,        flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_DEGARDE_TO_SUPPORTED), value = DEGRADE_SUPPORTED_TOPOLOGY, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_NO_DEGRADE),           value = DEGRADE_TOPOLOGY_AS_IS,     flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid = SOCKET_MP_LINK_CONFIGURATION.DfxVn1En,
+        prompt  = STRING_TOKEN(STR_DFX_VN1),
+        help    = STRING_TOKEN(STR_DFX_VN1_HELP),
+        option text = STRING_TOKEN(STR_DISABLE),                   value = KTI_DISABLE, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLE),                    value = KTI_ENABLE,  flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_KTI_AUTO),                  value = KTI_AUTO,    flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+    endoneof;
+
+    oneof varid = SOCKET_MP_LINK_CONFIGURATION.DfxD2cEn,
+        prompt  = STRING_TOKEN(STR_DFX_D2C),
+        help    = STRING_TOKEN(STR_DFX_D2C_HELP),
+        option text = STRING_TOKEN(STR_DISABLE),                   value = KTI_DISABLE, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLE),                    value = KTI_ENABLE,  flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_KTI_AUTO),                  value = KTI_AUTO,    flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+    endoneof;
+
+    oneof varid = SOCKET_MP_LINK_CONFIGURATION.DfxD2kEn,
+        prompt  = STRING_TOKEN(STR_DFX_D2K),
+        help    = STRING_TOKEN(STR_DFX_D2K_HELP),
+        option text = STRING_TOKEN(STR_DISABLE),                   value = KTI_DISABLE, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLE),                    value = KTI_ENABLE,  flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_KTI_AUTO),                  value = KTI_AUTO,    flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+    endoneof;
+
+
+endform;
+

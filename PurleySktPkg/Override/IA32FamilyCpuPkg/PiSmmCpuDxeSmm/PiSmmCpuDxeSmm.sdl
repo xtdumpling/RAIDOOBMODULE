@@ -1,0 +1,27 @@
+TOKEN
+	Name  = "PiSmmCpuDxeSmm_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling PiSmmCpuDxeSmm support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+
+INFComponent
+    Name  = "PiSmmCpuDxeSmm"
+    File  = "PiSmmCpuDxeSmm/PiSmmCpuDxeSmm.inf"
+    Package  = "IA32FamilyCpuPkg"
+    ModuleTypes  = "DXE_SMM_DRIVER"
+    Token = "SMM_SUPPORT" "=" "1"
+    Disable = Yes
+End
+
+INFComponent
+	Name  = "PiSmmCpuDxeSmm"
+	File  = "PiSmmCpuDxeSmm.inf"
+	Package  = "PurleySktPkg"
+	Arch  = "IA32 X64"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "PiSmmCpuDxeSmm_SUPPORT" "=" "1"
+End
+

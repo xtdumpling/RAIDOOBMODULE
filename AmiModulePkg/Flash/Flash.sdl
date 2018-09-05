@@ -1,0 +1,315 @@
+#****************************************************************************
+#****************************************************************************
+#**                                                                        **
+#**           (C)Copyright 1985-2016, American Megatrends, Inc.            **
+#**                                                                        **
+#**                          All Rights Reserved.                          **
+#**                                                                        **
+#**           5555 Oakbrook Parkway, Suite 200, Norcross, GA 30071         **
+#**                                                                        **
+#**                          Phone (770)-246-8600                          **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+
+#****************************************************************************
+# $Header: $
+#
+# $Revision: $
+#
+# $Date: $
+#
+#****************************************************************************
+TOKEN
+	Name  = "Flash_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable FLASH support in Project."
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "FLASH_VERSION"
+	Value = "19"
+	Help  = "Flash module version.\Do not change."
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "FLASH_ERASE_POLARITY"
+	Value  = "1"
+	Help  = "Flash Device Erase Polarity"
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+	Range  = "0 or 1"
+End
+
+TOKEN
+	Name  = "FLASH_RETRIES"
+	Value  = "3"
+	Help  = "Number of retries attempted for the failed flash update operation"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+
+TOKEN
+	Name  = "FLASH_PART_STRING_LENGTH"
+	Value  = "48"
+	Help  = "Number of bytes per Page"
+	TokenType = Integer
+	TargetH = Yes
+	Lock = Yes
+End
+
+MODULE
+	Help  = "Includes Flash.mak to Project"
+	File  = "Flash.mak"
+End
+
+ELINK
+	Name  = "FlashList"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "OemFlashWriteEnableList"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "OemFlashWriteDisableList"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "OemFlashValidTableList"
+	InvokeOrder = ReplaceParent
+End
+
+INFComponent
+	Name  = "AmiFlashLibDxe"
+	File  = "AmiFlashLibDxe.inf"
+	Package  = "AmiModulePkg"
+End
+
+INFComponent
+	Name  = "AmiFlashLibPei"
+	File  = "AmiFlashLibPei.inf"
+	Package  = "AmiModulePkg"
+End
+
+INFComponent
+	Name  = "AmiFlashLibRuntime"
+	File  = "AmiFlashLibRuntime.inf"
+	Package  = "AmiModulePkg"
+End
+
+INFComponent
+	Name  = "FlashLib"
+	File  = "FlashLib.inf"
+	Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+	Class  = "FlashLib"
+	Instance  = "AmiModulePkg.FlashLib"
+	ModuleTypes  = "DXE_CORE DXE_DRIVER DXE_RUNTIME_DRIVER DXE_SAL_DRIVER DXE_SMM_DRIVER SMM_CORE UEFI_APPLICATION UEFI_DRIVER"
+End
+
+INFComponent
+	Name  = "FlashPeiLib"
+	File  = "FlashPeiLib.inf"
+	Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+	Class  = "FlashLib"
+	Instance  = "AmiModulePkg.FlashPeiLib"
+	ModuleTypes  = "PEIM"
+End
+
+LibraryMapping
+	Class  = "AmiFlashLib"
+	Instance  = "AmiModulePkg.AmiFlashLibDxe"
+	ModuleTypes  = "DXE_DRIVER UEFI_DRIVER DXE_SMM_DRIVER DXE_CORE SMM_CORE UEFI_APPLICATION"
+End
+
+LibraryMapping
+	Class  = "AmiFlashLib"
+	Instance  = "AmiModulePkg.AmiFlashLibPei"
+	ModuleTypes  = "PEIM"
+End
+
+LibraryMapping
+	Class  = "AmiFlashLib"
+	Instance  = "AmiModulePkg.AmiFlashLibRuntime"
+	ModuleTypes  = "DXE_RUNTIME_DRIVER"
+End
+
+# Components below are to address when various flash interface modules are not present
+# This should be cleaned up later so that components are dependent on the appropriate tokens
+
+INFComponent
+	Name  = "FwhFlashLibNull"
+	File  = "Library/FwhFlashLibNull.inf"
+	Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+	Class  = "FwhFlashLib"
+	Instance  = "AmiModulePkg.FwhFlashLibNull"
+	ModuleTypes  = "DXE_CORE DXE_DRIVER DXE_RUNTIME_DRIVER DXE_SAL_DRIVER DXE_SMM_DRIVER SMM_CORE UEFI_APPLICATION UEFI_DRIVER"
+End
+
+INFComponent
+	Name  = "FwhFlashPeiLibNull"
+	File  = "Library/FwhFlashPeiLibNull.inf"
+	Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+	Class  = "FwhFlashLib"
+	Instance  = "AmiModulePkg.FwhFlashPeiLibNull"
+	ModuleTypes  = "PEIM"
+End
+
+INFComponent
+	Name  = "LpcFlashLibNull"
+	File  = "Library/LpcFlashLibNull.inf"
+	Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+	Class  = "LpcFlashLib"
+	Instance  = "AmiModulePkg.LpcFlashLibNull"
+	ModuleTypes  = "DXE_CORE DXE_DRIVER DXE_RUNTIME_DRIVER DXE_SAL_DRIVER DXE_SMM_DRIVER SMM_CORE UEFI_APPLICATION UEFI_DRIVER"
+End
+
+INFComponent
+	Name  = "LpcFlashPeiLibNull"
+	File  = "Library/LpcFlashPeiLibNull.inf"
+	Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+	Class  = "LpcFlashLib"
+	Instance  = "AmiModulePkg.LpcFlashPeiLibNull"
+	ModuleTypes  = "PEIM"
+End
+
+INFComponent
+	Name  = "StdFlashLibNull"
+	File  = "Library/StdFlashLibNull.inf"
+	Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+	Class  = "StdFlashLib"
+	Instance  = "AmiModulePkg.StdFlashLibNull"
+	ModuleTypes  = "DXE_CORE DXE_DRIVER DXE_RUNTIME_DRIVER DXE_SAL_DRIVER DXE_SMM_DRIVER SMM_CORE UEFI_APPLICATION UEFI_DRIVER"
+End
+
+INFComponent
+	Name  = "StdFlashPeiLibNull"
+	File  = "Library/StdFlashPeiLibNull.inf"
+	Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+	Class  = "StdFlashLib"
+	Instance  = "AmiModulePkg.StdFlashPeiLibNull"
+	ModuleTypes  = "PEIM"
+End
+
+INFComponent
+	Name  = "SpiFlashLibNull"
+	File  = "Library/SpiFlashLibNull.inf"
+	Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+	Class  = "SpiFlashLib"
+	Instance  = "AmiModulePkg.SpiFlashLibNull"
+	ModuleTypes  = "DXE_CORE DXE_DRIVER DXE_RUNTIME_DRIVER DXE_SAL_DRIVER DXE_SMM_DRIVER SMM_CORE UEFI_APPLICATION UEFI_DRIVER"
+End
+
+INFComponent
+	Name  = "SpiFlashPeiLibNull"
+	File  = "Library/SpiFlashPeiLibNull.inf"
+	Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+	Class  = "SpiFlashLib"
+	Instance  = "AmiModulePkg.SpiFlashPeiLibNull"
+	ModuleTypes  = "PEIM"
+End
+
+INFComponent
+	Name  = "CspFlashLibNull"
+	File  = "Library/CspFlashLibNull.inf"
+	Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+	Class  = "CspFlashLib"
+	Instance  = "AmiModulePkg.CspFlashLibNull"
+	ModuleTypes  = "DXE_CORE DXE_DRIVER DXE_RUNTIME_DRIVER DXE_SAL_DRIVER DXE_SMM_DRIVER SMM_CORE UEFI_APPLICATION UEFI_DRIVER"
+End
+
+INFComponent
+	Name  = "CspFlashPeiLibNull"
+	File  = "Library/CspFlashPeiLibNull.inf"
+	Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+	Class  = "CspFlashLib"
+	Instance  = "AmiModulePkg.CspFlashPeiLibNull"
+	ModuleTypes  = "PEIM"
+End
+
+INFComponent
+	Name  = "AmiCspFlashLibNull"
+	File  = "Library/AmiCspFlashLibNull.inf"
+	Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+	Class  = "AmiCspFlashLib"
+	Instance  = "AmiModulePkg.AmiCspFlashLibNull"
+	ModuleTypes  = "DXE_CORE DXE_DRIVER DXE_RUNTIME_DRIVER DXE_SAL_DRIVER DXE_SMM_DRIVER SMM_CORE UEFI_APPLICATION UEFI_DRIVER"
+End
+
+INFComponent
+	Name  = "AmiCspFlashPeiLibNull"
+	File  = "Library/AmiCspFlashPeiLibNull.inf"
+	Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+	Class  = "AmiCspFlashLib"
+	Instance  = "AmiModulePkg.AmiCspFlashPeiLibNull"
+	ModuleTypes  = "PEIM"
+End
+
+#****************************************************************************
+#****************************************************************************
+#**                                                                        **
+#**           (C)Copyright 1985-2016, American Megatrends, Inc.            **
+#**                                                                        **
+#**                          All Rights Reserved.                          **
+#**                                                                        **
+#**           5555 Oakbrook Parkway, Suite 200, Norcross, GA 30071         **
+#**                                                                        **
+#**                          Phone (770)-246-8600                          **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************

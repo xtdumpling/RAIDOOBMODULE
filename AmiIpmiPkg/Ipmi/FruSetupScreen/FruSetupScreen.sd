@@ -1,0 +1,198 @@
+//****************************************************************************
+//**                                                                        **
+//**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+//**                                                                        **
+//****************************************************************************
+//  File History
+//
+//  Rev. 1.00
+//    Bug Fix: Remove "View FRU Information" 
+//    Reason : Refer from Grantley
+//    Auditor: Kasber Chen
+//    Date   : Jun/07/2016
+//
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
+
+//
+// @file  FruSetupScreen.sd
+//
+//   FruSetupScreen log form set
+//
+
+#ifdef SERVER_MGMT_CONFIGURATION_DATA_DEFINITION
+//***********************************************************
+// Put NVRAM data definitions here.
+// For example:    UINT8 Data1;
+// These definitions will be converted by the build process
+// to a definitions of SERVER_MGMT_CONFIGURATION_DATA fields.
+//***********************************************************
+#endif //#ifdef SERVER_MGMT_CONFIGURATION_DATA_DEFINITION
+
+#if defined(VFRCOMPILE) && !defined(CONTROLS_ARE_DEFINED)
+#define CONTROL_DEFINITION
+#endif
+
+#ifdef CONTROL_DEFINITION
+//
+// Write Control definitions here
+//
+#endif //#ifdef CONTROL_DEFINITION
+
+#ifdef CONTROLS_WITH_DEFAULTS
+//
+// Write Control definitions with defaults here
+//
+#endif //#ifdef CONTROLS_WITH_DEFAULTS
+
+#ifdef SERVER_MGMT_FORM_SET
+
+    #ifdef FORM_SET_TYPEDEF
+    //
+    // If you need any additional type definitions add them here
+    //
+    #endif
+
+    #ifdef FORM_SET_VARSTORE
+    //
+    //If you need custom varstore's define them here
+    //
+    #endif
+
+    #ifdef FORM_SET_ITEM
+    //
+    // Define controls to be added to the main page of the formset
+    //
+    #endif
+
+    #ifdef FORM_SET_GOTO
+    suppressif SMCPKG_SUPPORT;
+        suppressif  ideqval SERVER_MGMT_CONFIGURATION_DATA.BmcSupport == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+        goto FRU_VIEW_FORM, 
+    prompt = STRING_TOKEN(STR_SRVRMGMT_FRU_VIEW),
+    help   = STRING_TOKEN(STR_SRVRMGMT_FRU_VIEW_HELP),
+    flags  = INTERACTIVE, 
+    key    = AUTO_ID(FRU_FORM_KEY);
+        SUPPRESS_GRAYOUT_ENDIF
+    endif;	//suppressif SMCPKG_SUPPORT
+    #endif
+
+    #ifdef FORM_SET_FORM
+        #ifndef FRUSETUPSCREEN_FORM_SERVERMGMT
+        #define FRUSETUPSCREEN_FORM_SERVERMGMT
+form formid = AUTO_ID(FRU_VIEW_FORM),
+    title  = STRING_TOKEN (STR_SRVRMGMT_FRU_FORM_TITLE);
+    subtitle text = STRING_TOKEN (STR_SRVRMGMT_FRU_FORM_TITLE);
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+  text help  = STRING_TOKEN (STR_SYS_MANUFACTURER_HELP),
+       text  = STRING_TOKEN (STR_SYS_MANUFACTURER),
+       text  = STRING_TOKEN (STR_SYS_MANUFACTURER_VAL),
+       flags = 0,
+       key   = 0;
+
+  text help  = STRING_TOKEN (STR_SYS_PROD_NAME_HELP),
+       text  = STRING_TOKEN (STR_SYS_PROD_NAME),
+       text  = STRING_TOKEN (STR_SYS_PROD_NAME_VAL),
+       flags = 0,
+       key   = 0;
+
+  text help  = STRING_TOKEN (STR_SYS_VERSION_HELP),
+       text  = STRING_TOKEN (STR_SYS_VERSION),
+       text  = STRING_TOKEN (STR_SYS_VERSION_VAL),
+       flags = 0,
+       key   = 0;
+
+  text help  = STRING_TOKEN (STR_SYS_SERIAL_NUM_HELP),
+       text  = STRING_TOKEN (STR_SYS_SERIAL_NUM),
+       text  = STRING_TOKEN (STR_SYS_SERIAL_NUM_VAL),
+       flags = 0,
+       key   = 0;
+
+  text help  = STRING_TOKEN (STR_BRD_MANUFACTURER_HELP),
+       text  = STRING_TOKEN (STR_BRD_MANUFACTURER),
+       text  = STRING_TOKEN (STR_BRD_MANUFACTURER_VAL),
+       flags = 0,
+       key   = 0; 
+
+  text help  = STRING_TOKEN (STR_BRD_PROD_NAME_HELP),
+       text  = STRING_TOKEN (STR_BRD_PROD_NAME),
+       text  = STRING_TOKEN (STR_BRD_PROD_NAME_VAL),
+       flags = 0,
+       key   = 0;
+         
+  text help  = STRING_TOKEN (STR_BRD_VERSION_HELP),
+       text  = STRING_TOKEN (STR_BRD_VERSION),
+       text  = STRING_TOKEN (STR_BRD_VERSION_VAL),
+       flags = 0,
+       key   = 0;
+
+  text help  = STRING_TOKEN (STR_BRD_SERIAL_NUM_HELP),
+       text  = STRING_TOKEN (STR_BRD_SERIAL_NUM),
+       text  = STRING_TOKEN (STR_BRD_SERIAL_NUM_VAL),
+       flags = 0,
+       key   = 0;
+
+  text help  = STRING_TOKEN (STR_CHA_MANUFACTURER_HELP),
+       text  = STRING_TOKEN (STR_CHA_MANUFACTURER),
+       text  = STRING_TOKEN (STR_CHA_MANUFACTURER_VAL),
+       flags = 0,
+       key   = 0;
+
+  text help  = STRING_TOKEN (STR_CHA_VERSION_HELP),
+       text  = STRING_TOKEN (STR_CHA_VERSION),
+       text  = STRING_TOKEN (STR_CHA_VERSION_VAL),
+       flags = 0,
+       key   = 0;
+
+  text help  = STRING_TOKEN (STR_CHA_SERIAL_NUM_HELP),
+       text  = STRING_TOKEN (STR_CHA_SERIAL_NUM),
+       text  = STRING_TOKEN (STR_CHA_SERIAL_NUM_VAL),
+       flags = 0,
+       key   = 0;     
+
+  text help  = STRING_TOKEN (STR_SDR_VERSION_HELP),
+       text  = STRING_TOKEN (STR_SDR_VERSION),
+       text  = STRING_TOKEN (STR_SDR_VERSION_VAL),
+       flags = 0,
+       key   = 0;
+
+  text help  = STRING_TOKEN (STR_SYSTEM_UUID_HELP),
+       text  = STRING_TOKEN (STR_SYSTEM_UUID),
+       text  = STRING_TOKEN (STR_SYSTEM_UUID_VAL),
+       flags = 0,
+       key   = 0;
+ 
+    subtitle text = STRING_TOKEN(STR_NULL_STRING); 
+    subtitle text = STRING_TOKEN(STR_NOTE1);  
+    subtitle text = STRING_TOKEN(STR_NOTE2);
+    endform;
+        #endif //#ifndef FRUSETUPSCREEN_FORM_SERVERMGMT
+    #endif //#ifdef FORM_SET_FORM
+#endif //#ifdef SERVER_MGMT_FORM_SET
+
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**         5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093     **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************

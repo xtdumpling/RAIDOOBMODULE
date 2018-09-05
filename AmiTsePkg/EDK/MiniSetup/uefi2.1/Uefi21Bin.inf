@@ -1,0 +1,50 @@
+
+
+[Defines]
+INF_VERSION = 0x00010015
+VERSION_STRING = 1.0
+BASE_NAME = Uefi21Bin
+MODULE_TYPE = BASE
+LIBRARY_CLASS = Uefi21Bin
+
+[Sources.Common]
+
+[binaries.IA32]
+ LIB | Uefi21Local.lib	
+[binaries.X64]
+ LIB | Uefi21Localx64.lib
+[binaries.AARCH64]
+ LIB | Uefi21LocalAarch64.lib 
+
+
+[Packages]
+  AmiTsePkg/AmiTsePkg.dec
+  AmiTsePkg/AmiTsePrivatePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  MdePkg/MdePkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  
+
+[Protocols]
+  gEfiUnicodeCollation2ProtocolGuid
+  gEfiUnicodeCollationProtocolGuid
+  gEfiOEMBadgingProtocolGuid
+  gEfiSimpleFileSystemProtocolGuid
+#  gEfiLegacyBiosProtocolGuid
+  gEfiUnicodeCollation2ProtocolGuid
+  gEfiUnicodeCollationProtocolGuid
+  gEfiBlockIoProtocolGuid
+  gEfiFirmwareVolumeProtocolGuid
+  gEfiSimpleTextInProtocolGuid
+  gEfiLoadedImageProtocolGuid
+
+[Guids]
+  gEfiConsoleOutDeviceGuid 
+  
+[BuildOptions]
+MSFT:*_*_*_CC_FLAGS = /DTSE_FOR_APTIO_4_50   
+GCC:*_*_*_CC_FLAGS = -DTSE_FOR_APTIO_4_50  
+  

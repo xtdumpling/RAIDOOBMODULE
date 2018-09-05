@@ -1,0 +1,68 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2013, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+## @file
+#   This driver installs Crypto DXE Protocol
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                   	 = CryptoDXE
+  FILE_GUID                      = 77EB6C06-FD48-488B-A1B3-AE0A70801369
+  MODULE_TYPE                    = DXE_RUNTIME_DRIVER 
+  VERSION_STRING                 = 1.0
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  ENTRY_POINT                    = NotInSmmFunction
+  #CryptoDxe_Init
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+
+[Sources]
+  CryptoDxe.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiCryptoPkg/AmiCryptoPkg.dec
+
+[LibraryClasses]
+  AmiDxeLib
+  UefiDriverEntryPoint
+  AmiCryptLib
+  MemoryAllocationLib
+  DebugLib
+
+[Guids]
+gPRKeyGuid
+gEfiCertX509Guid
+gEfiCertSha256Guid
+gEfiCertRsa2048Guid
+gEfiHashAlgorithmSha1Guid
+gEfiHashAlgorithmSha256Guid
+gEfiHashAlgorithmSha384Guid
+gEfiHashAlgorithmSha512Guid
+gEfiHashAlgorithmSha1NoPadGuid
+gEfiHashAlgorithmSha256NoPadGuid
+
+[Protocols]
+gAmiDigitalSignatureProtocolGuid    # producer
+gAmiSmmDigitalSignatureProtocolGuid # producer
+
+[Depex]
+TRUE
+

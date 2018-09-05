@@ -1,0 +1,109 @@
+TOKEN
+	Name  = "BaseCryptLib_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling BaseCryptLib support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+INFComponent
+	Name  = "BaseCryptLibRuntimeCryptProtocol"
+	File  = "..\BaseCryptLibRuntimeCryptProtocol\BaseCryptLibRuntimeCryptProtocol.inf"
+	Package  = "CryptoPkg"
+	ModuleTypes  = "DXE_RUNTIME_DRIVER"
+End
+
+INFComponent
+	Name  = "BaseIntrinsicLib"
+	File  = "..\IntrinsicLib\IntrinsicLib.inf"
+	Package  = "CryptoPkg"
+	Arch  = "IA32 X64 IPF AARCH64"
+	ModuleTypes  = "BASE"
+End
+
+INFComponent
+	Name  = "BaseCryptLib"
+	File  = "BaseCryptLib.inf"
+	Package  = "CryptoPkg"
+	Arch  = "IA32 X64 IPF ARM"
+	ModuleTypes  = "DXE_DRIVER"
+End
+
+INFComponent
+	Name  = "PeiCryptLib"
+	File  = "PeiCryptLib.inf"
+	Package  = "CryptoPkg"
+	Arch  = "IA32"
+	ModuleTypes  = "PEIM"
+End
+
+INFComponent
+	Name  = "RuntimeCryptLib"
+	File  = "RuntimeCryptLib.inf"
+	Package  = "CryptoPkg"
+	Arch  = "IA32 X64 IPF ARM"
+	ModuleTypes  = "DXE_RUNTIME_DRIVER"
+End
+
+INFComponent
+	Name  = "SmmCryptLib"
+	File  = "SmmCryptLib.inf"
+	Package  = "CryptoPkg"
+	Arch  = "IA32 X64 IPF ARM"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+End
+
+INFComponent
+	Name  = "BaseCrtWrapperLib"
+	File  = "CrtWrapperLib.inf"
+	Package  = "CryptoPkg"
+	Arch  = "IA32 X64 IPF AARCH64"
+	ModuleTypes  = "BASE"
+End
+
+LibraryMapping
+	Class  = "BaseCryptLib"
+	Instance  = "CryptoPkg.BaseCryptLibRuntimeCryptProtocol"
+	ModuleTypes  = "DXE_RUNTIME_DRIVER DXE_SAL_DRIVER"
+End
+
+LibraryMapping
+	Class  = "IntrinsicLib"
+	Instance  = "CryptoPkg.BaseIntrinsicLib"
+	Arch  = "IA32 X64 IPF AARCH64"
+End
+
+# Added support for ARM Architecture build
+LibraryMapping
+	Class  = "BaseCryptLib"
+	Instance  = "CryptoPkg.BaseCryptLib"
+	Arch  = "IA32 X64 IPF ARM AARCH64"
+	ModuleTypes  = "DXE_DRIVER DXE_CORE UEFI_APPLICATION UEFI_DRIVER"
+End
+
+LibraryMapping
+	Class  = "BaseCryptLib"
+	Instance  = "CryptoPkg.PeiCryptLib"
+	Arch  = "IA32"
+	ModuleTypes  = "PEIM PEI_CORE"
+End
+
+LibraryMapping
+	Class  = "BaseCryptLib"
+	Instance  = "CryptoPkg.RuntimeCryptLib"
+	Arch  = "IA32 X64 IPF ARM"
+	ModuleTypes  = "DXE_RUNTIME_DRIVER"
+End
+
+LibraryMapping
+	Class  = "BaseCryptLib"
+	Instance  = "CryptoPkg.SmmCryptLib"
+	Arch  = "IA32 X64 IPF ARM"
+	ModuleTypes  = "DXE_SMM_DRIVER SMM_CORE"
+End
+
+LibraryMapping
+	Class  = "CrtWrapperLib"
+	Instance  = "CryptoPkg.BaseCrtWrapperLib"
+	Arch  = "IA32 X64 IPF AARCH64"
+End

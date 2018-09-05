@@ -1,0 +1,1045 @@
+------------------------------------------------------------------------------------------------------------
+
+01/10/2017
+
+Module Label: PurleyPlatPkg_61
+
+------------------------------------------------------------------------------------------------------------
+New Features Added in this Label: 
+------------------------------------------------------------------------------------------------------------
+
+1. Support for Intel RAS Reference Code Version 114.R09
+------------------------------------------------------------------------------------------------------------
+
+Known Issues : 
+        1.  ADDDC-MR : Continous SMI is getting triggered when validating BANK -> RANK -> SDDC Flow. 
+	      IPS#00060704 is created. As per Intel,there are few silicon sightings related to this ADDC-MR.
+	  	  a)  b311120-  Std RAS Sku, in _1 state, detected UC is not generating MCERR, and corected count increments.                                                                                                                          b311043- Failed Rank is not logged correctl for ADDDC and SVL plus 1 modes.               
+      		  b)  b311285/s5352904: Rank ADDDC Skips the First Address of TAD.  (wka: set 64B interleave mode).    
+				    If sparing didn’t complete correctly, skipped first address of TAD, then  reading the line should trigger UC
+				    but due to sighting 1, the UC turns into correctable.
+				    
+				    To verify BANK-RANK-SDDC Flow, "1LM Memory Interleave Granularity" BIOS Setup options needs to set as
+				     "64B Target, 64B Channel"
+	  	  
+
+        2.  BIOS-RAS SMI handler is not getting control when the system is in VIRAL State.
+            Same issue exists with Intel CRB BIOS.IPS#00155526 created and working with Intel regarding this issue.
+
+        3.  As per Sighting report (Sighting# 291, 292), Intel RC code doesn’t handle SDDC feature with X8 DIMM.		
+
+	4.  Windows Event Viewer is not interpreting Processor Errors (KTI) Logs properly.
+            Same issue exists with Intel CRB BIOS.IPS#00146499 is created for this issue.
+
+	5.  BIOS SMI handler not getting control when injecting Memory UCE with POISON Enabled.
+            Same issue exists with Intel CRB BIOS .As per IPS#00137716, this is a known issue with ITP C Scripts. 
+            SKX Sighting Report 0.76 has more information regarding this sighting (Sighting#340).
+
+        6. System generates BSOD when hot-removing a PCIE card (Card is connected from the power-on boot itself and trying remove from Windows OS) 
+           with Runtime Error Support Setup option enabled. Same issue exists with Intel WW 52 BIOS.
+           IPS#00156703.
+	
+------------------------------------------------------------------------------------------------------------
+Aptio V Purley RAS Features Support:
+------------------------------------------------------------------------------------------------------------
+27/10/2016
+Module Labels: PurleyPlatPkg_54
+               PurleySktPkg_53
+------------------------------------------------------------------------------------------------------------
+New Features Added in this Label: 
+------------------------------------------------------------------------------------------------------------
+
+1. Support for Intel RAS Reference Code Version 106.D11.
+------------------------------------------------------------------------------------------------------------
+
+
+10/04/2016
+
+Module Labels: PurleyPlatPkg_51
+               PurleySktPkg_50
+
+------------------------------------------------------------------------------------------------------------
+New Features Added in this Label: 
+------------------------------------------------------------------------------------------------------------
+
+1. Support for Intel RAS Reference Code Version 102.D12 .
+------------------------------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+Fixes and enhancements made in this Label:
+-----------------------------------------------------------------------------
+[TAG] EIP294599
+[Category] Improvement
+[Severity] Normal
+[Description] Modify Event Data to log Socket information for Processor Errors.
+[Files] PurleyPlatPkg\Ras\RuntimeErrorlog\Board\Bmc\RtErrorLogBmc.c
+PurleyPlatPkg\Ras\RuntimeErrorlog\Board\Bmc\RtErrorLogBmc.h
+
+06/10/2016
+
+Module Labels: PurleyPlatPkg_40
+               PurleySktPkg_38
+
+------------------------------------------------------------------------------------------------------------
+New Features Added in this Label: 
+------------------------------------------------------------------------------------------------------------
+
+1. Support for Intel RAS Reference Code Version 87.D08.
+------------------------------------------------------------------------------------------------------------
+
+05/25/2016
+
+Module Labels: PurleyPlatPkg_39
+               PurleySktPkg_37
+
+------------------------------------------------------------------------------------------------------------
+New Features Added in this Label: 
+------------------------------------------------------------------------------------------------------------
+
+1. Support for Intel RAS Reference Code Version 85.D17.
+------------------------------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------
+Fixes and enhancements made in this Label:
+-----------------------------------------------------------------------------
+[TAG] EIP270534
+[Category] Improvement
+[Severity] Normal
+[Description] Remove ELINK definitions in RtErrorLog module in Purley
+[Files] PurleyPlatPkg\Ras\RuntimeErrorlog\Board\Bmc\RtErrorLogBmc.sdl
+PurleyPlatPkg\Ras\RuntimeErrorlog\Board\Gpnv\RtErrorLogGpnv.sdl
+PurleyPlatPkg\Ras\RuntimeErrorlog\RtErrorLog.cif
+PurleyPlatPkg\Ras\RuntimeErrorlog\RtErrorLog.sdl
+PurleyPlatPkg\Ras\RuntimeErrorlog\RtErrorlogBoard.h
+PurleyPlatPkg\Ras\RuntimeErrorlog\RtErrorLogElinks.txt
+
+[TAG]    	EIP269437
+[Category]	Improvement
+[Severity]	Normal 
+[Description] Prevent loop condition when error is injected to Rank 1.
+[Files]	PurleySktPkg\Library\ProcMemErrReporting\ProcMemErrReporting.c
+
+[TAG] EIP269552
+[Category] Bug Fix
+[Severity] Important
+[Symptom] System hangs up after injecting ECC error
+[Root Cause] The error status wasn't cleared completely after DetectAndHandle 
+[Files] PurleySktPkg\Library\ProcMemErrReporting\ProcMemErrReporting.c
+
+================================================================
+RAS features validation status using ITP C Scripts and IDK Tool. 
+================================================================
+
+=====================
+Memory RAS Features :
+=====================
+
+Feature                  : ADDDC-SR and ADDDC-MR
+
+Project Label            : 5.12_PurleyCrb_0ACFD037
+
+Module  Label            : PurleyPlatPkg_38.2
+
+---------------------------------------------------------------------------------------------------------------
+Known Issues : 
+        1.  ADDDC-MR : Continous SMI is getting triggered when validating BANK -> RANK -> SDDC Flow. 
+	      IPS#00060704 is created. As per Intel,there are few silicon sightings related to this ADDC-MR.
+	  	  a)  b311120-  Std RAS Sku, in _1 state, detected UC is not generating MCERR, and corected count increments.                                                                                                                          b311043- Failed Rank is not logged correctl for ADDDC and SVL plus 1 modes.               
+      		  b)  b311285/s5352904: Rank ADDDC Skips the First Address of TAD.  (wka: set 64B interleave mode).    
+				    If sparing didn’t complete correctly, skipped first address of TAD, then  reading the line should trigger UC
+				    but due to sighting 1, the UC turns into correctable.
+				    
+				    To verify BANK-RANK-SDDC Flow, "1LM Memory Interleave Granularity" BIOS Setup options needs to set as
+				     "64B Target, 64B Channel"
+	  	  
+
+        2.  Using ITP C Script command PCIE UCE - System is not going into VIRAL State. 
+			  3Stike Error - Verified the system is in VIRAL State by reading VIRAL CSR but no SMI is getting generated. 
+			  Working with Intel.
+        3.  As per Sighting report (Sighting# 291, 292), Intel RC code doesn’t handle SDDC feature with X8 DIMM.
+------------------------------------------------------------------------------------------------------------
+
+05/06/2016
+
+Module Label: PurleyPlatPkg_38.1
+
+------------------------------------------------------------------------------------------------------------
+New Features Added in this Label: 
+------------------------------------------------------------------------------------------------------------
+
+1. Support for Intel RAS Reference Code Version 8X.D0X.
+------------------------------------------------------------------------------------------------------------
+
+Known Issues : 
+		1 :
+			   Using ITP C Script command PCIE UCE - System is not going into VIRAL State. 
+			   3Stike Error - Verified the system is in VIRAL State by reading VIRAL CSR but no SMI is getting generated. 
+			   Working with Intel
+
+------------------------------------------------------------------------------------------------------------
+
+05/06/2016
+Module Label: PurleyPlatPkg_38.1
+
+-----------------------------------------------------------------------------
+Fixes and enhancements made in this Label:
+-----------------------------------------------------------------------------
+[TAG] EIP267057
+[Category] Improvement
+[Severity] Normal
+[Description] Changes for Logging of common SEL Processor Event for Processor Errors.
+[Files] 
+PurleyPlatPkg\Ras\RuntimeErrorlog\Board\Bmc\RtErrorLogBmc.c
+PurleyPlatPkg\Ras\RuntimeErrorlog\Board\Bmc\RtErrorLogBmc.h
+PurleyPlatPkg\Ras\RuntimeErrorlog\Board\Bmc\RtErrorLogBmc.sdl
+PurleyPlatPkg\Ras\RuntimeErrorlog\Board\Gpnv\RtErrorLogGpnv.c
+PurleyPlatPkg\Ras\RuntimeErrorlog\Board\Gpnv\RtErrorLogGpnv.sdl
+PurleyPlatPkg\Ras\RuntimeErrorlog\RtErrorLog.mak
+PurleyPlatPkg\Ras\RuntimeErrorlog\RtErrorLog.sdl
+PurleyPlatPkg\Ras\RuntimeErrorlog\RtErrorlogBoard.c
+PurleyPlatPkg\Ras\Smm\ErrHandling\PlatformErrorHandler\PlatformErrorHandler.c
+PurleyPlatPkg\Ras\Smm\ErrHandling\ProcessorErrorHandler\IohErrorHandler.c
+PurleyPlatPkg\Ras\Smm\ErrHandling\ProcessorErrorHandler\IohErrorHandler.h
+PurleyPlatPkg\Ras\Smm\ErrHandling\ProcessorErrorHandler\ProcessorErrorHandler.c
+
+[TAG] EIP248737
+[Category] Improvement
+[Severity] Normal
+[Description] Changes for RAS_DEBUG macro issues, Injecting PCIE Error on ROOT PORT 2A which has 
+uplink and co-processor device and memory  Mirror Failover.
+[Files]
+PurleyPlatPkg\Ras\RuntimeErrorlog\RtErrorlogBoard.c
+PurleyPlatPkg\Ras\Smm\ErrHandling\ProcessorErrorHandler\MemoryErrorHandler.c
+PurleySktPkg\Include\Library\mpsyncdatalib.h
+
+[TAG] EIP248737
+[Category] Improvement
+[Severity] Normal
+[Description]  Changes done to Support VTD/ITC/DMA/OTC Errors in Purley CRB
+[Files]
+PurleyPlatPkg\Ras\RuntimeErrorlog\Board\Bmc\RtErrorLogBmc.c
+PurleyPlatPkg\Ras\RuntimeErrorlog\Board\Bmc\RtErrorLogBmc.sdl
+PurleyPlatPkg\Ras\RuntimeErrorlog\RtErrorLog.mak
+PurleyPlatPkg\Ras\RuntimeErrorlog\RtErrorLog.sdl
+PurleyPlatPkg\Ras\RuntimeErrorlog\RtErrorlogBoard.c
+PurleyPlatPkg\Ras\RuntimeErrorlog\RtErrorlogBoard.h
+PurleyPlatPkg\Ras\Smm\ErrHandling\ProcessorErrorHandler\IohErrorHandler.h
+PurleySktPkg\Library\ChipsetErrReporting\ChipsetErrReporting.c
+PurleySktPkg\Library\ChipsetErrReporting\ChipsetErrReporting.inf
+PurleySktPkg\Library\ChipsetErrReporting\ProcessIioErrors.c
+PurleySktPkg\Library\ChipsetErrReporting\ProcessIioErrors.h
+
+------------------------------------------------------------------------------------------------------------
+
+05/03/2016
+
+Module Label: PurleyPlatPkg_37.1
+
+------------------------------------------------------------------------------------------------------------
+New Features Added in this Label: 
+------------------------------------------------------------------------------------------------------------
+
+1. Support for Intel RAS Reference Code Version 81.D08.
+------------------------------------------------------------------------------------------------------------
+
+
+Feature                  : Mirroring Support (Full and Partial)
+
+Project Label            : 5.12_PurleyCrb_0ACFD036_BETA
+
+Module  Label            : PurleyPlatPkg_37.1
+
+-------------------------------------------------------------------------------------------------------------
+
+Feature                  : LMCE Support
+
+Project Label            : 5.12_PurleyCrb_0ACFD036_BETA
+
+Module  Label            : PurleyPlatPkg_37.1
+
+-------------------------------------------------------------------------------------------------------------
+Feature                  : VIRAL Support
+
+Project Label            : 5.12_PurleyCrb_0ACFD036_BETA
+
+Module  Label            : PurleyPlatPkg_37.1
+
+-------------------------------------------------------------------------------------------------------------
+
+Feature                  : PCIE ECRC Support
+
+Project Label            : 5.12_PurleyCrb_0ACFD036_BETA
+
+Module  Label            : PurleyPlatPkg_37.1
+
+-------------------------------------------------------------------------------------------------------------
+
+Feature                  : IOMCA Feature Support
+
+Project Label            : 5.12_PurleyCrb_0ACFD036_BETA
+
+Module  Label            : PurleyPlatPkg_37.1
+
+-------------------------------------------------------------------------------------------------------------
+
+Feature                  : e-SMM Support
+
+Project Label            : 5.12_PurleyCrb_0ACFD036_BETA
+
+Module  Label            : PurleyPlatPkg_37.1
+
+-------------------------------------------------------------------------------------------------------------
+Known Issues : 
+		1 : 
+			   To verify LCME, we need a OS Support. Current OSes doesn’t support LMCE. 
+		       Current OS implementations assume MCE is broadcast to all Logicall processors.
+			   From BIOS side, verified MSR 0x179 BIT 27 , MSR 0x4D0 BIT 0 MSR 3A BIT 20  (LMCE). 
+			   Bits are not getting set as expected. Working with Intel.
+
+		2 :
+			   Using ITP C Script command PCIE UCE - System is not going into VIRAL State. 
+			   3Stike Error - Verified the system is in VIRAL State by reading VIRAL CSR but no SMI is getting generated. 
+			   Working with Intel
+
+------------------------------------------------------------------------------------------------------------
+4/26/2016
+Module Label: PurleyPlatPkg_35
+
+------------------------------------------------------------------------------------------------------------
+New Features Added in this Label: 
+------------------------------------------------------------------------------------------------------------
+
+1. Support for Intel RAS Reference Code Version 78.D03
+
+
+================================================================
+RAS features validation status using ITP C Scripts and IDK Tool. 
+================================================================
+
+=====================
+Memory RAS Features :
+=====================
+
+Feature                  : Memory Correctable and Uncorrectable Errors Enabling and Logging Support
+
+Project Label            : 5.12_PurleyCrb_0ACFD035_BETA
+
+Module  Label            : PurleyPlatPkg_35
+
+-------------------------------------------------------------------------------------------------------
+
+Feature                  : Sparing Support
+
+Project Label            : 5.12_PurleyCrb_0ACFD035_BETA
+
+Module  Label            : PurleyPlatPkg_35
+
+---------------------------------------------------------------------------------------------------------
+
+Feature                  : SDDC/SDDC+1 Enabling and Logging Support
+
+Project Label            : 5.12_PurleyCrb_0ACFD035_BETA
+
+Module  Label            : PurleyPlatPkg_35
+
+-------------------------------------------------------------------------------------------------------------
+
+Feature                  : Patrol Scrubbing and Demand Scrubbing Support
+
+Project Label            : 5.12_PurleyCrb_0ACFD035_BETA
+
+Module  Label            : PurleyPlatPkg_35
+
+-------------------------------------------------------------------------------------------------------------
+
+Feature                  : HA and IMC Corrupt data containment (Poisoning)
+
+Project Label            : 5.12_PurleyCrb_0ACFD035_BETA
+
+Module  Label            : PurleyPlatPkg_35
+
+-------------------------------------------------------------------------------------------------------------
+
+========================
+PCI, PCI-e AER Logging
+========================
+
+Feature                  : PCI, PCI-e AER Logging
+
+Project Label            : 5.12_PurleyCrb_0ACFD035_BETA
+
+Module  Label            : PurleyPlatPkg_35
+
+-------------------------------------------------------------------------------------------------------------
+===================
+Enhanced MCA Gen2 :
+====================
+
+Feature                  : Enhanced MCA Gen2
+
+Project Label            : 5.12_PurleyCrb_0ACFD035_BETA
+
+Module  Label            : PurleyPlatPkg_35
+
+-------------------------------------------------------------------------------------------------------------
+
+04/26/2015
+Module Label: PurleyPlatPkg_35
+------------------------------------------------------------------------------------------------------------
+New Features Added in this Label: 
+------------------------------------------------------------------------------------------------------------
+
+1. Support for Intel RAS Reference Code Version 78.D03
+
+=========================================================
+Setup Options to change to support PURLEY RAS Features
+=========================================================
+
+------------------------------------------------------------------------------------------------------------
+Functionality:
+------------------------------------------------------------------------------------------------------------
+
+Setup Questions:
+
+We have below setup questions Support for Error Logging:
+
+1.  System Errors               : Enable/Disable Runtime Error Logging Support.
+
+2.  S/W Error Injection Support : IDK tool and other utilities needs MSR 0x790 to be unlocked.
+
+3.  System Memory Poison        : Enable/Disable Poison Support.
+
+4.  Viral Status         		: Enable/Disable Viral.
+
+5.  IIO/PCH Global Error        : Enable/Disable the IIO Error Logging.
+
+6.  IIO MCA Support             : Enable/Disable IIO MCA Support.
+
+7.  EMCA Logging Support        : Enable/Disable the EMCA Logging.
+
+8.  EMCA CMCI-SMI Morphing      : Enable/Disable EMCA CSMI for Correctable Errors.
+
+9.  EMCA MCE-SMI Enable         : Enable/Disable EMCA Uncorrectabled SMI for gen1 and gen2.
+ 
+10. WHEA Settings		
+    WHEA Support                : Enable/Disable the WHEA ACPI support.
+    Whea Log Memory Error		: Enable/Disable Whea Log Memory Error.
+    Whea Log Processor Error	: Enable/Disable Whea Log Processor Error.
+    Whea Log PCI Error			: Enable/Disable Whea Log PCI Error.
+
+
+11. UPI Error Enabling       
+    SMI UPI Lane Failover       : Enable/Disable SMI when clock/data failover is set.
+    
+12. Memory Error Enabling    
+    Memory Error      			: Enable/Disable Memory Error. 
+    Spare Interrupt             : Spare Interrupt Selection.
+    
+13. Memory RAS Configuration 
+    Correctable Error Threshold : Correctable Error Threshold (1 - 32767) used for sparing, SDDC etc..
+	
+14. SDDC Plus One				: Enable/Disable SDDC Plus One.
+
+15. ADDDC Sparing				: Enable/Disable ADDDC Sparing	
+    
+16. PCIe Error Enabling 
+    Corrected Error			: Enable & escalate Correctable Errors to error pins.
+    Uncorrected Error		: Enable & escalate Uncorrectable/Recoverable to error pins.
+    Fatal Error Enable		: Enable & escalate fatal errors to error pins.
+    SERR Propagation		: Enable/Disable SERR propagation.
+    PERR Propagation		: Enable/Disable PERR propagation.
+
+--------------------
+Memory RAS Features
+--------------------
+
+Memory error logging Support
+------------------------------------------------
+
+Setup Options to be changed for supporting Memory error logging:
+
+1. Platform Configuration -> Runtime Error Logging -> System Errors - [Enable]
+2. Platform Configuration -> Runtime Error Logging ->Memory Error Enabling -> Memory Error - [Enable]
+3. Platform Configuration -> Runtime Error Logging ->Memory Error Enabling -> Spare Interrupt - [SMI]
+4. Socket Configuration   -> Memory configuration -> Memory RAS configuration -> Correctable Error Threshold - [1]
+5. Platform Configuration -> Runtime Error Logging-> S/W Error Injection Support [Enable]
+
+
+Memory Error (UCE) Logging :
+---------------------------------------
+
+Setup Options to be changed for supporting Memory ErrorLogging:
+
+1. Platform Configuration -> Runtime Error Logging -> System Errors - [Enable]
+2. Platform Configuration -> Runtime Error Logging -> Memory Error Enabling -> Memory Error - [Enable]
+3. Platform Configuration -> Runtime Error Logging -> eEMCA Settings -> EMCA Logging Support - [Enable]
+4. Platform Configuration -> Runtime Error Logging -> eEMCA Setting -> EMCA MCE-SMI Enable - [EMCA gen2 - MSMI]
+5. Platform Configuration -> Runtime Error Logging-> S/W Error Injection Support [Enable]
+
+
+Memory Rank Sparing Support
+---------------------------
+
+Hardware Requirements :
+
+1. Minimum need to use 2R DIMM's to validate the Rank Sparing support.
+
+Setup Options to be changed for supporting Memory Rank Spare logging:
+
+1. Platform Configuration -> Runtime Error Logging -> System Errors - [Enable]
+2. Platform Configuration -> Runtime Error Logging -> Memory Error Enabling -> Memory Error - [Enable]
+3. Platform Configuration -> Runtime Error Logging -> Memory Error Enabling -> Spare Interrupt - [SMI]
+4. Platform Configuration -> Memory configuration -> Memory RAS configuration -> Correctable Error Threshold - [1]
+5. Platform Configuration -> Memory configuration -> Memory RAS configuration -> Memory Rank Sparing - [Enable]
+6. Platform Configuration -> Runtime Error Logging-> S/W Error Injection Support [Enable]
+
+
+Memory Mirroring Support
+------------------------
+
+Harware Requirements :
+
+1. Popuate DIMM's of same size and rank in each Channel's under same Memory Controller.
+2.  Ex : Populate 16GB 2Rx4 DIMM on Socket 0 Channel 0  DIMM 0 and channel 1 DIMM 0.
+
+Setup Options to be changed for supporting Mirror Logging (Full Channel Mirroring):
+
+1. Platform Configuration -> Runtime Error Logging -> System Errors - [Enable]
+2. Platform Configuration -> Runtime Error Logging -> Memory Error Enabling -> Memory Error - [Enable]
+3. Platform Configuration -> Runtime Error Logging -> eEMCA Settings -> EMCA Logging Support - [Enable]
+4. Platform Configuration -> Runtime Error Logging -> eEMCA Settings -> EMCA MCE-SMI Enable - [EMCA gen 2 - MSMI]
+5. Socket Configuration   -> Memory configuration -> Memory RAS configuration -> Mirror Mode - [1LM/2LLM]
+
+Setup Options to be changed for supporting Mirror Logging (Partial Mirroring):
+
+1. Platform Configuration -> Runtime Error Logging -> System Errors - [Enable]
+2. Platform Configuration -> Runtime Error Logging -> Memory Error Enabling -> Memory Error - [Enable]
+3. Platform Configuration -> Runtime Error Logging -> eEMCA Settings -> EMCA Logging Support - [Enable]
+4. Platform Configuration -> Runtime Error Logging -> eEMCA Settings -> EMCA MCE-SMI Enable - [EMCA gen 2 - MSMI]
+5. Socket Configuration   -> Memory configuration -> Memory RAS configuration -> Mirror Mode - [Disable]
+6. Socket Configuration   -> Memory configuration -> Memory RAS configuration -> Mirror 4GB - [Disable]
+7. Socket Configuration   -> Memory configuration -> Memory RAS configuration -> Enable Partial Mirror - [Partial Mirror mode 1LM/2LM]
+8. Socket Configuration   -> Memory configuration -> Memory RAS configuration -> Partial Mirror1 Size [4] ( Units in terms of 1GB)
+9. Socket Configuration   -> Memory configuration -> Memory RAS configuration -> Partial Mirror2 Size [0] ( Units in terms of 1GB)
+10. Socket Configuration   -> Memory configuration -> Memory RAS configuration -> Partial Mirror3 Size [0] ( Units in terms of 1GB)
+11. Socket Configuration   -> Memory configuration -> Memory RAS configuration -> Partial Mirror4 Size [0] ( Units in terms of 1GB)
+
+If more Partial mirroring range is required, user can change these options accordingly. 
+Partial Mirror1 Size needs to be filled or else system won't be in Partial Mirroring Mode.
+
+Example : If 32GB Memory is populated on a system and with above settings
+
+Memory Map : 
+0GB - 4GB   : Non-Mirrored Range
+4GB - 8GB   : Mirrored Range
+8GB - 32GB  : Non-Mirrored Range.
+
+Using ITP C Script comamnd, mirrored memory range can be found.
+
+a) mc.addTrans() to find the mirrored range
+b) Select option 3 : Show core address map
+c) Search TAD @ Socket x MC X (Open Page Address Mapping mode Fixed or Adaptive)
+d) Search Mirrored keyword and it will which ranges are mirrored
+
+   Injected mirror_fail over at  mirrored range address 5GB which falls under, SMI will getting generated CE error 
+   will be logged as expected and there won't be MCE.
+   happend as expected.
+
+   In case of error injection outside the mirrored range, UCE will be logged as expected.
+
+
+ADDDC (SR/MR) Logging Support
+---------------------
+
+Hardware requirements :
+
+1. Need to use x4 DIMM's . Memory Mode needs to be Independent.
+
+Setup Options to be changed for supporting ADDDC Logging:
+
+1. Platform Configuration -> Runtime Error Logging -> System Errors - [Enable]
+2. Platform Configuration -> Runtime Error Logging ->Memory Error Enabling -> Memory Error - [Enable]
+3. Platform Configuration -> Runtime Error Logging ->Memory Error Enabling -> Spare Interrupt - [SMI]
+4. Platform Configuration -> Memory RAS configuration -> Correctable Error - [1 - 32767]
+5. Socket Configuration   -> Memory RAS configuration -> ADDDC Sparing - [Enable]
+6. Platform Configuration -> Memory configuration -> Memory RAS configuration -> SDDC Plus One - [Enable]
+
+SDDC Logging Support (Standard SKU Supports SDDC and Advanced SKU supports SDDC + 1)
+---------------------
+
+Hardware requirements :
+
+1. Need to use x4 DIMM's or X8 DIMM's based on Memory Mode (Independent or LockStep)
+2. If DIMM is X4, memory mode can be Independent or Static Virtual Lockstep Mode enabled.
+3. If DIMM is X8, memory mode can not be in Independent Mode. It needs to be in Static Virtual Lockstep Mode.
+
+Setup Options to be changed for supporting SDDC Logging:
+
+1. Platform Configuration -> Runtime Error Logging -> System Errors - [Enable]
+2. Platform Configuration -> Runtime Error Logging -> S/W Error Injection Support - [Enable]
+3. Platform Configuration -> Runtime Error Logging -> Memory Error Enabling -> Memory Error - [Enabled]
+4. Platform Configuration -> Runtime Error Logging -> Memory Error Enabling -> Spare Interrupt - [SMI]
+5. Platform Configuration -> Memory configuration -> Memory RAS configuration -> Correctable Error Threshold - [1]
+6. Platform Configuration -> Memory configuration -> Memory RAS configuration -> SDDC Plus One - [Enable]
+
+Demand Scrub Support
+--------------------
+
+1. Scoket Configuration   -> Memory configuration -> Memory RAS configuration -> Demand Scrub - [Enabled]
+
+
+Patrol Scrub Support
+--------------------
+
+1. Scoket Configuration   -> Memory configuration -> Memory RAS configuration -> Patrol Scrub - [Enabled]
+
+
+PCI-e error logging
+--------------------
+
+Setup Options to be changed for supporting PCI-e error logging:
+
+1. Platform Configuration -> Runtime Error Logging -> System Errors - [Enable]
+2. Platform Configuration -> Runtime Error Logging -> IIO Error Enabling -> IIO/PCH Global Error - [Enable]
+4. Platform Configuration -> Runtime Error Logging -> PCIe Error Enabling -> Corrected Error - [Enable]
+5. Platform Configuration -> Runtime Error Logging -> PCIe Error Enabling -> Uncorrected Error - [Enable]
+6. Platform Configuration -> Runtime Error Logging -> PCIe Error Enabling -> Fatal Error Enable - [Enable]			 	
+7. Platform Configuration -> Runtime Error Logging -> PCIe Error Enabling -> SERR Propagation - [Enable]
+8. Platform Configuration -> Runtime Error Logging -> PCIe Error Enabling -> PERR Propagationn - [Enable]
+
+
+IOMCA Feature:
+--------------------------
+
+Setup Options to be changed for supporting PCI-e error logging with IOMCA option enabled:
+
+1. Platform Configuration -> Runtime Error Logging -> System Errors - [Enable]
+2. Platform Configuration -> Runtime Error Logging -> IIO Error Enabling -> IIO/PCH Global Error - [Enable]
+3. Platform Configuration -> Runtime Error Logging -> PCIe Error Enabling -> Corrected Error - [Enable]
+4. Platform Configuration -> Runtime Error Logging -> PCIe Error Enabling -> Uncorrected Error - [Enable]
+5. Platform Configuration -> Runtime Error Logging -> PCIe Error Enabling -> Fatal Error Enable - [Enable]			 	
+6. Platform Configuration -> Runtime Error Logging -> PCIe Error Enabling -> SERR Propagation - [Enable]
+7. Platform Configuration -> Runtime Error Logging -> PCIe Error Enabling -> PERR Propagationn - [Enable]
+7. Platform Configuration -> Runtime Error Logging -> eEMCA Settings -> EMCA Logging Support - [Enable]
+8. Platform Configuration -> Runtime Error Logging -> eEMCA Settings -> EMCA MCE-SMI Enable - [EMCA gen 2 - MSMI]
+9. Platform Configuration -> Runtime Error Logging -> IIO Error Enabling -> IIO MCA Support - [Enable]
+
+WHEA/APEI
+---------
+
+Setup Options to be changed for supporting WHEA Errorlogging:
+
+1. Platform Configuration -> Runtime Error Logging -> System Errors - [Enable]
+2. Platform Configuration -> Runtime Error Logging -> Whea settings -> WHEA Support - [Enable]
+3. Platform Configuration -> Runtime Error Logging -> Whea settings -> Whea Log Memory Error - [Enable]	
+4. Platform Configuration -> Runtime Error Logging -> Whea settings -> Whea Log Processor Error - [Enable]
+5. Platform Configuration -> Runtime Error Logging -> Whea settings -> Whea Log PCI Error - [Enable]		
+
+================================================
+Test procedure used to validate the Error Logging
+================================================
+
+1. Memory Error logging:
+
+Software Method : Used Intel ITP II C Scripts to inject memory errors.
+
+Procedure to use Intel C Scripts :
+
+	a. Intel ITP II Version                : 1.0.5990.400
+	b. Intel ITP II C Scripts Version      : BETA 0.51
+	c. In windows Start” menu Intel->Intel DFx Abstraction Layer->Config Console. 
+   		select  SKX_LBG_PURLEY_ReferenceSettings and click the Apply button and close the window.
+	d. Double-click on the “startCScripts.py” file that is found in the CScritps folder. 
+	e. Error Injection Syntax :
+   		Examples : 
+			ei.injectMemError(0x100000, errType = "uce") for uncorrectable
+			ei.injectMemError(0x100000 , errType = "ce")  for correctable
+	
+			To generate 3 multiple errors at once : it should be more than threshold
+			for x in range(0x3):
+			...     ei.injectMemError(0x1000 + x)
+			...
+   		
+   			sv.socket0.uncore0.imc0_c0_correrrcnt_0.show to check Error Count for correctable errors
+			sv.socket0.uncore0.imc0_c0_correrrorstatus.show to check error status check for correctale errors
+			sv.socket0.uncore0.ha0_mc5_status.show to check the status of uncorrectable errors
+
+2. PCI Error logging:
+PCI errors are generated Using Adaptec SCSI Card 29320LPE. 
+	a. Plug in Adaptec SCSI Card 29320LPE on to the system.
+	b. Boot the system to DOS, Windows or Linux Operating System.
+	c. Use any utility to change the Adaptec PCI card Configuration space offset 43h value to 01 for generate SERR, 04 for PERR. Sometimes will trigger SERR/PERR signal at the same time.
+	d. You may see System generating NMI.
+	e. Reset the system and Use the SEL view Utility to view the SEL log of the PCI errors. 
+
+PCI errors are generated Using ITP C Scripts.
+	
+	Error Injection Syntax :
+   		Examples : 
+			ei.injectPCIeError(Socket#, Port_Num# errType = "uce") for uncorrectable
+			ei.injectMemError(Socket#, Port_Num# , errType = "ce")  for correctable
+
+3. IOH core, VT-d Error Logging:
+No hardware or software utilities are available to generate these Errors. Verified code flow with debugger utilities like Intel ITP. 
+
+4. IOMCA
+PCI errors are generated Using ITP C Scripts and Adaptec SCSI Card 29320LPE. 
+	
+	a. Injected the uncorrectable error using the PCIAdaptec card with EMCA and IOMCA enabled.
+	b. System resets with blue screen 0x124 MCE triggered and erors are logged in IIO MC Bank after system reset.
+	c. After Reset, IIO Machine Check Bank Status Register : (419h) IA32_MC6_STATUS  :  0xBF80000000010405
+	d. expected MCOD : Three MCA error codes :
+			•0010 000f rrrrrrrr: f=1 fatal, f=0 non fatal. (r= reserved/ software ignore)
+			•0000 0100 0000 0101 signifying an internal unclassified error type
+			•Status register also contains the Bus/Device/Function of the device which detected the error
+			
+	e. In windows you see the Blue screen Error like below
+		*** STOP: 0x00000124 (0x0000000000000000,0xFFFFFA800E658028,0x00000000FB800000,0
+		x0000000000000E0B)
+
+5. Testing procedure for SDDC/SDDC+1.
+
+SDDC
+----------
+a. Inject CE (as per threshold value).
+b. Confirm whether the Device is getting Tagged from the Debug log or ITP log.
+c. Select a different device ei.memDevs(dev0=3,dev0msk=0x8,dev1=4,dev1msk=0x10)
+d. Inject one more CE and in the ITP log 
+e. Check the ITP for this message "Correction was a +1 correction" if the SKU Supports SDDC+1 feature. 
+f. If SDDC+1 is not supported, MCE will happen when injecting one CE after device is getting tagged.
+
+6. Testing procedure for ADDDC/ADDDC+1
+
+-------------------------------------------------
+ADDDC - Single Region (Standard SKU supports SR)
+-------------------------------------------------
+
+a) First Strike (First Error) : Single Bank of a DRAM can be pushed to VLS (Virtual LockStep mode), during which process the failed Bank gets mapped out via copy to spare DRAM’s Bank.
+
+b) Second strike: BIOS can copy the full rank to the ECC DRAM device (SDDC), from then DIMM will have error detection capability only and not the correction capability.
+
+c) Third strike: AS the dimm lost the correction capability, system will generate MCE in Standard SKU
+
+----------------------------------------------
+Test case#1 : Same Device and Different banks
+-----------------------------------------------
+
+Inject Error on DEV 1 :
+
+First Strike : ei.injectMemError(socket=0, channel=0, dimm=0, rank=1, sub_rank=0,bank_group=2, bank = 3, errType = "ce")
+
+System needs to go to BANK VLS. Run this ITP C Script command ras.adddc_status_check(socket=0,mc=0) to check system is in ADDDC mode.
+
+Second Strike : ei.injectMemError(socket=0, channel=0, dimm=0, rank=1, sub_rank=0,bank_group=2, bank = 1, errType = "ce")
+
+System needs to go to SDDCPlusone mode. Run this ITP C Script command ras.adddc_status_check(socket=0,mc=0) to check system is in SDDDC mode.
+
+As this device (DEV 1) is tagged, tried injecting the third error on DEV 5.
+Third Strike : ei.injectMemError(socket=0, channel=0, dimm=0, rank=1, errType = "ce")
+
+System will generate machine check excpetion.
+
+
+------------------------------------------------
+Test case#2 : Different Device and same banks
+------------------------------------------------
+
+Inject on DEV 1 :
+
+First Strike : ei.injectMemError(socket=0, channel=0, dimm=0, rank=1, sub_rank=0,bank_group=2, bank = 1, errType = "ce")
+
+System needs to go to BANK VLS. Run this ITP C Script command ras.adddc_status_check(socket=0,mc=0) to check system is in ADDDC mode.
+
+Inject on DEV3 :
+
+Second Strike : ei.injectMemError(socket=0, channel=0, dimm=0, rank=1, sub_rank=0,bank_group=2, bank = 1, errType = "ce")
+
+System needs to go to SDDCPlusone mode. Run this ITP C Script command ras.adddc_status_check(socket=0,mc=0) to check system is in SDDDC mode.
+
+As this device (DEV 3) is tagged, tried injecting the third error on DEV 5.
+Third Strike : ei.injectMemError(socket=0, channel=0, dimm=0, rank=1, errType = "ce")
+
+System will generate machine check excpetion.
+
+
+----------------------------------------------
+ADDDC -multiRegion (Advanced SKU supports MR)
+-----------------------------------------------
+
+a) Two regions can be used to perform Virtual lock step, each region can be at Bank or Rank granularity. It support maximum of 2 region. It can be either BANK and BANK failure or BANK and RANK failure.
+
+b) An additional single bit correction is possible after the second spare copy.
+
+------------------------------------------------------------------------
+Test case#1 : BANK- BANK failure (2 bank failure on different devices).
+-------------------------------------------------------------------------
+
+Injected on DEV 1 :
+
+First Strike : ei.injectMemError(socket=0, channel=0, dimm=0, rank=1, sub_rank=0,bank_group=2, bank = 3, errType = "ce")
+
+System needs to go to BANK VLS and make use of ADDDC Region 0.Run this ITP C Script command ras.adddc_status_check(socket=0,mc=0) to check system is in ADDDC mode.
+
+Injected on DEV 3.
+Second Strike : ei.injectMemError(socket=0, channel=0, dimm=0, rank=1, sub_rank=0,bank_group=2, bank = 1, errType = ce)
+
+System needs to go to BANK VLS and make use of ADDDC Region 1.Run this ITP C Script command ras.adddc_status_check(socket=0,mc=0) to check system is in ADDDC mode.
+
+As 2 regions got exhausted, next error will push to SDDCplusone mode.
+
+Injected on DEV 5.
+
+Third Strike : ei.injectMemError(socket=0, channel=0, dimm=0, rank=1, sub_rank=0,bank_group=2, bank = 0, errType = "ce")
+
+System needs to go to SDDCPlus one mode.Run this ITP C Script command ras.adddc_status_check(socket=0,mc=0) to check system is in SDDDC mode.
+
+Injected on DEV 7.
+Fourth Strike : Advanced SKU has SDDDPlusone + 1 capable, there won't be any MCE in case of next error as like Standard SKU.
+
+ei.injectMemError(socket=0, channel=0, dimm=0, rank=1, errType = "ce")
+
+System should not generate MCE as expected. ITP log shows like below.
+"Log data is valid, overflow=1, ECC mode = sddc +1 1LM".
+
+--------------------------------------
+Test case#2 : BANK-RANK-SDDCPLUS mode
+--------------------------------------
+
+Injected on DEV 1 :
+
+First Strike : ei.injectMemError(socket=0, channel=0, dimm=0, rank=1, sub_rank=0,bank_group=2, bank = 3, errType = "ce")
+
+System needs to go to BANK VLS.Run this ITP C Script command ras.adddc_status_check(socket=0,mc=0) to check system is in ADDDC mode.
+
+Injected on same DEV1 :
+
+Second Strike : ei.injectMemError(socket=0, channel=0, dimm=0, rank=1, sub_rank=0,bank_group=2, bank = 1, errType = "ce")
+
+System needs to go to RANK VLS mode.Run this ITP C Script command ras.adddc_status_check(socket=0,mc=0) to check system is in ADDDC mode
+
+As 2 regions got exhausted, next error will push to SDDCplusone mode.
+
+Injected on Dev 5.
+Third Strike : ei.injectMemError(socket=0, channel=0, dimm=0, rank=1, sub_rank=0,bank_group=2, bank = 2, errType = "ce")
+
+System needs to go to SDDCPlus mode.Run this ITP C Script command ras.adddc_status_check(socket=0,mc=0) to check system is in SDDDC mode.
+
+Injected on DEV 7.
+Fourth Strike : Advanced SKU has SDDDPlusone + 1 capable, there won't be any MCE in case of next error as like Standard SKU.
+
+ei.injectMemError(socket=0, channel=0, dimm=0, rank=1, errType = "ce")
+
+System should not generate MCE as expected. ITP log shows like below.
+"Log data is valid, overflow=1, ECC mode = sddc +1 1LM".
+
+
+================================================
+IPMI SEL log Format with Different Errors
+================================================
+
+BMC SEL log format on Memory errors:
+------------------------------------
+
+Memory SEL Log:
+
+  SensorType Bit[7:0] = EFI_MEMORY_SENSOR_TYPE <0x0C>
+  SensorNumber Bit[7:0] = 0x8
+
+  Event Data 1 Bit[7:4] = 0xA (Indicates that OEMEvData2 and OEMEvData3 are OEM values)
+  Event Data 1 Bit[3:0] = Error Type 
+    Error Type:
+      Correctable Memory Error: 0x00
+      UnCorrectable Memory Error: 0x01
+      Parity Error: 0x02
+      Correctable Memory Error Logging Limit Reached: 0x05
+
+  Event Data 2 Bit[0] = Current/Last Boot Error 
+    Current Boot : 0
+    Last Boot    : 1
+
+   DIMM Location is logged to "Event Data 2 and 3" as Follows 
+   
+     Event Data 2 Bit[2:1] = Memory Controller Number
+     
+	 Event Data 3 Bit[7:6]: CPU Socket Number.
+	 Event Data 3 Bit[5:4]: Channel Number.
+	 Event Data 3 Bit[3:0]: DIMM Number.
+
+ 
+BMC SEL log format on PCI errors.
+------------------------------------
+
+PCIe SEL Log:
+  SensorType Bit[7:0] = SEL_SENS_TYPE_CRIT_ERR <0x13>
+  SensorNumber Bit[7:0] = 0x00
+  OEMEvData1 Bit[7:4] = 0xA (Indicates that OEMEvData2 and OEMEvData3 are OEM values)
+  OEMEvData1 Bit[3:0] = Error Type 
+Error Type
+  PCI PERR                   -           0x04
+  PCI SERR                   -           0x05
+  Bus Correctable Error      -           0x07
+  Bus Uncorrectable Error    -           0x08
+  Bus Fatal Error            -           0x0A
+  OEMEvData2 Bit[7:0] = PCI bus number for failed device.
+  OEMEvData3 Bit[7:3] = PCI device number for failed device.
+  OEMEvData3 Bit[2:0] = PCI function number for failed device.
+
+LastBootError Behavior on  PCI errors :
+---------------------------------------
+
+PCIe SEL Log:
+  SensorType Bit[7:0] = SEL_SENS_TYPE_CRIT_ERR <0x13>
+  SensorNumber Bit[7:0] = 0x00
+  OEMEvData1 Bit[7:4] = 0xA (Indicates that OEMEvData2 and OEMEvData3 are OEM values)
+  OEMEvData1 Bit[3:0] = 0xF (Indicates LastBoot PCIe Error )
+  OEMEvData2 Bit[7:0] = PCI bus number for failed device.
+  OEMEvData3 Bit[7:3] = PCI device number for failed device.
+  OEMEvData3 Bit[2:0] = PCI function number for failed device.
+
+BMC SEL log format on Processor Errors.
+---------------------------------------------------
+
+Core/CHA/UPI and PCU Errors are logged as Processor configuration error in the SEL.
+
+  OEMEvData1 Bit[7:4] = 0xA (Indicates that OEMEvData2 and OEMEvData3 are OEM values)
+  OEMEvData1 Bit[3:0] = Error Type (PROCESSOR CONFIGURATION_ERROR)
+  OEMEvData2 Bit[7:4] = CPU Socket Number.
+  OEMEvData2 Bit[3:0] = Bank Type (Please see below)
+      Bank Type: 
+     0 (0000) - None
+     1 (0001) - IFU
+     2 (0010) - DCU
+     3 (0011) - DTLB
+     4 (0100) - MLC
+     5 (0101) - PCU
+     6 (0110) - IIO
+     7 (0111) - CHA
+     8 (1000) - KTI
+
+  OEMEvData3 Bit[7:4] = Processor Error Type (UNKNOWN/Cache/TLB/BUS/Micro Arch) 
+  OEMEvData3 Bit[3:0] = Error Severity (Correctable/Uncorrectable)
+    Error Severity:
+     00 - Correctable Error
+     01 - Fatal Error
+     02 - Corrected Error
+
+  
+BMC SEL log format on IOH CORE Errors.
+---------------------------------------------------
+Core Errors are logged as Processor configuration error in the SEL.
+
+  OEMEvData1 Bit[7:4] = 0xA (Indicates that OEMEvData2 and OEMEvData3 are OEM values)
+  OEMEvData1 Bit[3:0] = Error Type (PROCESSOR CONFIGURATION_ERROR)
+  OEMEvData2 Bit[3:0] = Reserved
+  OEMEvData2 Bit[7:4] = CPU Socket Number.
+  OEMEvData3 Bit[7:0] = Error Sub Type
+
+BMC SEL log format on Intel VT-d errors.
+---------------------------------------------------
+
+VT-d error is logged as Processor configuration error in the SEL.
+
+  OEMEvData1 Bit[7:4] = 0xA (Indicates that OEMEvData2 and OEMEvData3 are OEM values)
+  OEMEvData1 Bit[3:0] = Error Type (PROCESSOR CONFIGURATION_ERROR)
+  OEMEvData2 Bit[3:0] = CPU Stack Number.
+  OEMEvData2 Bit[7:4] = CPU Socket Number.
+  OEMEvData3          = Intel VT-d Local Group error code as per Skylake-EP Processor
+			External Design Specification (EDS)
+
+			90h - Data Parity Error during Context Cache Lookup
+			91h - Data Parity Error during L1 Lookup 
+			92h - Data Parity Error during L2 Lookup 
+			93h - Data Parity Error during L3 Lookup 
+			94h - TLB0 Data Parity Error
+			95h - TLB1 Data Parity Error
+			96h - Unsuccessful completion status received in the coherent interface
+			97h - Illegal request to 0xFEE 
+			98h - Protected Memory region space violated status
+			A0h - Intel VT-d spec defined errors
+			
+			
+
+BMC SEL log format on ITC errors.
+---------------------------------------------------
+Inbound Traffic Controller(ITC) error is logged as Processor configuration error in the SEL.
+
+  OEMEvData1 Bit[7:4] = 0xA (Indicates that OEMEvData2 and OEMEvData3 are OEM values)
+  OEMEvData1 Bit[3:0] = Error Type (PROCESSOR CONFIGURATION_ERROR)
+  OEMEvData2 Bit[3:0] = CPU Stack Number.
+  OEMEvData2 Bit[7:4] = CPU Socket Number.
+  OEMEvData3          = Inbound Traffic Controller Error code as per Skylake-EP EDS Specification.
+
+			80h - ITC IRP credit underflow
+			81h - ITC IRP credit overflow
+			82h - Parity error in the incoming data from PCIe
+			83h - Parity error in the ITC hdr_q RF
+			84h - Parity error in the ITC vtd_misc_info RF
+			85h - Parity error in the ITC addr_q RF
+			86h - ECC corrected error in the ITC dat_dword RF
+			87h - ECC uncorrected error in the ITC dat_dword RF
+			88h - Completer abort
+			89h - Master abort
+			8Ah - Multicast target error for ITC only
+
+BMC SEL log format on OTC errors.
+---------------------------------------------------
+OutBound Traffic Controller(OTC) error is logged as Processor configuration error in the SEL.
+
+  OEMEvData1 Bit[7:4] = 0xA (Indicates that OEMEvData2 and OEMEvData3 are OEM values)
+  OEMEvData1 Bit[3:0] = Error Type (PROCESSOR CONFIGURATION_ERROR)
+  OEMEvData2 Bit[3:0] = CPU Stack Number.
+  OEMEvData2 Bit[7:4] = CPU Socket Number.
+  OEMEvData3          = Outbound Traffic Controller Error code as per Skylake-EP EDS Specification.
+
+			60h - OTC OB credit underflow
+			61h - OTC OB credit overflow
+			62h - Parity error in the OTC hdr_q RF
+			63h - Parity error in the OTC addr_q RF
+			64h - ECC uncorrected error in the OTC dat_dword RF
+			65h - Completer abort
+			66h - Master abort
+			67h - Multicast target error for ITC
+			68h - ECC corrected error in the OTC dat_dword RF
+			69h - Misc block request overflow
+			6Ah - IOAPIC RTE parity error
+			6Bh - Parity error on incoming data from IRP
+			6Ch - Parity error on incoming addr from IRP
+
+BMC SEL log format on DMA errors.
+---------------------------------------------------
+Direct Memory Access(DMA) error is logged as Processor configuration error in the SEL.
+
+  OEMEvData1 Bit[7:4] = 0xA (Indicates that OEMEvData2 and OEMEvData3 are OEM values)
+  OEMEvData1 Bit[3:0] = Error Type (PROCESSOR CONFIGURATION_ERROR)
+  OEMEvData2 Bit[3:0] = CPU Stack Number.
+  OEMEvData2 Bit[7:4] = CPU Socket Number.
+  OEMEvData3          = Direct Memory Access Error code as per Skylake-EP EDS Specification.
+
+			40h - Received_Poisoned_Data_from_DP_status
+			41h - DMA_internal_HW_parity_error_status
+			42h - Cfg_Reg_Parity_Error_status
+			43h - RD_Cmpl_Header_Error_status
+			44h - Read_address_decode_error_status
+			45h - Multiple errors
+			46h - DMA Transfer Source Address Error.
+			47h - DMA Transfer Destination Address Error.
+			48h - Next Descriptor Address Error.
+			49h - Error when reading a DMA descriptor
+			4Ah - Chain Address Value Error.
+			4Bh - CHANCMD Error
+			4Ch - Data Parity Error
+			4Dh - DMA Data Parity Error.
+			4Eh - Read Data Error.
+			4Fh - Write Data Error.
+			50h - Descriptor Control Error.
+			51h - Descriptor Length Error.
+			52h - Completion Address Error.
+			53h - Interrupt Configuration Error.
+			54h - CRC or XOR P Error
+			55h - XOR Q Error
+			56h - Descriptor Count Error
+			57h - DIF All F Detect Error
+			58h - DIF Guard Tag Error
+			59h - DIF Application Tag Error
+			5Ah - DIF Reference Tag Error
+			5Bh - DIF Bundle Error

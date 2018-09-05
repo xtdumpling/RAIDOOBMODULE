@@ -1,0 +1,70 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.00
+#       Bug fixed:   Initialize revision
+#       Reason:      Clone from Sample folder.
+#       Auditor:     Kasber Chen
+#       Date:        Jun/24/2016
+#
+#****************************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  BASE_NAME                      = X11SPHSmmDriver
+  FILE_GUID                      = ca3668c7-ae4e-454b-9e46-da97aaae0ff5
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = X11SPHSmmDriverInit
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+#  
+
+[Sources]  
+  X11SPHSmmDriver.c
+  X11SPHSmmDriver.h  
+
+[Packages]
+  MdePkg/MdePkg.dec   
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec 
+  AmiModulePkg/AmiModulePkg.dec
+  
+[LibraryClasses]
+  AmiDxeLib
+  SmmServicesTableLib  
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  
+[Protocols]
+  gEfiSmmPowerButtonDispatch2ProtocolGuid
+  gEfiSmmSxDispatch2ProtocolGuid
+  
+[Depex]
+  gEfiSmmPowerButtonDispatch2ProtocolGuid AND
+  gEfiSmmSxDispatch2ProtocolGuid
+  
+  
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

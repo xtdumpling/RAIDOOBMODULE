@@ -1,0 +1,160 @@
+TOKEN
+	Name  = "AmiCompatibilityPkg_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable AmiCompatibilityPkg support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "AMI_COMPATIBILITY_PKG_VERSION"
+	Value  = "25"
+	Help  = "AmiCompatibilityPkg version.\Do not change."
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "TRACE_PEICORE_BITMASK"
+	Value  = "DEBUG_ERROR"
+	Help  = "This value is a bit mask for the TRACE messages related to PEI_CORE.  The mask value is one of the DEBUG_XXX values defined in DebugLib.h"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TRACE_DXEIPL_BITMASK"
+	Value  = "DEBUG_ERROR"
+	Help  = "This value is a bit mask for the TRACE messages related to DXEIPL.  The mask value is one of the DEBUG_XXX values defined in DebugLib.h"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TRACE_PEI_CHIPSET_BITMASK"
+	Value  = "DEBUG_ERROR"
+	Help  = "This value is a bit mask for the TRACE messages related to PEI_CHIPSET. The mask value is one of the DEBUG_XXX values defined in DebugLib.h"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TRACE_PEI_PLATFORM_BITMASK"
+	Value  = "DEBUG_ERROR"
+	Help  = "This value is a bit mask for the TRACE messages related to PEI_PLATFORM. The mask value is one of the DEBUG_XXX values defined in DebugLib.h"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TRACE_PEI_CPU_BITMASK"
+	Value  = "DEBUG_ERROR"
+	Help  = "This value is a bit mask for the TRACE messages related to PEI_CPU. The mask value is one of the DEBUG_XXX values defined in DebugLib.h"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TRACE_DXE_CORE_BITMASK"
+	Value  = "DEBUG_ERROR"
+	Help  = "This value is a bit mask for the TRACE messages related to DXE_CORE. The mask value is one of the DEBUG_XXX values defined in DebugLib.h"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TRACE_DXE_CHIPSET_BITMASK"
+	Value  = "DEBUG_ERROR"
+	Help  = "This value is a bit mask for the TRACE messages related to DXE_CHIPSET. The mask value is one of the DEBUG_XXX values defined in DebugLib.h"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TRACE_DXE_PLATFORM_BITMASK"
+	Value  = "DEBUG_ERROR"
+	Help  = "This value is a bit mask for the TRACE messages related to DXE_PLATFORM. The mask value is one of the DEBUG_XXX values defined in DebugLib.h"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TRACE_DXE_CPU_BITMASK"
+	Value  = "DEBUG_ERROR"
+	Help  = "This value is a bit mask for the TRACE messages related to DXE_CPU. The mask value is one of the DEBUG_XXX values defined in DebugLib.h"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TRACE_CSM_BITMASK"
+	Value  = "DEBUG_ERROR"
+	Help  = "This value is a bit mask for the TRACE messages related to CSM. The mask value is one of the DEBUG_XXX values defined in DebugLib.h"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TRACE_USB_BITMASK"
+	Value  = "DEBUG_ERROR"
+	Help  = "This value is a bit mask for the TRACE messages related to USB. The mask value is one of the DEBUG_XXX values defined in DebugLib.h"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+MODULE
+	Help  = "Includes AmiCompatibilityPkg.mak to Project"
+	File  = "AmiCompatibilityPkg.mak"
+End
+
+
+#Setup.sdl
+ELINK
+	Name  = "SETUP_DEFINITIONS"
+	InvokeOrder = ReplaceParent
+End
+
+OUTPUTREGISTER
+	Name  = "ERROR_LEVEL_TOKENS_H"
+	Path  = "Build"
+	File  = "ErrorLevelTokens.h"
+	Template  = "ErrorLevelTokens.txt"
+End
+
+INFComponent
+	Name  = "AmiPeiLib"
+	File  = "Library/AmiPeiLib.inf"
+	Package  = "AmiCompatibilityPkg"
+End
+
+INFComponent
+	Name  = "AmiDxeLib"
+	File  = "Library/AmiDxeLib.inf"
+	Package  = "AmiCompatibilityPkg"
+End
+
+INFComponent
+	Name  = "AmiCriticalSectionCompatLib"
+	File  = "Library/AmiCriticalSectionCompatLib.inf"
+	Package  = "AmiCompatibilityPkg"
+End
+
+LibraryMapping
+	Class  = "AmiPeiLib"
+	Instance  = "AmiCompatibilityPkg.AmiPeiLib"
+End
+
+LibraryMapping
+	Class  = "AmiDxeLib"
+	Instance  = "AmiCompatibilityPkg.AmiDxeLib"
+End
+
+LibraryMapping
+	Class  = "AmiCriticalSectionLib"
+	Instance  = "AmiCompatibilityPkg.AmiCriticalSectionCompatLib"
+End
+

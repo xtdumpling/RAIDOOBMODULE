@@ -1,0 +1,27 @@
+TOKEN
+    Name  = "PeiVideoInit"
+    Value  = "1"
+    Help  = "Main Switch for Enabling Pei Video Init Code in the Project"
+    TokenType = Boolean
+    Master = Yes
+End
+
+INFComponent
+    Name  = "PeiVideoInitLib"
+    File  = "PeiVideoInit.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "PEIM"
+End
+
+LibraryMapping
+    Class  = "PeiVideoInitLib"
+    Instance  = "AmiModulePkg.PeiVideoInitLib"
+    ModuleTypes  = "PEIM"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiModulePkg.PeiVideoInitLib"
+    ModuleTypes  = "PEIM"
+    Override  = "AmiModulePkg.PeiVideoTextOut"
+End

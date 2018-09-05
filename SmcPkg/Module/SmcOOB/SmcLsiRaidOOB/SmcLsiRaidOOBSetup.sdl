@@ -1,0 +1,63 @@
+##****************************************************************************
+##****************************************************************************
+##**                                                                        **
+##**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+##**                                                                        **
+##****************************************************************************
+##****************************************************************************
+#
+#  File History
+#
+#  Rev. 1.00
+#    Bug Fix:  Initial revision.
+#    Reason:   
+#    Auditor:  Durant Lin
+#    Date:     Aug/13/2018
+#
+#****************************************************************************
+
+TOKEN
+    Name          = "SmcLsiRaidOOBSetup_SUPPORT"
+    Value         = "1"
+    TokenType     = Boolean
+    TargetEQU     = Yes
+    TargetMAK     = Yes
+    TargetH       = Yes
+    Master        = Yes
+End
+
+PATH
+    Name          = "SmcLsiRaidOOBSetup_DIR"
+End
+
+INFComponent
+    Name          = "SmcLsiRaidOOBSetup"
+    File          = "SmcLsiRaidOOBSetup.inf"
+    Package       = "SmcPkg"
+    ModuleTypes   = "DXE_DRIVER"
+End
+
+FFS_FILE
+    Name          = "SmcLsiRaidOOBSetup"
+    FD_AREA       = "FV_MAIN"
+    INFComponent  = "SmcPkg.SmcLsiRaidOOBSetup"
+End
+
+MODULE
+	Help  = "Includes SmcLsiRaidOOBSetup.mak to Project"
+	File  = "SmcLsiRaidOOBSetup.mak"
+End
+
+ELINK
+    Name = "{{ 0xca113bd9, 0x21cc, 0xaa1b, { 0x33, 0x58, 0xa9, 0x73, 0x78, 0xdd, 0x3c, 0x5e } }, 0x2000, NULL},"
+        Parent  = "AMITSE_HIDDEN_PAGE_LIST"
+        Help  = "Hidden SmcLsiRaidOOBSetup vfr page."
+        InvokeOrder = AfterParent
+End
+
+TOKEN
+    Name          = "SMC_RAID_DETAILED_DEBUG_MESSAGE"
+    Value         = "1"
+    TokenType     = Boolean
+    TargetH       = Yes
+End

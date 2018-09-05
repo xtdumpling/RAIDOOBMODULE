@@ -1,0 +1,101 @@
+#/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#
+# This file contains an 'Intel Peripheral Driver' and is
+# licensed for Intel CPUs and chipsets under the terms of your
+# license agreement with Intel or your vendor.  This file may
+# be modified by the user, subject to additional terms of the
+# license agreement
+#
+#
+# Copyright (c) 2009 - 2016, Intel Corporation. All rights reserved
+# This software and associated documentation (if any) is furnished
+# under a license and may only be used or copied in accordance
+# with the terms of the license. Except as permitted by such
+# license, no part of this software or documentation may be
+# reproduced, stored in a retrieval system, or transmitted in any
+# form or by any means without the express written consent of
+# Intel Corporation.
+
+#
+#  Module Name:
+#
+#   WheaErrorInj.inf
+#
+#  Abstract:
+#
+#    Component description file for SMM Platform handler module
+#
+#--------------------------------------------------------------------*/
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = WheaErrorInj
+  FILE_GUID                      = FB6D36A2-EF7D-4B74-99AC-80B31F6BE9B1
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  VERSION_STRING                 = 1.0
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  ENTRY_POINT                    = InitWheaErrorInj
+
+[Sources]
+  WheaErrorInj.c
+  MeErrorInj.c
+  Einj.asm | MSFT
+  Einj.nasm | GCC
+
+[Packages]
+  MdePkg/MdePkg.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+  CpPlatPkg/CpPlatPkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  UefiCpuPkg/UefiCpuPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  PurleySktPkg/Me/MePkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiRuntimeServicesTableLib
+  UefiBootServicesTableLib
+  DebugLib
+  UefiLib
+  BaseMemoryLib
+  WheaPlatformHooksLib
+  SynchronizationLib
+  MpSyncDataLib
+  WheaSiliconHooksLib
+  MeUmaEinjLib
+
+[Protocols]
+  gEfiWheaPlatformSupportProtocolGuid
+  gEfiIioUdsProtocolGuid
+  gEfiSmmSwDispatch2ProtocolGuid
+  gEfiSmmPeriodicTimerDispatch2ProtocolGuid
+  gEfiWheaSupportProtocolGuid
+  gEfiMemRasProtocolGuid
+  gEfiCpuCsrAccessGuid
+  gEfiSmmCpuProtocolGuid
+  gEfiSmmCpuServiceProtocolGuid
+  gEfiSmmCpuProtocolGuid
+  gEfiCrystalRidgeSmmGuid  
+  gEfiPlatformRasPolicyProtocolGuid
+
+[Guids]
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[Depex]
+  gEfiSmmBase2ProtocolGuid AND
+  gEfiWheaSupportProtocolGuid  AND
+  gEfiSmmSwDispatch2ProtocolGuid AND
+  gEfiSmmPeriodicTimerDispatch2ProtocolGuid AND
+  gEfiSmmCpuProtocolGuid AND
+  gEfiMemRasProtocolGuid AND
+  gSmmMeHeci3ProtocolGuid AND
+  gEfiPlatformRasPolicyProtocolGuid AND
+  gEfiIioUdsProtocolGuid
+
+
+

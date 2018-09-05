@@ -1,0 +1,88 @@
+TOKEN
+	Name  = "PlatformPei_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling Pei support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "UuidPeiInit_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable UuidPeiInit support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "UuidPeiInit"
+	File  = "UuidPeiInit/UuidPeiInit.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "PEIM"
+	Token = "UuidPeiInit_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "FpgaPlatformInit_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable FpgaPlatformInit support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "FpgaPlatformInit"
+	File  = "FpgaPlatformInit/FpgaPlatformEarlyInit.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "PEIM"
+	Token = "FpgaPlatformInit_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "MemCacheInit_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable UuidPeiInit support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "MemCacheInit"
+	File  = "MemCacheInit/MemCacheInit.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "PEIM"
+	Token = "MemCacheInit_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+    Class  = "DebugPrintErrorLevelLib"
+    Instance  = "MdePkg.BaseDebugPrintErrorLevelLib"
+    Override  = "PurleyPlatPkg.MemCacheInit"
+End
+
+TOKEN
+	Name  = "MrcOemHooksPeim_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable MrcOemHooksPeim support in Project"
+	TokenType = Boolean
+	Token = "MRC_OEM_HOOKS_PPI_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "MrcOemHooksPeim"
+	File  = "MrcOemHooksPeim/MrcOemHooksPeim.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "PEIM"
+	Token = "MrcOemHooksPeim_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+    Class  = "OemProcMemInitLib"
+    Instance  = "PurleyPlatPkg.OemProcMemInitLib"
+    Override  = "PurleyPlatPkg.MrcOemHooksPeim"
+    Token = "MrcOemHooksPeim_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+    Class  = "OemIioInitLib"
+    Instance  = "PurleyPlatPkg.OemIioInitLib"
+    Override  = "PurleyPlatPkg.MrcOemHooksPeim"
+    Token = "MrcOemHooksPeim_SUPPORT" "=" "1"
+End

@@ -1,0 +1,317 @@
+## @file
+#  ProcMemInit LIBRARY
+#
+#  Copyright (c) 2009 - 2017, Intel Corporation. All rights reserved.<BR>
+#
+#  This program and the accompanying materials
+#  are licensed and made available under the terms and conditions of the BSD License
+#  which accompanies this distribution. The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.php
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = ProcMemInit
+  FILE_GUID                      = 11777581-2B67-4075-8EB4-F691A47ECEC7
+  MODULE_TYPE                    = BASE
+  LIBRARY_CLASS                  = ProcMemInitLib | PEIM DXE_DRIVER DXE_SMM_DRIVER
+
+[Sources.Ia32]
+## //SKX_TODO: Move for 64 bit build
+#  Core/Mem/MemoryInit.c
+  Chip/Common/ProcMemInit.c
+  Chip/Include/ProcMemInit.h
+  Chip/Kti/KtiInit.c
+  Chip/Mmrc/Source/RegAccess.c
+  Chip/Mmrc/Source/MmrcProjectDataGenerated.c
+  Chip/Mmrc/Source/StringsGenerated.c
+  Chip/Common/PipeInit.c
+[Sources]
+## //SKX_TODO: Move for 64 bit build
+## Chip/Common
+  Chip/Common/Bios2yamChip.c
+  Chip/Common/CpuPciAccess.c
+  Chip/Common/CpuPciAccessCommon.c
+  Chip/Common/DebugCmd.c
+  Chip/Common/ErrorChip.c
+  Chip/Common/MailBox.c
+  Chip/Common/PciAccess.c
+  Chip/Common/PrintfChip.c
+  Chip/Common/ProcMemInit.c
+  Chip/Common/Smbus.c
+  Chip/Common/ScratchPadReg.c
+  Chip/Common/MrcHooksChipServicesPpiInstall.c
+## Chip/Cpu
+  Chip/Cpu/CpuInit.c
+## Chip/Include/RcRegs
+  Chip/Include/RcRegs/CHA_CMS.h
+  Chip/Include/RcRegs/CHA_MISC.h
+  Chip/Include/RcRegs/CHA_PMA.h
+  Chip/Include/RcRegs/CHABC_SAD1.h
+  Chip/Include/RcRegs/CHABC_UTIL.h
+  Chip/Include/RcRegs/CHABC_SAD.h
+  Chip/Include/RcRegs/CHABC_PMA.h
+  Chip/Include/RcRegs/IIO_DFX.h
+  Chip/Include/RcRegs/IIO_DFX_VTD.h
+  Chip/Include/RcRegs/IIO_DFX_GLOBAL.h
+  Chip/Include/RcRegs/IIO_IOAPIC.h
+  Chip/Include/RcRegs/IIO_PCIE.h
+  Chip/Include/RcRegs/IIO_PCIEDMI.h
+  Chip/Include/RcRegs/IIO_PCIENTB.h
+  Chip/Include/RcRegs/IIO_PERFMON.h
+  Chip/Include/RcRegs/IIO_RAS.h
+  Chip/Include/RcRegs/IIO_VTD.h
+  Chip/Include/RcRegs/IIOCB_FUNC0.h
+  Chip/Include/RcRegs/IIOCB_FUNC1.h
+  Chip/Include/RcRegs/IIOCB_FUNC2.h
+  Chip/Include/RcRegs/IIOCB_FUNC3.h
+  Chip/Include/RcRegs/IIOCB_FUNC4.h
+  Chip/Include/RcRegs/IIOCB_FUNC5.h
+  Chip/Include/RcRegs/IIOCB_FUNC6.h
+  Chip/Include/RcRegs/IIOCB_FUNC7.h
+  Chip/Include/RcRegs/KTI_CIOPHYDFX.h
+  Chip/Include/RcRegs/KTI_LLDFX.h
+  Chip/Include/RcRegs/KTI_LLPMON.h
+  Chip/Include/RcRegs/KTI_REUT.h
+  Chip/Include/RcRegs/KTI_PHY_IOVB.h
+  Chip/Include/RcRegs/KTI_PHY_PQD.h
+  Chip/Include/RcRegs/M2UPCIE_CMS.h
+  Chip/Include/RcRegs/M2UPCIE_MAIN.h
+  Chip/Include/RcRegs/M2UPCIE_PMON.h
+  Chip/Include/RcRegs/M3KTI_CMS.h
+  Chip/Include/RcRegs/M3KTI_MAIN.h
+  Chip/Include/RcRegs/M3KTI_PMON.h
+  Chip/Include/RcRegs/M3KTI_PMON1.h
+  Chip/Include/RcRegs/MC_2LM.h
+  Chip/Include/RcRegs/MC_DDRIOBC.h
+  Chip/Include/RcRegs/MC_DDRIOMC.h
+  Chip/Include/RcRegs/MC_MAIN.h
+  Chip/Include/RcRegs/MC_MAINEXT.h
+  Chip/Include/RcRegs/MCDDC_CTL.h
+  Chip/Include/RcRegs/MCDDC_DP.h
+  Chip/Include/RcRegs/MCIO_DDRIO.h
+  Chip/Include/RcRegs/MCIO_DDRIOEXT.h
+  Chip/Include/RcRegs/PCU_FUN0.h
+  Chip/Include/RcRegs/PCU_FUN1.h
+  Chip/Include/RcRegs/PCU_FUN2.h
+  Chip/Include/RcRegs/PCU_FUN3.h
+  Chip/Include/RcRegs/PCU_FUN4.h
+  Chip/Include/RcRegs/PCU_FUN5.h
+  Chip/Include/RcRegs/PCU_FUN6.h
+  Chip/Include/RcRegs/PCU_FUN7.h
+  Chip/Include/RcRegs/PSEUDO_OFFSET.h
+  Chip/Include/RcRegs/UBOX_CFG.h
+  Chip/Include/RcRegs/UBOX_DFX.h
+  Chip/Include/RcRegs/UBOX_MISC.h
+  Chip/Include/RcRegs/VCU_FUN0.h
+  Chip/Include/RcRegs/VCU_FUN1.h
+  Chip/Include/RcRegs/VCU_FUN2.h
+  Chip/Include/RcRegs/VCU_FUN3.h
+  Chip/Include/RcRegs/VCU_FUN4.h
+  Chip/Include/RcRegs/VCU_FUN5.h
+  Chip/Include/RcRegs/VCU_FUN6.h
+  Chip/Include/RcRegs/VCU_FUN7.h
+  Chip/Include/RcRegs/FNV_A_UNIT_0.h
+  Chip/Include/RcRegs/FNV_DA_UNIT_0.h
+  Chip/Include/RcRegs/FNV_DA_UNIT_1.h
+  Chip/Include/RcRegs/FNV_DFX_MISC_0.h
+  Chip/Include/RcRegs/FNV_DFX_MISC_1.h
+  Chip/Include/RcRegs/FNV_DPA_MAPPED_0.h
+  Chip/Include/RcRegs/FNV_DPA_MAPPED_1.h
+  Chip/Include/RcRegs/FNV_DDRIO_COMP.h
+  Chip/Include/RcRegs/FNV_DDRIO_DAT.h
+  Chip/Include/RcRegs/FNV_DDRIO_DAT7_CH.h
+  Chip/Include/RcRegs/FNV_D_UNIT_0.h
+  Chip/Include/RcRegs/FNV_P_UNIT_0.h
+  Chip/Include/RcRegs/FNV_P_UNIT_1.h
+  Chip/Include/RcRegs/FNV_SEC_0.h
+  Chip/Include/RcRegs/FNV_SEC_1.h
+  Chip/Include/RcRegs/FPGA_CCI.h
+  Chip/Include/RcRegs/FPGA_FME.h
+## Chip/Include
+  Chip/Include/CmdCtlDelay.h
+  Chip/Include/CpgcChip.h
+  Chip/Include/CpuCsrAccessDefine.h
+  Chip/Include/CpuPciAccess.h
+  Chip/Include/Ddr4OdtActivationTable.h
+  Chip/Include/Ddr4OdtValueTable.h
+  Chip/Include/EvAutoRecipe.h
+  Chip/Include/FnvAccess.h
+  Chip/Include/KtiCoh.h
+  Chip/Include/KtiEvRecipeTable_SKX.h
+  Chip/Include/KtiLib.h
+  Chip/Include/KtiMisc.h
+  Chip/Include/KtiSetupDefinitions.h
+  Chip/Include/MemHostChip.h
+  Chip/Include/MemPOR.h
+  Chip/Include/MemProjectSpecific.h
+  Chip/Include/MemThrot.h
+  Chip/Include/MemWeight.h
+  Chip/Include/RcRegs.h
+  Chip/Include/ScratchPadReg.h
+  Chip/Include/SimRegs.h
+  Chip/Include/SysFuncChip.h
+  Chip/Include/SysHostChip.h
+  Chip/Include/uart16550Init.h
+  Chip/Include/EvTypes.h
+  Chip/Include/EvTestEntry.h
+  Chip/Include/XCCVictimAggressorTable.h
+  Chip/Include/Rc_Revision.h
+  # APTIOV_SERVER_OVERRIDE_RC_START
+  Chip/Include/MemAddrMap.h
+  Chip/Include/RcSimChip.h
+  Chip/Include/CpuPciAccessCommon.h
+  Chip/Include/MemFuncChip.h
+  # APTIOV_SERVER_OVERRIDE_RC_END
+## Chip/Kti
+  Chip/Kti/KtiCoh.c
+  Chip/Kti/KtiDisc.c
+  Chip/Kti/KtiEvAutoRecipe.c
+  Chip/Kti/KtiLib.c
+  Chip/Kti/KtiLinks.c
+  Chip/Kti/KtiMain.c
+## Chip/Mem
+  Chip/Mem/FnvAccess.c
+  Chip/Mem/InitMemChip.c
+  Chip/Mem/MemAddrMap.c
+  Chip/Mem/MemCmdControl.c
+  Chip/Mem/MemCpgc.c
+  Chip/Mem/MemDisplayChip.c
+  Chip/Mem/MemIOControl.c
+  Chip/Mem/MemPXC.c
+  Chip/Mem/MemPciAccess.c
+  Chip/Mem/MemProjectSpecific.c
+  Chip/Mem/MemRAS.c
+  Chip/Mem/MemSPDChip.c
+  Chip/Mem/MemStartChip.c
+  Chip/Mem/MemThrot.c
+  Chip/Mem/MemTimingChip.c
+  Chip/Mem/MemTrainingChip.c
+  Chip/Mem/MemXoverCalib.c
+  Chip/Mem/NGNDimmHandler.c
+  Chip/Mem/MemWDBChip.c
+  Chip/Mem/BiosSsaMemoryConfigChip.c
+  Chip/Mem/BiosSsaMemoryServerConfigChip.c
+  Chip/Mem/BiosSsaMemoryDdrtConfigChip.c
+  Chip/Mem/MrcSsaServicesChip.c
+  Chip/Mem/EvTestEntry.c
+  Chip/Mem/FpgaMemMap.c
+## Chip/Mmrc
+  Chip/Mmrc/Include/DDRIOHI.h
+  Chip/Mmrc/Include/DDRIOLO.h
+  Chip/Mmrc/Include/MC1LMDP.h
+  Chip/Mmrc/Include/MC1LMSCH.h
+  Chip/Mmrc/Include/MC2LM.h
+  Chip/Mmrc/Include/MCDECS.h
+  Chip/Mmrc/Include/MCMAIN.h
+  Chip/Mmrc/Include/Mmrc.h
+  Chip/Mmrc/Include/MmrcLibraries.h
+  Chip/Mmrc/Include/RegAccess.h
+  Chip/Mmrc/Include/MmrcData.h
+  Chip/Mmrc/Include/MmrcProjectData.h
+  Chip/Mmrc/Include/MmrcProjectDefinitions.h
+  Chip/Mmrc/Include/MmrcProjectDataGenerated.h
+  Chip/Mmrc/Include/MmrcProjectDefinitionsGenerated.h
+  Chip/Mmrc/Source/RegAccess.c
+  Chip/Mmrc/Source/MmrcLibraries.c
+  Chip/Mmrc/Source/MmrcProjectDataGenerated.c
+  Chip/Mmrc/Source/StringsGenerated.c
+## Platform/Include
+  Platform/Include/KtiPlatform.h
+  Platform/Include/OemProcMemInit.h
+## Platform/Setup
+  Platform/Setup/CommonSetup.c
+  Platform/Setup/CpuSetup.c
+  Platform/Setup/KtiSetup.c
+  Platform/Setup/MemSetup.c
+# APTIOV_SERVER_OVERRIDE_RC_START : Add missing files
+  Chip/Include/RcRegs/IIO_DFX_DMI.h
+  Chip/Include/RcRegs/IIO_DFX_GLOBAL_DMI.h
+  Chip/Include/RcRegs/IIO_DFX_VTD_DMI.h
+  Chip/Include/RcRegs/IIO_VMD.h
+  Chip/Include/RcRegs/M2MEM_CMS.h
+  Chip/Include/RcRegs/M2MEM_MAIN.h
+  Chip/Mmrc/Include/COMP.h
+# APTIOV_SERVER_OVERRIDE_RC_END : Add missing files
+[Packages]
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  MdePkg/MdePkg.dec
+  PurleySktPkg/SocketPkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  # APTIOV_SERVER_OVERRIDE_RC_START
+  PurleyPlatPkg/PlatPkg.dec
+  # APTIOV_SERVER_OVERRIDE_RC_END
+
+[LibraryClasses.Ia32]
+  PeimEntryPoint
+  IioInitPeiLib
+
+[LibraryClasses]
+  BaseMemoryCoreLib
+  DebugLib
+  HobLib
+  IoLib
+  PciLib
+  OemProcMemInitLib
+  SiliconAccessLib
+  MemoryEvContentLib
+  PchPmcLib 
+  
+  # APTIOV_SERVER_OVERRIDE_RC_START
+  AmiMrcIntrinsicLib    # memcpy and memset defined locally as AmiCryptoPkg and CryptoPkg removed the definitions.
+  AmiMrcHooksWrapperLib
+  # APTIOV_SERVER_OVERRIDE_RC_END
+
+[LibraryClasses.X64]
+  UefiLib
+  
+
+[Guids]
+  gEfiMemoryConfigDataGuid
+  gEfiMemoryConfigDataHobGuid
+  gEfiMemoryMapGuid
+  gEfiSmmPeiSmramMemoryReserveGuid
+  gEfiAcpiVariableCompatiblityGuid
+  gEfiMemoryTypeInformationGuid
+  gEfiPlatformTxtDeviceMemoryGuid
+  gEfiHobListGuid
+
+
+[Ppis]
+  gEfiPeiCpuIoPpiInstalledGuid
+  gEfiPciCfg2PpiGuid
+  gPeiBaseMemoryTestPpiGuid
+  gPeiPlatformMemorySizePpiGuid
+  gPeiTxtScleanPpiGuid
+  gEfiPeiReadOnlyVariable2PpiGuid
+  gSsaBiosServicesPpiGuid
+  gMrcHooksChipServicesPpiGuid		## PRODUCES
+
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+  gEfiCpRcPkgTokenSpaceGuid.PcdRcRevision
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[BuildOptions.Ia32]
+  # APTIOV_SERVER_OVERRIDE_RC_START : To resolve optimization build error
+  MSFT:*_*_*_CC_FLAGS     = /W4 /Gs1310720 /GF /GL- /wd4214 /wd4334 /wd4142 /wd4819 /URAS_SUPPORT /DIA32 /DSSA_OEM_HOOK /O1ib2
+  # APTIOV_SERVER_OVERRIDE_RC_END : To resolve optimization build error
+  GCC:*_*_*_CC_FLAGS     = -URAS_SUPPORT -DIA32 -DSSA_OEM_HOOK
+
+[BuildOptions.X64]
+  MSFT:*_*_X64_CC_FLAGS   = /W2 /Gs1310720 /GL- /wd4142 /wd4819 /DRAS_SUPPORT /UIA32
+  GCC:*_*_X64_CC_FLAGS   = -DRAS_SUPPORT -UIA32
+
+

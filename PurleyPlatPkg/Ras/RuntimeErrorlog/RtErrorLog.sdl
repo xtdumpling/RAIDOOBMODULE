@@ -1,0 +1,145 @@
+TOKEN
+	Name  = "RtErrorLog_SUPPORT"
+	Value  = "1"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+        TargetH = Yes
+	Master = Yes
+	Help  = "Main switch to enable RtErrorLog support in Project"
+End
+
+TOKEN
+	Name  = "HandleLastbootError_Support"
+	Value  = "1"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+        TargetH = Yes	
+	Help  = "Main switch to enable HandleLastbootError Support  in Project"
+End
+
+TOKEN
+	Name  = "ENABLE_ERROR_INJECTOR_SUPPORT"
+	Value  = "1"
+	Help  = "To support software methods(Like ITP C-scripts) to inject Memory Errors"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+ELINK
+	Name  = "MemErrorHandlers"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "MemErrorInitFunctions"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "PciErrorHandlers"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "PciErrorInitFunctions"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+    	Name  = "ProcessorErrorHandlers"
+    	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "IohQpiErrorHandlers"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "IohCoreErrorHandlers"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "IohVtdErrorHandlers"
+	InvokeOrder = ReplaceParent
+End
+
+
+ELINK
+	Name  = "ItcErrorHandlers"
+	InvokeOrder = ReplaceParent
+End
+
+
+ELINK
+	Name  = "OtcErrorHandlers"
+	InvokeOrder = ReplaceParent
+End
+
+
+ELINK
+	Name  = "DmaErrorHandlers"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "ADDITIONAL_RTERRORLOG_LIB"
+	InvokeOrder = ReplaceParent
+End
+
+OUTPUTREGISTER
+	Name = "RTERRORLOG_ELINKS_AUTOGEN_H"
+	Path = "Build"
+	File = "RtErrorLogElinks.h"
+	Template = "RtErrorLogElinks.txt"
+End
+
+INFComponent
+	Name  = "RtErrorLogBoardLib"
+	File  = "RtErrorLogBoard.inf"
+	Package  = "PurleyPlatPkg"
+	PreProcess = Yes
+	ModuleTypes  = "DXE_DRIVER"
+End
+
+LibraryMapping
+	Class  = "RtErrorLogBoardLib"
+	Instance  = "PurleyPlatPkg.RtErrorLogBoardLib"
+	ModuleTypes  = "DXE_DRIVER DXE_SMM_DRIVER"
+	Arch  = "common"
+End
+
+INFComponent
+    Name  = "RtErrorLogBmcNullLib"
+    File  = "Board\Bmc\RtErrorLogBmcNullLib.inf"
+    Package  = "PurleyPlatPkg"
+    ModuleTypes  = "DXE_DRIVER"
+    Token = "RuntimeErrorLogBmc_SUPPORT" "=" "0"
+End
+
+LibraryMapping
+    Class  = "RtErrorLogBmcLib"
+    Instance  = "PurleyPlatPkg.RtErrorLogBmcNullLib"
+    Arch  = "common"
+    ModuleTypes  = "DXE_DRIVER DXE_SMM_DRIVER"
+    Token = "RuntimeErrorLogBmc_SUPPORT" "=" "0"
+End
+
+INFComponent
+    Name  = "RtErrorLogGpnvNullLib"
+    File  = "Board\Gpnv\RtErrorLogGpnvNullLib.inf"
+    Package  = "PurleyPlatPkg"
+    ModuleTypes  = "DXE_DRIVER"
+    Token = "RtErrorLogGpnv_SUPPORT" "=" "0"
+End
+
+LibraryMapping
+    Class  = "RtErrorLogGpnvLib"
+    Instance  = "PurleyPlatPkg.RtErrorLogGpnvNullLib"
+    Arch  = "common"
+    ModuleTypes  = "DXE_DRIVER DXE_SMM_DRIVER"
+    Token = "RtErrorLogGpnv_SUPPORT" "=" "0"
+End

@@ -1,0 +1,200 @@
+#****************************************************************************
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.00
+#      Bug Fixed:  Implment IOBP Override.
+#      Reason:     
+#      Auditor:    Chen Lin
+#      Date:       Mar/25/2016
+#
+#
+#*****************************************************************************
+## @file
+# Component description file for PCH Init Lib Pei Phase
+#
+# @copyright
+# Copyright (c) 2014 - 2016, Intel Corporation. All rights reserved
+# This software and associated documentation (if any) is furnished
+# under a license and may only be used or copied in accordance
+# with the terms of the license. Except as permitted by the
+# license, no part of this software or documentation may be
+# reproduced, stored in a retrieval system, or transmitted in any
+# form or by any means without the express written consent of
+# Intel Corporation.
+# This file contains an 'Intel Peripheral Driver' and is uniquely
+# identified as "Intel Reference Module" and is licensed for Intel
+# CPUs and chipsets under the terms of your license agreement with
+# Intel or your vendor. This file may be modified by the user, subject
+# to additional terms of the license agreement.
+#
+#@par Specification Reference:
+#
+##
+
+
+[Defines]
+  INF_VERSION                    = 0x00010017
+  BASE_NAME                      = PeiPchInitLib
+  FILE_GUID                      = AB7EB2D3-2D0D-475B-A7ED-97D6D02F3009
+  VERSION_STRING                 = 1.0
+  MODULE_TYPE                    = PEIM
+  LIBRARY_CLASS                  = PchInitLib
+
+
+[LibraryClasses]
+  BaseLib
+  IoLib
+  DebugLib
+  TimerLib
+  MmPciLib
+  PchCycleDecodingLib
+  PchGbeLib
+  PchPcieRpLib
+  PchPcrLib
+  PchSbiAccessLib
+  TraceHubInitLib
+  PchPciExpressHelpersLib
+  MemoryAllocationLib
+  BaseMemoryLib
+  HobLib
+  PeiServicesLib
+  GpioLib
+  GpioPrivateLib
+  #SERVER_BIOS CpuPlatformLib
+  #SERVER_BIOS PeiMeLib
+  HeciMsgPeiLib                                  #SERVER_BIOS
+  PchSmmControlLib
+  PchSerialIoLib
+  PchInitCommonLib
+  PchResetCommonLib
+  PchSmbusCommonLib
+  PchSpiCommonLib
+  PchWdtCommonLib
+  PchHsioLib
+  S3BootScriptLib
+  #SERVER_BIOS GraphicsInitLib
+  #SERVER_BIOS CpuCommonLib
+  PlatformHooksLib                              #SERVER_BIOS
+  PlatformHooksLib                              #SERVER_BIOS
+  SpsPeiLib                                     #SERVER_BIOS
+  PchPmcLib                                     #SERVER_BIOS
+
+[Packages]
+  IA32FamilyCpuPkg/IA32FamilyCpuPkg.dec
+  MdePkg/MdePkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  PurleySktPkg/Me/MePkg.dec
+  PurleySktPkg/SocketPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+  PurleySktPkg/Ie/IePkg.dec         #SERVER_BIOS
+  PurleyPlatPkg/PlatPkg.dec #SMCPKG_SUPPORT
+
+[Sources]
+  PchInitPreMem.c
+  PchSata.c
+  PchInit.c
+  PchDmi.c
+  PchRootPorts.c
+  PchCio2.c
+  PchUsb.c
+  PchXdci.c
+  PchTraceHub.c
+  PchInterruptAssign.c
+  PchLan.c
+  PchLpc.c
+  PchHda.c
+  PchHsio.c
+  PchThermal.c
+  PchSerialIo.c
+  PchScs.c
+  PchIsh.c
+  PchPm.c
+  PchHHsioAx.c              #SERVER_BIOS
+  PchHHsioBx.c
+  PchHHsioDx.c
+  PchLpHsioBx.c
+  PchLpHsioCx.c
+  PchLbgHsioAx.c            #SERVER_BIOS
+  PchLbgHsioBx.c            #SERVER_BIOS
+  PchLbgHsioBx_Ext.c        #SERVER_BIOS
+  PchLbgHsioSx.c            #SERVER_BIOS
+  PchLbgHsioSx_Ext.c        #SERVER_BIOS
+  PchHsioLaneLib.c
+  PchLbgHsioBxD.c           #SERVER_BIOS
+  PchLbgHsioBxD_Ext.c       #SERVER_BIOS
+  # APTIOV_SERVER_OVERRIDE_RC_START
+  PchHsioLaneLib.h
+  # APTIOV_SERVER_OVERRIDE_RC_END
+#
+# PCH WDT
+#
+  Wdt.c
+#
+# PCH Reset
+#
+  PchReset.c
+#
+# PCH SPI
+#
+  PchSpi.c
+#
+# PCH SMBus
+#
+  PchSmbus.c
+  PchSmbusArp.c
+  # APTIOV_SERVER_OVERRIDE_RC_START : Add missing file
+  PchInitPei.h
+  PchReset.h
+  PchSmbus.h
+  PchSpi.h
+  PchUsb.h
+  Wdt.h
+  PchInitAdr.h
+  # APTIOV_SERVER_OVERRIDE_RC_END : Add missing file
+  PchInitAdr.c              #SERVER_BIOS
+
+[Ppis]
+  gPchPlatformPolicyPpiGuid             ## CONSUMES #SERVER_BIOS
+  gWdtPpiGuid                           ## PRODUCES
+  gPchResetPpiGuid                      ## PRODUCES
+  gPchResetCallbackPpiGuid              ## CONSUMES
+  #SERVER_BIOS gPchSpiPpiGuid           ## PRODUCES
+  gPeiSpiPpiGuid                        ## PRODUCES #SERVER_BIOS
+  gEfiPeiMemoryDiscoveredPpiGuid        ## CONSUMES
+  gEfiPeiSmbus2PpiGuid                  ## PRODUCES
+  gPchPcieDeviceTablePpiGuid            ## CONSUMES
+  gPchHdaVerbTablePpiGuid               ## CONSUMES
+  gPchHsioPtssTablePpiGuid              ## CONSUMES
+  gPchPmcXramOffsetDataPpiGuid          ## CONSUMES
+  gEfiEndOfPeiSignalPpiGuid             ## CONSUMES
+  #SERVER_BIOS gHeciPpiGuid             ## CONSUMES
+  gPeiCachePpiGuid                      ## CONSUMES #SERVER_BIOS
+  gPchInitPpiGuid                       ## CONSUMES #SERVER_BIOS
+  gPchPeiInitDonePpiGuid                ## CONSUMES #SERVER_BIOS
+  gDirtyWarmResetSignalGuid             ## PRODUCES #SERVER_BIOS
+  gDirtyWarmResetGuid                   ## PRODUCES #SERVER_BIOS
+
+[Guids]
+  gEfiSmbusArpMapGuid
+  gPchPolicyHobGuid
+  gPchDeviceTableHobGuid
+  gPchChipsetInitHobGuid
+  gWdtHobGuid
+  gPchPsfErrorHobGuid  #PCH_SERVER_BIOS_FLAG
+
+[Pcd]
+  gEfiPchTokenSpaceGuid.PcdPchAcpiIoPortBaseAddress  #SERVER_BIOS
+  gEfiPchTokenSpaceGuid.PcdTcoBaseAddress            #SERVER_BIOS
+  gPlatformTokenSpaceGuid.PcdLockCsrSsidSvidRegister #SERVER_BIOS
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+

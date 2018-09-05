@@ -1,0 +1,39 @@
+TOKEN
+	Name  = "SmbiosRecoveryDMIEdit_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable AMI DMIEdit Recovery support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+    Token = "SmbiosDMIEdit_SUPPORT" "=" "1"
+End
+
+INFComponent
+    Name  = "SmbiosRecoveryDmiEdit"
+    File  = "SmbiosRecoveryDmiEdit.inf"
+    Package  = "AmiCompatibilityPkg"
+    Token = "SmbiosRecoveryDMIEdit_SUPPORT" "=" "1"    
+End
+
+LibraryMapping
+    Class = "NULL"
+    Instance = "AmiCompatibilityPkg.SmbiosRecoveryDmiEdit"
+    Override = "AmiModulePkg.Reflash"
+    Token = "SmbiosRecoveryDMIEdit_SUPPORT" "=" "1"
+End
+
+ELINK
+    Name  = "RecoveryPreserveDmiEditData,"
+    Parent  = "OemBeforeFlashUpdateList"
+    InvokeOrder = AfterParent
+    Token = "SmbiosDMIEdit_SUPPORT" "=" "1"
+    Token = "SMBIOS_DMIEDIT_DATA_LOC" "=" "2"
+End
+
+ELINK
+    Name  = "RecoveryRestoreDmiEditData,"
+    Parent  = "OemAfterFlashUpdateList"
+    InvokeOrder = AfterParent    
+    Token = "SmbiosDMIEdit_SUPPORT" "=" "1"
+    Token = "SMBIOS_DMIEDIT_DATA_LOC" "=" "2"
+End

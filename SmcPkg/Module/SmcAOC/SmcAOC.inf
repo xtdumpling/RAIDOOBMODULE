@@ -1,0 +1,58 @@
+[Defines]
+  INF_VERSION = 0x00010005
+  VERSION_STRING = 1.0
+  BASE_NAME = SmcAOC
+  MODULE_TYPE = DXE_DRIVER
+  FILE_GUID = c7996da0-604a-47bd-8637-be0aa2fbd996
+  ENTRY_POINT = SmcAOCInit
+  PI_SPECIFICATION_VERSION = 0x0001000A
+
+[Sources]
+  SmcAOC.c
+  SmcAOC.h
+  SmcAOCDB.h
+  SmcAOCCommon.c
+  SmcAOCCommon.h
+  SmcSlotDB.h
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  PcdLib
+  SmcLib
+
+[Guids]
+
+
+[Protocols]
+  gEfiPciIoProtocolGuid
+
+[Packages]
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  AmiCryptoPkg/AmiCryptoPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  SmcPkg/SmcPkg.dec
+
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT1BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT2BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT3BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT4BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT5BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT6BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT7BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT8BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT9BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT10BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT11BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcAOCLocation
+  gSmcPkgTokenSpaceGuid.PcdSmcAOCExtendFlag
+  gSmcPkgTokenSpaceGuid.PcdSmcAOCNVMeMode
+
+[Depex]
+  TRUE

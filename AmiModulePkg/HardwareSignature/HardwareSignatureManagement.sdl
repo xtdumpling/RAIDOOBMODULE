@@ -1,0 +1,74 @@
+TOKEN
+    Name  = HARDWARE_SIGNATURE_MANAGEMENT_SUPPORT
+    Value  = 1
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+    Master = Yes
+    Help  = "Main switch to enable HardwareSignatureManagement support in Project"
+End
+
+PATH
+    Name  = "HARDWARE_SIGNATURE_DIR"
+    Path  = "AmiModulePkg/HardwareSignature"
+End
+
+
+TOKEN
+    Name  = "HARDWARE_SIGNATURE_DEBUG_MESSAGES"
+    Value  = "1"
+    Help  = "A switch to enable HardwareSignatureManagement Driver Debug messages over Serial Port."
+    TokenType = Boolean
+    TargetH = Yes
+    Token = "DEBUG_CODE" "=" "1"
+End
+
+TOKEN
+    Name  = "HARDWARE_SIGNATURE_USB_CHANGE"
+    Value  = "0"
+    Help  = "A switch to enable detect the change of the USB devices"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "THRESHOLD_OF_DIFFERENT_MEMORY_SIZE"
+    Value  = "128"
+    Help  = "The threshold of the different memory size. If memory map is changed, the total memory size will be little different."
+    TokenType = Integer
+    TargetH = Yes
+    Lock = Yes
+End
+
+INFComponent
+    Name  = "HardwareSignatureEntry"
+    File  = "HardwareSignatureEntry.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_DRIVER"
+End
+
+INFComponent
+    Name  = "HardwareSignatureLib"
+    File  = "HardwareSignatureLib.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_DRIVER"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "AmiModulePkg.HardwareSignatureLib"
+	Override  = "AmiModulePkg.SMIFlash"
+End
+
+ELINK
+	Name  = "SetupChangeCount,"
+	Parent  = "SavedConfigChanges,"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(HARDWARE_SIGNATURE_DIR)/SignalSetupConfig.c"
+    Parent  = "TSE_SOURCE_FILES"
+    InvokeOrder = AfterParent
+End

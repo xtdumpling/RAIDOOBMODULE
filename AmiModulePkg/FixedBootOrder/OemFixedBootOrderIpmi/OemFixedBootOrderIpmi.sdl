@@ -1,0 +1,33 @@
+TOKEN
+	Name  = "OemFixedBootOrderIpmi_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable OemFixedBootOrderIpmi support in Project"
+	TokenType = Boolean
+	Token = "IpmiBoot_SUPPORT" "=" "1"
+    Master = Yes	
+End
+
+ELINK
+    Name  = "ApplyIpmiBootRequest,"
+    Parent  = "SetIpmiBootOptionPriorities,"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "FboIpmiBootTag,"
+    Parent  = "SetIpmiBootOptionPriorities,"
+    InvokeOrder = AfterParent
+End
+
+INFComponent
+	Name  = "OemFixedBootOrderIpmi"
+	File  = "OemFixedBootOrderIpmi.inf"
+	Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_DRIVER"	
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "AmiModulePkg.OemFixedBootOrderIpmi"
+	Override  = "AmiModulePkg.Bds"
+End

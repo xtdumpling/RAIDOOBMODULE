@@ -1,0 +1,69 @@
+TOKEN
+	Name  = "OEMROMHOLE_SUPPORT"
+	Value  = "0"
+	Help  = "Switch for Enabling OEM ROM HOLE Checking support in the project"
+	TokenType = Boolean
+	Master = Yes
+	Token = "OFBD_FOR_ARM_SUPPORT" "=" "0"
+End
+
+TOKEN
+	Name  = "[OEM ROM HOLE Sample Code Section]"
+	Help  = "See detail description in each token's help box."
+	TokenType = Expression
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "OEM_ROM_HOLE_SAMPLE_TEST"
+	Value  = "1"
+	Help  = "Test OEM ROM HOLE Function"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "OEMROMHOLE_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "OEM_ROM_HOLE_0_GUID"
+	Value  = "{0x05ca01fc, 0x0fc1, 0x11dc, 0x90, 0x11, 0x00, 0x17, 0x31, 0x53, 0xeb, 0xa8}"
+	Help  = "OEM ROM HOLE 0 GUID."
+	TokenType = Expression
+	TargetH = Yes
+	Range  = "GUID"
+	Token = "OEM_ROM_HOLE_SAMPLE_TEST" "=" "1"
+End
+
+TOKEN
+	Name  = "OEM_ROM_HOLE_1_GUID"
+	Value  = "{0x05ca01fd, 0x0fc1, 0x11dc, 0x90, 0x11, 0x00, 0x17, 0x31, 0x53, 0xeb, 0xa8}"
+	Help  = "OEM ROM HOLE 1 GUID."
+	TokenType = Expression
+	TargetH = Yes
+	Range  = "GUID"
+	Token = "OEM_ROM_HOLE_SAMPLE_TEST" "=" "1"
+End
+
+PATH
+	Name  = "OFBD_OEMROMHOLE_DIR"
+End
+
+ELINK
+	Name  = "$(OFBD_OEMROMHOLE_DIR)/OemRomHole.h"
+	Parent  = "OFBD_FUNC_INCLUDE_FILES"
+	InvokeOrder = BeforeParent
+End
+
+ELINK
+	Name  = "$(OFBD_OEMROMHOLE_DIR)/OemRomHole.c"
+	Parent  = "OFBD_FUNC_SOURCES_FILES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "OEMROMHOLEEntry,"
+	Parent  = "OFBD_INIT_FUNC_LIST"
+	Token = "OEMROMHOLE_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+

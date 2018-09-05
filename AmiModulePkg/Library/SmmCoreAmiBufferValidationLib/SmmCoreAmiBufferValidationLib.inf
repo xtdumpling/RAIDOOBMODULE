@@ -1,0 +1,69 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+## @file
+# AmiBufferValidationLib instance for the SMM drivers
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SmmCoreAmiBufferValidationLib
+  FILE_GUID                      = 9499D2C1-B417-4B22-A2DD-0B56CC67D9E1
+  MODULE_TYPE                    = SMM_CORE
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  LIBRARY_CLASS                  = AmiBufferValidationLib|SMM_CORE
+  CONSTRUCTOR                    = SmmCoreAmiBufferValidationLibConstructor
+  DESTRUCTOR                     = SmmCoreAmiBufferValidationLibDestructor
+
+[Sources]
+  SmmCoreAmiBufferValidationLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+
+[LibraryClasses]
+  SmmServicesTableLib
+  UefiBootServicesTableLib
+  DxeServicesTableLib
+  MemoryAllocationLib
+  DebugLib
+  BaseMemoryLib
+
+[Protocols]
+  gEfiSmmAccess2ProtocolGuid ## CONSUMES
+  gEfiSmmReadyToLockProtocolGuid ## CONSUMES
+  gEfiLegacyBiosProtocolGuid ## CONSUMES
+  gAmiSmmBufferValidationProtocolGuid ## PRODUCES
+  gEfiSmmSwDispatch2ProtocolGuid ## CONSUMES
+  gEfiSmmCpuProtocolGuid ## CONSUMES
+
+[Pcd]
+  gAmiModulePkgTokenSpaceGuid.AmiPcdSmmMemLibProperties
+  gAmiModulePkgTokenSpaceGuid.AmiPcdSmmCommunicationBufferSize
+  gAmiModulePkgTokenSpaceGuid.AmiPcdSmmCommunicationBufferSwSmi
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

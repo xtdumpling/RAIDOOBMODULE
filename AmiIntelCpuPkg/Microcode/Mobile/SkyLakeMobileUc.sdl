@@ -1,0 +1,55 @@
+TOKEN
+	Name  = "MOBILE_406EX"
+	Value  = "0"
+        Help = "Intel(R) SkyLake"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "MOBILE_MF2406E1"
+	Value  = "1"
+	Help  = "Intel(R) SkyLake Processor A-2 Stepping"
+	TokenType = Boolean
+	Token = "NON_PRODUCTION_MICROCODE" "=" "1"
+End
+
+TOKEN
+    Name  = "MOBILE_MC0406E2"
+    Value  = "1"
+    Help  = "Intel(R) SkyLake Processor C-0 Stepping"
+    TokenType = Boolean
+    Token = "NON_PRODUCTION_MICROCODE" "=" "1"
+End
+
+TOKEN
+    Name  = "MOBILE_MC0406E3"
+    Value  = "1"
+    Help  = "Intel(R) SkyLake Processor D-0 K-1 Stepping"
+    TokenType = Boolean
+End
+
+ELINK
+	Name  = "$(MICROCODE_MOBILE_DIR)/MF2406E1_00000016.mcb"
+	Parent  = "MICROCODE_FILES"
+	Help  = "Intel(R) SkyLake Processor A-2 Stepping"
+	Token = "MOBILE_MF2406E1" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(MICROCODE_MOBILE_DIR)/MC0406E2_00000028.mcb"
+    Parent  = "MICROCODE_FILES"
+    Help  = "Intel(R) SkyLake Processor C-0 Stepping"
+    Token = "MOBILE_MC0406E2" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(MICROCODE_MOBILE_DIR)/MC0406E3_000000BA.mcb"
+    Parent  = "MICROCODE_FILES"
+    Help  = "Intel(R) SkyLake Processor D-0, K-1 Stepping"
+    Token = "MOBILE_MC0406E3" "=" "1"
+    InvokeOrder = AfterParent
+End
+

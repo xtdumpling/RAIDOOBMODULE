@@ -1,0 +1,78 @@
+## @file
+#  MrcHooksServicesLib Layer to call into Mrc HooksServices PPI 
+#
+#  Copyright (c) 2009 - 2016, Intel Corporation. All rights reserved.<BR>
+#
+#  This program and the accompanying materials
+#  are licensed and made available under the terms and conditions of the BSD License
+#  which accompanies this distribution. The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.php
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = MrcHooksServicesLib
+  FILE_GUID                      = D8A3A7EA-41D9-49BB-AB4B-4D8821E033BF
+  MODULE_TYPE                    = BASE
+  LIBRARY_CLASS                  = MrcHooksServicesLib| PEIM DXE_DRIVER DXE_SMM_DRIVER
+
+[Sources]
+  MrcHooksServicesLib.c
+
+################################################################################
+#
+# Package Dependency Section - list of Package files that are required for
+#                              this module.
+#
+################################################################################
+
+[Packages]
+  MdePkg/MdePkg.dec
+  PurleySktPkg/SocketPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  CpRcPkg/CpRcPkg.dec
+
+
+################################################################################
+#
+# Library Class Section - list of Library Classes that are required for
+#                         this module.
+#
+################################################################################
+
+[LibraryClasses]
+  BaseLib
+  DebugLib
+  PcdLib
+
+[Ppis]
+  gMrcHooksServicesPpiGuid	## CONSUMES
+  gMrcHooksChipServicesPpiGuid	## CONSUMES
+
+[Guids]
+
+[Depex]
+
+
+################################################################################
+#
+# Protocol C Name Section - list of Protocol and Protocol Notify C Names
+#                           that this module uses or produces.
+#
+################################################################################
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+
+[BuildOptions.Ia32]
+  MSFT:*_*_*_CC_FLAGS     = /W4 /Gs999999 /GF /GL- /wd4214 /wd4334 /wd4142 /wd4819 /DBUILDING_FOR_IA32  /DIA32 $(DSC_GLOBAL_BUILD_OPTIONS)
+  GCC:*_*_*_CC_FLAGS     = -DBUILDING_FOR_IA32  -DIA32 $(DSC_GLOBAL_BUILD_OPTIONS)
+
+[BuildOptions.X64]
+  MSFT:*_*_X64_CC_FLAGS   = /W2 /Gs32768 /DCONFIG_DP /DKTI_HW_PLATFORM /DBUILDING_FOR_X64 /UIA32 /DEXTERNAL_PACKAGE /DRAS_FEATURES /wd4142 /wd4819 $(DSC_GLOBAL_BUILD_OPTIONS)
+  GCC:*_*_X64_CC_FLAGS   = -DCONFIG_DP -DKTI_HW_PLATFORM -DBUILDING_FOR_X64 -UIA32 -DEXTERNAL_PACKAGE -DRAS_FEATURES $(DSC_GLOBAL_BUILD_OPTIONS)

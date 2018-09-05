@@ -1,0 +1,38 @@
+TOKEN
+    Name  = "DESKTOP_306EX"
+    Value  = "0"
+    Help = "Intel(R) Ivy Bridge-E"
+    TokenType = Boolean
+    Master = Yes
+End
+
+TOKEN
+    Name  = "DESKTOP_MED306E2"
+    Value  = "1"
+    Help  = "Intel(R) Ivy Bridge L-1 and R-1"
+    TokenType = Boolean
+    Token = "NON_PRODUCTION_MICROCODE" "=" "1"
+End
+
+TOKEN
+    Name  = "DESKTOP_MED306E4"
+    Value  = "1"
+    Help  = "Intel(R) Ivy Bridge S-1"
+    TokenType = Boolean
+End
+
+ELINK
+    Name  = "$(MICROCODE_DESKTOP_DIR)/MED306E2_0000020D.mcb"
+    Parent  = "MICROCODE_FILES"
+    Help  = "Intel(R) Ivy Bridge L-1 and R-1"
+    Token = "DESKTOP_MED306E2" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(MICROCODE_DESKTOP_DIR)/MED306E4_00000428.mcb"
+    Parent  = "MICROCODE_FILES"
+    Help  = "Intel(R) Ivy Bridge S-1"
+    Token = "DESKTOP_MED306E4" "=" "1"
+    InvokeOrder = AfterParent
+End

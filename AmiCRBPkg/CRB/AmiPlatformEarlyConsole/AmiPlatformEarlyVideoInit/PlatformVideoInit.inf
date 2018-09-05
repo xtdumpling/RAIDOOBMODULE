@@ -1,0 +1,65 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+## @file
+#  This file provide the LIB function for the Platform Video Controller Init 
+##
+[Defines]
+  INF_VERSION       = 0x00010005
+  VERSION_STRING    = 1.0
+  BASE_NAME         = PlatformVideoInitLib
+  LIBRARY_CLASS     = PlatformVideoInitLib
+  MODULE_TYPE       = BASE
+  
+[Sources]
+  PlatformVideoInit.c
+  PlatformVideoInit.h	
+  FastVideo.c		
+  FastVideo.h		
+  
+[Packages]
+  MdePkg/MdePkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec 
+  AmiCRBPkg/AmiCRBPkg.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  
+[LibraryClasses]
+  PlatformHooksLib
+ 
+[Guids] 
+  gVideoInitDoneSentGuid	# Early Video Initialization
+  
+[Pcd] 
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+  
+[LibraryClasses]
+  DebugLib
+  
+[Depex]
+  gAmiPeiPciTableInitPpiGuid
+
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************

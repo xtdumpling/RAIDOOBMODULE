@@ -1,0 +1,117 @@
+#***************************************************************************
+#***************************************************************************
+#**                                                                       **
+#**       (C)Copyright 1993-2016 Supermicro Computer, Inc.                **
+#**                                                                       **
+#***************************************************************************
+#***************************************************************************
+#
+#  History
+#
+#  Rev. 1.00
+#    Bug Fix : Renew.
+#    Reason  : Move from Greenlow
+#    Auditor : Kasber Chen
+#    Date    : Aug/17/2016
+#
+#****************************************************************************
+
+TOKEN
+	Name  = "SMC_OFBD_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch enable Smc OFBD modification."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+End
+
+PATH
+	Name  = "SmcOFBD_DIR"
+End
+
+ELINK
+	Name  = "PreserveSmcRomHoleData,"
+	Parent  = "SMIFlashPreUpdateList"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+        Name  = "SmcOfbdDisableWdt,"
+        Parent  = "SMIFlashPreUpdateList"
+        InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "RestoreSmcRomHoleData,"
+	Parent  = "SMIFlashEndUpdateList"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "SmcOfbdRestoreWdt,"
+	Parent  = "SMIFlashEndUpdateList"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(BUILD_DIR)\SmcOFBD.ffs"
+	Parent  = "FV_MAIN"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(SmcOFBD_DIR)\SmcOFBD.ssp"
+	Parent  = "ADDON_SSP_FILES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "SmcPkg\SmcPkg.dec"
+	Parent  = "AMI_OFBD_PACKAGES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(SmcOFBD_DIR)\SmcGetPattern.h"
+	Parent  = "OFBD_FUNC_INCLUDE_FILES"
+	InvokeOrder = BeforeParent
+End
+
+ELINK
+	Name  = "$(SmcOFBD_DIR)\SmcGetPattern.c"
+	Parent  = "OFBD_FUNC_SOURCES_FILES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "SmcGetPatternEntry,"
+	Parent  = "OFBD_INIT_FUNC_LIST"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "SmcLib"
+	Parent  = "AMI_OFBD_LIBRARIES"
+	InvokeOrder = AfterParent
+End
+
+INFComponent
+    	Name  = "SmcOFBD"
+    	File  = "SmcOFBD.inf"
+    	Package  = "SmcPkg"
+    	ModuleTypes = "BASE"
+End
+
+LibraryMapping
+	Class  = "SmcOFBDLib"
+	Instance  = "SmcPkg.SmcOFBD"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "SmcPkg.SmcOFBD"
+	Override = "AmiModulePkg.SMIFlash"
+End
+
+##****************************************************************************

@@ -1,0 +1,49 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SmcLsiRaidOOBLib
+  FILE_GUID                      = CAADB41D-3F18-3Ab7-1CD4-C1CAE21521DC
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = SmcLsiRaidOOBLib|DXE_CORE DXE_DRIVER DXE_RUNTIME_DRIVER UEFI_DRIVER
+  CONSTRUCTOR                    = SmcLsiRaidOOBLibConstructor
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF EBC
+#
+
+[Sources]
+  SmcLsiRaidOOB.c
+  SmcLsiRaidOOBLib.c
+  SmcLsiRaidOOB.h
+  SmcLsiRaidOOBLib.h
+  SmcLsiRaidOOBSetupProtocol.h
+
+[Packages]
+  MdePkg/MdePkg.dec   
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec 
+  AmiModulePkg/AmiModulePkg.dec
+  SmcPkg/SmcPkg.dec
+  SmcPkg/Module/SmcOOB/SmcOOB.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  IoLib
+  OobLibrary
+  UefiLib
+  PrintLib
+  HiiLib
+  BaseLib
+  BaseMemoryLib
+  AmiDxeLib
+
+[Protocols]
+  gEfiHiiDatabaseProtocolGuid
+  gEfiHiiStringProtocolGuid
+  gEfiHiiConfigAccessProtocolGuid
+  gEfiHiiConfigRoutingProtocolGuid
+  gEfiFormBrowser2ProtocolGuid
+

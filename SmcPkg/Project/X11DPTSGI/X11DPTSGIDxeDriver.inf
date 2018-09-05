@@ -1,0 +1,75 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.01
+#    Bug Fix:  Send HideItem and RiserCard data to sum.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Sep/23/2016
+#
+#  Rev. 1.00
+#       Bug fixed:   Initialize revision
+#       Reason:      Clone from Sample folder.
+#       Auditor:     Jacker Yeh
+#       Date:        Feb/04/2016
+#
+#****************************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = X11DPTSGIDxeDriver
+  FILE_GUID                      = 2dcbe49a-1e5b-486e-bc23-48156b8282c9
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = X11DPTSGIDxeDriverInit
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+#  
+
+[Sources]  
+  X11DPTSGIDxeDriver.c
+  X11DPTSGIDxeDriver.h	
+  HideSetupItem.c
+  HideSetupItem.h
+
+[Packages]
+  MdePkg/MdePkg.dec   
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec 
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  CpRcPkg/CpRcPkg.dec  
+  AmiModulePkg/AmiModulePkg.dec
+  SmcPkg/SmcPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  AmiDxeLib
+  AmiCspLib
+  PcdLib
+  SmcLib
+  
+[Pcd]  
+  gSmcPkgTokenSpaceGuid.PcdSmcOBLan1BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBLan2BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBLan3BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBLan4BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcMultiFuncLanChip1
+  gSmcPkgTokenSpaceGuid.PcdSGINodeIsA1B1
+[Protocols]  
+  #gEfiSmbusHcProtocolGuid
+  gSetupModifyProtocolGuid
+  gAmiSmbiosProtocolGuid
+[Depex]
+  TRUE
+  
+#**********************************************************************

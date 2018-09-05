@@ -1,0 +1,280 @@
+	ECHO	--Including: SMBHDR.EQU
+
+; Inclusion guard
+IFNDEF	_smbhdr_equ_
+_smbhdr_equ_	EQU	1
+
+;----------------------------------------------------------------------------
+; Do not change any structure definition unless otherwise specified
+;----------------------------------------------------------------------------
+
+;****************************************************************************
+;****************************************************************************
+;**                                                                        **
+;**           (C)Copyright 1985-2009, American Megatrends, Inc.            **
+;**                                                                        **
+;**                          All Rights Reserved.                          **
+;**                                                                        **
+;**            5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093           **
+;**                                                                        **
+;**                          Phone: (770)-246-8600                         **
+;**                                                                        **
+;****************************************************************************
+;****************************************************************************
+
+;****************************************************************************
+; $Header: /Alaska/BIN/Modules/SMBIOS/SmbiosStaticData/Smbhdr.equ 4     6/02/09 4:47p Davidd $
+;
+; $Revision: 4 $
+;
+; $Date: 6/02/09 4:47p $
+;****************************************************************************
+
+;----------------------------------------------------------------------------
+;               This release implements SMBIOS 2.4 specification
+;----------------------------------------------------------------------------
+SMBIOS_VERSION          EQU     24h     ; 2.4
+SMBIOS_MAJOR_VERSION    EQU     02h     ; Major Version 2
+SMBIOS_MINOR_VERSION    EQU     04h     ; Minor Version 4
+
+;----------------------------------------------------------------------------
+;			OEM GPNV STRUCTURE INFORMATION
+;----------------------------------------------------------------------------
+MAX_MEMORY_GPNV_DATAID	EQU	08h	; max #of dataid in memory mapped GPNV
+MAX_IO_GPNV_DATAID	EQU	08h	; max #of dataid in io mapped GPNV
+
+;----------------------------------------------------------------------------
+;			EVENT LOG INFORMATION
+;----------------------------------------------------------------------------
+IFDEF	MKF_EVENTLOG_VERSION
+        NO_OF_SUPPORTED_EVENTS          EQU MKF_NO_OF_SUPPORTED_EVENTS
+ELSE
+        NO_OF_SUPPORTED_EVENTS          EQU 06h
+        LENGTH_OF_EACH_LOG_TYPE_DESC    EQU 02h
+ENDIF	; MKF_EVENTLOG_VERSION
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;	HEADER OF SMBIOS DATA MODULE
+;----------------------------------------------------------------------------
+SMBDataModuleHeaderSTRUC	STRUC
+        bSignature              BYTE 8 DUP(?)   ; _AMIDMI_ signature
+        wSMBIOSVer              WORD    ?       ; SMBIOS Spec Ver#
+        wAMIImplementationVer   WORD    ?       ; AMI Implementation Ver#
+        bConfigurationInfo      BYTE    ?       ; total #of configuration supported (1-based)
+        wLength                 WORD    ?       ; length of data module
+        bReserved               BYTE    ?       ; reserved
+SMBDataModuleHeaderSTRUC	ENDS
+
+;----------------------------------------------------------------------------
+;	SMBIOSInfo Details
+;----------------------------------------------------------------------------
+smbios_runtime_bit		EQU	00000001b; 0 = SMBIOS POST active
+						 ; 1 = SMBIOS Runtime active
+smbios_gpnv_data_bit		EQU	00000010b; 0 = SMBIOS data in GPNV not changed
+						 ; 1 = SMBIOS data in GPNV modified
+						 ; bit15-2....NOT USED
+
+;----------------------------------------------------------------------------
+;	SMBIOS INTERNAL DATA STRUCTURE
+;----------------------------------------------------------------------------
+SMBInternalDataSTRUC                    STRUC
+        dSMBStorageBase                 DWORD   ?       ; memory mapped storage base
+        dSMBStorageSize                 DWORD   ?       ; memory mapped storage size
+        wSMBNumRuntimeStruc             WORD    ?       ; #of valid runtime structures
+        wSMBNumRomStruc                 WORD    ?       ; #of structures in ROM
+        wSMBRomStructuresLength         WORD    ?       ; total length of all ROM structures
+        wSMBStructuresSegment           WORD    ?       ; Segment of the data structures in RAM
+        wSMBStructuresStart             WORD    ?       ; start of data structures in RAM
+        wSMBCurrentStructuresEnd        WORD    ?       ; end of current data structures in RAM + 1
+        wSMBAvailableStructuresEnd      WORD    ?       ; end of space available for structures + 1
+        wCPUInternalClock               WORD    ?       ; CPU internal clock
+        wExternalClock                  WORD    ?       ; CPU Bus clock
+SMBInternalDataSTRUC                    ENDS
+
+;----------------------------------------------------------------------------
+;	SMBIOS INSTALLATION STRUCTURE
+;----------------------------------------------------------------------------
+SMBTableHeaderSTRUC             STRUCT
+        bAnchorStr              BYTE    4 DUP (?)
+        bChecksum               BYTE    ?
+        bLength                 BYTE    ?
+        bMajorVer               BYTE    ?
+        bMinorVer               BYTE    ?
+        wMaxStrucSize           WORD    ?
+        bRevision               BYTE    ?
+        bFormattedArea          BYTE    5 DUP (?)
+        bIntAnchorStr           BYTE    5 DUP (?)
+        bIntChecksum            BYTE    ?
+        wStrucTblLen            WORD    ?
+        dStrucTblAddr           DWORD   ?
+        wNumSMBStruc            WORD    ?
+        bSMBRevision            BYTE    ?
+SMBTableHeaderSTRUC             ENDS
+
+;----------------------------------------------------------------------------
+;	STRUCTURE OF DATA BUFFER IN SMBIOS FUNCTION 52H
+;----------------------------------------------------------------------------
+SMBIOSFun52BufferSTRUC          STRUC
+	bCommand		BYTE	?
+	bFieldOffset		BYTE	?
+	dChangeMask		DWORD	?
+	dChangeValue		DWORD	?
+	wDataLength		WORD	?
+	dStructureHeader	DWORD	?
+	bStructureData		BYTE	?
+SMBIOSFun52BufferSTRUC          ENDS
+
+;----------------------------------------------------------------------------
+;	STRUCTURE OF DATA BUFFER IN SMBIOS FUNCTION 53H
+;----------------------------------------------------------------------------
+SMBIOSFun53BufferSTRUC          STRUC
+	bChangeStatus		BYTE	?
+	bChangeType		BYTE	?
+	wChangeHandle		WORD	?
+	bChangeReserved		BYTE	12 DUP (?)
+SMBIOSFun53BufferSTRUC          ENDS
+
+;----------------------------------------------------------------------------
+;	STRUCTURE USED IN FUNC 52H
+;----------------------------------------------------------------------------
+F52_FIELD_ABSENT	EQU	0FFh	; absent field
+F52_STRING_DATA_TYPE	EQU	80h	; bit-7 = 1..string data type
+					;	  0..binary data
+F52_ONE_TIME_MODIFIABLE	 = 	40h	; bit-6 = 1..one time modifiable
+					;	  0..modifiable always
+F52_BYTE		EQU	01h	; length of a BYTE data
+F52_WORD		EQU	02h	; length of a WORD data
+F52_DWORD		EQU	04h	; length of a DWORD data
+F52_STATUS_MODIFIED	EQU	01h	; bit-0 = 1..this field is not modifiable any more
+					; bit7-1= reserved for future use
+
+;<AMI_SHDR_START>
+;----------------------------------------------------------------------------
+; Name:		ModificationHeaderSTRUC
+;
+; Fields:	Name		Type	Description
+;		-------------------------------------------------------------
+;		wLength		WORD	length of the information in BYTEs
+;					including this word
+;		bType		BYTE	SMBIOS structure type
+;
+; Description:
+;
+;----------------------------------------------------------------------------
+;<AMI_SHDR_END>
+
+ModificationHeaderSTRUC         STRUC
+
+        wLength                 WORD    ?
+        bType                   BYTE    ?               ; structure type
+
+ModificationHeaderSTRUC         ENDS
+
+;<AMI_SHDR_START>
+;----------------------------------------------------------------------------
+; Name:		ModificationKeyFieldSTRUC
+;
+; Fields:	Name		Type	Description
+;		-------------------------------------------------------------
+;		bOffset		BYTE	offset of the key-field inside the structure
+;  				        FF -> there is no key-field
+;		bType		BYTE	Data Type
+;					Bit-7 = 0..Binary Data
+;						1..String Data
+;					Bit-6 = 0..modifiable always
+;					        1..One time modifiable
+;					Bit5-0= reserved for future use
+;		bLength		BYTE	Data Length in Bytes
+;  					Bit7-0= data length in BYTEs
+; Description:
+;
+;----------------------------------------------------------------------------
+;<AMI_SHDR_END>
+
+ModificationKeyFieldSTRUC	STRUC
+
+        bOffset                 BYTE    ?               ; offset of the key-field inside the structure
+                                                        ; FF -> there is no key-field
+        bType                   BYTE    ?               ; Data Type
+                                                        ; Bit-7 = 0..Binary Data
+                                                        ;         1..String Data
+                                                        ; Bit-6 = 0..modifiable always
+                                                        ;         1..One time modifiable
+                                                        ; Bit5-0= reserved for future use
+        bLength                 BYTE    ?               ; Data Length in Bytes
+                                                        ; Bit7-0= data length in BYTEs
+
+ModificationKeyFieldSTRUC	ENDS
+
+;<AMI_SHDR_START>
+;----------------------------------------------------------------------------
+; Name:		ModificationFieldSTRUC
+;
+; Fields:	Name		Type	Description
+;		-------------------------------------------------------------
+;		bOffset		BYTE	offset of the key-field inside the structure
+;  				        FF -> there is no key-field
+;		bType		BYTE	Data Type
+;					Bit-7 = 0..Binary Data
+;						1..String Data
+;					Bit-6 = 0..modifiable always
+;					        1..One time modifiable
+;					Bit5-0= reserved for future use
+;		bLength		BYTE	Data Length in Bytes
+;  					Bit7-0= data length in BYTEs
+;		bStatus		BYTE	Status of the field
+; Description:
+;
+;----------------------------------------------------------------------------
+;<AMI_SHDR_END>
+
+ModificationFieldSTRUC          STRUC
+
+        bOffset                 BYTE    ?       ; offset of the key-field inside the structure
+                                                ; FF -> there is no key-field
+        bType                   BYTE    ?       ; Data Type
+                                                ; Bit-7 = 0..Binary Data
+                                                ;         1..String Data
+                                                ; Bit-6 = 0..modifiable always
+                                                ;         1..One time modifiable
+                                                ; Bit5-0= reserved for future use
+        bLength                 BYTE    ?       ; Data Length in Bytes
+                                                ; Bit7-0= data length in BYTEs
+        bStatus                 BYTE    ?       ; status of this field
+
+ModificationFieldSTRUC          ENDS
+
+;----------------------------------------------------------------------------
+;	EQUATES USED IN SMBIOS FUNCTION 53H
+;----------------------------------------------------------------------------
+; equates used in SMBIOS Change Status
+SMBIOS_NO_CHANGE			EQU	00h ; 00h..SMBIOS No Change
+SMBIOS_OTHER_CHANGE			EQU	01h ; 01h..SMBIOS Other Change
+SMBIOS_UNKNOWN_CHANGE			EQU	02h ; 02h..SMBIOS Unknown Change
+SMBIOS_SINGLE_STRUCTURE_AFFECTED 	EQU	03h ; 03h..SMBIOS Single Structure Affected
+SMBIOS_MULTIPLE_STRUCTURE_AFFECTED	EQU	04h ; 04h..SMBIOS Multiple Structure Affected
+
+; equates used in SMBIOS Change Type
+SMBIOS_ONE_MORE_STRUCTURE_CHANGED	EQU	00000001b ; Bit-0 = 1, One/More Structure was changed
+SMBIOS_ONE_MORE_STRUCTURE_ADDED		EQU	00000010b ; Bit-1 = 1, One/More Structure was added
+						 	  ; Bit7-2.....Reserved
+
+;----------------------------------------------------------------------------
+; End of Inclusion guard
+ENDIF	;_smbhdr_equ_
+;----------------------------------------------------------------------------
+
+;****************************************************************************
+;****************************************************************************
+;**                                                                        **
+;**           (C)Copyright 1985-2009, American Megatrends, Inc.            **
+;**                                                                        **
+;**                          All Rights Reserved.                          **
+;**                                                                        **
+;**            5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093           **
+;**                                                                        **
+;**                          Phone: (770)-246-8600                         **
+;**                                                                        **
+;****************************************************************************
+;****************************************************************************

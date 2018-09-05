@@ -1,0 +1,97 @@
+## @file
+#
+#  Copyright (c) 2011 - 2016, Intel Corporation. All rights reserved.<BR>
+#
+#  This program and the accompanying materials
+#  are licensed and made available under the terms and conditions of the BSD License
+#  which accompanies this distribution. The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.php
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+#
+##
+
+#
+#  Module Name:
+#
+#   PartialMirrorHandler.inf
+#
+#  Abstract:
+#
+#    Component description file for SMM Mirroring handler module
+# 
+#
+#--*/
+
+[Defines]
+  INF_VERSION                 = 0x00010005
+  BASE_NAME                   = PartialMirrorHandler
+  FILE_GUID                   = C1D61CB0-78B0-42f0-BC3F-F54DFEC65DB2
+  MODULE_TYPE	                = DXE_SMM_DRIVER
+  VERSION_STRING              = 1.0
+  PI_SPECIFICATION_VERSION    = 0x0001000A
+  ENTRY_POINT                 = InitPartialMirrorHandler
+
+[sources.common]
+  PartialMirrorHandler.c
+  PartialMirrorHandler.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec 
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  PurleySktPkg/Override/IA32FamilyCpuPkg/IA32FamilyCpuPkg.dec
+  UefiCpuPkg/UefiCpuPkg.dec
+
+[LibraryClasses]
+  UefiBootServicesTableLib
+  UefiDriverEntryPoint
+  DebugLib
+  SmmScriptLib
+  IoLib
+  BaseMemoryLib
+  HobLib
+  PcdLib
+  MpSyncDataLib
+  SmmServicesTableLib
+  SmmLib
+  TimerLib
+  MemoryAllocationLib
+
+[Protocols]
+  gEfiSmmBase2ProtocolGuid
+  gEfiSmmSwDispatch2ProtocolGuid
+  gEfiGlobalNvsAreaProtocolGuid
+  gEfiMemRasProtocolGuid  
+  gEfiIioUdsProtocolGuid                        # PROTOCOL ALWAYS_CONSUMED
+  gEfiQuiesceProtocolGuid
+  gEfiCpuCsrAccessGuid
+  gEfiSmmSxDispatch2ProtocolGuid
+  gEfiMpServiceProtocolGuid
+  gEfiSmmCpuProtocolGuid
+  gEfiSmmCpuServiceProtocolGuid
+  gEfiSmmVariableProtocolGuid
+    
+[Guids]
+  gEfiMemoryMapGuid
+  gEfiHobListGuid
+  gEfiSetupVariableGuid
+  gAddressBasedMirrorGuid  
+  
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[Depex]
+  gEfiSmmVariableProtocolGuid AND
+  gEfiVariableWriteArchProtocolGuid 
+  
+[BuildOptions]
+  MSFT:*_*_X64_CC_FLAGS = /W4 /Gs999999 /GF /GL- /DBUILDING_FOR_X64 /DEFIX64 $(DSC_GLOBAL_BUILD_OPTIONS)
+  GCC:*_*_X64_CC_FLAGS = -DBUILDING_FOR_X64 -DEFIX64 $(DSC_GLOBAL_BUILD_OPTIONS)

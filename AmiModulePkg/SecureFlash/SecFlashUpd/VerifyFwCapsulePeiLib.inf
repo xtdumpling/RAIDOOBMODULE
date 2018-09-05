@@ -1,0 +1,65 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#** 5555 Oakbrook Parkway, Suite 200, Norcross,GA 30093              **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+## @file
+#   This library provides hooks to detect FlUpdate and Fw capsule Image verification 
+##
+
+[Defines]
+  INF_VERSION            = 0x00010005
+  BASE_NAME              = VerifyFwCapsulePeiLib
+  FILE_GUID              = 3513B87F-F0BC-41F7-A895-4A1916B39E79
+  MODULE_TYPE            = PEIM
+  VERSION_STRING         = 1.0
+  LIBRARY_CLASS          = VerifyFwCapsulePeiLib|PEIM PEI_CORE 
+  
+# DXE_CORE DXE_DRIVER DXE_RUNTIME_DRIVER DXE_SAL_DRIVER DXE_SMM_DRIVER UEFI_APPLICATION UEFI_DRIVER
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32
+#
+
+[Sources]
+FwCapsuleInfo.c
+VerifyFwCapsule.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiCryptoPkg/AmiCryptoPkg.dec
+  
+[LibraryClasses]
+ AmiPeiLib
+ DebugLib
+
+[Guids]
+gEfiCertSha256Guid
+gEfiCertRsa2048Guid
+gEfiCertPkcs7Guid
+gEfiCertX509Guid
+gEfiHashAlgorithmSha256Guid
+
+[Ppis]
+gAmiDigitalSignaturePPIGuid
+gEfiPeiReadOnlyVariable2PpiGuid
+
+[Depex]
+gAmiDigitalSignaturePPIGuid
+
+#[BuildOptions.IA32]
+#*_*_IA32_CC_FLAGS = -DPEI_BUILD 
+  
+  

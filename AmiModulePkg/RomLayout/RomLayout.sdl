@@ -1,0 +1,95 @@
+TOKEN
+	Name  = "RomLayout_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable RomLayout support in Project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+OUTPUTREGISTER
+	Name  = "APTIOV_ROM_LAYOUT"
+	Path  = "Build"
+	File  = "RomLayoutData.h"
+End
+
+OUTPUTREGISTER
+	Name  = "RomLayoutHooks"
+	Path  = "Build"
+	File  = "AmiRomLayoutHooks.h"
+	Template  = "RomLayoutHooks.txt"
+End
+
+INFComponent
+	Name  = "RomLayout"
+	File  = "RomLayout.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "USER_DEFINED"
+End
+
+INFComponent
+	Name  = "LegacyRomLayout"
+	File  = "LegacyRomLayout.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "USER_DEFINED"
+End
+
+INFComponent
+	Name  = "RomLayoutPei"
+	File  = "RomLayoutPei.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "PEI_CORE"
+	Help  = "This PEIM must be in the PEI Core FV (boot FV).\The module type is set to PEI_CORE in order to facilitate that."
+End
+
+INFComponent
+	Name  = "RomLayoutDxe"
+	File  = "RomLayoutDxe.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "DXE_CORE"
+	Help  = "This driver must be in the DXE Core FV.\The module type is set to DXE_CORE in order to facilitate that."
+End
+
+INFComponent
+	Name  = "AmiReportFvLibCompatibility"
+	File  = "AmiReportFvLibCompatibility.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "PEI_CORE"
+	Help  = "Compatibility instance of the ReportFVLib library class."
+End
+
+LibraryMapping
+    Class  = "ReportFVLib"
+    Instance  = "AmiModulePkg.AmiReportFvLibCompatibility"
+End
+
+FFS_FILE
+	Name  = "RomLayout"
+	FD_AREA  = "FV_BB"
+	INFComponent  = "AmiModulePkg.RomLayout"
+	Rule_Override  = "SubtypeGuidUncompressed"
+End
+
+FFS_FILE
+	Name  = "LegacyRomLayout"
+	FD_AREA  = "FV_BB"
+	INFComponent  = "AmiModulePkg.LegacyRomLayout"
+	Rule_Override  = "SubtypeGuidUncompressed"
+End
+
+ELINK
+   Name  = "PeiProcessFvBeforePublishing"
+   Help  = "Called before publishing FVs in the Pei phase. Enteries should not be comma terminated."
+   InvokeOrder = ReplaceParent
+End
+
+ELINK
+   Name  = "DxeProcessFvBeforePublishing"
+   Help  = "Called before publishing FVs in the Dxe phase. Entries should not be comma termined."
+   InvokeOrder = ReplaceParent
+End
+
+ELINK
+   Name  = "ProcessFvBeforePublishing"
+   Help  = "Compatibility function list called before publishing FVs. Each child should be terminated with a comma."
+   InvokeOrder = ReplaceParent
+End

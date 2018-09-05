@@ -1,0 +1,47 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+## @file
+#   Runtime instance of the AmiRomLayoutLib library class
+##
+[Defines]
+  INF_VERSION       = 0x00010005
+  VERSION_STRING    = 1.0
+  MODULE_TYPE       = DXE_RUNTIME_DRIVER
+  BASE_NAME         = RuntimeAmiDebugLib
+  FILE_GUID         = 9F646F6C-035B-48E7-84C5-C798BA3D4C57
+  LIBRARY_CLASS     = DebugLib|DXE_RUNTIME_DRIVER
+  CONSTRUCTOR       = RuntimeAmiDebugLibConstructor
+  DESTRUCTOR        = RuntimeAmiDebugLibDestructor
+
+[Sources]
+  RuntimeAmiDebugLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  
+[LibraryClasses]
+  PcdLib
+  BaseMemoryLib
+  BaseLib
+  DebugPrintErrorLevelLib
+
+[Protocols]
+  gAmiDebugServiceProtocolGuid      ## CONSUMES   
+
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdDebugClearMemoryValue  ## SOMETIMES_CONSUMES
+  gEfiMdePkgTokenSpaceGuid.PcdDebugPropertyMask      ## CONSUMES
+  gEfiMdePkgTokenSpaceGuid.PcdFixedDebugPrintErrorLevel ## CONSUMES

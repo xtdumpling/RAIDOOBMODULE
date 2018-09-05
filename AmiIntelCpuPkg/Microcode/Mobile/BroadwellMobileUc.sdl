@@ -1,0 +1,54 @@
+TOKEN
+	Name  = "MOBILE_306DX"
+	Value  = "0"
+        Help = "Intel(R) Broadwell"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "MOBILE_MF2306D2"
+	Value  = "1"
+	Help  = "Intel(R) Broadwell Processor C-0 Stepping"
+	TokenType = Boolean
+	Token = "NON_PRODUCTION_MICROCODE" "=" "1"
+End
+
+TOKEN
+	Name  = "MOBILE_MC0306D3"
+	Value  = "1"
+	Help  = "Intel(R) Broadwell Processor D-0 Stepping"
+	TokenType = Boolean
+	Token = "NON_PRODUCTION_MICROCODE" "=" "1"
+End
+
+TOKEN
+	Name  = "MOBILE_MC0306D4"
+	Value  = "1"
+	Help  = "Intel(R) Broadwell Processor E-0,F-0 Stepping"
+	TokenType = Boolean
+End
+
+ELINK
+	Name  = "$(MICROCODE_MOBILE_DIR)/MF2306D2_FFFF0009.mcb"
+	Parent  = "MICROCODE_FILES"
+	Help  = "Intel(R) Broadwell Processor C-0 Stepping"
+	Token = "MOBILE_MF2306D2" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(MICROCODE_MOBILE_DIR)/MC0306D3_FFFF0010.mcb"
+	Parent  = "MICROCODE_FILES"
+	Help  = "Intel(R) Broadwell Processor D-0 Stepping"
+	Token = "MOBILE_MC0306D3" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(MICROCODE_MOBILE_DIR)/MC0306D4_00000024.mcb"
+	Parent  = "MICROCODE_FILES"
+	Help  = "Intel(R) Broadwell Processor E-0,F-0 Stepping"
+	Token = "MOBILE_MC0306D4" "=" "1"
+	InvokeOrder = AfterParent
+End

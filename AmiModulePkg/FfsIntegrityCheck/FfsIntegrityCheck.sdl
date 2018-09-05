@@ -1,0 +1,53 @@
+TOKEN
+    Name  = "FfsIntegrityCheck_SUPPORT"
+    Value = "1"
+    Help  = "Main switch to enable FfsIntegrityCheck support in Project"
+    TokenType = Boolean
+    TargetH = Yes
+    Master = Yes
+End
+
+TOKEN
+    Name  = "FFS_FILE_CHECKSUM_SUPPORT"
+    Value  = "1"
+    Help  = "Use this switch to enable/disable FFS file check-sum. \Default value is 1 to enable checksums to be generated when the module is added to a project."
+    TokenType = Boolean
+End
+
+INFComponent
+    Name = "FfsIntegrityCheckDxe"
+    File = "FfsIntegrityCheckDxe.inf"
+    Package = "AmiModulePkg"
+End
+
+INFComponent
+    Name = "FfsIntegrityCheckPei"
+    File = "FfsIntegrityCheckPei.inf"
+    Package = "AmiModulePkg"
+End
+
+ELINK
+    Name = "CheckFvAndFfsIntegrityDxe"
+    Parent = "DxeProcessFvBeforePublishing"
+    Help = "Function adds the ability to check the Integrity of the FV and the FFS files within it"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name = "CheckFvAndFfsIntegrityPei"
+    Parent = "PeiProcessFvBeforePublishing"
+    Help = "Function adds the ability to check the Integrity of the FV and the FFS files within it"
+    InvokeOrder = AfterParent
+End
+
+LibraryMapping
+    Class = "NULL"
+    Instance = "AmiModulePkg.FfsIntegrityCheckPei"
+    Override = "AmiModulePkg.RomLayoutPei"
+End
+
+LibraryMapping
+    Class = "NULL"
+    Instance = "AmiModulePkg.FfsIntegrityCheckDxe"
+    Override = "AmiModulePkg.RomLayoutDxe"
+End

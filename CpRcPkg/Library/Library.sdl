@@ -1,0 +1,157 @@
+TOKEN
+	Name  = "Library_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling Library support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+INFComponent
+	Name  = "BaseCsrToPcieLibNull"
+	File  = "CsrToPcieLibNull\BaseCsrToPcieLibNull.inf"
+	Package  = "CpRcPkg"
+	ModuleTypes  = "BASE"
+End
+
+INFComponent
+	Name  = "PcieAddrLib"
+	File  = "PcieAddressLib\PcieAddressLib.inf"
+	Package  = "CpRcPkg"
+	ModuleTypes  = "BASE"
+End
+
+INFComponent
+	Name  = "PeiUsraLib"
+	File  = "PeiUsraLib\PeiUsraLib.inf"
+	Package  = "CpRcPkg"
+	ModuleTypes  = "PEIM"
+End
+
+INFComponent
+	Name  = "SmmUsraLib"
+	File  = "DxeUsraLib\DxeSmmUsraLib.inf"
+	Package  = "CpRcPkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+End
+
+INFComponent
+	Name  = "DxeUsraLib"
+	File  = "DxeUsraLib\DxeUsraLib.inf"
+	Package  = "CpRcPkg"
+	ModuleTypes  = "DXE_DRIVER"
+End
+
+INFComponent
+	Name  = "PeiDxeSmmMmPciLib"
+	File  = "MmPciBaseLib\MmPciBaseLib.inf"
+	Package  = "CpRcPkg"
+	ModuleTypes  = "BASE"
+End
+
+INFComponent
+	Name  = "DxeMmPciLib"
+	File  = "DxeMmPciBaseLib\DxeMmPciBaseLib.inf"
+	Package  = "CpRcPkg"
+	ModuleTypes  = "BASE"
+End
+
+INFComponent
+    Name  = "DxeSmmMmPciLib"
+    File  = "DxeMmPciBaseLib\SmmMmPciBaseLib.inf"
+    Package  = "CpRcPkg"
+    ModuleTypes  = "BASE"
+End
+
+INFComponent
+    Name  = "USRATraceLib"
+    File  = "USRATraceLibNull\USRATraceLibNull.inf"
+    Package  = "CpRcPkg"
+    ModuleTypes  = "BASE"
+End
+
+INFComponent
+    Name  = "SiliconAccessLib"
+    File  = "UsraAccessLib\UsraAccessLib.inf"
+    Package  = "CpRcPkg"
+    ModuleTypes  = "BASE"
+End
+
+INFComponent
+    Name  = "BaseMemoryCoreLib"
+    File  = "BaseMemoryCoreLib\BaseMemoryCoreLibPurley.inf"
+    Package  = "CpRcPkg"
+    ModuleTypes  = "BASE"
+End
+
+INFComponent
+    Name  = "UsraRegisterFilterLib"
+    File  = "UsraRegisterFilterLibNull\UsraRegisterFilterLibNull.inf"
+    Package  = "CpRcPkg"
+    ModuleTypes  = "BASE"
+End
+
+LibraryMapping
+	Class  = "CsrToPcieLib"
+	Instance  = "CpRcPkg.BaseCsrToPcieLibNull"
+End
+
+LibraryMapping
+	Class  = "PcieAddrLib"
+	Instance  = "CpRcPkg.PcieAddrLib"
+End
+
+LibraryMapping
+	Class  = "UsraLib"
+	Instance  = "CpRcPkg.PeiUsraLib"
+	ModuleTypes  = "PEIM PEI_CORE SEC"
+End
+
+LibraryMapping
+	Class  = "SiliconAccessLib"
+	Instance  = "CpRcPkg.SiliconAccessLib"
+End
+
+
+LibraryMapping
+	Class  = "UsraLib"
+	Instance  = "CpRcPkg.DxeUsraLib"
+	ModuleTypes  = "DXE_CORE DXE_DRIVER DXE_RUNTIME_DRIVER DXE_SAL_DRIVER UEFI_APPLICATION UEFI_DRIVER"
+End
+
+LibraryMapping
+    Class  = "UsraLib"
+    Instance  = "CpRcPkg.SmmUsraLib"
+    ModuleTypes  = "DXE_SMM_DRIVER SMM_CORE"
+End
+
+LibraryMapping
+	Class  = "MmPciLib"
+	Instance  = "CpRcPkg.PeiDxeSmmMmPciLib"
+End
+
+LibraryMapping
+	Class  = "MmPciLib"
+	Instance  = "CpRcPkg.DxeMmPciLib"
+	ModuleTypes  = "DXE_DRIVER DXE_RUNTIME_DRIVER"	
+End
+
+LibraryMapping
+	Class  = "MmPciLib"
+	Instance  = "CpRcPkg.DxeSmmMmPciLib"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+End
+
+LibraryMapping
+	Class  = "USRATraceLib"
+	Instance  = "CpRcPkg.USRATraceLib"
+End
+
+LibraryMapping
+	Class  = "BaseMemoryCoreLib"
+	Instance  = "CpRcPkg.BaseMemoryCoreLib"
+End
+
+LibraryMapping
+    Class  = "UsraRegisterFilterLib"
+    Instance  = "CpRcPkg.UsraRegisterFilterLib"
+End

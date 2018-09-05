@@ -1,0 +1,322 @@
+//**********************************************************************//
+//**********************************************************************//
+//**                                                                  **//
+//**        (C)Copyright 1993-2016, Supermicro Computer, Inc.         **//
+//**                                                                  **//
+//**                       All Rights Reserved.                       **//
+//**                                                                  **//
+//**********************************************************************//
+//**********************************************************************//
+//  
+//  History
+//  Rev. 1.00
+//    Bug Fix:  1. Fix issue that changed METW,MECI's value will not take effect at this boot to OS.
+//    Reason:   
+//    Auditor:  Chen Lin
+//    Date:     Sep/06/2016
+//
+//  
+//  
+//**********************************************************************
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
+
+
+/** @file SmbiosElogSetupScreenVfr.sd
+    SmbiosElogSetupScreenVfr Form
+
+**/
+#if defined(VFRCOMPILE) && !defined(CONTROL_DEFINITION)
+#define CONTROL_DEFINITION
+#endif
+
+#ifdef CONTROL_DEFINITION
+
+#ifndef GPNV_SMBIOS_LOGGING
+#define GPNV_SMBIOS_LOGGING\
+      oneof varid = SETUP_DATA.SmbiosLogging,\
+        prompt = STRING_TOKEN(STR_SMBIOS_ENABLE),\
+        help = STRING_TOKEN(STR_SMBIOS_ENABLE_HELP),\
+        option text = STRING_TOKEN(STR_SMBIOS_DISABLED), value = 0, flags = RESET_REQUIRED;\
+        option text = STRING_TOKEN(STR_SMBIOS_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+      endoneof;
+#endif
+
+#ifndef GPNV_SMBIOS_ERASE_LOG
+#define GPNV_SMBIOS_ERASE_LOG\
+      oneof varid = SETUP_DATA.SmbiosErase,\
+        prompt = STRING_TOKEN(STR_SMBIOS_ERASE),\
+        help = STRING_TOKEN(STR_SMBIOS_ERASE_HELP),\
+        option text = STRING_TOKEN(STR_SMBIOS_DO_NOT_ERASE), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+        option text = STRING_TOKEN(STR_SMBIOS_ERASE_NEXT_BOOT), value = 1, flags = RESET_REQUIRED;\
+        option text = STRING_TOKEN(STR_SMBIOS_ERASE_EVERY_BOOT), value = 2, flags = RESET_REQUIRED;\
+      endoneof;
+#endif
+
+#ifndef GPNV_SMBIOS_EVENT_LOG_FULL
+#define GPNV_SMBIOS_EVENT_LOG_FULL\
+      oneof varid = SETUP_DATA.SmbiosEventLogFull,\
+        prompt = STRING_TOKEN(STR_SMBIOS_FULL),\
+        help = STRING_TOKEN(STR_SMBIOS_FULL_HELP),\
+        option text = STRING_TOKEN(STR_SMBIOS_DO_NOTHING), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+        option text = STRING_TOKEN(STR_SMBIOS_ERASE_WHEN_FULL), value = 1, flags = RESET_REQUIRED;\
+      endoneof;
+#endif
+
+//SGI+
+#ifndef GPNV_SMBIOS_SYSTEM_BOOT_EVENT_LOG
+#define GPNV_SMBIOS_SYSTEM_BOOT_EVENT_LOG\
+      oneof varid = SETUP_DATA.LogSystemBootRecord,\
+        prompt = STRING_TOKEN(STR_LOG_SYSTEM_BOOT_RECORDS_PROMPT),\
+        help = STRING_TOKEN(STR_LOG_SYSTEM_BOOT_RECORDS_HELP),\
+        option text = STRING_TOKEN(STR_SMBIOS_ENABLED), value = 1, flags =  RESET_REQUIRED;\
+        option text = STRING_TOKEN(STR_SMBIOS_DISABLED), value = 0, flags =DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+      endoneof;
+#endif
+//SGI-
+//SMC+
+#ifndef GPNV_SMBIOS_MECI
+#define GPNV_SMBIOS_MECI\
+      numeric  varid   = SETUP_DATA.MECI,\
+        prompt  = STRING_TOKEN(STR_MECI_PROMPT),\
+        help    = STRING_TOKEN(STR_MECI_HELP),\
+        minimum = 1,\
+        maximum = 255,\
+        step = 1,\
+        default = 1,\
+        option text = STRING_TOKEN (STR_MECI_PROMPT), value = 1, flags = MANUFACTURING | RESET_REQUIRED; \
+      endnumeric;
+#endif
+
+//#ifndef GPNV_SMBIOS_MECI
+//#define GPNV_SMBIOS_MECI\
+//      numeric  varid   = SETUP_DATA.MECI,\
+//        prompt  = STRING_TOKEN(STR_MECI_PROMPT),\
+//        help    = STRING_TOKEN(STR_MECI_HELP),\
+//        minimum = 1,\
+//        maximum = 255,\
+//        step = 1,\
+//        default = 1,\
+//        option text = STRING_TOKEN (STR_MECI_PROMPT), value = 1, flags = MANUFACTURING ; \
+//      endnumeric;
+//#endif
+
+#ifndef GPNV_SMBIOS_METW
+#define GPNV_SMBIOS_METW\
+      numeric varid   = SETUP_DATA.METW,\
+        prompt  = STRING_TOKEN(STR_METW_PROMPT),\
+        help    = STRING_TOKEN(STR_METW_HELP),\
+        minimum = 0,\
+        maximum = 99,\
+        step = 1,\
+        default = 60,\
+        option text = STRING_TOKEN (STR_METW_PROMPT), value = 60, flags =  MANUFACTURING | RESET_REQUIRED;\
+      endnumeric;
+#endif
+
+//#ifndef GPNV_SMBIOS_METW
+//#define GPNV_SMBIOS_METW\
+//      numeric varid   = SETUP_DATA.METW,\
+//        prompt  = STRING_TOKEN(STR_METW_PROMPT),\
+//        help    = STRING_TOKEN(STR_METW_HELP),\
+//        minimum = 0,\
+//        maximum = 99,\
+//        step = 1,\
+//        default = 60,\
+//        option text = STRING_TOKEN (STR_METW_PROMPT), value = 60, flags =  MANUFACTURING;\
+//      endnumeric;
+//#endif
+//SMC-
+
+#ifndef GPNV_SMBIOS_LOG_EFI_STATUS_CODES
+#define GPNV_SMBIOS_LOG_EFI_STATUS_CODES\
+      oneof varid = SETUP_DATA.LogEfiStatusCodes,\
+        prompt = STRING_TOKEN(STR_LOG_EFI_ERRORS_PROMPT),\
+        help = STRING_TOKEN(STR_LOG_EFI_ERRORS_HELP),\
+        option text = STRING_TOKEN(STR_SMBIOS_DISABLED), value = 0, flags = RESET_REQUIRED;\
+        option text = STRING_TOKEN(STR_SMBIOS_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+      endoneof;
+#endif
+
+#ifndef GPNV_SMBIOS_CONVERT_EFI_TO_LEGACY
+#define GPNV_SMBIOS_CONVERT_EFI_TO_LEGACY \
+      oneof varid = SETUP_DATA.ConvertEfiToLegacy,\
+        prompt = STRING_TOKEN(STR_CONVERT_EFI_ERRORS_PROMPT),\
+        help = STRING_TOKEN(STR_CONVERT_EFI_ERRORS_HELP),\
+        option text = STRING_TOKEN(STR_SMBIOS_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+        option text = STRING_TOKEN(STR_SMBIOS_ENABLED), value = 1, flags = RESET_REQUIRED;\
+      endoneof;
+#endif
+
+#endif //#ifdef CONTROL_DEFINITION
+
+#ifdef EVENT_LOGS_FORM_SET
+
+
+
+// DEFINE ALL MAIN PAGE QUESTIONS HERE
+
+ #ifdef FORM_SET_ITEM
+ #endif
+
+
+
+
+
+// DEFINE ALL MAIN PAGE LINKS HERE
+
+ #ifdef FORM_SET_GOTO
+
+
+// Smbios Settings
+
+    goto SMBIOS_MAIN_FORM, 
+      prompt  = STRING_TOKEN(STR_SMBIOS_LINKS_HEADER),
+      help    = STRING_TOKEN(STR_SMBIOS_EVENT_LOG_HELP);
+
+    goto SMBIOS_VIEW_FORM, 
+      prompt = STRING_TOKEN(STR_SMBIOS_VIEW),
+      help   = STRING_TOKEN(STR_SMBIOS_VIEW_HELP),
+      flags  = INTERACTIVE, 
+      key    = AUTO_ID(SMBIOS_VIEW_FORM_KEY);
+
+ #endif
+
+
+
+
+
+// DEFINE ALL FORMS HERE
+
+ #ifdef FORM_SET_FORM
+
+  form formid = AUTO_ID(SMBIOS_MAIN_FORM),
+    title  = STRING_TOKEN(STR_SMBIOS_EVENT_LOG_TITLE);
+
+    subtitle text = STRING_TOKEN(STR_SMBIOS_ENABLING_OPTIONS);
+
+    /////////////////////////////////////////////////
+    // Enable
+    /////////////////////////////////////////////////
+    grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+        GPNV_SMBIOS_LOGGING
+    endif;
+
+
+    subtitle text = STRING_TOKEN(STR_EMPTY);
+    subtitle text = STRING_TOKEN(STR_SMBIOS_ERASING_OPTIONS);
+
+
+// Erase
+
+    suppressif  ideqval SETUP_DATA.SmbiosLogging == 0;
+    grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+        GPNV_SMBIOS_ERASE_LOG
+    SUPPRESS_GRAYOUT_ENDIF
+
+
+// Full event log
+
+    suppressif  ideqval SETUP_DATA.SmbiosLogging == 0;
+    grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+        GPNV_SMBIOS_EVENT_LOG_FULL
+    SUPPRESS_GRAYOUT_ENDIF
+
+    subtitle text = STRING_TOKEN(STR_EMPTY);
+    subtitle text = STRING_TOKEN(STR_SMBIOS_STANDARD_SETTINGS);
+
+
+// Log System Boot records
+
+    suppressif  ideqval SETUP_DATA.SmbiosLogging == 0;
+    grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+        GPNV_SMBIOS_SYSTEM_BOOT_EVENT_LOG
+    SUPPRESS_GRAYOUT_ENDIF
+
+
+// MECI
+
+    suppressif  ideqval SETUP_DATA.SmbiosLogging == 0;
+    grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+        GPNV_SMBIOS_MECI
+
+
+// METW
+
+        GPNV_SMBIOS_METW
+      SUPPRESS_GRAYOUT_ENDIF
+
+    suppressif SMC_SETUP_STYLE;  //SMCPKG_SUPPORT S
+    subtitle text = STRING_TOKEN(STR_EMPTY);
+    subtitle text = STRING_TOKEN(STR_SMBIOS_EFI_SETTINGS);
+
+
+// Log Efi Status Codes
+
+    suppressif  ideqval SETUP_DATA.SmbiosLogging == 0;
+    grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+        GPNV_SMBIOS_LOG_EFI_STATUS_CODES
+    SUPPRESS_GRAYOUT_ENDIF
+
+
+// Convert Efi Status Codes
+
+    suppressif  ideqval SETUP_DATA.SmbiosLogging == 0;
+    grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+    suppressif ideqval SETUP_DATA.LogEfiStatusCodes == 0;
+        GPNV_SMBIOS_CONVERT_EFI_TO_LEGACY
+    endif;
+    SUPPRESS_GRAYOUT_ENDIF
+    endif;      //SMCPKG_SUPPORT E
+
+    subtitle text = STRING_TOKEN(STR_EMPTY);
+    subtitle text = STRING_TOKEN(STR_ERROR_LOGGING_NOTE_1);
+    subtitle text = STRING_TOKEN(STR_ERROR_LOGGING_NOTE_2);
+
+  endform;
+
+  form formid = AUTO_ID(SMBIOS_VIEW_FORM),
+    title  = STRING_TOKEN(STR_SMBIOS_VIEW);
+    subtitle text = STRING_TOKEN(STR_COLUMN_TITLE_ERROR_SCREEN);
+    subtitle text = STRING_TOKEN(STR_EMPTY);
+
+
+// View Choice of Logs and Log Info
+
+    suppressif ideqvallist ERROR_MANAGER.ErrorCount == 0xFFFF;
+        goto SMBIOS_VIEW_FORM,
+            prompt = STRING_TOKEN(STR_EMPTY),
+            help = STRING_TOKEN(STR_EMPTY);
+    endif;
+
+  endform;
+
+
+  #endif  // FORM_SET_FORM
+
+#endif  // EVENT_LOGS_FORM_SET
+
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**         5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093     **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************

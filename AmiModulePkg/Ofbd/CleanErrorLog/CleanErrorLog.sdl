@@ -1,0 +1,56 @@
+TOKEN
+	Name  = "CLEAN_ERROR_LOG_SUPPORT"
+	Value  = "0"
+	Help  = "Switch for Enabling Clean Gpnv Error Log support in the project"
+	TokenType = Boolean
+	Master = Yes
+	Token = "OFBD_FOR_ARM_SUPPORT" "=" "0"
+End
+
+TOKEN
+	Name  = "[Clean Gpnv Error Log Sample Code Section]"
+	Help  = "See detail description in each token's help box."
+	TokenType = Expression
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "CLEAN_GPNV_ERROR_LOG_SAMPLE_TEST"
+	Value  = "1"
+	Help  = "Test Clean Gpnv Error Log Function"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "CLEAN_ERROR_LOG_SUPPORT" "=" "1"
+End
+
+PATH
+	Name  = "OFBD_CLEANERRORLOG_DIR"
+End
+
+ELINK
+	Name  = "$(OFBD_CLEANERRORLOG_DIR)/CleanErrorLog.h"
+	Parent  = "OFBD_FUNC_INCLUDE_FILES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(OFBD_CLEANERRORLOG_DIR)/CleanErrorLog.c"
+	Parent  = "OFBD_FUNC_SOURCES_FILES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "CleanErrorLogEntry,"
+	Parent  = "OFBD_INIT_FUNC_LIST"
+	Token = "CLEAN_ERROR_LOG_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "CleanErrorLogInSmm,"
+	Parent  = "OFBD_IN_SMM_FUNC_LIST"
+	Token = "CLEAN_ERROR_LOG_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+

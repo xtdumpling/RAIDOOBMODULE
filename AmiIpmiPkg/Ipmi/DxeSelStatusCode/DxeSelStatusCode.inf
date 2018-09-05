@@ -1,0 +1,81 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+#
+# @file  DxeSelStatusCode.inf
+#
+# INF description file for DxeSelStatusCode driver
+#
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = DxeSelStatusCode
+  FILE_GUID                      = AE587172-CC15-48e1-8BE0-29DDF05C6A1F
+  MODULE_TYPE                    = DXE_RUNTIME_DRIVER
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = InitializeDxeSel
+
+[Sources]
+  DxeSelStatusCode.c
+  DxeSelStatusCode.h
+
+[Packages]
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  AmiIpmiPkg/AmiIpmiPkg.dec
+  SmcPkg/SmcPkg.dec            #SMCPKG_SUPPORT
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  MemoryAllocationLib
+  BaseLib  
+  DebugLib
+  BaseMemoryLib
+  UefiLib
+  ReportStatusCodeLib
+
+[Protocols]
+  gEfiDxeIpmiTransportProtocolGuid      #CONSUMES
+  gEfiRscHandlerProtocolGuid            #CONSUMES
+  gEfiSelStatusCodeProtocolGuid         #PRODUCES
+
+[Guids]
+  gEfiServerMgmtSetupVariableGuid
+  gEfiEventVirtualAddressChangeGuid
+
+[Pcd]
+
+[Depex]
+  gEfiDxeIpmiTransportProtocolGuid AND
+  gEfiRscHandlerProtocolGuid
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**         5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093     **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

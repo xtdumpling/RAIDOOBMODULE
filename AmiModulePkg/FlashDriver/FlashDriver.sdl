@@ -1,0 +1,32 @@
+TOKEN
+	Name  = "FlashDriver_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable Runtime support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+INFComponent
+	Name  = "FlashRuntime"
+	File  = "FlashDriver.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "DXE_RUNTIME_DRIVER"
+End
+
+INFComponent
+	Name  = "FlashSmm"
+	File  = "FlashDriverSmm.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "SMM_SUPPORT" "=" "1"
+End
+
+FFS_FILE
+	Name  = "FlashRuntime"
+	FD_AREA  = "FV_MAIN"
+	INFComponent  = "AmiModulePkg.FlashRuntime"
+	Apriori_Index  = "2"
+End
+

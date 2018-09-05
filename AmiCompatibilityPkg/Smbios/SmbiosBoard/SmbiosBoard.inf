@@ -1,0 +1,64 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+## @file
+#   
+##
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SmbiosBoard
+  FILE_GUID                      = CEF68C66-06AB-4fb3-A3ED-5FFA885B5725
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = SMIBiosBoardDriverEntryPoint
+
+[Sources]
+  SmbiosBoard.c
+
+[Packages]
+  AmiModulePkg/AmiModulePkg.dec
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+
+[LibraryClasses]
+  AmiDxeLib
+  UefiDriverEntryPoint
+  FlashLib
+
+[Guids]
+  gAmiSmbiosDynamicDataGuid
+  
+[Protocols]
+  gEfiDriverBindingProtocolGuid
+  gEfiSmbiosProtocolGuid
+  gEfiPciRootBridgeIoProtocolGuid
+  gAmiSmbiosProtocolGuid
+  gAmiSmbiosBoardProtocolGuid
+
+[Depex]
+  gEfiCpuArchProtocolGuid
+
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************

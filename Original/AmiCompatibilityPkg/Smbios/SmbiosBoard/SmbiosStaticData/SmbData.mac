@@ -1,0 +1,2484 @@
+	ECHO	--Including: SMBDATA.MAC
+
+;----------------------------------------------------------------------------
+;	DO NOT CHANGE ANY STRUCTURE DEFINITION UNLESS OTHERWISE SPECIFIED
+;----------------------------------------------------------------------------
+
+;****************************************************************************
+;****************************************************************************
+;**                                                                        **
+;**           (C)Copyright 1985-2017, American Megatrends, Inc.            **
+;**                                                                        **
+;**                          All Rights Reserved.                          **
+;**                                                                        **
+;**           5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093            **
+;**                                                                        **
+;**                          Phone: (770)-246-8600                         **
+;**                                                                        **
+;****************************************************************************
+;****************************************************************************
+
+;****************************************************************************
+; $Header: /Alaska/BIN/Modules/SMBIOS/SmbiosStaticData/SMBDATA.MAC 33    9/13/12 12:10p Davidd $
+;
+; $Revision: 33 $
+;
+; $Date: 9/13/12 12:10p $
+;****************************************************************************
+
+include TimeStamp.equ
+include Token.equ
+
+IFNDEF	_smbdata_mac_			; Start of Inclusion Guard _smbdata_mac_
+_smbdata_mac_	EQU	1
+
+;----------------------------------------------------------------------------
+;	Structure Type 0 : BIOS INFORMATION
+;----------------------------------------------------------------------------
+CreateBiosInfo          macro   xHandle:REQ
+
+ LOCAL   xBVersion
+
+ xHandle = xHandle + 1
+
+ IF MKF_BIOS_VERSION_BACKWARD_COMPATIBILITY
+  MKF_CMA = MKF_CORE_MAJOR_VERSION
+  MKF_CMI = MKF_CORE_MINOR_VERSION
+  IFDEF MKF_ITK_SUPPORT
+   IF MKF_ITK_SUPPORT EQ -1
+    xBVersionNoTime TEXTEQU @CATSTR (%MKF_TWO_LETTER_PRODUCT_NAME, %MKF_PRODUCT_CHIPSET_FAMILY, %MKF_PRODUCT_BOARD_REVISION, %MKF_PRODUCT_BOARD_SUB_REVISION, <.>, %MKF_THREE_LETTER_OEMID, <.>, %MKF_PRODUCT_BUILD_NUMBER)
+    xBVersion TEXTEQU @CATSTR(xBVersionNoTime, <.>, %FOUR_DIGIT_YEAR, <.>, %TWO_DIGIT_MONTH, %TWO_DIGIT_DAY, <.>, %TWO_DIGIT_HOUR, %TWO_DIGIT_MINUTE)
+   ELSE
+    xBVersion TEXTEQU @CATSTR (%MKF_CORE_MAJOR_VERSION, <.>, %MKF_CORE_MINOR_VERSION, <.>, %MKF_CORE_REVISION)
+   ENDIF
+  ENDIF
+  IFNDEF MKF_ITK_SUPPORT
+   xBVersion TEXTEQU @CATSTR (%MKF_CORE_MAJOR_VERSION, <.>, %MKF_CORE_MINOR_VERSION, <.>, %MKF_CORE_REVISION)
+  ENDIF
+ ELSE
+  MKF_CMA = MKF_SYSTEM_BIOS_MAJOR_VERSION
+  MKF_CMI = MKF_SYSTEM_BIOS_MINOR_VERSION
+  IFNDEF MKF_SYSTEM_BIOS_VERSION
+   IF MKF_SYSTEM_BIOS_MINOR_VERSION LT 10
+    xBVersion TEXTEQU @CATSTR (%MKF_SYSTEM_BIOS_MAJOR_VERSION, <.>, <00>, %MKF_SYSTEM_BIOS_MINOR_VERSION)
+   ELSEIF MKF_SYSTEM_BIOS_MINOR_VERSION EQ 10
+    xBVersion TEXTEQU @CATSTR (%MKF_SYSTEM_BIOS_MAJOR_VERSION, <.>, <0>, %MKF_SYSTEM_BIOS_MINOR_VERSION)
+   ELSE
+    xBVersion TEXTEQU @CATSTR (%MKF_SYSTEM_BIOS_MAJOR_VERSION, <.>, %MKF_SYSTEM_BIOS_MINOR_VERSION)
+   ENDIF
+  ELSE
+   xBVersion TEXTEQU MKF_SYSTEM_BIOS_VERSION
+  ENDIF
+ ENDIF
+ IF MKF_SMBIOS_SPEC_VERSION LT 310
+  BIOSINFO_STRUC  {\
+   { 0, sizeof(BIOSINFO_STRUC), xHandle },
+   1,2,MKF_BI_BIOS_START_ADDR,3,
+   BIOS_SIZE_IN_KB(MKF_BIOS_SIZE),
+   BIOS_CHAR(),BIOS_CHAR1(),EXT_CHAR(),EXT_CHAR2(),
+   MKF_CMA,MKF_CMI,MKF_ECMA,MKF_ECMI\
+  }
+ ELSE
+  BIOSINFO_STRUC  {\
+   { 0, sizeof(BIOSINFO_STRUC), xHandle },
+   1,2,MKF_BI_BIOS_START_ADDR,3,
+   BIOS_SIZE_IN_KB(MKF_BIOS_SIZE),
+   BIOS_CHAR(),BIOS_CHAR1(),EXT_CHAR(),EXT_CHAR2(),
+   MKF_CMA,MKF_CMI,MKF_ECMA,MKF_ECMI,
+   BIOS_SIZE_IN_MB(MKF_BIOS_SIZE)\
+  }
+ ENDIF
+ SCAN_PUT_STR %MKF_BIOS_VENDOR
+ PUT_STR %xBVersion
+ SCAN_PUT_STR %TODAY
+ TERMINATOR
+ EXITM   %xHandle
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 1 : SYSTEM INFORMATION
+;----------------------------------------------------------------------------
+CreateSysInfo	macro	xHandle:REQ
+
+	LOCAL	length, strnum, nMN, nPN, nVE, nSN, nSK, nFA
+
+	xHandle = xHandle + 1
+	length = sizeof SYSINFO_STRUC
+	strnum = 1
+
+	IFNDEF MKF_SYSTEM_MANUFACTURER
+		nMN = 0
+	ELSE
+		nMN = strnum
+		strnum = strnum + 1
+	ENDIF
+
+	IFNDEF MKF_SYSTEM_PRODUCT_NAME
+		nPN = 0
+	ELSE
+		nPN = strnum
+		strnum = strnum + 1
+	ENDIF
+
+	IFNDEF MKF_SYSTEM_VERSION
+		nVE = 0
+	ELSE
+		nVE = strnum
+		strnum = strnum + 1
+	ENDIF
+
+	IFNDEF MKF_SYSTEM_SERIAL_NUMBER
+		nSN = 0
+	ELSE
+		nSN = strnum
+		strnum = strnum + 1
+	ENDIF
+
+	IFNDEF MKF_SYSTEM_SKU_NUMBER
+		nSK = 0
+	ELSE
+		nSK = strnum
+		strnum = strnum + 1
+	ENDIF
+
+	IFNDEF MKF_SYSTEM_FAMILY
+		nFA = 0
+	ELSE
+		nFA = strnum
+	ENDIF
+
+	SYSINFO_STRUC	{\
+					{1, length, xHandle},
+					nMN,
+					nPN,
+					nVE,
+					nSN,
+					MKF_SMBIOS_UUID,
+					MKF_SYSTEM_WAKEUP_TYPE,
+					nSK,
+					nFA\
+					}
+	IFDEF MKF_SYSTEM_MANUFACTURER
+		SCAN_PUT_STR %MKF_SYSTEM_MANUFACTURER
+	ENDIF
+	IFDEF MKF_SYSTEM_PRODUCT_NAME
+		SCAN_PUT_STR %MKF_SYSTEM_PRODUCT_NAME
+	ENDIF
+	IFDEF MKF_SYSTEM_VERSION
+		SCAN_PUT_STR %MKF_SYSTEM_VERSION
+	ENDIF
+	IFDEF MKF_SYSTEM_SERIAL_NUMBER
+		SCAN_PUT_STR %MKF_SYSTEM_SERIAL_NUMBER
+	ENDIF
+	IFDEF MKF_SYSTEM_SKU_NUMBER
+		SCAN_PUT_STR %MKF_SYSTEM_SKU_NUMBER
+	ENDIF
+	IFDEF MKF_SYSTEM_FAMILY
+		SCAN_PUT_STR %MKF_SYSTEM_FAMILY
+	ENDIF
+	TERMINATOR
+	EXITM	%xHandle
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 2 : BASEBOARD INFORMATION
+;----------------------------------------------------------------------------
+CreateBaseBoardInfo             macro   xHandle:REQ
+
+	LOCAL	length, chndl, sMN, sPR, sVE, sSN, sAT, sLC, sTemp, vFF, vBT
+	LOCAL	strnum, nBB, nMN, nPR, nVE, nSN, nAT, nLC
+
+    chndl = xHandle + 1 + MKF_NUMBER_OF_BASEBOARDS
+
+	IF  MKF_BASE_BOARD_INFO
+		length = sizeof  BASEBOARD_INFO_STRUC
+
+        IF MKF_NUMBER_OF_BASEBOARDS EQ 1
+            xHandle = xHandle + 1
+    		strnum = 1
+
+    		IFNDEF MKF_BASE_BOARD_MANUFACTURER
+    			nMN = 0
+    		ELSE
+    			nMN = strnum
+    			strnum = strnum + 1
+    		ENDIF
+
+    		IFNDEF MKF_BASE_BOARD_PRODUCT_NAME
+    			nPR = 0
+    		ELSE
+    			nPR = strnum
+    			strnum = strnum + 1
+    		ENDIF
+
+    		IFNDEF MKF_BASE_BOARD_VERSION
+    			nVE = 0
+    		ELSE
+    			nVE = strnum
+    			strnum = strnum + 1
+    		ENDIF
+
+    		IFNDEF MKF_BASE_BOARD_SERIAL_NUMBER
+    			nSN = 0
+    		ELSE
+    			nSN = strnum
+    			strnum = strnum + 1
+    		ENDIF
+
+    		IFNDEF MKF_BB_ASSET_TAG
+    			nAT = 0
+    		ELSE
+    			nAT = strnum
+    			strnum = strnum + 1
+    		ENDIF
+
+    		IFNDEF MKF_BB_LOC_IN_CHASSIS
+    			nLC = 0
+    		ELSE
+    			nLC = strnum
+    		ENDIF
+
+		    BASEBOARD_INFO_STRUC {\
+				{2, length, xHandle},
+				nMN,
+				nPR,
+				nVE,
+				nSN,
+				nAT,
+				BASE_BOARD_FEATURE_FLAGS(),
+				nLC,
+				chndl,
+				MKF_BB_BOARD_TYPE,
+				00h\
+				}
+    		IFDEF MKF_BASE_BOARD_MANUFACTURER
+    			SCAN_PUT_STR %MKF_BASE_BOARD_MANUFACTURER
+    		ENDIF
+    		IFDEF MKF_BASE_BOARD_PRODUCT_NAME
+    			SCAN_PUT_STR %MKF_BASE_BOARD_PRODUCT_NAME
+    		ENDIF
+    		IFDEF MKF_BASE_BOARD_VERSION
+    			SCAN_PUT_STR %MKF_BASE_BOARD_VERSION
+    		ENDIF
+    		IFDEF MKF_BASE_BOARD_SERIAL_NUMBER
+    			SCAN_PUT_STR %MKF_BASE_BOARD_SERIAL_NUMBER
+    		ENDIF
+    		IFDEF MKF_BB_ASSET_TAG
+    			SCAN_PUT_STR %MKF_BB_ASSET_TAG
+    		ENDIF
+    		IFDEF MKF_BB_LOC_IN_CHASSIS
+    			SCAN_PUT_STR %MKF_BB_LOC_IN_CHASSIS
+    		ENDIF
+    		TERMINATOR
+        ELSE
+            nBB = 1
+            REPEAT MKF_NUMBER_OF_BASEBOARDS
+                xHandle = xHandle + 1
+        		strnum = 1
+
+                sTemp TEXTEQU @CATSTR(<BASEBOARD_FEATURE_FLAG_>, <%nBB>)
+                vFF = @CATSTR(%sTemp)
+                sTemp TEXTEQU @CATSTR(<BASEBOARD_TYPE_>, <%nBB>)
+                vBT = @CATSTR(%sTemp)
+
+                sMN TEXTEQU @CATSTR(<BASEBOARD_MANUFACTURER_>, <%nBB>)
+; sMN will be set to "BASEBOARD_MANUFACTURER_X" if string is not defined,
+; therefore if we search the string for "BASEBOARD_MANUFACTURER_" and it
+; returns a non-zero value, it means the string is not defined. 
+                IF @INSTR(1, %sMN, <BASEBOARD_MANUFACTURER_>) NE 0
+        			nMN = 0
+        		ELSE
+        			nMN = strnum
+        			strnum = strnum + 1
+        		ENDIF
+
+                sPR TEXTEQU @CATSTR(<BASEBOARD_PRODUCT_>, <%nBB>)
+                IF @INSTR(1, %sPR, <BASEBOARD_PRODUCT_>) NE 0
+        			nPR = 0
+        		ELSE
+        			nPR = strnum
+        			strnum = strnum + 1
+        		ENDIF
+
+                sVE TEXTEQU @CATSTR(<BASEBOARD_VERSION_>, <%nBB>)
+                IF @INSTR(1, %sVE, <BASEBOARD_VERSION_>) NE 0
+        			nVE = 0
+        		ELSE
+        			nVE = strnum
+        			strnum = strnum + 1
+        		ENDIF
+
+                sSN TEXTEQU @CATSTR(<BASEBOARD_SERIAL_NUMBER_>, <%nBB>)
+                IF @INSTR(1, %sSN, <BASEBOARD_SERIAL_NUMBER_>) NE 0
+        			nSN = 0
+        		ELSE
+        			nSN = strnum
+        			strnum = strnum + 1
+        		ENDIF
+
+                sAT TEXTEQU @CATSTR(<BASEBOARD_ASSET_TAG_>, <%nBB>)
+                IF @INSTR(1, %sAT, <BASEBOARD_ASSET_TAG_>) NE 0
+        			nAT = 0
+        		ELSE
+        			nAT = strnum
+        			strnum = strnum + 1
+        		ENDIF
+
+                sLC TEXTEQU @CATSTR(<BASEBOARD_LOCATION_>, <%nBB>)
+                IF @INSTR(1, %sLC, <BASEBOARD_LOCATION_>) NE 0
+        			nLC = 0
+        		ELSE
+        			nLC = strnum
+        		ENDIF
+
+    		    BASEBOARD_INFO_STRUC {\
+    				{2, length, xHandle},
+    				nMN,
+    				nPR,
+    				nVE,
+    				nSN,
+    				nAT,
+    				vFF,
+    				nLC,
+    				chndl,
+    				vBT,
+    				00h\
+    				}
+                IF nMN NE 0
+        			SCAN_PUT_STR %sMN
+        		ENDIF
+        		IF nPR
+        			SCAN_PUT_STR %sPR
+        		ENDIF
+        		IF nVE
+        			SCAN_PUT_STR %sVE
+        		ENDIF
+        		IF nSN
+        			SCAN_PUT_STR %sSN
+        		ENDIF
+        		IF nAT
+        			SCAN_PUT_STR %sAT
+        		ENDIF
+        		IF nLC
+        			SCAN_PUT_STR %sLC
+        		ENDIF
+                nBB = nBB + 1
+        		TERMINATOR
+            ENDM
+        ENDIF               ; MKF_NUMBER_OF_BASEBOARDS
+	ENDIF                   ; MKF_BASE_BOARD_INFO
+	EXITM   %xHandle
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 3 : SYSTEM ENCLOSURE OR CHASSIS
+;----------------------------------------------------------------------------
+CreateSysChassisInfo  macro     xHandle:REQ
+
+	LOCAL   length, LockPresence, xSysHt, xNoPwrCords, xNoContEle, xContEleRcrdLen
+	LOCAL   xCt, xCbs, xPss, xTs, xSs, xOem, xContElement
+
+	LOCAL	strnum, MFG, sMfg, vCl, VER, sVer, SN, sSn, ATN, sAtn, SKU, sSku, nSC, sTemp
+
+	LockPresence = 0
+
+	IF	MKF_SYS_CHASSIS_INFO
+        nSC = 1
+        REPEAT MKF_NUMBER_OF_SYSTEM_CHASSIS
+          xHandle = xHandle + 1
+		  strnum = 1
+
+          sTemp TEXTEQU @CATSTR(<MKF_SYS_CHASSIS_MANUFACTURER_>, <%nSC>)
+          IF @INSTR(1, %sTemp, <MKF_SYS_CHASSIS_MANUFACTURER_>) NE 0
+			MFG = 0
+		  ELSE
+			MFG = strnum
+			strnum = strnum + 1
+            sMfg TEXTEQU @CATSTR(%sTemp)
+		  ENDIF
+
+          sTemp TEXTEQU @CATSTR(<MKF_SYS_CHASSIS_LOCK_>, <%nSC>)
+          vCl TEXTEQU @CATSTR(%sTemp)
+
+          sTemp TEXTEQU @CATSTR(<MKF_SYS_CHASSIS_TYPE_>, <%nSC>)
+          xCt TEXTEQU @CATSTR(%sTemp)
+; In HJWasm, TXTEQU statement can't contain OR, use "="
+;          xCt TEXTEQU xCt OR vCl
+          xCt = xCt OR vCl
+
+          sTemp TEXTEQU @CATSTR(<MKF_SYS_CHASSIS_VERSION_>, <%nSC>)
+          IF @INSTR(1, %sTemp, <MKF_SYS_CHASSIS_VERSION_>) NE 0
+			VER = 0
+		  ELSE
+			VER = strnum
+			strnum = strnum + 1
+            sVer TEXTEQU @CATSTR(%sTemp)
+		  ENDIF
+
+          sTemp TEXTEQU @CATSTR(<MKF_SYS_CHASSIS_SERIAL_NUM_>, <%nSC>)
+          IF @INSTR(1, %sTemp, <MKF_SYS_CHASSIS_SERIAL_NUM_>) NE 0
+			SN = 0
+		  ELSE
+			SN = strnum
+			strnum = strnum + 1
+            sSn TEXTEQU @CATSTR(%sTemp)
+		  ENDIF
+
+          sTemp TEXTEQU @CATSTR(<MKF_SYS_CHASSIS_ASSET_TAG_NUM_>, <%nSC>)
+          IF @INSTR(1, %sTemp, <MKF_SYS_CHASSIS_ASSET_TAG_NUM_>) NE 0
+			ATN = 0
+		  ELSE
+			ATN = strnum
+			strnum = strnum + 1
+            sAtn TEXTEQU @CATSTR(%sTemp)
+		  ENDIF
+
+          sTemp TEXTEQU @CATSTR(<MKF_SYS_CHASSIS_BOOT_STATE_>, <%nSC>)
+          xCbs TEXTEQU @CATSTR(%sTemp)
+
+          sTemp TEXTEQU @CATSTR(<MKF_SYS_PWR_SUPPLY_STATE_>, <%nSC>)
+          xPss TEXTEQU @CATSTR(%sTemp)
+
+          sTemp TEXTEQU @CATSTR(<MKF_SYS_THERMAL_STATE_>, <%nSC>)
+          xTs TEXTEQU @CATSTR(%sTemp)
+
+          sTemp TEXTEQU @CATSTR(<MKF_SYS_SECURE_STATE_>, <%nSC>)
+          xSs TEXTEQU @CATSTR(%sTemp)
+
+          sTemp TEXTEQU @CATSTR(<MKF_SYS_OEM_>, <%nSC>)
+          xOem TEXTEQU @CATSTR(%sTemp)
+
+          sTemp TEXTEQU @CATSTR(<MKF_SYS_HEIGHT_>, <%nSC>)
+          xSysHt TEXTEQU @CATSTR(%sTemp)
+
+          sTemp TEXTEQU @CATSTR(<MKF_NO_PWR_CORDS_>, <%nSC>)
+          xNoPwrCords TEXTEQU @CATSTR(%sTemp)
+
+          sTemp TEXTEQU @CATSTR(<MKF_ELEMENT_COUNT_>, <%nSC>)
+          xNoContEle = @CATSTR(%sTemp)
+
+          sTemp TEXTEQU @CATSTR(<MKF_ELEMENT_LEN_>, <%nSC>)
+          xContEleRcrdLen = @CATSTR(%sTemp)
+
+          xContElement TEXTEQU @CATSTR(<MKF_CONT_ELEMENT_>, <%nSC>)
+          xContElement TEXTEQU @CATSTR(%xContElement)
+
+          sTemp TEXTEQU @CATSTR(<MKF_SYS_CHASSIS_SKU_NUMBER_>, <%nSC>)
+          IF @INSTR(1, %sTemp, <MKF_SYS_CHASSIS_SKU_NUMBER_>) NE 0
+			SKU = 0
+		  ELSE
+			SKU = strnum
+            sSku TEXTEQU @CATSTR(%sTemp)
+		  ENDIF
+
+          IF (xNoContEle * xContEleRcrdLen) EQ 0
+		    length = sizeof SYSENC_STRUC
+		    SYSENC_STRUC	{\
+					{3, length, xHandle},
+					MFG,xCt,VER,SN,ATN,
+					xCbs,xPss,xTs,xSs,xOem,
+					xSysHt,xNoPwrCords,
+					xNoContEle,
+					xContEleRcrdLen,
+					SKU\
+					}
+          ELSEIF nSC EQ 1
+            length = sizeof SYSENC_STRUC_1
+        	SYSENC_STRUC_1	{\
+					{3, length, xHandle},
+					MFG,xCt,VER,SN,ATN,
+					xCbs,xPss,xTs,xSs,xOem,
+					xSysHt,xNoPwrCords,
+					xNoContEle,
+					xContEleRcrdLen,
+					xContElement,
+					SKU\
+					}
+          ELSEIF nSC EQ 2
+            length = sizeof SYSENC_STRUC_2
+        	SYSENC_STRUC_2	{\
+					{3, length, xHandle},
+					MFG,xCt,VER,SN,ATN,
+					xCbs,xPss,xTs,xSs,xOem,
+					xSysHt,xNoPwrCords,
+					xNoContEle,
+					xContEleRcrdLen,
+					xContElement,
+					SKU\
+					}
+          ELSEIF nSC EQ 3
+            length = sizeof SYSENC_STRUC_3
+        	SYSENC_STRUC_3	{\
+					{3, length, xHandle},
+					MFG,xCt,VER,SN,ATN,
+					xCbs,xPss,xTs,xSs,xOem,
+					xSysHt,xNoPwrCords,
+					xNoContEle,
+					xContEleRcrdLen,
+					xContElement,
+					SKU\
+					}
+          ELSEIF nSC EQ 4
+            length = sizeof SYSENC_STRUC_4
+        	SYSENC_STRUC_4	{\
+					{3, length, xHandle},
+					MFG,xCt,VER,SN,ATN,
+					xCbs,xPss,xTs,xSs,xOem,
+					xSysHt,xNoPwrCords,
+					xNoContEle,
+					xContEleRcrdLen,
+					xContElement,
+					SKU\
+					}
+          ELSEIF nSC EQ 5
+            length = sizeof SYSENC_STRUC_5
+        	SYSENC_STRUC_5	{\
+					{3, length, xHandle},
+					MFG,xCt,VER,SN,ATN,
+					xCbs,xPss,xTs,xSs,xOem,
+					xSysHt,xNoPwrCords,
+					xNoContEle,
+					xContEleRcrdLen,
+					xContElement,
+					SKU\
+					}
+          ENDIF
+
+          IF MFG NE 0
+            SCAN_PUT_STR %sMfg
+		  ENDIF
+          IF VER NE 0
+            SCAN_PUT_STR %sVer
+		  ENDIF
+          IF SN NE 0
+            SCAN_PUT_STR %sSn
+		  ENDIF
+          IF ATN NE 0
+            SCAN_PUT_STR %sAtn
+		  ENDIF
+          IF SKU NE 0
+            SCAN_PUT_STR %sSku
+		  ENDIF
+		  TERMINATOR
+          nSC = nSC + 1
+        ENDM
+	ENDIF                      ; MKF_SYS_CHASSIS_INFO
+	EXITM   %xHandle
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 4 : PROCESSOR INFORMATION
+;----------------------------------------------------------------------------
+CreateProcessorInfo macro	xHandle:REQ
+
+	LOCAL	length, xSi, xSv, rC, xN, xPT, xPF, xPS, xPA, xPP, xPF2
+	LOCAL	strnum, nSN, nAT, nPN
+
+	xL1 = 0FFFFh
+	xL2 = 0FFFFh
+	xL3 = 0FFFFh
+	xVt = 0
+	xMs = 0
+	xUg = 0
+	length = sizeof PROC_STRUC
+
+	IF 	MKF_PROCESSOR_INFO
+		rC = 1
+		REPEAT	MKF_NO_OF_PROCESSOR_SOCKETS
+            xHandle = xHandle + 1
+
+			IF MKF_NUMBER_OF_PROC_CACHE GT 0
+				xL1 = xHandle + 1
+			ENDIF
+			IF MKF_NUMBER_OF_PROC_CACHE GT 1
+				xL2 = xL1 + 1
+			ENDIF
+			IF MKF_NUMBER_OF_PROC_CACHE GT 2
+				xL3 = xL2 + 1
+			ENDIF
+
+			xSd TEXTEQU @CATSTR(<PROC_SOC_DESIG_>, <%rC>)
+			xPT TEXTEQU @CATSTR(<PROC_TYPE_>, <%rC>)
+			xPF TEXTEQU @CATSTR(<PROC_FAMILY_>, <%rC>)
+			xSv TEXTEQU @CATSTR(<PROC_VOLTAGE_>, <%rC>)
+			xSs TEXTEQU @CATSTR(<PROC_MAX_SPEED_>, <%rC>)
+			xSu TEXTEQU @CATSTR(<PROC_UPGRADE_>, <%rC>)
+			xPS TEXTEQU @CATSTR(<PROC_SERIAL_NO_>, <%rC>)
+			xPA TEXTEQU @CATSTR(<PROC_ASSET_TAG_>, <%rC>)
+			xPP TEXTEQU @CATSTR(<PROC_PART_NO_>, <%rC>)
+            xPF2 TEXTEQU @CATSTR(<PROC_FAMILY_2_>, <%rC>)
+
+			strnum = 4
+
+			nSN = @SIZESTR(%xPS)
+			IF nSN NE 0
+				nSN = strnum
+				strnum = strnum + 1
+			ENDIF
+			nAT = @SIZESTR(%xPA)
+			IF nAT NE 0
+				nAT = strnum
+				strnum = strnum + 1
+			ENDIF
+			nPN = @SIZESTR(%xPP)
+			IF nPN NE 0
+				nPN = strnum
+			ENDIF
+
+			PROC_STRUC	{\
+				{4,length,xHandle},
+				01h,xPT,xPF,
+				02h,0,
+				03h,
+				@PROC_VOLT(%xSv),
+				0,
+				xSs,
+				0,41h,
+				xSu,
+				xL1,xL2,xL3,
+				nSN,nAT,nPN,
+				1,1,1,
+				04h,xPF2,
+				1,1,1}
+			SCAN_PUT_STR %xSd
+			BYTE	"                 ",0
+			BYTE	"                                               ",0
+			IF nSN NE 0
+				SCAN_PUT_STR %xPS
+			ENDIF
+			IF nAT NE 0
+				SCAN_PUT_STR %xPA
+			ENDIF
+			IF nPN NE 0
+				SCAN_PUT_STR %xPP
+			ENDIF
+		TERMINATOR
+		rC = rC+1
+		xHandle = CreateProcCacheInfo(xHandle)
+		ENDM
+	ENDIF
+	EXITM	%xHandle
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 5 : MEMORY CONTROLLER INFORMATION
+;----------------------------------------------------------------------------
+CreateMemCtrlInfo macro		xHandle:REQ, hStart:REQ
+
+	LOCAL	length, hMemMod, xEDD
+
+	IF MKF_MEM_CTRL_INFO
+        xHandle = xHandle + 1
+		hMemMod = hStart
+		length = (15 + (2 * MKF_A1_MEMORY_SOCKETS) + 1)
+
+		xEDD = MKF_MEM_CTRL_EDD
+		xMs = MKF_MAX_MEM_MODULE_SIZE
+		MEMCTRL_STRUC	{\
+				{5, length, xHandle},
+				xEDD,
+				MEM_CTRL_ECC(),
+				MKF_MEM_CTRL_INTRLV,
+				MKF_MEM_CTRL_INTRLV,
+				MEM_SIZE_IN_MB(xMs),
+				MEM_CTRL_SPEED(),
+				SUPPORTED_MEM_TYPE(),
+				MEM_MOD_VOLTAGE(),
+				MKF_A1_MEMORY_SOCKETS\
+				}
+		REPEAT	MKF_A1_MEMORY_SOCKETS
+			WORD	hMemMod
+			hMemMod = hMemMod + 1
+		ENDM
+		BYTE	MEM_CTRL_ECC()
+		TERMINATOR	; Memory Controller structure NOT Terminated by NULL
+		TERMINATOR	; Memory Controller structure NOT Terminated by NULL
+	ENDIF
+    EXITM	%xHandle
+ENDM
+
+;----------------------------------------------------------------------------
+;	Structure Type 6 : MEMORY MODULE INFORMATION
+;----------------------------------------------------------------------------
+CreateMemModuleInfo  macro	xHandle:REQ
+
+	LOCAL	length, rC, xS, dS, xN, xL, xMs
+
+	length = 0CH
+IF	MKF_MEM_MODULE_INFO
+	rC = 1
+	REPEAT	MKF_A1_MEMORY_SOCKETS
+        xHandle = xHandle + 1
+
+		DMIHDR_STRUC	{6, length, xHandle}
+		BYTE	1
+
+		xS TEXTEQU @CATSTR(<MEMORY_INFO_>, <%rC>)
+		xN = @INSTR(1, %xS, <,>)
+		dS TEXTEQU @SUBSTR(%xS, 1, (xN-1))
+		xL = @SIZESTR(%xS)
+		xL = xL -xN
+		xS TEXTEQU @SUBSTR(%xS, (xN+1), xL)
+		xMs = @MEMORY_INFO(%xS)
+		xS TEXTEQU @CATSTR(<MEMORY_TYPE_>, <%rC>)
+		@MEMORY_TYPE %xS
+		WORD	xMs
+		xS TEXTEQU @CATSTR(<MEMORY_ERR_STATUS_>, <%rC>)
+		@MEMORY_ERR_STATUS %xS
+		SCAN_PUT_STR	%dS
+		TERMINATOR
+		rC = rC+1
+	ENDM
+ENDIF
+	EXITM	%xHandle
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 7: CACHE INFORMATION (INTERNAL)
+;----------------------------------------------------------------------------
+CreateProcCacheInfo		macro	xHandle:REQ
+
+	LOCAL	length, rC, xS, dS, xN, xL
+
+	length = sizeof CACHE_INFO_STRUC
+
+	rC = 1
+	REPEAT	MKF_NUMBER_OF_PROC_CACHE
+        xHandle = xHandle + 1
+
+		DMIHDR_STRUC	{7, length, xHandle}
+		BYTE		1
+		xS TEXTEQU @CATSTR(<PROC_CACHE_CFG_L>, <%rC>)
+		xN = @INSTR(1, %xS, <,>)
+		dS TEXTEQU @SUBSTR(%xS, 1, (xN-1))
+		xL = @SIZESTR(%xS)
+		xL = xL -xN
+		xS TEXTEQU @SUBSTR(%xS, (xN+1), xL)
+		@CACHE_CFG %xS
+		xS TEXTEQU @CATSTR(<PROC_CACHE_INFO_L>, <%rC>)
+		@CACHE_INFO %xS
+		xS TEXTEQU @CATSTR(<PROC_CACHE_CHAR_L>, <%rC>)
+		@CACHE_CHAR %xS
+      IF MKF_SMBIOS_SPEC_VERSION GT 300
+        DWORD   0
+        DWORD   0
+	  ENDIF
+		SCAN_PUT_STR	%dS
+		TERMINATOR
+		rC = rC+1
+	ENDM
+	EXITM	%xHandle
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 7: CACHE INFORMATION (EXTERNAL)
+;----------------------------------------------------------------------------
+CreateExternalCacheInfo		macro	xHandle:REQ
+
+	LOCAL	length, rC, xS, dS, xN, xL
+
+IF	MKF_EXTERNAL_CACHE_INFORMATION
+    xHandle = xHandle + 1
+    length = sizeof CACHE_INFO_STRUC
+
+	DMIHDR_STRUC	{7, length, xHandle}
+	BYTE		1
+	xS TEXTEQU <EXTERNAL_CACHE_CFG>
+	xN = @INSTR(1, %xS, <,>)
+	dS TEXTEQU @SUBSTR(%xS, 1, (xN-1))
+	xL = @SIZESTR(%xS)
+	xL = xL -xN
+	xS TEXTEQU @SUBSTR(%xS, (xN+1), xL)
+	@EXT_CACHE_CFG %xS
+	xS TEXTEQU <EXTERNAL_CACHE_INFO>
+	@CACHE_INFO %xS
+	xS TEXTEQU <EXTERNAL_CACHE_CHAR>
+	@CACHE_CHAR %xS
+    IF MKF_SMBIOS_SPEC_VERSION GT 300
+        DWORD   0
+        DWORD   0
+    ENDIF
+	SCAN_PUT_STR	%dS
+	TERMINATOR
+ENDIF
+	EXITM	%xHandle
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 8 : PORT CONNECTOR INFORMATION
+;----------------------------------------------------------------------------
+CreatePortConnectorInfo		macro	xHandle:REQ
+
+	LOCAL	length, iS, eS, iP, eP, pT, xC, xN, xS, rC, xLabel
+
+	length = sizeof PORT_CONNECTOR_STRUC
+IF	MKF_PORT_CONNECTOR_INFO
+	IF	MKF_NUMBER_OF_EXT_PORT_CONNECTORS GT 0
+		rC = 1
+		REPEAT	MKF_NUMBER_OF_EXT_PORT_CONNECTORS
+            xHandle = xHandle + 1
+			xN = 1
+
+			DMIHDR_STRUC {8, length, xHandle}
+			xS TEXTEQU @CATSTR(<EXT_CONNECTOR_>, <%rC>)
+			xC = @INSTR(<%xN>, %xS, <,>)
+			iS TEXTEQU @SUBSTR(%xS, <%xN>, (xC-xN))
+			xN = xC+1
+			xC = @INSTR(<%xN>, %xS, <,>)
+			iP TEXTEQU @SUBSTR(%xS, <%xN>, (xC-xN))
+			xN = xC+1
+			xC = @INSTR(<%xN>, %xS, <,>)
+			eS TEXTEQU @SUBSTR(%xS, <%xN>, (xC-xN))
+			xN = xC+1
+			xC = @INSTR(<%xN>, %xS, <,>)
+			eP TEXTEQU @SUBSTR(%xS, <%xN>, (xC-xN))
+			xN = @SIZESTR(%xS)
+			xN = xN-xC
+			xC = xC+1
+			pT TEXTEQU @SUBSTR(%xS, <%xC>, xN)
+			DEFINE_EXT_CONNECTOR %iS, %iP, %eS, %eP, %pT
+			TERMINATOR
+			rC = rC+1
+		ENDM
+    ENDIF
+
+    IF	MKF_NUMBER_OF_INT_PORT_CONNECTORS GT 0
+		rC = 1
+		REPEAT	MKF_NUMBER_OF_INT_PORT_CONNECTORS
+            xHandle = xHandle + 1
+			xN = 1
+
+			DMIHDR_STRUC {8, length, xHandle}
+			xS TEXTEQU @CATSTR(<INT_CONNECTOR_>, <%rC>)
+			xC = @INSTR(<%xN>, %xS, <,>)
+			iS TEXTEQU @SUBSTR(%xS, <%xN>, (xC-xN))
+			xN = xC+1
+			xC = @INSTR(<%xN>, %xS, <,>)
+			iP TEXTEQU @SUBSTR(%xS, <%xN>, (xC-xN))
+			xN = @SIZESTR(%xS)
+			xN = xN-xC
+			xC = xC+1
+			pT TEXTEQU @SUBSTR(%xS, <%xC>, xN)
+			DEFINE_INT_CONNECTOR %iS, %iP, %pT
+			TERMINATOR
+			rC = rC+1
+		ENDM
+    ENDIF
+ENDIF
+	EXITM	%xHandle
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 9 : SYSTEM SLOT INFORMATION
+;----------------------------------------------------------------------------
+CreateSystemSlotInfo    macro	xHandle:REQ
+
+	LOCAL	length, xS1, xS2, rC, xH, sD, sT, sW, cU, sL, sI, sc1, sc2, xC, xN, xS, xSG, xB, xDF
+
+	length = sizeof SYSTEM_SLOT_INFO_STRUC
+
+IF	MKF_SYSTEM_SLOT_INFO
+    IF MKF_NUMBER_OF_SYSTEM_SLOTS GT 0
+		rC = 1
+		REPEAT MKF_NUMBER_OF_SYSTEM_SLOTS
+		    xHandle = xHandle + 1
+			xN = 1
+
+			xS1 TEXTEQU @CATSTR(<SEGGRP_BUS_DEV_FUNC_>, <%rC>)
+			xS2 TEXTEQU @CATSTR(<SYSTEM_SLOT_CHAR_>, <%rC>)
+			xS TEXTEQU @CATSTR(<SYSTEM_SLOT_INFO_>, <%rC>)
+			xC = @INSTR(<%xN>, %xS, <,>)
+			sD TEXTEQU @SUBSTR(%xS, <%xN>, (xC-xN))
+			xN = xC+1
+			xC = @INSTR(<%xN>, %xS, <,>)
+			sT TEXTEQU @SUBSTR(%xS, <%xN>, (xC-xN))
+			xN = xC+1
+			xC = @INSTR(<%xN>, %xS, <,>)
+			sW TEXTEQU @SUBSTR(%xS, <%xN>, (xC-xN))
+			xN = xC+1
+			xC = @INSTR(<%xN>, %xS, <,>)
+			cU TEXTEQU @SUBSTR(%xS, <%xN>, (xC-xN))
+			xN = xC+1
+			xC = @INSTR(<%xN>, %xS, <,>)
+			sL TEXTEQU @SUBSTR(%xS, <%xN>, (xC-xN))
+			xN = @SIZESTR(%xS)
+			xN = xN-xC
+			xC = xC+1
+			sI TEXTEQU @SUBSTR(%xS, <%xC>, xN)
+			xS TEXTEQU @CATSTR(<SEGGRP_BUS_DEV_FUNC_>, <%rC>)
+			xN = 1
+			xC = @INSTR(<%xN>, %xS, <,>)
+			xSG TEXTEQU @SUBSTR(%xS, <%xN>, (xC-xN))
+			xN = xC+1
+			xC = @INSTR(<%xN>, %xS, <,>)
+			xB TEXTEQU @SUBSTR(%xS, <%xN>, (xC-xN))
+			xC = xC+1
+			xDF TEXTEQU @SUBSTR(%xS, <%xC>)
+
+			SYS_SLOT_INFO 9, length, xHandle, sD, sT, sW, cU, sL, sI, xS2, xSG, xB, xDF
+			TERMINATOR
+			rC = rC+1
+    	ENDM
+    ENDIF
+ENDIF
+	EXITM	%xHandle
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 10 : ON BOARD DEVICES INFORMATION
+;----------------------------------------------------------------------------
+CreateOnboardDeviceInfo macro	xHandle:REQ
+
+	LOCAL   length, xS, xE, xT, xN, rC, xD, xC
+
+IF MKF_ONBOARD_DEVICE_INFO
+    xHandle = xHandle + 1
+	length = 4 + (2 * MKF_NUMBER_OF_ONBOARD_DEVICES)
+	rC = 1
+
+	DMIHDR_STRUC {10, length, xHandle}
+	REPEAT  MKF_NUMBER_OF_ONBOARD_DEVICES
+		xN = 1
+		xS TEXTEQU @CATSTR(<ONBOARD_DEVICE_>, <%rC>)
+		xC = @INSTR(<%xN>, %xS, <,>)
+		xE TEXTEQU @SUBSTR(%xS, <%xN>, (xC-xN))
+		xN = xC+1
+		xC = @INSTR(<%xN>, %xS, <,>)
+		xT TEXTEQU @SUBSTR(%xS, <%xN>, (xC-xN))
+		ONBOARD_DEV_SUB_STRUC	{((xE shl 7) OR xT), rC}
+		rC = rC + 1
+	ENDM
+	rC = 1
+	REPEAT  MKF_NUMBER_OF_ONBOARD_DEVICES
+		xN = 1
+		xS TEXTEQU @CATSTR(<ONBOARD_DEVICE_>, <%rC>)
+		xC = @INSTR(<%xN>, %xS, <,>)
+		xN = xC+1
+		xC = @INSTR(<%xN>, %xS, <,>)
+		xN = @SIZESTR(%xS)
+		xN = xN-xC
+		xC = xC+1
+		xD TEXTEQU @SUBSTR(%xS, <%xC>, <%xN>)
+		SCAN_PUT_STR %xD
+		rC = rC + 1
+	ENDM
+	TERMINATOR
+ENDIF
+	EXITM	%xHandle
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 11 : OEM STRINGS INFORMATION
+;----------------------------------------------------------------------------
+CreateOemStringInfo	macro	xHandle:REQ
+
+	LOCAL	xS, rC
+
+IF	 MKF_OEM_STRING_INFO
+    xHandle = xHandle + 1
+
+	OEM_STRING_STRUC {\
+			 {11, 5, xHandle},
+			 MKF_NUMBER_OF_OEM_STRINGS\
+			 }
+	rC = 1
+	REPEAT	MKF_NUMBER_OF_OEM_STRINGS
+		xS TEXTEQU @CATSTR(<OEM_STRING_>, <%rC>)
+		SCAN_PUT_STR	%xS
+		rC = rC+1
+	ENDM
+	TERMINATOR
+ENDIF
+	EXITM	%xHandle
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 12 : SYSTEM CONFIGURATION STRINGS INFORMATION
+;----------------------------------------------------------------------------
+CreateSystemConfigOptionInfo	macro	xHandle:REQ
+
+	LOCAL	xS, rC
+
+IF 	MKF_SYSTEM_CONFIG_OPTION_INFO
+    xHandle = xHandle + 1
+
+	SYSTEM_CONFIG_OPT_STRUC {\
+				 {12, 5, xHandle},
+				 MKF_NUMBER_OF_SYSTEM_CONFIG_STRINGS\
+			 	}
+	rC = 1
+	REPEAT	MKF_NUMBER_OF_SYSTEM_CONFIG_STRINGS
+		xS TEXTEQU @CATSTR(<SYSTEM_CONFIG_STRING_>, <%rC>)
+		SCAN_PUT_STR	%xS
+		rC = rC+1
+	ENDM
+	TERMINATOR
+ENDIF
+	EXITM	%xHandle
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 13: BIOS LANGUAGE INFORMATION
+;----------------------------------------------------------------------------
+CreateBiosLanguageInfo	macro	xHandle:REQ
+
+	LOCAL	 xS, rC
+
+IF	MKF_BIOS_LANGUAGE_INFO
+    xHandle = xHandle + 1
+
+    BIOS_LANGUAGE_INFO_STRUC {\
+        {13, 16h, xHandle},
+  		 NUMBER_OF_LANGUAGE_STRINGS,
+		 BIOS_LANGUAGE_FORMAT,
+		 {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		 CURRENT_LANGUAGE\
+		}
+	rC = 1
+    REPEAT  NUMBER_OF_LANGUAGE_STRINGS
+		xS TEXTEQU @CATSTR(<LANGUAGE_STRING_>, <%rC>)
+	    SCAN_PUT_STR	%xS
+	    rC = rC+1
+	ENDM
+	TERMINATOR
+ENDIF
+	EXITM	%xHandle
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 14: GROUP ASSOCIATION INFORMATION
+;----------------------------------------------------------------------------
+; NOT IMPLEMENTED NOW
+
+;----------------------------------------------------------------------------
+;       Structure Type 15: EVENT LOG INFORMATION
+;----------------------------------------------------------------------------
+CreateEventLogInfo		MACRO	xHandle:REQ
+
+	LOCAL	length
+
+	length = 14h
+IF	MKF_EVENT_LOG_INFO
+    xHandle = xHandle + 1
+    length = (17h + (NO_OF_SUPPORTED_EVENTS * LENGTH_OF_EACH_LOG_TYPE_DESC))
+
+	EVENTLOG_INFO_STRUC	{\
+			 {15, length, xHandle},
+			 0004h,
+			 0000h,
+			 0002h,
+			 02h,
+			 00h,
+			 00000000h,
+			 046c046ah,
+			 00h,
+			 NO_OF_SUPPORTED_EVENTS,
+			 LENGTH_OF_EACH_LOG_TYPE_DESC\
+			 }
+	BYTE	(NO_OF_SUPPORTED_EVENTS*LENGTH_OF_EACH_LOG_TYPE_DESC) dup(0FFh)
+	TERMINATOR
+	TERMINATOR
+ENDIF
+	EXITM	%xHandle
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 16: PHYSICAL MEMORY ARRAY INFORMATION
+;----------------------------------------------------------------------------
+CreateMemoryInfo	MACRO	xHandle:REQ
+
+	LOCAL   length, HArrayError, HArray, HMdevice, HMMAddress
+	LOCAL   AC, ILoopCount, xN, xNN, xSi, xSv, xTv, xoN
+	LOCAL 	xNmd, xCt, xMl, xDc, ICurDev, xDn, xDh, xMs, xA, xDw, xFf, xMt, xTd, xAt, xMh
+
+	length = sizeof PHY_MEM_ARRAY_STRUC
+    AC = 1
+	REPEAT MKF_NO_OF_PHYSICAL_MEMORY_ARRAY
+    xHandle = xHandle + 1
+    HArray = xHandle
+
+IF	MKF_MEMORY_ERROR_INFO
+	HArrayError = xHandle + 1
+ELSE
+	HArrayError = 0FFFEh
+ENDIF
+
+	xA TEXTEQU @CATSTR(<MKF_A>, <%AC>)
+    xMs = @CATSTR(%xA, <_MEMORY_SOCKETS>)
+
+	PHY_MEM_ARRAY_STRUC	{\
+		{16, length, xHandle},
+		@CATSTR(<ARRAY_LOC_>,<%AC>),
+		@CATSTR(<ARRAY_USE_>,<%AC>),
+		@CATSTR(<ARRAY_ERROR_COR_>,<%AC>),
+		@CATSTR(<MAX_MEM_CAP_>,<%AC>),
+		HArrayError,
+		xMs,
+		@CATSTR(<EXT_MAX_MEM_CAP_>,<%AC>)\
+		}
+	TERMINATOR
+	TERMINATOR
+
+;----------------------------------------------------------------------------
+;       Structure Type 18:  MEMORY ERROR INFORMATION
+;----------------------------------------------------------------------------
+IF	MKF_MEMORY_ERROR_INFO
+	length = sizeof MEMORY_ARRAY_ERR_STRUC
+    xHandle = xHandle + 1
+	MEMORY_ARRAY_ERR_STRUC	{\
+		{18, length, xHandle},
+		MKF_MEMORY_ERROR_TYPE,
+		MKF_ERROR_GRANULARITY,
+		MKF_ERROR_OPERATION,
+		MKF_VENDOR_SYNDROME,
+		MKF_MEMORY_ARRAY_ERROR_ADDRESS,
+		MKF_DEVICE_ERROR_ADDRESS,
+		MKF_ERROR_RESOLUTION\
+		}
+	TERMINATOR
+	TERMINATOR
+ENDIF
+
+;----------------------------------------------------------------------------
+;       Structure Type 19:  MEMORY ARRAY MAPPED ADDRESS INFORMATION
+;----------------------------------------------------------------------------
+	length = sizeof MEMORY_ARRAY_MAPPED_ADDRESS_STRUC
+    xHandle = xHandle + 1
+    HMMAddress = xHandle
+	MEMORY_ARRAY_MAPPED_ADDRESS_STRUC{\
+		{19, length, xHandle},
+		MKF_ARRAY_MAPPED_STARTING_ADDRESS,
+		MKF_ARRAY_MAPPED_ENDING_ADDRESS,
+		HArray,
+		MKF_PARTITION_WIDTH,
+		0,
+		0\
+		}
+	TERMINATOR
+	TERMINATOR
+
+;----------------------------------------------------------------------------
+;       Structure Type 17:  MEMORY DEVICE INFORMATION
+;----------------------------------------------------------------------------
+	ILoopCount = 1
+	xA TEXTEQU @CATSTR(<A>, <%AC>)
+
+	REPEAT  xMs
+        xHandle = xHandle + 1
+    	length = sizeof MEMORY_DEVICE_STRUC
+		xSv TEXTEQU @CATSTR(%xA, <_DEVICE_>, <%ILoopCount>)
+		xDw = @CATSTR(%xA, <_DATAWIDTH>)
+		xFf = @CATSTR(%xA, <_FORMFACTOR>)
+		xMt = @CATSTR(%xA, <_MEMORYTYPE>)
+		xTd = @CATSTR(%xA, <_TYPEDETAIL>)
+		xAt = @CATSTR(%xA, <_ATTRIBUTES>)
+        xMh TEXTEQU @CATSTR (<MEMORY_HNDL_>, <%ILoopCount>)
+        %xMh = xHandle
+		HMdevice = xHandle
+
+IF	MKF_MEMORY_ERROR_INFO
+		HArrayError = xHandle + 1
+ELSE
+		HArrayError = 0FFFEh
+ENDIF
+
+	MEMORY_DEVICE_STRUC     {\
+		{17, length, xHandle},
+		HArray,
+		HArrayError,
+		0ffffh,
+		xDw,
+		0,
+		xFf,
+		0,
+		01h,
+		02h,
+		xMt,
+		xTd,
+		0,
+		03h,
+		04h,
+		05h,
+		06h,
+		xAt,
+		0,
+		0,
+		0,
+		0,
+		0\
+		}
+		xoN = 1
+		xN = @INSTR(xoN, %xSv, <,>)
+		xTv TEXTEQU @SUBSTR(%xSv, xoN, (xN-xoN))
+		SCAN_PUT_STR %xTv
+		xoN = xN + 1
+		xN = @INSTR(xoN, %xSv, <,>)
+		xTv TEXTEQU @SUBSTR(%xSv, xoN, (xN-xoN))
+		SCAN_PUT_STR %xTv
+		xoN = xN + 1
+		xN = @INSTR(xoN, %xSv, <,>)
+		xTv TEXTEQU @SUBSTR(%xSv, xoN, (xN-xoN))
+		SCAN_PUT_STR %xTv
+		xoN = xN + 1
+		xN = @INSTR(xoN, %xSv, <,>)
+		xTv TEXTEQU @SUBSTR(%xSv, xoN, (xN-xoN))
+		SCAN_PUT_STR %xTv
+		xoN = xN + 1
+		xN = @INSTR(xoN, %xSv, <,>)
+		xTv TEXTEQU @SUBSTR(%xSv, xoN, (xN-xoN))
+		SCAN_PUT_STR %xTv
+		xoN = xN + 1
+		xTv TEXTEQU @SUBSTR(%xSv, xoN)
+		SCAN_PUT_STR %xTv
+		xoN = xN + 1
+	TERMINATOR
+
+;----------------------------------------------------------------------------
+;       Structure Type 18:  MEMORY ERROR INFORMATION
+;----------------------------------------------------------------------------
+IF	MKF_MEMORY_ERROR_INFO
+	length = sizeof MEMORY_ARRAY_ERR_STRUC
+    xHandle = xHandle + 1
+	MEMORY_ARRAY_ERR_STRUC	{\
+		{18, length, xHandle},
+		MKF_MEMORY_ERROR_TYPE,
+		MKF_ERROR_GRANULARITY,
+		MKF_ERROR_OPERATION,
+		MKF_VENDOR_SYNDROME,
+		MKF_MEMORY_ARRAY_ERROR_ADDRESS,
+		MKF_DEVICE_ERROR_ADDRESS,
+		MKF_ERROR_RESOLUTION\
+		}
+	TERMINATOR
+	TERMINATOR
+ENDIF
+
+;----------------------------------------------------------------------------
+;       Structure Type 20:  MEMORY DEVICE MAPPED ADDRESS INFORMATION
+;----------------------------------------------------------------------------
+IF	MKF_MEMORY_DEVICE_INFO
+	length = sizeof MEMORY_DEVICE_MAPPED_ADDRESS_STRUC
+    xHandle = xHandle + 1
+	MEMORY_DEVICE_MAPPED_ADDRESS_STRUC	{\
+		{20, length, xHandle},
+		MKF_MEMORY_DEVICE_STARTING_ADDRESS,
+		MKF_MEMORY_DEVICE_ENDING_ADDRESS,
+		HMdevice,
+		HMMAddress,
+		01h,
+		00h,
+		MKF_INTERLEAVE_DATA_DEPTH,
+		0,
+		0\
+		}
+	TERMINATOR
+	TERMINATOR
+ENDIF
+	ILoopCount = ILoopCount + 1
+    ENDM                                ; xMs
+    AC = AC + 1
+ENDM                                    ; MKF_NO_OF_PHYSICAL_MEMORY_ARRAY
+    EXITM   %xHandle
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 37: MEMORY CHANNEL INFORMATION STRUCTURE
+;----------------------------------------------------------------------------
+CreateMemoryChannelInfo  macro   xHandle:REQ
+
+    LOCAL    ILoopCount, xNmd, xCt, xMl, sLen, ICurDev, xDn, xDh
+
+IF  MKF_MEMORY_CHANNEL_INFO
+    ILoopCount = 1
+    REPEAT  MKF_NUMBER_OF_MEMORY_CHANNELS
+        xHandle = xHandle + 1
+
+        xNmd = @CATSTR (<NUMBER_OF_MEMORY_DEVICES_IN_CHANNEL_>, <%ILoopCount>)
+        xCt = @CATSTR (<CHANNEL_>, <%ILoopCount>, <_TYPE>)
+        xMl = @CATSTR (<MAX_CHANNEL_>, <%ILoopCount>, <_LOAD>)
+        sLen = 7 + 3 * xNmd
+        MEMORY_CHANNEL_STRUC {\
+            {37, sLen, xHandle},
+            xCt,
+            xMl,
+            xNmd\
+            }
+
+        ICurDev = 1
+        REPEAT xNmd
+            xDn = @CATSTR (<CHANNEL_>, <%ILoopCount>, <_MEMORY_DEVICE_>, <%ICurDev>, <_NUM>)
+            xDh = @CATSTR (<MEMORY_HNDL_>, <%xDn>)
+            db  0
+            dw  xDh
+            ICurDev = ICurDev + 1
+        ENDM
+
+        TERMINATOR
+        TERMINATOR
+        ILoopCount = ILoopCount + 1
+    ENDM                                ; MKF_NUMBER_OF_MEMORY_CHANNELS
+ENDIF
+    EXITM   %xHandle
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 16: SYSTEM FLASH MEMORY ARRAY INFORMATION
+;----------------------------------------------------------------------------
+CreateFlashMemoryInfo   MACRO   xHandle:REQ
+
+LOCAL   FMArray,FMdevice,FMMAddress
+
+IF MKF_FLASH_MEMORY_ARRAY_INFO
+xHandle = xHandle + 1
+FMArray = xHandle
+PHY_MEM_ARRAY_STRUC {\
+{16, sizeof(PHY_MEM_ARRAY_STRUC), xHandle},
+03h,
+05h,
+03h,
+(MKF_BIOS_SIZE/400h),
+0FFFEh,
+01h,
+00h\
+}
+TERMINATOR
+TERMINATOR
+
+;----------------------------------------------------------------------------
+;       Structure Type 19:  MEMORY ARRAY MAPPED ADDRESS INFORMATION
+;----------------------------------------------------------------------------
+xHandle = xHandle + 1
+FMMAddress = xHandle
+MEMORY_ARRAY_MAPPED_ADDRESS_STRUC{\
+{19, sizeof(MEMORY_ARRAY_MAPPED_ADDRESS_STRUC), xHandle},
+(0FFFFFFFFh - MKF_BIOS_SIZE + 1) SHR 10,
+0FFFFFFFFh SHR 10,
+FMArray,
+01h, 0, 0\
+}
+TERMINATOR
+TERMINATOR
+
+;----------------------------------------------------------------------------
+;       Structure Type 17:  MEMORY DEVICE INFORMATION
+;----------------------------------------------------------------------------
+xHandle = xHandle + 1
+FMdevice = xHandle
+MEMORY_DEVICE_STRUC {\
+{17, sizeof(MEMORY_DEVICE_STRUC), xHandle},
+FMArray,
+0FFFEh,
+08h,
+08h,
+(MKF_BIOS_SIZE/400h) OR 8000h,
+01h,
+00h,
+01h,
+02h,
+09h,
+1000h,
+00h,
+03h,
+04h,
+05h,
+06h,
+00h,
+00h,
+00h,
+00h,
+00h,
+00h\
+}
+BYTE    20h, 0
+BYTE    20h, 0
+BYTE    20h, 0
+BYTE    20h, 0
+BYTE    20h, 0
+BYTE    20h, 0
+TERMINATOR
+
+;----------------------------------------------------------------------------
+;       Structure Type 20:  MEMORY DEVICE MAPPED ADDRESS INFORMATION
+;----------------------------------------------------------------------------
+xHandle = xHandle + 1
+MEMORY_DEVICE_MAPPED_ADDRESS_STRUC  {\
+{20, sizeof(MEMORY_DEVICE_MAPPED_ADDRESS_STRUC), xHandle},
+(0FFFFFFFFh - MKF_BIOS_SIZE + 1) SHR 10,
+0FFFFFC00h SHR 10,
+FMdevice,
+FMMAddress,
+01h,
+00h,
+00h,
+00h,
+00h\
+}
+TERMINATOR
+TERMINATOR
+ENDIF                                   ; MKF_FLASH_MEMORY_ARRAY_INFO
+EXITM   %xHandle
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 21:  BUILT-IN POINTING DEVICE INFORMATION
+;----------------------------------------------------------------------------
+CreateBuiltinPointingDeviceInfo	macro	xHandle:REQ
+
+	LOCAL PointDevCntr
+
+IF	MKF_BUILTIN_POINTING_DEVICE_INFO
+    PointDevCntr = 1
+
+	REPEAT MKF_NO_OF_POINTING_DEVICE
+        xHandle = xHandle + 1
+
+	    BUILTIN_POINT_DEV_STRUC	{\
+    		{21, 07h, xHandle},
+    		@CATSTR(<POINTING_DEVICE_TYPE_>,<%PointDevCntr>),
+    		@CATSTR(<POINTING_DEVICE_INTERFACE_>,<%PointDevCntr>),
+    		@CATSTR(<POINTING_DEVICE_NUM_BUTTONS_>,<%PointDevCntr>)\
+    		}
+		TERMINATOR
+		TERMINATOR
+        PointDevCntr = PointDevCntr + 1
+    ENDM                                ; MKF_NO_OF_POINTING_DEVICE
+ENDIF                                   ; MKF_BUILTIN_POINTING_DEVICE_INFO
+	EXITM	%xHandle
+ENDM
+
+;----------------------------------------------------------------------------
+;	Structure Type 22: PORTABLE BATTERY INFORMATION
+;----------------------------------------------------------------------------
+CreatePortableBatteryInfo	macro	xHandle:REQ
+
+	LOCAL BC, xDCh, xDC, xDV, xME, xSSN, xSMD, xDCM, xOS
+
+IF	MKF_PORTABLE_BATTERY_INFO
+
+    BC = 1
+
+	REPEAT MKF_NO_OF_PORTABLE_BATTERY
+        xHandle = xHandle + 1
+
+        xDCh = @CATSTR(<DEVICE_CHEMISTRY_>,<%BC>)
+        xDC = @CATSTR(<DESIGN_CAPACITY_>,<%BC>)
+        xDV = @CATSTR(<DESIGN_VOLTAGE_>,<%BC>)
+        xME = @CATSTR(<MAX_ERROR_IN_BAT_DATA_>,<%BC>)
+        xSSN = @CATSTR(<PORT_BAT_SBDS_SERIAL_NO_>,<%BC>)
+        xSMD = @CATSTR(<PORT_BAT_SBDS_MAN_DATE_>,<%BC>)
+        xDCM = @CATSTR(<DESIGN_CAPACITY_MULTIPLIER_>,<%BC>)
+        xOS = @CATSTR(<OEM_SPECIFIC_>,<%BC>)
+
+    	PORTABLE_BATTERY_STRUC	{\
+    		{22, sizeof(PORTABLE_BATTERY_STRUC), xHandle},
+    		01h, 02h, 03h, 04h,	05h,
+    	    xDCh,
+    	    xDC,
+    	    xDV,
+    		06,
+    	    xME,
+    	    xSSN,
+    	    ,
+    	    07,
+    	    ,
+    	    xOS\
+    		}
+    	SCAN_PUT_STR @CATSTR(<PORT_BAT_LOCATION_>,<%BC>)
+    	SCAN_PUT_STR @CATSTR(<PORT_BAT_MANUFACTURER_>,<%BC>)
+    	SCAN_PUT_STR @CATSTR(<PORT_BAT_MANUFACTURE_DATE_>,<%BC>)
+    	SCAN_PUT_STR @CATSTR(<PORT_BAT_SERIAL_NUMBER_>,<%BC>)
+    	SCAN_PUT_STR @CATSTR(<PORT_BAT_DEVICE_NAME_>,<%BC>)
+    	SCAN_PUT_STR @CATSTR(<PORT_BAT_SBDS_VER_NO_>,<%BC>)
+    	SCAN_PUT_STR @CATSTR(<PORT_BAT_SBDS_DEV_CHEM_>,<%BC>)
+    	TERMINATOR
+        BC = BC + 1
+    ENDM                                ; MKF_NO_OF_PORTABLE_BATTERY
+ENDIF                                   ; MKF_PORTABLE_BATTERY_INFO
+	EXITM	%xHandle
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 23: SYSTEM RESET INFORMATION
+;----------------------------------------------------------------------------
+CreateSystemResetInfo	MACRO	xHandle:REQ
+
+	LOCAL length
+
+	length = 0Dh
+IF	MKF_SYSTEM_RESET_INFO
+    xHandle = xHandle + 1
+
+	SYSTEM_RESET_STRUC	{\
+				 {23, length, xHandle},
+				 RESET_CAPABILITIES,
+				 RESET_COUNT,
+				 RESET_LIMIT,
+				 RESET_TIMER_INTERVAL,
+				 RESET_TIMEOUT\
+				}
+	TERMINATOR
+	TERMINATOR
+ENDIF                                   ; MKF_SYSTEM_RESET_INFO
+	EXITM	%xHandle
+
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 24: HARDWARE SECURITY INFORMATION
+;----------------------------------------------------------------------------
+CreateHardwareSecurityInfo	MACRO	xHandle:REQ
+
+	LOCAL length
+
+	length = 05h
+IF	MKF_HARDWARE_SECURITY_INFO
+    xHandle = xHandle + 1
+
+	HARDWARE_SECURITY_STRUC	{\
+				 {24, length, xHandle},
+				 MKF_HARDWARE_SECURITY_SETTINGS\
+				}
+	TERMINATOR
+	TERMINATOR
+ENDIF                                   ; MKF_HARDWARE_SECURITY_INFO
+	EXITM	%xHandle
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 25: SYSTEM POWER CONTROLS INFORMATION
+;----------------------------------------------------------------------------
+CreateSystemPowerControlsInfo	MACRO	xHandle:REQ
+
+	LOCAL length
+
+	length = 09h
+
+IF	MKF_SYSTEM_POWER_CONTROLS_INFO
+    xHandle = xHandle + 1
+
+	SYSTEM_POWER_CONTROLS_STRUC	{\
+				 {25, length, xHandle},
+				 NEXT_SCHEDULED_POWERON_MONTH,
+				 NEXT_SCHEDULED_POWERON_DAY_OF_MONTH,
+				 NEXT_SCHEDULED_POWERON_HOUR,
+				 NEXT_SCHEDULED_POWERON_MINUTE,
+				 NEXT_SCHEDULED_POWERON_SECOND\
+				 }
+	TERMINATOR
+	TERMINATOR
+ENDIF                                   ; MKF_SYSTEM_POWER_CONTROLS_INFO
+	EXITM	%xHandle
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 30:  OUT-OF-BAND REMOTE ACCESS INFORMATION
+;----------------------------------------------------------------------------
+CreateOutofBandRemoteAccessInfo	MACRO	xHandle:REQ
+
+	LOCAL length
+
+	length = 06h
+
+IF	MKF_OUT_OF_BAND_REMOTE_ACCESS_INFO
+    xHandle = xHandle + 1
+
+	OUT_OF_BAND_REMOTE_ACCESS_STRUC	{\
+				 {30, length, xHandle},
+				 01h,
+				 MKF_OBRA_CONNECTIONS\
+				 }
+    SCAN_PUT_STR %MKF_OBRA_MANUFACTURER_NAME
+	TERMINATOR
+ENDIF                                   ; MKF_OUT_OF_BAND_REMOTE_ACCESS_INFO
+	EXITM	%xHandle
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 31:  BOOT INTEGRITY SERVICES
+;----------------------------------------------------------------------------
+CreateBootIntegrityServicesInfo	MACRO	xHandle:REQ
+
+IF	MKF_BIS_INFO
+    xHandle = xHandle + 1
+
+	BOOT_INTEGRITY_STRUC {\
+		{31, sizeof(BOOT_INTEGRITY_STRUC), xHandle},
+		MKF_CHECKSUM,
+		0,
+		0,
+		MKF_BIS_ENTRY_POINT_REAL_MODE,
+		MKF_BIS_ENTRY_POINT_FLAT_MODE,
+		0,
+		0\
+		}
+	TERMINATOR
+	TERMINATOR
+ENDIF                                   ; MKF_BIS_INFO
+    EXITM	%xHandle
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 32:  SYSTEM BOOT INFORMATION
+;----------------------------------------------------------------------------
+CreateSystemBootInfo	MACRO	xHandle:REQ
+
+IF	MKF_SYSTEM_BOOT_INFO
+    xHandle = xHandle + 1
+
+	SYS_BOOT_INFORMATION_STRUC	{\
+			{32, sizeof(SYS_BOOT_INFORMATION_STRUC), xHandle},
+			{0,0,0,0,0,0},
+			{0,0,0,0,0,0,0,0,0,0}\
+			}
+	TERMINATOR
+	TERMINATOR
+ENDIF                                   ; MKF_SYSTEM_BOOT_INFO
+	EXITM	%xHandle
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 33:  64-BIT MEMORY ERROR INFORMATION
+;----------------------------------------------------------------------------
+CreateSixtyFourBitMemoryErrorInfo	MACRO	xHandle:REQ
+
+	LOCAL   length
+
+	length = 01Fh
+
+IF	MKF_SIXTY_FOURBIT_MEMORY_ERROR_INFO
+    xHandle = xHandle + 1
+
+	SIXTYFOUR_BIT_MEMORY_ARRAY_ERR_STRUC {\
+			{33, length, xHandle},
+			MKF_MEMORY_ERROR_TYPE,
+			MKF_ERROR_GRANULARITY,
+			MKF_ERROR_OPERATION,
+			MKF_VENDOR_SYNDROME,
+			MEM_ARR_ERR_ADD,
+			DEV_ERR_ADD,
+			MKF_ERROR_RESOLUTION\
+			}
+	TERMINATOR
+	TERMINATOR
+ENDIF                                   ; MKF_SIXTY_FOURBIT_MEMORY_ERROR_INFO
+	EXITM	%xHandle
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 34:  MANAGEMENT DEVICE INFORMATION
+;----------------------------------------------------------------------------
+CreateManagementDeviceInfo    macro	xHandle:REQ
+
+    LOCAL   length, mD, mT, mA, mAt, xC, xN, xS, rC, mH, cH, tH
+    LOCAL   vD,lS,maxV,minV,reS,tolE,accY,oD,nomV,rCMdi,rCVpi, rCEdi
+    LOCAL   Tphndl,tD,dtS,cuG,oDc,nS,nD,eD,xT,xCc,xE,xV,rCo
+    LOCAL   xPs, mPc, pSc, xTs
+
+IF  MKF_MANAGEMENT_DEVICE_INFO
+    rCMdi = 1
+
+    REPEAT MKF_NUMBER_OF_MANAGEMENT_DEVICES
+        xHandle = xHandle + 1
+        mH = xHandle
+        length = sizeof MANAGEMENT_DEVICE_STRUC
+
+        mD  TEXTEQU @CATSTR(<MANAGEMENT_DEVICE_STRING_>, <%rCMdi>)
+        mT  TEXTEQU @CATSTR(<MANAGEMENT_DEVICE_TYPE_>, <%rCMdi>)
+        mA  TEXTEQU @CATSTR(<MANAGEMENT_DEVICE_ADDR_>, <%rCMdi>)
+        mAt TEXTEQU @CATSTR(<MANAGEMENT_DEVICE_ADDR_TYPE_>, <%rCMdi>)
+
+        MANAGEMENT_DEV_INFO  34, length, xHandle, mD, mT, mA, mAt
+        TERMINATOR
+
+;----------------------------------------------------------------------------
+;       Structure Type 26:  VOLTAGE PROBE INFORMATION
+;----------------------------------------------------------------------------
+IF MKF_VOLTAGE_PROBE_INFO
+        rCVpi =1
+        xV TEXTEQU @CATSTR(<NUMBER_OF_VOLTAGE_PROBE_ASSOCIATED_MGMT_DEV_>, <%rCMdi>)
+
+        REPEAT  xV
+            xHandle = xHandle + 1
+            cH = xHandle
+            length = sizeof VOLTAGE_PROBE_STRUC
+
+            xN = 1
+            xS TEXTEQU @CATSTR(<VOLTAGE_PROBE_INFO_>, <%rCMdi>, <_>, <%rCVpi>)
+            xC = @INSTR(<%xN>, %xS, <,>)
+            vD TEXTEQU @SUBSTR(%xS, <%xN>, (xC-xN))
+            xN = xC+1
+            xC = @INSTR(<%xN>, %xS, <,>)
+            lS TEXTEQU @SUBSTR(%xS, <%xN>, (xC-xN))
+            xN = xC+1
+            xC = @INSTR(<%xN>, %xS, <,>)
+            maxV TEXTEQU @SUBSTR(%xS, <%xN>, (xC-xN))
+            xN = xC+1
+            xC = @INSTR(<%xN>, %xS, <,>)
+            minV TEXTEQU @SUBSTR(%xS, <%xN>, (xC-xN))
+            xN = xC+1
+            xC = @INSTR(<%xN>, %xS, <,>)
+            reS TEXTEQU @SUBSTR(%xS, <%xN>, (xC-xN))
+            xN = xC+1
+            xC = @INSTR(<%xN>, %xS, <,>)
+            tolE TEXTEQU @SUBSTR(%xS, <%xN>, (xC-xN))
+            xN = xC+1
+            xC = @INSTR(<%xN>, %xS, <,>)
+            accY TEXTEQU @SUBSTR(%xS, <%xN>, (xC-xN))
+            xN = xC+1
+            xC = @INSTR(<%xN>, %xS, <,>)
+            oD TEXTEQU @SUBSTR(%xS, <%xN>, (xC-xN))
+            xN = @SIZESTR(%xS)
+            xN = xN-xC
+            xC = xC+1
+            nomV = @SUBSTR(%xS, <%xC>, xN)
+
+            VOLTAGE_PRO_INFO  26, length, xHandle, vD, lS, maxV, minV, reS, tolE, accY, oD, nomV
+            TERMINATOR
+
+;----------------------------------------------------------------------------
+;       Structure Type 36:  MANAGEMENT DEVICE THRESHOLD DATA INFORMATION
+;----------------------------------------------------------------------------
+            xHandle = xHandle + 1
+            tH = xHandle
+            length = sizeof MANAGEMENT_DEVICE_THRESHOLD_DATA_STRUC
+
+            xN = 1
+            xS TEXTEQU @CATSTR(<MANAGEMENT_DEV_VOLT_THRESHOLD_DATA_INFO_>, <%rCMdi>, <_>, <%rCVpi>)
+            xC = @INSTR(xN, %xS, <,>)
+            ltnc = @SUBSTR(%xS, xN, (xC-xN))
+            xN = xC+1
+            xC = @INSTR(xN, %xS, <,>)
+            utnc = @SUBSTR(%xS, xN, (xC-xN))
+            xN = xC+1
+            xC = @INSTR(xN, %xS, <,>)
+            ltc = @SUBSTR(%xS, xN, (xC-xN))
+            xN = xC+1
+            xC = @INSTR(xN, %xS, <,>)
+            utc = @SUBSTR(%xS, xN, (xC-xN))
+            xN = xC+1
+            xC = @INSTR(xN, %xS, <,>)
+            ltnr = @SUBSTR(%xS, xN, (xC-xN))
+            xN = xC+1
+            xC = @SIZESTR(%xS)
+            utnr = @SUBSTR(%xS, xN, (xC-xN+1))
+
+            MANAGEMENT_DEV_THRESHOLD_INFO 36, length, xHandle, ltnc, utnc, ltc, utc, ltnr, utnr
+            TERMINATOR
+            TERMINATOR
+
+;----------------------------------------------------------------------------
+;       Structure Type 35:  MANAGEMENT DEVICE COMPONENT INFORMATION
+;----------------------------------------------------------------------------
+            xHandle = xHandle + 1
+
+            MANAGEMENT_DEVICE_COMPONENT_STRUC{\
+            {35, sizeof(MANAGEMENT_DEVICE_COMPONENT_STRUC), xHandle},
+            01h, mH, cH, tH}
+
+            SCAN_PUT_STR %MKF_MGMT_DEV_COMPONENT_DESCRIPTION
+            TERMINATOR
+
+            rCVpi = rCVpi + 1
+        ENDM                            ; xV
+ENDIF                                   ; IF MKF_VOLTAGE_PROBE_INFO
+
+;----------------------------------------------------------------------------
+;       Structure Type 28:  TEMPERATURE PROBE INFORMATION
+;----------------------------------------------------------------------------
+IF MKF_TEMPERATURE_PROBE_INFO
+		rCTpi = 1
+        xT TEXTEQU @CATSTR(<NUMBER_OF_TEMPERATURE_PROBE_ASSOCIATED_MGMT_DEV_>, <%rCMdi>)
+
+        REPEAT  xT
+            xHandle = xHandle + 1
+            Tphndl = xHandle
+            cH = xHandle
+            length = sizeof TEMPERATURE_PROBE_STRUC
+            xN = 1
+            xS TEXTEQU @CATSTR(<TEMPERATURE_PROBE_INFO_>, <%rCMdi>, <_>, <%rCTpi>)
+            xC = @INSTR(<%xN>, %xS, <,>)
+            tD TEXTEQU @SUBSTR(%xS, <%xN>, (xC-xN))
+            xN = xC+1
+            xC = @INSTR(<%xN>, %xS, <,>)
+            lS TEXTEQU @SUBSTR(%xS, <%xN>, (xC-xN))
+            xN = xC+1
+            xC = @INSTR(<%xN>, %xS, <,>)
+            maxV TEXTEQU @SUBSTR(%xS, <%xN>, (xC-xN))
+            xN = xC+1
+            xC = @INSTR(<%xN>, %xS, <,>)
+            minV TEXTEQU @SUBSTR(%xS, <%xN>, (xC-xN))
+            xN = xC+1
+            xC = @INSTR(<%xN>, %xS, <,>)
+            reS TEXTEQU @SUBSTR(%xS, <%xN>, (xC-xN))
+            xN = xC+1
+            xC = @INSTR(<%xN>, %xS, <,>)
+            tolE TEXTEQU @SUBSTR(%xS, <%xN>, (xC-xN))
+            xN = xC+1
+            xC = @INSTR(<%xN>, %xS, <,>)
+            accY TEXTEQU @SUBSTR(%xS, <%xN>, (xC-xN))
+            xN = xC+1
+            xC = @INSTR(<%xN>, %xS, <,>)
+            oD TEXTEQU @SUBSTR(%xS, <%xN>, (xC-xN))
+            xN = @SIZESTR(%xS)
+            xN = xN-xC
+            xC = xC+1
+            nomV = @SUBSTR(%xS, <%xC>, xN)
+
+            TEMPERATURE_PRO_INFO  28, length, xHandle, tD, lS, maxV, minV, reS, tolE, accY, oD, nomV
+            TERMINATOR
+
+;----------------------------------------------------------------------------
+;       Structure Type 36:  MANAGEMENT DEVICE THRESHOLD DATA INFORMATION
+;----------------------------------------------------------------------------
+
+            xHandle = xHandle + 1
+            tH = xHandle
+            length = sizeof MANAGEMENT_DEVICE_THRESHOLD_DATA_STRUC
+            xN = 1
+            xS TEXTEQU @CATSTR(<MANAGEMENT_DEV_TEMP_THRESHOLD_DATA_INFO_>, <%rCMdi>, <_>, <%rCTpi>)
+            xC = @INSTR(xN, %xS, <,>)
+            ltnc = @SUBSTR(%xS, xN, (xC-xN))
+            xN = xC+1
+            xC = @INSTR(xN, %xS, <,>)
+            utnc = @SUBSTR(%xS, xN, (xC-xN))
+            xN = xC+1
+            xC = @INSTR(xN, %xS, <,>)
+            ltc = @SUBSTR(%xS, xN, (xC-xN))
+            xN = xC+1
+            xC = @INSTR(xN, %xS, <,>)
+            utc = @SUBSTR(%xS, xN, (xC-xN))
+            xN = xC+1
+            xC = @INSTR(xN, %xS, <,>)
+            ltnr = @SUBSTR(%xS, xN, (xC-xN))
+            xN = xC+1
+            xC = @SIZESTR(%xS)
+            utnr = @SUBSTR(%xS, xN, (xC-xN+1))
+
+            MANAGEMENT_DEV_THRESHOLD_INFO  36, length, xHandle, ltnc, utnc, ltc, utc, ltnr, utnr
+            TERMINATOR
+            TERMINATOR
+
+;----------------------------------------------------------------------------
+;       Structure Type 35:  MANAGEMENT DEVICE COMPONENT INFORMATION
+;----------------------------------------------------------------------------
+            xHandle = xHandle + 1
+
+            MANAGEMENT_DEVICE_COMPONENT_STRUC{\
+            {35, sizeof(MANAGEMENT_DEVICE_COMPONENT_STRUC), xHandle},
+            01h,
+            mH,
+            cH,
+            tH\
+            }
+            SCAN_PUT_STR %MKF_MGMT_DEV_COMPONENT_DESCRIPTION
+            TERMINATOR
+
+;----------------------------------------------------------------------------
+;       Structure Type 27:  COOLING DEVICE
+;----------------------------------------------------------------------------
+IF MKF_COOLING_DEVICE_INFO
+            rCo  = 1
+            xCc TEXTEQU @CATSTR(<NUMBER_OF_COOLING_DEVICE_ASSOCIATED_TEMP_PROBE_>, <%rCMdi>, <_>, <%rCTpi>)
+
+            REPEAT	xCc
+                xHandle = xHandle + 1
+                cH = xHandle
+                length = sizeof COOLING_DEVICE_STRUC
+
+                xN = 1
+                xS TEXTEQU @CATSTR(<COOLING_DEVICE_INFO_>, <%rCMdi>, <_>, <%rCTpi>, <_>, <%rCo>)
+                xC = @INSTR(xN, %xS, <,>)
+                dtS = @SUBSTR(%xS, xN, (xC-xN))
+                xN = xC+1
+                xC = @INSTR(xN, %xS, <,>)
+                cuG = @SUBSTR(%xS, xN, (xC-xN))
+                xN = xC+1
+                xC = @INSTR(xN, %xS, <,>)
+                oDc = @SUBSTR(%xS, xN, (xC-xN))
+                xN = xC+1
+                xC = @INSTR(xN, %xS, <,>)
+                nS = @SUBSTR(%xS, xN, (xC-xN))
+                xN = xC+1
+                xC = @SIZESTR(%xS)
+
+                IF xC LT xN
+                    COOLING_DEV_INFO  27, length, xHandle, Tphndl, dtS, cuG, oDc, nS, 0
+                    TERMINATOR
+                ELSE
+                    nD TEXTEQU @SUBSTR(%xS, xN, (xC-xN+1))
+                    COOLING_DEV_INFO  27, length, xHandle, Tphndl, dtS, cuG, oDc, nS, 1
+                    SCAN_PUT_STR %nD
+                ENDIF
+                TERMINATOR
+
+;----------------------------------------------------------------------------
+;       Structure Type 36:  MANAGEMENT DEVICE THRESHOLD DATA INFORMATION
+;----------------------------------------------------------------------------
+                xHandle = xHandle + 1
+                tH = xHandle
+
+                length = sizeof MANAGEMENT_DEVICE_THRESHOLD_DATA_STRUC
+                xN = 1
+                xS TEXTEQU @CATSTR(<MANAGEMENT_DEV_COOL_THRESHOLD_DATA_INFO_>, <%rCMdi>, <_>, <%rCTpi>, <_>, <%rCo>)
+                xC = @INSTR(xN, %xS, <,>)
+                ltnc = @SUBSTR(%xS, xN, (xC-xN))
+                xN = xC+1
+                xC = @INSTR(xN, %xS, <,>)
+                utnc = @SUBSTR(%xS, xN, (xC-xN))
+                xN = xC+1
+                xC = @INSTR(xN, %xS, <,>)
+                ltc = @SUBSTR(%xS, xN, (xC-xN))
+                xN = xC+1
+                xC = @INSTR(xN, %xS, <,>)
+                utc = @SUBSTR(%xS, xN, (xC-xN))
+                xN = xC+1
+                xC = @INSTR(xN, %xS, <,>)
+                ltnr = @SUBSTR(%xS, xN, (xC-xN))
+                xN = xC+1
+                xC = @SIZESTR(%xS)
+                utnr = @SUBSTR(%xS, xN, (xC-xN+1))
+
+                MANAGEMENT_DEV_THRESHOLD_INFO  36, length, xHandle, ltnc, utnc, ltc, utc, ltnr, utnr
+                TERMINATOR
+                TERMINATOR
+
+;----------------------------------------------------------------------------
+;       Structure Type 35:  MANAGEMENT DEVICE COMPONENT INFORMATION
+;----------------------------------------------------------------------------
+                xHandle = xHandle + 1
+
+                MANAGEMENT_DEVICE_COMPONENT_STRUC{\
+                {35, sizeof(MANAGEMENT_DEVICE_COMPONENT_STRUC), xHandle},
+                01h, mH, cH, tH}
+
+                SCAN_PUT_STR %MKF_MGMT_DEV_COMPONENT_DESCRIPTION
+                TERMINATOR
+
+                rCo = rCo + 1
+            ENDM                        ; xCc
+ENDIF                                   ; IF MKF_COOLING_DEVICE_INFO
+        ENDM                            ; xT
+ENDIF                                   ; IF MKF_TEMPERATURE_PROBE_INFO
+
+;----------------------------------------------------------------------------
+;       Structure Type 29:  ELECTRICAL PROBE INFORMATION
+;----------------------------------------------------------------------------
+IF	MKF_ELECTRICAL_PROBE_INFO
+        rCEdi =1
+
+        xE TEXTEQU @CATSTR(<NUMBER_OF_ELECTRICAL_PROBE_ASSOCIATED_MGMT_DEV_>, <%rCMdi>)
+
+        REPEAT  xE
+            xHandle = xHandle + 1
+            cH = xHandle
+            length = sizeof ELECTRICAL_CURRENT_PROBE_STRUC
+
+            xN = 1
+            xS TEXTEQU @CATSTR(<ELECTRICAL_PROBE_INFO_>,<%rCMdi>, <_>,<%rCEdi>)
+            xC = @INSTR(<%xN>,%xS,<,>)
+            eD TEXTEQU @SUBSTR(%xS,<%xN>,(xC-xN))
+            xN = xC+1
+            xC = @INSTR(<%xN>,%xS,<,>)
+            lS TEXTEQU @SUBSTR(%xS,<%xN>,(xC-xN))
+            xN = xC+1
+            xC = @INSTR(<%xN>,%xS,<,>)
+            maxV TEXTEQU @SUBSTR(%xS,<%xN>,(xC-xN))
+            xN = xC+1
+            xC = @INSTR(<%xN>,%xS,<,>)
+            minV TEXTEQU @SUBSTR(%xS,<%xN>,(xC-xN))
+            xN = xC+1
+            xC = @INSTR(<%xN>,%xS,<,>)
+            reS TEXTEQU @SUBSTR(%xS,<%xN>,(xC-xN))
+            xN = xC+1
+            xC = @INSTR(<%xN>,%xS,<,>)
+            tolE TEXTEQU @SUBSTR(%xS,<%xN>,(xC-xN))
+            xN = xC+1
+            xC = @INSTR(<%xN>,%xS,<,>)
+            accY TEXTEQU @SUBSTR(%xS,<%xN>,(xC-xN))
+            xN = xC+1
+            xC = @INSTR(<%xN>,%xS,<,>)
+            oD TEXTEQU @SUBSTR(%xS,<%xN>,(xC-xN))
+            xN = @SIZESTR(%xS)
+            xN = xN-xC
+            xC = xC+1
+            nomV = @SUBSTR(%xS,<%xC>,xN)
+
+            ELECTRICAL_PRO_INFO  29, length, xHandle, eD, lS, maxV, minV, reS, tolE, accY, oD, nomV
+            TERMINATOR
+
+;----------------------------------------------------------------------------
+;       Structure Type 36:  MANAGEMENT DEVICE THRESHOLD DATA INFORMATION
+;----------------------------------------------------------------------------
+            xHandle = xHandle + 1
+            tH = xHandle
+            length = sizeof MANAGEMENT_DEVICE_THRESHOLD_DATA_STRUC
+
+            eltnc   TEXTEQU @CATSTR(<LOWER_THRESHOLD_NON_CRITICAL_>,<%rCEdi>)
+            eutnc   TEXTEQU @CATSTR(<UPPER_THRESHOLD_CRITICAL_>,<%rCEdi>)
+            eltc    TEXTEQU @CATSTR(<LOWER_THRESHOLD_CRITICAL_>,<%rCEdi>)
+            eutc    TEXTEQU @CATSTR(<UPPER_THRESHOLD_NON_CRITICAL_>,<%rCEdi>)
+            eltnr   TEXTEQU @CATSTR(<LOWER_THRESHOLD_NON_RECOVERABLE_>,<%rCEdi>)
+            eutnr   TEXTEQU @CATSTR(<UPPER_THRESHOLD_NON_RECOVERABLE_>,<%rCEdi>)
+
+            MANAGEMENT_DEV_THRESHOLD_INFO 36, length, xHandle, eltnc, eutnc, eltc, eutc, eltnr, eutnr
+            TERMINATOR
+            TERMINATOR
+
+;----------------------------------------------------------------------------
+;       Structure Type 35:  MANAGEMENT DEVICE COMPONENT INFORMATION
+;----------------------------------------------------------------------------
+            xHandle = xHandle + 1
+
+            MANAGEMENT_DEVICE_COMPONENT_STRUC{\
+            {35, sizeof(MANAGEMENT_DEVICE_COMPONENT_STRUC), xHandle},
+            01h, mH, cH, tH}
+
+            SCAN_PUT_STR %MKF_MGMT_DEV_COMPONENT_DESCRIPTION
+            TERMINATOR
+
+            rCEdi = rCEdi + 1
+        ENDM                            ; xE
+ENDIF                                   ; IF MKF_ELECTRICAL_PROBE_INFO
+    rCMdi = rCMdi + 1
+    ENDM                                ; MKF_NUMBER_OF_MANAGEMENT_DEVICES
+
+ENDIF                                   ; IF MKF_MANAGEMENT_DEVICE_INFO
+    EXITM   %xHandle
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 39: SYSTEM POWER SUPPLY
+;----------------------------------------------------------------------------
+CreateSystemPowerSupplyInfo    macro xHandle:REQ
+
+    LOCAL   length, vpH, cdH, tpH, cpH, s1, v1, v2
+    LOCAL   sPr, vLS, vMa, vMi, vRe, vTo, vAc, vOD, vNo             ; Type 26/28/29
+    LOCAL   vTS, vCG, vOD, vNS, sDe                                 ; Type 27
+    LOCAL   vPS, vPG, sLo, sDN, sMa, sSN, sAT, sPN, sRL, vMP, vPC   ; Type 39
+
+IF MKF_SYSTEM_POWER_SUPPLY_INFO
+    vPS = 1
+    REPEAT MKF_NUMBER_OF_POWER_SUPPLY
+;----------------------------------------------------------------------------
+;       Associated Structure Type 26:  VOLTAGE PROBE INFORMATION
+;----------------------------------------------------------------------------
+
+        s1 TEXTEQU @CATSTR(<VOLTAGE_PROBE_39_>, <%vPS>)
+        v1 = @SUBSTR(%s1, 1, 1)
+        IF v1 EQ 1
+            xHandle = xHandle + 1
+            vpH = xHandle
+            length = sizeof VOLTAGE_PROBE_STRUC
+            v1 = @INSTR(1, %s1, <,>) + 1
+            v2 = @INSTR(v1, %s1, <,>)
+            sPr TEXTEQU @SUBSTR(%s1, v1, (v2 - v1))
+            v1 = v2 + 1
+            v2 = @INSTR(v1, %s1, <,>)
+            vLS = @SUBSTR(%s1, v1, (v2 - v1))
+            v1 = v2 + 1
+            v2 = @INSTR(v1, %s1, <,>)
+            vMa = @SUBSTR(%s1, v1, (v2 - v1))
+            v1 = v2 + 1
+            v2 = @INSTR(v1, %s1, <,>)
+            vMi = @SUBSTR(%s1, v1, (v2 - v1))
+            v1 = v2 + 1
+            v2 = @INSTR(v1, %s1, <,>)
+            vRe = @SUBSTR(%s1, v1, (v2 - v1))
+            v1 = v2 + 1
+            v2 = @INSTR(v1, %s1, <,>)
+            vTo = @SUBSTR(%s1, v1, (v2 - v1))
+            v1 = v2 + 1
+            v2 = @INSTR(v1, %s1, <,>)
+            vAc = @SUBSTR(%s1, v1, (v2 - v1))
+            v1 = v2 + 1
+            v2 = @INSTR(v1, %s1, <,>)
+            vOD = @SUBSTR(%s1, v1, (v2 - v1))
+            v1 = v2 + 1
+            v2 = @SIZESTR(%s1) - v1 + 1
+            vNo = @SUBSTR(%s1, v1, v2)
+
+            VOLTAGE_PRO_INFO  26, length, vpH, sPr, vLS, vMa, vMi, vRe, vTo, vAc, vOD, vNo
+            TERMINATOR
+        ELSE
+            vpH = 0FFFFh
+        ENDIF
+;----------------------------------------------------------------------------
+;       Associated Structure Type 28:  TEMPERATURE PROBE INFORMATION
+;----------------------------------------------------------------------------
+        s1 TEXTEQU @CATSTR(<COOLING_DEVICE_39_>, <%vPS>)
+        v1 = @SUBSTR(%s1, 1, 1)
+        IF v1 EQ 1
+	        s1 TEXTEQU @CATSTR(<TEMPERATURE_PROBE_39_>, <%vPS>)
+	        v1 = @SUBSTR(%s1, 1, 1)
+	        IF v1 EQ 1
+                xHandle = xHandle + 1
+	            tpH = xHandle
+	            length = sizeof TEMPERATURE_PROBE_STRUC
+	            v1 = @INSTR(1, %s1, <,>) + 1
+	            v2 = @INSTR(v1, %s1, <,>)
+	            sPr TEXTEQU @SUBSTR(%s1, v1, (v2 - v1))
+	            v1 = v2 + 1
+	            v2 = @INSTR(v1, %s1, <,>)
+	            vLS = @SUBSTR(%s1, v1, (v2 - v1))
+	            v1 = v2 + 1
+	            v2 = @INSTR(v1, %s1, <,>)
+	            vMa = @SUBSTR(%s1, v1, (v2 - v1))
+	            v1 = v2 + 1
+	            v2 = @INSTR(v1, %s1, <,>)
+	            vMi = @SUBSTR(%s1, v1, (v2 - v1))
+	            v1 = v2 + 1
+	            v2 = @INSTR(v1, %s1, <,>)
+	            vRe = @SUBSTR(%s1, v1, (v2 - v1))
+	            v1 = v2 + 1
+	            v2 = @INSTR(v1, %s1, <,>)
+	            vTo = @SUBSTR(%s1, v1, (v2 - v1))
+	            v1 = v2 + 1
+	            v2 = @INSTR(v1, %s1, <,>)
+	            vAc = @SUBSTR(%s1, v1, (v2 - v1))
+	            v1 = v2 + 1
+	            v2 = @INSTR(v1, %s1, <,>)
+	            vOD = @SUBSTR(%s1, v1, (v2 - v1))
+	            v1 = v2 + 1
+	            v2 = @SIZESTR(%s1) - v1 + 1
+	            vNo = @SUBSTR(%s1, v1, v2)
+	
+	            TEMPERATURE_PRO_INFO  28, length, tpH, sPr, vLS, vMa, vMi, vRe, vTo, vAc, vOD, vNo
+	            TERMINATOR
+	        ELSE
+	            tpH = 0FFFFh
+	        ENDIF
+		ENDIF
+;----------------------------------------------------------------------------
+;       Associated Structure Type 27:  COOLING DEVICE INFORMATION
+;----------------------------------------------------------------------------
+        s1 TEXTEQU @CATSTR(<COOLING_DEVICE_39_>, <%vPS>)
+        v1 = @SUBSTR(%s1, 1, 1)
+        IF v1 EQ 1
+            xHandle = xHandle + 1
+            cdH = xHandle
+            length = sizeof COOLING_DEVICE_STRUC
+            v1 = @INSTR(1, %s1, <,>) + 1
+            v2 = @INSTR(v1, %s1, <,>)
+            vTS = @SUBSTR(%s1, v1, (v2 - v1))
+            v1 = v2 + 1
+            v2 = @INSTR(v1, %s1, <,>)
+            vCG = @SUBSTR(%s1, v1, (v2 - v1))
+            v1 = v2 + 1
+            v2 = @INSTR(v1, %s1, <,>)
+            vOD = @SUBSTR(%s1, v1, (v2 - v1))
+            v1 = v2 + 1
+            v2 = @INSTR(v1, %s1, <,>)
+            vNS = @SUBSTR(%s1, v1, (v2 - v1))
+            v1 = v2 + 1
+            v2 = @SIZESTR(%s1) - v1 + 1
+            sDe TEXTEQU @SUBSTR(%s1, v1, v2)
+
+            COOLING_DEV_INFO  27, length, cdH, tpH, vTS, vCG, vOD, vNS, 1
+            SCAN_PUT_STR %sDe
+            TERMINATOR
+        ELSE
+            cdH = 0FFFFh
+        ENDIF
+;----------------------------------------------------------------------------
+;       Associated Structure Type 29:  ELECTRICAL CURRENT PROBE INFORMATION
+;----------------------------------------------------------------------------
+        s1 TEXTEQU @CATSTR(<ELECTRICAL_PROBE_39_>, <%vPS>)
+        v1 = @SUBSTR(%s1, 1, 1)
+        IF v1 EQ 1
+            xHandle = xHandle + 1
+            cpH = xHandle
+            length = sizeof ELECTRICAL_CURRENT_PROBE_STRUC
+            v1 = @INSTR(1, %s1, <,>) + 1
+            v2 = @INSTR(v1, %s1, <,>)
+            sPr TEXTEQU @SUBSTR(%s1, v1, (v2 - v1))
+            v1 = v2 + 1
+            v2 = @INSTR(v1, %s1, <,>)
+            vLS = @SUBSTR(%s1, v1, (v2 - v1))
+            v1 = v2 + 1
+            v2 = @INSTR(v1, %s1, <,>)
+            vMa = @SUBSTR(%s1, v1, (v2 - v1))
+            v1 = v2 + 1
+            v2 = @INSTR(v1, %s1, <,>)
+            vMi = @SUBSTR(%s1, v1, (v2 - v1))
+            v1 = v2 + 1
+            v2 = @INSTR(v1, %s1, <,>)
+            vRe = @SUBSTR(%s1, v1, (v2 - v1))
+            v1 = v2 + 1
+            v2 = @INSTR(v1, %s1, <,>)
+            vTo = @SUBSTR(%s1, v1, (v2 - v1))
+            v1 = v2 + 1
+            v2 = @INSTR(v1, %s1, <,>)
+            vAc = @SUBSTR(%s1, v1, (v2 - v1))
+            v1 = v2 + 1
+            v2 = @INSTR(v1, %s1, <,>)
+            vOD = @SUBSTR(%s1, v1, (v2 - v1))
+            v1 = v2 + 1
+            v2 = @SIZESTR(%s1) - v1 + 1
+            vNo = @SUBSTR(%s1, v1, v2)
+
+            ELECTRICAL_PRO_INFO  29, length, cpH, sPr, vLS, vMa, vMi, vRe, vTo, vAc, vOD, vNo
+            TERMINATOR
+        ELSE
+            cpH = 0FFFFh
+        ENDIF
+;----------------------------------------------------------------------------
+;   Create Type 39
+;----------------------------------------------------------------------------
+        xHandle = xHandle + 1
+        length = sizeof SYSTEM_POWER_SUPPLY_STRUC
+        vPG = @CATSTR(<POWER_SUPPLY_UNIT_GROUP_>, <%vPS>)
+        sLo TEXTEQU @CATSTR(<POWER_SUPPLY_LOCATION_>, <%vPS>)
+        sDN TEXTEQU @CATSTR(<POWER_SUPPLY_DEVICE_NAME_>, <%vPS>)
+        sMa TEXTEQU @CATSTR(<POWER_SUPPLY_MANUFACTURER_>, <%vPS>)
+        sSN TEXTEQU @CATSTR(<POWER_SUPPLY_SERIAL_NUMBER_>, <%vPS>)
+        sAT TEXTEQU @CATSTR(<POWER_SUPPLY_ASSET_TAG_NUMBER_>, <%vPS>)
+        sPN TEXTEQU @CATSTR(<POWER_SUPPLY_MODEL_PART_NUMBER_>, <%vPS>)
+        sRL TEXTEQU @CATSTR(<POWER_SUPPLY_REVISION_LEVEL_>, <%vPS>)
+        vMP = @CATSTR(<POWER_SUPPLY_MAX_POWER_CAPACITY_>, <%vPS>)
+        vPC TEXTEQU @CATSTR(<POWER_SUPPLY_CHARACTERISTICS_>, <%vPS>)
+
+        SYSTEM_POWER_SUPPLY_INFO  39, length, xHandle, vPG, sLo, sDN, sMa, sSN, sAT, sPN, sRL, vMP, vPC, vpH, cdH, cpH
+        TERMINATOR
+        vPS = vPS + 1
+    ENDM                                ; MKF_NUMBER_OF_POWER_SUPPLY
+ENDIF                                   ; MKF_SYSTEM_POWER_SUPPLY_INFO
+    EXITM   %xHandle
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 38: IPMI DEVICE INFORMATION
+;----------------------------------------------------------------------------
+CreateIPMIDeviceInfo	MACRO	xHandle:REQ
+
+	LOCAL iit, isr, isa, nsda, ibal, ibah, bamii, intnum
+
+IF	MKF_IPMI_DEVICE_INFO
+    xHandle = xHandle + 1
+
+    iit = MKF_IPMI_INTERFACE_TYPE
+    isr = MKF_IPMI_SPECIFICATION_REVISION
+    isa = MKF_I2C_SLAVE_ADDRESS
+    nsda = MKF_NV_STORAGE_DEVICE_ADDRESS
+    ibal = IPMI_BASE_ADDRESS_LO
+    ibah = IPMI_BASE_ADDRESS_HI
+    bamii = MKF_BASE_ADDR_MOD_INTR_INFO
+    intnum = MKF_INTERRUPT_NUMBER
+
+    IPMI_DEVICE_INFORMATION_STRUC{\
+    	{38, sizeof(IPMI_DEVICE_INFORMATION_STRUC), xHandle},
+    	iit,
+    	isr,
+    	isa,
+    	nsda,
+    	ibal,
+    	ibah,
+    	bamii,
+    	intnum\
+    }
+	TERMINATOR
+	TERMINATOR
+ENDIF                                   ; MKF_IPMI_DEVICE_INFO
+	EXITM	%xHandle
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 40 : ADDITIONAL INFORMATION
+;----------------------------------------------------------------------------
+CreateAdditionalInformation  macro     xHandle:REQ
+
+	LOCAL   length, rC, eL, rH, rT, rI, rO, uS, sC, sN, rV, xS
+
+	IF (MKF_ADDITIONAL_INFO AND (MKF_ADDITIONAL_INFO_COUNT GT 0))
+        xHandle = xHandle + 1
+		length = sizeof(ADDITIONAL_INFO_STRUC) + (MKF_ADDITIONAL_INFO_COUNT * sizeof(ADDITIONAL_INFO_ENTRY_STRUC))
+
+		ADDITIONAL_INFO_STRUC    {\
+						{40, length, xHandle},
+						MKF_ADDITIONAL_INFO_COUNT\
+						}
+
+		rC = 1
+        sC = 1
+		REPEAT	MKF_ADDITIONAL_INFO_COUNT
+            eL = sizeof ADDITIONAL_INFO_ENTRY_STRUC
+            rT = @CATSTR (REF_TYPE_, <%rC>)
+            rI = @CATSTR (REF_TYPE_INSTANCE_, <%rC>)
+            rO  TEXTEQU @CATSTR (REF_OFFSET_, <%rC>)
+            uS = @CATSTR (USE_STRING_, <%rC>)
+            IF uS EQ 1
+                sN = sC
+                sC = sC + 1
+            ELSE
+                sN = 0
+            ENDIF
+            rV  TEXTEQU @CATSTR (VALUE_, <%rC>)
+    		ADDITIONAL_INFO_ENTRY_STRUC    {\
+    						eL,
+                            (rT*16)+rI,
+                            rO,
+                            sN,
+                            {rV}\
+    						}
+            rC = rC + 1
+        ENDM                            ; MKF_ADDITIONAL_INFO_COUNT
+
+		rC = 1
+		REPEAT	MKF_ADDITIONAL_INFO_COUNT
+            uS = @CATSTR (USE_STRING_, <%rC>)
+            IF uS EQ 1
+        		xS TEXTEQU @CATSTR (STRING_, <%rC>)
+        		SCAN_PUT_STR %xS
+            ENDIF
+            rC = rC + 1
+        ENDM                            ; MKF_ADDITIONAL_INFO_COUNT
+    	TERMINATOR
+    ENDIF
+	EXITM   %xHandle
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 41 : Onboard Devices Extended Information
+;----------------------------------------------------------------------------
+CreateOnboardDevicesExtendedInfo  macro     xHandle:REQ
+
+	LOCAL   length, rC, xN, xS, xC, eD, dT, dI, sD, sG, xB, dF
+
+	length = sizeof(ONBOARD_DEVICE_EXTENDED_STRUC)
+
+	IF (MKF_ONBOARD_DEVICE_EXTENDED_INFO AND (MKF_ONBOARD_DEVICE_EXT_COUNT GT 0))
+		rC = 1
+		REPEAT	MKF_ONBOARD_DEVICE_EXT_COUNT
+            xHandle = xHandle + 1
+			xN = 1
+			xS TEXTEQU @CATSTR(<ONBOARD_DEVICE_EXT_>, <%rC>)
+			xC = @INSTR(<%xN>, %xS, <,>)
+			eD TEXTEQU @SUBSTR(%xS, <%xN>, (xC-xN))
+			xN = xC+1
+			xC = @INSTR(<%xN>, %xS, <,>)
+			dT TEXTEQU @SUBSTR(%xS, <%xN>, (xC-xN))
+			xN = xC+1
+			xC = @INSTR(<%xN>, %xS, <,>)
+			dI TEXTEQU @SUBSTR(%xS, <%xN>, (xC-xN))
+			xN = @SIZESTR(%xS)
+			xN = xN-xC
+			xC = xC+1
+			sD TEXTEQU @SUBSTR(%xS, <%xC>, <%xN>)
+
+			xS TEXTEQU @CATSTR(<SEGGRP_BUS_DEVFN_EXT_>, <%rC>)
+			xN = 1
+			xC = @INSTR(<%xN>, %xS, <,>)
+                        sG TEXTEQU @SUBSTR(%xS, <%xN>, (xC-xN))
+			xN = xC+1
+			xC = @INSTR(<%xN>, %xS, <,>)
+            xB TEXTEQU @SUBSTR(%xS, <%xN>, (xC-xN))
+			xC = xC+1
+            dF TEXTEQU @SUBSTR(%xS, <%xC>)
+
+            ONBOARD_DEVICE_EXTENDED_STRUC {\
+                        {41, length, xHandle},
+                        1,
+                        ((eD shl 7) OR dT),
+                        dI,sG,xB,
+                        dF\
+                        }
+            SCAN_PUT_STR %sD
+            TERMINATOR
+            rC = rC + 1
+        ENDM                            ; MKF_ONBOARD_DEVICE_EXT_COUNT
+    ENDIF
+	EXITM   %xHandle
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 240: OEM DEFINED IO STRUCTURE
+;----------------------------------------------------------------------------
+CreateOEMIOMappedGpnvInfo	MACRO	xHandle:REQ
+
+	IF MKF_OEM_IO_GPNV_STRUC_INFO
+        xHandle = xHandle + 1
+		DescLength = (MAX_IO_GPNV_DATAID*size DATAID_DESCRIPTOR_STRUC)
+		TotalLength = sizeof(OEM_GPNV_STRUC)+DescLength
+		OEM_GPNV_STRUC	{\
+				 {OEM_IO_GPNV_INFORMATION_TYPE, TotalLength, xHandle},
+				 00h,
+				 00000000h,
+				 MAX_IO_GPNV_DATAID\
+				 }
+    	BYTE	DescLength dup(0FFh)
+    	TERMINATOR
+    	TERMINATOR
+	ENDIF                               ; MKF_OEM_IO_GPNV_STRUC_INFO
+	EXITM	%xHandle
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 241: OEM DEFINED MEMORY STRUCTURE
+;----------------------------------------------------------------------------
+CreateOEMMemoryMappedGpnvInfo	MACRO	xHandle:REQ
+    IF MKF_OEM_MEMORY_GPNV_STRUC_INFO
+        xHandle = xHandle + 1
+		DescLength = (MAX_MEMORY_GPNV_DATAID*size DATAID_DESCRIPTOR_STRUC)
+		TotalLength = sizeof(OEM_GPNV_STRUC)+DescLength
+		OEM_GPNV_STRUC	{\
+				 {OEM_MEMORY_GPNV_INFORMATION_TYPE, TotalLength, xHandle},
+				 00h,
+				 00000000h,
+				 MAX_MEMORY_GPNV_DATAID\
+				 }
+    	BYTE	DescLength dup(0FFh)
+    	TERMINATOR
+    	TERMINATOR
+    ENDIF                               ; MKF_OEM_MEMORY_GPNV_STRUC_INFO
+	EXITM	%xHandle
+ENDM
+;----------------------------------------------------------------------------
+;       Structure Type 129: INTEL ASF STRUCTURE
+;----------------------------------------------------------------------------
+CreateIntelASFTable	MACRO	xHandle:REQ
+IFDEF	MKF_ASF_SUPPORT
+IF 	MKF_ASF_SUPPORT
+    xHandle = xHandle + 1
+	INTEL_ASF_STRUC{\
+	{129, sizeof(INTEL_ASF_STRUC), xHandle},
+	01h,
+	01h,
+	02h,
+	01h\
+	}
+	BYTE	'Intel_ASF',0
+	BYTE	'Intel ASF_001',0
+	TERMINATOR
+ENDIF                                   ; MKF_ASF_SUPPORT
+ENDIF                                   ; MKF_ASF_SUPPORT
+   	EXITM	%xHandle
+endm
+;----------------------------------------------------------------------------
+;       Structure Type 127: END OF TABLE
+;----------------------------------------------------------------------------
+CreateEndOfTable	MACRO	xHandle:REQ
+    xHandle = xHandle + 1
+	END_OF_TABLE_STRUC{\
+			{127, sizeof(END_OF_TABLE_STRUC), xHandle}\
+			}
+	TERMINATOR
+	TERMINATOR
+	EXITM	%xHandle
+ENDM
+
+;----------------------------------------------------------------------------
+ENDIF					; End of Inclusion Guard _smbdata_mac_
+;----------------------------------------------------------------------------
+
+;****************************************************************************
+;****************************************************************************
+;**                                                                        **
+;**           (C)Copyright 1985-2017, American Megatrends, Inc.            **
+;**                                                                        **
+;**                          All Rights Reserved.                          **
+;**                                                                        **
+;**           5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093            **
+;**                                                                        **
+;**                          Phone: (770)-246-8600                         **
+;**                                                                        **
+;****************************************************************************
+;****************************************************************************

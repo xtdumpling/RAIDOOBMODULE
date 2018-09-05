@@ -1,0 +1,91 @@
+#
+# This file contains an 'Intel Peripheral Driver' and is      
+# licensed for Intel CPUs and chipsets under the terms of your
+# license agreement with Intel or your vendor.  This file may 
+# be modified by the user, subject to additional terms of the 
+# license agreement                                           
+#
+## @file
+#
+# Copyright (c) 2006 - 2010, Intel Corporation. All rights reserved.<BR>
+#
+#  This software and associated documentation (if any) is furnished
+#  under a license and may only be used or copied in accordance
+#  with the terms of the license. Except as permitted by such
+#  license, no part of this software or documentation may be
+#  reproduced, stored in a retrieval system, or transmitted in any
+#  form or by any means without the express written consent of
+#  Intel Corporation.
+#
+#
+##
+#
+################################################################################
+#
+# Defines Section - statements that will be processed to create a Makefile.
+#
+################################################################################
+[Defines]
+INF_VERSION          = 0x00010005
+BASE_NAME            = SoftStrapsPeim
+FILE_GUID            = 1988a1d8-04fc-4d68-b58d-636f36f30d82
+MODULE_TYPE          = PEIM
+VERSION_STRING       = 1.0
+ENTRY_POINT          = SoftStrapsPeimEntryPoint
+
+################################################################################
+#
+# Sources Section - list of files that are required for the build to succeed.
+#
+################################################################################
+[Sources]
+  SoftStrapsPeim.c
+  SoftStrapsPeim.h
+
+################################################################################
+#
+# Package Dependency Section - list of Package files that are required for
+#                              this module.
+#
+################################################################################
+[Packages]
+  MdePkg/MdePkg.dec
+  CpRcPkg/CpRcPkg.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+
+################################################################################
+#
+# Library Class Section - list of Library Classes that are required for
+#                         this module.
+#
+################################################################################
+[LibraryClasses]
+  PeimEntryPoint
+  DebugLib
+  HobLib
+  BaseMemoryLib
+  IoLib
+  PciLib
+  PcdLib
+  SiliconAccessLib
+
+################################################################################
+#
+# Protocol C Name Section - list of Protocol and Protocol Notify C Names
+#                           that this module uses or produces.
+#
+################################################################################
+[Ppis]
+  gPeiSpiSoftStrapsPpiGuid
+  
+[Guids]
+
+[FixedPcd]
+  gServerCommonTokenSpaceGuid.PcdPchPciBusNumber
+  gServerCommonTokenSpaceGuid.PcdPchPciDevNumber
+  gServerCommonTokenSpaceGuid.PcdPchSpiFunNumber
+  gServerCommonTokenSpaceGuid.PcdPchSpiBar0Offset
+
+[Depex]
+  TRUE
+  

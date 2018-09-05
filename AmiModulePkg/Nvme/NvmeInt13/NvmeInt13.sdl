@@ -1,0 +1,37 @@
+TOKEN
+    Name  = "NVMEINT13_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable Sdio Int13 support in the project."
+    TokenType = Boolean
+    TargetMAK = Yes
+    TargetH = Yes
+    Master = Yes
+    Token = "CSM_SUPPORT" "=" "1"
+End
+
+PATH
+    Name  = "NVMEINT13_DIR"
+    Path  = "AmiModulePkg\Nvme\NvmeInt13"
+End
+
+TOKEN
+    Name  = "NVME_SWSMI"
+    Value  = "0x42"
+    Help  = "Data to be written to SW SMI port to invoke SDIO SW SMI handler."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+ELINK
+    Name = "OPROM(1,0,5,$(NVMEINT13_DIR)\NvmeI13.BIN)"
+    Parent = "CSM_OPROM_LIST"
+    InvokeOrder = AfterParent
+End
+
+INFComponent
+    Name  = "NvmeInt13"
+    File  = "NvmeInt13.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_DRIVER"
+End
+

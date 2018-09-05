@@ -1,0 +1,55 @@
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = XhciHandlerPei
+  FILE_GUID                      = 50B4FAD4-9D0D-440b-812C-D8E3EC21244C
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 0.1
+  LIBRARY_CLASS                  = XhciHandlerPei|PEIM
+  CONSTRUCTOR                    = XhciHandlerConstructor
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+
+[Binaries.Ia32]
+  BIN | XhciHandlerPei.lib
+
+[Packages]
+  MdePkg/MdePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+
+[LibraryClasses]
+  PeiServicesLib
+  TimerLib
+  StatusCodePeiLib
+  XhciHandlerCommon
+
+[Ppis]
+  gEfiPeiMemoryDiscoveredPpiGuid ## CONSUMES
+  gEfiDxeIplPpiGuid ## CONSUMES
+  gEfiPeiCpuIoPpiInstalledGuid ##CONSUMES
+  gEfiPciCfg2PpiGuid ##CONSUMES
+  
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************

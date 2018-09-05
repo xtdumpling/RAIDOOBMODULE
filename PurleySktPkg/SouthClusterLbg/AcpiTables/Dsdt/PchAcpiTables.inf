@@ -1,0 +1,49 @@
+## @file
+#  Component description file for the PCH ACPI tables
+#
+#@copyright
+# Copyright (c) 1999 - 2016 Intel Corporation. All rights reserved
+# This software and associated documentation (if any) is furnished
+# under a license and may only be used or copied in accordance
+# with the terms of the license. Except as permitted by the
+# license, no part of this software or documentation may be
+# reproduced, stored in a retrieval system, or transmitted in any
+# form or by any means without the express written consent of
+# Intel Corporation.
+# This file contains an 'Intel Peripheral Driver' and is uniquely
+# identified as "Intel Reference Module" and is licensed for Intel
+# CPUs and chipsets under the terms of your license agreement with
+# Intel or your vendor. This file may be modified by the user, subject
+# to additional terms of the license agreement.
+#
+#@par Specification Reference:
+##
+
+[Defines]
+INF_VERSION          = 0x00010005
+BASE_NAME            = PchAcpiTables
+FILE_GUID            = 31401EE7-1600-437c-A11C-B1035D8E6070
+MODULE_TYPE          = USER_DEFINED
+VERSION_STRING       = 1.0
+
+[Sources]
+  Pch.asl
+  PchNvs.asl
+  PchHda.asl
+  PchSerialIo.asl
+  PchPcie.asl
+  PchSata.asl
+  PchRstPcieStorage.asl
+# APTIOV_SERVER_OVERRIDE_RC_START
+  usbsbd.asl   # Case mismatch in file name
+  GpioDefine.asl   # Correct file name
+  GpioLib.asl   # Correct file name
+# APTIOV_SERVER_OVERRIDE_RC_END
+  PchXhci.asl
+  PchXdci.asl
+  IrqLink.asl
+  TraceHubDebug.asl
+
+[Packages]
+  MdePkg/MdePkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec

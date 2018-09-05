@@ -1,0 +1,278 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.16
+#      Bug Fixed:  Fix POST hang up when set MMCFG Base to 3G.
+#      Reason:     
+#      Auditor:    Isaac Hsu
+#      Date:       May/17/2017
+#
+#  Rev. 1.15
+#      Bug Fixed:  Set Foreground color to white and Background color to
+#                  black when Changed Logo by AMI utility ChangeLogo.
+#      Reason:     
+#      Auditor:    Isaac Hsu
+#      Date:       Mar/16/2017
+#
+#  Rev. 1.14
+#      Bug Fixed:  Early Graphic Logo Support
+#      Reason:     
+#      Auditor:    Isaac Hsu
+#      Date:       Mar/14/2017
+#
+#  Rev. 1.13
+#      Bug Fixed:  Add NVDIMM/CPLD function
+#      Reason:     
+#      Auditor:    Leon Xu
+#      Date:       Feb/17/2017
+#
+#  Rev. 1.12
+#    Bug Fix:  Remove module - SmcBuildTimeData.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Oct/13/2016
+#
+#    Rev.  1.11
+#     Bug Fix: Add sum load default function.
+#     Reason:	
+#     Auditor:	Hartmann Hsieh
+#     Date:  	Oct/11/2016
+#
+#  Rev. 1.10
+#    Bug Fix:  Trigger a software SMI to flash ROM part after BIOS lock.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Sep/30/2016
+#
+#  Rev. 1.09
+#   Bug Fixed:  Fixe Memory Map out feature could not work. 
+#   Reason:     
+#   Auditor:    Chen Lin
+#   Date:       Sep/26/2016
+#
+#  Rev. 1.08
+#    Bug Fix:  Send HideItem and RiserCard data to sum.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Sep/23/2016
+#
+#  Rev. 1.07
+#     Reason:   Add PCD for PcdSmcPS2AlwaysInstall support.
+#     Auditor:  Sunny
+#    Date:     Sep/07/2016
+#
+#  Rev. 1.06
+#    Bug Fix:   add CPLD version support
+#    Reason:	Get CPLD version from BMC
+#    Auditor:  Sunny Yang
+#    Date:     Sep/01/2016
+#
+#  Rev. 1.05
+#    Bug Fix:  Add Full SmBios InBand support.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Aug/05/2016
+#
+#  Rev. 1.04
+#    Bug Fix:  Re-write SmcOutBand module.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Aug/02/2016
+#
+#  Rev. 1.03
+#    Bug Fix:  Add Full SMBIOS module.
+#    Reason:
+#    Auditor:  Hartmann Hsieh
+#    Date:     Jul/27/2016
+#
+#  Rev. 1.02
+#    Bug Fix:  Compress and encipher HII data for sum.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Jul/25/2016
+#
+#  Rev. 1.01
+#      Bug Fixed:  Support SMC Memory map-out function.
+#      Reason:     
+#      Auditor:    Ivern Yeh
+#      Date:       Jul/07/2016
+#
+#  Rev. 1.00
+#       Bug fixed:   Initialize revision
+#       Reason:      Get base code from Grantley
+#       Auditor:     Salmon Chen
+#       Date:        Dec/02/2014
+#
+#****************************************************************************
+#*****************************************************************************
+
+[Defines]
+  DEC_SPECIFICATION              = 0x00010005
+  PACKAGE_NAME                   = SmcPkg
+  PACKAGE_GUID                   = 8541ec30-7536-11e2-bcfd-0800200c9a66
+  PACKAGE_VERSION                = 0.1
+################################################################################
+#
+# Include Section - list of Include Paths that are provided by this package.
+#                   Comments are used for Keywords and Module Types.
+#
+# Supported Module Types:
+#  SEC PEIM DXE_DRIVER DXE_RUNTIME_DRIVER DXE_SMM_DRIVER DXE_SAL_DRIVER UEFI_DRIVER
+#
+################################################################################
+[Includes]
+  Include
+  SmcCspLib
+  SmcLib
+  Module
+  Module\SmcOOB\Library
+  Module\SmcOOB\SmcInBand
+#  Module\SmcRomHole
+#  ../AmiTsePkg\EDK\MiniSetup\TseLite
+#  ../AmiTsePkg\EDK\MiniSetup\uefi2.1
+  ../Build
+#  ../AmiModulePkg\AmiStatusCode
+#  ../AmiModulePkg\SecureBoot
+#  ../AmiCompatibilityPkg\Include
+#  ../MdePkg\Include
+#  ../AmiIpmiPkg\Include
+################################################################################
+#
+# Library Class Header section - list of Library Class header files that are
+#                                provided by this package.
+#
+################################################################################
+[LibraryClasses]
+  SmcCspLib|SmcCspLib/SmcCspLib.h
+  SmcLib|SmcLib/SmcLib.h
+  SmcRomHoleLib|Module/SmcRomHole/SmcRomHole.h
+  SetupHideItem
+
+################################################################################
+#
+# Global Guid Definition section - list of Global Guid C Name Data Structures
+#                                  that are provided by this package.
+#
+################################################################################
+[Guids]
+  gProjectOwnProtocolGuid = {0x6b588d7c, 0xc72e, 0x4a78, { 0x88, 0x58, 0x77, 0xe1, 0xda, 0x8f, 0xc7, 0xf7 }}
+  gProjectOwnPeiProtocolGuid = { 0xa0e5a45f, 0x5374, 0x46b3, { 0xb5, 0x1e, 0xd3, 0x10, 0xb2, 0xc4, 0x8a, 0xae }}
+  gSuperMDriverProtocolGuid = { 0x2272865b, 0xebf6, 0x4047, { 0xb0, 0x8, 0x78, 0x89, 0x49, 0x7f, 0x53, 0xbd }}
+  gSuperMPeiPrococolGuid = { 0x7ffc3700, 0x7c5e, 0x423f, { 0xa0, 0x4b, 0x32, 0xe9, 0xf1, 0x6a, 0x67, 0x27 }}
+  gSMCOOBMD5GUID = { 0xb629d9f6, 0xd390, 0x4fb3, { 0xaa, 0xa, 0xd2, 0x48, 0xc7, 0x3e, 0xa8, 0xf6 }}
+  gSmcFeatureSupportFlagsGuid = { 0xd32cae03, 0xfffe, 0x4f67, { 0xbb, 0xf9, 0x7c, 0xb8, 0x51, 0xc4, 0x58, 0x0e }}
+  gSmcBoardInfoVariableGuid = {0x262b2e3f, 0xda2d, 0x4b81, {0x8d, 0x1d, 0xf9, 0x38, 0xe8, 0x51, 0xfd, 0xed}}
+  gSmcMemMapOutGuid =         {0x75C8F622, 0x8090, 0x4017, {0x85, 0x0C, 0x3F, 0xA4, 0x0B, 0x02, 0x79, 0x84}}
+  gEfiSmcInBandLoadDefaultGuid = {0x1e107fe3, 0x565d, 0x4ae0, {0x94, 0xb5, 0x56, 0x3d, 0x9f, 0x96, 0xbf, 0xc8}}
+  gSmcSwSmiFlashProtocolGuid = {0x6a20b893, 0x10f7, 0x4bc7, {0xa8, 0x1e, 0x7d, 0xfd, 0xe9, 0x2, 0x4e, 0x4d}}
+  gSmcOobPlatformPolicyGuid = {0x27723F8B, 0x25A8, 0x4DA1, {0xA3, 0xFC, 0x7B, 0x30, 0xE9, 0x87, 0x1D, 0xC7}}
+  gSmcOobPlatformPolicyCallbackGuid = {0x501C5B87, 0x8181, 0x4AE5, {0xA6, 0xB2, 0xD0, 0x5A, 0xCE, 0x0D, 0x83, 0xDE}}
+
+################################################################################
+#
+# Global Protocols Definition section - list of Global Protocols C Name Data
+#                                  Structures that are provided by this package.
+#
+################################################################################
+[Protocols]
+  gSmcOobDataReadyProtocolGuid = {0xd4a5b2fd, 0xad44, 0x404a, {0x98, 0xa8, 0x29, 0x78, 0x57, 0xe7, 0x2a, 0x53}}
+  gSetupModifyProtocolGuid = {0x41eadc00, 0x8db2, 0x4bfe, {0xb0, 0xea, 0xcb, 0xaa, 0xe7, 0xf4, 0xd3, 0x1b}}
+  gSmcSwSmiFlashProtocolGuid = {0xfdcb1801, 0xa303, 0x4430, {0x94, 0x81, 0x28, 0xf2, 0x98, 0xc0, 0x1e, 0xc9}}
+  gSmcNVDIMMSmmProtocolGuid = { 0xa2990b11, 0xf05c, 0x4182, { 0x97, 0x3, 0xbb, 0x2, 0x27, 0x5d, 0xb8, 0xf9 }}
+  gSmcIpmiOemCommandSetProtocolGuid = {0x81F93099, 0xA7F, 0x4F1A, {0x94, 0xD4, 0xB3, 0xBE, 0x3F, 0xAC, 0xEA, 0x6A}}
+  gSmcRomHoleProtocolGuid = {0x2938C3C9, 0x4F9B, 0x43B2, {0xA4, 0x29, 0x7E, 0x63, 0x15, 0xAD, 0x6A, 0x9D}}
+
+################################################################################
+#
+# Global Ppis Definition section - list of Global Ppis C Name Data Structures
+#                                  that are provided by this package.
+#
+################################################################################
+[Ppis]
+
+################################################################################
+#
+# PCD Declarations section - list of all PCDs Declared by this Package
+#                            Only this package should be providing the
+#                            declaration, other packages should not.
+#
+################################################################################
+[Guids]
+  gSmcPkgTokenSpaceGuid = { 0x4f9883c7, 0xb309, 0x4152, { 0xac, 0xf3, 0x22, 0x38, 0x50, 0x47, 0x8d, 0x88 } }
+
+[PcdsFeatureFlag]
+
+[PcdsFixedAtBuild]
+
+[PcdsDynamic,PcdsDynamicEx]
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT1BDF|0x00|UINT32|0x00000010
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT2BDF|0x00|UINT32|0x00000011
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT3BDF|0x00|UINT32|0x00000012
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT4BDF|0x00|UINT32|0x00000013
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT5BDF|0x00|UINT32|0x00000014
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT6BDF|0x00|UINT32|0x00000015
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT7BDF|0x00|UINT32|0x00000016
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT8BDF|0x00|UINT32|0x00000017
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT9BDF|0x00|UINT32|0x00000018
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT10BDF|0x00|UINT32|0x00000019
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT11BDF|0x00|UINT32|0x0000001A
+  gSmcPkgTokenSpaceGuid.PcdSmcOBLan1BDF|0x00|UINT32|0x00000020
+  gSmcPkgTokenSpaceGuid.PcdSmcOBLan2BDF|0x00|UINT32|0x00000021
+  gSmcPkgTokenSpaceGuid.PcdSmcOBLan3BDF|0x00|UINT32|0x00000022
+  gSmcPkgTokenSpaceGuid.PcdSmcOBLan4BDF|0x00|UINT32|0x00000023
+  gSmcPkgTokenSpaceGuid.PcdSmcMultiFuncLanChip1|0x00|UINT8|0x00000024
+  gSmcPkgTokenSpaceGuid.PcdSmcMultiFuncLanChip2|0x00|UINT8|0x00000025
+  gSmcPkgTokenSpaceGuid.PcdSmcOBSASBDF|0x00|UINT32|0x00000026
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe1BDF|0x00|UINT32|0x00000027
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe2BDF|0x00|UINT32|0x00000028
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe3BDF|0x00|UINT32|0x00000029
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe4BDF|0x00|UINT32|0x0000002A
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe5BDF|0x00|UINT32|0x0000002B
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe6BDF|0x00|UINT32|0x0000002C
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe7BDF|0x00|UINT32|0x0000002D
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe8BDF|0x00|UINT32|0x0000002E
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe9BDF|0x00|UINT32|0x0000002F
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe10BDF|0x00|UINT32|0x00000030
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe11BDF|0x00|UINT32|0x00000031
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe12BDF|0x00|UINT32|0x00000032
+  gSmcPkgTokenSpaceGuid.PcdSmcRiserID|0x00000000|UINT32|0x00000040
+  gSmcPkgTokenSpaceGuid.PcdSmcSXB1Index|0x00|UINT8|0x00000041
+  gSmcPkgTokenSpaceGuid.PcdSmcSXB2Index|0x00|UINT8|0x00000042
+  gSmcPkgTokenSpaceGuid.PcdSmcSXB3Index|0x00|UINT8|0x00000043
+  gSmcPkgTokenSpaceGuid.PcdSmcCPU0IIOBus|0x00|UINT64|0x00000044
+  gSmcPkgTokenSpaceGuid.PcdSmcCPU1IIOBus|0x00|UINT64|0x00000045
+  gSmcPkgTokenSpaceGuid.PcdSmcCPU2IIOBus|0x00|UINT64|0x00000046
+  gSmcPkgTokenSpaceGuid.PcdSmcCPU3IIOBus|0x00|UINT64|0x00000047
+  gSmcPkgTokenSpaceGuid.PcdSkipDmiUpdate|0x00|UINT8|0x00000048
+  gSmcPkgTokenSpaceGuid.PcdSMCMapOutDIMM|0x00|UINT8|0x00000049	      		
+  gSmcPkgTokenSpaceGuid.PcdGetOobFileStatus0|0x00000000|UINT32|0x0000004A
+  gSmcPkgTokenSpaceGuid.PcdGetOobFileStatus1|0x00000000|UINT32|0x0000004B
+  gSmcPkgTokenSpaceGuid.PcdGetOobFileStatus2|0x00000000|UINT32|0x0000004C
+  gSmcPkgTokenSpaceGuid.PcdGetOobFileStatus3|0x00000000|UINT32|0x0000004D
+  gSmcPkgTokenSpaceGuid.PcdSmcCPLDRevision|0x00000000|UINT32|0x0000004E
+  gSmcPkgTokenSpaceGuid.PcdSmcPS2AlwaysInstall|0x00|UINT8|0x0000004F
+  gSmcPkgTokenSpaceGuid.PcdSmcAOCLocation|0x00|UINT64|0x00000050
+  gSmcPkgTokenSpaceGuid.PcdSmcAOCExtendFlag|0x00|UINT64|0x00000051
+  gSmcPkgTokenSpaceGuid.PcdSmcAOCNVMeMode|0x00|UINT64|0x00000052
+  gSmcPkgTokenSpaceGuid.PcdSmcNVDIMM|0x00|UINT64|0x00000053
+    	# BIT0      ADR function Enable/Disable
+    	# BIT[63:1] Reserved
+  gSmcPkgTokenSpaceGuid.PcdSmcColor|0x00|UINT8|0x00000054
+  gSmcPkgTokenSpaceGuid.PcdSmcBdsColor|0x00|UINT8|0x00000055
+  gSmcPkgTokenSpaceGuid.PcdSmcVgaBar|0x00|UINT32|0x00000056
+
+  
+[PcdsFixedAtBuild,PcdsPatchableInModule,PcdsDynamic,PcdsDynamicEx]
+
+[Ppis]
+
+  ## Include/Ppi/EvPei.h 
+  gEfiEvPpiGuid = { 0xa0015941, 0x1a1, 0x4146,  { 0xb1, 0x1, 0xb1, 0xbb, 0x5, 0xd8, 0x63, 0x1c }}
+
+[Protocols]
+

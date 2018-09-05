@@ -1,0 +1,61 @@
+## @file
+#  Status Code Handler Driver which produces general handlers and hook them
+#  onto the DXE status code router.
+#
+#  Copyright (c) 2006 - 2016, Intel Corporation.
+#
+#  All rights reserved. This program and the accompanying materials
+#  are licensed and made available under the terms and conditions of the BSD License
+#  which accompanies this distribution. The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.php
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+#
+##
+
+[Defines]
+  INF_VERSION             = 0x00010005
+  BASE_NAME               = IioInit
+  FILE_GUID               = 63809859-F029-41c3-9F34-EEEB9EA787A5
+  MODULE_TYPE             = DXE_DRIVER
+  VERSION_STRING          = 1.0
+  ENTRY_POINT             = IioInitEntry
+
+[Sources]
+  IioInit.c
+  
+[Packages]  
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  UefiLib
+  DebugLib
+  IioInitLib
+  IioInitDxeLib
+
+[Protocols]
+  gEfiIioSystemProtocolGuid
+  gEfiCpuCsrAccessGuid
+  
+[Guids]
+  gIioPolicyHobGuid
+
+[Pcd]
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[Depex]
+  gEfiSmbusHcProtocolGuid AND
+  gEfiMpServiceProtocolGuid
+
+

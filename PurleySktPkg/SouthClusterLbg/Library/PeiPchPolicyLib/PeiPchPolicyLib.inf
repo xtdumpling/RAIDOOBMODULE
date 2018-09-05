@@ -1,0 +1,65 @@
+## @file
+# Component description file for the PeiPchPolicy libbrary.
+#
+# @copyright
+# Copyright (c) 2014 - 2015 Intel Corporation. All rights reserved
+# This software and associated documentation (if any) is furnished
+# under a license and may only be used or copied in accordance
+# with the terms of the license. Except as permitted by the
+# license, no part of this software or documentation may be
+# reproduced, stored in a retrieval system, or transmitted in any
+# form or by any means without the express written consent of
+# Intel Corporation.
+# This file contains an 'Intel Peripheral Driver' and is uniquely
+# identified as "Intel Reference Module" and is licensed for Intel
+# CPUs and chipsets under the terms of your license agreement with
+# Intel or your vendor. This file may be modified by the user, subject
+# to additional terms of the license agreement.
+#
+#@par Specification Reference:
+#
+##
+
+
+[Defines]
+  INF_VERSION          = 0x00010017
+  BASE_NAME            = PeiPchPolicyLib
+  FILE_GUID            = BB1AC992-B2CA-4744-84B7-915C185576C5
+  VERSION_STRING       = 1.0
+  MODULE_TYPE          = PEIM
+  LIBRARY_CLASS        = PchPolicyLib
+
+
+[LibraryClasses]
+  DebugLib
+  IoLib
+  PcdLib
+  PeiServicesLib
+  BaseMemoryLib
+  MemoryAllocationLib
+  PchInfoLib
+  PchPmcLib                                   #SERVER_BIOS
+
+
+[Packages]
+  MdePkg/MdePkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec   #SERVER_BIOS
+
+
+[Pcd]
+  #SERVER_BIOS   gEfiPchTokenSpaceGuid.PcdAcpiBaseAddress    #SERVER_BIOS
+  gEfiPchTokenSpaceGuid.PcdPchAcpiIoPortBaseAddress          #SERVER_BIOS
+  gEfiPchTokenSpaceGuid.PcdSmbusBaseAddress   #SERVER_BIOS
+  gEfiPchTokenSpaceGuid.PcdSerialIoUartDebugEnable
+  gEfiPchTokenSpaceGuid.PcdSerialIoUartNumber
+
+
+[Sources]
+  PeiPchPolicyLib.c
+  PeiPchPolicyLibrary.h
+  PchPrintPolicy.c
+  Rvp3PolicyLib.c
+
+
+[Ppis]
+  gPchPlatformPolicyPpiGuid            ## PRODUCES # SERVER_BIOS

@@ -1,0 +1,40 @@
+TOKEN
+	Name  = "ApachePass_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable ApachePass support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+TOKEN
+    Name  = "APACHE_PASS_DRIVER_EFI_FILE_PATH"
+    Value  = "AmiCRBPkg/ApachePass/ApachePassDriver/ApachePassDriver.efi"
+    TokenType = Expression
+    TargetMAK = Yes
+    TargetFDF = Yes
+    Help  = "APACHE PASS DRIVER FILE PATH (v01.00.01.1011)"
+End
+
+FFS_FILE
+	Name  = "ApachePassDriver"
+	FD_AREA  = "FV_MAIN"
+	FILE_Stmt  = "AmiCRBPkg/ApachePass/ApachePassDriver/ApachePassDriverFdfFileStatement.txt"
+End
+
+TOKEN
+    Name  = "APACHE_PASS_HII_EFI_FILE_PATH"
+    Value  = "AmiCRBPkg/ApachePass/ApachePassHii/ApachePassHii.efi"
+    TokenType = Expression
+    TargetMAK = Yes
+    TargetFDF = Yes
+    Help  = "APACHE PASS HII FILE PATH (v01.00.01.1011)"
+End
+
+FFS_FILE
+	Name  = "ApachePassHii"
+	FD_AREA  = "FV_MAIN"
+	FILE_Stmt  = "AmiCRBPkg/ApachePass/ApachePassHii/ApachePassHiiFdfFileStatement.txt"
+End
+

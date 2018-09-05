@@ -1,0 +1,130 @@
+TOKEN
+    Name  = "SecFlashUpd_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable Secured FlashUpdate support in Project"
+    TokenType = Boolean
+    TargetH = Yes
+    Master = Yes
+    Token = "SecureMod_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "FlashUpdatePolicy"
+    Value  = "7"
+    Help  = "Flash update policy bitmap\0-Disabled, \bit0-Cold Reboot(recovery),bit1-Warm Reboot(capsule),bit2-Runtime,\bits 3..31-Reserved"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "BBUpdatePolicy"
+    Value  = "$(FlashUpdatePolicy)"
+    Help  = "Select Boot Block (CRTM) Flash update policy.Bu default - same as Main BIOS"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "IGNORE_IMAGE_ROLLBACK"
+    Value  = "0"
+    Help  = "When set, FW Capsule Validate logic will skip image Revision check"
+    TokenType = Boolean
+    TargetMAK = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "IGNORE_RUNTIME_UPDATE_IMAGE_REVISION_CHECK"
+    Value  = "0"
+    Help  = "When set, FW Capsule Validate logic will skip image Revision check during Runtime updates"
+    TokenType = Boolean
+    TargetMAK = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "IGNORE_RUNTIME_UPDATE_IMAGE_REVISION_CHECK"
+    Value  = "1"
+    Help  = "Force Ignore_runtime.. if master Ignore_image_rollback is set"
+    TokenType = Boolean
+    TargetH = Yes
+    Token = "IGNORE_IMAGE_ROLLBACK" "=" "1"
+End
+
+TOKEN
+    Name  = "FWCAPSULE_RECOVERY_SUPPORT"
+    Value  = "0"
+    Help  = "Enable APTIO FW Capsule recovery PPI and relevant runtime SecSmiFlash code"
+    TokenType = Boolean
+    TargetMAK = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "FWCAPSULE_RECOVERY_SUPPORT"
+    Value  = "1"
+    Help  = "Don't modify this value!"
+    TokenType = Boolean
+    TargetMAK = Yes
+    TargetH = Yes
+    Token = "Recovery_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "FLASH_LOCK_EVENT_NOTIFY"
+    Value  = "1"
+    Help  = "1:Issue Flash Ready to Lock Event"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+PATH
+    Name  = "SecFlashUpd_DIR"
+    Help  = "Path to FlashUpdate Module in Project"
+End
+
+INFComponent
+    Name  = "SecFlashUpdDXE"
+    File  = "SecFlashUpdDXE.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_RUNTIME_DRIVER"
+End
+
+INFComponent
+    Name  = "IsSecRecoveryPEI"
+    File  = "IsSecRecoveryPEI.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "PEIM"
+End
+
+INFComponent
+    Name  = "VerifyFwCapsulePeiLib"
+    File  = "VerifyFwCapsulePeiLib.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "PEIM"
+End
+
+LibraryMapping
+    Class  = "VerifyFwCapsulePeiLib"
+    Instance  = "AmiModulePkg.VerifyFwCapsulePeiLib"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiModulePkg.VerifyFwCapsulePeiLib"
+    Override  = "AmiModulePkg.Recovery"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiModulePkg.VerifyFwCapsulePeiLib"
+    Override  = "AmiModulePkg.FsRecovery"
+End
+
+FFS_FILE
+    Name  = "IsSecRecoveryPEI"
+    FD_AREA  = "FV_BB"
+    INFComponent  = "IsSecRecoveryPEI"
+    Apriori_Index  = "5"
+End
+

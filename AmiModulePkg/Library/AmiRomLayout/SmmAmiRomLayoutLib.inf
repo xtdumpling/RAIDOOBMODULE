@@ -1,0 +1,62 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+## @file
+#   PEI instance of the AmiRomLayoutLib library class
+##
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SmmAmiRomLayoutLib
+  FILE_GUID                      = 4372B10C-D641-4EE4-8214-D3104A524693
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  LIBRARY_CLASS                  = AmiRomLayoutLib|SMM_CORE DXE_SMM_DRIVER
+  CONSTRUCTOR                    = SmmAmiRomLayoutLibConstructor
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  
+[Sources]
+  SmmAmiRomLayoutLib.c
+  AmiRomLayoutLibCommon.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+
+[GUIDS]
+  gAmiRomLayoutFfsFileGuid
+  gAmiRomLayoutGuid
+  
+[LibraryClasses]
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  DxeServicesTableLib
+  UefiLib
+  MemoryAllocationLib
+  BaseMemoryLib
+  HobLib
+  SmmServicesTableLib
+  DebugLib
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

@@ -1,0 +1,413 @@
+TOKEN
+	Name  = "FIXED_BOOT_ORDER_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable module support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "BOOT_OPTION_GET_BBS_ENTRY_DEVICE_TYPE_FUNCTION"
+	Value  = "FBO_GetBbsEntryDeviceType"
+	Help  = "Name of the function of type GET_BBS_ENTRY_DEVICE_TYPE.\The function is used to convert device type stored in the BBS table to a legacy device type that will be stored in the NVRAM.\The default implementation(GetBbsEntryDeviceTypeDefault) provides support for BBS_USB_DEVICE_TYPE_SUPPORT and BBS_NETWORK_DEVICE_TYPE_SUPPORT SDL tokens."
+	TokenType = Expression
+	TargetH = Yes
+	Token = "CSM_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "INITIAL_LEGCAY_GROUP_FUNCTION"
+	Value  = "InitLegacyGroupDefault"
+	Help  = "Name of the function of FBO_INITIAL_GROUP.\The function is initial legacy boot option device name."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "INITIAL_UEFI_GROUP_FUNCTION"
+	Value  = "InitUefiGroupDefault"
+	Help  = "Name of the function of FBO_INITIAL_GROUP.\The function is initial uefi boot option device name."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "USBKEY_RANGE_SIZE"
+	Value  = "32000"
+	Help  = "USB key memory size define.\Exsample:\32000 is 32G.\64000 is 64G."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SETUP_RUNTIME_IFR_PROCESSING"
+	Value  = "1"
+	Help  = "Processes IFR data that are added to hii at runtime.  This will cause an increased FW footprint and remove AMIBCP compatibility for those new pages."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FIXED_BOOT_SWAP_POLICY"
+	Value  = "0"
+	Help  = "0 = Swap option which is duplicated after boot priority is changed in TSE\1 = Swap nearby option (moving up and down)"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FIXED_BOOT_DISPLAY_DEVICE_NAME_IN_SETUP"
+	Value  = "1"
+	Help  = "ON - Display device name in boot priority.\OFF - Just display type."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FIXED_BOOT_INCLUDE_DISABLED_OPTION"
+	Value  = "1"
+	Help  = "ON - Include Disabled to each boot priority control.  NOTE: System will be reset after priorities got changed.\OFF - No Disabled option"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "FIXED_BOOT_SWAP_POLICY" "=" "0"
+End
+
+TOKEN
+	Name  = "TSE_SAVE_DISABLED_BBS_DEVICEPATH"
+	Value  = "0"
+	Help  = "1 => Saves the DevicePaths of Disabled BBS devices to NVRAM Variable. \Depends on that varaible to keep device disbaled in next boot. \0 => Doesn't save the Disabled BBS devicepath."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TSE_LOAD_OPTION_HIDDEN"
+	Value  = "1"
+	Help  = "1 => Hide LOAD_OPTION_HIDDEN Boot option. 0 => Shows all boot options."
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "EFI_SPECIFICATION_VERSION" ">" "0x20000"
+End
+
+TOKEN
+	Name  = "FBO_USE_BOOT_OPTION_NUMBER_UNI"
+	Value  = "0"
+	Help  = "1 => Use Boot Option number unicode string with .UNI file."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FBO_DUAL_MODE"
+	Value  = "0"
+	Help  = "1 = Legacy/Uefi mix display."
+	TokenType = Boolean
+	TargetH = Yes
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "FBO_WTG_PRIORITY_UPDATE"
+	Value  = "1"
+	Help  = "1 = Update Priorities when User set Windows To Go to 1st Priority in Windows To Go Startup."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FIXED_BOOT_ORDER_SUBMENU_MAX_NUM"
+	Value  = "18"
+	Help  = "All SubMenu Total boot options."
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FIXED_BOOT_ORDER_GROUP_MAX_NUM"
+	Value  = "18"
+	Help  = "Maximum number of groups."
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FIXED_BOOT_ORDER_TOTAL_DEVICES_MAX_NUM"
+	Value  = "$(FIXED_BOOT_ORDER_SUBMENU_MAX_NUM)*$(FIXED_BOOT_ORDER_GROUP_MAX_NUM)"
+	Help  = "Maximum number of devices."
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "BcpBootOrder_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable BcpBootOrder support in Project"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SHELL_GROUP_SUPPORT"
+	Value  = "0"
+	Help  = "1 = Shell Group Support 0 = Shell Grop Not Support."
+	TokenType = Boolean
+	TargetH = Yes
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "FBO_TRACE_LEVEL"
+	Value  = "0xFFFFFFFF"
+	TokenType = Integer
+	Help = "Trace level of FixedBootOrder debug message.\0xFFFFFFFF = TRACE_ALWAYS, 0 = TRACE_NEVER"
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+    Name  = "FBO_ETHERNET_DEFAULT_PRIORITY_POLICY"
+    Value  = "0"
+    Help  = "This token contorl FixedBootOrder default IPV4 and IPV6 priority.\0: IPV4 at the front.\1: IPV6 at the front."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "ADJUST_GROUP_PRIORITY_BY_BOOTORDER"
+    Value  = "0"
+    Help  = "Some third-party utility will change bootorder.\0:Keep original priority.\1:Adjust group priority by bootorder."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "ADJUST_DEVICE_PRIORITY_BY_BOOTORDER"
+    Value  = "0"
+    Help  = "Some third-party utility will change bootorder.\0:Keep original priority.\1:Adjust device priority by bootorder."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "FBO_RUNTIME_CALLBACK_REGISTRATION"
+    Value  = "1"
+    Help  = "Setup module of version 04 provides function to register callback in runtime. \0: disable, needs modify Setup.c as CHM file shows. \1: enable, do not need to modify Setup.c."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+PATH
+	Name  = "FixedBootOrder_DIR"
+End
+
+ELINK
+	Name  = "FBO_Init,"
+	Parent  = "ReadBootOptions,"
+	InvokeOrder = BeforeParent
+End
+
+ELINK
+	Name  = "FixedBootOrderStringInit,"
+	Parent  = "SetupStringInit"
+	Help  = "Install form callback for each control"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "FixedBootOrderSaveChange,"
+	Parent  = "SavedConfigChangesHook,"
+	Help  = "Save Changed boot order"
+	InvokeOrder = AfterParent
+End
+
+TOKEN
+    Name  = "DONOT_LOAD_DEFAULT_IN_SETUP"
+    Value  = "0"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "TSE_BOOT_NOW_IN_BOOT_ORDER"
+    Value  = "1"
+    Help  = "Turn on to see boot override/BBS Popup menu with in the devices listed in boot order."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+ELINK
+    Name = "PreserveFboSetting,"
+    Parent = "LoadSetupDefaults,"
+    InvokeOrder = BeforeParent
+End
+
+ELINK
+	Name  = "FixedBootOrderLoadedConfigDefaults,"
+	Parent  = "LoadedConfigDefaultsHook,"
+	Help  = "Loaded  boot order Defaults"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "FixedBootOrderLoadPreviousString,"
+	Parent  = "LoadedPreviousValuesHook,"
+	Help  = "Load Previous String"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "FBO_Protocol_install,"
+	Parent  = "MinisetupDriverEntryHook,"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "FBO_UpdateBootListPriority,"
+	Parent  = "SaveLegacyDevOrder,"
+	Token = "CSM_SUPPORT" "=" "1"
+	InvokeOrder = BeforeParent
+End
+
+ELINK
+	Name  = "FBO_UpdateBootListPriority,"
+	Parent  = "SaveBootOptions,"
+	Token = "CSM_SUPPORT" "!=" "1"
+	Priority = 1
+	InvokeOrder = BeforeParent
+End
+
+ELINK
+    Name  = "FboSetLegacyDeviceType,"
+    Parent  = "SaveLegacyDevOrder,"
+    Token = "CSM_SUPPORT" "=" "1"
+    InvokeOrder = ReplaceParent
+End
+
+ELINK
+    Name  = "FboSetLegacyDeviceType,"
+    Parent  = "SaveBootOptions,"
+        Token = "CSM_SUPPORT" "!=" "1"
+    InvokeOrder = BeforeParent
+End
+
+ELINK
+    Name  = "FboUpdateBoTagDeviceType,"
+    Parent  = "ReadBootOptions,"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "CreateOldBootOrder,"
+	Parent  = "SaveBootOptions,"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "FBO_AdjustWtgPriority,"
+	Parent  = "ReadBootOptions,"
+	InvokeOrder = AfterParent
+	Token = "FBO_WTG_PRIORITY_UPDATE" "=" "1"
+End
+
+ELINK
+    Name  = "FboSyncBootOptionsFromDevOrder,"
+    Parent  = "CreateBootOptionsForNewBootDevices,"
+    InvokeOrder = BeforeParent
+    Priority = 1
+End
+
+ELINK
+    Name  = "FboAdjustEthernetDefaultPriority,"
+    Parent  = "CreateBootOptionsForNewBootDevices,"
+    InvokeOrder = BeforeParent
+End
+
+ELINK
+	Name  = "FBO_SetDefaultUEFIDevOrder,"
+	Parent  = "SaveBootOptions,"
+	InvokeOrder = BeforeParent
+End
+
+ELINK
+	Name  = "FixedBootOrderSetupEnter,"
+	Parent  = "ProcessEnterSetupHook,"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "FixedBootOrderToBoot,"
+	Parent  = "ProcessProceedToBootHook,"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(FixedBootOrder_DIR)\FixedBootOrderTse.c"
+	Parent  = "TSE_SOURCE_FILES"
+	InvokeOrder = AfterParent
+End
+
+# Link with Setup
+ELINK
+	Name  = "$(FixedBootOrder_DIR)\FixedBootOrder.c"
+	Parent  = "SetupCallbackFiles"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "gEfiGlobalVariableGuid"
+	Parent  = "AdditionalSetupGuids"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "gEfiDevicePathProtocolGuid"
+    Parent  = "AdditionalSetupProtocols"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+	Name = "FIXED_BOOT_ORDER_SETUP_DEFINITIONS"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "AdjustLegacyBootOptionPriorities,"
+	Parent  = "UpdateBootOptionVariables,"
+	Token = "CSM_SUPPORT" "=" "1"
+	Token = "GROUP_BOOT_OPTIONS_BY_TAG" "=" "1"
+	InvokeOrder = AfterParent
+	Disable = Yes 
+End
+
+INFComponent
+	Name  = "Bds"
+	File  = "..\Bds\Bds.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes = "DXE_DRIVER"
+End
+
+INFComponent
+	Name  = "FixedBootOrder"
+	File  = "FixedBootOrder.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "DXE_DRIVER"
+End
+
+LibraryMapping
+	Class  = "FixedBootOrder"
+	Instance  = "AmiModulePkg.FixedBootOrder"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "AmiModulePkg.FixedBootOrder"
+	Override  = "AmiModulePkg.Bds"
+End

@@ -1,0 +1,56 @@
+TOKEN
+	Name  = "UINT13_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable USB Int13 support in the project."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+	Token = "CSM_SUPPORT" "=" "1"
+	Token = "USB_RUNTIME_DRIVER_IN_SMM" "!=" "0"
+End
+
+TOKEN
+	Name  = "USB_I13_DRIVER_VERSION"
+	Value  = "1"
+	Help  = "Driver version. Reported in DriverBinding protocol."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+PATH
+	Name  = "UINT13_DIR"
+	Path  = "AmiModulePkg/Usb/Int13"
+End
+
+ELINK
+	Name  = "OPROM(1,0,2,$(UINT13_DIR)/UI13.bin)"
+	Parent  = "CSM_OPROM_LIST"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "CollectUsbBbsDevices,"
+	Parent  = "CollectBootDevices,"
+	InvokeOrder = BeforeParent
+End
+
+INFComponent
+	Name  = "UsbInt13"
+	File  = "UsbInt13.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "DXE_DRIVER"
+End
+
+INFComponent
+	Name  = "UsbBbs"
+	File  = "UsbBbs.inf"
+	Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "AmiModulePkg.UsbBbs"
+	Override  = "AmiModulePkg.Bds"
+End
+

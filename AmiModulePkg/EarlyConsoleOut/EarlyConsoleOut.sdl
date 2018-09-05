@@ -1,0 +1,40 @@
+TOKEN
+    Name  = "EarlyConsoleOut_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable EarlyConsoleOut support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    Master = Yes
+End
+
+ELINK
+    Name  = "OemProgressCodeList"
+    InvokeOrder = ReplaceParent
+    Help  = "OEM Progress Code list in the format of(EFI_STATUS_CODE_VALUE, CheckPointValue),"
+End
+
+ELINK
+    Name  = "OemProgressCodeToString"
+    InvokeOrder = ReplaceParent
+    Help  = "OEM Progress Code to String in the format of(EFI_STATUS_CODE_VALUE, String),"
+End
+
+ELINK
+    Name  = "OemErrorCodeList"
+    InvokeOrder = ReplaceParent
+    Help  = "OEM Error Code list in the format of(EFI_STATUS_CODE_VALUE, CheckPointValue),"
+End
+
+ELINK
+    Name  = "OemErrorCodeToString"
+    InvokeOrder = ReplaceParent
+    Help  = "OEM Error Code to String in the format of(EFI_STATUS_CODE_VALUE, ErrorString, Possible Root cause String, Possible Solution String),"
+End
+
+OUTPUTREGISTER
+    Name = "EarlyConsoleElinkFile"
+    File = "OemProgressErrorCode.h"
+    Path = "Build"
+    Template = "EarlyConsoleElink.txt"
+End
+

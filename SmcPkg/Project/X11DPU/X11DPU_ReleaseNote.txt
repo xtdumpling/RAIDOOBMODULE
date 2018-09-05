@@ -1,0 +1,395 @@
+X11DPU+ release note.
+======================================================================
+--------------------------------------------------------------------------------
+Date: Aug-24-2017
+1.Fixed memory error LED can't turn on for memory error.
+2.Fixed compile error(SVN_1982, add setup item "tRWSR")
+
+--------------------------------------------------------------------------------
+Date: Aug-21-2017
+1. Change NVMe port bit map to 32bit one CPLD.
+
+--------------------------------------------------------------------------------
+Date: Aug-8-2017
+1.Update SPS XML setting for SPS4.0.3.235.
+2.Update BIOS version to 1.0b 
+
+--------------------------------------------------------------------------------
+Date: Jul-28-2017
+1. [X11DPU] Fixed get SMBIOS data failed with AMIDEDOS issue.
+2. [X11DPU] Fixed SMM driver load failed.
+
+--------------------------------------------------------------------------------
+Date: Jul-24-2017
+1. [X11DPU] Update re-driver settings provide by HW. (Re-driver Setting_20170725A.xlsx)
+
+--------------------------------------------------------------------------------
+Date: Jul-17-2017
+1. Add more DID (XL710, X710 and X722) to modify lan string. 
+--------------------------------------------------------------------------------
+Date: Jul-03-2017
+1.[Enhancements] Add memory error LED function.
+   Description: Add function.
+   Validation: 1.Generate memory correctable error by Intel RAS tool and see the DIMM error LED turns on.
+               2.Check the memory error LED will be turn off during following conditions.
+                 a.Clean it by change setup item [Advanced] -> [Chipset Configuration] -> [North Bridge] -> [Memory Configuration] -> [Turn off Memory Error LED] to [Yes, Next reset].
+                   Reboot and check memory erro LED turns off.
+                 b.Flash BIOS and reboot to check the memory LED turns off.
+                 c.Check the memory error LED turn off after AC power loss occurred.
+
+--------------------------------------------------------------------------------
+Date: Jun-28-2017
+1.Update Re-driver for AOC-SLG3-2E4R(PB issue #80517).
+
+--------------------------------------------------------------------------------
+Date: Jun-20-2017
+1. Update BIOS version to 1.0a
+
+--------------------------------------------------------------------------------
+Date: Jun-09-2017
+1. Enable B2_WORKAROUND_SUPPORT.
+
+--------------------------------------------------------------------------------
+Date: Jun-08-2017
+1. Modify eSPI Freq to 30MHz and enable QUAD IO followed HW request
+
+--------------------------------------------------------------------------------
+Date: May-05-2017
+1. Move 24NVMe system "SYS-2029U-TN24R4T" to board level.
+2. Set ConfigIOU0[1] = IIO_BIFURCATE_xxxxxx16 when system is 24 NVMe.
+
+--------------------------------------------------------------------------------
+Date: May-04-2017
+1. Enable DualOutFastRead support.
+
+--------------------------------------------------------------------------------
+Date: Apr-21-2017
+1.Temporary solution for 401A AOC NVMe card can't set redriver.
+ 
+--------------------------------------------------------------------------------
+Date: Mar-24-2017
+1. Fix WHQL issue, secure boot function fail.
+2. Disable graphic early video.
+
+--------------------------------------------------------------------------------
+Date: Mar-23-2017
+1.Disable "Dual Output Fast Read Supported".
+
+--------------------------------------------------------------------------------
+Date: Mar-21-2017
+1.Fixed system can't shutdown normally after enable IE.(X11DPU doesn't has IE debug port and SMLink4 signal).
+2.Disable IE to prevent system hang after BIOS recovery done.
+
+--------------------------------------------------------------------------------
+Date: Mar-15-2017
+1.Build-in default IE image(From BMC team)
+
+--------------------------------------------------------------------------------
+Date: Mar-08-02017
+1. Override USB 2.0 and 3.0 mapping table for WHQL.
+
+--------------------------------------------------------------------------------
+Date: Mar-6-2017
+1.Update SPS XML file for SPS4.0.3.163.
+
+--------------------------------------------------------------------------------
+Date: Mar-1-2017
+1.Update SPS XML file for SPS4.0.3.160.
+2. Update UPI by X11DPU+ R1[1].01_UPI TxEQ_01012017.
+
+--------------------------------------------------------------------------------
+Date: Feb-18-2017
+1. Remove PciStaticSetup.sd override file.
+
+--------------------------------------------------------------------------------
+Date: Feb/13/2017
+1. Set OFFICIAL_RELEASE to 1.
+
+--------------------------------------------------------------------------------
+Date: Feb/09/2017
+1. Fix that MAC Address of AOC-URN4-m2TS was wrong on IPMI web.
+
+--------------------------------------------------------------------------------
+Date: Feb-06-2017
+1. Add a file to record X11DPU system HW design and BIOS coding key point.
+
+--------------------------------------------------------------------------------
+Date: Feb-03-2017
+1. Send NVMe bitmap from PCH Smbus if system is 10 NVMe or 24 NVMe.
+
+--------------------------------------------------------------------------------
+Date: Jan-27-2017
+1. Added Riser ID to mask AOC NVME bit.
+2. Mask all AOC NVME bit for 24 NVMe SKU.
+
+--------------------------------------------------------------------------------
+Date: Jan-26-2017
+1. Program Re-driver for AOC-2UR6N4-i4XT.
+
+--------------------------------------------------------------------------------
+Date: Jan-23-2017
+1. Change "NVMe Firmware Source" to "AMI Native Support".
+
+--------------------------------------------------------------------------------
+Date: Jan-20-2017
+1.Update setup template draft v0.1
+
+--------------------------------------------------------------------------------
+Date: Jan-18-2017
+1. Fix LAN mac can't get.
+
+--------------------------------------------------------------------------------
+Date: Jan-17-2017
+1. [X11DPU] Fix Re-driver didn't be updated for AOC-URN6-I2XT.
+2. Support SYS-1029U-TN10RT sku.
+3. Modify code to meet setup template draft v0.1.
+
+--------------------------------------------------------------------------------
+Date: Jan-13-2017
+1. [X11DPU] Program Re-driver for AOC-URN6-I2XT.
+2. [X11DPU] Optimize Re-driver for AOC-URN6-I2XT.
+
+--------------------------------------------------------------------------------
+Date: Jan-09-2017
+1. [X11DPU] Change board name from X11DPU+ to X11DPU.
+2.Update SPS XML setting, disable ME-PSU sensor and set ME-BMC-PSU polling time to 100ms.
+
+--------------------------------------------------------------------------------
+Date: Jan-05-2017
+1. [X11DPU] Disable "SR-IOV Support" by default for NVMe unstable issues.
+
+--------------------------------------------------------------------------------
+Date: Dec-19-2016
+1. Support NVMe mode changed per port.
+
+--------------------------------------------------------------------------------
+Date: Dec-16-2016
+1. Update xml files for SPS 4.0.3.133.
+2.Set SPI clock to 40MHz.
+
+--------------------------------------------------------------------------------
+Date: Dec-14-2016
+1. Workaround : Fix system hangs with QS PCH and ES CPU.
+
+--------------------------------------------------------------------------------
+Date: Dec-12-2016
+1. Sync override files with label 58.
+
+----------------------------------------------------------------------
+Date: Dec-3-2016
+1. Update SPS XML for SPS 4.0.3.114
+
+----------------------------------------------------------------------
+Date: Dec-1-2016
+
+1.Update ME XML setting, enable dual output read.
+
+----------------------------------------------------------------------
+Date: Nov-30-2016
+1. Sync override files with kernel.
+
+----------------------------------------------------------------------
+Date: Nov-25-2016
+1. Fix LAN4 MAC show incorrectly.
+
+----------------------------------------------------------------------
+Date: Nov-24-2016
+1. Correct setup string.
+2. Fix AOC NVMe card detection fail in SXB2.
+
+----------------------------------------------------------------------
+Date: Nov-18-2016
+1. Support auto detection AOC NVMe card.
+
+----------------------------------------------------------------------
+Date: Nov-17-2016
+1. Fix two "BOboard Lan 1 OPROM" item.
+
+----------------------------------------------------------------------
+Date: Nov-16-2016
+1. [X11DPU] Update ME XML for SPS 4.0.3.111.
+2. Define onboard NVMe BDF.
+
+----------------------------------------------------------------------
+Date: Nov-10-2016
+1. [X11DPU] Update NVMe hotplug settings.
+2. [X11DPU] Correct IIO port number.
+
+----------------------------------------------------------------------
+Date: Nov-04-2016
+1. [X11DPU] Update SATA IOBP for PB issue #74940.
+
+----------------------------------------------------------------------
+Date: Nov-01-2016
+1. [X11DPU] Update SPI settings for power-on problem.
+
+----------------------------------------------------------------------
+Date: Oct-31-2016
+1. [X11DPU] SPS updated to 4.0.3.101, update X11DPU XML format.
+
+----------------------------------------------------------------------
+Date: Oct-21-2016
+1. [X11DPU] Modify Fast Read clock frequency to 17MHz in ME.
+
+----------------------------------------------------------------------
+Date: Oct-20-2016
+1. [X11DPU] The I-SATA port7 Gen3 TX De-emph register value need from -3.9dB be changed to -4.3dB.
+2. [X11DPU] The S-SATA port3 Gen3 TX De-emph register value need from -3.9dB be changed to -4.3dB.
+
+----------------------------------------------------------------------
+Date: Oct-19-2016
+1.[X11DPU] Sync XML with other project.
+
+----------------------------------------------------------------------
+Date: Oct-14-2016
+1.[X11DPU] Fix only two MAC addresses can be observed for 4 LAN ports riser card.
+
+----------------------------------------------------------------------
+Date: Oct-12-2016
+1.[X11DPU] Remove trunk 453 workaround for 2666 DIMM.
+
+----------------------------------------------------------------------
+Date: Oct-06-2016
+1.[X11DPU] Enable PORT61H_EMULATION for some addon cards.
+2.[X11DPU] Fix plugging three 2666 DIMMs, system would always reset.
+
+----------------------------------------------------------------------
+Date: Oct-03-2016
+1.[X11DPU] Sync XML with other projects.
+
+----------------------------------------------------------------------
+Date: Sep-30-2016
+1.[X11DPU] Update XML for SPS 4.0.2.86.
+
+----------------------------------------------------------------------
+Date: Sep-20-2016
+1.[X11DPU] Update ME XML setting for SPS 4.0.2.84.
+2.[X11DPU] Fix HDD can't be detected at S-SATA port 4, 5.
+3.[X11DPU] Build BIOS with SPS 4.0.2.84 by default.
+
+----------------------------------------------------------------------
+Date: Sep-02-2016
+1. [X11DPU] Rollback SPS to 4.0.2.53
+
+--------------------------------------------------------------------------------
+Date: Sep-01-2016
+1. [X11DPU] Update XML for SPS 4.0.2.81.
+
+----------------------------------------------------------------------
+Date: Aug-24-2016
+1. [X11DPU] Fix BMC can't get Lan MAC address from BIOS.
+2. [X11DPU] Fix sometimes IPMI isn't ready.
+
+----------------------------------------------------------------------
+Date: Aug-22-2016
+1. [X11DPU] Update SMBIOS type 8.
+2. [X11DPU] Fix compile error.
+3. [X11DPU] Fix building errors when enabling DEBUG_MODE.
+
+----------------------------------------------------------------------
+Date: Aug-17-2016
+1. [X11DPU] Fix that IPMI tool can't get entire platform power statistics. 
+
+--------------------------------------------------------------------------------
+Date: Aug-16-2016
+1. Follow SMBIOS template to remove SMBIOS Type 26/27/28/29.
+   Description: The SMBIOS Type 26/27/28/29 present. 
+   Validation: Check the SMBIOS Type 26/27/28/29 doesn't present. 
+
+----------------------------------------------------------------------
+Date: Aug-15-2016
+1. [X11DPU] Build different SPS by token - BIOS_SIZE.
+
+----------------------------------------------------------------------
+Date: Aug-03-2016
+1. [X11DPU] Disable PORT61H_EMULATION temporarily for hanging at video OPROM.
+2. [X11DPU] Correct SMBIOS map.
+3. [X11DPU] Build BIOS with SPS 4.0.2.53 by default temporarily.
+
+----------------------------------------------------------------------
+Date: Aug-02-2016
+1. [X11DPU] Update XML for SPS_E5_04.00.02.064.0.
+
+----------------------------------------------------------------------
+Date: Jul-22-2016
+1. [X11DPU] Update USB2 IOBP for Lab's requirement.
+
+----------------------------------------------------------------------
+Date: Jul-19-2016
+1. [X11DPU] Add USB2.0 & USB3.0 OC settings.
+
+----------------------------------------------------------------------
+Date: Jul-15-2016
+1. [X11DPU] Update I-SATA and S-SATA IOBP for Lab's requirement.
+2. [X11DPU] Modify BIOS_SIZE to 32MB.
+
+----------------------------------------------------------------------
+Date: Jul-14-2016
+1. [X11DPU] Fix Onboard NVMe can't be detected.
+
+----------------------------------------------------------------------
+Date: Jul-11-2016
+1. [X11DPU] Modify BIOS_SIZE to 32MB.
+
+----------------------------------------------------------------------
+Date: Jul-06-2016
+1. [X11DPU]Correct WIO slot sdl define.
+
+----------------------------------------------------------------------
+Date : Jul-05-2016
+1. [X11DPU] Add more LAN OPROM for ultra IO card.
+
+----------------------------------------------------------------------
+Date : Jul-04-2016
+1. [X11DPU] Default build 32MB BIOS.
+
+--------------------------------------------------------------------------------
+Date: Jun-18-2016
+1. [X11DPU] Build BIOS with SPS 4.0.2.53 by default.
+
+--------------------------------------------------------------------------------
+Date: Jun-16-2016
+1. [X11DPU] Update XML for SPS 4.0.2.53
+2. [X11DPU] Add Intel X540 PXE OPROM.
+
+--------------------------------------------------------------------------------
+Date: Jun-15-2016
+1. [X11DPU] Update some losing files.
+
+----------------------------------------------------------------------
+Date : June-13-2016
+1. [X11DPU]Rollback Sps 4.0.2.2 for pcie device can't be detected.
+   
+2. [X11DPU] Enable GPI NMI function.
+   Description: Enable front panel NMI function(JWD1 2-3)
+   Validation: Check NMI can be trigger under DOS when jumper JWD1 set to 2-3.
+
+----------------------------------------------------------------------
+Date : June-3-2016
+1. [X11DPU] Disable SMBALERT function to fix system will auto power after shutdown under OS.
+   Description: System will auto power after shutdown under OS.
+   Validation: Check system would not auto power on after shutdown normally under OS.
+
+2. [X11DPU] Disable onboard GbE which doesn't used.
+   Description: Disable onboard GbE
+   Validation: Check the GbE device(B:0, D:31, F:6) doesn't present.
+
+--------------------------------------------------------------------------------
+Date: 05-26-2016
+1. Add XML settings override file.
+
+----------------------------------------------------------------------
+Date : May-13-2016
+1. [X11DPU]Enabling riser card function.
+
+--------------------------------------------------------------------------------
+Date: 05-12-2016
+1. Correct onboard LAN IRQ settings (Port 1A)
+2. Temporary Disable VmdEfi to avoid system hang when load more than 1 LAN OPROM problem.
+
+Note: Need to use old SPS otherwis the system cannot detect the device on CPU port 1A.
+
+----------------------------------------------------------------------
+1. First check-in
+
+----------------------------------------------------------------------

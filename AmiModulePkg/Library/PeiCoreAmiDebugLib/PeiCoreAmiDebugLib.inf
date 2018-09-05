@@ -1,0 +1,49 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+## @file
+#   PEI Core instance of the AmiRomLayoutLib library class
+##
+[Defines]
+  INF_VERSION       = 0x00010005
+  VERSION_STRING    = 1.0
+  MODULE_TYPE       = PEIM
+  BASE_NAME         = PeiCoreAmiDebugLib
+  FILE_GUID         = F79D50DC-FA48-4AE1-9745-76D85B0CEC5E
+  LIBRARY_CLASS     = DebugLib|PEI_CORE
+  CONSTRUCTOR       = PeiAmiDebugLibConstructor
+
+[Sources]
+  PeiCoreAmiDebugLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  
+[LibraryClasses]
+  PcdLib
+  BaseMemoryLib
+  PeiServicesLib
+  SerialPortLib
+  DebugPrintErrorLevelLib
+  PrintLib
+  BaseLib
+
+[Ppis]
+  gAmiDebugServicePpiGuid      ## CONSUMES   
+
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdDebugClearMemoryValue  ## SOMETIMES_CONSUMES
+  gEfiMdePkgTokenSpaceGuid.PcdDebugPropertyMask      ## CONSUMES
+  gEfiMdePkgTokenSpaceGuid.PcdFixedDebugPrintErrorLevel ## CONSUMES

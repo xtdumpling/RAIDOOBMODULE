@@ -1,0 +1,43 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2013, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = CsmRt32
+  FILE_GUID                      = 56BF094C-69F6-49dd-8C1C-1ECEFF71C9E5
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = RT32_EntryPoint
+
+[Sources]
+  CsmRt32.c
+
+[Packages]
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+
+[Protocols]
+  gEfiLegacyBiosProtocolGuid
+  gEfiFirmwareVolume2ProtocolGuid
+
+[Guids]
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  AmiDxeLib
+
+[Depex]
+  gEfiLegacyBiosProtocolGuid

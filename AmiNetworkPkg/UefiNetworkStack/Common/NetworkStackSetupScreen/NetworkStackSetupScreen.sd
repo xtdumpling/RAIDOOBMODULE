@@ -1,0 +1,273 @@
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**       (C)Copyright 1993-2016 Supermicro Computer, Inc.           **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
+//  File History
+//
+//  Rev. 1.00
+//    Bug Fix: Draft template.
+//    Reason:
+//    Auditor:  Kasber Chen
+//    Date:     Nov/04/2016
+//
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
+
+//**********************************************************************
+// $Header: $
+//
+// $Revision: $
+//
+// $Date: $
+//**********************************************************************
+// Revision History
+// ----------------
+// $Log: $
+// 
+// 
+//**********************************************************************
+//<AMI_FHDR_START>
+//
+// Name:  NetworkStackSetupScreen.sd
+//
+// Description:  Setup definitions for NetworkStack setup screen
+//
+//<AMI_FHDR_END>
+//**********************************************************************
+
+//**********************************************************************
+//                  Compatibility Section
+//**********************************************************************
+
+#if defined(VFRCOMPILE) && !defined(CONTROLS_ARE_DEFINED)
+    #define CONTROL_DEFINITION
+#endif
+
+//**********************************************************************
+//                  Controls Section
+//
+// The following section contains control macros that can be overridden
+// in external files.  This allows customization of control content, 
+// while ensuring the control's data is available.
+//**********************************************************************
+
+#ifdef CONTROL_DEFINITION
+    #define NETWORKSTACK_ONEOF_NETWORK_STACK_SUPPORT \
+        oneof varid    = NETWORK_STACK.Enable,\
+            prompt   = STRING_TOKEN(STR_NETWORK_STACK_ENABLE),\
+            help     = STRING_TOKEN(STR_NETWORK_STACK_HELP),\
+            option text = STRING_TOKEN(STR_DISABLED), value=0, flags= RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_ENABLED), value=1, flags= RESET_REQUIRED;\
+            default = NWSTACK_DEFAULT_VALUE,\
+            default = NWSTACK_DEFAULT_VALUE, defaultstore = AmiMfgDefault,\
+        endoneof;
+
+    #if Ipv4_SUPPORT == 1
+        #define NETWORKSTACK_ONEOF_IPV4_PXE_SUPPORT \
+            oneof varid    = NETWORK_STACK.Ipv4Pxe,\
+                prompt   = STRING_TOKEN(STR_IPV4_PXE_ENABLE),\
+                help     = STRING_TOKEN(STR_IPV4_PXE_HELP),\
+                option text = STRING_TOKEN(STR_DISABLED), value=0, flags= RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_ENABLED), value=1, flags= RESET_REQUIRED;\
+                default = NETWORKSTACK_IPV4_PXE_SUPPORT,\
+                default = NETWORKSTACK_IPV4_PXE_SUPPORT, defaultstore = AmiMfgDefault,\
+            endoneof;
+            
+         #define NETWORKSTACK_ONEOF_IPV4_HTTP_SUPPORT \
+            oneof varid    = NETWORK_STACK.Ipv4Http,\
+                prompt   = STRING_TOKEN(STR_IPV4_HTTP_ENABLE),\
+                help     = STRING_TOKEN(STR_IPV4_HTTP_HELP),\
+                option text = STRING_TOKEN(STR_DISABLED), value=0, flags= RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_ENABLED), value=1, flags= RESET_REQUIRED;\
+                default = NETWORKSTACK_IPV4_HTTP_SUPPORT,\
+                default = NETWORKSTACK_IPV4_HTTP_SUPPORT, defaultstore = AmiMfgDefault,\
+            endoneof;
+            
+    #endif
+
+    #if Ipv6_SUPPORT == 1
+        #define NETWORKSTACK_ONEOF_IPV6_PXE_SUPPORT \
+            oneof varid    = NETWORK_STACK.Ipv6Pxe,\
+                prompt   = STRING_TOKEN(STR_IPV6_PXE_ENABLE),\
+                help     = STRING_TOKEN(STR_IPV6_PXE_HELP),\
+                option text = STRING_TOKEN(STR_DISABLED), value=0, flags= RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_ENABLED), value=1, flags= RESET_REQUIRED;\
+                default = NETWORKSTACK_IPV6_PXE_SUPPORT,\
+                default = NETWORKSTACK_IPV6_PXE_SUPPORT, defaultstore = AmiMfgDefault,\
+            endoneof;
+            
+            #define NETWORKSTACK_ONEOF_IPV6_HTTP_SUPPORT \
+            oneof varid    = NETWORK_STACK.Ipv6Http,\
+                prompt   = STRING_TOKEN(STR_IPV6_HTTP_ENABLE),\
+                help     = STRING_TOKEN(STR_IPV6_HTTP_HELP),\
+                option text = STRING_TOKEN(STR_DISABLED), value=0, flags= RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_ENABLED), value=1, flags= RESET_REQUIRED;\
+                default = NETWORKSTACK_IPV6_HTTP_SUPPORT,\
+                default = NETWORKSTACK_IPV6_HTTP_SUPPORT, defaultstore = AmiMfgDefault,\
+            endoneof; 
+            
+    #endif
+
+    #if IpSecDxe_SUPPORT == 1
+        #define NETWORKSTACK_ONEOF_IPSEC_CERTIFICATE \
+            oneof varid    = NETWORK_STACK.IpsecCertificate,\
+                prompt   = STRING_TOKEN(STR_IPSEC_CERTIFICATE_ENABLE),\
+                help     = STRING_TOKEN(STR_IPSEC_CERTIFICATE_HELP),\
+                option text = STRING_TOKEN(STR_DISABLED), value=0, flags= RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_ENABLED), value=1, flags= RESET_REQUIRED;\
+                default = 1,\
+                default = 1, defaultstore = AmiMfgDefault,\
+            endoneof;
+    #endif
+
+    #if UefiPxeBcDxe_SUPPORT == 1
+        #define NETWORKSTACK_NUMERIC_PXE_BOOT_WAIT_TIME \
+            numeric varid    = NETWORK_STACK.PxeBootWaitTime,\
+                prompt   = STRING_TOKEN(STR_PXE_BOOT_WAIT_TIME),\
+                help     = STRING_TOKEN(STR_PXE_BOOT_WAIT_TIME_HELP),\
+                flags   = RESET_REQUIRED,\
+                minimum = 0,\
+                maximum = 5,\
+                step    = 1,\
+                default = 0,\
+                default = 0, defaultstore = AmiMfgDefault,\
+            endnumeric;
+
+        #define NETWORKSTACK_NUMERIC_MEDIA_DETECT_COUNT \
+            numeric varid    = NETWORK_STACK.MediaDetectCount,\
+                prompt   = STRING_TOKEN(STR_MEDIA_DETECT_COUNT),\
+                help     = STRING_TOKEN(STR_MEDIA_DETECT_COUNT_HELP),\
+                flags   = RESET_REQUIRED,\
+                minimum = MIN_MEDIA_DETECT_COUNT,\
+                maximum = MAX_MEDIA_DETECT_COUNT,\
+                step    = 1,\
+                default = DEFAULT_MEDIA_DETECT_COUNT,\
+                default = DEFAULT_MEDIA_DETECT_COUNT, defaultstore = AmiMfgDefault,\
+            endnumeric;
+    #endif
+#endif //#ifdef CONTROL_DEFINITION
+
+
+#ifdef CONTROLS_WITH_DEFAULTS
+        NETWORKSTACK_ONEOF_NETWORK_STACK_SUPPORT
+    #if Ipv4_SUPPORT == 1
+        NETWORKSTACK_ONEOF_IPV4_PXE_SUPPORT
+        NETWORKSTACK_ONEOF_IPV4_HTTP_SUPPORT
+    #endif
+    #if Ipv6_SUPPORT == 1
+        NETWORKSTACK_ONEOF_IPV6_PXE_SUPPORT
+        NETWORKSTACK_ONEOF_IPV6_HTTP_SUPPORT
+    #endif
+    #if IpSecDxe_SUPPORT == 1
+        NETWORKSTACK_ONEOF_IPSEC_CERTIFICATE
+    #endif
+    #if UefiPxeBcDxe_SUPPORT == 1
+        NETWORKSTACK_NUMERIC_PXE_BOOT_WAIT_TIME
+        NETWORKSTACK_NUMERIC_MEDIA_DETECT_COUNT
+    #endif
+#endif //#ifdef CONTROLS_WITH_DEFAULTS
+
+
+//**********************************************************************
+//                ADVANCED - Network Stack Configuration Form
+//**********************************************************************
+#ifdef ADVANCED_FORM_SET
+
+#ifdef FORM_SET_TYPEDEF
+#include <NetworkStackSetup.h>
+#endif
+
+
+#ifdef FORM_SET_VARSTORE
+  varstore NETWORK_STACK,
+  key  = AUTO_ID(NETWORK_STACK_KEY_ID),
+  name = NetworkStackVar,
+  guid = NETWORK_STACK_GUID;
+#endif
+
+#ifdef FORM_SET_GOTO
+// Define goto commands for the forms defined in this file
+	suppressif SMC_SETUP_STYLE;	//SMCPKG_SUPPORT S
+	goto STACK_FORM_ID, 
+		prompt = STRING_TOKEN(STR_STACK_FORM),
+		help = STRING_TOKEN(STR_STACK_FORM_HELP);
+	endif;	//SMCPKG_SUPPORT E
+#endif
+
+
+#ifdef FORM_SET_FORM
+// Define forms
+    #ifndef NETWORK_STACK_FORM_SETUP
+    #define NETWORK_STACK_FORM_SETUP
+
+    form formid = AUTO_ID(STACK_FORM_ID),
+    title = STRING_TOKEN(STR_STACK_FORM);
+
+        NETWORKSTACK_ONEOF_NETWORK_STACK_SUPPORT
+
+#if Ipv4_SUPPORT == 1
+    suppressif ideqval NETWORK_STACK.Enable == 0;
+        NETWORKSTACK_ONEOF_IPV4_PXE_SUPPORT
+        NETWORKSTACK_ONEOF_IPV4_HTTP_SUPPORT
+    endif;
+#endif
+
+#if Ipv6_SUPPORT == 1
+    suppressif ideqval NETWORK_STACK.Enable == 0;
+        NETWORKSTACK_ONEOF_IPV6_PXE_SUPPORT
+        NETWORKSTACK_ONEOF_IPV6_HTTP_SUPPORT
+    endif;
+#endif
+
+
+#if IpSecDxe_SUPPORT == 1
+    suppressif ideqval NETWORK_STACK.Enable == 0;
+        NETWORKSTACK_ONEOF_IPSEC_CERTIFICATE
+    endif;
+#endif
+
+#if UefiPxeBcDxe_SUPPORT == 1
+
+    suppressif ideqval NETWORK_STACK.Enable == 0;
+        NETWORKSTACK_NUMERIC_PXE_BOOT_WAIT_TIME
+    endif;
+
+    suppressif ideqval NETWORK_STACK.Enable == 0;
+        NETWORKSTACK_NUMERIC_MEDIA_DETECT_COUNT
+    endif;
+#endif // #if UefiPxeBcDxe_SUPPORT == 1
+
+        endform;
+  #endif // NETWORK_STACK_FORM_SETUP
+#endif // #ifdef FORM_SET_GOTO
+
+#endif // ADVANCED_FORM_SET
+
+
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2013, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************

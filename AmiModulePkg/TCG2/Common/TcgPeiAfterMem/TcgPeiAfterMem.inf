@@ -1,0 +1,84 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+## @file
+#
+##
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = TcgPeiAfterMem
+  FILE_GUID                      = 01631791-F34E-4c0a-B15D-0B6CE22B27A8
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0  
+  ENTRY_POINT                    = ReInstallTcgServiceAfterMem
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF EBC
+#
+
+[Sources]
+TcgPeiAfterMem.c
+xTcgPeiAfterMem.c
+TcgTcmPeiAfterMem.c
+  
+[Packages]
+  MdePkg/MdePkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+
+[LibraryClasses]
+  PeimEntryPoint
+  BaseLib
+  DebugLib
+  IoLib
+  PeiServicesLib
+  BaseAmiTcmLib
+  
+ [LibraryClasses.IA32]
+  AmiTcgLibPei
+  TpmReportStatusCodeWrapperLibPei
+  
+[Guids]
+  gEfiPeiTcgLogHobGuid
+  
+[Ppis]
+  gPeiTcgPpiGuid
+  gPeiTpmPpiGuid
+  gTcgPeiPolicyGuid
+  gEfiPeiMemoryDiscoveredPpiGuid
+  gEfiPeiReadOnlyVariable2PpiGuid
+
+[Depex]
+  gEfiPeiMasterBootModePpiGuid AND
+  gEfiPeiReadOnlyVariable2PpiGuid AND
+  gEfiPeiMemoryDiscoveredPpiGuid AND
+  gTcgPeiPolicyGuid
+  
+  [BuildOptions.IA32]
+    *_*_IA32_CC_FLAGS = -DPEI_COMPILE 
+
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************

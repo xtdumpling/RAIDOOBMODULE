@@ -1,0 +1,77 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SmcRiserCardPei
+  FILE_GUID                      = e9deb2b3-88e4-46d2-b9a4-f60cacb918dc
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = SmcRiserCardPeiInit
+
+[Sources]
+  SmcRiserCardPei.c
+  SmcRiserCardPei.h
+  SmcRiserCardCommon.c
+  SmcRiserCardCommon.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  AmiIpmiPkg/AmiIpmiPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  SmcPkg/SmcPkg.dec
+
+[LibraryClasses]
+  PeimEntryPoint
+  PchPlatformLib
+  SmcCspLib
+  PciLib
+
+[Ppis]
+  gEfiPeiReadOnlyVariable2PpiGuid
+  gEfiPeiSmbus2PpiGuid
+  gEfiPeiIpmiTransportPpiGuid
+  gEfiPeiStallPpiGuid
+
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+  gSmcPkgTokenSpaceGuid.PcdSmcOBLan1BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBLan2BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBLan3BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBLan4BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcMultiFuncLanChip1
+  gSmcPkgTokenSpaceGuid.PcdSmcMultiFuncLanChip2
+  gSmcPkgTokenSpaceGuid.PcdSmcOBSASBDF
+  gSmcPkgTokenSpaceGuid.PcdSmcRiserID
+  gSmcPkgTokenSpaceGuid.PcdSmcSXB1Index
+  gSmcPkgTokenSpaceGuid.PcdSmcSXB2Index
+  gSmcPkgTokenSpaceGuid.PcdSmcSXB3Index
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe1BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe2BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe3BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe4BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe5BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe6BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe7BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe8BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe9BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe10BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe11BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe12BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT1BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT2BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT3BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT4BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT5BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT6BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT7BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT8BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT9BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT10BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT11BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcCPU0IIOBus
+  gSmcPkgTokenSpaceGuid.PcdSmcCPU1IIOBus
+  gSmcPkgTokenSpaceGuid.PcdSmcAOCLocation
+
+[Depex]
+  gEfiPeiSmbus2PpiGuid

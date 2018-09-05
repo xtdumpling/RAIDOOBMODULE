@@ -1,0 +1,103 @@
+#
+# This file contains an 'Intel Peripheral Driver' and is
+# licensed for Intel CPUs and chipsets under the terms of your
+# license agreement with Intel or your vendor.  This file may
+# be modified by the user, subject to additional terms of the
+# license agreement
+#
+## @file
+# Component description file for Quiesce Support driver module
+#
+# This is HpIOXAccess driver for platform.
+#
+# Copyright (c) 2006 - 2016, Intel Corporation.
+#
+#  All rights reserved.
+#  This software and associated documentation (if any) is furnished
+#  under a license and may only be used or copied in accordance
+#  with the terms of the license. Except as permitted by such
+#  license, no part of this software or documentation may be
+#  reproduced, stored in a retrieval system, or transmitted in any
+#  form or by any means without the express written consent of
+#  Intel Corporation.
+#
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = QuiesceSupport
+  FILE_GUID                      = E954929C-5BAC-4494-B963-3B23D4A13AD2
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  VERSION_STRING                 = 1.0
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  ENTRY_POINT                    = QuiesceSupportInitialization
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+
+
+[Sources]
+  QuiesceMain.c
+# APTIOV_SERVER_OVERRIDE_RC_START : Adding missing files
+  QuiesceMain.h
+  QuiesceSupport.h
+# APTIOV_SERVER_OVERRIDE_RC_END : Adding missing files
+  QuiesceMiscFuncs.c
+  QuiesceSupport.c
+  X64/CpuQuiesceHandler.asm | MSFT
+  X64/CpuQuiesceHandler.nasm | GCC
+  X64/QuiesceCacheCode.asm | MSFT
+  X64/QuiesceCacheCode.nasm | GCC
+
+[Packages]
+  PurleySktPkg/Override/IA32FamilyCpuPkg/IA32FamilyCpuPkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+  IA32FamilyCpuPkg/IA32FamilyCpuPkg.dec
+  PurleySktPkg/SocketPkg.dec
+# APTIOV_SERVER_OVERRIDE_RC_START
+  PurleyPlatPkg/PlatPkg.dec
+# APTIOV_SERVER_OVERRIDE_RC_END
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  UefiCpuPkg/UefiCpuPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  SmmServicesTableLib
+  SmmLib
+  BaseLib
+  DebugLib
+  PcdLib
+  IoLib
+  BaseMemoryLib
+  MemoryAllocationLib
+  SynchronizationLib
+  MpSyncDataLib
+
+
+[Protocols]
+  gEfiSmmCpuProtocolGuid                        # PROTOCOL ALWAYS_CONSUMED
+  gEfiIioUdsProtocolGuid                        # PROTOCOL ALWAYS_CONSUMED
+  gEfiSmmCpuServiceProtocolGuid                 # PROTOCOL ALWAYS_CONSUMED
+  gEfiQuiesceProtocolGuid
+  gEfiIioSystemProtocolGuid
+
+[Guids]
+
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[Depex]
+  gEfiSmmBase2ProtocolGuid AND
+  gEfiSmmCpuProtocolGuid AND
+  gEfiSmmCpuServiceProtocolGuid AND
+  gEfiIioUdsProtocolGuid AND
+  gEfiIioSystemProtocolGuid

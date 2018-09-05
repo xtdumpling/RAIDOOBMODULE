@@ -1,0 +1,3180 @@
+//***************************************************************************
+//**                                                                       **
+//**       (C)Copyright 1993-2017 Supermicro Computer, Inc.                **
+//**                                                                       **
+//**                                                                       **
+//***************************************************************************
+//***************************************************************************
+//
+//  Rev. 1.00
+//    Bug Fix:  Draft template v0.1.
+//    Reason:   
+//    Auditor:  Jimmy Chiu
+//    Date:     Jan/18/2017
+//
+//***************************************************************************
+//
+// This file contains an 'Intel Peripheral Driver' and is
+// licensed for Intel CPUs and chipsets under the terms of your
+// license agreement with Intel or your vendor.  This file may
+// be modified by the user, subject to additional terms of the
+// license agreement
+//
+// *++
+//
+// Copyright (c) 1999 - 2015 Intel Corporation. All rights reserved
+// This software and associated documentation (if any) is furnished
+// under a license and may only be used or copied in accordance
+// with the terms of the license. Except as permitted by such
+// license, no part of this software or documentation may be
+// reproduced, stored in a retrieval system, or transmitted in any
+// form or by any means without the express written consent of
+// Intel Corporation.
+//
+//
+// Module Name:
+//
+//   IioDfxSetup.hfr
+//
+// Abstract:
+//
+//   IIO Setup formset.
+//
+// Revision History:
+//
+// --*/
+#include <IioSetupDefinitions.h>
+  //
+  // Iio Dfx Setup Options
+  //
+
+form formid = VFR_FORMID_IIO_DFX_CONFIG,
+
+    title = STRING_TOKEN(STR_IIO_DFX_CFG_FORM_TITLE);
+      
+    subtitle text = STRING_TOKEN(STR_IIO_DFX_CFG_FORM_TITLE);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+    //
+    // Jump to IIO Configuration Form
+    //
+    suppressif TRUE;
+    checkbox varid    = SOCKET_IIO_CONFIGURATION.IioPresent[0],
+             prompt   = STRING_TOKEN(STR_NULL_IIO0PRES_STRING),
+             help     = STRING_TOKEN(STR_NULL_STRING),
+             // Flags behavior for checkbox is overloaded so that it equals
+             // a DEFAULT value.  1 = ON, 0 = off
+             flags    = CHECKBOX_DEFAULT | CHECKBOX_DEFAULT_MFG,
+    endcheckbox;
+    endif;
+
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.IioPresent[0] == 0;
+    goto VFR_FORMID_DFX_IIO0,
+        prompt  = STRING_TOKEN(STR_IIO0_CONFIG_FORM_TITLE),
+        help    = STRING_TOKEN(STR_NULL_STRING);
+     endif;
+
+#if NUMBER_CPU_SOCKETS > 1 //#if MAX_SOCKET > 1 //SMCPKG_SUPPORT
+    suppressif TRUE;
+    checkbox varid    = SOCKET_IIO_CONFIGURATION.IioPresent[1],
+             prompt   = STRING_TOKEN(STR_NULL_IIO1PRES_STRING),
+             help     = STRING_TOKEN(STR_NULL_STRING),
+             // Flags behavior for checkbox is overloaded so that it equals
+             // a DEFAULT value.  1 = ON, 0 = off
+             flags    = CHECKBOX_DEFAULT | CHECKBOX_DEFAULT_MFG,
+    endcheckbox;
+    endif;
+
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.IioPresent[1] == 0;
+      goto VFR_FORMID_DFX_IIO1,
+          prompt  = STRING_TOKEN(STR_IIO1_CONFIG_FORM_TITLE),
+          help    = STRING_TOKEN(STR_NULL_STRING);
+     endif;
+#endif
+
+#if NUMBER_CPU_SOCKETS > 2 //#if MAX_SOCKET > 2 //SMCPKG_SUPPORT
+    suppressif TRUE;
+    checkbox varid    = SOCKET_IIO_CONFIGURATION.IioPresent[2],
+             prompt   = STRING_TOKEN(STR_NULL_IIO2PRES_STRING),
+             help     = STRING_TOKEN(STR_NULL_STRING),
+             // Flags behavior for checkbox is overloaded so that it equals
+             // a DEFAULT value.  1 = ON, 0 = off
+             flags    = CHECKBOX_DEFAULT | CHECKBOX_DEFAULT_MFG,
+    endcheckbox;
+    endif;
+
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.IioPresent[2] == 0;
+      goto VFR_FORMID_DFX_IIO2,
+          prompt  = STRING_TOKEN(STR_IIO2_CONFIG_FORM_TITLE),
+          help    = STRING_TOKEN(STR_NULL_STRING);
+     endif;
+
+#endif
+
+#if NUMBER_CPU_SOCKETS > 3 //#if MAX_SOCKET > 3 //SMCPKG_SUPPORT
+    suppressif TRUE;
+    checkbox varid    = SOCKET_IIO_CONFIGURATION.IioPresent[3],
+             prompt   = STRING_TOKEN(STR_NULL_IIO3PRES_STRING),
+             help     = STRING_TOKEN(STR_NULL_STRING),
+             // Flags behavior for checkbox is overloaded so that it equals
+             // a DEFAULT value.  1 = ON, 0 = off
+             flags    = CHECKBOX_DEFAULT | CHECKBOX_DEFAULT_MFG,
+    endcheckbox;
+    endif;
+
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.IioPresent[3] == 0;
+      goto VFR_FORMID_DFX_IIO3,
+          prompt  = STRING_TOKEN(STR_IIO3_CONFIG_FORM_TITLE),
+          help    = STRING_TOKEN(STR_NULL_STRING);
+     endif;
+#endif
+
+#if NUMBER_CPU_SOCKETS > 4 //#if MAX_SOCKET > 4 //SMCPKG_SUPPORT
+    suppressif TRUE;
+    checkbox varid    = SOCKET_IIO_CONFIGURATION.IioPresent[4],
+             prompt   = STRING_TOKEN(STR_NULL_IIO4PRES_STRING),
+             help     = STRING_TOKEN(STR_NULL_STRING),
+             // Flags behavior for checkbox is overloaded so that it equals
+             // a DEFAULT value.  1 = ON, 0 = off
+             flags    = CHECKBOX_DEFAULT | CHECKBOX_DEFAULT_MFG,
+    endcheckbox;
+    endif;
+#endif
+
+#if NUMBER_CPU_SOCKETS > 5 //#if MAX_SOCKET > 5 //SMCPKG_SUPPORT
+    suppressif TRUE;
+    checkbox varid    = SOCKET_IIO_CONFIGURATION.IioPresent[5],
+             prompt   = STRING_TOKEN(STR_NULL_IIO5PRES_STRING),
+             help     = STRING_TOKEN(STR_NULL_STRING),
+             // Flags behavior for checkbox is overloaded so that it equals
+             // a DEFAULT value.  1 = ON, 0 = off
+             flags    = CHECKBOX_DEFAULT | CHECKBOX_DEFAULT_MFG,
+    endcheckbox;
+    endif;
+#endif
+
+#if NUMBER_CPU_SOCKETS > 6 //#if MAX_SOCKET > 6 //SMCPKG_SUPPORT
+    suppressif TRUE;
+    checkbox varid    = SOCKET_IIO_CONFIGURATION.IioPresent[6],
+             prompt   = STRING_TOKEN(STR_NULL_IIO6PRES_STRING),
+             help     = STRING_TOKEN(STR_NULL_STRING),
+             // Flags behavior for checkbox is overloaded so that it equals
+             // a DEFAULT value.  1 = ON, 0 = off
+             flags    = CHECKBOX_DEFAULT | CHECKBOX_DEFAULT_MFG,
+    endcheckbox;
+    endif;
+#endif
+
+#if NUMBER_CPU_SOCKETS > 7 //#if MAX_SOCKET > 7 //SMCPKG_SUPPORT
+    suppressif TRUE;
+    checkbox varid    = SOCKET_IIO_CONFIGURATION.IioPresent[7],
+             prompt   = STRING_TOKEN(STR_NULL_IIO7PRES_STRING),
+             help     = STRING_TOKEN(STR_NULL_STRING),
+             // Flags behavior for checkbox is overloaded so that it equals
+             // a DEFAULT value.  1 = ON, 0 = off
+             flags    = CHECKBOX_DEFAULT | CHECKBOX_DEFAULT_MFG,
+    endcheckbox;
+    endif;
+#endif
+
+
+    oneof varid = SOCKET_IIO_CONFIGURATION.DFXEnable,
+        prompt  = STRING_TOKEN(STR_DFX_ENABLE_PROMPT),
+        help    = STRING_TOKEN(STR_DFX_ENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE),     value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),      value = 1, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid = SOCKET_IIO_CONFIGURATION.DfxLtssmLogger,
+        prompt  = STRING_TOKEN(STR_PCIE_LTSSM_LOG_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_LTSSM_LOG_HELP),
+        option text = STRING_TOKEN(STR_DISABLE),   value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),    value = 1, flags = RESET_REQUIRED ;
+    endoneof;
+
+    suppressif  ideqval SOCKET_IIO_CONFIGURATION.DfxLtssmLogger == 0;
+      numeric varid = SOCKET_IIO_CONFIGURATION.DfxLtssmLoggerStop,
+        prompt  = STRING_TOKEN(STR_LTSSM_LOG_STOP_PROMPT),
+        help    = STRING_TOKEN(STR_LTSSM_LOG_STOP_HELP),
+        flags        = RESET_REQUIRED | DISPLAY_UINT_HEX,
+        minimum      = 0,
+        maximum      = 0x99,
+        step         = 0, 
+        default      = 0x99, defaultstore = MyStandardDefault,
+        default      = 0x99, defaultstore = MyManufactureDefault,
+      endnumeric;
+
+      oneof varid = SOCKET_IIO_CONFIGURATION.DfxLtssmLoggerSpeed,
+        prompt  = STRING_TOKEN(STR_LTSSM_LOG_SPEED_PROMPT),
+        help    = STRING_TOKEN(STR_LTSSM_LOG_SPEED_HELP),
+        option text     = STRING_TOKEN(STR_PCIE_GEN1),   value = PCIE_LINK_SPEED_GEN1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text     = STRING_TOKEN(STR_PCIE_GEN2),   value = PCIE_LINK_SPEED_GEN2, flags = RESET_REQUIRED;
+        option text     = STRING_TOKEN(STR_PCIE_GEN3),   value = PCIE_LINK_SPEED_GEN3, flags = RESET_REQUIRED;
+      endoneof;
+
+      numeric varid = SOCKET_IIO_CONFIGURATION.DfxLtssmLoggerMask,
+        prompt  = STRING_TOKEN(STR_LTSSM_LOG_MASK_PROMPT),
+        help    = STRING_TOKEN(STR_LTSSM_LOG_MASK_HELP),
+        flags        = RESET_REQUIRED | DISPLAY_UINT_HEX,
+        minimum      = 0,
+        maximum      = 0xff,
+        step         = 0, 
+        default      = 0xff, defaultstore = MyStandardDefault,
+        default      = 0xff, defaultstore = MyManufactureDefault,
+      endnumeric;
+
+    endif;
+    
+    oneof varid = SOCKET_IIO_CONFIGURATION.DfxJitterLogger,
+        prompt  = STRING_TOKEN(STR_PCIE_JITTER_LOG_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_JITTER_LOG_HELP),
+        option text = STRING_TOKEN(STR_DISABLE),   value = 0, flags = RESET_REQUIRED  | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),    value = 1, flags = RESET_REQUIRED;
+    endoneof;
+       
+
+       goto VFR_FORMID_IIO_DFX_SKT0SVDEVHIDE,
+         prompt  = STRING_TOKEN(STR_IIO_DFX_SKT0_DEVHIDE_FORM),
+         help    = STRING_TOKEN(STR_IIO_DFX_SKT0_DEVHIDE_FORM);
+
+       goto VFR_FORMID_IIO_DFX_SKT1SVDEVHIDE,
+         prompt  = STRING_TOKEN(STR_IIO_DFX_SKT1_DEVHIDE_FORM),
+         help    = STRING_TOKEN(STR_IIO_DFX_SKT1_DEVHIDE_FORM);
+
+       goto VFR_FORMID_IIO_DFX_SKT2SVDEVHIDE,
+         prompt  = STRING_TOKEN(STR_IIO_DFX_SKT2_DEVHIDE_FORM),
+         help    = STRING_TOKEN(STR_IIO_DFX_SKT2_DEVHIDE_FORM);
+
+       goto VFR_FORMID_IIO_DFX_SKT3SVDEVHIDE,
+         prompt  = STRING_TOKEN(STR_IIO_DFX_SKT3_DEVHIDE_FORM),
+         help    = STRING_TOKEN(STR_IIO_DFX_SKT3_DEVHIDE_FORM);
+         
+endform;
+
+//SOCKET DEV HIDE OPTIONS SKT 0
+
+ form formid = VFR_FORMID_IIO_DFX_SKT0SVDEVHIDE,
+      title = STRING_TOKEN(STR_IIO_DFX_SKT0_DEVHIDE_FORM);
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[0],
+                prompt    = STRING_TOKEN(STR_DEVHIDE0_0),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[1],
+                prompt    = STRING_TOKEN(STR_DEVHIDE1_0),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[2],
+                prompt    = STRING_TOKEN(STR_DEVHIDE2_0),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[3],
+                prompt    = STRING_TOKEN(STR_DEVHIDE3_0),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[4],
+                prompt    = STRING_TOKEN(STR_DEVHIDE4_0),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[5],
+                prompt    = STRING_TOKEN(STR_DEVHIDE5_0),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+        
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[6],
+                prompt    = STRING_TOKEN(STR_DEVHIDE6_0),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[7],
+                prompt    = STRING_TOKEN(STR_DEVHIDE7_0),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;        
+
+        
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[8],
+                prompt    = STRING_TOKEN(STR_DEVHIDE0_0_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[9],
+                prompt    = STRING_TOKEN(STR_DEVHIDE1_0_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;             
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[10],
+                prompt    = STRING_TOKEN(STR_DEVHIDE2_0_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[11],
+                prompt    = STRING_TOKEN(STR_DEVHIDE3_0_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[12],
+                prompt    = STRING_TOKEN(STR_DEVHIDE4_0_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+         
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[13],
+                prompt    = STRING_TOKEN(STR_DEVHIDE5_0_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[14],
+                prompt    = STRING_TOKEN(STR_DEVHIDE6_0_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[15],
+                prompt    = STRING_TOKEN(STR_DEVHIDE7_0_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+       
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[16],
+                prompt    = STRING_TOKEN(STR_DEVHIDE0_0_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[17],
+                prompt    = STRING_TOKEN(STR_DEVHIDE1_0_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+     
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[18],
+                prompt    = STRING_TOKEN(STR_DEVHIDE2_0_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[19],
+                prompt    = STRING_TOKEN(STR_DEVHIDE3_0_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;           
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[20],
+                prompt    = STRING_TOKEN(STR_DEVHIDE4_0_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[21],
+                prompt    = STRING_TOKEN(STR_DEVHIDE5_0_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[22],
+                prompt    = STRING_TOKEN(STR_DEVHIDE6_0_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[23],
+                prompt    = STRING_TOKEN(STR_DEVHIDE7_0_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[24],
+                prompt    = STRING_TOKEN(STR_DEVHIDE0_0_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[25],
+                prompt    = STRING_TOKEN(STR_DEVHIDE1_0_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[26],
+                prompt    = STRING_TOKEN(STR_DEVHIDE2_0_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;         
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[27],
+                prompt    = STRING_TOKEN(STR_DEVHIDE3_0_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[28],
+                prompt    = STRING_TOKEN(STR_DEVHIDE4_0_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[29],
+                prompt    = STRING_TOKEN(STR_DEVHIDE5_0_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[30],
+                prompt    = STRING_TOKEN(STR_DEVHIDE6_0_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[31],
+                prompt    = STRING_TOKEN(STR_DEVHIDE7_0_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+    
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[32],
+                prompt    = STRING_TOKEN(STR_DEVHIDE0_0_4),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[33],
+                prompt    = STRING_TOKEN(STR_DEVHIDE1_0_4),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[34],
+                prompt    = STRING_TOKEN(STR_DEVHIDE2_0_4),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+      
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[35],
+                prompt    = STRING_TOKEN(STR_DEVHIDE3_0_4),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[36],
+                prompt    = STRING_TOKEN(STR_DEVHIDE4_0_4),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[37],
+                prompt    = STRING_TOKEN(STR_DEVHIDE5_0_4),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[38],
+                prompt    = STRING_TOKEN(STR_DEVHIDE6_0_4),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[39],
+                prompt    = STRING_TOKEN(STR_DEVHIDE7_0_4),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[40],
+                prompt    = STRING_TOKEN(STR_DEVHIDE0_0_5),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[41],
+                prompt    = STRING_TOKEN(STR_DEVHIDE1_0_5),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[42],
+                prompt    = STRING_TOKEN(STR_DEVHIDE2_0_5),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[43],
+                prompt    = STRING_TOKEN(STR_DEVHIDE3_0_5),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[44],
+                prompt    = STRING_TOKEN(STR_DEVHIDE4_0_5),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[45],
+                prompt    = STRING_TOKEN(STR_DEVHIDE5_0_5),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[46],
+                prompt    = STRING_TOKEN(STR_DEVHIDE6_0_5),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[47],
+                prompt    = STRING_TOKEN(STR_DEVHIDE7_0_5),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+    endform; // SKT0SVDEVHIDE_FORM_ID
+// SKT0 IIO forms -- end
+
+
+//SOCKET DEVHIDE SKT IIO1
+
+  form formid = VFR_FORMID_IIO_DFX_SKT1SVDEVHIDE,
+      title = STRING_TOKEN(STR_IIO_DFX_SKT1_DEVHIDE_FORM);
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[48],
+                prompt    = STRING_TOKEN(STR_DEVHIDE0_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[49],
+                prompt    = STRING_TOKEN(STR_DEVHIDE1_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[50],
+                prompt    = STRING_TOKEN(STR_DEVHIDE2_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[51],
+                prompt    = STRING_TOKEN(STR_DEVHIDE3_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[52],
+                prompt    = STRING_TOKEN(STR_DEVHIDE4_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[53],
+                prompt    = STRING_TOKEN(STR_DEVHIDE5_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+        
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[54],
+                prompt    = STRING_TOKEN(STR_DEVHIDE6_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[55],
+                prompt    = STRING_TOKEN(STR_DEVHIDE7_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;        
+
+        
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[56],
+                prompt    = STRING_TOKEN(STR_DEVHIDE0_1_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[57],
+                prompt    = STRING_TOKEN(STR_DEVHIDE1_1_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;             
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[58],
+                prompt    = STRING_TOKEN(STR_DEVHIDE2_1_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[59],
+                prompt    = STRING_TOKEN(STR_DEVHIDE3_1_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[60],
+                prompt    = STRING_TOKEN(STR_DEVHIDE4_1_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+         
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[61],
+                prompt    = STRING_TOKEN(STR_DEVHIDE5_1_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[62],
+                prompt    = STRING_TOKEN(STR_DEVHIDE6_1_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[63],
+                prompt    = STRING_TOKEN(STR_DEVHIDE7_1_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+       
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[64],
+                prompt    = STRING_TOKEN(STR_DEVHIDE0_2_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[65],
+                prompt    = STRING_TOKEN(STR_DEVHIDE1_2_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+     
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[66],
+                prompt    = STRING_TOKEN(STR_DEVHIDE2_2_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[67],
+                prompt    = STRING_TOKEN(STR_DEVHIDE3_2_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;           
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[68],
+                prompt    = STRING_TOKEN(STR_DEVHIDE4_2_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[69],
+                prompt    = STRING_TOKEN(STR_DEVHIDE5_2_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[70],
+                prompt    = STRING_TOKEN(STR_DEVHIDE6_2_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[71],
+                prompt    = STRING_TOKEN(STR_DEVHIDE7_2_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[72],
+                prompt    = STRING_TOKEN(STR_DEVHIDE0_3_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[73],
+                prompt    = STRING_TOKEN(STR_DEVHIDE1_3_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[74],
+                prompt    = STRING_TOKEN(STR_DEVHIDE2_3_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;         
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[75],
+                prompt    = STRING_TOKEN(STR_DEVHIDE3_3_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[76],
+                prompt    = STRING_TOKEN(STR_DEVHIDE4_3_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[77],
+                prompt    = STRING_TOKEN(STR_DEVHIDE5_3_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[78],
+                prompt    = STRING_TOKEN(STR_DEVHIDE6_3_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[79],
+                prompt    = STRING_TOKEN(STR_DEVHIDE7_3_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+      
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[80],
+                prompt    = STRING_TOKEN(STR_DEVHIDE0_4_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[81],
+                prompt    = STRING_TOKEN(STR_DEVHIDE1_4_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[82],
+                prompt    = STRING_TOKEN(STR_DEVHIDE2_4_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+      
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[83],
+                prompt    = STRING_TOKEN(STR_DEVHIDE3_4_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[84],
+                prompt    = STRING_TOKEN(STR_DEVHIDE4_4_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[85],
+                prompt    = STRING_TOKEN(STR_DEVHIDE5_4_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[86],
+                prompt    = STRING_TOKEN(STR_DEVHIDE6_4_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[87],
+                prompt    = STRING_TOKEN(STR_DEVHIDE7_4_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[88],
+                prompt    = STRING_TOKEN(STR_DEVHIDE0_5_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[89],
+                prompt    = STRING_TOKEN(STR_DEVHIDE1_5_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[90],
+                prompt    = STRING_TOKEN(STR_DEVHIDE2_5_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[91],
+                prompt    = STRING_TOKEN(STR_DEVHIDE3_5_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[92],
+                prompt    = STRING_TOKEN(STR_DEVHIDE4_5_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[93],
+                prompt    = STRING_TOKEN(STR_DEVHIDE5_5_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[94],
+                prompt    = STRING_TOKEN(STR_DEVHIDE6_5_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[95],
+                prompt    = STRING_TOKEN(STR_DEVHIDE7_5_1),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+                
+    endform; // SKT1SVDEVHIDE_FORM_ID
+// SKT1 IIO forms -- end
+
+//SOCKET DEVHIDE SKT IIO 2
+
+ form formid = VFR_FORMID_IIO_DFX_SKT2SVDEVHIDE,
+      title = STRING_TOKEN(STR_IIO_DFX_SKT2_DEVHIDE_FORM);
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[96],
+                prompt    = STRING_TOKEN(STR_DEVHIDE0_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[97],
+                prompt    = STRING_TOKEN(STR_DEVHIDE1_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[98],
+                prompt    = STRING_TOKEN(STR_DEVHIDE2_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[99],
+                prompt    = STRING_TOKEN(STR_DEVHIDE3_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[100],
+                prompt    = STRING_TOKEN(STR_DEVHIDE4_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[101],
+                prompt    = STRING_TOKEN(STR_DEVHIDE5_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+        
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[102],
+                prompt    = STRING_TOKEN(STR_DEVHIDE6_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[103],
+                prompt    = STRING_TOKEN(STR_DEVHIDE7_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;        
+
+        
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[104],
+                prompt    = STRING_TOKEN(STR_DEVHIDE0_1_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[105],
+                prompt    = STRING_TOKEN(STR_DEVHIDE1_1_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;             
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[106],
+                prompt    = STRING_TOKEN(STR_DEVHIDE2_1_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[107],
+                prompt    = STRING_TOKEN(STR_DEVHIDE3_1_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[108],
+                prompt    = STRING_TOKEN(STR_DEVHIDE4_1_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+         
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[109],
+                prompt    = STRING_TOKEN(STR_DEVHIDE5_1_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[110],
+                prompt    = STRING_TOKEN(STR_DEVHIDE6_1_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[111],
+                prompt    = STRING_TOKEN(STR_DEVHIDE7_1_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+       
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[112],
+                prompt    = STRING_TOKEN(STR_DEVHIDE0_2_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[113],
+                prompt    = STRING_TOKEN(STR_DEVHIDE1_2_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+     
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[114],
+                prompt    = STRING_TOKEN(STR_DEVHIDE2_2_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[115],
+                prompt    = STRING_TOKEN(STR_DEVHIDE3_2_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;           
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[116],
+                prompt    = STRING_TOKEN(STR_DEVHIDE4_2_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[117],
+                prompt    = STRING_TOKEN(STR_DEVHIDE5_2_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[118],
+                prompt    = STRING_TOKEN(STR_DEVHIDE6_2_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[119],
+                prompt    = STRING_TOKEN(STR_DEVHIDE7_2_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[120],
+                prompt    = STRING_TOKEN(STR_DEVHIDE0_3_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[121],
+                prompt    = STRING_TOKEN(STR_DEVHIDE1_3_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[122],
+                prompt    = STRING_TOKEN(STR_DEVHIDE2_3_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;         
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[123],
+                prompt    = STRING_TOKEN(STR_DEVHIDE3_3_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[124],
+                prompt    = STRING_TOKEN(STR_DEVHIDE4_3_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[125],
+                prompt    = STRING_TOKEN(STR_DEVHIDE5_3_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[126],
+                prompt    = STRING_TOKEN(STR_DEVHIDE6_3_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[127],
+                prompt    = STRING_TOKEN(STR_DEVHIDE7_3_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+      
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[128],
+                prompt    = STRING_TOKEN(STR_DEVHIDE0_4_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[129],
+                prompt    = STRING_TOKEN(STR_DEVHIDE1_4_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[130],
+                prompt    = STRING_TOKEN(STR_DEVHIDE2_4_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+      
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[131],
+                prompt    = STRING_TOKEN(STR_DEVHIDE3_4_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[132],
+                prompt    = STRING_TOKEN(STR_DEVHIDE4_4_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[133],
+                prompt    = STRING_TOKEN(STR_DEVHIDE5_4_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[134],
+                prompt    = STRING_TOKEN(STR_DEVHIDE6_4_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[135],
+                prompt    = STRING_TOKEN(STR_DEVHIDE7_4_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[136],
+                prompt    = STRING_TOKEN(STR_DEVHIDE0_5_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[137],
+                prompt    = STRING_TOKEN(STR_DEVHIDE1_5_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[138],
+                prompt    = STRING_TOKEN(STR_DEVHIDE2_5_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[139],
+                prompt    = STRING_TOKEN(STR_DEVHIDE3_5_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[140],
+                prompt    = STRING_TOKEN(STR_DEVHIDE4_5_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[141],
+                prompt    = STRING_TOKEN(STR_DEVHIDE5_5_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[142],
+                prompt    = STRING_TOKEN(STR_DEVHIDE6_5_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[143],
+                prompt    = STRING_TOKEN(STR_DEVHIDE7_5_2),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+    endform; // SKT2SVDEVHIDE_FORM_ID
+// SKT2 IIO forms -- end
+
+//SOCKET DEVHIDE SKT IIO3
+
+   form formid = VFR_FORMID_IIO_DFX_SKT3SVDEVHIDE,
+      title = STRING_TOKEN(STR_IIO_DFX_SKT3_DEVHIDE_FORM);
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[144],
+                prompt    = STRING_TOKEN(STR_DEVHIDE0_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[145],
+                prompt    = STRING_TOKEN(STR_DEVHIDE1_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[146],
+                prompt    = STRING_TOKEN(STR_DEVHIDE2_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[147],
+                prompt    = STRING_TOKEN(STR_DEVHIDE3_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[148],
+                prompt    = STRING_TOKEN(STR_DEVHIDE4_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[149],
+                prompt    = STRING_TOKEN(STR_DEVHIDE5_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+        
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[150],
+                prompt    = STRING_TOKEN(STR_DEVHIDE6_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[151],
+                prompt    = STRING_TOKEN(STR_DEVHIDE7_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;        
+
+        
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[152],
+                prompt    = STRING_TOKEN(STR_DEVHIDE0_1_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[153],
+                prompt    = STRING_TOKEN(STR_DEVHIDE1_1_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;             
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[154],
+                prompt    = STRING_TOKEN(STR_DEVHIDE2_1_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[155],
+                prompt    = STRING_TOKEN(STR_DEVHIDE3_1_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[156],
+                prompt    = STRING_TOKEN(STR_DEVHIDE4_1_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+         
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[157],
+                prompt    = STRING_TOKEN(STR_DEVHIDE5_1_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[158],
+                prompt    = STRING_TOKEN(STR_DEVHIDE6_1_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[159],
+                prompt    = STRING_TOKEN(STR_DEVHIDE7_1_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+       
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[160],
+                prompt    = STRING_TOKEN(STR_DEVHIDE0_2_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[161],
+                prompt    = STRING_TOKEN(STR_DEVHIDE1_2_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+     
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[162],
+                prompt    = STRING_TOKEN(STR_DEVHIDE2_2_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[163],
+                prompt    = STRING_TOKEN(STR_DEVHIDE3_2_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;           
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[164],
+                prompt    = STRING_TOKEN(STR_DEVHIDE4_2_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[165],
+                prompt    = STRING_TOKEN(STR_DEVHIDE5_2_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[166],
+                prompt    = STRING_TOKEN(STR_DEVHIDE6_2_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[167],
+                prompt    = STRING_TOKEN(STR_DEVHIDE7_2_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[168],
+                prompt    = STRING_TOKEN(STR_DEVHIDE0_3_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[169],
+                prompt    = STRING_TOKEN(STR_DEVHIDE1_3_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[170],
+                prompt    = STRING_TOKEN(STR_DEVHIDE2_3_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;         
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[171],
+                prompt    = STRING_TOKEN(STR_DEVHIDE3_3_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[172],
+                prompt    = STRING_TOKEN(STR_DEVHIDE4_3_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[173],
+                prompt    = STRING_TOKEN(STR_DEVHIDE5_3_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[174],
+                prompt    = STRING_TOKEN(STR_DEVHIDE6_3_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[175],
+                prompt    = STRING_TOKEN(STR_DEVHIDE7_3_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+      
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[176],
+                prompt    = STRING_TOKEN(STR_DEVHIDE0_4_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[177],
+                prompt    = STRING_TOKEN(STR_DEVHIDE1_4_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[178],
+                prompt    = STRING_TOKEN(STR_DEVHIDE2_4_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+      
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[179],
+                prompt    = STRING_TOKEN(STR_DEVHIDE3_4_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[180],
+                prompt    = STRING_TOKEN(STR_DEVHIDE4_4_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[181],
+                prompt    = STRING_TOKEN(STR_DEVHIDE5_4_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[182],
+                prompt    = STRING_TOKEN(STR_DEVHIDE6_4_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[183],
+                prompt    = STRING_TOKEN(STR_DEVHIDE7_4_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[184],
+                prompt    = STRING_TOKEN(STR_DEVHIDE0_5_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[185],
+                prompt    = STRING_TOKEN(STR_DEVHIDE1_5_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[186],
+                prompt    = STRING_TOKEN(STR_DEVHIDE2_5_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[187],
+                prompt    = STRING_TOKEN(STR_DEVHIDE3_5_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[188],
+                prompt    = STRING_TOKEN(STR_DEVHIDE4_5_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[189],
+                prompt    = STRING_TOKEN(STR_DEVHIDE5_5_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[190],
+                prompt    = STRING_TOKEN(STR_DEVHIDE6_5_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_IIO_CONFIGURATION.DfxSocketDevFuncHide[191],
+                prompt    = STRING_TOKEN(STR_DEVHIDE7_5_3),
+                help      = STRING_TOKEN(STR_DEVHIDE_HELP),
+                flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+                minimum   = 0,
+                maximum   = 0xffffffff,
+                step      = 0,
+                default   = 0, defaultstore = MyStandardDefault,
+                default   = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+    endform; // SKT3SVDEVHIDE_FORM_ID
+
+//--------------------------------------------------
+// IIO0 Configuration 
+//--------------------------------------------------
+form formid = VFR_FORMID_DFX_IIO0,
+      title   = STRING_TOKEN(STR_IIO0_TITLE);
+    //
+    // Jump to PCI Express Port0 Configuration Form
+    //
+    suppressif TRUE;
+      checkbox varid    = SOCKET_IIO_CONFIGURATION.HidePEXPMenu[0],
+          prompt   = STRING_TOKEN(STR_PCIE_PORT_0_NULL_PROMPT),
+          help     = STRING_TOKEN(STR_NULL_STRING),
+          // Flags behavior for checkbox is overloaded so that it equals
+          // a DEFAULT value.  1 = ON, 0 = off
+          flags    = 0,
+      endcheckbox;
+    endif;
+
+    goto VFR_FORMID_DFX_PCIE_IIO0P0,
+      prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_0_PROMPT),
+      help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+
+    //
+    // Jump to PCI Express Port1 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[1]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO0P1,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_1_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port2 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[2]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO0P2,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_2_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port3 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[3]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO0P3,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_3_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port4 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[4]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO0P4,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_4_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port5 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[5]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO0P5,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_5_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port6 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[6]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO0P6,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_6_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port7 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[7]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO0P7,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_7_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port8 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[8]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO0P8,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_8_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+    //
+    // Jump to PCI Express Port9 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[9]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO0P9,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_9_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port10 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[10]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO0P10,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_10_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port11 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[11]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO0P11,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_11_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+    
+    //
+    // Jump to PCI Express Port12 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[12]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO0P12,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_12_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+    
+    //
+    // Jump to PCI Express Port13 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[13]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO0P13,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_13_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+    
+    //
+    // Jump to PCI Express Port14 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[14]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO0P14,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_14_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port15 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[15]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO0P15,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_14_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port16 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[16]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO0P16,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_16_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;     
+
+    //
+    // Jump to PCI Express Port17 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[17]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO0P17,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_17_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port18 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[18]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO0P18,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_18_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port19 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[19]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO0P19,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_19_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port20 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[20]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO0P20,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_20_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+endform;
+
+//--------------------------------------------------
+// IIO1 Configuration 
+//--------------------------------------------------
+form formid = VFR_FORMID_DFX_IIO1,
+      title   = STRING_TOKEN(STR_IIO1_TITLE);
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[21]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO1P0,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_21_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port1 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[22]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO1P1,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_22_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port2 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[23]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO1P2,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_23_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port3 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[24]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO1P3,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_24_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port4 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[25]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO1P4,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_25_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+    //
+    // Jump to PCI Express Port5 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[26]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO1P5,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_26_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port6 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[27]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO1P6,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_27_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port7 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[28]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO1P7,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_28_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port8 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[29]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO1P8,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_29_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port9 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[30]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO1P9,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_30_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port10 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[31]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO1P10,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_31_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port11 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[32]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO1P11,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_32_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port12 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[33]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO1P12,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_33_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+     
+    //
+    // Jump to PCI Express Port13 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[34]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO1P13,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_34_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port14 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[35]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO1P14,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_35_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+      
+    //
+    // Jump to PCI Express Port15 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[36]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO1P15,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_36_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port16 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[37]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO1P16,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_37_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;     
+
+    //
+    // Jump to PCI Express Port17 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[38]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO1P17,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_38_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port18 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[39]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO1P18,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_39_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port19 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[40]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO1P19,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_40_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port20 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[41]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO1P20,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_41_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+endform;
+
+//--------------------------------------------------
+// IIO2 Configuration 
+//--------------------------------------------------
+form formid = VFR_FORMID_DFX_IIO2,
+    title   = STRING_TOKEN(STR_IIO2_TITLE);
+    
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[42]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO2P0,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_42_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port1 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[43]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO2P1,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_43_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port2 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[44]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO2P2,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_44_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port3 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[45]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO2P3,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_45_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port4 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[46]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO2P4,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_46_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port5 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[47]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO2P5,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_47_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port6 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[48]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO2P6,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_48_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port7 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[49]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO2P7,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_49_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port8 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[50]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO2P8,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_50_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+    //
+    // Jump to PCI Express Port9 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[51]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO2P9,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_51_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port10 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[52]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO2P10,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_52_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+    
+    //
+    // Jump to PCI Express Port11 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[53]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO2P11,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_53_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+    
+    //
+    // Jump to PCI Express Port12 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[54]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO2P12,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_54_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+    
+    //
+    // Jump to PCI Express Port13 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[55]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO2P13,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_55_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+    
+    //
+    // Jump to PCI Express Port14 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[56]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO2P14,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_56_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port15 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[57]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO2P15,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_57_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port16 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[58]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO2P16,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_58_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;     
+
+    //
+    // Jump to PCI Express Port17 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[59]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO2P17,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_59_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port18 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[60]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO2P18,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_60_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port19 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[61]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO2P19,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_61_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port20 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[62]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO2P20,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_62_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+    
+endform;
+
+//--------------------------------------------------
+// IIO3 Configuration 
+//--------------------------------------------------
+form formid = VFR_FORMID_DFX_IIO3,
+      title   = STRING_TOKEN(STR_IIO3_TITLE);
+      
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[63]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO3P0,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_63_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port1 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[64]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO3P1,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_64_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port2 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[65]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO3P2,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_65_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port3 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[66]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO3P3,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_66_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port4 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[67]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO3P4,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_67_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+    //
+    // Jump to PCI Express Port5 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[68]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO3P5,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_68_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port6 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[69]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO3P6,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_69_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+    //
+    // Jump to PCI Express Port7 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[70]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO3P7,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_70_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port8 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[71]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO3P8,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_71_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port9 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[72]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO3P9,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_72_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port10 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[73]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO3P10,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_73_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port11 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[74]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO3P11,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_74_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+     
+    //
+    // Jump to PCI Express Port12 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[75]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO3P12,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_75_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+     
+    //
+    // Jump to PCI Express Port13 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[76]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO3P13,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_76_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+     
+    //
+    // Jump to PCI Express Port14 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[77]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO3P14,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_77_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port15 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[78]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO3P15,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_78_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port16 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[79]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO3P16,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_79_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port17 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[80]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO3P17,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_80_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+     
+    //
+    // Jump to PCI Express Port18 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[81]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO3P18,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_81_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+     
+    //
+    // Jump to PCI Express Port19 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[82]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO3P19,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_82_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+     
+    //
+    // Jump to PCI Express Port20 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[83]==1;
+      goto VFR_FORMID_DFX_PCIE_IIO3P20,
+        prompt  = STRING_TOKEN(STR_DFX_PCIE_PORT_83_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+endform;
+
+#include "IioDfxPcieSetup.hfr"

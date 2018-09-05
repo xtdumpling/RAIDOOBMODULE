@@ -1,0 +1,246 @@
+/*++
+  This file contains 'Framework Code' and is licensed as such
+  under the terms of your license agreement with Intel or your
+  vendor.  This file may not be modified, except as allowed by
+  additional terms of your license agreement.
+--*/
+/*++
+  
+  Copyright (c)  2001 - 2013 Intel Corporation.  All rights reserved.
+
+  This software and associated documentation (if any) is furnished under 
+  a license and may only be used or copied in accordance with the terms 
+  of the license.  Except as permitted by such license, no part of this 
+  software or documentation may be reproduced, stored in a retrieval system, 
+  or transmitted in any form or by any means without the express written 
+  consent of Intel Corporation.
+  
+  Module Name:
+  
+    Me.asi
+  
+  Abstract:
+  
+    This file provides HECI-2 device in ASL code in DSDT table. The device
+    is used by Node Manager (aka NPTM) for sending updates about changes
+    in max p-state and t-state support when NM wants to limit host power
+    consumption.
+  
+--*/
+#if 0
+//
+// Obsolete code. New is in PurleyPkg/Me/Sps/Asl
+//
+#define HECI_CMD_MAXPTSTATE    0
+#define HECI_CMD_CPUHOTPLUG    1
+#define HECI_CMD_CPUHOTREMOVE  2
+//
+// The commands below are defined just informationaly.
+// These are not actually used because the \PETE object holds their values.
+//
+#define HECI_CMD_MAXPSTATEACK  0x80
+#define HECI_CMD_MAXTSTATEACK  0x40
+#define HECI_CMD_MAXPTSTATEACK (HECI_CMD_MAXPSTATEACK | HECI_CMD_MAXTSTATEACK)
+
+#define CPU_THREAD_NOTIFY(socket, thread)                                     \
+        Notify(\_SB.SCK##socket.CP##thread, 0x80)                             \
+        Notify(\_SB.SCK##socket.CP##thread, 0x82)
+
+#define CPU_SOCKET_NOTIFY(socket)                                             \
+        CPU_THREAD_NOTIFY(socket, 00)                                         \
+        CPU_THREAD_NOTIFY(socket, 01)                                         \
+        CPU_THREAD_NOTIFY(socket, 02)                                         \
+        CPU_THREAD_NOTIFY(socket, 03)                                         \
+        CPU_THREAD_NOTIFY(socket, 04)                                         \
+        CPU_THREAD_NOTIFY(socket, 05)                                         \
+        CPU_THREAD_NOTIFY(socket, 06)                                         \
+        CPU_THREAD_NOTIFY(socket, 07)                                         \
+        CPU_THREAD_NOTIFY(socket, 08)                                         \
+        CPU_THREAD_NOTIFY(socket, 09)                                         \
+        CPU_THREAD_NOTIFY(socket, 0A)                                         \
+        CPU_THREAD_NOTIFY(socket, 0B)                                         \
+        CPU_THREAD_NOTIFY(socket, 0C)                                         \
+        CPU_THREAD_NOTIFY(socket, 0D)                                         \
+        CPU_THREAD_NOTIFY(socket, 0E)                                         \
+        CPU_THREAD_NOTIFY(socket, 0F)                                         \
+        CPU_THREAD_NOTIFY(socket, 10)                                         \
+        CPU_THREAD_NOTIFY(socket, 11)                                         \
+        CPU_THREAD_NOTIFY(socket, 12)                                         \
+        CPU_THREAD_NOTIFY(socket, 13)                                         \
+        CPU_THREAD_NOTIFY(socket, 14)                                         \
+        CPU_THREAD_NOTIFY(socket, 15)                                         \
+        CPU_THREAD_NOTIFY(socket, 16)                                         \
+        CPU_THREAD_NOTIFY(socket, 17)                                         \
+        CPU_THREAD_NOTIFY(socket, 18)                                         \
+        CPU_THREAD_NOTIFY(socket, 19)                                         \
+        CPU_THREAD_NOTIFY(socket, 1A)                                         \
+        CPU_THREAD_NOTIFY(socket, 1B)                                         \
+        CPU_THREAD_NOTIFY(socket, 1C)                                         \
+        CPU_THREAD_NOTIFY(socket, 1D)                                         \
+        CPU_THREAD_NOTIFY(socket, 1E)                                         \
+        CPU_THREAD_NOTIFY(socket, 1F)                                         \
+        CPU_THREAD_NOTIFY(socket, 20)                                         \
+        CPU_THREAD_NOTIFY(socket, 21)                                         \
+        CPU_THREAD_NOTIFY(socket, 22)                                         \
+        CPU_THREAD_NOTIFY(socket, 23)                                         \
+        CPU_THREAD_NOTIFY(socket, 24)                                         \
+        CPU_THREAD_NOTIFY(socket, 25)                                         \
+        CPU_THREAD_NOTIFY(socket, 26)                                         \
+        CPU_THREAD_NOTIFY(socket, 27)                                         \
+        CPU_THREAD_NOTIFY(socket, 28)                                         \
+        CPU_THREAD_NOTIFY(socket, 29)                                         \
+        CPU_THREAD_NOTIFY(socket, 2A)                                         \
+        CPU_THREAD_NOTIFY(socket, 2B)                                         \
+        CPU_THREAD_NOTIFY(socket, 2C)                                         \
+        CPU_THREAD_NOTIFY(socket, 2D)                                         \
+        CPU_THREAD_NOTIFY(socket, 2E)                                         \
+        CPU_THREAD_NOTIFY(socket, 2F)                                         \
+        CPU_THREAD_NOTIFY(socket, 30)                                         \
+        CPU_THREAD_NOTIFY(socket, 31)                                         \
+        CPU_THREAD_NOTIFY(socket, 32)                                         \
+        CPU_THREAD_NOTIFY(socket, 33)                                         \
+        CPU_THREAD_NOTIFY(socket, 34)                                         \
+        CPU_THREAD_NOTIFY(socket, 35)                                         \
+        CPU_THREAD_NOTIFY(socket, 36)                                         \
+        CPU_THREAD_NOTIFY(socket, 37)                                         
+
+    //
+    // Define the region for HECI2 registers mapped to HECI2_BASE_ADDRESS
+    //
+    //OperationRegion (HCSR, SystemMemory, 0xFEA00000, 16)
+    OperationRegion (HCSR, SystemMemory, 0xFED12010, 0x10)
+    Field (HCSR, DWordAcc, NoLock, Preserve) {
+        CBWW, 32, // HECI2 write window - R_HECI_HOST_CB_WW
+        // Bit fields of R_HECI_HOST_H_CSR (Host Control Status Register)
+        HIE, 1,
+        HIS, 1,
+        HIG, 1,
+        HRD, 1,
+        HRS, 1,
+        , 3,
+        HRP, 8,
+        HWP, 8,
+        HBD, 8,
+        CBRW, 32, // HECI2 Read Window - R_HECI_ME_CB_RW
+        // Bit fields of R_HECI_ME_CSR_HA (ME Control Status Register - Host Access)
+        MIE, 1,
+        MIS, 1,
+        MIG, 1,
+        MRD, 1,
+        MRS, 1,
+        , 3,
+        MRP, 8,
+        MWP, 8,
+        MBD, 8
+    }
+
+//
+// Init method enables HECI2 on OS boot
+//
+Method(_INI, 0, Serialized) {
+    WAK()
+}
+
+//
+// Wake-up handler method - called from platform _WAK() method
+//
+Method (WAK, 0, Serialized) {
+//Store(0xAA, \IO80)	// debug
+    If(NMEN) {
+        //Store(0xAB, \IO80)	// debug
+        Store(1, HRD) //host ready
+        Store(1, HIS) // clear HECI interrupt status
+        Store(1, HIE) // enable HECI interrupts
+        Store(1, HIG)	// kick ME - I'm ready now
+    }
+}
+
+//
+// Prepare-to-sleep handler method - called from platform _PTS() method
+//
+Method (PTS, 0, Serialized) {
+    //Store(0xBB, \IO80)	// debug
+    If(NMEN) {
+        //Store(0xBC, \IO80)	// debug
+        Store(0, HIE) // disable HECI interrupts
+        Store(0, HRD) //host not ready
+        Store(1, HIG)	// kick ME - I'm not ready any more
+    }
+}
+
+//
+// Hot-Plug NotiFy method - sends status message via HECI-2
+// Used by CPU socket _STA & _EJ0 methods
+// Arg0 - HECI_CMD_CPUHOTPLUG for hot-plug,
+//        HECI_CMD_CPUHOTREMOVE for hot-remove
+// Arg1 - CPU socket id
+// Arg2 - number of threads on the CPU socket affected
+//
+Method(HPNF, 3, Serialized)
+{
+    Or(ShiftLeft(Arg2, 16), Or(ShiftLeft(Arg1, 8), Arg0), Local0)
+    Store(0x80040021, CBWW)
+    Store(Local0, CBWW)
+    Store(1, HIG)
+}
+
+//
+// SCI handler method - called from _L06() SCI handler
+//
+Method (HSCI, 0, Serialized) {
+    //Store(0xE0, \IO80)	// debug
+    If (NMEN) {      
+        //Store(0xE1, \IO80)	// debug
+        If (HIS) { // If Host Interrupt Status is Set (when ME_IG is set to 1)
+            Store(1, HIS) // clear interrupt status before reading queue
+            If (MRS) { // reset request from ME - respond with host reset
+                //Store(0xE2, \IO80)	// debug
+                Store(1, HRS)
+                Store(1, HIG)
+            } Else {
+                //Store(0xE3, \IO80)	// debug
+                If (MRD) {
+                    //Store(0xE4, \IO80)	// debug
+                    If (LNot(HRD)) { // ME signals ready, make this side ready too
+                        //Store(0xE5, \IO80)	// debug
+                        Store(0, HRS)
+                        Store(1, HRD)
+                        Store(1, HIG)	// kick ME - I'm ready now
+                    }
+                    If (LNotEqual(MWP, MRP)) { // If buffer not empty
+                        //Store(0xE6, \IO80)	// debug
+                        Store(CBRW, Local1)	// Local1 = message header
+                        Store(CBRW, Local0)	// Local0 = TState:PState:SeqNo:Command
+                        If (LEqual(And(Local0, 0xff), HECI_CMD_MAXPTSTATE)) {
+                            //Store(0xE7, \IO80)	// Debug
+                            Store(Local1, CBWW)
+                            Store(Or(Local0, And(PETE, 0xff)), CBWW)        // Send ACK for P/T-State
+                            Store(1, HIG)
+                            Store(And(ShiftRight(Local0, 16), 0xff), \PSTE) // Extract Max P state allowed
+                            Store(And(ShiftRight(Local0, 24), 0xff), \TSTE) // Extract Max T state allowed
+                            //Store(Or(ShiftLeft(\TSTE, 4), \PSTE), \IO80)	// Debug: print PT state on LED
+                            //
+                            // Trigger _PPC & _TPC execution for all the CPUs present in the system
+                            //
+                            If (And(PRBM, 1)) {
+                                CPU_SOCKET_NOTIFY(0)
+                            }
+                            If (And(PRBM, 2)) {
+                                CPU_SOCKET_NOTIFY(1)
+                            }
+                            If (And(PRBM, 4)) {
+                                CPU_SOCKET_NOTIFY(2)
+                            }
+                            If (And(PRBM, 8)) {
+                                CPU_SOCKET_NOTIFY(3)
+                            }
+                        }
+                    }
+                } // If (MRD)
+            }
+        } //If (HIS)
+    } // If (NMEN)
+} // Method(HSCI,...)
+
+#endif
+

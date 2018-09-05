@@ -1,0 +1,45 @@
+TOKEN
+	Name  = "CryptoPkg_Bin_SUPPORT"
+	Value  = "0"
+	Help  = "Switch for Enabling CryptoPkg Library Binary support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+PATH
+	Name  = "CryptoPkg_Bin_DIR"
+End
+
+TOKEN
+	Name  = "OpensslLib_SUPPORT"
+	Value  = "0"
+	Help  = "Switch for Enabling OpensslLib support in the project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "OPENSSL_LIB"
+	Value  = "OpensslLibNoStdIo.lib"
+	TokenType = Expression
+        TOKEN = "StdLib_SUPPORT" "=" "0"	
+End
+
+TOKEN
+	Name  = "OPENSSL_LIB"
+	Value  = "OpensslLibStdIo.lib"
+	TokenType = Expression
+        TOKEN = "StdLib_SUPPORT" "!=" "0"	
+End
+
+INFComponent
+	Name  = "OpensslBianry"
+	File  = "OpensslBinary.inf"
+	Package  = "CryptoPkg"	
+	PreProcess = Yes
+	ModuleTypes  = "BASE"
+End
+
+LibraryMapping
+	Class  = "OpensslLib"
+	Instance  = "CryptoPkg.OpensslBianry"
+End

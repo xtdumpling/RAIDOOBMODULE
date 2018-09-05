@@ -1,0 +1,62 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+
+## @file OpalSecurity.inf
+#  Produces the StorageSecuritycommand Protocol interface
+##
+[Defines]
+  INF_VERSION              = 0x00010015
+  VERSION_STRING           = 1.0
+  BASE_NAME                = OpalSecurity
+  MODULE_TYPE              = DXE_DRIVER
+  FILE_GUID                = 59AF16B0-661D-4865-A381-38DE68385D8D
+  ENTRY_POINT              = OpalSecEntryPoint
+
+[Sources]
+  ../AmiModulePkg/OpalSecurity/OpalSecurity.c
+  ../AmiModulePkg/OpalSecurity/OpalSecurity.h
+    @Elink(OpalSecuritySrcList,"@Child","%n","%n")
+
+[LibraryClasses]
+  AmiDxeLib
+  UefiDriverEntryPoint
+  
+[Packages]
+  MdePkg/MdePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  
+[Protocols]
+  gAmiIdeBusInitProtocolGuid
+  gAmiAhciBusProtocolGuid  
+  gAmiHddOpalSecInitProtocolGuid
+  gEfiStorageSecurityCommandProtocolGuid  
+  
+[Depex]
+  TRUE
+  
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+

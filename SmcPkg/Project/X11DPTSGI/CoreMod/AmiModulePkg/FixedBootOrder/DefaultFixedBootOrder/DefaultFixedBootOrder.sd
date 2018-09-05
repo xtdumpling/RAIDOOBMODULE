@@ -1,0 +1,274 @@
+//****************************************************************************
+//**                                                                        **
+//**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+//**                                                                        **
+//****************************************************************************
+//  File History
+//
+//  Rev. 1.02
+//    Bug Fix:  Draft template.
+//    Reason:   
+//    Auditor:  Kasber Chen
+//    Date:     Nov/04/2016
+//
+//  Rev. 1.01
+//    Bug Fix:  Add setup item to enable/disable LEGACYT to EFI support when enable LEGACY_TO_EFI token.
+//    Reason:   Function improvement.
+//    Auditor:  Jimmy Chiu (Refer Grantley - Jacker Yeh)
+//    Date:     Aug/24/2016
+//
+//  Rev. 1.00
+//    Bug Fix:  Set Boot mode to default DUAL
+//    Reason:   
+//    Auditor:  Kasber Chen
+//    Date:     Aug/02/2016
+//
+//****************************************************************************
+//****************************************************************************
+#include <token.h>
+
+#ifdef SETUP_DATA_DEFINITION
+/***********************************************************/
+/* Put NVRAM data definitions here.
+/* For example:	UINT8 Data1;
+/* These definitions will be converted by the build process
+/* to a definitions of SETUP_DATA fields.
+/***********************************************************/
+UINT8  BootMode;
+UINT16 LegacyPriorities[16];
+UINT16 UefiPriorities[16];
+#if FBO_DUAL_MODE
+UINT16 DualPriorities[32];
+#endif
+#if SMCPKG_SUPPORT
+#if LEGACY_TO_EFI_DEFAULT
+UINT8  LegacyToEFISupport;
+#endif
+#endif //SMCPKG_SUPPORT
+#endif
+
+#ifdef FIXED_BOOT_ORDER_SETUP_GROUP_DATA
+UINT8	LegacyHDD;
+UINT8	LegacyHDD1;
+UINT8	LegacyHDD2;
+UINT8	LegacyHDD3;
+UINT8	LegacyHDD4;
+UINT8	LegacyHDD5;
+UINT8	LegacyODD;
+UINT8   LegacyNETWORK;
+UINT8	LegacyUSBHDD;
+UINT8	LegacyUSBODD;
+UINT8	LegacyUSBFDD;
+UINT8	LegacyUSBKEY;
+UINT8	LegacyUSBLAN;
+UINT8   LegacyUSB;
+UINT8   UefiDEVICE;
+UINT8	UefiHDD;
+UINT8	UefiHDD1;
+UINT8	UefiHDD2;
+UINT8	UefiHDD3;
+UINT8	UefiHDD4;
+UINT8	UefiHDD5;
+UINT8	UefiODD;
+UINT8   UefiNETWORK;
+UINT8	UefiUSBHDD;
+UINT8	UefiUSBODD;
+UINT8	UefiUSBKEY;
+UINT8	UefiUSBFDD;		//(EIP96232+)
+UINT8	UefiUSBLAN;
+UINT8   UefiUSB;
+#if SHELL_GROUP_SUPPORT
+UINT8	UefiAPPLICATION;
+#endif 
+#endif
+
+#ifdef FIXED_BOOT_ORDER_SETUP_DATA
+UINT8	LegacyDevice[FIXED_BOOT_ORDER_TOTAL_DEVICES_MAX_NUM];
+UINT8	UefiDevice[FIXED_BOOT_ORDER_TOTAL_DEVICES_MAX_NUM];
+#endif
+
+#if 0
+STRING_TOKEN(STR_BOOT_OPTION)
+STRING_TOKEN(STR_BOOT_OPTION_HELP)
+
+//
+// UEFI STRINGS
+//
+MAKEFILE_INSERT_UEFI_STRING_FLAG
+
+//
+// LEGACY STRINGS
+//
+MAKEFILE_INSERT_LEGACY_STRING_FLAG
+
+//
+// DUAL MODE STRINGS
+//
+MAKEFILE_INSERT_DUAL_STRING_FLAG
+
+//
+// FOR EIP123284
+//
+MAKEFILE_INSERT_STR_LEGACY_BOOT_ORDER_STRING_FLAG
+
+MAKEFILE_INSERT_STR_UEFI_BOOT_ORDER_STRING_FLAG
+
+MAKEFILE_INSERT_STR_DUAL_BOOT_ORDER_STRING_FLAG
+
+// LABEL auto ID
+MAKEFILE_INSERT_UEFI_FORM_LABEL_AUTO_ID_FLAG
+
+MAKEFILE_INSERT_LEGACY_FORM_LABEL_AUTO_ID_FLAG
+
+AUTO_ID(FIXED_BOOT_GROUP_KEY)
+
+#endif
+
+// Don't Modify below line, it's use in makefile !!
+MAKEFILE_INSERT_FORM_SET_FLAG
+
+//
+// Define Device
+//
+MAKEFILE_INSERT_DEVICE_VALUE_FLAG
+
+//
+// Define Uefi Device Values
+//
+MAKEFILE_INSERT_UEFI_DEVICE_VALUE_FLAG
+
+//
+// Define Legacy Device Values
+//
+MAKEFILE_INSERT_LEGACY_DEVICE_VALUE_FLAG
+
+//
+// Define Dual Mode Device Values
+//
+MAKEFILE_INSERT_DUAL_DEVICE_VALUE_FLAG
+
+
+	#ifdef FORM_SET_TYPEDEF
+	#include "AmiModulePkg/FixedBootOrder/FixedBootOrder.h"
+	#endif
+
+	#ifdef FORM_SET_VARSTORE
+		varstore FIXED_BOOT_GROUP,
+		key   = AUTO_ID(FIXED_BOOT_KEY1),
+		name  = FixedBootGroup,
+		guid  = SETUP_GUID;	
+	#endif
+					
+  	#ifdef FORM_SET_ITEM
+	
+		//----------------------------------------
+		//Make default to variable "StdDefault",don't display.
+        suppressif TRUE; 
+            goto 
+                formsetguid = FBO_GROUP_FORM_FORM_SET_GUID, 
+                formid = AUTO_ID(STD_DEFAULT_DUMMY_FORM),
+                question = 0, 
+                prompt = STRING_TOKEN(STR_EMPTY),
+                help = STRING_TOKEN(STR_EMPTY);
+        endif;
+        suppressif TRUE; 
+            oneof varid     = FIXED_BOOT_GROUP.LegacyHDD, 
+                prompt      = STRING_TOKEN(STR_EMPTY),
+                help        = STRING_TOKEN(STR_EMPTY),
+                option text = STRING_TOKEN(STR_EMPTY),	value = 0, flags = DEFAULT;
+                option text = STRING_TOKEN(STR_EMPTY),	value = 1, flags = 0;
+            endoneof;
+        endif;
+		//----------------------------------------
+#if EFI_DEVICE_IN_ONE_GROUP
+        // Always set this hidden, because there are no more 
+        // Implement it in Dual Mode.
+        suppressif TRUE; 
+            	oneof varid   = SETUP_DATA.BootMode,
+                	prompt    = STRING_TOKEN(STR_BOOT_MODE_SEL),
+                	help      = STRING_TOKEN(STR_BOOT_MODE_SEL_HELP),
+                	option text  = STRING_TOKEN(STR_BOOT_MODE_DUAL),       value = 2, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+	    	endoneof;
+        endif;
+#else
+#if CSM_SUPPORT
+	suppressif SMC_SETUP_STYLE == 0;	//SMCPKG_SUPPORT S
+	oneof varid     = SETUP_DATA.CsmSupport,
+	    prompt      = STRING_TOKEN(STR_CSM_SUPPORT_PROMPT),
+	    help        = STRING_TOKEN(STR_CSM_SUPPORT_HELP),
+	    default     = DEFAULT_CSM_LAUNCH_POLICY,
+	    option text = STRING_TOKEN(STR_DISABLED),	value = 0, flags = INTERACTIVE | RESET_REQUIRED;
+	    option text = STRING_TOKEN(STR_ENABLED),	value = 1, flags = MANUFACTURING | INTERACTIVE | RESET_REQUIRED;
+	endoneof;
+	endif;	//SMCPKG_SUPPORT E
+        oneof varid   = SETUP_DATA.BootMode,
+            prompt    = STRING_TOKEN(STR_BOOT_MODE_SEL),
+            help      = STRING_TOKEN(STR_BOOT_MODE_SEL_HELP),
+            option text  = STRING_TOKEN(STR_BOOT_MODE_LEGACY),     value = 0, flags = 0;
+            option text  = STRING_TOKEN(STR_BOOT_MODE_UEFI),       value = 1, flags =  DEFAULT | MANUFACTURING | RESET_REQUIRED;//SGI
+#if FBO_DUAL_MODE
+            option text  = STRING_TOKEN(STR_BOOT_MODE_DUAL),       value = 2, flags =0;	//SGI
+#endif
+        endoneof;
+#else
+		//No Legacy device,Set default is UEFI mode, don't display this.
+        suppressif TRUE; 
+            oneof varid   = SETUP_DATA.BootMode,
+                prompt    = STRING_TOKEN(STR_BOOT_MODE_SEL),
+                help      = STRING_TOKEN(STR_BOOT_MODE_SEL_HELP),
+                option text  = STRING_TOKEN(STR_BOOT_MODE_LEGACY),     value = 0, flags = 0;
+                option text  = STRING_TOKEN(STR_BOOT_MODE_UEFI),       value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+#if FBO_DUAL_MODE
+                option text  = STRING_TOKEN(STR_BOOT_MODE_DUAL),       value = 2, flags = 0;
+#endif
+            endoneof;
+        endif;
+#endif		//#if CSM_SUPPORT
+
+#if SMCPKG_SUPPORT
+#if LEGACY_TO_EFI_DEFAULT
+            	oneof varid   = SETUP_DATA.LegacyToEFISupport,
+                	prompt    = STRING_TOKEN(STR_LEGACYTOEFI_SUPPORT),
+                	help      = STRING_TOKEN(STR_LEGACYTOEFI_SUPPORT_HELP),
+                	option text  = STRING_TOKEN(STR_DISABLED),     value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                	option text  = STRING_TOKEN(STR_ENABLED),      value = 1, flags = 0;
+	    	endoneof;                	
+#endif //LEGACY_TO_EFI_DEFAULT
+#endif //SMCPKG_SUPPORT
+
+#endif          //#if EFI_DEVICE_IN_ONE_GROUP
+	
+        	SEPARATOR
+       	 	SUBTITLE(STRING_TOKEN(STR_FIXED_BOOT_ORDER_SUBTITLE))
+
+MAKEFILE_INSERT_UEFI_OPTION_ITEM_FLAG
+
+MAKEFILE_INSERT_LEGACY_OPTION_ITEM_FLAG
+
+#if FBO_DUAL_MODE
+MAKEFILE_INSERT_DUAL_OPTION_ITEM_FLAG
+#endif
+							//<(EIP107268+)
+  	#endif  //FORM_SET_ITEM
+
+						
+	#ifdef FORM_SET_GOTO
+	//
+	// Define goto commands for the forms defined in this file
+	//
+        	SEPARATOR
+        //--------------------------------------------------
+        //  UEFI GROUP FORM GOTO ITEM
+        //--------------------------------------------------
+MAKEFILE_INSERT_UEFI_GROUP_FORM_GOTO_ITEM_FLAG
+
+#if CSM_SUPPORT
+		//--------------------------------------------------
+		//	LEGACY GROUP FORM GOTO ITEM
+		//--------------------------------------------------
+MAKEFILE_INSERT_LEGACY_GROUP_FORM_GOTO_ITEM_FLAG
+
+#endif
+
+	#endif	//#ifdef FORM_SET_GOTO				
+#endif	//#ifdef BOOT_FORM_SET

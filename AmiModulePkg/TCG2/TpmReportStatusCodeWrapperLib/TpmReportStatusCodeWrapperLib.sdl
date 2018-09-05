@@ -1,0 +1,32 @@
+TOKEN
+    Name  = "TPM_REPORT_STATUSCODE_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable TCG support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+    Master = Yes
+End
+
+INFComponent
+    Name        = "TpmReportStatusCodeWrapperLibDxe"
+    File        = "TpmReportStatusCodeWrapperLibDxe.inf"
+    Package     = "AmiModulePkg"
+End
+
+INFComponent
+    Name        = "TpmReportStatusCodeWrapperLibPei"
+    File        = "TpmReportStatusCodeWrapperLibPei.inf"
+    Package     = "AmiModulePkg"
+End
+
+LibraryMapping
+    Class       = "TpmReportStatusCodeWrapperLibPei"
+    Instance    = "AmiModulePkg.TpmReportStatusCodeWrapperLibPei"
+End
+
+LibraryMapping
+    Class       = "TpmReportStatusCodeWrapperLibDxe"
+    Instance    = "AmiModulePkg.TpmReportStatusCodeWrapperLibDxe"
+End

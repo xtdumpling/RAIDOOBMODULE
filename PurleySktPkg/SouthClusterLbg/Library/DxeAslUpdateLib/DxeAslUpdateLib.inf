@@ -1,0 +1,54 @@
+## @file
+# Provides services to update ASL tables.
+#
+# @copyright
+# Copyright (c) 1999 - 2014 Intel Corporation. All rights reserved
+# This software and associated documentation (if any) is furnished
+# under a license and may only be used or copied in accordance
+# with the terms of the license. Except as permitted by the
+# license, no part of this software or documentation may be
+# reproduced, stored in a retrieval system, or transmitted in any
+# form or by any means without the express written consent of
+# Intel Corporation.
+# This file contains an 'Intel Peripheral Driver' and is uniquely
+# identified as "Intel Reference Module" and is licensed for Intel
+# CPUs and chipsets under the terms of your license agreement with
+# Intel or your vendor. This file may be modified by the user, subject
+# to additional terms of the license agreement.
+# 
+# @par Specification Reference:
+#
+##
+
+
+[Defines]
+INF_VERSION = 0x00010017
+BASE_NAME = DxeAslUpdateLib
+FILE_GUID = 8621697D-4E3A-4bf2-ADB0-3E2FF06559CA
+VERSION_STRING = 1.0
+MODULE_TYPE = BASE
+LIBRARY_CLASS = AslUpdateLib
+
+
+[LibraryClasses]
+BaseLib
+IoLib
+DebugLib
+PcdLib
+BaseMemoryLib
+UefiLib
+MemoryAllocationLib
+
+
+[Packages]
+MdePkg/MdePkg.dec
+PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+
+
+[Sources]
+DxeAslUpdateLib.c
+
+
+[Protocols]
+gEfiAcpiTableProtocolGuid ## CONSUMES
+gEfiAcpiSdtProtocolGuid ## CONSUMES

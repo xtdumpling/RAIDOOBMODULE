@@ -1,0 +1,33 @@
+TOKEN
+	Name  = DsmAsl_SUPPORT
+	Value  = "1"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes	
+	Master = Yes
+	Help  = "Main switch to enable DsmAsl support in Project"
+End
+
+MODULE
+	Help  = "Includes DsmAsl.mak to Project"
+	File  = "DsmAsl.mak"
+End
+
+PATH
+    Name = "DsmAsl_DIR"
+End
+
+ELINK
+	Name  = "DsmAsl"
+	InvokeOrder = ReplaceParent
+    Help = "eLink parent for creating platform device names with _DSM method"
+End
+
+# Below is an example of how DsmAsl ELIN K can be populated
+#ELINK                 
+#    Name = "PCI_SLOT_DSM(1, Pci_slot_6, \_SB.PCI0.PEX7),"
+#    Parent  = "DsmAsl"
+#    InvokeOrder = AfterParent
+#    Help = "eLink for creating platform device names with DSM method. Specify Slot number, name and current device scope"
+#End

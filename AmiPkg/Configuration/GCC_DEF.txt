@@ -1,0 +1,232 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+#**********************************************************************
+## @file
+# GCC Tool Chain Definition
+#**********************************************************************
+
+IDENTIFIER = Default TOOL_CHAIN_CONF
+
+!include CommonDef.txt
+
+##############################################################
+### Tool Chain Specific Definitions
+##############################################################
+####################################################################################
+#
+# GCC
+#   GCC tool chain (GCC 4.4...4.9)
+#
+####################################################################################
+*_GCC_*_*_FAMILY             = GCC
+
+#######################################################
+## Override default definitions from CommonDef.txt
+#######################################################
+*_*_ARM_ASL_PATH             = ENV(TOOLS_DIR)/iasl5
+*_*_AARCH64_ASL_PATH         = ENV(TOOLS_DIR)/iasl5
+
+#######################################################
+## Common Macros
+#######################################################
+DEFINE IA32_PREFIX           = ENV(IA32_TOOLS_DIR)/ENV(IA32_TOOL_PREFIX)
+DEFINE X64_PREFIX            = ENV(X64_TOOLS_DIR)/ENV(X64_TOOL_PREFIX)
+DEFINE ARM_PREFIX            = ENV(ARM_TOOLS_DIR)/ENV(ARM_TOOL_PREFIX)
+DEFINE AARCH64_PREFIX        = ENV(AARCH64_TOOLS_DIR)/ENV(AARCH64_TOOL_PREFIX)
+
+#######################################################
+## Built Tool Flags
+#######################################################
+
+##########################################
+# CC_FLAGS
+##########################################
+DEFINE CC_SUPPRESSED_WARNINGS = -Wno-comment -Wno-unknown-pragmas -Wno-unused-variable -Wno-missing-braces -Wno-array-bounds
+DEFINE COMMON_CC_FLAGS = -nostdinc -g -fshort-wchar -fno-stack-protector -fno-strict-aliasing -Wall -ffunction-sections -fdata-sections -c -include AutoGen.h -DSTRING_ARRAY_NAME=$(BASE_NAME)Strings ENV(EXTERNAL_CC_FLAGS)  -std=gnu89 DEF(CC_SUPPRESSED_WARNINGS)
+*_*_IA32_CC_FLAGS            = DEF(COMMON_CC_FLAGS) -m32 -malign-double -D EFI32 -Os
+*_*_X64_CC_FLAGS             = DEF(COMMON_CC_FLAGS) -mabi=ms -m64 "-DEFIAPI=__attribute__((ms_abi))" -DNO_BUILTIN_VA_FUNCS -mno-red-zone -Wno-address -mcmodel=large -DEFIx64 -DEFIX64
+*_*_AARCH64_CC_FLAGS         = DEF(COMMON_CC_FLAGS) -mcmodel=large
+*_*_ARM_CC_FLAGS             = DEF(COMMON_CC_FLAGS)  -mthumb -march=armv7-a -mword-relocations -mlittle-endian -mabi=aapcs -mapcs -fno-short-enums -save-temps -fsigned-char -fomit-frame-pointer -Wno-address ENV(EXTERNAL_CC_FLAGS)
+##########################################
+# ASM_FLAGS
+##########################################
+DEFINE COMMON_ASM_FLAGS = -c -x assembler -imacros $(DEST_DIR_DEBUG)/AutoGen.h
+*_*_IA32_ASM_FLAGS           = DEF(COMMON_ASM_FLAGS) -m32 -Wa,--32 -march=i386
+*_*_X64_ASM_FLAGS            = DEF(COMMON_ASM_FLAGS) -m64 -Wa,--64
+*_*_AARCH64_ASM_FLAGS        = DEF(COMMON_ASM_FLAGS)
+*_*_ARM_ASM_FLAGS            = DEF(COMMON_ASM_FLAGS) -march=armv7-a -mlittle-endian
+##########################################
+# DLINK_FLAGS
+##########################################
+DEFINE COMMON_DLINK_FLAGS = -nostdlib -e $(IMAGE_ENTRY_POINT) -u $(IMAGE_ENTRY_POINT) -Map $(DEST_DIR_DEBUG)/$(BASE_NAME).map
+DEFINE COMMON_IA_DLINK_FLAGS = DEF(COMMON_DLINK_FLAGS) -n -q --gc-sections --script=$(EDK_TOOLS_PATH)/Scripts/gcc4.4-ld-script
+*_*_IA32_DLINK_FLAGS         = DEF(COMMON_IA_DLINK_FLAGS) -m elf_i386 --oformat=elf32-i386
+*_*_X64_DLINK_FLAGS          = DEF(COMMON_IA_DLINK_FLAGS)  -melf_x86_64 --oformat=elf64-x86-64
+*_*_AARCH64_DLINK_FLAGS      = DEF(COMMON_DLINK_FLAGS) --emit-relocs
+*_*_ARM_DLINK_FLAGS          = DEF(COMMON_DLINK_FLAGS) -Ttext=0x0 --oformat=elf32-littlearm --emit-relocs
+
+##########################################
+# MAKE_FLAGS
+##########################################
+*_*_*_MAKE_FLAGS             =
+
+##########################################
+# SLINK_FLAGS
+##########################################
+*_*_*_SLINK_FLAGS            =
+
+##########################################
+# Preprocessor Flags
+##########################################
+DEFINE COMMON_PP_FLAGS_WITH_LINE_DIRECTIVE = -x c -E
+DEFINE COMMON_PP_FLAGS_NO_LINE_DIRECTIVE = -x c -E -P
+DEFINE COMMON_PP_FLAGS = DEF(COMMON_PP_FLAGS_WITH_LINE_DIRECTIVE)
+
+*_*_*_VFRPP_FLAGS            = DEF(COMMON_PP_FLAGS_NO_LINE_DIRECTIVE) -DVFRCOMPILE --include $(DEST_DIR_DEBUG)/$(MODULE_NAME)StrDefs.h ENV(EXTERNAL_CC_FLAGS)
+*_*_*_APP_FLAGS              = DEF(COMMON_PP_FLAGS)
+# The assembler files are compiled using PP_FLAGS. 
+# That's why we are using "-x assembler-with-cpp" here instead of "-x c".
+*_*_*_PP_FLAGS               = -E -x assembler-with-cpp -include $(DEST_DIR_DEBUG)/AutoGen.h
+*_*_*_ASLPP_FLAGS            = DEF(COMMON_PP_FLAGS_NO_LINE_DIRECTIVE)
+
+##########################################
+# CBIN_FLAGS, ASLCC_FLAGS (C files that produce binaries)
+##########################################
+DEFINE COMMON_CBIN_ASLCC_FLAGS = -c -x c -include $(DEST_DIR_DEBUG)/AutoGen.h
+*_*_*_CBINCC_FLAGS           = DEF(COMMON_CBIN_ASLCC_FLAGS)
+*_*_*_ASLCC_FLAGS            = DEF(COMMON_CBIN_ASLCC_FLAGS)
+*_*_IA32_ASLCC_FLAGS         = DEF(COMMON_CBIN_ASLCC_FLAGS) -m32
+*_*_X64_ASLCC_FLAGS          = DEF(COMMON_CBIN_ASLCC_FLAGS) -m64
+
+*_*_*_CBINDLINK_FLAGS        = -nostdlib --dll
+
+DEFINE GCC_IA32_X64_ASLDLINK_FLAGS = -nostdlib --pie --gc-sections --entry ReferenceAcpiTable -u ReferenceAcpiTable
+*_*_*_ASLDLINK_FLAGS         = -nostdlib --pie --entry ReferenceAcpiTable
+*_*_IA32_ASLDLINK_FLAGS      = DEF(GCC_IA32_X64_ASLDLINK_FLAGS) -m elf_i386
+*_*_X64_ASLDLINK_FLAGS       = DEF(GCC_IA32_X64_ASLDLINK_FLAGS) -m elf_x86_64
+
+##########################################
+# ASMLINK_FLAGS (ASM 16 linker)
+##########################################
+*_*_*_ASMLINK_FLAGS          = option quiet format dos com
+
+##########################################
+# RC and OBJCOPY flags
+##########################################
+DEFINE COMMON_RC_FLAGS       = -I binary --rename-section .data=.hii
+*_*_IA32_RC_FLAGS            = DEF(COMMON_RC_FLAGS) -O elf32-i386 -B i386
+*_*_X64_RC_FLAGS             = DEF(COMMON_RC_FLAGS) -O elf64-x86-64 -B i386
+*_*_AARCH64_RC_FLAGS         = DEF(COMMON_RC_FLAGS) -O elf64-littleaarch64 -B aarch64
+*_*_ARM_RC_FLAGS             = DEF(COMMON_RC_FLAGS) -O elf32-littlearm  -B arm
+*_*_*_OBJCOPY_FLAGS          = 
+
+##########################################
+# NASM_FLAGS
+##########################################
+*_*_IA32_NASM_FLAGS          = -f elf32
+*_*_X64_NASM_FLAGS           = -f elf64
+
+#######################################################
+## Built Tool Paths
+#######################################################
+
+##########################################
+# Common for all architectures
+##########################################
+# This is a workaround for EDKII build tool (build.exe) bug.
+# Build process fails if we use *_*_*_MAKE_PATH here.
+DEBUG_*_*_MAKE_PATH          = make
+RELEASE_*_*_MAKE_PATH        = make
+*_*_*_ASM16_PATH             = hjwasm
+# ASM 16 linker
+*_*_*_ASMLINK_PATH           = wlink
+
+##########################################
+# IA32 Paths
+##########################################
+*_*_IA32_CC_PATH             = DEF(IA32_PREFIX)gcc
+*_*_IA32_SLINK_PATH          = DEF(IA32_PREFIX)ar
+*_*_IA32_DLINK_PATH          = DEF(IA32_PREFIX)ld
+*_*_IA32_PP_PATH             = DEF(IA32_PREFIX)gcc
+*_*_IA32_VFRPP_PATH          = DEF(IA32_PREFIX)gcc
+*_*_IA32_APP_PATH            = DEF(IA32_PREFIX)gcc
+*_*_IA32_ASM_PATH            = DEF(IA32_PREFIX)gcc
+*_*_IA32_ASLCC_PATH          = DEF(IA32_PREFIX)gcc
+*_*_IA32_ASLPP_PATH          = DEF(IA32_PREFIX)gcc
+*_*_IA32_ASLDLINK_PATH       = DEF(IA32_PREFIX)ld
+*_*_IA32_OBJCOPY_PATH        = DEF(IA32_PREFIX)objcopy
+*_*_IA32_RC_PATH             = DEF(IA32_PREFIX)objcopy
+
+##########################################
+# X64 Paths
+##########################################
+*_*_X64_CC_PATH              = DEF(X64_PREFIX)gcc
+*_*_X64_SLINK_PATH           = DEF(X64_PREFIX)ar
+*_*_X64_DLINK_PATH           = DEF(X64_PREFIX)ld
+*_*_X64_PP_PATH              = DEF(X64_PREFIX)gcc
+*_*_X64_VFRPP_PATH           = DEF(X64_PREFIX)gcc
+*_*_X64_APP_PATH             = DEF(X64_PREFIX)gcc
+*_*_X64_ASM_PATH             = DEF(X64_PREFIX)gcc
+*_*_X64_ASLCC_PATH           = DEF(X64_PREFIX)gcc
+*_*_X64_ASLPP_PATH           = DEF(X64_PREFIX)gcc
+*_*_X64_ASLDLINK_PATH        = DEF(X64_PREFIX)ld
+*_*_X64_OBJCOPY_PATH         = DEF(X64_PREFIX)objcopy
+*_*_X64_RC_PATH              = DEF(X64_PREFIX)objcopy
+
+##########################################
+# AARCH64 Paths
+##########################################
+*_*_AARCH64_CC_PATH          = DEF(AARCH64_PREFIX)gcc
+*_*_AARCH64_SLINK_PATH       = DEF(AARCH64_PREFIX)ar
+*_*_AARCH64_DLINK_PATH       = DEF(AARCH64_PREFIX)ld
+*_*_AARCH64_PP_PATH          = DEF(AARCH64_PREFIX)gcc
+*_*_AARCH64_VFRPP_PATH       = DEF(AARCH64_PREFIX)gcc
+*_*_AARCH64_APP_PATH         = DEF(AARCH64_PREFIX)gcc
+*_*_AARCH64_ASM_PATH         = DEF(AARCH64_PREFIX)gcc
+*_*_AARCH64_ASLCC_PATH       = DEF(AARCH64_PREFIX)gcc
+*_*_AARCH64_ASLPP_PATH       = DEF(AARCH64_PREFIX)gcc
+*_*_AARCH64_ASLDLINK_PATH    = DEF(AARCH64_PREFIX)ld
+*_*_AARCH64_OBJCOPY_PATH     = DEF(AARCH64_PREFIX)objcopy
+*_*_AARCH64_RC_PATH          = DEF(AARCH64_PREFIX)objcopy
+
+##########################################
+# ARM Paths
+##########################################
+*_*_ARM_CC_PATH              = DEF(ARM_PREFIX)gcc
+*_*_ARM_SLINK_PATH           = DEF(ARM_PREFIX)ar
+*_*_ARM_DLINK_PATH           = DEF(ARM_PREFIX)ld
+*_*_ARM_PP_PATH              = DEF(ARM_PREFIX)gcc
+*_*_ARM_VFRPP_PATH           = DEF(ARM_PREFIX)gcc
+*_*_ARM_APP_PATH             = DEF(ARM_PREFIX)gcc
+*_*_ARM_ASM_PATH             = DEF(ARM_PREFIX)gcc
+*_*_ARM_ASLCC_PATH           = DEF(ARM_PREFIX)gcc
+*_*_ARM_ASLPP_PATH           = DEF(ARM_PREFIX)gcc
+*_*_ARM_ASLDLINK_PATH        = DEF(ARM_PREFIX)ld
+*_*_ARM_OBJCOPY_PATH         = DEF(ARM_PREFIX)objcopy
+*_*_ARM_RC_PATH              = DEF(ARM_PREFIX)objcopy
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

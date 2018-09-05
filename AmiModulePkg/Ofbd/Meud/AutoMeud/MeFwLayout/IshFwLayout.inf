@@ -1,0 +1,28 @@
+
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = IshFwLayout
+  FILE_GUID                      = 39B3CE2B-82D0-4C7E-B949-D5E65181B98A
+  MODULE_TYPE                    = USER_DEFINED
+  SECTION_GUID                   = 173DE4C7-FD68-4926-B202-A8D4102D69B4
+  
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF EBC (EBC is for build only)
+#
+
+[Sources]
+  MeFwLayout.cbin
+
+[Packages]
+  MdePkg/MdePkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+
+[BuildOptions.X64]
+  *_*_X64_CBINCC_FLAGS = -D_BUILD_ISHFW_CAPSULE_
+
+[BuildOptions.IA32]
+  *_*_IA32_CBINCC_FLAGS = -D_BUILD_ISHFW_CAPSULE_

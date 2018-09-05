@@ -1,0 +1,109 @@
+TOKEN
+    Name  = "Recovery_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable Recovery support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+    Master = Yes
+End
+
+TOKEN
+    Name  = "RECOVERY_ROM"
+    Value  = "$(BIOS_TAG).rom"
+    TokenType = Expression
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "RECOVERY_SCAN_RETRIES"
+    Value  = "3"
+    Help  = "Number of times to scan all recovery devices before reporting error"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "RECOVERY_DEVICE_ORDER"
+    Value  = "BLOCK,SERIAL,"
+    Help  = "***AMITODO: THIS SHOULD BE DEFINED VIA ELINK***"
+    TokenType = Expression
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "Recovery_Time_Delay"
+    Value  = "15"
+    Help  = "Loop count to calculate the delay for Atapi Recovery"
+    TokenType = Integer
+    TargetMAK = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "FORCE_RECOVERY"
+    Value  = "0"
+    Help  = "Force recovery execution by forcing BootMode = BOOT_IN_RECOVERY_MODE in SbPei.c"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "OFFSET_TO_ADDRESS(Offset)"
+    Value  = "(0xFFFFFFFF - FLASH_SIZE + (Offset) + 1)"
+    Help  = "Expression to calculate FV address in flash based on offset in ROM file"
+    TokenType = Expression
+    TargetH = Yes
+End
+
+ELINK
+    Name  = "RecoveryDeviceOrder"
+    InvokeOrder = ReplaceParent
+End
+
+ELINK
+    Name  = "BLOCK,"
+    Parent  = "RecoveryDeviceOrder"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(ABS_BUILD_DIR)$(PATH_SLASH)$(PLATFORM_NAME)$(PATH_SLASH)$(TARGET)_$(TOOL_CHAIN_TAG)\X64\AmiModulePkg\Recovery\ReFlash\ReFlash\OUTPUT"
+    Parent  = "IFR_DIR_LIST"
+    InvokeOrder = BeforeParent
+    Token = "X64_SUPPORT" "=" "1"
+End
+
+ELINK
+    Name  = "$(ABS_BUILD_DIR)$(PATH_SLASH)$(PLATFORM_NAME)$(PATH_SLASH)$(TARGET)_$(TOOL_CHAIN_TAG)\IA32\AmiModulePkg\Recovery\ReFlash\ReFlash\OUTPUT"
+    Parent  = "IFR_DIR_LIST"
+    InvokeOrder = BeforeParent
+    Token = "X64_SUPPORT" "=" "0"
+End
+
+PcdMapping
+    Name  = "PcdRecoveryImageSize"
+    GuidSpace  = "gAmiModulePkgTokenSpaceGuid"
+    PcdType  = "PcdsFixedAtBuild"
+    DataType  = "Uint32"
+    Value  = "$(FLASH_SIZE)"
+    Offset  = 00h
+    Length  = 04h
+    TargetDSC = Yes
+End
+
+INFComponent
+    Name  = "Recovery"
+    File  = "Recovery.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes = "PEIM"
+End
+
+FFS_FILE
+    Name  = "Recovery"
+    FD_AREA  = "FV_BB"
+    INFComponent  = "AmiModulePkg.Recovery"
+    Rule_Override  = "Compressed"
+End
+

@@ -1,0 +1,121 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+TOKEN
+	Name  = FWUpdateLib_TXE_02
+	Value  = 1
+	TokenType = Boolean
+	Master = Yes
+	Help  = "Main switch to enable MEFwUpdLcl support in Project"
+        Token = "MEFwUpdLcl_SUPPORT" "=" "1"
+        Token = "ME_FW_UPDATE_API_CONTROL" "=" "2"
+End
+
+TOKEN
+	Name  = "ME_FW_OEM_ID"
+	Value  = "{0, 0, 0, {0, 0, 0, 0, 0, 0, 0, 0}}"
+	Help  = "ME Firmware OEM ID."
+	TokenType = Expression
+	TargetH = Yes
+	Range  = "GUID"
+End
+
+TOKEN
+        Name  = "ME_FW_IMAGE_VERSION"
+        Value  = "{0, 0, 0, 0}"
+	Help  = "File name of the ME FW image to be signed."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "ME_DEFINITIONS"
+	Value  = "{$(SPI_BASE), 0xB0, 0xB4, 0, 0x1A, 0, 0x40, $(PMC_BASE_ADDRESS) + 0x34, 0x80000}"
+        Help  = "ME Relating Registers Configuration.\{SPI BAR, FDOC, FDOD, HECI Bus, HECI Device, HECI Function, HECI Host FW Status, ME/SeC Disable Bar, Disable Bit}"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+INFComponent
+	Name  = "FWUpdateLib"
+	File  = "FWUpdateLib.inf"
+	Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "AmiModulePkg.FWUpdateLib"
+	Override  = "AmiModulePkg.MEFwUpdLcl"
+End
+
+INFComponent
+	Name  = "FWUpdatePlatformLib"
+	File  = "FWUpdatePlatformLib.inf"
+	Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "AmiModulePkg.FWUpdatePlatformLib"
+	Override  = "AmiModulePkg.MEFwUpdLcl"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "AmiChipsetModulePkg.SbCspDxeSmmLib"
+	Override  = "AmiModulePkg.AutoMeud"
+End
+
+ELINK
+        Name  = "Build/ChipsetReference.dec"
+        Parent  = "MEFwUpdLcLPackages"
+        InvokeOrder = BeforeParent
+End
+
+ELINK
+        Name  = "gEfiHeciProtocolGuid"
+        Parent  = "MEFwUpdLcLDepex"
+        InvokeOrder = BeforeParent
+End
+
+INFComponent
+	Name  = "MeFwCapsulePei"
+	File  = "MeFwCapsulePei.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "PEIM"
+        Token = "AUTO_ME_UPDATE_POLICY" "=" "2"
+        Disable = Yes
+End
+
+FFS_FILE
+        Name  = "MeFwCapsulePei"
+        FD_AREA  = "FV_BB"
+        INFComponent  = "MeFwCapsulePei"
+        Apriori_Index  = "10"
+        Disable = Yes
+End
+
+
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************

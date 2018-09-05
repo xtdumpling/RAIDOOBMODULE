@@ -1,0 +1,55 @@
+# APTIOV_SERVER_OVERRIDE_RC_START : for build error replaced with #
+#@file  Implementation of the OEM RAS LIBRARY.
+
+#@copyright
+#  Copyright (c) 2011 - 2016, Intel Corporation. All rights reserved
+#  This software and associated documentation (if any) is furnished
+#  under a license and may only be used or copied in accordance
+#  with the terms of the license. Except as permitted by such
+#  license, no part of this software or documentation may be
+#  reproduced, stored in a retrieval system, or transmitted in any
+#  form or by any means without the express written consent of
+#  Intel Corporation.
+#
+# APTIOV_SERVER_OVERRIDE_RC_END : for build error replaced with #
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = OemRasLib
+  FILE_GUID                      = 596B02F2-7FA0-426D-8727-94B381605916
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = OemRasLib
+
+[Sources]
+  OemRasLib.c
+  OemRasLib.h
+
+[Packages]
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec 
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  # APTIOV_SERVER_OVERRIDE_RC_START
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  UefiCpuPkg/UefiCpuPkg.dec
+  CpPlatPkg/CpPlatPkg.dec
+  # APTIOV_SERVER_OVERRIDE_RC_END
+
+[Protocols]
+
+[LibraryClasses]
+  BaseLib
+  DebugLib
+  # APTIOV_SERVER_OVERRIDE_RC_START
+  SetupLib
+  AmiErrReportingLib
+  # APTIOV_SERVER_OVERRIDE_RC_END
+
+[Guids]
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+

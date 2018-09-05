@@ -1,0 +1,102 @@
+TOKEN
+	Name  = "AMIDebugAgent_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling AMIDebugAgent support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "PeiAMIDebugAgentLib_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable PeiAMIDebugAgentLib support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "DxeAMIDebugAgentLib_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable DxeAMIDebugAgentLib support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "SmmAMIDebugAgentLib_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable SmmAMIDebugAgentLib support in Project"
+	TokenType = Boolean
+End
+
+PATH
+	Name  = "COMDxeAMIDebugAgentLib_DIR"
+	Path  = "AMIDebugRxPkg\SerialDebugger\AMIDebugAgent"
+End
+
+PATH
+	Name  = "COMPeiAMIDebugAgentLib_DIR"
+	Path  = "AMIDebugRxPkg\SerialDebugger\AMIDebugAgent"
+End
+
+PATH
+	Name  = "COMSmmAMIDebugAgentLib_DIR"
+	Path  = "AMIDebugRxPkg\SerialDebugger\AMIDebugAgent"
+End
+
+INFComponent
+    Name  = "CommonDebugAgentLib"
+    File  = "CommonDebugAgentLib.inf"
+    Package  = "SerialDebugger"
+    Arch  = "common Ia32 X64"
+End
+
+INFComponent
+    Name  = "DxeAMIDebugAgentLib"
+	File  = "DxeAMIDebugAgentLib.inf"
+	Package  = "SerialDebugger"
+	Arch  = "common Ia32 X64"
+	Path  = "COMDxeAMIDebugAgentLib_DIR"
+End
+
+INFComponent
+    Name  = "PeiAMIDebugAgentLib"
+    File  = "PeiAMIDebugAgentLib.inf"
+    Package  = "SerialDebugger"
+    Arch  = "common Ia32 X64"
+    Path  = "COMPeiAMIDebugAgentLib_DIR"
+End
+
+INFComponent
+    Name  = "SmmAMIDebugAgentLib"
+    File  = "SmmAMIDebugAgentLib.inf"
+    Package  = "SerialDebugger"
+    Arch  = "common Ia32 X64"
+    Path  = "COMSmmAMIDebugAgentLib_DIR"
+    Token = "SMM_DEBUG_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+    Class  = "CommonDebugAgentLib"
+    Instance  = "SerialDebugger.CommonDebugAgentLib"
+End
+
+LibraryMapping
+    Class  = "DebugAgentLib"
+    Instance  = "SerialDebugger.DxeAMIDebugAgentLib"
+    ModuleTypes  = "DXE_CORE DXE_DRIVER DXE_RUNTIME_DRIVER UEFI_APPLICATION"
+End
+
+LibraryMapping
+    Class  = "DebugAgentLib"
+    Instance  = "SerialDebugger.PeiAMIDebugAgentLib"
+    ModuleTypes  = "SEC PEIM PEI_CORE"
+End
+
+LibraryMapping
+    Class  = "DebugAgentLib"
+    Instance  = "SerialDebugger.SmmAMIDebugAgentLib"
+    ModuleTypes  = "DXE_SMM_DRIVER"
+    Token = "SMM_DEBUG_SUPPORT" "=" "1"    
+End
+
+
+

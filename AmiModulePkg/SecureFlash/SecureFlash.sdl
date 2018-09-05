@@ -1,0 +1,401 @@
+TOKEN
+	Name  = "SecureMod_SUPPORT"
+	Value  = "1"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+	Token = "AmiCryptoPkg_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "SECURE_FLASH_MODULE_REVISION"
+	Value  = "23"
+	Help  = "Version of Secure Flash module interfaces"
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "CREATE_FWCAPSULE"
+	Value  = "1"
+	Help  = "Mode selector for creating digitally signed Aptio FW Capsule, used in Protected Flash Updates and Recovery.\0 - Don't prepare Aptio FW Capsule, only link Secure Flash interfaces;\1 - Sign Aptio FW Capsule with the test key if the key file is linked to a project;\2 - Skip final FW Capsule signing process, e.g hand off this task to signing server."
+	TokenType = Integer
+	TargetMAK = Yes
+	Range  = "0-1-2"
+End
+
+TOKEN
+	Name  = "====FWCAPSULE FORMAT TUNE-UP===="
+	Value  = "=============================="
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "FWCAPSULE_FILE_FORMAT"
+	Value  = "0"
+	Help  = "0 - Include Aptio FW Signature Block inside the BIOS ROM as a ROM Hole Ffs.\1 - FW Signature Block is attached on top of BIOS Image."
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FWCAPSULE_CERT_FORMAT"
+	Value  = "0"
+	Help  = "0 - FwCapsule Hdr includes UEFI RSA2048_SHA256 Certificates\1 - PKCS#7 Certificate. Signer keys expected in PKCS#12.pfx and X.509.cer"
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FWCAPSULE_BUILD_TARGET"
+	Value  = "End"
+	Help  = "Name of the make target to link Fw Capsule build rules with"
+	TokenType = Expression
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "ROM_FILE_NAME"
+	Value  = "$(subst /,$(PATH_SLASH),$(OUTPUT_DIRECTORY))$(PATH_SLASH)$(TARGET)_$(TOOL_CHAIN_TAG)$(PATH_SLASH)FV$(PATH_SLASH)AMIROM.fd"
+	Help  = "File name of the BIOS image to be signed."
+	TokenType = Expression
+	TargetMAK = Yes
+	Token = "AMI_PKG_VERSION" "<" "11"
+End
+
+TOKEN
+	Name  = "UNSIGNED_BIOS_ROM"
+	Value  = "$(ROM_FILE_NAME)"
+	TokenType = Expression
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "FWCAPSULE_FILE_NAME"
+	Value  = "$(PROJECT_TAG).BIN"
+	Help  = "Signed BIOS file name. FwCapsule Hdr with the Signature is embedded inside the BIOS ROM.\Warning!!! Default Recovery image name is set by PCD:PcdRecoveryImageName"
+	TokenType = Expression
+	TargetMAK = Yes
+	Token = "FWCAPSULE_FILE_FORMAT" "=" "0"
+End
+
+TOKEN
+	Name  = "FWCAPSULE_FILE_NAME"
+	Value  = "$(PROJECT_TAG).CAP"
+	Help  = "Signed BIOS file name. FwCapsule Hdr is attached on top of BIOS ROM.\Warning!!! Default Recovery image name is set by PCD:PcdRecoveryImageName"
+	TokenType = Expression
+	TargetMAK = Yes
+	Token = "FWCAPSULE_FILE_FORMAT" "=" "1"
+End
+
+TOKEN
+	Name  = "FWCAPSULE_FILE"
+	Value  = "$(FWCAPSULE_FILE_NAME)"
+	Help  = "Target location for a signed Fw Capsule file. In the reference projects the path should be replaced to a generic ROM Build folder, e.g.ROM_IMAGE_DIRECTORY"
+	TokenType = Expression
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "FWCAPSULE_IMAGE_ALLIGN"
+	Value  = "4096"
+	Help  = "FW Capsule Header alignment"
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+	Range  = "Min FW Capsule file size alignment is 512"
+	Token = "FWCAPSULE_FILE_FORMAT" "=" "1"
+End
+
+TOKEN
+	Name  = "FWCAPSULE_MAX_PAYLOAD_SIZE"
+	Value  = "$(FLASH_SIZE)"
+	Help  = "Max supported size of a signed BIOS payload"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FWCAPSULE_MAX_HDR_SIZE"
+	Value  = "4096"
+	Help  = "Max size of an embedded FwCapsule Header file"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "Min FW Capsule Header size is 2048"
+End
+
+TOKEN
+	Name  = "FWCAPSULE_IMAGE_SIZE"
+	Value  = "$(FWCAPSULE_MAX_PAYLOAD_SIZE)+0x4000"
+	Help  = "Max supported size of a signed BIOS payload with up to 16kb FwCapsule Hdr attached"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FWSIG_PADDING"
+	Value  = "0"
+	Help  = "RSA Signature padding scheme.0-PKCS1v1.5, 1-PSS, 2-xx reserved\Only relevant with FWCAPSULE_CERT_FORMAT=0"
+	TokenType = Integer
+End
+
+TOKEN
+	Name  = "FWKEY_FILE_FORMAT"
+	Value  = "1"
+	Help  = "FW Key store format inside BIOS RTU (FV_BB).\0-n-modulus of RSA2048 key, 1-SHA256 hash of RSA2048 n-modulus or hash of tbs section of x.509 cert,\2-x.509 DER encoded Certificate key, 3-xx reserved"
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetFDF = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "FWKEY_FILE_REPLACE"
+	Value  = "1"
+	Help  = "Directive to Cryptocon to replace existing FW Key inside BIOS RTU (FV_BB) with the public portion of FwCapsule sign key"
+	TokenType = Integer
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "ENABLE_SECURE_FLASH_INFO_PAGE"
+	Value  = "0"
+	Help  = "Enable Setup Page with Secure Flash status. Only available in Debug builds"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "ENABLE_SECURE_FLASH_INFO_PAGE"
+	Value  = "1"
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "DEBUG_MODE" "=" "1"
+End
+
+TOKEN
+	Name  = "ROM_LAYOUT_EX"
+	Value  = "$(BUILD_DIR)$(PATH_SLASH)RomLayoutEx.bin"
+	Help  = "Name of the extended rom map file. Used by a Cryptocon utility to select the sections of the BIOS to be signed"
+	TokenType = Expression
+	TargetMAK = Yes
+End
+
+TOKEN
+    Name  = "SecureMod_DEBUG_MESSAGES"
+    Value  = "0"
+    TokenType = Boolean
+    Help  = "Control level of debug messages in SecureFlash source code"
+    Token = "DEBUG_CODE" "=" "1"
+End
+
+TOKEN
+    Name  = "SecureMod_DEBUG_LEVEL"
+    Value  = "EFI_D_INFO"
+    TokenType = Expression
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "SecureMod_DEBUG_LEVEL"
+    Value  = "EFI_D_ERROR"
+    TokenType = Expression
+    TargetH = Yes
+    Token = "SecureMod_DEBUG_MESSAGES" "=" "1"
+End
+
+PATH
+	Name  = "SecureMod_DIR"
+End
+
+MODULE
+	File  = "SecureFlash.mak"
+	Token = "CREATE_FWCAPSULE" "!=" "0"
+End
+
+ELINK
+	Name  = "CRYPTOCON_CMDLINE"
+	Help  = "Cryptocon.exe command line to create signed FwCapsule"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "CRYPTOCON_CMDLINE_SIG"
+	Help  = "Cryptocon.exe command line to create signed FwCapsule"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "CRYPTOCON_CMDLINE_MAP"
+	Help  = "Cryptocon.exe command line to prepare embedded signature block FwCapsule"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "$(CRYPTOCON_CMDLINE)"
+	Parent  = "CRYPTOCON_CMDLINE_SIG"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(CRYPTOCON_CMDLINE)"
+	Parent  = "CRYPTOCON_CMDLINE_MAP"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "-c $(FWrootKey) -k $(FWpriv)"
+	Parent  = "CRYPTOCON_CMDLINE"
+	Token = "FWCAPSULE_CERT_FORMAT" "=" "0"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "-c2 -x $(FWpriv),$(FW_PFX_Password)"
+	Parent  = "CRYPTOCON_CMDLINE"
+	Token = "FWCAPSULE_CERT_FORMAT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "-q"
+	Parent  = "CRYPTOCON_CMDLINE"
+	Help  = "Extended FwCapsule Hdr Signature Calculation scheme"
+	Token = "FWCAPSULE_CERT_FORMAT" "=" "0"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "-p"
+	Parent  = "CRYPTOCON_CMDLINE"
+	Help  = "RSA-PSS Signature padding scheme. (Default - PKCS#1v1.5)"
+	Token = "FWCAPSULE_CERT_FORMAT" "=" "0"
+	Token = "FWSIG_PADDING" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "-m -r $(ROM_LAYOUT_EX)"
+	Parent  = "CRYPTOCON_CMDLINE_MAP"
+	Token = "AMI_CRYPTOPACKAGE_MODULE_REVISION" ">" "18"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "-c2 -r $(ROM_LAYOUT_EX)"
+	Parent  = "CRYPTOCON_CMDLINE_MAP"
+	Token = "AMI_CRYPTOPACKAGE_MODULE_REVISION" "<" "19"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "-l $(FWCAPSULE_IMAGE_ALLIGN)"
+	Parent  = "CRYPTOCON_CMDLINE_SIG"
+	Token = "FWCAPSULE_FILE_FORMAT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "-y"
+	Parent  = "CRYPTOCON_CMDLINE_SIG"
+	Help  = "directive to store the FW signature inside of embedded FW FwCapsule Hdr Block"
+	Token = "FWCAPSULE_FILE_FORMAT" "=" "0"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "-n"
+	Parent  = "CRYPTOCON_CMDLINE_SIG"
+	Help  = "directive to replace default Platform Key inside BIOS.ROM with the public portion of the Sign key -k"
+	Token = "FWKEY_FILE_REPLACE" "=" "1"
+	Token = "FWCAPSULE_CERT_FORMAT" "=" "0"
+	Token = "FWKEY_FILE_FORMAT" "!=" "2"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "-n -k $(FWpub)"
+	Parent  = "CRYPTOCON_CMDLINE_SIG"
+	Token = "FWKEY_FILE_REPLACE" "=" "1"
+	Token = "FWCAPSULE_CERT_FORMAT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "ITEM_CALLBACK(SECURITY_FORM_SET_CLASS,0,SECURE_FLASH_MENU_REFRESH,SecureFlashModeCallback),"
+	Parent  = "SetupItemCallbacks"
+	Token = "ENABLE_SECURE_FLASH_INFO_PAGE" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(SecureMod_DIR)$(PATH_SLASH)SecureFlash.uni"
+	Parent  = "SetupStringFiles"
+	Token = "ENABLE_SECURE_FLASH_INFO_PAGE" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(SecureMod_DIR)$(PATH_SLASH)SecureFlash.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	Token = "ENABLE_SECURE_FLASH_INFO_PAGE" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(SecureMod_DIR)$(PATH_SLASH)SecureFlash.c"
+	Parent  = "SetupCallbackFiles"
+	Token = "ENABLE_SECURE_FLASH_INFO_PAGE" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "AmiCryptoPkg$(PATH_SLASH)AmiCryptoPkg.dec"
+	Parent  = "AdditionalSetupPackages"
+	Token = "ENABLE_SECURE_FLASH_INFO_PAGE" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "gAmiDigitalSignatureProtocolGuid"
+	Parent  = "AdditionalSetupProtocols"
+	Token = "ENABLE_SECURE_FLASH_INFO_PAGE" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "gEfiCertX509Guid gEfiCertSha256Guid gEfiCertRsa2048Guid gEfiHashAlgorithmSha256Guid"
+	Parent  = "AdditionalSetupGuids"
+	Token = "ENABLE_SECURE_FLASH_INFO_PAGE" "=" "1"	
+	InvokeOrder = AfterParent
+End
+
+INFComponent
+	Name  = "FwCapsuleHdr"
+	File  = "FwCapsuleHdr.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "USER_DEFINED"
+End
+
+FFS_FILE
+	Name  = "FwCapsuleHdr"
+	FD_AREA  = "FV_MAIN"
+	INFComponent  = "AmiModulePkg.FwCapsuleHdr"
+	Rule_Override  = "SubtypeGuidUncompressedNoChecksum"
+	Token = "NESTED_FV_MAIN" "=" "0"
+	Token = "CREATE_FWCAPSULE" "!=" "0"
+End
+
+FFS_FILE
+	Name  = "FwCapsuleHdr"
+	FD_AREA  = "FV_MAIN_WRAPPER"
+	INFComponent  = "AmiModulePkg.FwCapsuleHdr"
+	Rule_Override  = "SubtypeGuidUncompressedNoChecksum"
+	Token = "NESTED_FV_MAIN" "=" "1"
+	Token = "CREATE_FWCAPSULE" "!=" "0"
+End
+

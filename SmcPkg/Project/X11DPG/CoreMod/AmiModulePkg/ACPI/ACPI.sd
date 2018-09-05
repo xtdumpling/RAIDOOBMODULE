@@ -1,0 +1,315 @@
+//****************************************************************************
+//**                                                                        **
+//**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+//**                                                                        **
+//****************************************************************************
+//  File History
+//
+//  Rev. 1.05
+//    Bug Fix:  To avoid VTK test case 22 cannot run when disable SMC_SETUP_STYLE token issue.
+//    Reason:   AMI default mask Hpet setup variable in setup menu cause HPET related code been skipped.
+//    Auditor:  Jacker Yeh
+//    Date:     Feb/22/2017
+//
+//  Rev. 1.04
+//    Bug Fix:  Fix that system doesn't support ACPI Hibernate(S4).
+//    Reason:   
+//    Auditor:  Isaac Hsu
+//    Date:     Jan/24/2017
+//
+//  Rev. 1.03
+//    Bug Fix:  Draft template v0.1.
+//    Reason:   
+//    Auditor:  Jimmy Chiu
+//    Date:     Jan/20/2017
+//
+//  Rev. 1.02
+//    Bug Fix:  Add signature "$SMCUNHIDE$ to AERON and MCEON items.
+//    Reason:   
+//    Auditor:  Kasber Chen
+//    Date:     Jan/12/2017
+//
+//  Rev. 1.01
+//    Bug Fix:  Add AER item.
+//    Reason:   
+//    Auditor:  Kasber Chen
+//    Date:     Dec/20/2016
+//
+//  Rev. 1.00
+//    Bug Fix:  Draft template.
+//    Reason:   
+//    Auditor:  Kasber Chen
+//    Date:     Dec/16/2016
+//
+//****************************************************************************
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**         5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093        **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
+
+//**********************************************************************
+// $Header: /Alaska/BIN/Modules/ACPI/Template/Board/ACPI.sd 19    12/06/10 4:18p Oleksiyy $
+//
+// $Revision: 19 $
+//
+// $Date: 12/06/10 4:18p $
+//**********************************************************************
+//<AMI_FHDR_START>
+//
+// Name:	ACPI.sd
+//
+// Description:	ACPI Form Template
+//
+//<AMI_FHDR_END>
+//**********************************************************************
+
+#ifdef SETUP_DATA_DEFINITION
+/***********************************************************/
+/* Put NVRAM data definitions here.
+/* For example: UINT8 Data1;
+/* These definitions will be converted by the build process
+/* to a definitions of SETUP_DATA fields.
+/***********************************************************/
+    UINT8   AcpiAuto;
+    UINT16  AcpiSleepState;
+    UINT8   AcpiLockLegacyRes;
+    UINT8   AcpiHibernate;
+    UINT8   S3ResumeVideoRepost;
+    UINT8   ForceToAcpi1;
+#if SMCPKG_SUPPORT
+    UINT8   AerEnable;
+#endif
+#endif
+
+#if defined(VFRCOMPILE) && !defined(CONTROLS_ARE_DEFINED)
+#define CONTROL_DEFINITION
+#endif
+
+#ifdef CONTROL_DEFINITION
+
+        #define ACPI_CHECKBOX_ACPIAUTO\
+				checkbox varid = SETUP_DATA.AcpiAuto,\
+					prompt = STRING_TOKEN(STR_ACPI_AUTO_PROMPT),\
+					help = STRING_TOKEN(STR_ACPI_AUTO_HELP),\
+					flags = 0,\
+					default = DEFAULT_AUTO_ACPI,\
+					default = DEFAULT_AUTO_ACPI, defaultstore = AmiMfgDefault,\
+				endcheckbox;
+        #define ACPI_CHECKBOX_ACPIHIBERNATE\
+				checkbox varid = SETUP_DATA.AcpiHibernate,\
+					prompt = STRING_TOKEN(STR_ACPI_S4_PROMPT),\
+					help = STRING_TOKEN(STR_ACPI_S4_HELP),\
+					default = DEFAULT_SS4,\
+					default = DEFAULT_SS4, defaultstore = AmiMfgDefault,\
+				endcheckbox;
+#if A_S3 == 1
+#define S3_STRING option text = STRING_TOKEN(STR_ACPI_SLEEP_S3), value = 2, flags = RESET_REQUIRED; default = 2, default = 2, defaultstore = AmiMfgDefault,
+#else 
+#define S3_STRING 
+#endif
+
+#if A_S1 == 1
+#if A_S3 == 1
+#define S1_STRING option text = STRING_TOKEN(STR_ACPI_SLEEP_S1), value = 1, flags = RESET_REQUIRED;
+#else 
+#define S1_STRING option text = STRING_TOKEN(STR_ACPI_SLEEP_S1), value = 1, flags = RESET_REQUIRED; default = 1, default = 1, defaultstore = AmiMfgDefault,
+#endif
+#else
+#define S1_STRING 
+#endif
+
+#if (A_S1 == 0) && (A_S3 == 0)
+#define S0_STRING option text = STRING_TOKEN(STR_ACPI_SLEEP_NO), value = 0, flags = RESET_REQUIRED; default = 0, default = 0, defaultstore = AmiMfgDefault,
+#else
+#define S0_STRING option text = STRING_TOKEN(STR_ACPI_SLEEP_NO), value = 0, flags = RESET_REQUIRED;
+#endif
+
+        #define ACPI_ONEOF_ACPISLEEPSTATE\
+				oneof varid  = SETUP_DATA.AcpiSleepState,\
+					prompt = STRING_TOKEN(STR_ACPI_SLEEP_PROMPT),\
+					help = STRING_TOKEN(STR_ACPI_SLEEP_HELP),\
+					S0_STRING\
+					S1_STRING\
+					S3_STRING\
+				endoneof;
+    #if LOCK_LEGACY_RES_SETUP_ENABLE == 1
+        #define ACPI_CHECKBOX_ACPILOCKLEGACYRES\
+				checkbox varid = SETUP_DATA.AcpiLockLegacyRes,\
+					prompt = STRING_TOKEN(STR_ACPI_LOCK_LEGACY_DEV_PROMPT),\
+					help = STRING_TOKEN(STR_ACPI_LOCK_LEGACY_DEV_HELP),\
+					flags = RESET_REQUIRED,\
+					default = DEFAULT_ACPI_LOCK_LEGACY_DEV,\
+					default = DEFAULT_ACPI_LOCK_LEGACY_DEV, defaultstore = AmiMfgDefault,\
+				endcheckbox;
+    #else
+        #define ACPI_CHECKBOX_ACPILOCKLEGACYRES
+    #endif
+    #if S3_VIDEO_REPOST_SUPPORT == 1
+        #define ACPI_ONEOF_S3RESUMEVIDEOREPOST\
+				oneof varid  = SETUP_DATA.S3ResumeVideoRepost,\
+					prompt = STRING_TOKEN(STR_S3_VIDEO_REPOST_PROMPT),\
+					help = STRING_TOKEN(STR_S3_VIDEO_REPOST_HELP),\
+					option text = STRING_TOKEN(STR_ACPI_DISABLED), value = 0, flags = RESET_REQUIRED;\
+				    option text = STRING_TOKEN(STR_ACPI_ENABLED), value = 1, flags = RESET_REQUIRED;\
+				    default = 0, default = 0, defaultstore = AmiMfgDefault,\
+				endoneof;
+    #else
+        #define ACPI_ONEOF_S3RESUMEVIDEOREPOST
+    #endif
+    #if FORCE_TO_ACPI1_SETUP_ENABLE == 1
+        #define ACPI_ONEOF_FORCETOACPI1\
+				oneof varid  = SETUP_DATA.ForceToAcpi1,\
+					prompt = STRING_TOKEN(STR_FORCE_TO_ACPI1_PROMPT),\
+					help = STRING_TOKEN(STR_FORCE_TO_ACPI1_HELP),\
+					option text = STRING_TOKEN(STR_ACPI_DISABLED), value = 0, flags = RESET_REQUIRED;\
+				    option text = STRING_TOKEN(STR_ACPI_ENABLED), value = 1, flags = RESET_REQUIRED;\
+				    default = 0, default = 0, defaultstore = AmiMfgDefault,\
+				endoneof;
+    #else
+        #define ACPI_ONEOF_FORCETOACPI1
+    #endif
+#if SMCPKG_SUPPORT
+    #define PCIBUS_ONEOF_AERENABLE\
+        oneof varid  = SETUP_DATA.AerEnable,\
+            prompt = STRING_TOKEN(STR_PCI_AER_PROMPT),\
+            help = STRING_TOKEN(STR_PCI_AER_HELP),\
+            option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;\
+        endoneof;
+#endif  //SMCPKG_SUPPORT
+#endif //#ifdef CONTROL_DEFINITION
+
+#ifdef CONTROLS_WITH_DEFAULTS
+
+    ACPI_CHECKBOX_ACPIAUTO
+    ACPI_CHECKBOX_ACPIHIBERNATE
+    ACPI_ONEOF_ACPISLEEPSTATE
+    ACPI_CHECKBOX_ACPILOCKLEGACYRES
+    ACPI_ONEOF_S3RESUMEVIDEOREPOST
+    ACPI_ONEOF_FORCETOACPI1
+#if SMCPKG_SUPPORT
+    PCIBUS_ONEOF_AERENABLE
+#endif  //SMCPKG_SUPPORT      
+
+#endif //#ifdef CONTROLS_WITH_DEFAULTS
+
+#ifdef ADVANCED_FORM_SET
+    #ifndef SUPPRESS_GRAYOUT_ENDIF //old Core
+    #define SUPPRESS_GRAYOUT_ENDIF endif;
+    #endif
+	#ifdef FORM_SET_ITEM
+	// Define controls to be added to the main page of the formset
+	#endif
+
+	#ifdef FORM_SET_GOTO
+	// Define goto commands for the forms defined in this file
+		goto ACPI_FORM_ID, 
+			prompt = STRING_TOKEN(STR_ACPI_FORM),
+			help = STRING_TOKEN(STR_ACPI_FORM_HELP);
+	#endif
+
+	#ifdef FORM_SET_FORM
+	// Define forms
+        #ifndef ACPI_FORM_MAIN
+        #define ACPI_FORM_MAIN
+
+		    form formid = AUTO_ID(ACPI_FORM_ID),
+			    title = STRING_TOKEN(STR_ACPI_FORM);
+            SUBTITLE(STRING_TOKEN(STR_ACPI_FORM))
+            SEPARATOR
+        
+			    grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+//SMCPKG_SUPPORT S
+        suppressif SMC_SETUP_STYLE;  //SMCPKG_SUPPORT S
+        PCIBUS_ONEOF_AERENABLE
+
+        suppressif ideqval SYSTEM_CONFIGURATION.MemErrEn == 0x00;
+            oneof varid = SYSTEM_CONFIGURATION.CorrMemErrEn,
+            prompt      = STRING_TOKEN(STR_MEM_COR_ERR_EN_PROMPT),
+            help        = STRING_TOKEN(STR_MEM_COR_ERR_EN_HELP),
+            option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+            option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;      
+            endoneof; 
+        endif;
+        endif;  //SMCPKG_SUPPORT E
+
+#if SMCPKG_SUPPORT && SMC_SETUP_STYLE
+#if NUMBER_CPU_SOCKETS > 1
+        oneof varid = SOCKET_COMMONRC_CONFIGURATION.NumaEn,
+            prompt  = STRING_TOKEN(STR_NUMAEN),
+            help    = STRING_TOKEN(STR_NUMAEN_HELP),
+            option text = STRING_TOKEN(STR_DISABLE),      value = 0,  flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_ENABLE),       value = 1,  flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        endoneof;
+#endif
+
+        oneof varid = SYSTEM_CONFIGURATION.WheaSupportEn,
+            prompt      = STRING_TOKEN(STR_WHEA_SUPPORT_EN_PROMPT),
+            help        = STRING_TOKEN(STR_WHEA_SUPPORT_EN_HELP),
+            option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;      
+        endoneof; 
+#endif
+//SMCPKG_SUPPORT+
+        oneof varid  = SYSTEM_CONFIGURATION.Hpet,
+            prompt   = STRING_TOKEN(STR_HPET_PROMPT),
+            help     = STRING_TOKEN(STR_HPET_HELP),
+            option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+        endoneof;
+//SMCPKG_SUPPORT-
+
+#if (X11DPG_SUPPORT == 1) || (A_S3 == 1)
+        ACPI_ONEOF_ACPISLEEPSTATE
+#endif
+
+//SMCPKG_SUPPORT E
+        suppressif SMC_SETUP_STYLE;  //SMCPKG_SUPPORT S
+                    ACPI_CHECKBOX_ACPIAUTO
+        endif;  //SMCPKG_SUPPORT E
+			    endif;
+        suppressif SMC_SETUP_STYLE;  //SMCPKG_SUPPORT S
+			    SEPARATOR
+			    suppressif ideqval SETUP_DATA.AcpiAuto == 0x1;
+			    grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+
+                    ACPI_CHECKBOX_ACPIHIBERNATE
+#if (A_S1 == 1) || (A_S3 == 1)
+                    //ACPI_ONEOF_ACPISLEEPSTATE
+#endif
+                    ACPI_CHECKBOX_ACPILOCKLEGACYRES
+
+                    ACPI_ONEOF_S3RESUMEVIDEOREPOST
+
+                    ACPI_ONEOF_FORCETOACPI1
+
+			    SUPPRESS_GRAYOUT_ENDIF
+        endif;  //SMCPKG_SUPPORT E
+		    endform;  // ACPI_FORM_ID
+        #endif // ACPI_FORM_MAIN
+	#endif  // FORM_SET_FORM
+
+#endif  // ADVANCED_FORM_SET
+
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**         5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093        **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************

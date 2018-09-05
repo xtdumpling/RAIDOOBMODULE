@@ -1,0 +1,54 @@
+#****************************************************************************
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.01
+#    Bug Fix:  Fix system hangs at Sum InBand command.
+#    Reason:   Because of using Boot Service in SMM. Separate SmcRomHole into two libraries - DXE and SMM.
+#    Auditor:  Hartmann Hsieh
+#    Date:     Jul/12/2016
+#
+#  Rev. 1.00
+#    Bug Fix:  Initialize revision.
+#    Reason:   Get base code from Grantley
+#    Auditor:  Kasber Chen
+#    Date:     May/04/2016
+#
+#*****************************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SmcRomHoleSmmLib
+  FILE_GUID                      = 3C6370FA-C79C-4840-A6F4-EC83CBD3F05D
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = SmcRomHoleSmmLib
+  CONSTRUCTOR                    = SmcRomHoleSmmInit
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  SmcPkg/SmcPkg.dec
+
+[LibraryClasses]
+  SmmServicesTableLib
+  UefiBootServicesTableLib
+  DebugLib
+
+[Sources]
+  SmcRomHoleSmm.c
+  SmcRomHoleCommon.c
+  
+[Protocols]
+  gEfiSmmBase2ProtocolGuid
+  gFlashSmmProtocolGuid
+
+[Pcd]
+

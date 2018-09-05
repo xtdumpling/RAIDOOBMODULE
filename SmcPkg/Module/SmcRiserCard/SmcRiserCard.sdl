@@ -1,0 +1,745 @@
+#****************************************************************************
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#    Rev. 1.10
+#    Reason:	Add RSC_UN4_88 redriver & i2c mux information.
+#    Auditor:	Leon Xu
+#    Date:      Jun/14/2017
+#
+#    Rev. 1.09
+#    Reason:	Define default value of TOKEN "RC_U2N4_1"~"RC_U2N4_4" to prevent compile error.
+#    Auditro:	Jimmy Chiu
+#    Date:      Feb/23/2017
+#
+#    Rev. 1.08
+#    Reason:	Support OEM type 130 for SXB slots.
+#    Auditro:	Kasber Chen
+#    Date:      Jan/25/2017
+#
+#    Rev. 1.07
+#    Reason:	Correct port D device and function number.
+#    Auditro:	Kasber Chen
+#    Date:      Jan/12/2017
+#
+#  Rev. 1.06
+#    Bug Fix:  Add riser card redriver function.
+#    Reason:   
+#    Auditor:  Kasber Chen
+#    Date:     Jan/10/2017
+#
+#  Rev. 1.05
+#    Bug Fix:  Support AOC NVMe card in riser card slots.
+#    Reason:   
+#    Auditor:  Kasber Chen
+#    Date:     Nov/16/2016
+#
+#  Rev. 1.04
+#    Bug Fix:  Send HideItem and RiserCard data to sum.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Sep/23/2016
+#
+#  Rev. 1.03
+#    Bug Fixed:  Fix Bus dynamic change issue.
+#    Reason:     
+#    Auditor:    Kasber Chen
+#    Date:       Sep/06/2016
+#
+#  Rev. 1.02
+#    Bug Fix:  Support 6 NVMe
+#    Reason:   
+#    Auditor:  Kasber Chen
+#    Date:     Jul/14/2016
+#
+#  Rev. 1.01
+#      Bug Fixed:  Add riser card name to IIO and OPROM control items.
+#      Reason:     
+#      Auditor:    Kasber Chen
+#      Date:       Jun/21/2016
+#
+#   Rev. 1.00
+#     Reason:   Initialize revision.
+#     Auditro:	Kasber Chen
+#     Date:     04/13/2016      
+#
+#**************************************************************************//
+TOKEN
+	Name  = "SmcRiserCard_SUPPORT"
+	Value  = "0"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "Single_CPU_Platform"
+	Value  = "0"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SYSTEM_SLOT_INFO"
+	Value  = "0"
+	Help  = "ON  -> System Slot Information structure will be present\OFF -> System Slot Information structure will not be present"
+	TokenType = Boolean
+	TargetEQU = Yes
+	Lock = Yes
+End
+
+TOKEN
+        Name  = "SXB_Max_Device"
+        Value  = "12"
+        Help = "Max device number in a SXB slot"
+        TokenType = Integer
+        TargetH = Yes
+End
+
+TOKEN
+	Name  = "SXB1_GPIO_Tbl"
+	Value  = "{0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff}"
+	Help = "SXB1 GPIO define in the token."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SXB2_GPIO_Tbl"
+	Value  = "{0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff}"
+	Help = "SXB2 GPIO define in the token."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SXB3_GPIO_Tbl"
+	Value  = "{0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff}"
+	Help = "SXB2 GPIO define in the token."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "WIO_SUPPORT"
+	Value  = "0"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "ULIO_SUPPORT"
+	Value  = "0"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "GIO_SUPPORT"
+	Value  = "0"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FRIO_SUPPORT"
+	Value  = "0"
+	Help = "RSC-R2UF-2E8GR, RSC-R1UF-E16, RSC-R2UF-E16"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TIO_SUPPORT"
+	Value  = "0"
+	Help = "RSC-R2UT-E8E16R, RSC-R2UT-3E8R, RSC-R1UTP-E16R"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FFIO_SUPPORT"
+	Value  = "0"
+	Help = "RSC-R2UT-E8E16R, RSC-R2UT-3E8R, RSC-R1UTP-E16R"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+#P0PE1A = 0x00110000, P0PE1B = 0x00110008, P0PE1C = 0x00110010, P0PE1D = 0x00110018
+#P0PE2A = 0x00120000, P0PE2B = 0x00120008, P0PE2C = 0x00120010, P0PE2D = 0x00120018
+#P0PE3A = 0x00130000, P0PE3B = 0x00130008, P0PE3C = 0x00130010, P0PE3D = 0x00130018
+#P1PE0A = 0x00200000,
+#P1PE1A = 0x00210000, P1PE1B = 0x00210008, P1PE1C = 0x00210010, P1PE1D = 0x00210018
+#P1PE2A = 0x00220000, P1PE2B = 0x00220008, P1PE2C = 0x00220010, P1PE2D = 0x00220018
+#P1PE3A = 0x00230000, P1PE3B = 0x00230008, P1PE3C = 0x00230010, P1PE3D = 0x00230018
+
+TOKEN
+	Name  = "BOARD_PCIE_PORT_SXB1"
+	Value  = "{0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff}"
+	Help  = "SXB1 slot port mapping."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "BOARD_PCIE_PORT_SXB2"
+	Value  = "{0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff}"
+	Help  = "SXB2 slot port mapping."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "BOARD_PCIE_PORT_SXB3"
+	Value  = "{0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff}"
+	Help  = "SXB3 slot port mapping."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcSLOT1BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x88888888"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcSLOT2BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x88888888"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcSLOT3BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x88888888"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcSLOT4BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x88888888"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcSLOT5BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x88888888"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcSLOT6BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x88888888"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcSLOT7BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x88888888"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcSLOT8BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x88888888"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcSLOT9BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x88888888"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcSLOT10BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x88888888"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcSLOT11BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x88888888"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcOBLan1BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x88888888"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcOBLan2BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x88888888"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcOBLan3BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x88888888"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcOBLan4BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x88888888"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcMultiFuncLanChip1"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Help  = "for LAN1 and LAN2."
+	Value  = "0x88"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 01h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcMultiFuncLanChip2"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Help  = "for LAN3 and LAN4."
+	Value  = "0x88"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 01h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcOBNVMe1BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x88888888"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcOBNVMe2BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x88888888"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcOBNVMe3BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x88888888"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcOBNVMe4BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x88888888"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcOBNVMe5BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x88888888"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcOBNVMe6BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x88888888"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcOBNVMe7BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x88888888"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcOBNVMe8BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x88888888"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcOBNVMe9BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x88888888"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcOBNVMe10BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x88888888"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcOBNVMe11BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x88888888"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcOBNVMe12BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x88888888"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+TOKEN
+        Name  = "MAX_SLOT"
+        Value  = "5"
+        TokenType = Integer
+        TargetH = Yes
+End
+
+TOKEN
+	Name  = "RC_2URN4_i4XT_1"
+	Value  = "{{0xff, 0xff}}"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "RC_2URN4_i4XT_2"
+	Value  = "{{0xff, 0xff}}"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "RC_2URN4_i4XT_3"
+	Value  = "{{0xff, 0xff}}"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "RC_2URN4_i4XT_4"
+	Value  = "{{0xff, 0xff}}"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+        Name  = "RC_2UR6N4_i4XT_1"
+        Value  = "{{0xff, 0xff}}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "RC_2UR6N4_i4XT_2"
+        Value  = "{{0xff, 0xff}}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "RC_2UR6N4_i4XT_3"
+        Value  = "{{0xff, 0xff}}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "RC_2UR6N4_i4XT_4"
+        Value  = "{{0xff, 0xff}}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "RC_2UR8N4_i2XT_1"
+        Value  = "{{0xff, 0xff}}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "RC_2UR8N4_i2XT_2"
+        Value  = "{{0xff, 0xff}}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "RC_2UR8N4_i2XT_3"
+        Value  = "{{0xff, 0xff}}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "RC_2UR8N4_i2XT_4"
+        Value  = "{{0xff, 0xff}}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "RC_URN6_i2XT_1"
+        Value  = "{{0xff, 0xff}}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "RC_URN6_i2XT_2"
+        Value  = "{{0xff, 0xff}}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "RC_URN6_i2XT_3"
+        Value  = "{{0xff, 0xff}}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "RC_URN6_i2XT_4"
+        Value  = "{{0xff, 0xff}}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "RC_URN6_i2XT_5"
+        Value  = "{{0xff, 0xff}}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "RC_URN6_i2XT_6"
+        Value  = "{{0xff, 0xff}}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "RC_U2N4_1"
+        Value  = "{{0xff, 0xff}}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "RC_U2N4_2"
+        Value  = "{{0xff, 0xff}}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "RC_U2N4_3"
+        Value  = "{{0xff, 0xff}}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "RC_U2N4_4"
+        Value  = "{{0xff, 0xff}}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "RSC_UN4_88_1"
+        Value  = "{{0xff, 0xff}}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "RSC_UN4_88_2"
+        Value  = "{{0xff, 0xff}}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "RSC_UN4_88_3"
+        Value  = "{{0xff, 0xff}}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "RSC_UN4_88_4"
+        Value  = "{{0xff, 0xff}}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+PATH
+	Name  = "SmcRiserCard_DIR"
+End
+
+FFS_FILE
+	Name  = "SmcRiserCard"
+	FD_AREA  = "FV_MAIN"
+	INFComponent  = "SmcPkg.SmcRiserCard"
+	Apriori_Index  = "3"
+End
+
+FFS_FILE
+	Name  = "SmcRiserCardPei"
+	FD_AREA  = "FV_BB"
+	INFComponent  = "SmcPkg.SmcRiserCardPei"
+End
+
+INFComponent
+        Name  = "SmcRiserCard"
+        File  = "SmcRiserCard.inf"
+        Package  = "SmcPkg"
+        ModuleTypes  = "DXE_DRIVER"
+End
+
+INFComponent
+	Name  = "SmcRiserCardPei"
+	File  = "SmcRiserCardPei.inf"
+	Package  = "SmcPkg"
+	ModuleTypes  = "PEIM"
+End
+

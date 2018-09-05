@@ -1,0 +1,39 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2011, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+## @file
+#   This library implements SIO specific functions
+##
+
+[Defines]
+  INF_VERSION = 0x00010005
+  VERSION_STRING = 1.0
+  BASE_NAME = AmiSioDxeLib
+  MODULE_TYPE = DXE_DRIVER
+  LIBRARY_CLASS = AmiSioDxeLib | DXE_CORE DXE_DRIVER DXE_RUNTIME_DRIVER UEFI_APPLICATION UEFI_DRIVER DXE_SMM_DRIVER
+  FILE_GUID = 3AFDB4A7-2565-4e26-96CC-77964B80943F
+#  CONSTRUCTOR = AmiSioDxeLibConstructor
+
+[Sources]
+  AmiSioDxeLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+
+[LibraryClasses]
+  AmiDxeLib
+  AmiIoDecodeLib
+

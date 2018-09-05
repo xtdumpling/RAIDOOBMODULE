@@ -1,0 +1,67 @@
+TOKEN
+	Name  = "TSE_ADVANCED_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable Ezport Style in TSE"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "TSE_SEPERATE_EFI_LEGACY_OPTIONS"
+	Value  = "0"
+	Help  = "Turn on to have EFI options and Legacy options seperate. This will have effect only if BDS also seperates EFI and Legacy options."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TSE_NVRAM_DEFAULTS_SUPPORT"
+	Value  = "1"
+	Help  = "To enable NVRAM support in TSE modules. This token requires TSE Sources support"
+	TokenType = Boolean
+	TargetH = Yes
+	TargetMAK = Yes
+	Token = "NVRAM_SUPPORT" "!=" "0"
+End
+
+PATH
+	Name  = "TSE_ADVANCED_DIR"
+End
+
+ELINK
+	Name  = "TseAdvanced"
+	Parent  = "TseAdvancedBin"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "TseAdvancedImages"
+	Parent  = "TseAdvancedImagesBin"
+	InvokeOrder = ReplaceParent
+End
+
+INFComponent
+	Name  = "TseAdvanced"
+	File  = "TseAdvanced.inf"
+	Package  = "AmiTsePkg"
+End
+
+INFComponent
+	Name  = "TseAdvancedImages"
+	File  = "AdvancedImages\AdvancedImages.inf"
+	Package  = "AmiTsePkg"
+End
+
+LibraryMapping
+	Class  = "TseAdvanced"
+	Instance  = "AmiTsePkg.TseAdvanced"
+#	Arch  = "X64"
+End
+
+LibraryMapping
+	Class  = "TseAdvancedImages"
+	Instance  = "AmiTsePkg.TseAdvancedImages"
+#	Arch  = "X64"
+End

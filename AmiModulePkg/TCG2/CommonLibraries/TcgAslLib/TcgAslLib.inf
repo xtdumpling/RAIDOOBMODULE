@@ -1,0 +1,41 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2010, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**     5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093            **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+[Defines]
+	INF_VERSION 	= 0x00010005
+	VERSION_STRING 	= 1.0
+	BASE_NAME 		= TcgAslLib
+	MODULE_TYPE 	= DXE_DRIVER
+	LIBRARY_CLASS 	= TcgAslLib
+	FILE_GUID 		= 50A7C2A6-DED4-4185-B159-A51AEE32E924	
+	
+[Sources]
+  TcgAslLib.c
+  TcgAslLib.h	
+	
+[LibraryClasses]
+  UefiDriverEntryPoint
+  MemoryAllocationLib
+  UefiLib
+
+[Guids]
+  gEfiAcpiTableGuid
+
+[Protocols]
+ gEfiAcpiSdtProtocolGuid     
+  
+[Packages]
+ AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+ MdePkg/MdePkg.dec
+ AmiModulePkg/AmiModulePkg.dec
+

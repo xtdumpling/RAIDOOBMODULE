@@ -1,0 +1,189 @@
+TOKEN
+	Name  = "TCGSETUP_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to control TCG setup pages"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "DISPLAY_TPM_SETUP_ERROR"
+	Value  = "0"
+	Help  = "Control warning message in setup if a TPM request form setup failed "
+	TokenType = Boolean
+	TargetEQU = Yes
+    TargetH   = Yes
+	TargetMAK = Yes
+End
+
+
+TOKEN
+    Name = "CHOOSE_TPM_STACK_QUESTION"
+    Value  = "1"
+    Help  = "Question to Shoe TPM 1.2 or 2.0 question"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH   = Yes
+    TargetMAK = Yes
+
+End
+
+
+TOKEN
+    Name = "TPM2_DISABLE_PLATFORM_HIERARCHY_RANDOMIZATION"
+    Value  = "0"
+    Help  = "Question to disable Platform Hierarchy randomization to facilitate TXT testing during development"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH   = Yes
+    TargetMAK = Yes
+
+End
+
+TOKEN
+    Name  = "DEFAULT_SHA1_BANK_ENABLE"
+    Value  = "01"
+    Help  = " 00h: Disable SHA1 Bank, 01h: Enable SHA1 Bank"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "DEFAULT_SHA256_BANK_ENABLE"
+    Value  = "02"
+    Help  = " 00h: Disable SHA256 Bank, 02h: Enable SHA256 Bank"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "DEFAULT_SHA384_BANK_ENABLE"
+    Value  = "00"
+    Help  = " 00h: Disable SHA384 Bank, 04h: Enable SHA384 Bank"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "DEFAULT_SHA512_BANK_ENABLE"
+    Value  = "00"
+    Help  = " 00h: Disable SHA512 Bank, 08h: Enable SHA512 Bank"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "DEFAULT_SM3_BANK_ENABLE"
+    Value  = "00"
+    Help  = " 00h: Disable SM3 Bank, 01h: Enable SM3 Bank"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+PATH
+	Name  = "TCG_SETUP_DIR"
+	Help  = "Tcg Setup Directory"
+End
+
+ELINK
+	Name  = "$(TCG_SETUP_DIR)\TcgSetup.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	Priority  = 0
+	InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(TCG_SETUP_DIR)/TcgSetup.uni"
+    Parent  = "SetupStringFiles"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(TCG_SETUP_DIR)/TcgSetup.c"
+    Parent  = "SetupCallbackFiles"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "InitTcgStrings,"
+    Parent  = "SetupStringInit"
+    InvokeOrder = AfterParent
+End
+
+#ELINK
+#   Name  = "$(TCG_SETUP_DIR)/TPMPwd.c"
+#  Parent  = "SetupCallbackFiles"
+# InvokeOrder = AfterParent
+#End
+
+ELINK
+    Name  = "TcgUpdateDefaultsHook,"
+    Parent  = "LoadedConfigDefaultsHook,"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "AmiTcgInstallPpiGuid,"
+    Parent  = "AfterInitPostScreenHook,"
+    InvokeOrder = AfterParent
+End
+
+
+ELINK
+	Name = "AmiTcgInstallPpiGuid,"
+	Parent = "DrawQuietBootLogoHook,"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(TCG_SETUP_DIR)/HandleLoadDefaultsSetup.c"
+    Parent  = "TSE_SOURCE_FILES"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+   Name  = "$(TCG_SETUP_DIR)/AmiTcgPpiHandshake.c"
+   Parent  = "TSE_SOURCE_FILES"
+   InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "AmiTcgPkg/AmiTcgPkg.dec"
+    Parent  = "ADDITIONAL_AMITSE_Packages"
+    InvokeOrder = AfterParent    
+End
+
+ELINK
+    Name  = "gTcgInternalflagGuid"
+    Parent  = "ADDITIONAL_AMITSE_Guids"
+    InvokeOrder = AfterParent    
+End
+
+ELINK
+    Name  = "gTcgInternalflagGuid"
+    Parent  = "AdditionalSetupGuids"
+    InvokeOrder = AfterParent    
+End
+
+
+ELINK
+    Name  = "gAmiPpiGuid"
+    Parent  = "ADDITIONAL_AMITSE_Guids"
+    InvokeOrder = AfterParent    
+End
+
+ELINK
+    Name  = "gTcgPlatformSetupPolicyGuid"
+    Parent  = "ADDITIONAL_AMITSE_Protocols"
+    InvokeOrder = AfterParent    
+End
+
+ELINK
+    Name  = "AmiTcgPkg/AmiTcgPkg.dec"
+    Parent  = "AdditionalSetupPackages"
+    InvokeOrder = AfterParent    
+End
+
+

@@ -1,0 +1,61 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+## @file LegacySmmSredir.inf
+#
+##
+[Defines]
+  INF_VERSION                 = 0x00010015
+  VERSION_STRING              = 1.0
+  BASE_NAME                   = LegacySmmSredir
+  MODULE_TYPE                 = DXE_SMM_DRIVER
+  FILE_GUID                   = 291E46D4-CA63-4d33-9857-1397C9AD7C0D
+  PI_SPECIFICATION_VERSION    = 0x0001000A
+  ENTRY_POINT                 = LegacySredirSmmEntryPoint
+
+[Sources]
+  LegacySmmSredir.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec 
+  AmiModulePkg/AmiModulePkg.dec
+  
+[LibraryClasses]
+  AmiDxeLib
+  UefiDriverEntryPoint
+  AmiBufferValidationLib
+
+[Protocols]
+  gEfiSmmBase2ProtocolGuid
+  gEfiSmmSwDispatch2ProtocolGuid
+  gEfiSmmCpuProtocolGuid
+
+[Depex.common.DXE_SMM_DRIVER]
+ gEfiSmmBase2ProtocolGuid       AND
+ gEfiSmmSwDispatch2ProtocolGuid
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

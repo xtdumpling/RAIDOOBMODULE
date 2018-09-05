@@ -1,0 +1,78 @@
+TOKEN
+        Name  = "BiosGuard_SUPPORT"
+        Value  = "0"
+        Help  = "Switch for Enabling BiosGuard support in the project"
+        TokenType = Boolean
+        Master = Yes
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+End
+
+TOKEN
+    Name  = "NVRAM_SMM_SUPPORT"
+    Value  = "1"
+    Help  = "Enables/disable NVRAM SMM driver.\"
+    TokenType = Boolean
+    Lock = Yes    
+End
+
+TOKEN
+        Name  = "BIOS_LOCK_ENABLE"
+        Value  = "1"
+        Help  = "1:Enable BIOS Lock.\0:Disable BIOS Lock.\Only read cycles result in Firmware Hub I/F cycles."
+        TokenType = Boolean
+        TargetH = Yes
+        Lock = Yes
+End
+
+TOKEN
+        Name  = "SMM_BIOS_WRITE_PROTECT"
+        Value  = "1"
+        Help  = "SMM BIOS Write Protect(SMM_BWP, B0:D31:F0 Reg#DCh[5]).\0 = BIOS region SMM protection is disabled.\1 = BIOS region SMM protection is enabled."
+        TokenType = Boolean
+        TargetMAK = Yes
+        TargetH = Yes
+        Lock = Yes
+End
+
+TOKEN
+        Name  = "BIOS_GUARD_DEBUG_MODE"
+        Value  = "0"
+        Help  = "If you want to debug BIOS Guard, please enable the token."
+        TokenType = Boolean
+        TargetMAK = Yes
+        TargetH = Yes
+End
+
+TOKEN
+        Name = "BIOS_GUARD_CAPSULE_VARIABLE_GUID"
+        Value = " { 0x368b3153, 0x563d, 0x4610, {0x8d, 0x94, 0x47, 0xa9, 0xfa, 0x8c, 0x4c, 0x16 }}"
+        Help = "This GUID is used for BIOS Guard capsule variable"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name = "BIOS_GUARD_RECOVERY_ADDRESS_GUID"
+        Value = " { 0x368b3152, 0x563d, 0x4670, {0x8d, 0x94, 0x47, 0xa9, 0xfa, 0x8c, 0x4c, 0x16 }}"
+        Help = "This GUID is used for BIOS Guard capsule variable"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name = "BIOS_GUARD_CAPSULE_GUID"
+        Value = " { 0xaeca034c, 0x5436, 0x4bde, {0x8a, 0x2e, 0xcb, 0xee, 0x1f, 0x59, 0x57, 0x53 }}"
+        Help = "This GUID is used for BIOS Guard capsule"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name = "BIOS_GUARD_RECOVERY_GUID"
+        Value = " { 0x3cdf5aa6, 0x2e40, 0x4f53, {0xa7, 0xb2, 0x29, 0x59, 0x59, 0x9, 0x19, 0x7e }}"
+        Help = "This GUID is used for BIOS Guard recovery"
+        TokenType = Expression
+        TargetH = Yes
+End

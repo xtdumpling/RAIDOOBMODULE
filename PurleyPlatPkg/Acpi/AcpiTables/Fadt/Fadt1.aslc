@@ -1,0 +1,124 @@
+/*++
+  This file contains an 'Intel Peripheral Driver' and is        
+  licensed for Intel CPUs and chipsets under the terms of your  
+  license agreement with Intel or your vendor.  This file may   
+  be modified by the user, subject to additional terms of the   
+  license agreement                                             
+--*/
+/*++
+Copyright (c) 1996 - 2005, Intel Corporation.
+
+This source code and any documentation accompanying it ("Material") is furnished
+under license and may only be used or copied in accordance with the terms of that
+license.  No license, express or implied, by estoppel or otherwise, to any
+intellectual property rights is granted to you by disclosure or delivery of these
+Materials.  The Materials are subject to change without notice and should not be
+construed as a commitment by Intel Corporation to market, license, sell or support
+any product or technology.  Unless otherwise provided for in the license under which
+this Material is provided, the Material is provided AS IS, with no warranties of
+any kind, express or implied, including without limitation the implied warranties
+of fitness, merchantability, or non-infringement.  Except as expressly permitted by
+the license for the Material, neither Intel Corporation nor its suppliers assumes
+any responsibility for any errors or inaccuracies that may appear herein.  Except
+as expressly permitted by the license for the Material, no part of the Material
+may be reproduced, stored in a retrieval system, transmitted in any form, or
+distributed by any means without the express written consent of Intel Corporation.
+
+
+Module Name:
+
+  Fadt1.0.c
+
+Abstract:
+
+  This file contains a structure definition for the ACPI 1.0 Fixed ACPI 
+  Description Table (FADT).  The contents of this file should only be modified 
+  for bug fixes, no porting is required.  The table layout is defined in 
+  Acpi1_0.h and the table contents are defined in Acpi1.0.h and Fadt.h.
+
+--*/
+
+//
+// Statements that include other files
+//
+#include <Acpi/Fadt.h>
+
+//
+// Fixed ACPI Description Table
+// Please modify all values in Fadt.h only.
+//
+EFI_ACPI_1_0_FIXED_ACPI_DESCRIPTION_TABLE Fadt = {
+  EFI_ACPI_1_0_FIXED_ACPI_DESCRIPTION_TABLE_SIGNATURE,
+  sizeof (EFI_ACPI_1_0_FIXED_ACPI_DESCRIPTION_TABLE),
+  EFI_ACPI_1_0_FIXED_ACPI_DESCRIPTION_TABLE_REVISION,
+  //
+  // Checksum will be updated at runtime
+  //
+  0x00,
+  //
+  // It is expected that these values will be updated at runtime
+  //
+  EFI_ACPI_OEM_ID,            // OEMID is a 6 bytes long field
+  EFI_ACPI_OEM_TABLE_ID,      // OEM table identification(8 bytes long)
+  EFI_ACPI_OEM_REVISION,      // OEM revision number
+  EFI_ACPI_CREATOR_ID,        // ASL compiler vendor ID
+  EFI_ACPI_CREATOR_REVISION,  // ASL compiler revision number
+  //
+  // These addresses will be updated at runtime
+  //
+  0x00000000,
+  0x00000000,
+
+  EFI_ACPI_INT_MODEL,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_SCI_INT,
+  EFI_ACPI_SMI_CMD,
+  EFI_ACPI_ACPI_ENABLE,
+  EFI_ACPI_ACPI_DISABLE,
+  EFI_ACPI_S4_BIOS_REQ,
+  EFI_ACPI_PSTATE_CNT,
+
+  EFI_ACPI_PM1A_EVT_BLK_ADDRESS,
+  EFI_ACPI_PM1B_EVT_BLK_ADDRESS,
+  EFI_ACPI_PM1A_CNT_BLK_ADDRESS,
+  EFI_ACPI_PM1B_CNT_BLK_ADDRESS,
+  EFI_ACPI_PM2_CNT_BLK_ADDRESS,
+  EFI_ACPI_PM_TMR_BLK_ADDRESS,
+  EFI_ACPI_GPE0_BLK_ADDRESS,
+  EFI_ACPI_GPE1_BLK_ADDRESS,
+  EFI_ACPI_PM1_EVT_LEN,
+  EFI_ACPI_PM1_CNT_LEN,
+  EFI_ACPI_PM2_CNT_LEN,
+  EFI_ACPI_PM_TMR_LEN,
+  EFI_ACPI_GPE0_BLK_LEN,
+  EFI_ACPI_GPE1_BLK_LEN,
+  EFI_ACPI_GPE1_BASE,
+
+  EFI_ACPI_CST_CNT,
+  EFI_ACPI_P_LVL2_LAT,
+  EFI_ACPI_P_LVL3_LAT,
+  EFI_ACPI_FLUSH_SIZE,
+  EFI_ACPI_FLUSH_STRIDE,
+  EFI_ACPI_DUTY_OFFSET,
+  EFI_ACPI_DUTY_WIDTH,
+  EFI_ACPI_DAY_ALRM,
+  EFI_ACPI_MON_ALRM,
+  EFI_ACPI_CENTURY,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_FIXED_FEATURE_FLAGS & 0x000003FF
+};
+
+VOID*
+ReferenceAcpiTable (
+  VOID
+  )
+
+{
+  //
+  // Reference the table being generated to prevent the optimizer from removing the 
+  // data structure from the exeutable
+  //
+  return (VOID*)&Fadt;
+}

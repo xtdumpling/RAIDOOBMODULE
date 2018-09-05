@@ -1,0 +1,114 @@
+#
+# This file contains an 'Intel Peripheral Driver' and is
+# licensed for Intel CPUs and chipsets under the terms of your
+# license agreement with Intel or your vendor.  This file may
+# be modified by the user, subject to additional terms of the
+# license agreement
+#
+#/*++
+#
+# Copyright (c) 2005 - 2016, Intel Corporation. All rights reserved
+# This software and associated documentation (if any) is furnished
+# under a license and may only be used or copied in accordance
+# with the terms of the license. Except as permitted by such
+# license, no part of this software or documentation may be
+# reproduced, stored in a retrieval system, or transmitted in any
+# form or by any means without the express written consent of
+# Intel Corporation.
+#
+#  Module Name:
+#
+#    SystemBoardDxe.inf
+#
+#  Abstract:
+#
+#    Component description file for DXE System Board Services.
+#
+#--*/
+
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SystemBoardDxe
+  FILE_GUID                      = 788DD6A1-F1EE-4BBA-A925-C0E7D66271BD
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = SystemBoardDxeEntry
+
+#
+# SystemBoardProtocol file GUID
+#
+#// {788DD6A1-F1EE-4BBA-A925-C0E7D66271BD}
+#static const GUID <<name>> =
+#{ 0x788dd6a1, 0xf1ee, 0x4bba, { 0xa9, 0x25, 0xc0, 0xe7, 0xd6, 0x62, 0x71, 0xbd } };
+
+[Sources]
+  SystemBoardDxe.c
+  SystemBoardDxe.h
+  ../Common/SystemBoardCommon.c
+
+[Packages]
+  MdeModulePkg/MdeModulePkg.dec
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  PurleyRpPkg/PlatformPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+  CpPlatPkg/CpPlatPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  PurleySktPkg/Me/MePkg.dec
+
+[LibraryClasses]
+  DebugLib
+  IoLib
+  UefiBootServicesTableLib
+  UefiDriverEntryPoint
+  UefiRuntimeServicesTableLib
+  HobLib
+  UefiLib
+  PrintLib
+  BaseMemoryLib
+  GpioLib
+  UbaPlatLib
+  MeTypeLib
+  SetupLib
+  UsraLib
+
+[FixedPcd.common]
+  gPlatformTokenSpaceGuid.PcdPostCompleteGpio
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[FeaturePcd]
+
+[Guids]
+  gEfiPlatformInfoGuid
+
+[Protocols]
+  gEfiDxeSystemBoardProtocolGuid         # PROTOCOL ALWAYS_PRODUCED
+  gEfiSmbiosProtocolGuid                 # PROTOCOL CONSUMES
+  gEfiPciRootBridgeIoProtocolGuid
+  gEfiSmbusHcProtocolGuid
+
+[Pcd]
+  gOemSkuTokenSpaceGuid.PcdOemSkuAcpiName
+  gOemSkuTokenSpaceGuid.PcdOemSkuFamilyName
+  gOemSkuTokenSpaceGuid.PcdOemSkuSubBoardID
+  gOemSkuTokenSpaceGuid.PcdOemSkuBoardSocketCount
+  gOemSkuTokenSpaceGuid.PcdOemSkuPlatformName
+  gOemSkuTokenSpaceGuid.PcdOemSkuPlatformNameSize
+  gOemSkuTokenSpaceGuid.PcdOemSkuPlatformFeatureFlag
+  gOemSkuTokenSpaceGuid.PcdOemSkuAssertPostGPIO
+  gOemSkuTokenSpaceGuid.PcdOemSkuAssertPostGPIOValue
+  gOemSkuTokenSpaceGuid.PcdOemTableIdXhci
+  gOemSkuTokenSpaceGuid.PcdOemSkuUplinkPortIndex
+# APTIOV_SERVER_OVERRIDE_RC_START : To use PcdAcpiDefaultOemTableId
+  gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemTableId
+# APTIOV_SERVER_OVERRIDE_RC_END : To use PcdAcpiDefaultOemTableId
+[Depex]
+  TRUE

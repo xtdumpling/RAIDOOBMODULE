@@ -1,0 +1,143 @@
+#
+# This file contains 'Framework Code' and is licensed as such
+# under the terms of your license agreement with Intel or your
+# vendor.  This file may not be modified, except as allowed by
+# additional terms of your license agreement.
+#
+## @file  CpPcPlatPkg.dec
+#
+#Copyright (c) 2014 - 2016, Intel Corporation. All rights reserved.
+#This software and associated documentation (if any) is furnished
+#under a license and may only be used or copied in accordance
+#with the terms of the license. Except as permitted by such
+#license, no part of this software or documentation may be
+#reproduced, stored in a retrieval system, or transmitted in any
+#form or by any means without the express written consent of
+#Intel Corporation.
+#
+##
+
+[Defines]
+  DEC_SPECIFICATION              = 0x00010005
+  PACKAGE_NAME                   = CpPcPlatPkg
+  PACKAGE_GUID                   = EB252EE6-7129-4499-BA39-96B995FC1188
+  PACKAGE_VERSION                = 0.10
+
+
+[Includes]
+  Include
+
+[LibraryClasses]
+  ##  @libraryclass  Provides library class for PC BIOS ID access APIs
+  ##
+  CpPcBiosIdLib|Include/Library/CpPcBiosIdLib.h
+  
+  ##
+  ##  @libraryclass  Provides library class for password check utility APIs
+  ##
+  PasswordUtilityLib|Include/Library/PasswordUtilityLib.h
+  
+  ## @libraryclass   Provides library class to get security revision from one FV
+  ##
+  SecurityRevisionLib|Include/Library/SecurityRevisionLib.h
+  
+  ##
+  ##  @libraryclass  Provides library class for platform NMI status check ,clear and generate
+  ##  
+  PlatformNmiButtonLib|Include/Library/PlatformNmiButtonLib.h
+
+  ##
+  ##  @libraryclass  Provides library class for BDS POST hot key
+  ##  
+  PostHotKeyLib|Include/Library/PostHotKeyLib.h
+
+[Guids] 
+  ## Include/Guid/PcPassword
+  gPcPasswordGuid = { 0x3e710061, 0x647a, 0x4c03, { 0xbe, 0x85, 0xfa, 0xd6, 0xcc, 0xfa, 0x5a, 0x18 } }
+  
+  ## Include/Guid/SecurityRevision
+  gEfiSecRevGuid = {0xF50707B0, 0x7DA0, 0x482D, {0xB4, 0x58, 0xD2, 0x3A, 0x72, 0x93, 0x99, 0x59 }}
+  gEfiCpPcPlatTokenSpaceGuid   = { 0x825bde6a, 0xe9e4, 0x4cc8, { 0x9c, 0x2d, 0x9, 0xb2, 0x9c, 0x3b, 0xd4, 0x26 } }
+  gPcInvalidPasswordGuid = { 0xd69240c0, 0xdd40, 0x4f2d, {0x98, 0x63, 0x48, 0x48, 0xda, 0x6e, 0x61, 0x5f }}
+
+  
+
+  gOA2MagicNumberGuid = {0x41282EF2, 0x9B5A, 0x4EB7, {0x95, 0xD8, 0xD9, 0xCD, 0x7B, 0xDC, 0xE3, 0x67}}
+  gOA2OemPublicKeyVariableGuid = {0xa4d622d, 0x1f4, 0x4974, {0xb3, 0xf5, 0x2b, 0xfe, 0x98, 0x88, 0xef, 0x92}}
+  gOA2MarkerVariableGuid = {0xec2a6c28, 0x2286, 0x44ed, {0x91, 0x6b, 0x24, 0x3a, 0xb5, 0x25, 0x35, 0x46}}
+  gOA2EncryptedOemPublicKeyVaribleGuid = {0x6d9bf711, 0xa90d, 0x42f9, {0xa3, 0xfb, 0xdd, 0x8, 0xb6, 0xe8, 0x90, 0x37}}
+
+  
+  gEfiSetupEnterGuid              = { 0x71202EEE, 0x5F53, 0x40d9, {0xAB, 0x3D, 0x9E, 0x0C, 0x26, 0xD9, 0x66, 0x57 }}
+  gEfiDriverHealthManagerFormSetGuid = { 0x4296d9f4, 0xf6fc, 0x4dde, { 0x86, 0x85, 0x8c, 0xe2, 0xd7, 0x9d, 0x90, 0xf0 } }
+
+  gCpPcHotkeyDataGuid            = { 0x54289c30, 0x4d54, 0x4ba4, { 0x8d, 0x6, 0x1c, 0x6b, 0x9b, 0x2d, 0xc2, 0x3d } }
+
+  gBootOrderDataGuid            = { 0xd2b04f7c, 0x699b, 0x4f9a, { 0x91, 0xf3, 0x4, 0x7, 0x8b, 0x95, 0x63, 0xcb } }
+
+  gBackupBiosUpdateGuid= { 0xfbdc5309, 0xbf95, 0x44b5, { 0xa8, 0xae, 0xe0, 0x59, 0x3e, 0x5, 0x22, 0xbf } }  
+  gBiosIdentifiedInfoGuid  = { 0x4efdd949, 0xe871, 0x4a21, {0x96, 0xb6, 0xb1, 0x61, 0xb2, 0x71, 0xb9, 0xbf }}
+  gCpPcBiosIdFileGuid = {0x372f8c51, 0xc43b, 0x472a, {0x82, 0xaf, 0x54, 0xb5, 0xc3, 0x23, 0x4d, 0x7f}}  
+  gBiosCapsuleGuid = {0xda4b2d79, 0xfee1, 0x42c6, {0x9b, 0x56, 0x92, 0x36, 0x33, 0x39, 0x8a, 0xeb}}
+  gMeCapsuleGuid = {0x99EF5934, 0x7822, 0x49c4, {0x83, 0xA4, 0x50, 0xC1, 0xAF, 0xBC, 0xBE, 0x00 }}
+  gFdCapsuleGuid ={0x1f05933d, 0xff2e, 0x4236, {0xbe, 0x92, 0x56, 0x68, 0x2d, 0x3e, 0x8f, 0xb4}}
+  gPdrCapsuleGuid = {0x698ac232, 0x28a6, 0x40ec, {0x94, 0xaa, 0x7d, 0x30, 0x2d, 0xbf, 0x56, 0x67  }}
+
+  #Fce multi mode support
+  gPlatformVariableHobGuid = {0x71e6d4bc, 0x4837, 0x45f1,{ 0xa2, 0xd7, 0x3f, 0x93, 0x8, 0xb1, 0x7e, 0xd7}}
+  gDefaultDataFileGuid = { 0x1ae42876, 0x008f, 0x4161, { 0xb2, 0xb7, 0x1c, 0xd, 0x15, 0xc5, 0xef, 0x43 }}
+  
+[Ppis]
+  
+
+[Protocols]
+  gSmmHeciProtocolGuid  = {0x826824b6, 0xcc9b, 0x4d62, {0x8e, 0x7a, 0xf, 0xfb, 0xf6, 0x1, 0x3c, 0xbe}}
+  gSmmSpiInitilizedGuid = { 0x35c33f32, 0x8c61, 0x452d, { 0x8d, 0x14, 0x9b, 0x5f, 0x53, 0xa2, 0xdf, 0xc0 } }
+  gEfiTpmCallBackProtocolGuid = { 0x18d6fc7e, 0xd862, 0x48de, { 0xb5, 0x6d, 0xfa, 0x31, 0x14, 0x21, 0xbf, 0x29 } }
+
+[PcdsFixedAtBuild]
+  gEfiCpPcPlatTokenSpaceGuid.PcdFlashAreaBaseAddress|0xFFA20000|UINT32|0x70000110 
+  gEfiCpPcPlatTokenSpaceGuid.PcdMEFlashAreaBaseAddress|0xFF820000|UINT32|0x70000111
+  gEfiCpPcPlatTokenSpaceGuid.PcdPDRFlashAreaBaseAddress|0xFF810000|UINT32|0x70000112
+  gEfiCpPcPlatTokenSpaceGuid.PcdFDFlashAreaBaseAddress|0xFF800000|UINT32|0x70000113
+  gEfiCpPcPlatTokenSpaceGuid.PcdWholeFlashBaseAddress|0xFF800000|UINT32|0x70000114
+
+  gEfiCpPcPlatTokenSpaceGuid.PcdBiosUpdate1CmosIndex|0x50|UINT8|0x70000200
+  gEfiCpPcPlatTokenSpaceGuid.PcdBiosUpdate2CmosIndex|0x51|UINT8|0x70000201
+  gEfiCpPcPlatTokenSpaceGuid.PcdBiosUpdate3CmosIndex|0x52|UINT8|0x70000202
+  gEfiCpPcPlatTokenSpaceGuid.PcdMeUpdateCmosIndex|0x53|UINT8|0x70000203  
+  gEfiCpPcPlatTokenSpaceGuid.PcdBackupBiosUpdateCmosIndex|0x54|UINT8|0x70000204
+  gEfiCpPcPlatTokenSpaceGuid.PcdFlashFvBackSecPeiBase|0xFFF80000|UINT32|0x70000205
+  gEfiCpPcPlatTokenSpaceGuid.PcdFlashFvBackSecPeiSize|0x00040000|UINT32|0x70000206
+  gEfiCpPcPlatTokenSpaceGuid.PcdFvSecRevisionBase|0x00000000|UINT32|0x70000207
+  gEfiCpPcPlatTokenSpaceGuid.PcdFvBackupSecRevisionBase|0x00000000|UINT32|0x70000208
+  gEfiCpPcPlatTokenSpaceGuid.PcdFvPublicKeyBase|0x00000000|UINT32|0x70000209
+  gEfiCpPcPlatTokenSpaceGuid.PcdFvBackupPublicKeyBase|0x00000000|UINT32|0x7000020A
+  gEfiCpPcPlatTokenSpaceGuid.PcdWholeFlashBase|0xFF000000|UINT32|0x70000133     #need to change if not use 16MB
+  gEfiCpPcPlatTokenSpaceGuid.PcdScratchPadBase|0xFF530000|UINT32|0x70000131
+  gEfiCpPcPlatTokenSpaceGuid.PcdScratchPadSize|0x00003000|UINT32|0x70000132
+  gEfiCpPcPlatTokenSpaceGuid.PcdUpdateCapsuleSmiNumber|0x27|UINT8|0x70000134
+  gEfiCpPcPlatTokenSpaceGuid.PcdGetCapsuleStatusSmiNumber|0x28|UINT8|0x70000135
+
+##PCD for failsafe variable ffs in other FV rather than bb1
+## by default , FCE will insert into  SECPEI, and you don;t need to set these two PCD if bb1(secpei)is used
+  gEfiCpPcPlatTokenSpaceGuid.PcdFailSafeVarFfsSize|0|UINT32|0x70000136
+  gEfiCpPcPlatTokenSpaceGuid.PcdFailSafeVarFvBase|0|UINT32|0x70000137
+
+  gEfiCpPcPlatTokenSpaceGuid.PcdSetupVariableGuid|{ 0x43,0xd6,0x87,0xec,0xa4, 0xeb, 0xb5,0x4b, 0xa1, 0xe5, 0x3f, 0x3e, 0x36, 0xb2, 0xd, 0xa9}|VOID*|0x70000009
+
+  
+
+[PcdsDynamic, PcdsDynamicEx]
+  gEfiCpPcPlatTokenSpaceGuid.PcdUsbBootPriorityEnable|TRUE|BOOLEAN|0x80000000
+  gEfiCpPcPlatTokenSpaceGuid.PcdPasswordMaxRetries|3|UINT8|0x80000005
+  gEfiCpPcPlatTokenSpaceGuid.PcdPasswordIsValidated|0|UINT8|0x80000006
+  gEfiCpPcPlatTokenSpaceGuid.PcdPlatformUsbNonBoot|FALSE|BOOLEAN|0x80000007
+  gEfiCpPcPlatTokenSpaceGuid.PcdSOLEnableFlag|FALSE|BOOLEAN|0x80000008
+  gEfiCpPcPlatTokenSpaceGuid.PcdTpmPendingPpiRequestFlag|FALSE|BOOLEAN|0x80000009
+  gEfiCpPcPlatTokenSpaceGuid.PcdTpmOnboardVideoUsedFlag|FALSE|BOOLEAN|0x8000000A
+
+[PcdsFeatureFlag]
+  gEfiCpPcPlatTokenSpaceGuid.PcdForceUpdateNVram|FALSE|BOOLEAN|0x00000024
+  gEfiCpPcPlatTokenSpaceGuid.PcdUnsignedCapsuleSupport|FALSE|BOOLEAN|0x00000025
+  gEfiCpPcPlatTokenSpaceGuid.PcdSraRelease|FALSE|BOOLEAN|0x00000026

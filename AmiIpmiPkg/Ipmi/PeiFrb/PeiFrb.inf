@@ -1,0 +1,72 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+# @file PeiFrb.inf
+#
+# INF description file for PeiFrb PEIM
+#
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = PeiFrb
+  FILE_GUID                      = 0EF53039-3A38-42d1-BCEC-CE966E87061A
+  MODULE_TYPE                    = PEIM
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = InitializePeiFrb
+
+[Sources]
+  PeiFrb.c
+  PeiFrb.h
+  PeiFrbBoard.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiIpmiPkg/AmiIpmiPkg.dec
+
+[LibraryClasses]
+  PeimEntryPoint
+  BaseLib
+  DebugLib
+  PeiServicesLib
+
+[Ppis]
+  gEfiPeiReadOnlyVariable2PpiGuid   #CONSUMES
+  gEfiPeiIpmiTransportPpiGuid       #CONSUMES
+  gEfiPeiMasterBootModePpiGuid      #CONSUMES
+
+
+[Guids]
+  gEfiServerMgmtSetupVariableGuid
+  
+[Pcd]
+
+[Depex]
+  gEfiPeiReadOnlyVariable2PpiGuid AND
+  gEfiPeiIpmiTransportPpiGuid
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**         5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093     **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

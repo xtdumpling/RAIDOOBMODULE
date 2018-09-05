@@ -1,0 +1,32 @@
+TOKEN
+    Name  = "KbcEmulIrq_SUPPORT"
+    Value  = "1"
+    Help  = "Switch for Enabling KbcEmulIrq support in the project"
+    TokenType = Boolean
+    Master = Yes
+End
+
+PATH
+    Name  = "KbcEmulIrq_DIR"
+    Path  = "AmiModulePkg"
+End
+
+ELINK
+    Name  = "$(KBCEMULIRQ_DIR)\KbcEmulIrq$(ARCH).lib"
+    Parent  = "KBCEMULLIB"
+    Priority  = 10
+    InvokeOrder = AfterParent
+End
+
+INFComponent
+    Name  = "KbcEmulIrq"
+    File  = "KbcEmulIrq.inf"
+    Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiModulePkg.KbcEmulIrq"
+    ModuleTypes  = "DXE_SMM_DRIVER"
+    Override  = "AmiModulePkg.KbcEmul"
+End

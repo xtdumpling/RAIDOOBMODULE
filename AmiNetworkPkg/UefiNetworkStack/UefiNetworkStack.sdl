@@ -1,0 +1,247 @@
+TOKEN
+	Name  = "UefiNetworkStack_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable UefiNetworkStack support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+	Token = "AmiNetworkPkg_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "SnpDxe_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable SnpDxe support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "DpcDxe_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable DpcDxe support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "MnpDxe_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable MnpDxe support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "ArpDxe_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable MnpDxe support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "IpSecDxe_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable IpSecDxe support in Project"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TcpDxe_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable TcpDxe support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "UefiPxeBcDxe_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable UefiPxeBcDxe support in Project"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "VLanConfigDxe_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable VLanConfigDxe support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "HttpBootDxe_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable HttpBootDxe support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "DnsDxe_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable HttpDxe support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "HttpDxe_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable HttpDxe support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "HttpUtilitiesDxe_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable HttpUtilitiesDxe support in Project"
+	TokenType = Boolean
+End
+
+
+# Token to control AMI PORTING changes
+# Disabling this is same as EDK-II source
+TOKEN
+	Name  = "NET_PKG_AMI_PORTING_ENABLE"
+	Value  = "1"
+	Help  = "switch to enable/disable AMI porting over NetworkPkg."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+
+# Token to decide installing drivers
+# even though NetworkStack is Disabled
+TOKEN
+	Name  = "LOAD_DRIVER_ONLY_ON_NWSTACK_ENABLE"
+	Value  = "1"
+	Help  = "Token to decide load drivers when network stack is disabled."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+
+# Token to control speed up changes
+TOKEN
+	Name  = "SNP_SPEEDUP"
+	Value  = "0"
+	Help  = "Token to enable speed up by MAC filtering in SNP."
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "NET_PKG_AMI_PORTING_ENABLE" "=" "1"
+End
+
+ELINK
+	Name  = "gEfiIp4Config2ProtocolGuid"
+	Parent  = "ADDITIONAL_SNP_PROTOCOLS"
+	Token = "SNP_SPEEDUP" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "gEfiSimpleNetworkProtocolGuid"
+	Parent  = "ADDITIONAL_SNP_PROTOCOLS"
+	Token = "SNP_SPEEDUP" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "ADDITIONAL_SNP_PROTOCOLS"
+	InvokeOrder = ReplaceParent
+End
+
+INFComponent
+	Name  = "SnpDxe"
+	File  = "Common/SnpDxe/SnpDxe.inf"
+	Package  = "AmiNetworkPkg"
+	PreProcess = Yes
+	ModuleTypes  = "UEFI_DRIVER"
+	Token = "SnpDxe_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "DpcDxe"
+	File  = "Common/DpcDxe/DpcDxe.inf"
+	Package  = "AmiNetworkPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "DpcDxe_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "MnpDxe"
+	File  = "Common/MnpDxe/MnpDxe.inf"
+	Package  = "AmiNetworkPkg"
+	ModuleTypes  = "UEFI_DRIVER"
+	Token = "MnpDxe_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "ArpDxe"
+	File  = "Common/ArpDxe/ArpDxe.inf"
+	Package  = "AmiNetworkPkg"
+	ModuleTypes  = "UEFI_DRIVER"
+	Token = "ArpDxe_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "IpSecDxe"
+	File  = "Common/IpSecDxe/IpSecDxe.inf"
+	Package  = "AmiNetworkPkg"
+	ModuleTypes  = "UEFI_DRIVER"
+	Token = "IpSecDxe_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "TcpDxe"
+	File  = "Common/TcpDxe/TcpDxe.inf"
+	Package  = "AmiNetworkPkg"
+	ModuleTypes  = "UEFI_DRIVER"
+	Token = "TcpDxe_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "UefiPxeBcDxe"
+	File  = "Common/UefiPxeBcDxe/UefiPxeBcDxe.inf"
+	Package  = "AmiNetworkPkg"
+	ModuleTypes  = "UEFI_DRIVER"
+	Token = "UefiPxeBcDxe_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "VlanConfigDxe"
+	File  = "Common/VlanConfigDxe/VlanConfigDxe.inf"
+	Package  = "AmiNetworkPkg"
+	ModuleTypes  = "UEFI_DRIVER"
+	Token = "VLanConfigDxe_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "HttpBootDxe"
+	File  = "Common/HttpBootDxe/HttpBootDxe.inf"
+	Package  = "AmiNetworkPkg"
+	ModuleTypes  = "UEFI_DRIVER"
+	Token = "HttpBootDxe_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "HttpDxe"
+	File  = "Common/HttpDxe/HttpDxe.inf"
+	Package  = "AmiNetworkPkg"
+	ModuleTypes  = "UEFI_DRIVER"
+	Token = "HttpDxe_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "DnsDxe"
+	File  = "Common/DnsDxe/DnsDxe.inf"
+	Package  = "AmiNetworkPkg"
+	ModuleTypes  = "UEFI_DRIVER"
+	Token = "DnsDxe_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "HttpUtilitiesDxe"
+	File  = "Common/HttpUtilitiesDxe/HttpUtilitiesDxe.inf"
+	Package  = "AmiNetworkPkg"
+	ModuleTypes  = "UEFI_DRIVER"
+	Token = "HttpUtilitiesDxe_SUPPORT" "=" "1"
+End
+

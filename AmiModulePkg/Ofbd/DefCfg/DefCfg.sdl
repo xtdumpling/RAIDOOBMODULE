@@ -1,0 +1,55 @@
+TOKEN
+	Name  = "DEFCFG_SUPPORT"
+	Value  = "0"
+	Help  = "Switch for Enabling AFU Default Command Configuration support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "[AFU Default Command Configuration Sample Code Section]"
+	Help  = "See detail description in each token's help box."
+	TokenType = Expression
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "DEF_CFG_SAMPLE_TEST"
+	Value  = "1"
+	Help  = "Test AFU Default Command Configuration Function"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "DEFCFG_SUPPORT" "=" "1"
+End
+
+PATH
+	Name  = "OFBD_DEFCFG_DIR"
+End
+
+ELINK
+	Name  = "gAmiSmbiosNvramGuid"
+	Parent  = "AMI_OFBD_GUIDS"
+	Token = "DEF_CFG_SAMPLE_TEST" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(OFBD_DEFCFG_DIR)/DefCfg.h"
+	Parent  = "OFBD_FUNC_INCLUDE_FILES"
+	InvokeOrder = BeforeParent
+End
+
+ELINK
+	Name  = "$(OFBD_DEFCFG_DIR)/DefCfg.c"
+	Parent  = "OFBD_FUNC_SOURCES_FILES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "DEFCFGEntry,"
+	Parent  = "OFBD_INIT_FUNC_LIST"
+	Token = "DEFCFG_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+

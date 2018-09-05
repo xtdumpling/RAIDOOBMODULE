@@ -1,0 +1,66 @@
+#/*++
+# This file contains a 'Sample Driver' and is licensed as such
+# under the terms of your license agreement with Intel or your
+# vendor.  This file may be modified by the user, subject to
+# the additional terms of the license agreement
+#--*/
+#/*++
+#
+#  Copyright (c)  2004 - 2016 Intel Corporation. All rights reserved
+#  This software and associated documentation (if any) is furnished
+#  under a license and may only be used or copied in accordance
+#  with the terms of the license. Except as permitted by such
+#  license, no part of this software or documentation may be
+#  reproduced, stored in a retrieval system, or transmitted in any
+#  form or by any means without the express written consent of
+#  Intel Corporation.
+#
+#  Module Name:
+#
+#    SerialOverLan.inf
+#
+#  Abstract:
+#
+#    Component description file for SerialOverLan module.
+#
+#--*/
+
+[defines]
+  INF_VERSION          = 0x00010005
+  BASE_NAME            = SerialOverLan
+  FILE_GUID            = FB142B99-DF57-46cb-BC69-0BF858A734F9
+  MODULE_TYPE          = DXE_DRIVER
+  VERSION_STRING       = 1.0
+  ENTRY_POINT          = PciSerialControllerDriverEntryPoint
+
+[sources.common]
+  SerialOverLan.c
+  SerialOverLan.h
+  ComponentName.c
+
+[LibraryClasses]
+  DxeAmtLib
+  BaseMemoryLib
+  MemoryAllocationLib
+  DevicePathLib
+  UefiDriverEntryPoint
+# PciLib             SERVER_BIOS_FLAG
+  PerformanceLib
+  UefiLib
+  MeTypeLib
+  DxeSpsPolicyLib
+  TimerLib
+
+[Protocols]
+  gEfiSerialIoProtocolGuid
+  gEfiPciIoProtocolGuid
+
+[Packages]
+  MdePkg/MdePkg.dec
+  PurleySktPkg/Me/MePkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  CpRcPkg/CpRcPkg.dec
+
+[Depex]
+  TRUE

@@ -1,0 +1,83 @@
+TOKEN
+	Name  = "PciStaticSetup_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable PciBus support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+	Token = "PCI_SETUP_USE_APTIO_4_STYLE" "=" "1"
+End
+
+TOKEN
+    Name  = "SETUP_SHOW_PCI_LATENCY"
+    Value  = "1"
+    Help  = "Sets visibility of the PCI Latency Timer Setup Item."
+    TokenType = Boolean
+    TargetH = Yes
+    Range  = "ON or OFF default is ON"
+End
+
+TOKEN
+    Name  = "SETUP_SHOW_PCIX_LATENCY"
+    Value  = "1"
+    Help  = "Sets visibility of the PCI X Latency Timer Setup Item."
+    TokenType = Boolean
+    TargetH = Yes
+    Range  = "ON or OFF default is ON"
+End
+
+TOKEN
+    Name  = "SETUP_SHOW_VGA_PALLETE_SNOOP"
+    Value  = "1"
+    Help  = "Sets visibility of the VGA Pallete Snoop Setup Item."
+    TokenType = Boolean
+    TargetH = Yes
+    Range  = "ON or OFF default is ON"
+End
+
+TOKEN
+    Name  = "SETUP_SHOW_PERR"
+    Value  = "1"
+    Help  = "Sets visibility of the PERR Setup Item."
+    TokenType = Boolean
+    TargetH = Yes
+    Range  = "ON or OFF default is ON"
+End
+
+TOKEN
+    Name  = "SETUP_SHOW_SERR"
+    Value  = "1"
+    Help  = "Sets visibility of the SERR Setup Item."
+    TokenType = Boolean
+    TargetH = Yes
+    Range  = "ON or OFF default is ON"
+End
+
+PATH
+	Name  = "PciStaticSetup_DIR"
+End
+
+ELINK
+	Name  = "$(PCIBUS_DIR)/PciStaticSetup.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(PCIBUS_DIR)\PciStaticSetup.c"
+	Parent  = "SetupCallbackFiles"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(PCIBUS_DIR)\PciStaticSetup.uni"
+	Parent  = "SetupStringFiles"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "InitPciBusStrings,"
+	Parent  = "SetupStringInit"
+	InvokeOrder = AfterParent
+End

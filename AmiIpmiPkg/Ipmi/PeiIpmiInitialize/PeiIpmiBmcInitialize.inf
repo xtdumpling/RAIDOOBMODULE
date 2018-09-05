@@ -1,0 +1,122 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.02
+#    Bug Fix:  Add the "PEI--IPMI Initialization" Post-Help message.
+#    Reason:
+#    Auditor:  Jimmy Chiu
+#    Date:     Aug/09/2016
+#
+#  Rev. 1.01
+#    Bug Fix:  Add Full SMBIOS module.
+#    Reason:
+#    Auditor:  Hartmann Hsieh
+#    Date:     Jul/27/2016
+#
+#  Rev. 1.00
+#    Bug Fix:  Initialize revision
+#    Reason:   Get base code from Grantley
+#    Auditor:  Kasber Chen
+#    Date:     Jun/07/2016
+#
+#****************************************************************************
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+## @file  PeiIpmiBmcInitialize.inf
+#
+# INF description file for PeiIpmiBmcInitialize PEIM
+##
+
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = PeiIpmiBmcInitialize
+  FILE_GUID                      = 7942EDD0-C023-4357-93ED-F6626D711E9E
+  MODULE_TYPE                    = PEIM
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = InitializeIpmiPhysicalLayer
+
+[Sources]
+  PeiIpmiBmcInitialize.c
+  IpmiBmc.h
+  IpmiBmc.c
+  KcsBmc.h
+  KcsBmc.c
+  BtBmc.c
+  BtBmc.h
+  SsifBmc.c
+  SsifBmc.h
+  PeiBmcBoard.c
+  IpmbBmc.c
+  IpmbBmc.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec	# SMCPKG_SUPPORT
+  AmiIpmiPkg/AmiIpmiPkg.dec
+  SmcPkg/SmcPkg.dec                             # SMCPKG_SUPPORT
+
+[LibraryClasses]
+  PeimEntryPoint
+  BaseLib
+  DebugLib
+  IoLib
+  PeiServicesLib
+  MemoryAllocationLib
+  BaseMemoryLib
+  TimerLib
+  PciLib
+  AmiPeiLib	# SMCPKG_SUPPORT
+
+[Ppis]
+  gEfiPeiReadOnlyVariable2PpiGuid   #CONSUMES
+  gEfiPeiIpmiTransportPpiGuid       #PRODUCES
+  gEfiPeiI2cMasterPpiGuid           #CONSUMES
+  gEfiPeiSmbus2PpiGuid              #CONSUMES
+
+[Guids]
+  gEfiServerMgmtSetupVariableGuid
+  gSuperMPeiPrococolGuid	#SMCPKG_SUPPORT
+
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+  gSmcPkgTokenSpaceGuid.PcdGetOobFileStatus0
+  gSmcPkgTokenSpaceGuid.PcdGetOobFileStatus1
+  gSmcPkgTokenSpaceGuid.PcdGetOobFileStatus2
+  gSmcPkgTokenSpaceGuid.PcdGetOobFileStatus3
+  gSmcPkgTokenSpaceGuid.PcdSmcColor
+
+[Depex]
+  gEfiPeiReadOnlyVariable2PpiGuid
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**         5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093     **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

@@ -1,0 +1,33 @@
+TOKEN
+	Name  = "Library_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling Library support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+INFComponent
+	Name  = "MeSpsPolicyAccessDxeLib"
+	File  = "MeSpsPolicyAccessDxeLib\MeSpsPolicyAccessDxeLib.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "DXE_DRIVER"
+End
+
+INFComponent
+	Name  = "MeSpsPolicyAccessPeiLib"
+	File  = "MeSpsPolicyAccessPeiLib\MeSpsPolicyAccessPeiLib.inf
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "PEIM"
+End
+
+LibraryMapping
+	Class  = "MeSpsPolicyAccessDxeLib"
+	Instance  = "PurleySktPkg.MeSpsPolicyAccessDxeLib"
+	ModuleTypes  = "DXE_DRIVER"
+End
+
+LibraryMapping
+	Class  = "MeSpsPolicyAccessPeiLib"
+	Instance  = "PurleySktPkg.MeSpsPolicyAccessPeiLib"
+	ModuleTypes  = "PEIM"
+End

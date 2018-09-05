@@ -1,0 +1,30 @@
+TOKEN
+	Name  = "ServerCommonPkg_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling ServerCommonPkg support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "SoftStrapsPeim_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable SoftStrapsPeim support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "SoftStrapsPeim"
+	File  = "Universal/SoftStrapsPeim/SoftStrapsPeim.inf"
+	Package  = "ServerCommonPkg"
+	ModuleTypes = "PEIM"
+	Token = "SoftStrapsPeim_SUPPORT" "=" "1"
+End
+
+FFS_FILE
+	Name  = "SoftStrapsPeim"
+	FD_AREA  = "FV_BB"
+	INFComponent  = "ServerCommonPkg.SoftStrapsPeim"
+	Apriori_Index  = "5"
+	Token = "SoftStrapsPeim_SUPPORT" "=" "1"	
+End

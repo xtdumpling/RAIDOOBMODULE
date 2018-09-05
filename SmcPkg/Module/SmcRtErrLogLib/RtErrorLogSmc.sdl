@@ -1,0 +1,50 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2014 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.00
+#       Bug fixed:   Initialize revision
+#       Reason:
+#       Auditor:     Jimmy Chiu
+#       Date:        Jul/02/2014
+#
+#****************************************************************************
+
+TOKEN
+	Name  = "RtErrorLogSmc_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable RtErrorLogSmc support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "RtErrLogSmc_Overide"
+	Value  = "0"
+	Help  = "Switch to enable RtErrorLogSmc support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+End
+
+INFComponent
+	Name  = "RtErrorLogSmcNullLib"
+	File  = "RtErrorLogSmcNullLib.inf"
+	Package  = "SmcPkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "RtErrLogSmc_Overide" "=" "0"
+End
+
+LibraryMapping
+	Class  = "RtErrorLogSmcLib"
+	Instance  = "SmcPkg.RtErrorLogSmcNullLib"
+	Arch  = "common"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "RtErrLogSmc_Overide" "=" "0"
+End

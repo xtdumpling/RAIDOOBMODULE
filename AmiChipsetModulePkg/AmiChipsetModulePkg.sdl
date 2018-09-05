@@ -1,0 +1,95 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+
+TOKEN
+	Name  = "AmiChipsetModulePkg_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable AmiChipsetModulePkg support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+PATH
+	Name  = "AmiChipsetModulePkg_DIR"
+End
+
+# Added Purley related Overrides
+INFComponent
+	Name  = "SbSmmCorePlatformHookLib"
+	File  = "Library/SbSmmCorePlatformHookLib/SbSmmCorePlatformHookLib.inf"
+	Package  = "AmiChipsetModulePkg"
+	Token = "SMM_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "SbSmmCorePlatformHookLib"
+	Instance  = "AmiChipsetModulePkg.SbSmmCorePlatformHookLib"
+	ModuleTypes  = "SMM_CORE"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "AmiChipsetModulePkg.SbSmmCorePlatformHookLib"
+	Override  = "MdeModulePkg.PiSmmCore"
+End
+
+LibraryMapping
+	Class  = "S3BootScriptLib"
+	Instance  = "MdePkg.BaseS3BootScriptLibNull"
+	Override  = "MdeModulePkg.PiSmmCore"
+End
+
+ELINK
+	Name  = "SbPlatformHookBeforeAfterSmmDispatch,"
+	Parent  = "PLATFORMHOOK_BEFORE_AFTER_SMMDISPATCH"
+	InvokeOrder = AfterParent
+End
+
+INFComponent
+	Name  = "SbCspIoDecodeLib"
+	File  = "Library/SbCspIoDecodeLib/SbCspIoDecodeLib.inf"
+	Package  = "AmiChipsetModulePkg"
+End
+
+LibraryMapping
+	Class  = "AmiIoDecodeLib"
+	Instance  = "AmiChipsetModulePkg.SbCspIoDecodeLib"
+End
+
+INFComponent
+	Name  = "SbBeepLibPcAt"
+	File  = "Library/SbBeepLibPcAt/SbBeepLibPcAt.inf"
+	Package  = "AmiChipsetModulePkg"
+End
+
+LibraryMapping
+	Class  = "AmiBeepLib"
+	Instance  = "AmiChipsetModulePkg.SbBeepLibPcAt"
+End
+
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************

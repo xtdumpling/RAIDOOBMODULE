@@ -1,0 +1,49 @@
+TOKEN
+    Name  = "SMMHDDSECURITY_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable SmmHddSecurity support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes
+    Master = Yes
+    Token = "SECURITY_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "SW_SMI_HDD_PASSWORD_SAVE"
+    Value  = "0D0h"
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "SW_SMI_HDD_UNLOCK_PASSWORD"
+    Value  = "0D1h"
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "SW_SMI_HDD_PASSWORD_REMOVE"
+    Value  = "0D2h"
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "SW_SMI_HDD_MISC_SMM_FEATURES"
+    Value  = "0D3h"
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+INFComponent
+    Name  = "SmmHddSecurity"
+    File  = "SmmHddSecurity.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_SMM_DRIVER"
+End

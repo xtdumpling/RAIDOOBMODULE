@@ -1,0 +1,146 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.00
+#    Bug Fix:  Fixed the COM1/COM2 IO decode/range can't be changed after label 44.
+#    Reason:   The root cause is "AMI Generic LPC Super I/O Driver" executed after function
+#              ProcessAllLocks, link PchOnEndOfDxeUefi to gExitPmAuthProtocolGuid to fix it.
+#    Auditor:  Jimmy Chiu
+#    Date:     Aug/15/2016
+#
+#****************************************************************************
+## @file
+# Component description file for Pch Initialization driver
+#
+# @copyright
+# Copyright (c) 1999 - 2016 Intel Corporation. All rights reserved
+# This software and associated documentation (if any) is furnished
+# under a license and may only be used or copied in accordance
+# with the terms of the license. Except as permitted by the
+# license, no part of this software or documentation may be
+# reproduced, stored in a retrieval system, or transmitted in any
+# form or by any means without the express written consent of
+# Intel Corporation.
+# This file contains an 'Intel Peripheral Driver' and is uniquely
+# identified as "Intel Reference Module" and is licensed for Intel
+# CPUs and chipsets under the terms of your license agreement with
+# Intel or your vendor. This file may be modified by the user, subject
+# to additional terms of the license agreement.
+#
+#@par Specification Reference:
+#
+##
+
+
+[Defines]
+INF_VERSION          = 0x00010017
+BASE_NAME            = PchInitDxe
+FILE_GUID            = DE23ACEE-CF55-4fb6-AA77-984AB53DE823
+VERSION_STRING       = 1.0
+MODULE_TYPE          = DXE_DRIVER
+ENTRY_POINT = PchInitEntryPointUefi
+
+
+[LibraryClasses]
+  S3BootScriptLib
+  PchCycleDecodingLib
+  PchPcieRpLib
+  PchP2sbLib
+  PchPcrLib
+  PchInfoLib
+  PchPciExpressHelpersLib
+  UefiBootServicesTableLib
+  DebugLib
+  IoLib
+  TimerLib
+  HobLib
+  BaseMemoryLib
+  MemoryAllocationLib
+  UefiLib
+  DxeServicesTableLib
+  UefiDriverEntryPoint
+  UefiRuntimeServicesTableLib 
+  RcFviLib #SERVER_BIOS
+  PchAslUpdateLib #SERVER_BIOS AslUpdateLib
+  DxeMeLib
+  #SERVER_BIOS CpuPlatformLib
+  PcdLib #SERVER_BIOS
+  GpioLib
+  PchSerialIoLib
+  PchHdaLib
+  PchInitCommonLib
+  PlatformHooksLib                         #SERVER_BIOS
+  SetupLib                                 #SERVER_BIOS
+  PcieAddrLib                              #SERVER_BIOS
+  # APTIOV_SERVER_OVERRIDE_RC_START : To use AMI flash for reading PDR region
+  FlashLib
+  # APTIOV_SERVER_OVERRIDE_RC_END : To use AMI flash for reading PDR region
+
+[Packages]
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  MdePkg/MdePkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  PurleySktPkg/Me/MePkg.dec
+  CpRcPkg/CpRcPkg.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+  # APTIOV_SERVER_OVERRIDE_RC_START
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec   # To use AMI flash for reading PDR region
+  # To Resolve build error on using IIO UDS
+  PurleySktPkg/SocketPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  # APTIOV_SERVER_OVERRIDE_RC_END
+
+[Pcd] 
+  gEfiPchTokenSpaceGuid.PcdFviSmbiosType       #SERVER_BIOS
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress  #SERVER_BIOS ## CONSUMES
+  gEfiPchTokenSpaceGuid.PcdEfiGcdAllocateType
+
+[Sources]
+  PchInitUefi.c
+  PchInit.h
+  PchInit.c
+  PchSataDxe.c
+  PchRstPcieStorage.c
+  PchSerialIo.c
+  PchSerialIoUefi.c
+  PchUsbPrecondition.c
+  PchHdaAcpi.c
+  PchScs.c
+  PchCio2Acpi.c
+  PchAcpi.c
+ # APTIOV_SERVER_OVERRIDE_RC_START : Add missing files
+  PchUsbPrecondition.h
+ # APTIOV_SERVER_OVERRIDE_RC_END : Add missing files
+
+
+[Protocols]
+  gPchInfoProtocolGuid                          ## PRODUCES
+  gPchNvsAreaProtocolGuid                       ## PRODUCES
+  gPchEmmcTuningProtocolGuid                    ## PRODUCES
+  gEfiPciIoProtocolGuid                         ## CONSUMES
+  gEfiAcpiTableProtocolGuid                     ## CONSUMES
+  gEfiBlockIoProtocolGuid                       ## CONSUMES
+  gHeciProtocolGuid
+  gEfiPciEnumerationCompleteProtocolGuid        ## CONSUMES
+  # APTIOV_SERVER_OVERRIDE_RC_START : For PCH devices BAR allocation based on MMIOL ranges
+  gEfiIioUdsProtocolGuid
+  # APTIOV_SERVER_OVERRIDE_RC_END : For PCH devices BAR allocation based on MMIOL ranges
+  gPchPcieIoTrapProtocolGuid                    ## CONSUMES
+  gExitPmAuthProtocolGuid                       ## SMCPKG_SUPPORT
+  gPchSataEfiLoadProtocolGuid                   ## CONSUMES #SERVER_BIOS
+  gPchsSataEfiLoadProtocolGuid                  ## CONSUMES #SERVER_BIOS
+  
+[Guids]
+  gEfiEndOfDxeEventGroupGuid
+  gEfiAcpiTableGuid  
+  gSiPolicyHobGuid
+  gPchPolicyHobGuid
+  gEfiEndOfDxeEventGroupGuid
+  
+[Depex]
+  gEfiPciHostBridgeResourceAllocationProtocolGuid ## This is to ensure that PCI MMIO and IO resource has been prepared and available for this driver to allocate.
+

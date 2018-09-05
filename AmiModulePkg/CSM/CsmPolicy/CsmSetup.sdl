@@ -1,0 +1,45 @@
+PATH
+	Name  = "AMI_CSM_SETUP"
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(ADVANCED_FORM_SET_CLASS,0,CSM_POLICY_LAUNCH_KEY,CsmPolicyLaunchCallback),"
+    Parent  = "SetupItemCallbacks"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(AMI_CSM_SETUP)/Csm.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(AMI_CSM_SETUP)/CsmSetup.c"
+	Parent  = "SetupCallbackFiles"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "InitCsmStrings,"
+	Parent  = "SetupStringInit"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(AMI_CSM_SETUP)/Csm.uni"
+	Parent  = "SetupStringFiles"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "gEfiGraphicsOutputProtocolGuid"
+	Parent  = "AdditionalSetupProtocols"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "gEfiPciIoProtocolGuid"
+    Parent  = "AdditionalSetupProtocols"
+    InvokeOrder = AfterParent
+End

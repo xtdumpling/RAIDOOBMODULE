@@ -1,0 +1,262 @@
+TOKEN
+    Name  = "HDD_SECURITY_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable HddSecurity support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes
+    Master = Yes
+End
+
+TOKEN
+    Name  = "SECURITY_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable IdeSecurity support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+    Token = "AHCI_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "SECURITY_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable IdeSecurity support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+    Token = "IdeBusSrc_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "SELECT_SAT3_OPAL_SECURITY_PROTOCOL"
+    Value  = "1"
+    Help  = "If device supports both SAT3 and TCG Security protocol, Enable this token to use SAT and Disable to use TCG protocol[handled by TcgStorageSecurity driver]"
+    TokenType = Boolean
+    TargetH = Yes
+    Token = "NVME_DRIVER_VERSION" ">" "11"
+End
+
+TOKEN
+    Name  = "MASTER_PASSWORD_ENABLE"
+    Value  = "0"
+    Help  = "Enables support for Master passwords."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "IDE_PASSWORD_LENGTH"
+    Value  = "32"
+    Help  = "Default maximum IDE password length."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "DISPLAY_MASTER_PASSWORD"
+    Value  = "0"
+    Help  = "Displays Master Password in the Setup Security Page"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "OEM_MASTER_PASSWORD_TAG"
+    Help  = "Tag Contains the Default Password String provided by OEM to set as Master Password"
+    TokenType = Expression
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "OEM_DEFAULT_MASTER_PASSWORD"
+    Value  = "0"
+    Help  = "OFF - (Default) Master Password is set by the user through Setup Interface \ ON - Master Password for all HDDs are set from the OEM_MASTER_PASSWORD_TAG which contains the string provided by the OEM.(Only Applicable when DISPLAY_MASTER_PASSWORD is Disabled)"
+    TokenType = Expression
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "DEFAULT_MASTER_PASSWORD_REVISION"
+    Value  = "0xFFFE"
+    Help  = "Master password revision code to be used as default.\0000h/0FFFFh - Not supported "
+    TokenType = Expression
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "DISABLED_MASTER_PASSWORD_REVISION"
+    Value  = "0x1"
+    Help  = "Disabled Master password revision code to be set.\0000h/0FFFFh - Not supported "
+    TokenType = Expression
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "DEFAULT_MASTER_PASSWORD_TAG"
+    Value  = "amim"
+    Help  = "Tag Contains the Default Password String provided by OEM to set as Master Password when disabled"
+    TokenType = Expression
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "MASTER_PASSWORD_REVISION_SWITCH"
+    Value  = "0"
+    Help  = "0 - (Default) Use DEFAULT_MASTER_PASSWORD_REVISION as Revision Code.\ 1 - Set Master Password Revision Code from CHANGED_MASTER_PASSWORD_REVISION value\ 2 -  Increment Master Revision Code if Set Everytime\"
+    TokenType = Expression
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "CHANGED_MASTER_PASSWORD_REVISION"
+    Value  = "0xFFFE"
+    Help  = "Changed Master password revision code to be set.\0000h/0FFFFh - Not supported "
+    TokenType = Expression
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "DISABLE_SOFT_SET_PREV"
+    Value  = "0"
+    Help  = "ON - Disable SATA Software Setting Preservation feature so that it will not preserve the state after hardware reset. i.e. After a hardware reset HDD will change security state as power-on.\OFF - Do not change it in POST, leave it as default (enabled)."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "DSSP"
+    Value  = "$(DISABLE_SOFT_SET_PREV)"
+    Help  = "It is for ASL usage related to DISABLE_SOFT_SET_PREV "
+    TokenType = Integer
+    TargetASL = Yes
+End
+
+TOKEN
+    Name  = "FORCE_HDD_PASSWORD_PROMPT"
+    Value  = "1"
+    Help  = "Set to 1 to always prompt for HDD password (in AHCI mode)."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "PORTRESET_ON_HDD_PWD_VERIFICATION"
+    Value  = "0"
+    Help  = "Set to 1 to issue Port reset for Password Verification instead of Disable Password cmd, to avoid Password lost due to power failure after Disable PWD command"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "HDD_PASSWORD_ON_NVRAM"
+    Value  = "0"
+    Help  = "Save the Hdd Password on Nvram."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "SECURITY_SETUP_ON_SAME_PAGE"
+    Value  = "0"
+    Help  = "Multiple HDD Security setting displayed on same page. To enable this token, AMITSE Source should be present in the project."
+    TokenType = Boolean
+    TargetH = Yes
+    TargetMAK = Yes
+End
+
+TOKEN
+    Name  = "SAVE_PCI_ROOTBRIDGE_REGS"
+    Value  = "1"
+    Help = "If this token value is 1, then the PCI configuration space of PCI Root Bridge will be saved. This is for restoring the Nvme controller registers on S3 resume to unlock the Nvme devices"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "FHPP"
+    Value  = "$(FORCE_HDD_PASSWORD_PROMPT)"
+    Help  = "It is for ASL usage related to FORCE_HDD_PASSWORD_PROMPT "
+    TokenType = Integer
+    TargetASL = Yes
+End
+
+TOKEN
+    Name  = "HDD_SECURITY_PLUG_IN"
+    Value  = "0"
+    Help  = "If this token value is 1, OEM .sd file will be added. Default value should be 0"
+    TokenType = Boolean
+    TargetH = Yes
+    TargetMAK = Yes
+End
+
+TOKEN
+    Name  = "HDD_SECURITY_PASSWORD_NON_CASE_SENSITIVE"
+    Value  = "1"
+    Help  = "Allow to use of case sensitive password."
+    TokenType = Boolean
+    TargetH = Yes
+    TargetMAK = Yes
+    Token = "SETUP_IDE_SECURITY_SUPPORT" "=" "0"
+End
+
+TOKEN
+    Name  = "HDD_SECURITY_PASSWORD_NON_CASE_SENSITIVE"
+    Value  = "$(SETUP_PASSWORD_NON_CASE_SENSITIVE)"
+    Help  = "Allow to use of case sensitive password. DO NOT MODIFY THIS TOKEN."
+    TokenType = Boolean
+    TargetH = Yes
+    TargetMAK = Yes
+    Token = "SETUP_IDE_SECURITY_SUPPORT" "=" "1"
+    Token = "TSE_BUILD" ">" "0x1206"
+End
+
+ELINK
+    Name  = "HDDSECURITY_PLUG_IN_SD"
+    Help  = "List of SD files of the IdeSecurity plug-ins"
+    InvokeOrder = ReplaceParent
+End
+
+ELINK
+    Name  = "$(IDESECURITY_PLUG_IN_SD)"
+    Parent  = "SETUP_DEFINITIONS"
+    Token = "SECURITY_SUPPORT" "=" "1"
+    Token = "HDD_SECURITY_PLUG_IN" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+PATH
+    Name  = "HDDSECURITY_DIR"
+End
+
+ELINK
+    Name  = "IdeConnectControllerAfterConnectEverthing,"
+    Parent  = "InitConVars,"
+    Token = "SECURITY_SUPPORT" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+INFComponent
+    Name  = "HddSecurity"
+    File  = "HddSecurity.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_DRIVER"
+    Token = "SECURITY_SUPPORT" "=" "1"
+End
+
+INFComponent
+    Name  = "HddSecurityBdsCallLib"
+    File  = "HddSecurityBdsCall.inf"
+    Package  = "AmiModulePkg"
+    Path  = "HDDSECURITY_DIR"
+    Token = "SECURITY_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiModulePkg.HddSecurityBdsCallLib"
+    Override  = "AmiModulePkg.Bds"
+    Token = "SECURITY_SUPPORT" "=" "1"
+End

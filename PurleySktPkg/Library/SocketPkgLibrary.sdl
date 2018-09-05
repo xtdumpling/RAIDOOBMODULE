@@ -1,0 +1,353 @@
+TOKEN
+	Name  = "SocketPkg_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling Library support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+INFComponent
+	Name  = "ChipsetErrReporting"
+	File  = "ChipsetErrReporting\ChipsetErrReporting.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "RAS_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "BPEmcaPlatformHooksLib"
+	File  = "emcaplatformhookslib\emcaplatformhookslib.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "RAS_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "ProcMemErrReporting"
+	File  = "ProcMemErrReporting\ProcMemErrReporting.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "RAS_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "AmiErrReportingLib"
+	File  = "AmiErrReportingLib\AmiErrReportingLib.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "RAS_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "WheaSiliconHooksLib"
+	File  = "WheaSiliconHooksLib\WheaSiliconHooksLib.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "BASE"
+	Token = "RAS_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "PcieAddrLib"
+	File  = "PcieAddressLib\PcieAddressLib.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "BASE"
+End
+
+INFComponent
+	Name  = "MemoryEvContent"
+	File  = "MemoryEvContent\MemoryEvContent.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "BASE"
+End
+
+INFComponent
+	Name  = "CpuPpmLib"
+	File  = "ProcessorPowerManagement\CpuPpmLib.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "BASE"
+End
+
+
+INFComponent
+	Name  = "SmmScriptLib"
+	File  = "SmmScriptLib\SmmScriptLib.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "BASE"
+End
+
+INFComponent
+	Name  = "SmmCpuPlatformHookLib"
+	File  = "SmmCpuPlatformHookLib\SmmCpuPlatformHookLib.inf"
+	Package  = "PurleySktPkg"
+End
+
+INFComponent
+	Name  = "AmiMrcIntrinsicLib"
+	File  = "AmiMrcIntrinsicLib/AmiMrcIntrinsicLib.inf"
+	Package  = "PurleySktPkg"
+End
+
+INFComponent
+	Name  = "CpuS3MsrLib"
+	File  = "CpuS3MsrLib/CpuS3MsrLib.inf"
+	Package  = "PurleySktPkg"
+End
+
+INFComponent
+	Name  = "FpgaConfigurationDxeLib"
+	File  = "FpgaConfigurationLib/FpgaConfigurationDxeLib.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes = "DXE_DRIVER"
+End
+
+INFComponent
+	Name  = "FpgaConfigurationPeiLib"
+	File  = "FpgaConfigurationLib/FpgaConfigurationPeiLib.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes = "PEIM"
+End
+
+INFComponent
+	Name  = "FpgaConfigurationSmmLib"
+	File  = "FpgaConfigurationLib/FpgaConfigurationSmmLib.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes = "DXE_SMM_DRIVER"
+End
+
+INFComponent
+	Name  = "UsraQuiesceLib"
+	File  = "UsraQuiesceLib\UsraQuiesceLib.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes = "DXE_SMM_DRIVER"
+End
+
+INFComponent
+    Name  = "UsraRegisterFilterLib"
+    File  = "UsraRegisterFilterLib\UsraRegisterFilterLib.inf"
+    Package  = "PurleySktPkg"
+    ModuleTypes  = "BASE"
+End
+
+INFComponent
+	Name  = "FpgaFvDataPeiLib"
+	File  = "FpgaFvDataLib/FpgaFvDataPeiLib.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes = "PEIM"
+End
+
+INFComponent
+	Name  = "FpgaFvDataDxeLib"
+	File  = "FpgaFvDataLib/FpgaFvDataDxeLib.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes = "DXE_DRIVER"
+End
+
+INFComponent
+	Name  = "OemIioInitLibPpi"
+	File  = "OemIioInitLibPpi\OemIioInitLibPpi.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes = "BASE"
+	Token =  "MRC_OEM_HOOKS_PPI_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "OemProcMemInitLibPpi"
+	File  = "OemProcMemInitLibPpi\OemProcMemInitLibPpi.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes = "BASE"
+	Token =  "MRC_OEM_HOOKS_PPI_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "ChipsetErrReporting"
+	Instance  = "PurleySktPkg.ChipsetErrReporting"
+	Token = "RAS_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "EmcaPlatformHooksLib"
+	Instance  = "PurleySktPkg.BPEmcaPlatformHooksLib"
+	Token = "RAS_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "ProcMemErrReporting"
+	Instance  = "PurleySktPkg.ProcMemErrReporting"
+	Token = "RAS_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "AmiErrReportingLib"
+	Instance  = "PurleySktPkg.AmiErrReportingLib"
+	Token = "RAS_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "WheaSiliconHooksLib"
+	Instance  = "PurleySktPkg.WheaSiliconHooksLib"
+	Token = "RAS_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "PcieAddrLib"
+	Instance  = "PurleySktPkg.PcieAddrLib"
+    Arch  = "IA32"
+End
+
+LibraryMapping
+	Class  = "CpuPpmLib"
+	Instance  = "PurleySktPkg.CpuPpmLib"
+End
+
+LibraryMapping
+	Class  = "UsraQuiesceLib"
+	Instance  = "PurleySktPkg.UsraQuiesceLib"
+	ModuleTypes = "DXE_SMM_DRIVER"
+End
+
+LibraryMapping
+	Class  = "SmmScriptLib"
+	Instance  = "PurleySktPkg.SmmScriptLib"
+End
+
+INFComponent
+    Name  = "CsrToPcieDxeLib"
+    File  = "CsrToPcieLib\CsrToPcieDxeLib.inf"
+    Package  = "PurleySktPkg"
+    ModuleTypes  = "BASE"
+End
+
+INFComponent
+    Name  = "CsrToPciePeiLib"
+    File  = "CsrToPcieLib\CsrToPciePeiLib.inf"
+    Package  = "PurleySktPkg"
+    ModuleTypes  = "BASE"
+End
+
+LibraryMapping
+    Class  = "CsrToPcieLib"
+    Instance  = "PurleySktPkg.CsrToPcieDxeLib"
+    Arch  = "X64"
+    ModuleTypes  = "DXE_SMM_DRIVER"
+ End
+
+LibraryMapping
+    Class  = "CsrToPcieLib"
+    Instance  = "PurleySktPkg.CsrToPciePeiLib"
+    Arch  = "IA32"  
+End
+
+TOKEN
+    Name  = "ProcMemInit_SUPPORT"
+    Value  = "1"
+    Help  = "Switch for Enabling ProcMemInit support in the project"
+    TokenType = Boolean
+End
+
+INFComponent
+    Name  = "ProcMemInit"
+    File  = "ProcMemInit\ProcMemInit.inf"
+    Package  = "PurleySktPkg"
+    ModuleTypes  = "BASE"
+    Token = "ProcMemInit_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+    Class  = "ProcMemInitLib"
+    Instance  = "PurleySktPkg.ProcMemInit"
+    # APTIOV_SERVER_OVERRIDE_RC_START
+    ModuleTypes  = "UEFI_DRIVER DXE_RUNTIME_DRIVER PEI_CORE PEIM DXE_DRIVER DXE_SMM_DRIVER"
+    # APTIOV_SERVER_OVERRIDE_RC_END
+    Token = "ProcMemInit_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+    Class  = "MemoryEvContentLib"
+    Instance  = "PurleySktPkg.MemoryEvContent"
+    ModuleTypes  = "PEIM DXE_DRIVER DXE_SMM_DRIVER"
+End
+
+LibraryMapping
+	Class  = "SmmCpuPlatformHookLib"
+	Instance  = "PurleySktPkg.SmmCpuPlatformHookLib"
+End
+
+TOKEN
+    Name  = "USRATraceLib_SUPPORT"
+    Value  = "1"
+    Help  = "Switch for Enabling USRATraceLib support in the project"
+    TokenType = Boolean
+End
+
+INFComponent
+    Name  = "USRATraceLib"
+    File  = "USRATraceLib\USRATraceLib.inf"
+    Package  = "PurleySktPkg"
+    Token = "ProcMemInit_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "USRATraceLib"
+	Instance  = "PurleySktPkg.USRATraceLib"
+    ModuleTypes  = "DXE_SMM_DRIVER"
+End
+
+LibraryMapping
+    Class  = "USRATraceLib"
+    Instance  = "PurleySktPkg.USRATraceLib"
+    Arch  = "IA32"
+End
+
+LibraryMapping
+	Class  = "AmiMrcIntrinsicLib"
+	Instance  = "PurleySktPkg.AmiMrcIntrinsicLib"
+End
+
+LibraryMapping
+	Class  = "CpuS3MsrLib"
+	Instance  = "PurleySktPkg.CpuS3MsrLib"
+End
+
+LibraryMapping
+	Class  = "FpgaConfigurationLib"
+	Instance  = "PurleySktPkg.FpgaConfigurationDxeLib"
+	ModuleTypes  = "DXE_DRIVER"
+End
+
+LibraryMapping
+	Class  = "FpgaConfigurationLib"
+	Instance  = "PurleySktPkg.FpgaConfigurationPeiLib"
+	ModuleTypes  = "PEIM"
+End
+
+LibraryMapping
+	Class  = "FpgaConfigurationLib"
+	Instance  = "PurleySktPkg.FpgaConfigurationSmmLib"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+End
+
+LibraryMapping
+	Class  = "FpgaFvDataLib"
+	Instance  = "PurleySktPkg.FpgaFvDataPeiLib"
+	ModuleTypes  = "PEIM"
+End
+
+LibraryMapping
+	Class  = "FpgaFvDataLib"
+	Instance  = "PurleySktPkg.FpgaFvDataDxeLib"
+	ModuleTypes  = "DXE_DRIVER"
+End
+
+LibraryMapping
+	Class  = "OemIioInitLib"
+	Instance  = "PurleySktPkg.OemIioInitLibPpi"
+	ModuleTypes  = "PEIM"
+	Token =  "MRC_OEM_HOOKS_PPI_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "OemProcMemInitLib"
+	Instance  = "PurleySktPkg.OemProcMemInitLibPpi"
+	ModuleTypes  = "PEIM"
+	Token =  "MRC_OEM_HOOKS_PPI_SUPPORT" "=" "1"
+End

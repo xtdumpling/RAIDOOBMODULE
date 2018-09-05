@@ -1,0 +1,88 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+#**********************************************************************
+# $Header:  $
+#
+# $Revision:  $
+#
+# $Date:  $
+#**********************************************************************
+#<AMI_FHDR_START>
+#
+# Name:  SmcCPLDWDT.inf
+#
+# Description:	INF description file for SmcCPLDWDT driver
+#
+#<AMI_FHDR_END>
+#**********************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  BASE_NAME                      = CPLDDXE
+  FILE_GUID                      = e69562f2-c982-4e73-87b4-63bc79cda110
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = CPLDDXE_Init
+
+[Sources]
+  SmcCPLD_DXE.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec 
+  SmcPkg/SmcPkg.dec
+  AmiIpmiPkg/AmiIpmiPkg.dec
+  PurleySktPkg/Me/MePkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  PurleyRpPkg/PlatformPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  
+[LibraryClasses]
+  UefiDriverEntryPoint
+  AmiDxeLib
+  AmiCspLib
+  SmcLib
+  SetupLib
+  SmcLib
+  
+[Protocols]
+  gEfiSmbusHcProtocolGuid
+  
+[Guids]
+
+[Pcd]
+
+[Depex]
+  TRUE
+
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**         5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

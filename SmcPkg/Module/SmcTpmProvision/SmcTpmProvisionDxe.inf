@@ -1,0 +1,126 @@
+##****************************************************************************
+##****************************************************************************
+##**                                                                        **
+##**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+##**                                                                        **
+##****************************************************************************
+##****************************************************************************
+#
+#  File History
+#
+#  Rev. 1.05
+#    Bug Fix : 1. [Fixes] Fixed the system cannot enter to TXT Environment when
+#              using TPM 1.2 on production platform.
+#              2. [Fixes] Fixed TPM 2.0 BIOS-Based Provisioning table doesn't 
+#              set PW flag to PS LCP Data for production platform.
+#    Reason  : Bug Fixed.
+#    Auditor : Joe Jhang
+#    Date    : Jul/20/2017
+#
+#  Rev. 1.04
+#    Bug Fix : Fixed TPM 1.2 command sending failed and SMC_IPMICmd30_68_1B 
+#              data 2 bit 4 cannot be set after TPM 1.2 is provisioned.
+#    Reason  : Bug Fixed.
+#    Auditor : Joe Jhang
+#    Date    : Jun/08/2017
+#
+#  Rev. 1.03
+#    Bug Fix : N/A
+#    Reason  : Implemented BIOS-based TPM provisioning finished flag for SUM.
+#    Auditor : Joe Jhang
+#    Date    : May/24/2017
+#
+#  Rev. 1.02
+#    Bug Fix : N/A.
+#    Reason  : Added BUILT_IN_TPM_PROVISIONING_TABLE_SUPPORT token in SDL and
+#              set to disabled by default for provisioning TPM remotely.
+#    Auditor : Joe Jhang
+#    Date    : Jan/20/2017
+#
+#  Rev. 1.01
+#    Bug Fix : N/A.
+#    Reason  : Implemented PPI-x OOB to check TPM provisioning table signature.
+#    Auditor : Joe Jhang
+#    Date    : Jan/10/2017
+#
+#  Rev. 1.00
+#    Bug Fix : N/A.
+#    Reason  : Initialized source code from Intel.
+#    Auditor : Joe Jhang
+#    Date    : Jan/09/2017
+#
+##**************************************************************************##
+##**************************************************************************##
+#
+# This file contains 'Framework Code' and is licensed as such
+# under the terms of your license agreement with Intel or your
+# vendor.  This file may not be modified, except as allowed by
+# additional terms of your license agreement.
+#
+## @file
+#
+#  Copyright (c) 2014, Intel Corporation. All rights reserved.<BR>
+#  This software and associated documentation (if any) is furnished
+#  under a license and may only be used or copied in accordance
+#  with the terms of the license. Except as permitted by such
+#  license, no part of this software or documentation may be
+#  reproduced, stored in a retrieval system, or transmitted in any
+#  form or by any means without the express written consent of
+#  Intel Corporation.
+#  
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SmcTpmProvisionDxe
+  FILE_GUID                      = F19E8ED6-442B-4194-AF8E-C91435E36320
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = SmcTpmProvisionDxeEntry
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+
+[Sources.common]
+  SmcTpmProvision.c
+  SmcTpm12NvStorage.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  SecurityPkg/SecurityPkg.dec
+  PurleySktPkg/Me/MePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec ##For Token.h
+  AmiTcgPkg/AmiTcgPkg.dec
+  SmcPkg/SmcPkg.dec
+ 
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  DebugLib
+  BaseMemoryLib
+  BaseLib
+  PrintLib
+  UefiLib
+  MemoryAllocationLib
+  Tpm2DeviceLib
+  Tpm2CommandLib
+#  Tpm12CommandLib
+  MeStorageLib
+  SmcLib
+  AmiDxeLib
+
+[Protocols]
+  gEfiTrEEProtocolGuid
+  gEfiTcgProtocolGuid
+  gEfiLoadedImageProtocolGuid
+  gEfiFirmwareVolume2ProtocolGuid
+
+[Guids]
+  gSetupVariableGuid  ## CONSUMES
+
+[Depex]
+  gEfiTrEEProtocolGuid OR gEfiTcgProtocolGuid

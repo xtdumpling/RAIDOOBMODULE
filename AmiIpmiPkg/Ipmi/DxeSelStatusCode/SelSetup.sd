@@ -1,0 +1,207 @@
+//****************************************************************************
+//**                                                                        **
+//**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+//**                                                                        **
+//****************************************************************************
+//  File History
+//
+//  Rev. 1.00
+//    Bug Fix:  Initialize revision
+//    Reason:   Get base code from Grantley
+//    Auditor:  Kasber Chen
+//    Date:     Jun/07/2016
+//
+//****************************************************************************
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
+
+//
+// @file  SelSetup.sd
+//
+// Contains the setup description for SEL Page
+//
+
+#ifdef SERVER_MGMT_CONFIGURATION_DATA_DEFINITION
+//***********************************************************
+// Put NVRAM data definitions here.
+// For example:    UINT8 Data1;
+// These definitions will be converted by the build process
+// to a definitions of SERVER_MGMT_CONFIGURATION_DATA fields.
+//************************************************************
+    UINT8       SelLogging;
+    UINT8       SelErase;
+    UINT8       SelFull;
+    UINT8       LogSelStatusCodes;
+    UINT8       Systemerror;
+    UINT8       Deviceerror;
+#endif //#ifdef SERVER_MGMT_CONFIGURATION_DATA_DEFINITION
+
+#if defined(VFRCOMPILE) && !defined(CONTROLS_ARE_DEFINED)
+#define CONTROL_DEFINITION
+#endif
+
+#ifdef CONTROL_DEFINITION
+
+#define DXESELSTATUSCODE_ONEOF_SELLOGGING\
+      oneof varid = SERVER_MGMT_CONFIGURATION_DATA.SelLogging,\
+        prompt = STRING_TOKEN(STR_SEL_ENABLE),\
+        help = STRING_TOKEN(STR_SEL_ENABLE_HELP),\
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;\
+        default = 1,\
+        default = 1, defaultstore = AmiMfgDefault,\
+      endoneof;
+
+#define DXESELSTATUSCODE_ONEOF_SELERASE\
+      oneof varid = SERVER_MGMT_CONFIGURATION_DATA.SelErase,\
+        prompt = STRING_TOKEN(STR_SEL_ERASE),\
+        help = STRING_TOKEN(STR_SEL_ERASE_HELP),\
+        option text = STRING_TOKEN(STR_SEL_DO_NOT_ERASE), value = 0, flags = RESET_REQUIRED;\
+        option text = STRING_TOKEN(STR_SEL_ERASE_NEXT_BOOT), value = 1, flags = RESET_REQUIRED;\
+        option text = STRING_TOKEN(STR_SEL_ERASE_EVERY_BOOT), value = 2, flags = RESET_REQUIRED;\
+        default = 0,\
+        default = 0, defaultstore = AmiMfgDefault,\
+      endoneof;
+
+#define DXESELSTATUSCODE_ONEOF_SELFULL\
+      oneof varid = SERVER_MGMT_CONFIGURATION_DATA.SelFull,\
+        prompt = STRING_TOKEN(STR_SEL_FULL),\
+        help = STRING_TOKEN(STR_SEL_FULL_HELP),\
+        option text = STRING_TOKEN(STR_SEL_DO_NOTHING), value = 0, flags = RESET_REQUIRED;\
+        option text = STRING_TOKEN(STR_SEL_ERASE_WHEN_FULL), value = 1, flags = RESET_REQUIRED;\
+        default = 0,\
+        default = 0, defaultstore = AmiMfgDefault,\
+      endoneof;
+
+#if SMCPKG_SUPPORT
+#define DXESELSTATUSCODE_ONEOF_LOGSELSTATUSCODES\
+      oneof varid = SERVER_MGMT_CONFIGURATION_DATA.LogSelStatusCodes,\
+        prompt = STRING_TOKEN(STR_LOG_EFI_ERRORS_PROMPT),\
+        help = STRING_TOKEN(STR_LOG_EFI_SEL_ERRORS_HELP),\
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+        option text = STRING_TOKEN(STR_ERROR_CODE), value = 2, flags =  RESET_REQUIRED;\
+	default = 2,\
+        default = 2, defaultstore = AmiMfgDefault,\
+      endoneof;
+#else
+#define DXESELSTATUSCODE_ONEOF_LOGSELSTATUSCODES\
+      oneof varid = SERVER_MGMT_CONFIGURATION_DATA.LogSelStatusCodes,\
+        prompt = STRING_TOKEN(STR_LOG_EFI_ERRORS_PROMPT),\
+        help = STRING_TOKEN(STR_LOG_EFI_SEL_ERRORS_HELP),\
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+        option text = STRING_TOKEN(STR_BOTH), value = 1, flags = RESET_REQUIRED;\
+        option text = STRING_TOKEN(STR_ERROR_CODE), value = 2, flags =  RESET_REQUIRED;\
+        option text = STRING_TOKEN(STR_PROGRESS_CODE), value = 3, flags =  RESET_REQUIRED;\
+        default = 2,\
+        default = 2, defaultstore = AmiMfgDefault,\
+      endoneof;
+#endif
+
+#endif //#ifdef CONTROL_DEFINITION
+
+#ifdef CONTROLS_WITH_DEFAULTS
+    DXESELSTATUSCODE_ONEOF_SELLOGGING
+    DXESELSTATUSCODE_ONEOF_SELERASE
+    DXESELSTATUSCODE_ONEOF_SELFULL
+    DXESELSTATUSCODE_ONEOF_LOGSELSTATUSCODES
+#endif //#ifdef CONTROLS_WITH_DEFAULTS
+
+#ifdef SERVER_MGMT_FORM_SET
+
+    #ifdef FORM_SET_TYPEDEF
+    //
+    // If you need any additional type definitions add them here
+    //
+    #endif
+
+    #ifdef FORM_SET_VARSTORE
+    //
+    //If you need custom varstore's define them here
+    //
+    #endif
+
+    #ifdef FORM_SET_ITEM
+    //
+    // Define controls to be added to the main page of the formset
+    //
+    #endif
+
+    #ifdef FORM_SET_GOTO
+        suppressif  ideqval SERVER_MGMT_CONFIGURATION_DATA.BmcSupport == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+        goto SEL_MAIN_FORM,
+            prompt  = STRING_TOKEN(STR_SEL_EVENT_LOG_TITLE),
+            help    = STRING_TOKEN(STR_SEL_EVENT_LOG_HELP),
+            flags   = INTERACTIVE,
+            key     = AUTO_ID(SEL_FORM_KEY);
+        SUPPRESS_GRAYOUT_ENDIF
+    #endif
+
+    #ifdef FORM_SET_FORM
+        #ifndef DXESELSTATUSCODE_FORM_SERVERMGMT
+        #define DXESELSTATUSCODE_FORM_SERVERMGMT
+        form formid = AUTO_ID(SEL_MAIN_FORM),
+            title  = STRING_TOKEN(STR_SEL_EVENT_LOG_TITLE);
+            subtitle text = STRING_TOKEN(STR_ENABLING_DISABLING_OPTIONS);
+            //
+            // Enable
+            //
+            suppressif  ideqval SERVER_MGMT_CONFIGURATION_DATA.BmcSupport == 0;
+                DXESELSTATUSCODE_ONEOF_SELLOGGING
+            endif;
+            subtitle text = STRING_TOKEN(STR_SEL_BLANK);
+            subtitle text = STRING_TOKEN(STR_SEL_ERASING_OPTIONS);
+            //
+            // Erase
+            //
+            grayoutif ideqval SERVER_MGMT_CONFIGURATION_DATA.SelLogging == 0;
+                DXESELSTATUSCODE_ONEOF_SELERASE
+            endif;
+            //
+            // Full event log
+            //
+            grayoutif ideqval SERVER_MGMT_CONFIGURATION_DATA.SelLogging == 0;
+                DXESELSTATUSCODE_ONEOF_SELFULL
+            endif;
+            suppressif SMCPKG_SUPPORT;	// SMCPKG_SUPPORT
+            subtitle text = STRING_TOKEN(STR_SEL_BLANK);
+            subtitle text = STRING_TOKEN(STR_SEL_EFI_SETTINGS);
+            //
+            // Log Efi Status Codes
+            //
+            grayoutif ideqval SERVER_MGMT_CONFIGURATION_DATA.SelLogging == 0;
+                DXESELSTATUSCODE_ONEOF_LOGSELSTATUSCODES
+            endif;
+            endif;
+            subtitle text = STRING_TOKEN(STR_SEL_BLANK);
+            subtitle text = STRING_TOKEN(STR_ERROR_LOGGING_NOTE_1);
+            subtitle text = STRING_TOKEN(STR_ERROR_LOGGING_NOTE_2);
+        endform;
+        #endif //#ifndef DXESELSTATUSCODE_FORM_SERVERMGMT
+    #endif //#ifdef FORM_SET_FORM
+#endif //#ifdef SERVER_MGMT_FORM_SET
+
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**         5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093     **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************

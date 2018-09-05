@@ -1,0 +1,45 @@
+TOKEN
+    Name  = "OA1_SUPPORT"
+    Value = "0"
+    Help  = "Main switch to enable OA1 support in Project"
+    TokenType = Boolean
+    TargetH = Yes
+    Master = Yes
+End
+
+TOKEN
+    Name = "OEM_DATA_SPACE_SIZE"
+    Value = "0x3E"
+    Help = "Maximum OEM data space size."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name = "OA1_STRING"
+    Value = "Copyright American Megatrends Inc. 1985-2013"
+    Help = "OEM Activation 1.0 string"
+    TokenType = Expression
+    TargetH = Yes
+End
+
+INFComponent
+    Name  = "OA1"
+    File  = "OA1.inf"
+    Package = "AmiModulePkg"
+    ModuleTypes = "UEFI_DRIVER"
+End
+
+INFComponent
+    Name  = "OemTable"
+    File  = "OemTable.inf"
+    Package = "AmiModulePkg"
+    ModuleTypes = "USER_DEFINED"
+End
+
+FFS_FILE
+    Name = "OemTable"
+    FD_AREA = "FV_MAIN"
+    INFComponent = "AmiModulePkg.OemTable"
+    Rule_Override = "SubtypeGuidUnCompressed"
+End

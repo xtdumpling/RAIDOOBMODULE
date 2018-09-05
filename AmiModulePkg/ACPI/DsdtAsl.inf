@@ -1,0 +1,42 @@
+
+#
+# This file contains code for North Bridge initialization in the DXE stage.
+#
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = DsdtAsl
+  FILE_GUID                      = C118F50D-391D-45f4-B3D3-11BC931AA56D
+  MODULE_TYPE                    = USER_DEFINED
+  VERSION_STRING                 = 1.0
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+
+[Sources]
+  $(DSDT_FILE)
+
+[Packages]
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  $(DSDT_Packages_List)
+
+[LibraryClasses]
+  $(DSDT_LibraryClasses_List)
+  
+[Pcd]
+  $(DSDT_Pcd_List)
+  
+[Protocols]
+  $(DSDT_Protocols_List)
+  
+[PPIs]
+  $(DSDT_PPIs_List)
+  
+[Guids]
+  $(DSDT_Guids_List)
+  
+[Depex]
+  $(DSDT_Depex_List)

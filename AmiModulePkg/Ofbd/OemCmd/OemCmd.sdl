@@ -1,0 +1,48 @@
+TOKEN
+	Name  = "OEMCMD_SUPPORT"
+	Value  = "0"
+	Help  = "Switch for Enabling OEM CMD Checking support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "[OEM CMD Checking Sample Code Section]"
+	Help  = "See detail description in each token's help box."
+	TokenType = Expression
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "OEM_CMD_CHECKING_SAMPLE_TEST"
+	Value  = "1"
+	Help  = "Test OEM CMD CHECKING Function"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "OEMCMD_SUPPORT" "=" "1"
+End
+
+PATH
+	Name  = "OFBD_OEMCMD_DIR"
+End
+
+ELINK
+	Name  = "$(OFBD_OEMCMD_DIR)/OemCmd.h"
+	Parent  = "OFBD_FUNC_INCLUDE_FILES"
+	InvokeOrder = BeforeParent
+End
+
+ELINK
+	Name  = "$(OFBD_OEMCMD_DIR)/OemCmd.c"
+	Parent  = "OFBD_FUNC_SOURCES_FILES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "OEMCMDEntry,"
+	Parent  = "OFBD_INIT_FUNC_LIST"
+	Token = "OEMCMD_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+

@@ -1,0 +1,42 @@
+TOKEN
+    Name  = "SerialRecovery_SUPPORT"
+    Value  = "0"
+    TokenType = Boolean
+    TargetMAK = Yes
+    TargetH = Yes
+End
+
+ELINK
+    Name  = "SERIAL,"
+    Parent  = "RecoveryDeviceOrder"
+    Token = "SerialRecovery_SUPPORT" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+PcdMapping
+    Name  = "PcdSerialRegisterBase"
+    GuidSpace  = "gEfiMdeModulePkgTokenSpaceGuid"
+    PcdType  = "PcdsPatchableInModule"
+    Value  = "0x02E0"
+    Offset  = 00h
+    Length  = 00h
+    TargetDSC = Yes
+    Override = "AmiModulePkg.SerialRecovery"
+    Token = "SerialRecovery_SUPPORT" "=" "1"
+End
+
+INFComponent
+    Name  = "SerialRecovery"
+    File  = "SerialRecovery.inf"
+    Package  = "AmiModulePkg"
+    Token = "SerialRecovery_SUPPORT" "=" "1"
+    ModuleTypes = "PEIM"
+End
+
+FFS_FILE
+    Name  = "SerialRecovery"
+    FD_AREA  = "FV_BB"
+    INFComponent  = "AmiModulePkg.SerialRecovery"
+    Rule_Override  = "Compressed"
+    Token = "SerialRecovery_SUPPORT" "=" "1"
+End

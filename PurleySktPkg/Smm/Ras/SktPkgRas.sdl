@@ -1,0 +1,123 @@
+TOKEN
+	Name  = "SktPkgRas_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling SktPkgRas support in the project"
+	TokenType = Boolean
+	TargetH = Yes
+	TargetMAK = Yes
+    Master = Yes
+End
+
+TOKEN
+	Name  = "IioRas_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable IioRas support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+    Name  = "CpuRas_SUPPORT"
+    Value  = "1"
+    Help  = "Switch for Enabling CpuRas support in the project"
+    TokenType = Boolean
+End
+
+
+TOKEN
+	Name  = "KtiRas_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable KtiRas support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "CpuHotAdd_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling CpuHotAdd support in the project"
+	TokenType = Boolean
+End
+
+TOKEN
+    Name  = "QuiesceSupport_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable QuiesceSupport support in Project"
+    TokenType = Boolean
+    Token = "RAS_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "SmbusRecovery_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable SmbusRecovery support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "SmbusRecovery"
+	File  = "SmbusRecovery\SmbusRecovery.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "SmbusRecovery_SUPPORT" "=" "1"
+End
+
+INFComponent
+    Name  = "QuiesceSupport"
+    File  = "QuiesceSupport\QuiesceSupport.inf"
+    Package  = "PurleySktPkg"
+    ModuleTypes  = "DXE_SMM_DRIVER"
+    Token = "QuiesceSupport_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "IioRas"
+	File  = "IioRas\IioRas.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "IioRas_SUPPORT" "=" "1"
+	Token = "RAS_CPU_ONLINE_OFFLINE_ENABLE" "=" "1"
+End
+
+INFComponent
+    Name  = "CpuRas"
+    File  = "CpuRas\CpuRas.inf"
+    Package  = "PurleySktPkg"
+    ModuleTypes  = "DXE_SMM_DRIVER"
+    Token = "CpuRas_SUPPORT" "=" "1"
+    Token = "RAS_CPU_ONLINE_OFFLINE_ENABLE" "=" "1"
+End
+
+
+INFComponent
+	Name  = "KtiRas"
+	File  = "KtiRas\KtiRas.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "KtiRas_SUPPORT" "=" "1"
+	Token = "RAS_CPU_ONLINE_OFFLINE_ENABLE" "=" "1"
+End
+
+INFComponent
+	Name  = "CpuHotAdd"
+	File  = "CpuHotAdd\CpuHotAdd.inf"
+	Package  = "PurleySktPkg"
+	Arch  = "X64"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "CpuHotAdd_SUPPORT" "=" "1"
+    Token = "RAS_CPU_ONLINE_OFFLINE_ENABLE" "=" "1"
+End
+
+ELINK
+	Name  = "*_*_X64_ASM_FLAGS"
+	Type  = "BuildOptions"
+	InvokeOrder = AfterParent
+	OutDSC = Yes
+	Override  = "CpuHotAdd"
+End
+
+ELINK
+	Name  = "-DEFIX64"
+	Parent  = "*_*_X64_ASM_FLAGS"
+	Type  = "BuildOptions"
+	InvokeOrder = AfterParent
+	Override  = "CpuHotAdd"
+End

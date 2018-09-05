@@ -1,0 +1,86 @@
+TOKEN
+        Name  = EventLogsSetupPage_SUPPORT
+        Value  = 1
+        TokenType = Boolean
+        TargetEQU = Yes
+        TargetH = Yes
+        TargetMAK = Yes
+        Master = Yes
+        Help  = "Main switch to enable EventLogsSetupPage support in Project"
+End
+
+PATH
+        Name  = "EventLogsSetupPage_DIR"
+        Path  = "AmiGpnvErrorLoggingPkg/Gpnv/EventLogsSetupPage"
+        Help  = "Path to EventLogsSetupPage Module in Project"
+End
+
+PATH
+        Name  = "Build_EventLogsSetupPage_DIR"
+        Path  = "Build"
+        Help  = "Path to Build time generated EventLogsSetupPage files in Project"
+End
+
+MODULE
+        Help  = "Includes EventLogsSetupPage.mak to Project"
+        File  = "EventLogsSetupPage.mak"
+End
+
+INFComponent
+        Name  = "EventLogsSetupPage"
+        File  = "EventLogsSetupPage.inf"
+        Package  = "AmiGpnvErrorLoggingPkg"
+        Path  = "Build_EventLogsSetupPage_DIR"
+        ModuleTypes  = "DXE_DRIVER"
+        Help  = "INF Component for EventLogsSetupPage driver"
+End
+
+ELINK
+        Name  = "EVENT_LOGS_SETUP_DEFINITIONS"
+        InvokeOrder = ReplaceParent
+        Help  = "ELink to include Event Logs Setup data definitions"
+End
+
+ELINK
+        Name  = "EventLogsSetupCallbackFiles"
+        InvokeOrder = ReplaceParent
+        Help  = "ELink to include Event Logs Setup Callback files"
+End
+
+ELINK
+        Name  = "EventLogsSetupStringFiles"
+        InvokeOrder = ReplaceParent
+        Help  = "ELink to include Event Logs Setup String files"
+End
+
+ELINK
+        Name  = "$(ABS_BUILD_DIR)$(PATH_SLASH)$(PLATFORM_NAME)$(PATH_SLASH)$(TARGET)_$(TOOL_CHAIN_TAG)/X64/Build/EventLogsSetupPage/OUTPUT/AmiGpnvErrorLoggingPkg/Gpnv/EventLogsSetupPage"
+        Parent  = "IFR_DIR_LIST"
+        InvokeOrder = BeforeParent
+        Token = "X64_SUPPORT" "=" "1"
+        Help  = "ELink to include Event Logs Setup page files to IFR Directory List"
+End
+
+ELINK
+        Name  = "$(ABS_BUILD_DIR)$(PATH_SLASH)$(PLATFORM_NAME)$(PATH_SLASH)$(TARGET)_$(TOOL_CHAIN_TAG)/IA32/Build/EventLogsSetupPage/OUTPUT/AmiGpnvErrorLoggingPkg/Gpnv/EventLogsSetupPage"
+        Parent  = "IFR_DIR_LIST"
+        InvokeOrder = BeforeParent
+        Token = "X64_SUPPORT" "=" "0"
+        Help  = "ELink to include Event Logs Setup page files to IFR Directory List"
+End
+
+TOKEN
+        Name  = "CustomEventTypeAndStrings"
+        Value  = "1"
+        Help  = "Main switch to enable OEM event types and string functions support in Project"
+        TokenType = Boolean
+        TargetMAK = Yes
+        TargetH = Yes
+End
+
+ELINK
+        Name  = "EVENT_LOGS_CUSTOM_STRING_FUNCTIONS"
+        InvokeOrder = ReplaceParent
+        Token = "CustomEventTypeAndStrings" "=" "1"
+        Help  = "ELink to include Event Logs custom string functions"
+End

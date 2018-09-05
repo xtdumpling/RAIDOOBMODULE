@@ -1,0 +1,53 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+## @file
+# DxeAmiConnectPolicyLib instance
+##
+[Defines]
+  INF_VERSION     = 0x00010005
+  BASE_NAME       = DxeAmiConnectPolicyLib
+  FILE_GUID       = AFEAF97A-ACC2-4FB9-A744-3ACA4E40A260
+  MODULE_TYPE     = DXE_DRIVER
+  LIBRARY_CLASS   = NULL|DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER
+  CONSTRUCTOR     = AmiConnectPolicyLibConstructor
+
+[Sources]
+  DxeAmiConnectPolicyLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+
+[LibraryClasses]
+  UefiBootServicesTableLib
+  SecurityManagementLib
+  DebugLib
+  
+[Protocols]
+  gAmiBdsConnectPolicyProtocolGuid
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

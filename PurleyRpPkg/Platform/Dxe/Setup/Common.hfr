@@ -1,0 +1,40 @@
+//
+// This file contains an 'Intel Peripheral Driver' and is
+// licensed for Intel CPUs and chipsets under the terms of your
+// license agreement with Intel or your vendor.  This file may
+// be modified by the user, subject to additional terms of the
+// license agreement
+//
+//
+//Common.hfr
+//
+
+#define VFR_BLANK_LINE subtitle text = STRING_TOKEN(STR_NULL_STRING);
+#define VFR_END_FORM endform;
+#define VFR_END_FORMSET endformset;
+#define VFR_HORIZ_LINE subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+
+
+#define SYSTEM_CONFIGURATION_CONTROL_KEY  0xFAF0
+#define SYSTEM_CONFIGURATION_KEY       0xFAFE
+#define SOCKET_IIO_CONFIG_KEY          0xFAFB
+#define SOCKET_COMMONRC_CONFIG_KEY 0xFAFA
+#define SOCKET_MP_LINK_CONFIG_KEY      0xFAF9
+#define SOCKET_MEMORY_CONFIG_KEY   0xFAF8
+#define SOCKET_MISC_CONFIG_KEY     0xFAF7
+#define BMC_LAN_CFG_DATA_KEY       0xFAF6
+
+
+// APTIOV_SERVER_OVERRIDE_RC_START : Changed variable name to IntelSetup
+#define VFR_VARSTORE_SETUP \
+    efivarstore SYSTEM_CONFIGURATION, \
+    attribute = PLATFORM_VARIABLE_ATTRIBUTES, \
+    name  = IntelSetup, \
+    guid  = SYSTEM_CONFIGURATION_GUID;
+// APTIOV_SERVER_OVERRIDE_RC_END : Changed variable name to IntelSetup  
+
+#define VFR_FAKE_VARSTORE \
+  varstore FAKE_VARSTORE, \
+    varid = FAKE_VARSTORE_ID, \
+    name = FakeVar, \
+    guid = FAKE_VARSTORE_GUID;

@@ -1,0 +1,83 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+## @file
+#
+##
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF EBC
+#
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+
+
+[Defines]
+ INF_VERSION = 0x00010005
+ VERSION_STRING = 1.0
+ BASE_NAME = TrEEPei
+ MODULE_TYPE = PEIM
+ FILE_GUID = 961C19BE-D1AC-4ba7-87AF-4AE0F09DF2A6
+ ENTRY_POINT = TrEEPeiEntry
+
+[Sources]
+ TrEEPei.c
+ Tpm2Sequences.c
+
+[LibraryClasses]
+ PeimEntryPoint
+ BaseLib
+ BaseTisLib20x32
+ BaseAmiTcmlib
+ BaseCrbLibPei
+ DebugLib
+ IoLib
+ PeiServicesLib
+ AmiTcgLibPei
+ PeiServicesTablePointerLib
+ TpmReportStatusCodeWrapperLibPei
+
+[Ppis]
+ gAmiTreePpiGuid
+ AmiPeiHashInterfaceProtocolGuid
+ gAmiHashLogExtendExGuid
+ gTcgPeiPolicyGuid
+
+[Guids]
+ gEfiTcgTreeLogHobGuid
+
+[Packages]
+ AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+ AmiModulePkg/AmiModulePkg.dec
+ MdePkg/MdePkg.dec
+ AmiTcgPkg/AmiTcgPkg.dec
+
+[Depex]
+ gEfiPeiReadOnlyVariable2PpiGuid
+ AND
+ gEfiPeiMemoryDiscoveredPpiGuid
+ AND
+ gTcgPeiPolicyGuid
+

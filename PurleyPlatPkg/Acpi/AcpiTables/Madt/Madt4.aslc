@@ -1,0 +1,707 @@
+/*++
+  This file contains an 'Intel Peripheral Driver' and is        
+  licensed for Intel CPUs and chipsets under the terms of your  
+  license agreement with Intel or your vendor.  This file may   
+  be modified by the user, subject to additional terms of the   
+  license agreement                                             
+--*/
+/*++
+Copyright (c) 1996 - 2015, Intel Corporation.
+
+This source code and any documentation accompanying it ("Material") is furnished
+under license and may only be used or copied in accordance with the terms of that
+license.  No license, express or implied, by estoppel or otherwise, to any
+intellectual property rights is granted to you by disclosure or delivery of these
+Materials.  The Materials are subject to change without notice and should not be
+construed as a commitment by Intel Corporation to market, license, sell or support
+any product or technology.  Unless otherwise provided for in the license under which
+this Material is provided, the Material is provided AS IS, with no warranties of
+any kind, express or implied, including without limitation the implied warranties
+of fitness, merchantability, or non-infringement.  Except as expressly permitted by
+the license for the Material, neither Intel Corporation nor its suppliers assumes
+any responsibility for any errors or inaccuracies that may appear herein.  Except
+as expressly permitted by the license for the Material, no part of the Material
+may be reproduced, stored in a retrieval system, transmitted in any form, or
+distributed by any means without the express written consent of Intel Corporation.
+
+
+Module Name:
+
+  Madt4.0.c
+
+Abstract:
+
+  This file contains a structure definition for the ACPI 2.0 Multiple APIC 
+  Description Table (MADT).  Any changes to the MADT table require updating the
+  respective structure count in Madt.h and then adding the structure to the 
+  MADT defined in this file.  The table layout is defined in Madt.h and the 
+  table contents are defined in Acpi3_0.h and Madt.h.
+
+--*/
+
+//
+// Statements that include other files
+//
+#include <Acpi/Madt.h>
+
+#define MAX_THREAD_PER_SOCKET (56)
+
+//local apic macro
+#define PROC_LOCALAPIC(socket, thread)                  \
+  EFI_ACPI_4_0_PROCESSOR_LOCAL_APIC,                    \
+  sizeof (EFI_ACPI_4_0_PROCESSOR_LOCAL_APIC_STRUCTURE), \
+  (socket * MAX_THREAD_PER_SOCKET + thread),            \
+  ((socket * MAX_THREAD_PER_SOCKET) + thread),          \
+  0x00000000,
+
+#define PROC_LOCALX2APIC(socket, thread)                \
+  EFI_ACPI_4_0_PROCESSOR_LOCAL_X2APIC,                  \
+  sizeof (EFI_ACPI_4_0_PROCESSOR_LOCAL_X2APIC_STRUCTURE), \
+  0x00,                                                 \
+  0x00,                                                 \
+  (UINT32)-1,                                           \
+  0x00000000,                                           \
+  (socket * MAX_THREAD_PER_SOCKET + thread),
+
+#define LOCAL_APIC_SOCKET_PRI_THREADS(socket)       \
+  PROC_LOCALAPIC(socket, 0x00)                      \
+  PROC_LOCALAPIC(socket, 0x02)                      \
+  PROC_LOCALAPIC(socket, 0x04)                      \
+  PROC_LOCALAPIC(socket, 0x06)                      \
+  PROC_LOCALAPIC(socket, 0x08)                      \
+  PROC_LOCALAPIC(socket, 0x0A)                      \
+  PROC_LOCALAPIC(socket, 0x0C)                      \
+  PROC_LOCALAPIC(socket, 0x0E)                      \
+  PROC_LOCALAPIC(socket, 0x10)                      \
+  PROC_LOCALAPIC(socket, 0x12)                      \
+  PROC_LOCALAPIC(socket, 0x14)                      \
+  PROC_LOCALAPIC(socket, 0x16)                      \
+  PROC_LOCALAPIC(socket, 0x18)                      \
+  PROC_LOCALAPIC(socket, 0x1A)                      \
+  PROC_LOCALAPIC(socket, 0x1C)                      \
+  PROC_LOCALAPIC(socket, 0x1E)                      \
+  PROC_LOCALAPIC(socket, 0x20)                      \
+  PROC_LOCALAPIC(socket, 0x22)                      \
+  PROC_LOCALAPIC(socket, 0x24)                      \
+  PROC_LOCALAPIC(socket, 0x26)                      \
+  PROC_LOCALAPIC(socket, 0x28)                      \
+  PROC_LOCALAPIC(socket, 0x2A)                      \
+  PROC_LOCALAPIC(socket, 0x2C)                      \
+  PROC_LOCALAPIC(socket, 0x2E)                      \
+  PROC_LOCALAPIC(socket, 0x30)                      \
+  PROC_LOCALAPIC(socket, 0x32)                      \
+  PROC_LOCALAPIC(socket, 0x34)                      \
+  PROC_LOCALAPIC(socket, 0x36)                                            
+
+#define LOCAL_APIC_SOCKET_2ND_THREADS(socket)       \
+  PROC_LOCALAPIC(socket, 0x01)                      \
+  PROC_LOCALAPIC(socket, 0x03)                      \
+  PROC_LOCALAPIC(socket, 0x05)                      \
+  PROC_LOCALAPIC(socket, 0x07)                      \
+  PROC_LOCALAPIC(socket, 0x09)                      \
+  PROC_LOCALAPIC(socket, 0x0B)                      \
+  PROC_LOCALAPIC(socket, 0x0D)                      \
+  PROC_LOCALAPIC(socket, 0x0F)                      \
+  PROC_LOCALAPIC(socket, 0x11)                      \
+  PROC_LOCALAPIC(socket, 0x13)                      \
+  PROC_LOCALAPIC(socket, 0x15)                      \
+  PROC_LOCALAPIC(socket, 0x17)                      \
+  PROC_LOCALAPIC(socket, 0x19)                      \
+  PROC_LOCALAPIC(socket, 0x1B)                      \
+  PROC_LOCALAPIC(socket, 0x1D)                      \
+  PROC_LOCALAPIC(socket, 0x1F)                      \
+  PROC_LOCALAPIC(socket, 0x21)                      \
+  PROC_LOCALAPIC(socket, 0x23)                      \
+  PROC_LOCALAPIC(socket, 0x25)                      \
+  PROC_LOCALAPIC(socket, 0x27)                      \
+  PROC_LOCALAPIC(socket, 0x29)                      \
+  PROC_LOCALAPIC(socket, 0x2B)                      \
+  PROC_LOCALAPIC(socket, 0x2D)                      \
+  PROC_LOCALAPIC(socket, 0x2F)                      \
+  PROC_LOCALAPIC(socket, 0x31)                      \
+  PROC_LOCALAPIC(socket, 0x33)                      \
+  PROC_LOCALAPIC(socket, 0x35)                      \
+  PROC_LOCALAPIC(socket, 0x37)                  
+
+#define LOCAL_X2APIC_SOCKET(socket)                   \
+  PROC_LOCALX2APIC(socket, 0x00)                      \
+  PROC_LOCALX2APIC(socket, 0x01)                      \
+  PROC_LOCALX2APIC(socket, 0x02)                      \
+  PROC_LOCALX2APIC(socket, 0x03)                      \
+  PROC_LOCALX2APIC(socket, 0x04)                      \
+  PROC_LOCALX2APIC(socket, 0x05)                      \
+  PROC_LOCALX2APIC(socket, 0x06)                      \
+  PROC_LOCALX2APIC(socket, 0x07)                      \
+  PROC_LOCALX2APIC(socket, 0x08)                      \
+  PROC_LOCALX2APIC(socket, 0x09)                      \
+  PROC_LOCALX2APIC(socket, 0x0A)                      \
+  PROC_LOCALX2APIC(socket, 0x0B)                      \
+  PROC_LOCALX2APIC(socket, 0x0C)                      \
+  PROC_LOCALX2APIC(socket, 0x0D)                      \
+  PROC_LOCALX2APIC(socket, 0x0E)                      \
+  PROC_LOCALX2APIC(socket, 0x0F)                      \
+  PROC_LOCALX2APIC(socket, 0x10)                      \
+  PROC_LOCALX2APIC(socket, 0x11)                      \
+  PROC_LOCALX2APIC(socket, 0x12)                      \
+  PROC_LOCALX2APIC(socket, 0x13)                      \
+  PROC_LOCALX2APIC(socket, 0x14)                      \
+  PROC_LOCALX2APIC(socket, 0x15)                      \
+  PROC_LOCALX2APIC(socket, 0x16)                      \
+  PROC_LOCALX2APIC(socket, 0x17)                      \
+  PROC_LOCALX2APIC(socket, 0x18)                      \
+  PROC_LOCALX2APIC(socket, 0x19)                      \
+  PROC_LOCALX2APIC(socket, 0x1A)                      \
+  PROC_LOCALX2APIC(socket, 0x1B)                      \
+  PROC_LOCALX2APIC(socket, 0x1C)                      \
+  PROC_LOCALX2APIC(socket, 0x1D)                      \
+  PROC_LOCALX2APIC(socket, 0x1E)                      \
+  PROC_LOCALX2APIC(socket, 0x1F)                      \
+  PROC_LOCALX2APIC(socket, 0x20)                      \
+  PROC_LOCALX2APIC(socket, 0x21)                      \
+  PROC_LOCALX2APIC(socket, 0x22)                      \
+  PROC_LOCALX2APIC(socket, 0x23)                      \
+  PROC_LOCALX2APIC(socket, 0x24)                      \
+  PROC_LOCALX2APIC(socket, 0x25)                      \
+  PROC_LOCALX2APIC(socket, 0x26)                      \
+  PROC_LOCALX2APIC(socket, 0x27)                      \
+  PROC_LOCALX2APIC(socket, 0x28)                      \
+  PROC_LOCALX2APIC(socket, 0x29)                      \
+  PROC_LOCALX2APIC(socket, 0x2A)                      \
+  PROC_LOCALX2APIC(socket, 0x2B)                      \
+  PROC_LOCALX2APIC(socket, 0x2C)                      \
+  PROC_LOCALX2APIC(socket, 0x2D)                      \
+  PROC_LOCALX2APIC(socket, 0x2E)                      \
+  PROC_LOCALX2APIC(socket, 0x2F)                      \
+  PROC_LOCALX2APIC(socket, 0x30)                      \
+  PROC_LOCALX2APIC(socket, 0x31)                      \
+  PROC_LOCALX2APIC(socket, 0x32)                      \
+  PROC_LOCALX2APIC(socket, 0x33)                      \
+  PROC_LOCALX2APIC(socket, 0x34)                      \
+  PROC_LOCALX2APIC(socket, 0x35)                      \
+  PROC_LOCALX2APIC(socket, 0x36)                      \
+  PROC_LOCALX2APIC(socket, 0x37)                      
+
+//
+// Multiple APIC Description Table
+//
+// http://www.microsoft.com/whdc/system/cec/acpi-mp.mspx
+//
+EFI_ACPI_4_0_MULTIPLE_APIC_DESCRIPTION_TABLE  Madt = {
+  EFI_ACPI_4_0_MULTIPLE_APIC_DESCRIPTION_TABLE_SIGNATURE,   // **Signatures are the same 1.0-3.0 because it says "APIC".
+  sizeof (EFI_ACPI_4_0_MULTIPLE_APIC_DESCRIPTION_TABLE),    // **Length
+  EFI_ACPI_4_0_MULTIPLE_APIC_DESCRIPTION_TABLE_REVISION,    // **Table Revision must be 2.0 for ACPI 3.0
+  //
+  // Checksum will be updated at runtime
+  //
+  0x00,                                 // **Check sum
+  //
+  // It is expected that these values will be programmed at runtime
+  //
+  ' ',                                  // OEMID
+  ' ',                                  // Creative way to
+  ' ',                                  // make six bytes
+  ' ',                                  // of space in 
+  ' ',                                  // a table for 
+  ' ',                                  // **OEMID
+  0,                                    // **OEM Table ID
+  EFI_ACPI_OEM_MADT_REVISION,           // **OEM Revision
+  0,                                    // **Creator ID
+  0,                                    // **Creator Revision
+  //
+  // MADT specific fields
+  //
+  EFI_APIC_LOCAL_ADDRESS,               // **Local APIC Address
+  EFI_ACPI_4_0_MULTIPLE_APIC_FLAGS,     // **Flags
+  //
+  // Processor Local APIC Structure
+  // Correct processor order, Primary threads first then Hyper threads
+  // And correct APIC-ids
+  // Platform can have max of 4 Sockets, 15 Cores per Socket, 2 threads per core
+  // So possible LAPIC IDs for Socket 0: 0x00 - 0x0D, 0x10 - 0x1D, 0x20 - 0x2D, 0x30 - 0x3D
+  // So possible LAPIC IDs for Socket 0: 0x40 - 0x4D, 0x50 - 0x5D, 0x60 - 0x6D, 0x70 - 0x7D
+  // So possible LAPIC IDs for Socket 0: 0x80 - 0x8D, 0x90 - 0x9D, 0xA0 - 0xAD, 0xB0 - 0xBD
+  // So possible LAPIC IDs for Socket 0: 0xC0 - 0xCD, 0xD0 - 0xDD, 0xE0 - 0xED, 0xF0 - 0xFD
+  // BSP needs to be first entry in table. Check before boot. If BSP non zero need to rotate the entries.
+  // Suppore BSP is LAPIC ID xy. Rotate the table by using formula [x + (y * 4)]
+  // So if BSP LAPIC ID is 21 then table rotated 6 times.
+  // Rhyme & reason of the ordering below.  This is a best guess ordering for now,
+  // Ordering was established to help dissipate heat across two sockets evenly.
+  // Since logical processor number only has to be unique, I followed
+  // a similar approach to high end servers and have the first digit of the LAPIC
+  // id the socket number.
+  //      
+  //
+  // ***************   IO APIC Structure ******************
+  //
+  //
+  //  
+  LOCAL_APIC_SOCKET_PRI_THREADS(0)
+
+#if MAX_SOCKET > 1
+  LOCAL_APIC_SOCKET_PRI_THREADS(1)
+#endif
+
+#if MAX_SOCKET > 2
+  LOCAL_APIC_SOCKET_PRI_THREADS(2)
+#endif
+
+#if MAX_SOCKET > 3
+  LOCAL_APIC_SOCKET_PRI_THREADS(3)
+#endif
+
+#if MAX_SOCKET > 4
+  LOCAL_APIC_SOCKET_PRI_THREADS(4)
+#endif
+
+#if MAX_SOCKET > 5
+  LOCAL_APIC_SOCKET_PRI_THREADS(5)
+#endif
+
+#if MAX_SOCKET > 6
+  LOCAL_APIC_SOCKET_PRI_THREADS(6)
+#endif
+
+#if MAX_SOCKET > 7
+  LOCAL_APIC_SOCKET_PRI_THREADS(7)
+#endif  
+
+  LOCAL_APIC_SOCKET_2ND_THREADS(0)
+
+#if MAX_SOCKET > 1
+  LOCAL_APIC_SOCKET_2ND_THREADS(1)
+#endif
+
+#if MAX_SOCKET > 2
+  LOCAL_APIC_SOCKET_2ND_THREADS(2)
+#endif
+
+#if MAX_SOCKET > 3
+  LOCAL_APIC_SOCKET_2ND_THREADS(3)
+#endif
+
+#if MAX_SOCKET > 4
+  LOCAL_APIC_SOCKET_2ND_THREADS(4)
+#endif
+
+#if MAX_SOCKET > 5
+  LOCAL_APIC_SOCKET_2ND_THREADS(5)
+#endif
+
+#if MAX_SOCKET > 6
+  LOCAL_APIC_SOCKET_2ND_THREADS(6)
+#endif
+
+#if MAX_SOCKET > 7
+  LOCAL_APIC_SOCKET_2ND_THREADS(7)
+#endif
+  //
+  // **************************  I/O APIC (PCH)  **************
+  //
+  EFI_ACPI_4_0_IO_APIC,                     // Type 0x01
+  sizeof (EFI_ACPI_4_0_IO_APIC_STRUCTURE),  // Length
+  PCH_IOAPIC_ID,                            // IO APIC ID
+  EFI_ACPI_RESERVED_BYTE,                   // Reserved    EFI_ACPI_RESERVED_BYTE
+  PCH_IOAPIC_ADDRESS,                       // IO APIC Address (physical)   0xFEC00000
+  PCH_INTERRUPT_BASE,                       // Global System Interrupt Base
+  //
+  // **************************  I/O APIC (PC00)  *****************
+  //
+  EFI_ACPI_4_0_IO_APIC,                     // Type 0x01
+  sizeof (EFI_ACPI_4_0_IO_APIC_STRUCTURE),  // Length
+  PC00_IOAPIC_ID,                           // IO APIC ID
+  EFI_ACPI_RESERVED_BYTE,                   // Reserved
+  PC00_IOAPIC_ADDRESS,                      // IO APIC Address (physical)
+  PC00_INTERRUPT_BASE,                      // Global System Interrupt Base
+  //
+  // **************************  I/O APIC (PC01)   *****************
+  //
+  EFI_ACPI_4_0_IO_APIC,                     // Type 0x01
+  sizeof (EFI_ACPI_4_0_IO_APIC_STRUCTURE),  // Length
+  PC01_IOAPIC_ID,                           // IO APIC ID
+  EFI_ACPI_RESERVED_BYTE,                   // Reserved
+  PC01_IOAPIC_ADDRESS,                      // IO APIC Address (physical)
+  PC01_INTERRUPT_BASE,                      // Global System Interrupt Base
+  //
+  // **************************  I/O APIC (PC02)   *****************
+  //
+  EFI_ACPI_4_0_IO_APIC,                     // Type 0x01
+  sizeof (EFI_ACPI_4_0_IO_APIC_STRUCTURE),  // Length
+  PC02_IOAPIC_ID,                           // IO APIC ID
+  EFI_ACPI_RESERVED_BYTE,                   // Reserved
+  PC02_IOAPIC_ADDRESS,                      // IO APIC Address (physical)
+  PC02_INTERRUPT_BASE,                      // Global System Interrupt Base
+  //
+  // **************************  I/O APIC (PC03)   *****************
+  //
+  EFI_ACPI_4_0_IO_APIC,                     // Type 0x01
+  sizeof (EFI_ACPI_4_0_IO_APIC_STRUCTURE),  // Length
+  PC03_IOAPIC_ID,                           // IO APIC ID
+  EFI_ACPI_RESERVED_BYTE,                   // Reserved
+  PC03_IOAPIC_ADDRESS,                      // IO APIC Address (physical)
+  PC03_INTERRUPT_BASE,                      // Global System Interrupt Base
+  //
+  // **************************  I/O APIC (PC04)  *****************
+  //
+  EFI_ACPI_4_0_IO_APIC,                     // Type 0x01
+  sizeof (EFI_ACPI_4_0_IO_APIC_STRUCTURE),  // Length
+  PC04_IOAPIC_ID,                           // IO APIC ID
+  EFI_ACPI_RESERVED_BYTE,                   // Reserved
+  PC04_IOAPIC_ADDRESS,                      // IO APIC Address (physical)
+  PC04_INTERRUPT_BASE,                      // Global System Interrupt Base
+  //
+  // **************************  I/O APIC (PC05)   *****************
+  //
+  EFI_ACPI_4_0_IO_APIC,                     // Type 0x01
+  sizeof (EFI_ACPI_4_0_IO_APIC_STRUCTURE),  // Length
+  PC05_IOAPIC_ID,                           // IO APIC ID
+  EFI_ACPI_RESERVED_BYTE,                   // Reserved
+  PC05_IOAPIC_ADDRESS,                      // IO APIC Address (physical)
+  PC05_INTERRUPT_BASE,                      // Global System Interrupt Base
+  //
+  // **************************  I/O APIC (PC06)   *****************
+  //
+  EFI_ACPI_4_0_IO_APIC,                     // Type 0x01
+  sizeof (EFI_ACPI_4_0_IO_APIC_STRUCTURE),  // Length
+  PC06_IOAPIC_ID,                           // IO APIC ID
+  EFI_ACPI_RESERVED_BYTE,                   // Reserved
+  PC06_IOAPIC_ADDRESS,                      // IO APIC Address (physical)
+  PC06_INTERRUPT_BASE,                      // Global System Interrupt Base
+  //
+  // **************************  I/O APIC (PC07)   *****************
+  //
+  EFI_ACPI_4_0_IO_APIC,                     // Type 0x01
+  sizeof (EFI_ACPI_4_0_IO_APIC_STRUCTURE),  // Length
+  PC07_IOAPIC_ID,                           // IO APIC ID
+  EFI_ACPI_RESERVED_BYTE,                   // Reserved
+  PC07_IOAPIC_ADDRESS,                      // IO APIC Address (physical)
+  PC07_INTERRUPT_BASE,                      // Global System Interrupt Base
+  //
+  // **************************  I/O APIC (PC08)  *****************
+  //
+  EFI_ACPI_4_0_IO_APIC,                     // Type 0x01
+  sizeof (EFI_ACPI_4_0_IO_APIC_STRUCTURE),  // Length
+  PC08_IOAPIC_ID,                           // IO APIC ID
+  EFI_ACPI_RESERVED_BYTE,                   // Reserved
+  PC08_IOAPIC_ADDRESS,                      // IO APIC Address (physical)
+  PC08_INTERRUPT_BASE,                      // Global System Interrupt Base
+  //
+  // **************************  I/O APIC (PC09)   *****************
+  //
+  EFI_ACPI_4_0_IO_APIC,                     // Type 0x01
+  sizeof (EFI_ACPI_4_0_IO_APIC_STRUCTURE),  // Length
+  PC09_IOAPIC_ID,                           // IO APIC ID
+  EFI_ACPI_RESERVED_BYTE,                   // Reserved
+  PC09_IOAPIC_ADDRESS,                      // IO APIC Address (physical)
+  PC09_INTERRUPT_BASE,                      // Global System Interrupt Base
+  //
+  // **************************  I/O APIC (PC10)   *****************
+  //
+  EFI_ACPI_4_0_IO_APIC,                     // Type 0x01
+  sizeof (EFI_ACPI_4_0_IO_APIC_STRUCTURE),  // Length
+  PC10_IOAPIC_ID,                           // IO APIC ID
+  EFI_ACPI_RESERVED_BYTE,                   // Reserved
+  PC10_IOAPIC_ADDRESS,                      // IO APIC Address (physical)
+  PC10_INTERRUPT_BASE,                      // Global System Interrupt Base
+  //
+  // **************************  I/O APIC (PC11)   *****************
+  //
+  EFI_ACPI_4_0_IO_APIC,                     // Type 0x01
+  sizeof (EFI_ACPI_4_0_IO_APIC_STRUCTURE),  // Length
+  PC11_IOAPIC_ID,                           // IO APIC ID
+  EFI_ACPI_RESERVED_BYTE,                   // Reserved
+  PC11_IOAPIC_ADDRESS,                      // IO APIC Address (physical)
+  PC11_INTERRUPT_BASE,                      // Global System Interrupt Base
+  //
+  // **************************  I/O APIC (PC12)  *****************
+  //
+  EFI_ACPI_4_0_IO_APIC,                     // Type 0x01
+  sizeof (EFI_ACPI_4_0_IO_APIC_STRUCTURE),  // Length
+  PC12_IOAPIC_ID,                           // IO APIC ID
+  EFI_ACPI_RESERVED_BYTE,                   // Reserved
+  PC12_IOAPIC_ADDRESS,                      // IO APIC Address (physical)
+  PC12_INTERRUPT_BASE,                      // Global System Interrupt Base
+  //
+  // **************************  I/O APIC (PC13)   *****************
+  //
+  EFI_ACPI_4_0_IO_APIC,                     // Type 0x01
+  sizeof (EFI_ACPI_4_0_IO_APIC_STRUCTURE),  // Length
+  PC13_IOAPIC_ID,                           // IO APIC ID
+  EFI_ACPI_RESERVED_BYTE,                   // Reserved
+  PC13_IOAPIC_ADDRESS,                      // IO APIC Address (physical)
+  PC13_INTERRUPT_BASE,                      // Global System Interrupt Base
+  //
+  // **************************  I/O APIC (PC14)   *****************
+  //
+  EFI_ACPI_4_0_IO_APIC,                     // Type 0x01
+  sizeof (EFI_ACPI_4_0_IO_APIC_STRUCTURE),  // Length
+  PC14_IOAPIC_ID,                           // IO APIC ID
+  EFI_ACPI_RESERVED_BYTE,                   // Reserved
+  PC14_IOAPIC_ADDRESS,                      // IO APIC Address (physical)
+  PC14_INTERRUPT_BASE,                      // Global System Interrupt Base
+  //
+  // **************************  I/O APIC (PC15)   *****************
+  //
+  EFI_ACPI_4_0_IO_APIC,                     // Type 0x01
+  sizeof (EFI_ACPI_4_0_IO_APIC_STRUCTURE),  // Length
+  PC15_IOAPIC_ID,                           // IO APIC ID
+  EFI_ACPI_RESERVED_BYTE,                   // Reserved
+  PC15_IOAPIC_ADDRESS,                      // IO APIC Address (physical)
+  PC15_INTERRUPT_BASE,                      // Global System Interrupt Base
+  //
+  // **************************  I/O APIC (PC16)  *****************
+  //
+  EFI_ACPI_4_0_IO_APIC,                     // Type 0x01
+  sizeof (EFI_ACPI_4_0_IO_APIC_STRUCTURE),  // Length
+  PC16_IOAPIC_ID,                           // IO APIC ID
+  EFI_ACPI_RESERVED_BYTE,                   // Reserved
+  PC16_IOAPIC_ADDRESS,                      // IO APIC Address (physical)
+  PC16_INTERRUPT_BASE,                      // Global System Interrupt Base
+  //
+  // **************************  I/O APIC (PC17)   *****************
+  //
+  EFI_ACPI_4_0_IO_APIC,                     // Type 0x01
+  sizeof (EFI_ACPI_4_0_IO_APIC_STRUCTURE),  // Length
+  PC17_IOAPIC_ID,                           // IO APIC ID
+  EFI_ACPI_RESERVED_BYTE,                   // Reserved
+  PC17_IOAPIC_ADDRESS,                      // IO APIC Address (physical)
+  PC17_INTERRUPT_BASE,                      // Global System Interrupt Base
+  //
+  // **************************  I/O APIC (PC18)   *****************
+  //
+  EFI_ACPI_4_0_IO_APIC,                     // Type 0x01
+  sizeof (EFI_ACPI_4_0_IO_APIC_STRUCTURE),  // Length
+  PC18_IOAPIC_ID,                           // IO APIC ID
+  EFI_ACPI_RESERVED_BYTE,                   // Reserved
+  PC18_IOAPIC_ADDRESS,                      // IO APIC Address (physical)
+  PC18_INTERRUPT_BASE,                      // Global System Interrupt Base
+  //
+  // **************************  I/O APIC (PC19)   *****************
+  //
+  EFI_ACPI_4_0_IO_APIC,                     // Type 0x01
+  sizeof (EFI_ACPI_4_0_IO_APIC_STRUCTURE),  // Length
+  PC19_IOAPIC_ID,                           // IO APIC ID
+  EFI_ACPI_RESERVED_BYTE,                   // Reserved
+  PC19_IOAPIC_ADDRESS,                      // IO APIC Address (physical)
+  PC19_INTERRUPT_BASE,                      // Global System Interrupt Base
+  //
+  // **************************  I/O APIC (PC20)  *****************
+  //
+  EFI_ACPI_4_0_IO_APIC,                     // Type 0x01
+  sizeof (EFI_ACPI_4_0_IO_APIC_STRUCTURE),  // Length
+  PC20_IOAPIC_ID,                           // IO APIC ID
+  EFI_ACPI_RESERVED_BYTE,                   // Reserved
+  PC20_IOAPIC_ADDRESS,                      // IO APIC Address (physical)
+  PC20_INTERRUPT_BASE,                      // Global System Interrupt Base
+  //
+  // **************************  I/O APIC (PC21)   *****************
+  //
+  EFI_ACPI_4_0_IO_APIC,                     // Type 0x01
+  sizeof (EFI_ACPI_4_0_IO_APIC_STRUCTURE),  // Length
+  PC21_IOAPIC_ID,                           // IO APIC ID
+  EFI_ACPI_RESERVED_BYTE,                   // Reserved
+  PC21_IOAPIC_ADDRESS,                      // IO APIC Address (physical)
+  PC21_INTERRUPT_BASE,                      // Global System Interrupt Base
+  //
+  // **************************  I/O APIC (PC22)   *****************
+  //
+  EFI_ACPI_4_0_IO_APIC,                     // Type 0x01
+  sizeof (EFI_ACPI_4_0_IO_APIC_STRUCTURE),  // Length
+  PC22_IOAPIC_ID,                           // IO APIC ID
+  EFI_ACPI_RESERVED_BYTE,                   // Reserved
+  PC22_IOAPIC_ADDRESS,                      // IO APIC Address (physical)
+  PC22_INTERRUPT_BASE,                      // Global System Interrupt Base
+  //
+  // **************************  I/O APIC (PC23)   *****************
+  //
+  EFI_ACPI_4_0_IO_APIC,                     // Type 0x01
+  sizeof (EFI_ACPI_4_0_IO_APIC_STRUCTURE),  // Length
+  PC23_IOAPIC_ID,                           // IO APIC ID
+  EFI_ACPI_RESERVED_BYTE,                   // Reserved
+  PC23_IOAPIC_ADDRESS,                      // IO APIC Address (physical)
+  PC23_INTERRUPT_BASE,                      // Global System Interrupt Base
+
+  //
+  // **************************  I/O APIC (PC24)   *****************
+  //
+  EFI_ACPI_4_0_IO_APIC,                     // Type 0x01
+  sizeof (EFI_ACPI_4_0_IO_APIC_STRUCTURE),  // Length
+  PC24_IOAPIC_ID,                           // IO APIC ID
+  EFI_ACPI_RESERVED_BYTE,                   // Reserved
+  PC24_IOAPIC_ADDRESS,                      // IO APIC Address (physical)
+  PC24_INTERRUPT_BASE,                      // Global System Interrupt Base
+  //
+  // **************************  I/O APIC (PC25)   *****************
+  //
+  EFI_ACPI_4_0_IO_APIC,                     // Type 0x01
+  sizeof (EFI_ACPI_4_0_IO_APIC_STRUCTURE),  // Length
+  PC25_IOAPIC_ID,                           // IO APIC ID
+  EFI_ACPI_RESERVED_BYTE,                   // Reserved
+  PC25_IOAPIC_ADDRESS,                      // IO APIC Address (physical)
+  PC25_INTERRUPT_BASE,                      // Global System Interrupt Base
+  //
+  // **************************  I/O APIC (PC26)  *****************
+  //
+  EFI_ACPI_4_0_IO_APIC,                     // Type 0x01
+  sizeof (EFI_ACPI_4_0_IO_APIC_STRUCTURE),  // Length
+  PC26_IOAPIC_ID,                           // IO APIC ID
+  EFI_ACPI_RESERVED_BYTE,                   // Reserved
+  PC26_IOAPIC_ADDRESS,                      // IO APIC Address (physical)
+  PC26_INTERRUPT_BASE,                      // Global System Interrupt Base
+  //
+  // **************************  I/O APIC (PC27)   *****************
+  //
+  EFI_ACPI_4_0_IO_APIC,                     // Type 0x01
+  sizeof (EFI_ACPI_4_0_IO_APIC_STRUCTURE),  // Length
+  PC27_IOAPIC_ID,                           // IO APIC ID
+  EFI_ACPI_RESERVED_BYTE,                   // Reserved
+  PC27_IOAPIC_ADDRESS,                      // IO APIC Address (physical)
+  PC27_INTERRUPT_BASE,                      // Global System Interrupt Base
+  //
+  // **************************  I/O APIC (PC28)   *****************
+  //
+  EFI_ACPI_4_0_IO_APIC,                     // Type 0x01
+  sizeof (EFI_ACPI_4_0_IO_APIC_STRUCTURE),  // Length
+  PC28_IOAPIC_ID,                           // IO APIC ID
+  EFI_ACPI_RESERVED_BYTE,                   // Reserved
+  PC28_IOAPIC_ADDRESS,                      // IO APIC Address (physical)
+  PC28_INTERRUPT_BASE,                      // Global System Interrupt Base
+  //
+  // **************************  I/O APIC (PC29)   *****************
+  //
+  EFI_ACPI_4_0_IO_APIC,                     // Type 0x01
+  sizeof (EFI_ACPI_4_0_IO_APIC_STRUCTURE),  // Length
+  PC29_IOAPIC_ID,                           // IO APIC ID
+  EFI_ACPI_RESERVED_BYTE,                   // Reserved
+  PC29_IOAPIC_ADDRESS,                      // IO APIC Address (physical)
+  PC29_INTERRUPT_BASE,                      // Global System Interrupt Base
+  //
+  // **************************  I/O APIC (PC30)   *****************
+  //
+  EFI_ACPI_4_0_IO_APIC,                     // Type 0x01
+  sizeof (EFI_ACPI_4_0_IO_APIC_STRUCTURE),  // Length
+  PC30_IOAPIC_ID,                           // IO APIC ID
+  EFI_ACPI_RESERVED_BYTE,                   // Reserved
+  PC30_IOAPIC_ADDRESS,                      // IO APIC Address (physical)
+  PC30_INTERRUPT_BASE,                      // Global System Interrupt Base
+  //
+  // **************************  I/O APIC (PC31)   *****************
+  //
+  EFI_ACPI_4_0_IO_APIC,                     // Type 0x01
+  sizeof (EFI_ACPI_4_0_IO_APIC_STRUCTURE),  // Length
+  PC31_IOAPIC_ID,                           // IO APIC ID
+  EFI_ACPI_RESERVED_BYTE,                   // Reserved
+  PC31_IOAPIC_ADDRESS,                      // IO APIC Address (physical)
+  PC31_INTERRUPT_BASE,                      // Global System Interrupt Base
+
+  //
+  // Interrupt Source Override Structure: Sample
+  //
+  // EFI_ACPI_4_0_INTERRUPT_SOURCE_OVERRIDE,                   // Type  0x02
+  // sizeof (EFI_ACPI_4_0_INTERRUPT_SOURCE_OVERRIDE_STRUCTURE),// Length
+  // 0x00,                                                     // Bus
+  // 0x00,                                                     // Source
+  // 0x00000000,                                               // Global System Interrupt
+  // 0x0000,                                                   // Flags
+  //
+  // IRQ0=>IRQ2 Interrupt Source Override Structure
+  //
+  EFI_ACPI_4_0_INTERRUPT_SOURCE_OVERRIDE,                     // Type  0x02
+  sizeof (EFI_ACPI_4_0_INTERRUPT_SOURCE_OVERRIDE_STRUCTURE),  // Length
+  0x00,                                                       // Bus - ISA
+  0x00,                                                       // Source - IRQ0
+  0x00000002,                                                 // Global System Interrupt - IRQ2
+  0x0000,                                                     // Flags - Conforms to specifications of the bus
+  //
+  // IRQ9 (SCI Active High) Interrupt Source Override Structure
+  //
+  EFI_ACPI_4_0_INTERRUPT_SOURCE_OVERRIDE,                     // Type  0x02
+  sizeof (EFI_ACPI_4_0_INTERRUPT_SOURCE_OVERRIDE_STRUCTURE),  // Length
+  0x00,                                                       // Bus - ISA
+  0x09,                                                       // Source - IRQ0
+  0x00000009,                                                 // Global System Interrupt - IRQ9
+  0x000D,                                                     // Flags - Level-tiggered, Active High
+  //
+  // Non-Maskable Interrupt (NMIs) Source Structure: Sample
+  //
+  // EFI_ACPI_4_0_NON_MASKABLE_INTERRUPT_SOURCE,                     // Type 0x03
+  // sizeof (EFI_ACPI_4_0_NON_MASKABLE_INTERRUPT_SOURCE_STRUCTURE),  // Length
+  // 0x0000,                                                         // Flags
+  // 0x00000000,                                                     // Global System Interrupt
+  //
+  // Local APIC NMI Structure: Sample
+  //
+  EFI_ACPI_4_0_LOCAL_APIC_NMI,                          
+  sizeof (EFI_ACPI_4_0_LOCAL_APIC_NMI_STRUCTURE),       
+  (UINT32)-1,                                                    
+  0x000D,                                               
+  0x01,  
+  //
+  // Local APIC Address Override Structure: Sample
+  //
+  // EFI_ACPI_4_0_LOCAL_APIC_ADDRESS_OVERRIDE,                     // Type 0x5
+  // sizeof (EFI_ACPI_4_0_LOCAL_APIC_ADDRESS_OVERRIDE_STRUCTURE),  // Length
+  // EFI_ACPI_RESERVED_WORD,                                       // Reserved
+  // 0x0000000000000000,                                           // Local APIC Address
+  //
+  // Sample Platform Interrupt Sources Structure
+  //
+  // EFI_ACPI_4_0_PLATFORM_INTERRUPT_SOURCES,                      // Type   0x8
+  // sizeof (EFI_ACPI_4_0_PLATFORM_INTERRUPT_SOURCES_STRUCTURE),   // Length
+  // 0x0000,                                                       // Flags
+  // 0x00,                                                         // Interrupt Type
+  // 0x00,                                                         // Processor ID
+  // 0x00,                                                         // Processor EID
+  // 0x00,                                                         // IO SAPIC Vector
+  // 0x00000000,                                                   // Global System Interrupt
+  // EFI_ACPI_RESERVED_DWORD,                                      // Reserved
+  //
+
+  LOCAL_X2APIC_SOCKET(0)
+
+#if MAX_SOCKET > 1
+  LOCAL_X2APIC_SOCKET(1)
+#endif
+
+#if MAX_SOCKET > 2
+  LOCAL_X2APIC_SOCKET(2)
+#endif
+
+#if MAX_SOCKET > 3
+  LOCAL_X2APIC_SOCKET(3)
+#endif
+
+#if MAX_SOCKET > 4
+  LOCAL_X2APIC_SOCKET(4)
+#endif
+
+#if MAX_SOCKET > 5
+  LOCAL_X2APIC_SOCKET(5)
+#endif
+
+#if MAX_SOCKET > 6
+  LOCAL_X2APIC_SOCKET(6)
+#endif
+
+#if MAX_SOCKET > 7
+  LOCAL_X2APIC_SOCKET(7)
+#endif
+
+  EFI_ACPI_4_0_LOCAL_X2APIC_NMI,                          
+  sizeof (EFI_ACPI_4_0_LOCAL_X2APIC_NMI_STRUCTURE),       
+  0x000D,                                                 
+  (UINT32)-1,                                             
+  0x01,                                                   
+  0x00,                                                   
+  0x00,                                                   
+  0x00
+
+};
+
+VOID*
+ReferenceAcpiTable (
+  VOID
+  )
+
+{
+  return (VOID*)&Madt;
+}

@@ -1,0 +1,76 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+#
+# @file DxeIpmiUsb.inf
+#
+#  INF description file for DxeIpmiUsb driver
+#
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = DxeIpmiUsb
+  FILE_GUID                      = 1015EA63-7421-417d-BB51-E5193061C551
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = DxeIpmiUsbEntryPoint
+
+[Sources]
+  DxeIpmiUsb.c
+  DxeIpmiUsb.h
+  UsbBmc.c
+  BmcVirtualUsb.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiIpmiPkg/AmiIpmiPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  TimerLib
+  UefiLib
+  BaseMemoryLib
+  MemoryAllocationLib
+  BaseLib
+  DebugLib
+  IoLib
+  ReportStatusCodeLib
+
+[Protocols]
+  gEfiDxeIpmiTransportProtocolGuid
+  gEfiDxeIpmiUsbTransportProtocolGuid       #PRODUCES
+  gEfiBlockIoProtocolGuid                   #CONSUMES
+  gEfiDevicePathProtocolGuid                #CONSUMES
+  gEfiUsbIoProtocolGuid                     #CONSUMES
+
+[Pcd]
+  gAmiIpmiPkgTokenSpaceGuid.BulkDataTransferTimeout
+
+[Depex]
+  TRUE
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**         5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093     **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

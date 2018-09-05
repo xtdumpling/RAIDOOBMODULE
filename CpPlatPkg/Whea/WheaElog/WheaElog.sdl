@@ -1,0 +1,38 @@
+TOKEN
+	Name  = "WheaElog_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling WheaElog support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+INFComponent
+	Name  = "WheaElog"
+	File  = "WheaElog.inf"
+	Package  = "CpPlatPkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+End
+
+# Using our ERST implementation as fatal error was not working with Intel WHEA
+TOKEN
+	Name  = "ELAR_SIZE"
+	Value  = "2000h"
+	Help  = "Size of Error Log Address Range."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+    Name  = "ERST_BUSY_STS_VALUE"
+    Value  = "1"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "FV_WHEA_SIZE"
+    Value  = "0x10000"
+    Help  = "WHEA SIZE"
+    TokenType = Integer
+    TargetH = Yes    
+End

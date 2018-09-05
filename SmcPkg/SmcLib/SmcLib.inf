@@ -1,0 +1,101 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.02 
+#    Bug Fixed:  Add GetPurleyCPUType function.
+#    Reason:     
+#    Auditor:    Leon Xu
+#    Date:       Jun/08/2017
+#
+#  Rev. 1.02 
+#    Bug Fixed:  Add GetOnBoardLanBus function.
+#    Reason:     
+#    Auditor:    William Hsu
+#    Date:       Jan/07/2017
+#
+#  Rev. 1.01 
+#    Bug Fix:   add CPLD version support
+#    Reason:	Get CPLD version from BMC
+#    Auditor:  Sunny Yang
+#    Date:     Sep/01/2016
+#
+#  Rev. 1.00
+#    Bug Fix:  Initial revision.
+#    Reason:   Get base code from Grantley
+#    Auditor:  Kasber Chen
+#    Date:     May/12/2016
+#
+#****************************************************************************
+
+[Defines]
+  INF_VERSION = 0x00010005
+  VERSION_STRING = 1.0
+  BASE_NAME = SmcLib
+  MODULE_TYPE = BASE
+  LIBRARY_CLASS = SmcLib
+  FILE_GUID = e66d94e0-74b5-11e2-bcfd-0800200c9a66
+
+
+[Sources.ia32]
+  SmcLibPei.c
+
+[Sources.x64]
+  SmcLibDxe.c
+
+[Sources.Common]
+  SmcLib.h
+  SmcLibCommon.h
+  SmcLibCommon.c
+  SmcLibSmBios.c
+  SmcLibSmBios.h
+  SmcLibBmc.c
+  SmcLibBmc.h  
+  SmcLibBmcPrivate.h  
+
+[LibraryClasses.Ia32]
+  PeiServicesLib
+    
+[LibraryClasses]
+  IoLib
+  PlatformHookLib
+  SmcCspLib
+  PcdLib
+  PciExpressLib
+  HobLib
+  BaseMemoryLib
+
+[Protocols]
+  gEfiSmbiosProtocolGuid
+  gEfiDxeIpmiTransportProtocolGuid
+
+[Ppis]
+  gEfiPeiIpmiTransportPpiGuid
+
+[Guids]
+  gEfiHobListGuid
+  gIioPolicyHobGuid
+  
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiIpmiPkg/AmiIpmiPkg.dec
+  SmcPkg/SmcPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  PurleySktPkg/SocketPkg.dec
+
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+  gSmcPkgTokenSpaceGuid.PcdSmcCPLDRevision
+  gSmcPkgTokenSpaceGuid.PcdSmcCPU0IIOBus
+  gSmcPkgTokenSpaceGuid.PcdSmcCPU1IIOBus
+  gSmcPkgTokenSpaceGuid.PcdSmcCPU2IIOBus
+  gSmcPkgTokenSpaceGuid.PcdSmcCPU3IIOBus

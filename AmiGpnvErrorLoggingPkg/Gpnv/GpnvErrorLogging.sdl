@@ -1,0 +1,109 @@
+TOKEN
+        Name  = GpnvErrorLogging_SUPPORT
+        Value  = 1
+        TokenType = Boolean
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+        Master = Yes
+        Help  = "Main switch to enable GpnvErrorLogging support in Project"
+End
+
+MODULE
+        Help  = "Includes GpnvErrorLogging.mak to Project"
+        File  = "GpnvErrorLogging.mak"
+End
+
+# RTC Porting Token: Start
+
+TOKEN
+        Name  = "OEMRtc_Enabled"
+        Value  = "0"
+        Help  = "Main switch to enable OEM RTC support in GPNV Module"
+        TokenType = Boolean
+        TargetH = Yes
+End
+
+ELINK
+        Name  = "GPNV_RTC_READ_HOOK"
+        InvokeOrder = ReplaceParent
+        Help  = "ELink label for GPNV RTC Read Hook"
+End
+
+# Sample ELINK for OEM RTC function
+#ELINK
+#        Name  = "OemGpnvRtcGetTime"
+#        Parent  = "GPNV_RTC_READ_HOOK"
+#        InvokeOrder = ReplaceParent
+#        Help  = "OEM Function to Read time from RTC and returned TIME is expected to be in standard EFI_TIME format"
+#        Token = "OEMRtc_Enabled" "=" "1"
+#End
+
+## RTC Porting Token: End
+
+TOKEN
+        Name  = "FV_ERROR_LOGGING_BASE"
+        Value  = "$(FLASH_BASE)+$(NVRAM_SIZE)"
+        Help  = "Base Address of the ErrorLogging Space"
+        TokenType = Integer
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+        Range  = "From: 4G - FLASH_SIZE To: 4G"
+End
+
+TOKEN
+        Name  = "FV_ERROR_LOGGING_BASE"
+        Value  = "$(FLASH_BASE)+$(NVRAM_SIZE)*2"
+        Help  = "Base Address of the ErrorLogging Space"
+        TokenType = Integer
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+        Range  = "From: 4G - FLASH_SIZE To: 4G"
+        Token = "FAULT_TOLERANT_NVRAM_UPDATE" "=" "1"
+End
+
+TOKEN
+        Name  = "FV_ERROR_LOGGING_BASE"
+        Value  = "$(FLASH_BASE)+$(NVRAM_SIZE)*2+$(FV_WHEA_SIZE)"
+        Help  = "Base Address of the ErrorLogging Space"
+        TokenType = Integer
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+        Range  = "From: 4G - FLASH_SIZE To: 4G"
+        Token = "FAULT_TOLERANT_NVRAM_UPDATE" "=" "1"
+        Token = "WHEA_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "GPNV_SIZE"
+        Value  = "0x10000"
+        Help  = "Size of GPNV area"
+        TokenType = Integer
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+        Range  = "From: 1 To: FLASH_SIZE - FV_MAIN_BLOCKS*FLASH_BLOCK_SIZE"
+End
+
+TOKEN
+        Name  = "FV_ERROR_LOGGING_BLOCKS"
+        Value = "1*($(GPNV_SIZE)/$(FLASH_BLOCK_SIZE))"
+        Help  = "Number of Blocks occupied by the FV_GPNV"
+        TokenType = Integer
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+        Range  = "From: 1  To :FLASH_SIZE/FLASH_BLOCK_SIZE-1"
+End
+
+TOKEN
+        Name  = "FV_ERROR_LOGGING_SIZE"
+        Value = "$(FV_ERROR_LOGGING_BLOCKS)*$(FLASH_BLOCK_SIZE) - 1"
+        Help  = "Size of the ErrorLogging Area in bytes"
+        TokenType = Integer
+        TargetMAK = Yes
+        TargetH = Yes
+End

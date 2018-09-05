@@ -1,0 +1,48 @@
+TOKEN
+    Name  = "AmtLockKBD_SUPPORT"
+    Value  = "1"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    Master = Yes
+    Help  = "Main switch to enable AmtInt16 support in Project"
+End
+
+PATH
+    Name  = "AmtLockKBD_DIR"
+End
+
+ELINK
+    Name  = "$(AmtLockKBD_DIR)\AmtInt9.csm16"
+    Parent  = "CSM_OEMINT_SRC"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "AMTINT09Proc"
+    Parent  = "CsmOemInterrupts"
+    ProcID  = 09h
+    SrcFile  = "$(AmtLockKBD_DIR)\AmtInt9.csm16"
+    InvokeOrder = AfterParent
+End
+
+INFComponent
+    Name  = "AMTLockKBD"
+    File  = "AMTLockKBD.inf"
+    Package  = "PurleySktPkg"
+    ModuleTypes  = "DXE_DRIVER"
+End
+
+INFComponent
+    Name  = "AmtLockUsbKBD"
+    File  = "AmtLockUsbKBD.inf"
+    Package  = "PurleySktPkg"
+    ModuleTypes  = "DXE_SMM_DRIVER"
+End
+
+INFComponent
+	Name  = "AmtLockPbtn"
+	File  = "AmtLockPbtn.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+End

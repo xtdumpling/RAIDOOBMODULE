@@ -1,0 +1,79 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = BootGuardPei
+  FILE_GUID                      = B41956E1-7CA2-42db-9562-168389F0F066
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = BootGuardPeiEntryPoint
+  
+[Sources]
+  BootGuardPei.c
+  BootGuardPei.h
+
+[Packages]
+  AmiCryptoPkg/AmiCryptoPkg.dec
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  CpRcPkg/CpRcPkg.dec
+
+[LibraryClasses]
+  BaseLib
+  BaseMemoryLib
+  PeiServicesLib
+  MemoryAllocationLib
+  PeimEntryPoint
+  DebugLib
+  IoLib
+  HobLib
+#  CpuLib
+  AmiPeiLib
+  PeiCryptLib
+#
+# CryptoLib is required for SMRAM integrity check
+#
+
+
+
+[Ppis]
+  gEfiPeiReadOnlyVariable2PpiGuid
+  gEfiEndOfPeiSignalPpiGuid
+  gEfiPeiBootInRecoveryModePpiGuid
+  gEfiPeiMemoryDiscoveredPpiGuid
+  
+[Pcd]
+
+[Guids]
+  
+[Depex]
+  gEfiPeiReadOnlyVariable2PpiGuid
+
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************

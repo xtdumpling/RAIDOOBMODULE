@@ -1,0 +1,173 @@
+TOKEN
+	Name  = "SmbiosDMIEdit_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable AMI DMIEdit for SMBIOS support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+	Master = Yes
+	Token = "SMBIOS_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "DmiEditSmm_Support"
+    Value  = "1"
+    Help  = "Switch to disable/enable DmiEdit with SMM support"
+    TokenType = Boolean
+    TargetH = Yes
+    Token = "SMM_SUPPORT" "=" "1"
+    Token = "SMIFlash_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "DmiEditSmm_Support"
+    Value  = "0"
+    Help  = "Switch to disable/enable DmiEdit with SMM support"
+    TokenType = Boolean
+    TargetH = Yes
+    Token = "AFRI_PASS_TO_AFRI_PROTOCOL" "=" "1"
+End
+
+TOKEN
+	Name  = "NonSmiDmiEdit_Support"
+	Value  = "0"
+	Help  = "Switch to disable/enable Non-SMI DmiEdit support"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "DMI_ARRAY_COUNT"
+	Value  = "256"
+	Help  = "The maximum number of entires DMIEdit array can hold"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+    Name  = "REGISTER_SW_SMI_FN50"
+    Value  = "1"
+    Help  = "Enable/Disable SW SMI Function 0x50 registration"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "REGISTER_SW_SMI_FN51"
+    Value  = "1"
+    Help  = "Enable/Disable SW SMI Function 0x51 registration"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "REGISTER_SW_SMI_FN52"
+    Value  = "1"
+    Help  = "Enable/Disable SW SMI Function 0x52 registration"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "REGISTER_SW_SMI_FN53"
+    Value  = "1"
+    Help  = "Enable/Disable SW SMI Function 0x53 registration"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+#########################################################################
+#
+# ATTENTION: FLASH_BB_BASE_ADDR token to be ported for project platform
+#
+#########################################################################
+TOKEN
+    Name  = "FLASH_BB_BASE_ADDR"
+    Value  = "$(FV_BB_BASE)"
+    Help  = "Specifies Flash BootBlock base address"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "INTEL_ARCH_SUPPORT"
+    Value  = "1"
+    Help  = "Intel Architecture support setting"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "INTEL_ARCH_SUPPORT"
+    Value  = "0"
+    Help  = "Intel Architecture support setting"
+    TokenType = Boolean
+    TargetH = Yes
+    Token = "INTEL_ARCHITECTURE_SUPPORT" "=" "0"
+End
+
+TOKEN
+    Name  = "DMIEDIT_DEBUG_TRACE"
+    Value  = "1"
+    Help  = "Enable/Disable debug trace messages"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "DMIEDIT_DEBUG_TRACE"
+    Value  = "0"
+    Help  = "For ARM platform - Disable debug trace messages"
+    TokenType = Boolean
+    TargetH = Yes
+    Token = "INTEL_ARCH_SUPPORT" "=" "0"
+End
+
+PATH
+	Name  = "SMBIOS_DMIEDIT_DIR"
+End
+
+ELINK
+    Name  = "DmiArrayVarCheck,"
+    Parent  = "SetVariableHook"
+    InvokeOrder = AfterParent
+    Token = "SMBIOS_DMIEDIT_DATA_LOC" "=" "2"
+End
+
+INFComponent
+    Name  = "SmbiosDmiEdit"
+    File  = "SmbiosDmiEdit.inf"
+    Package  = "AmiCompatibilityPkg"
+    ModuleTypes  = "DXE_SMM_DRIVER"
+    Token = "DmiEditSmm_Support" "=" "1"
+    Token = "DMIEDIT_SSI_SUPPORT" "=" "0"
+End
+
+INFComponent
+    Name  = "SmbiosDmiEditProtocol"
+    File  = "SmbiosDmiEditProtocol.inf"
+    Package  = "AmiCompatibilityPkg"
+    ModuleTypes  = "DXE_DRIVER"
+    Token = "NonSmiDmiEdit_Support" "=" "1"
+End
+
+INFComponent
+    Name  = "DmiArrayVarHookLib"
+    File  = "DmiArrayVarProtect.inf"
+    Package  = "AmiCompatibilityPkg"
+    Token = "SMBIOS_DMIEDIT_DATA_LOC" "=" "2"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiCompatibilityPkg.DmiArrayVarHookLib"
+    Override  = "AmiModulePkg.NvramDxe"
+    Token = "SMBIOS_DMIEDIT_DATA_LOC" "=" "2"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiCompatibilityPkg.DmiArrayVarHookLib"
+    Override  = "AmiModulePkg.NvramSmm"
+    Token = "SMBIOS_DMIEDIT_DATA_LOC" "=" "2"
+End

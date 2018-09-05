@@ -1,0 +1,105 @@
+TOKEN
+	Name  = "DbgrLib_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling DbgDbgrLib\DbgDbgrX64Lib support in the project"
+	TokenType = Boolean
+	Master = Yes
+	Token = "REDIRECTION_ONLY_MODE" "=" "0"
+End
+
+TOKEN
+	Name  = "DbgDbgrLib_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable DbgDbgrLib support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "DbgDbgrX64Lib_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable DbgDbgrX64Lib support in Project"
+	TokenType = Boolean
+	Token = "X64_SUPPORT" "=" "1"
+End
+
+PATH
+	Name  = "DbgDbgrLib_DIR"
+	Path  = "AMIDebugRxPkg\Debugger\DbgDbgrLib"
+End
+
+INFComponent
+	Name  = "DbgDbgrLib"
+	File  = "DbgDbgrLib.inf"
+	Package  = "Debugger"
+	Arch  = "common"
+	Path  = "DbgDbgrLib_DIR"
+End
+
+INFComponent
+	Name  = "DbgDbgrX64Lib"
+	File  = "DbgDbgrX64Lib.inf"
+	Package  = "Debugger"
+	Arch  = "common"
+	Path  = "DbgDbgrLib_DIR"
+	Token = "DbgDbgrX64Lib_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "CommonDbgDbgrLib"
+	File  = "CommonDbgDbgrLib.inf"
+	Package  = "Debugger"
+	Arch  = "common"
+	Path  = "DbgDbgrLib_DIR"
+End
+
+LibraryMapping
+	Class  = "PeiDebugDbgrLib"
+	Instance  = "Debugger.DbgDbgrLib"
+	Arch  = "IA32"
+End
+
+LibraryMapping
+	Class  = "PeiDebugDbgrLib"
+	Instance  = "Debugger.DbgDbgrX64Lib"
+	Arch  = "X64"
+	Token = "DbgDbgrX64Lib_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "DxeDebugDbgrLib"
+	Instance  = "Debugger.DbgDbgrLib"
+	Token = "X64_SUPPORT" "=" "0"
+End
+
+LibraryMapping
+	Class  = "DxeDebugDbgrLib"
+	Instance  = "Debugger.DbgDbgrX64Lib"
+	Token = "DbgDbgrX64Lib_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "CommonDbgDbgrLib"
+	Instance  = "Debugger.CommonDbgDbgrLib"
+End
+
+PcdMapping
+	Name  = "PcdNvramBaseAddres"
+	GuidSpace  = "gEfiAMIDebugRxPkgTokenSpaceGuid"
+	Help  = "Starting address of the NVRAM flash area"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "$(NVRAM_ADDRESS)"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdNvramHeaderSize"
+	GuidSpace  = "gEfiAMIDebugRxPkgTokenSpaceGuid"
+	Help  = "Size of NVRAM header, which is number of bytes from\the NVRAM_ADDRESS to the first variable record.\Currently defined as:\72(FV Header Size) + 24 (FFS File Header Size) + 48 Extended header size."
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "$(NVRAM_HEADER_SIZE)"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End

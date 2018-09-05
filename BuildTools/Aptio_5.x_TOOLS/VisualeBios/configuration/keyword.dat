@@ -1,0 +1,181 @@
+//## Syntax Highlighting for C and C++
+
+EXT=C,CPP,H,HPP
+KEYWORDS=BYTE,DWORD,LONG,PVOID,UCHAR,UINT,ULONG,VOID,WORD
+KEYWORDS=asm,auto,break,byte,case,catch,cdecl,char
+KEYWORDS=class,const,continue,default,delete,double,do,dword,else,enum
+KEYWORDS=extern,far,float,for,friend,goto,huge,if,inline,interrupt
+KEYWORDS=int,long,near,new,operator,pascal,private,protected,public
+KEYWORDS=register,return,short,signed,sizeof,static,struct,switch
+KEYWORDS=template,this,typedef,union,unsigned,virtual,void,volatile,word,while
+//## EFI types
+KEYWORDS=INT8,INT16,INT32,INT64,INTN,UINT8,UINT16,UINT32,UINT64,UINTN,CHAR8,CHAR16,BOOLEAN,EFI_HANDLE,EFI_STATUS,EFI_GUID
+INSTRUCTIONS=include,define,ifdef,ifndef,elif,endif,undef,defined,pragma,TRUE,FALSE,true,false
+//## define
+TYPE1_REGEXP="^[[:blank:]]*#[[:blank:]]*define[[:blank:]]+([[:word:]]+)"
+//## function
+TYPE2_REGEXP="^[[:blank:]]*[[:word:]]+[[:space:]\*]*[[:space:]]+([[:word:]]+)[[:space:]]*\([^;]+?\{"
+//## typedef of structure or enum
+SYMDEF="^[[:blank:]]*typedef[[:space:]]+(?:struct|enum|union)[[:space:]]*[[:word:]]*[[:space:]]*\{(?:[[:word:][:space:][:punct:]\*]+?)\}[[:space:]]*([[:word:]]+)"
+//## typedef
+SYMDEF="^[[:blank:]]*typedef[[:space:]]+(?:[[:word:]]+[[:space:]]+)?[[:word:]]+[[:space:]\*]+(?:\((?:[[:space:]]*[[:word:]]+)?[[:space:]\*]*\*)?([[:word:]]+)"
+EOLCOMMENTS=//
+OPENCOM=/*
+CLOSECOM=*/
+SENSITIVE=1
+
+//## Syntax Highlighting for SSP and SDL
+
+EXT=SSP,SDL
+KEYWORDS=Token,PCIDevice,End,IRQLink,OUTPUTREGISTER,INFComponent,PcdMapping,ELINK,MODULE,LibraryMapping
+KEYWORDS=FD_AREA,FFS_FILE,FD_INFO,PATH,LDEVICE,SIODEVICE,IODEVICE,IOAPIC,RSVCHIPSET,Platform
+KEYWORDS=Question,EndQuestion,MenuItem,EndMenuItem,ControlGroup,EndControlGroup
+KEYWORDS=Separator,EndSeparator,DynamicText,EndDynamicText,StaticText,EndStaticText
+KEYWORDS=DynamicText,EndDynamicText,Control
+KEYWORDS=DateControl,EndDateControl,NvramField,EndNvramField,TimeControl,EndTimeControl
+EOLCOMMENTS=//
+EOLCOMMENTS=#
+SENSITIVE=0
+
+
+//## Syntax Highlighting for 80x86 Assembly
+
+EXT=ASM,INC,EQU,DAT,CSS,MAC
+KEYWORDS=BYTE,CODEPTR,DATAPTR,DUP,DWORD,ENDM,ENDP,ENDS,EQ,EXTRN,EXTERN,FAR,END
+KEYWORDS=FWORD,GE,GT,HIGH,LARGE,LENGTH,LE,LOW,LT,MACRO,MASK,MOD,NEAR,NE
+KEYWORDS=OFFSET,PROC,PTR,PUBLIC,PWORD,QWORD,SEGMENT,SEG,SHORT,LABEL,EQU
+KEYWORDS=SIZE,SMALL,STRUC,SYMTYPE,TBYTE,THIS,TYPE,UNKNOWN,WIDTH,WORD
+KEYWORDS=ASSUME,COMMENT,ENDOFCOMMENT,'CODE',TITLE,INCLUDE,NOTHING
+KEYWORDS=IF,ELSE,ENDIF,PRIVATE
+KEYWORDS=BIT0,BIT1,BIT2,BIT3,BIT4,BIT5,BIT6,BIT7,BIT8,BIT9,BIT10,BIT11,BIT12,BIT13,BIT14,BIT15
+KEYWORDS=AL,BL,CL,DL,AH,BH,CH,DH,AX,BX,CX,DX,SI,DI,BP,SP,EAX,EBX,ECX,EDX,ESI,EDI,EBP,ESP,CS,DS,SS,ES,FS,GS,RAX,RBX,RCX,RDX,RSI,RDI,RBP,RSP
+INSTRUCTIONS=AAA,AAD,AAM,AAS,ADC,ADD,AND,ARPL
+INSTRUCTIONS=BOUND,BSF,BSR,BSWAP,BT,BTC,BTR,BTS
+INSTRUCTIONS=CBQ,CDQ,CLC,CLD,CLI,CLTS,CMC,CPUID,CMOV,CMP,CMPS,CMPSB,CMPSD,CMPSW,CMPXCHG,CMPXCHG8B,CWD,CWDE,CALL
+INSTRUCTIONS=DAA,DAS,DEC,DIV,EMMS,ENTER,STC
+INSTRUCTIONS=F2XM1,FABS,FADD,FADDP,FBLD,FBSTP,FCHS,FCLEX
+INSTRUCTIONS=HLT,IDIV,IMUL,IN,INC,INS,INSB,INSD,INSW,INT,IRET,IRETD
+INSTRUCTIONS=JA,JAE,JB,JBE,JC,JCXZ,JECXZ,JE,JG,JGE,JL,JLE,JNA,JNAE,JNB,JNBE,JNC,JNE,JMP,JZ,JNZ,LOOP
+INSTRUCTIONS=MOV,MOVZX,NEG,PUSH,POP,PUSHA,POPA,PUSHAD,POPAD,PUSHF,POPF,RET,RETF
+INSTRUCTIONS=SHR,SHL,SUB,OR,XOR,TEST,OUT,XCHG
+EOLCOMMENTS=;
+EOLCOMMENTS=#
+TYPE1_REGEXP="^[[:blank:]]*([[:alnum:]_@]+)[[:blank:]]+SEGMENT"
+TYPE2_REGEXP="^[[:blank:]]*([[:alnum:]_@]+)[[:blank:]]*:"
+TYPE2_REGEXP="^[[:blank:]]*([[:alnum:]_@]+)[[:blank:]]+PROC"
+SYMDEF="^[[:blank:]]*([[:alnum:]_@]+)[[:blank:]]+(?:(?:TEXT)?EQU)|="
+SYMDEF="^[[:blank:]]*([[:alnum:]_@]+)[[:blank:]]+(?:(?:TEXT)?STRUC)|="
+SYMDEF="^[[:blank:]]*([[:alnum:]_@]+)[[:blank:]]+(?:(?:TEXT)?LABEL)|="
+SYMDEF="^[[:blank:]]*([[:alnum:]_@]+)[[:blank:]]+DB"
+SYMDEF="^[[:blank:]]*([[:alnum:]_@]+)[[:blank:]]+DW"
+SYMDEF="^[[:blank:]]*([[:alnum:]_@]+)[[:blank:]]+DD"
+SENSITIVE=0
+//## TYPE1_REGEXP="^[ \t]*[a-zA-Z_][a-zA-Z_0-9]*[ \t]*:";"[a-zA-Z_][a-zA-Z_0-9]*"
+//## TYPE2_REGEXP="^[ \t]*[a-zA-Z_][a-zA-Z_0-9]*[ \t]+[sS][eE][gG][mM][eE][nN][tT]";"[a-zA-Z_][a-zA-Z_0-9]*"
+
+
+//## Syntax Highlighting for ASL
+
+EXT=ASL,OEM
+KEYWORDS=And,Buffer,Device,Else,Event,Field,If,Load,Method,Name
+KEYWORDS=Not,OperationRegion,Or,Package,ResourceTemplate,Return
+KEYWORDS=Scope,Signal,SystemIO,Unload,Xor
+EOLCOMMENTS=//
+EOLCOMMENTS=;
+OPENCOM=/*
+CLOSECOM=*/
+SENSITIVE=1
+
+//## Syntax Highlighting for Make Files
+
+EXT=MAK
+KEYWORDS=endif,else,if,include,ifdef,ifndef,elseif,elseifdef,elseifndef,undef,message,error
+INSTRUCTIONS=all,none,any,invisible,clean
+TYPE2_REGEXP="^([[:word:]]+)[[:blank:]]*:"
+SYMDEF="^([[:word:]]+)[[:blank:]]*="
+EOLCOMMENTS=#
+SENSITIVE=0
+
+//## Syntax Highlighting for .CFG Files
+
+EXT=CFG
+KEYWORDS=ALL,NONE,ANY,INVISIBLE
+EOLCOMMENTS=//
+SENSITIVE=0
+
+//## Syntax Highlighting for Batch Files
+
+EXT=BAT,CMD
+KEYWORDS=SET,COPY,XCOPY,DEL,EXIST,MKDIR,RD,ECHO
+INSTRUCTIONS=GOTO,FOR,IF
+TYPE2_REGEXP="^:([[:word:]]+)"
+TYPE1_REGEXP="^[[:blank:]]*SET[[:blank:]]+([[:word:]]+)"
+EOLCOMMENTS=//
+EOLCOMMENTS=A
+SENSITIVE=0
+
+//## Syntax Highlighting for DXS files
+
+EXT=DXS
+KEYWORDS=DEPENDENCY_START,DEPENDENCY_END,AND,OR,NOT,AFTER,BEFORE,SOR
+INSTRUCTIONS=include,define,ifdef,ifndef,endif,pragma,TRUE,FALSE,true,false
+//## define
+TYPE1_REGEXP="^[[:blank:]]*#[[:blank:]]*define[[:blank:]]+([[:word:]]+)"
+EOLCOMMENTS=//
+OPENCOM=/*
+CLOSECOM=*/
+SENSITIVE=1
+
+//## Syntax Highlighting for VFR files
+
+EXT=VFR,VFI,SD
+KEYWORDS=formset,endformset,title,formid,oneof,prompt,orderedlist,endlist,endform,endoneof,form
+KEYWORDS=subtitle,help,varid,text,option,value,flags,date,enddate,year,month,day,time,endtime,hour,minute,second
+KEYWORDS=grayoutif,label,timeout,inventory,guid,checkbox,endcheckbox,numeric,endnumeric,minimum,maximum,step
+KEYWORDS=default,password,endpassword,string,endstring,minsize,maxsize,encoding,suppressif,hidden,goto,inconsistentif,endif,ideqid,ideqval,vareqval,var,ideqvallist,length,values,key
+KEYWORDS=class,subclass,restore,save,defaults,banner,align,left,right,center,line,varstore,name
+//## C preprocessor
+KEYWORDS=include,define,if,ifdef,ifndef,endif,defined,pragma
+//## types
+INSTRUCTIONS=struct,UINT64,UINT32,UINT16,CHAR16,UINT8,typedef,TRUE,FALSE,true,false
+//## VFR specific
+INSTRUCTIONS=STRING_TOKEN,AND,OR,NOT,DEFAULT,MANUFACTURING,INTERACTIVE,NV_ACCESS,RESET_REQUIRED,LATE_CHECK
+INSTRUCTIONS=AUTO_ID
+//## C define
+TYPE1_REGEXP="^[[:blank:]]*#[[:blank:]]*define[[:blank:]]+([[:word:]]+)"
+TYPE2_REGEXP="^[[:blank:]]*form[[:blank:]]+formid[[:blank:]]+=[[:blank:]]+([[:word:]]+)"
+EOLCOMMENTS=//
+OPENCOM=/*
+CLOSECOM=*/
+SENSITIVE=1
+
+//## Syntax Highlighting for UNI files
+
+EXT=UNI
+KEYWORDS=langdef,string,language
+INSTRUCTIONS=include
+EOLCOMMENTS=//
+OPENCOM=/*
+CLOSECOM=*/
+SENSITIVE=0
+SYMDEF="#string[[:blank:]]+([[:word:]]+)[[:blank:]]+#language"
+
+//## Syntax Highlighting for INF files
+
+EXT=INF
+KEYWORDS=Defines,Sources,Packages,LibraryClasses,Pcd,Protocols,PPIs,Depex,Guids,IA32,X64,IPF,EBC,ARM,common
+INSTRUCTIONS=INF_VERSION,BASE_NAME,FILE_GUID,MODULE_TYPE,VERSION_STRING,PI_SPECIFICATION_VERSION,ENTRY_POINT
+EOLCOMMENTS=#
+OPENCOM=##
+CLOSECOM=##
+SENSITIVE=0
+
+//## Syntax Highlighting for DEC files
+
+EXT=DEC
+KEYWORDS=Defines,Includes,PPIs,PcdsFixedAtBuild,PcdsPatchableInModule,PcdsDynamic,PcdsDynamicEx,Protocols,Guids,LibraryClasses,IA32,X64,IPF,EBC,ARM,common
+INSTRUCTIONS=DEC_SPECIFICATION,PACKAGE_NAME,PACKAGE_GUID,PACKAGE_VERSION
+EOLCOMMENTS=#
+OPENCOM=##
+CLOSECOM=##
+SENSITIVE=0

@@ -1,0 +1,112 @@
+TOKEN
+    Name  = "AHCI_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable AHCI support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes
+    Master = Yes
+End
+
+TOKEN
+    Name  = "PORT_MULTIPLIER_SUPPORT"
+    Value  = "0"
+    Help  = "Switch to Enable/Disable PM Support"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "INDEX_DATA_PORT_ACCESS"
+    Value  = "0"
+    Help  = "0-MMIO Access , 1- Index/Port access"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AHCI_USE_PCIIO_FOR_MMIO_AND_IO"
+    Value  = "0"
+    Help  = "0- Use direct Io/Mmio read/write , 1- Use PciIo->Io/PciIo->Mem APIs for Io/Mmmio operations"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "HDD_PASSWORD_SUPPORT_UNDER_RAIDMODE"
+    Value  = "1"
+    Help  = "0-HDD Password not support under Raid mode 1- Enabled"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "SUPPORT_ATAPI_IN_RAID_MODE"
+    Value  = "1"
+    Help  = "1-Under Raid mode , Atapi devices are handled by AhciBus driver. 0 - Raid option rom will handle the Atapi devices."
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "DiPM_SUPPORT"
+    Value  = "0"
+    Help  = "Support Device Initiated Power Management"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "ENABLE_DIPM"
+    Value  = "0"
+    Help  = " 0 - Disable Device Initiated Power Management Feature. 1 - Enable DipM Feature"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "DEVICE_SLEEP_SUPPORT"
+    Value  = "0"
+    Help  = "Enable/Disable Token to support Device Sleep"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "ENABLE_DEVICE_SLEEP"
+    Value  = "0"
+    Help  = " 0 - Disable Device Sleep Feature. 1 - Enable Device Sleep Feature"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "USE_PCIIO_MAP_ADDRESS_FOR_DATA_TRANSFER"
+    Value  = "0"
+    Help  = "Token Enabled to use PCIIO Mapped address for either DMA or PIO Data Transfer"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+PATH
+    Name  = "AHCI_DIR"
+    Path  = "AmiModulePkg\AHCI"
+End
+
+INFComponent
+    Name  = "AHCI"
+    File  = "Ahci.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "UEFI_DRIVER"
+End
+

@@ -1,0 +1,200 @@
+TOKEN
+    Name  = "LEGACYSREDIR_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable AMI Legacy Serial Redirection support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+    Master = Yes
+    Token = "CSM_SUPPORT" "=" "1"
+    Token = "Terminal_SUPPORT" "=" "1"
+End
+
+MODULE
+    Help  = "Includes LegacySredir.mak to Project"
+    File  = "LegacySredir.mak"
+End
+
+PATH
+    Name  = "LEGACYSREDIR_DIR"
+End
+
+TOKEN
+    Name  = "LEGACY_SREDIR_VERSION"
+    Value  = "08"
+    Help  = "Version of the Legacy Serial Redirection module"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "SREDIR_CODE_DATA_SELECTION"
+    Value  = "0"
+    Help  = "0 - Sredir.bin will be copied into base memory. 1= sredircode.bin will be copied to base memory and data area will be allocated into base memory 2= sredircode.bin will be copied to legacy region and data will be allocated into base memory."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "DISPLAY_WHOLE_SCREEN"
+    Value  = "0"
+    Help  = "Display the whole screen before disabling the Legacy console redirection"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "TRAP_INT10_WORKAROUND"
+    Value  = "0"
+    Help  = "Trap Int10 to avoid the b8000 region accessed by Video option rom and Legacy console redirection."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "CHECKLOOPBACK_RETRY_COUNT"
+    Value  = "50"
+    Help  = "Retry count to check for the presence of Loop Back device and Serial mouse."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "SERIAL_READ_WRITE_CALLBACK"
+    Value  = "0"
+    Help  = "1- Call back will come from Sredir.bin for SerialRead and SerialWrite(SerialCallback.asm).0-Disabled."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "LEGACY_SREDIR_SWSMI"
+    Value  = "0x41"
+    Help  = "SW SMI value to be used in Legacy console redirection"
+    TokenType = Integer
+    TargetH = Yes
+    Range  = "0...0FFh"
+End
+
+TOKEN
+    Name  = "CTRLI_KEY_MAPPING"
+    Value  = "1"
+    Help  = "0- Mapped to TAB key, 1- Mapped to CtrlI Key"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "CTRLH_KEY_MAPPING"
+    Value  = "1"
+    Help  = "0- Mapped to BackSpace Key, 1- Mapped to CtrlH Key"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "CHECK_FOR_LOOPBACK_DEVICE"
+    Value  = "0"
+    Help  = "0- hardware Loop back checking disabled 1- Hardware loopback checking enabled and if present redirection skipped for the port"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "CLEAR_LEGACYSREDIR_KB_BUFFER_AT_READYTOBOOT"
+    Value  = "0"
+    Help  = "ON   -> Legacy Serial Redirection KB Buffer will be cleared at ReadyToBoot.\OFF  -> Legacy Serial Redirection KB Buffer will not be cleared at ReadyToBoot."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "UART_POLLING_REDIRECTION"
+    Value  = "0"
+    Help  = "Use polling method redirection to send and receive data from COM Port"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+PATH
+    Name  = "LEGACYSREDIR_DIR"
+End
+
+ELINK
+    Name  = "InvalidPciComDeviceList"
+    InvokeOrder = ReplaceParent
+    Help  = "Invalid PCI Device List to skip the redirection from that device. Format of the InvalidPciComDeviceList is {VendorId, DeviceId), "
+End
+
+ELINK
+   Name  = "SerialCallBackApiModuleStart"
+   Parent  = "CsmOem16Functions"
+   ProcID  = 0bh
+   SrcFile  = "$(LEGACYSREDIR_DIR)/Csm16/SerialCallback.csm16"
+   InvokeOrder = AfterParent
+End
+
+ELINK
+   Name  = "$(LEGACYSREDIR_DIR)/Csm16/SerialCallback.csm16"
+   Parent  = "CSM_OEM16_SRC"
+   InvokeOrder = AfterParent
+End
+
+ELINK
+   Name  = "LegcaySredirModuleStart"
+   Parent  = "CsmOem16Functions"
+   ProcID  = 08h
+   SrcFile  = "$(LEGACYSREDIR_DIR)/Csm16/SerialBootCall.csm16"
+   InvokeOrder = AfterParent
+End
+
+ELINK
+   Name  = "$(LEGACYSREDIR_DIR)/Csm16/SerialBootCall.csm16"
+   Parent  = "CSM_OEM16_SRC"
+   InvokeOrder = AfterParent
+End
+
+ELINK
+   Name  = "EnableLegcaySredirModuleStart"
+   Parent  = "CsmOem16Functions"
+   ProcID  = 06h
+   SrcFile  = "$(LEGACYSREDIR_DIR)/Csm16/SredirBootFail.csm16"
+   InvokeOrder = AfterParent
+End
+
+ELINK
+   Name  = "$(LEGACYSREDIR_DIR)/Csm16/SredirBootFail.csm16"
+   Parent  = "CSM_OEM16_SRC"
+   InvokeOrder = AfterParent
+End
+
+ELINK
+    Name = "OPROM(3,7,9,$(LEGACYSREDIR_DIR)/Sredir.BIN)"
+    Parent = "CSM_OPROM_LIST"
+    InvokeOrder = AfterParent
+    Token = "SREDIR_CODE_DATA_SELECTION" "=" "0"
+End
+
+ELINK
+    Name = "OPROM(3,7,9,$(LEGACYSREDIR_DIR)/SredirCode.BIN)"
+    Parent = "CSM_OPROM_LIST"
+    InvokeOrder = AfterParent
+    Token = "SREDIR_CODE_DATA_SELECTION" "!=" "0"
+End
+
+
+INFComponent
+    Name  = "LegacySredir"
+    File  = "LegacySredir.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_DRIVER"
+End
+
+INFComponent
+    Name  = "LegacySmmSredir"
+    File  = "LegacySmmSredir.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_SMM_DRIVER"
+End
+

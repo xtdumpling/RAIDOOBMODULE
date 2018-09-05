@@ -1,0 +1,225 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+#
+#*************************************************************************
+# $Header: $
+#
+# $Revision: $
+#
+# $Date: $
+#*************************************************************************
+# Revision History
+# ----------------
+# $Log: $
+# 
+# 
+#*************************************************************************
+#<AMI_FHDR_START>
+#
+# Name:  <CSP.SDL>
+#
+# Description:     
+#
+#<AMI_FHDR_END>
+#*************************************************************************
+
+TOKEN
+	Name  = "NCPU"
+	Value  = "16"
+	Help  = "Maximum number of processor threads in the system."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "EHCI_PEI_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable EhciPei support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "XHCI_PEI_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable XhciPei support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+#XHCI USB recovery function support start
+
+TOKEN
+	Name  = "PEI_XHCI_CONTROLLER_PCI_ADDRESS"
+	Value  = "{0x0, 0x14, 0x0},"
+	Help  = "Default value if XHCI controllers are not supported"
+	TokenType = Expression
+	TargetH = Yes
+	Token = "XHCI_PEI_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "PEI_XHCI_CONTROLLER_PCI_REGISTER_VALUES"
+	Value  = "{0,0x14,0,4,8,6,0},"
+	Help  = "Enable PCIe slot by programming bridge with the secondary/subordinate bus number and memory window.\Information format (AccessWidth is decimal), with a comma at the end:\   {Bus, Device, Function, Register, AccessWidth, BitsToSet, BitsToClear},"
+	TokenType = Expression
+	TargetH = Yes
+	Token = "XHCI_PEI_SUPPORT" "=" "1"
+End
+
+
+#XHCI USB recovery function support end
+TOKEN
+	Name  = "TimerBaseReg"
+	Value  = "$(ACPI_BASE_ADDRESS)"
+	Help  = "Offset for ACPI timer"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SW_IRQ_GENERATION_REG"
+	Value  = "$(TCO_BASE_ADDRESS)+0x10"
+	Help  = "Software IRQ generation regsiter from SB to generate the IRQ12 and IRQ1."
+	TokenType = Integer
+	TargetH = Yes
+	Token = "IRQ_EMUL_SUPPORT" "=" "1"
+End
+
+#Dynamic mmcfg base address change
+TOKEN
+    Name  = "PEBS"
+    Value  =  "0x80000000" 
+    Help  = "Pci Express Base Aliase to use in PCIeAccess.ASL"
+    TokenType = Integer
+    TargetASL = Yes
+    Token = "PCI_EXPRESS_SUPPORT" "=" "1"
+    Token = "DYNAMIC_MMCFG_BASE_SUPPORT" "=" "1" 
+End
+
+TOKEN
+    Name  = "PEBS"
+    Value  = "$(PCIEX_BASE_ADDRESS)"
+    Help  = "Pci Express Base Aliase to use in PCIeAccess.ASL"
+    TokenType = Integer
+    TargetASL = Yes
+    Token = "PCI_EXPRESS_SUPPORT" "=" "1"
+    Token = "DYNAMIC_MMCFG_BASE_SUPPORT" "=" "0" 
+End
+
+TOKEN
+	Name  = "CSM_OEM_SUPPORT"
+	Value  = "1"
+	Help  = "Enable/disable CSM OEM support."
+	TokenType = Boolean
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "SMM_CACHE_SUPPORT"
+	Value  = "1"
+	Help  = "Enable/disable SMM Cache Support"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "ACPI_PM_PROFILE"
+	Value  = "4"
+	Help  = "Power Management Profile ACPI 2.0\See acpi20.h"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0-8 0 = Unspecified; 1 = Desktop; 2 = Modile; 3 = Workstation; 4 = Enterprise Server; 5 = SOHO Server; 6 = Application PC; 7 = Performance Server; 8 = Tablet"
+	Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+	Name  = "FACP_FLAG_USE_PLATFORM_CLOCK"
+	Value  = "1"
+	Help  = "Currently HPET is not disabled on the CRB. If the HPET is exposed to OSPM, OSPM should use the HPET. Otherwise, OSPM will use the ACPI power management timer. A value of one indicates that the platform is known to have a correctly implemented ACPI power management timer."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "MPS_TABLE_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable MPS V 1.4 Table support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FWHFlash_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable FWH Flash support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "LPCFlash_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable LPC Flash support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "STDFlash_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable STD Flash support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+End
+
+ELINK
+	Name  = "gPlatformTokenSpaceGuid.PcdWakeupType"
+	Parent  = "AMI_CSP_PCD"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "PcdLib"
+	Parent  = "AMI_CSP_LIBRARIES"
+	InvokeOrder = AfterParent
+End
+
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+

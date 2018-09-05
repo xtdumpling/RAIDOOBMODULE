@@ -1,0 +1,55 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = CmosSmm
+  FILE_GUID                      = F44875AB-B9FC-4578-A280-AA335B49967C   
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  VERSION_STRING                 = 1.0
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  ENTRY_POINT                    = CmosManagerSmmEntry
+
+[Sources]
+  CmosManagerSmm.c
+  CmosManagerSmm.h
+  CmosManager.c
+  CmosManager.h
+  CmosAccess.c
+  CmosTables.c
+  CmosTypes.h
+
+[Protocols]
+  gEfiSmmSwDispatch2ProtocolGuid
+  gAmiCmosAccessSmmProtocolGuid
+
+[Packages]
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  AmiDxeLib
+  AmiCspLib
+  
+[Depex]
+ gEfiSmmBase2ProtocolGuid       AND
+ gEfiSmmSwDispatch2ProtocolGuid
+
+ 
+
+  
+  

@@ -1,0 +1,9 @@
+@Elink(PeiProcessFvBeforePublishing, "BOOLEAN @Child(IN CONST EFI_PEI_SERVICES **PeiServices, IN OUT AMI_ROM_AREA *Area, IN UINT32 FvType);
+", "", "")
+#define PeiProcessFvBeforePublishing @Elink(PeiProcessFvBeforePublishing, "@Child,", "", "")
+
+@Elink(DxeProcessFvBeforePublishing, "BOOLEAN @Child(IN OUT AMI_ROM_AREA *Area);
+", "", "")
+#define DxeProcessFvBeforePublishing @Elink(DxeProcessFvBeforePublishing, "@Child,", "", "")
+
+#define LegacyProcessFvBeforePublishing @Elink(ProcessFvBeforePublishing, "@Child", "" , "")

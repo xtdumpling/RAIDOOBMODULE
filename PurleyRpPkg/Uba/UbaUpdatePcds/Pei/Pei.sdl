@@ -1,0 +1,23 @@
+TOKEN
+	Name  = "Pei_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling Pei support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "UpdatePcdPei_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable UpdatePcdPei support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "UpdatePcdPei"
+	File  = "UpdatePcdsPei.inf"
+	Package  = "PurleyRpPkg"
+	ModuleTypes  = "PEIM"
+	Token = "UpdatePcdPei_SUPPORT" "=" "1"
+End
+

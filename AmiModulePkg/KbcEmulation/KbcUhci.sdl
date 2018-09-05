@@ -1,0 +1,54 @@
+TOKEN
+    Name  = "KbcUhci_SUPPORT"
+    Value  = "1"
+    Help  = "Switch for Enabling KbcUhci support in the project"
+    TokenType = Boolean
+    Master = Yes
+    Token = "UHCI_EMUL_SUPPORT" "=" "1"
+End
+
+PATH
+    Name  = "KBCUHCI_DIR"
+    Path  = "AmiModulePkg"
+End
+
+ELINK
+    Name  = "$(KBCUHCI_DIR)\KbcUhci.lib"
+    Parent  = "KBCEMULLIB"
+    Priority  = 10
+    InvokeOrder = AfterParent
+End
+
+TOKEN
+    Name  = "UHCI_A20PASSEN_SUPPORT"
+    Value  = "1"
+    Help  = "Used to disable A20PASSEnable bit in chipsets which does not support  A20PASSEnable"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+INFComponent
+    Name  = "KbcUhci"
+    File  = "KbcUhci.inf"
+    Package  = "AmiModulePkg"
+End
+
+INFComponent
+    Name  = "KbcUhciDxe"
+    File  = "KbcUhciDxe.inf"
+    Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiModulePkg.KbcUhciDxe"
+    ModuleTypes  = "DXE_DRIVER"
+    Override  = "AmiModulePkg.KbcEmulDxe"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiModulePkg.KbcUhci"
+    ModuleTypes  = "DXE_SMM_DRIVER"
+    Override  = "AmiModulePkg.KbcEmul"
+End

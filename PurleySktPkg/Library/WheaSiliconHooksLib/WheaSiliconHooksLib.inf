@@ -1,0 +1,115 @@
+#/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#
+# This file contains an 'Intel Peripheral Driver' and is
+# licensed for Intel CPUs and chipsets under the terms of your
+# license agreement with Intel or your vendor.  This file may
+# be modified by the user, subject to additional terms of the
+# license agreement
+#
+#
+# Copyright (c) 2015 - 2016, Intel Corporation. All rights reserved
+# This software and associated documentation (if any) is furnished
+# under a license and may only be used or copied in accordance
+# with the terms of the license. Except as permitted by such
+# license, no part of this software or documentation may be
+# reproduced, stored in a retrieval system, or transmitted in any
+# form or by any means without the express written consent of
+# Intel Corporation.
+
+#
+#  Module Name:
+#
+#   WheasiliconHooks.inf
+#
+#  Abstract:
+#
+#    Component description file for SMM Platform handler module
+#
+#------------------------------------------------------------------------*/
+
+
+[Defines]
+
+  INF_VERSION                = 0x00010005
+  BASE_NAME                  = WheaSiliconHooksLib
+  FILE_GUID                  = 66F12E53-8D13-4b04-82A9-3799C3735B04
+  MODULE_TYPE                = BASE
+  VERSION_STRING             = 1.0
+  PI_SPECIFICATION_VERSION   = 0x0001000A
+  LIBRARY_CLASS              = WheaSiliconHookLib
+  CONSTRUCTOR                = WheaSiliconHooksLib
+
+## // {66F12E53-8D13-4b04-82A9-3799C3735B04}
+## { 0x66f12e53, 0x8d13, 0x4b04, { 0x82, 0xa9, 0x37, 0x99, 0xc3, 0x73, 0x5b, 0x4 } };
+
+
+[Sources]
+ WheaSiliconHooksLib.c
+ DimmIsolationFlow.c
+ Einj.asm | MSFT
+ Einj.nasm | GCC
+ # APTIOV_SERVER_OVERRIDE_RC_START : Adding missing files
+ WheaSiliconHooksLib.h
+ DimmIsolationFlow.h
+ # APTIOV_SERVER_OVERRIDE_RC_END : Adding missing files
+################################################################################
+#
+# Package Dependency Section - list of Package files that are required for
+#                              this module.
+#
+################################################################################
+
+[Packages]
+  MdePkg/MdePkg.dec
+  PurleySktPkg/SocketPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+  CpPlatPkg/CpPlatPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  UefiCpuPkg/UefiCpuPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+
+
+[LibraryClasses]
+  BaseLib
+  BaseMemoryLib
+  UefiRuntimeServicesTableLib
+  UefiBootServicesTableLib
+  UefiDriverEntryPoint
+  UefiLib
+  DebugLib
+  LocalApicLib
+  MpSyncDataLib
+  IoLib
+  SmmServicesTableLib
+  HobLib
+  MmPciLib
+
+
+[Protocols]
+  gEfiCpuCsrAccessGuid
+  gEfiIioUdsProtocolGuid
+  gEfiMemRasProtocolGuid
+  gEfiWheaPlatformSupportProtocolGuid
+  gEfiWheaBootProtocolGuid
+  gEfiCrystalRidgeSmmGuid
+  gEfiPlatformRasPolicyProtocolGuid
+
+
+[Guids]
+  gPrevBootErrSrcHobGuid
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[Depex]
+  gEfiCpuCsrAccessGuid AND
+  gEfiMemRasProtocolGuid AND
+ # APTIOV_SERVER_OVERRIDE_RC_START : Changes done to Remove WHEA Depex from RAS Drivers
+#  gEfiWheaBootProtocolGuid AND 
+ # APTIOV_SERVER_OVERRIDE_RC_END : Changes done to Remove WHEA Depex from RAS Drivers
+  gEfiCrystalRidgeSmmGuid AND
+  gEfiPlatformRasPolicyProtocolGuid
+

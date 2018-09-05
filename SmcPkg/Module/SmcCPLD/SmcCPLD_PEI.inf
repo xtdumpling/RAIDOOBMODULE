@@ -1,0 +1,81 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+#**********************************************************************
+# $Header:  $
+#
+# $Revision:  $
+#
+# $Date:  $
+#**********************************************************************
+#<AMI_FHDR_START>
+#
+# Name:  OemSetupModule.inf
+#
+# Description:	INF description file for OemSetupModule driver
+#
+#<AMI_FHDR_END>
+#**********************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = CPLDPEI
+  FILE_GUID                      = affc90dd-b014-4737-89e9-d1a0f50cd25e 
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = CPLDPEI_Init
+
+[Sources]
+  SmcCPLD_PEI.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiCRBPkg/AmiCRBPkg.dec
+  SmcPkg/SmcPkg.dec
+  AmiIpmiPkg/AmiIpmiPkg.dec
+  
+[LibraryClasses]
+  AmiPeiLib
+  PeimEntryPoint
+  SmcLib
+  
+[Protocols]
+
+[Ppis]
+  gEfiPeiReadOnlyVariable2PpiGuid #CONSUMES
+  gEfiEndOfPeiSignalPpiGuid
+  gEfiPeiStallPpiGuid
+  gEfiPeiSmbus2PpiGuid
+  gEfiPeiIpmiTransportPpiGuid
+  
+[Pcd]
+
+[Depex]
+  TRUE
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**         5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

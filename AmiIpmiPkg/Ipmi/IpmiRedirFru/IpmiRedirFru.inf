@@ -1,0 +1,118 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2015 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.00
+#    Bug Fix:  Initialize revision
+#    Reason:   Get base code from Grantley
+#    Auditor:  Kasber Chen
+#    Date:     Jun/07/2016
+#
+#****************************************************************************
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+#
+# @file  IpmiRedirFru.inf
+#
+#  INF description file for IpmiRedirFru driver
+#
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = IpmiRedirFru
+  FILE_GUID                      = 8F2C127E-117D-484B-8A44-FBD911BE125E
+  MODULE_TYPE                    = DXE_RUNTIME_DRIVER
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = InitializeSmRedirFruLayer
+
+[Sources]
+  IpmiRedirFru.h
+  IpmiRedirFru.c
+  FruSmbios.c
+  FruSmbiosTable.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiIpmiPkg/AmiIpmiPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec #SMCPKG_SUPPORT
+  SmcPkg/SmcPkg.dec #SMCPKG_SUPPORT
+
+[LibraryClasses]
+  AmiDxeLib #SMCPKG_SUPPORT
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  MemoryAllocationLib
+  BaseLib
+  DebugLib
+  BaseMemoryLib
+  UefiLib
+  TimerLib
+
+[Protocols]
+  gEfiDxeIpmiTransportProtocolGuid      #CONSUMES
+  gEfiSmbiosProtocolGuid                #CONSUMES
+  gEfiRedirFruProtocolGuid              #PRODUCES
+
+[Guids]
+  gEfiEventVirtualAddressChangeGuid
+  gAmiSmbiosNvramGuid #SMCPKG_SUPPORT
+
+[Pcd]
+#Smbios Type 1 Strings
+  gAmiIpmiPkgTokenSpaceGuid.PcdSystemManufacturer
+  gAmiIpmiPkgTokenSpaceGuid.PcdSystemProductName
+  gAmiIpmiPkgTokenSpaceGuid.PcdSystemVersion
+  gAmiIpmiPkgTokenSpaceGuid.PcdSystemSerialNumber
+  gAmiIpmiPkgTokenSpaceGuid.PcdSystemUuid
+
+#Smbios Type 2 Strings
+  gAmiIpmiPkgTokenSpaceGuid.PcdBaseBoardManufacturer
+  gAmiIpmiPkgTokenSpaceGuid.PcdBaseBoardProductName
+  gAmiIpmiPkgTokenSpaceGuid.PcdBaseBoardVersion
+  gAmiIpmiPkgTokenSpaceGuid.PcdBaseBoardSerialNumber
+  gAmiIpmiPkgTokenSpaceGuid.PcdBaseBoardAssetTag
+  gSmcPkgTokenSpaceGuid.PcdSkipDmiUpdate	#SMCPKG_SUPPORT
+
+#Smbios Type 3 Strings
+  gAmiIpmiPkgTokenSpaceGuid.PcdChassisManufacturer
+  gAmiIpmiPkgTokenSpaceGuid.PcdChassisVersion
+  gAmiIpmiPkgTokenSpaceGuid.PcdChassisSerialNumber
+  gAmiIpmiPkgTokenSpaceGuid.PcdChassisAssetTag
+  gAmiIpmiPkgTokenSpaceGuid.PcdChassisType
+  gAmiIpmiPkgTokenSpaceGuid.PcdStrMfg
+  gAmiIpmiPkgTokenSpaceGuid.PcdStrProduct  
+
+[Depex]
+  gEfiDxeIpmiTransportProtocolGuid
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**         5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093     **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

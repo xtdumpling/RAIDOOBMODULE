@@ -1,0 +1,84 @@
+#/*++
+# This file contains a 'Sample Driver' and is licensed as such
+# under the terms of your license agreement with Intel or your
+# vendor.  This file may be modified by the user, subject to
+# the additional terms of the license agreement
+#--*/
+#/*++
+#
+#  Copyright (c) 2015 - 2016 Intel Corporation. All rights reserved
+#  This software and associated documentation (if any) is furnished
+#  under a license and may only be used or copied in accordance
+#  with the terms of the license. Except as permitted by such
+#  license, no part of this software or documentation may be
+#  reproduced, stored in a retrieval system, or transmitted in any
+#  form or by any means without the express written consent of
+#  Intel Corporation.
+#
+#  Module Name:
+#
+#    SpsSmm.inf
+#
+#  Abstract:
+#
+#    Component description file for SPS SMM driver.
+#
+#--*/
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SpsSmm
+  FILE_GUID                      = 921CD783-3E22-4579-A71F-00D74197FCC9
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  VERSION_STRING                 = 1.0
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  ENTRY_POINT                    = SpsSmmEntryPoint
+
+[Sources]
+  SpsSmm.c
+  SpsSmm.h
+  SpsRasNotify.c
+  SpsRasNotify.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  PurleySktPkg/Me/MePkg.dec
+  PurleySktPkg/SocketPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  
+[LibraryClasses]
+  UefiDriverEntryPoint
+  BaseLib
+  DebugLib
+  BaseMemoryLib
+  SmmServicesTableLib
+  SmmLib
+  HobLib
+  MmPciLib
+  MeTypeLib
+    
+[Protocols]
+  gEfiSmmBase2ProtocolGuid                 # PROTOCOL ALWAYS_CONSUMED
+  gEfiSmmVariableProtocolGuid              # PROTOCOL ALWAYS_CONSUMED
+  gSmmHeciProtocolGuid                     # PROTOCOL ALWAYS_CONSUMED
+  gSpsPolicyProtocolGuid
+  gSpsSmmHmrfpoProtocolGuid
+  gSmmMeHeci3ProtocolGuid
+  gSpsRasNotifyProtocolGuid
+  gEdkiiSmmLegacyBootProtocolGuid
+  gEdkiiSmmExitBootServicesProtocolGuid
+
+[Guids]
+  gSpsInfoHobGuid
+  gEfiHobListGuid
+  
+[Pcd.common]
+
+[Depex]
+  gEfiSmmBase2ProtocolGuid     AND
+  gSmmHeciProtocolGuid         AND
+  gEfiSmmVariableProtocolGuid  AND
+  gSpsPolicyProtocolGuid       AND
+  gSmmMeHeci3ProtocolGuid

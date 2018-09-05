@@ -1,0 +1,888 @@
+;Inclusion guard
+ifndef	_mbiosequ_equ_
+_mbiosequ_equ_	equ	1
+.586p
+.xlist
+
+;************************************************************************
+;************************************************************************
+;**                                                                    **
+;**      	(C)Copyright 1985-2016, American Megatrends, Inc.          **
+;**                                                                    **
+;**                    	     All Rights Reserved.                      **
+;**                                                                    **
+;**          5555 Oakbrook Pkwy Suite 200, Norcross, GA 30093          **
+;**                                                                    **
+;**                          Phone (770)-246-8600                      **
+;**                                                                    **
+;************************************************************************
+;************************************************************************
+
+;---------------------------------------;
+;	COMPRESSED BIOS EQUATES		;
+;---------------------------------------;
+setup_binary_module_id	equ	04h	; SETUP Binary identifier
+bblk_runtime_interface_module_id equ 08h; Module containing uncompress routine
+notebook_module_id	equ	0Ah	; NoteBook BIOS Module identifier
+romid_module_id		equ	0Ch	; ROMID Module identifier
+oem_logo_module_id	equ	0Eh	; OEM Logo Module identifier
+acpi_table_module_id	equ	0Fh	; ACPI Table Module identifier
+acpi_aml_module_id	equ	10h	; ACPI AML Code Module identifier
+micro_code_module_id	equ	11h	; P6 Micro Code Module identifier
+  micro_code_patch_length 	equ 08h	; #of bytes added to Micro code..this
+					; helps us update BIOS checksum when
+					; micro code gets updated in runtime
+					; IF THIS EUQATE GETS CHANGED, NECESSARY
+					; CHANGES NEEDS TO BE DONE IN CORE.MAK FILE
+memory_size_module_id	equ	15h	; Memory Sizing Module identifier
+bios_debug_module_id	equ	17h	; BIOS Debug Module identifier
+adm_module_id		equ	18h	; Display Manager Module identifier
+adm_font_module_id	equ	19h	; Font Module identifier
+small_logo_module_id	equ	1ah	; Small Logo(s) Module identifer
+slab_module_id		equ	1bh	; Single Link Arch BIOS Module identifier
+bcp_info_module_id	equ	1ch	; BCP data area module identifier
+					; 1D-1F..Reserved for future use
+					; 20-2F..For User defined module
+pci_option_rom_id	equ	20h	; PCI Option ROM identifier
+multi_language_module_id equ	21h	; Multi Language identifier
+					; 30-3F..Reserved for future use
+serial_redir_module_id  equ     2fh
+parties_logo_module_id	equ     30h
+osb_logo_module_id	equ	31h	; On Screen Branding Logo Package
+					; F0-FF..Reserved for OEM use, these
+					; IDs should never be used by AMI.
+
+
+;-----------------------------------------------------------------------;
+;			BOOT DRIVE EQUATES				;
+;-----------------------------------------------------------------------;
+hdd0_boot_drive		equ	01h
+hdd1_boot_drive		equ	hdd0_boot_drive+1
+hdd2_boot_drive		equ	hdd1_boot_drive+1
+hdd3_boot_drive		equ	hdd2_boot_drive+1
+hdd4_boot_drive		equ	hdd3_boot_drive+1
+hdd5_boot_drive		equ	hdd4_boot_drive+1
+hdd6_boot_drive		equ	hdd5_boot_drive+1
+hdd7_boot_drive		equ	hdd6_boot_drive+1
+fdd0_boot_drive		equ	hdd7_boot_drive+1
+fdd1_boot_drive		equ	fdd0_boot_drive+1
+afd_boot_drive		equ	fdd1_boot_drive+1
+afd_hdd_boot_drive	equ	afd_boot_drive+1
+cd_boot_drive		equ	afd_hdd_boot_drive+1
+scsi_boot_drive		equ	cd_boot_drive+1
+network_boot_drive	equ	scsi_boot_drive+1
+
+
+;---------------------------------------;
+;	MISCELLANEOUS EQUATES		;
+;---------------------------------------;
+level_1_int		equ	70h	; master int controller base
+level_2_int		equ	08	; slave  int controller base
+beep_one_on_time	equ	0e0h	; speaker on time
+beep_one_off_time	equ	0d0h	; speaker off time
+beep_one_envelope_time	equ	080h	; envelope time for single beep
+beep_error_off_time	equ	6	; silence period for error beep
+
+
+;---------------------------------------;
+;	8254 TIMER EQUATES		;
+;---------------------------------------;
+timer_control_port	equ	43h	; 8254 control register
+timer_2_port		equ	42h	; 8254 ch_2 select
+timer_1_port		equ	41h	; 8254 ch_1 select
+timer_0_port		equ	40h	; 8254 ch_0 select
+timer_delta_wait_time	equ	10h	; time for delta count test
+timer_delta_count_diff	equ	10	; tollerable delta count diff
+timer_delta_1_data	equ	0ffh	; data for delta count 1 test
+timer_delta_2_data	equ	0eeh	; data for delta count 2 test
+refresh_delta_count_diff	equ	10 ; refresh duty tolerance.
+
+
+;---------------------------------------;
+;	8042 KB CONTROLLER EQUATES	;
+;---------------------------------------;
+kb_stat_port		equ	64h	; keyboard status port
+sound_port		equ	61h	; parity,refresh,sound,timer ..
+refresh_port		equ	61h
+kb_data_port		equ	60h	; keyboard data port
+kb_buffer_wait_time	equ	12	; kb buffer full loop count
+
+
+;---------------------------------------;
+;	CMOS EQUATES			;
+;---------------------------------------;
+cmos_addr_port		equ	70h	; address selection port
+cmos_data_port		equ	71h	; data r/w port
+shutdown_code_1		equ	01	; shutdown after memory error
+shutdown_code_2		equ	02	; v_mode exception shut code
+shutdown_code_3		equ	03	; shutdown after memory test
+shutdown_code_6		equ	06	; to display memory size
+
+
+;---------------------------------------;
+;	VIRTUAL MODE EQUATES		;
+;---------------------------------------;
+v_mode_msw		equ	0001h	; virtual mode machine status
+v_mode_idt_size		equ	0100h	; virtual mode IDT segment size
+v_mode_dum_size		equ	0000h	; virtual mode dummy seg size
+v_mode_dum_offs		equ	0000h	; virtual mode dummy offset
+v_mode_ds_size		equ	0fc00h	; virtual mode (DS) seg size
+v_mode_ds_offs		equ	0400h	; virtual mode (DS) offset
+v_mode_es_size		equ	0ffffh	; virtual mode (ES) seg size
+v_mode_es_offs		equ	0000h	; virtual mode (ES) offset
+v_mode_ss_size		equ	0100h	; virtual mode (SS) seg size
+v_mode_ss_offs		equ	0300h	; virtual mode (SS) offset
+v_mode_cs_size		equ	0ffffh	; virtual mode (CS) seg size
+v_mode_cs_offs		equ	0000h	; virtual mode (CS) offset
+v_mode_es_entry		equ	40h	; virtual mode (ES) entry  ,,
+
+
+;---------------------------------------;
+;	8237 DMA CONTROLLER EQUTES	;
+;---------------------------------------;
+dma_1_byte_ptr_ff_reset	equ	0ch	; DMA unit 1 byte ptr f/f clear
+dma_unit_1_command_port	equ	08h	; DMA unit 1 command port
+dma_unit_1_base		equ	00h	; DMA unit 1 base
+dma_unit_1_mask_clear	equ	0eh	; DMA unit 1 mask clear
+dma_unit_1_mode		equ	0bh	; DMA unit 1 mode
+dma_unit_1_master_clear	equ	0dh	; DMA unit 1 reset port
+dma_2_byte_ptr_ff_reset	equ	0d8h	; DMA unit 2 byte ptr f/f clear
+dma_unit_2_master_clear	equ	0dah	; DMA unit 2 reset port
+dma_unit_2_command_port	equ	0d0h	; DMA unit 2 command port
+dma_unit_2_base		equ	0c0h	; DMA unit 2 base
+dma_unit_2_mask_clear	equ	0dch	; DMA unit 2 mask clear
+dma_unit_2_mode		equ	0d6h	; DMA unit 2 mode
+dma_unit_2_writ_req_reg	equ	0d2h	; DMA unit 2 write request
+dma_unit_2_mask_s_r_reg	equ	0d4h	; DMA unit 2 mask set reset
+dma_page_base		equ	80h	; DMA page register base
+dma_page_ch_1		equ	87h	; DMA page channel 1
+dma_page_ch_2		equ	83h	; DMA page channel 2
+dma_page_registers	equ	16	; DMA page registers count
+dma_channel_registers	equ	8	; DMA channel registers count
+
+
+;---------------------------------------;
+;	8259 INTERRUPT CNTLR EQUATES	;
+;---------------------------------------;
+i_m_m_port		equ	21h	; interrupt master mask port
+i_s_m_port		equ	0a1h	; interrupt slave mask port
+i_c_m_port		equ	20h	; interrupt cntlr master port
+i_c_s_port		equ	0a0h	; interrupt cntlr slave port
+
+
+
+;---------------------------------------;
+;	E-820 information structure	;
+;---------------------------------------;
+
+;<AMI_SHDR_START>
+;----------------------------------------------------------------------------
+; Name:		e820_info_struc
+;
+; Fields:	 Name		Type		Description
+;		------------------------------------------------------------
+;		start_addr	DWORD		32-bit start address
+;		size_bytes	DWORD		size in bytes
+;		mem_type	byte		memory type
+;
+; Description:	Structure used to define E820 information by the BIOS as well
+;		as emodules.
+;
+;		different available memory types are
+;		"!!!! only Following types are reported to OS !!!!"
+;		ram_os(01h)	-	 memory type available to OS
+;		ram_res(02h)	-	 memory type reserved by system and
+;					 must not be used by OS
+;		ram_acpi_data(03h)-	 ACPI Reclaim data area
+;		ram_acpi_nvs(04h)-	 ACPI NVS area
+;
+;		"!!!! FOR BIOS INTERNAL PURPOSE ONLY !!!!"
+;		ram_dummy(0FFh)		 Dummy entry for BIOS internal use.
+; 		"!!!! Addition for memory above 4GB !!!!"
+;		ram_os_1M(081h)	-	 memory type available to OS the upper
+;					 bit means he granularity is 1MB.
+;					 While reporting we have to convert
+;					 memory in no of bytes and reset the
+;					 upper bit for memory type.
+;
+;
+;
+;----------------------------------------------------------------------------
+;<AMI_SHDR_END>
+
+e820_info_struc	struc
+	start_addr	dd	?	; 32-bit start address
+	size_bytes	dd	?	; size in bytes
+	mem_type	db	?	; memory type
+e820_info_struc	ends
+
+ram_os			equ	01h	; memory type available to OS
+ram_res			equ	02h	; memory type reserved by system and
+					; must not be used by OS
+ram_acpi_data		equ	03h	; ACPI Reclaim data area
+ram_acpi_nvs		equ	04h	; ACPI NVS area
+ram_dummy		equ	0FFh	; Dummy entry for BIOS internal use.
+
+; Addition for memory above 4GB "!!!! FOR INTERNAL PURPOSE ONLY !!!!"
+ram_os_1M		equ	081h	; memory type available to OS
+					; the upper bit means he granularity
+					; is 1MB.
+					; While reporting we have to convert
+					; memory in no of bytes and reset the
+					; upper bit for memory type.
+										;
+
+;---------------------------------------;
+;  FDD/HDD Access Control Equates	;
+;  in 40:EA (OEM_SUPPORT_BYTE)		;
+;---------------------------------------;
+password_used_bit	equ	00000001b; Bit-0 = 0..No Password or Supervisor Password used
+					;	   1..User Password used
+fdd_remove_bit		equ	00000010b; Bit-1 = 0..FDD is present
+					;	   1..FDD is removed
+fdd_access_control_bit	equ	00000100b; Bit-2 = 0..FDD R/W
+					;	   1..FDD R/O
+hdd_access_control_bit	equ	00001000b; Bit-3 = 0..HDD R/W
+					;	   1..HDD R/O
+					; Bit7-4 = Not Used
+;---------------------------------------;
+;	ARMD Device Emulation Type	;
+;---------------------------------------;
+armd_fdd_emulation	equ	00h	; 00 -> ARMD to be emulated as Floppy
+armd_hdd_emulation	equ	01h	; 01 -> ARMD to be emulated as Hard Disk
+;------------- BIOS_SCRATCH ------------;
+bios_f_shadow_bit		equ	00000001b; F000 shadow information
+					;	0 = Disabled
+					;	1 = Enabled
+bios_e_shadow_bit		equ	00000010b; E000 shadow information
+					;	0 = Disabled
+					;	1 = Enabled
+				; Bit3-2........NOT USED
+floppy_error_bit		equ	00010000b; POST Floppy Error Status
+					;	0 = FDD ok
+					;	1 = FDD error
+acpi_aware_os_bit		equ	00100000b; ACPI Aware OS Information
+					;	0 = Not an ACPI Aware OS
+					;	1 = ACPI Aware OS
+bios_post_complete_bit		equ	01000000b; BIOS POST information
+					;	0 = POST not complete
+					;	1 = POST complete
+int19_display_bit		equ	10000000b; Active display during INT19
+					;	0 = BIOS display
+					;	1 = OEM display
+
+;------------- RT_CMOS_BYTE ------------;
+rt_cmos_os2_bit		equ	10000000b; bit-7 = OS2 compatibilty mode
+rt_cmos_ps2_bit		equ	01000000b; bit-6 = PS2 Mouse support
+rt_cmos_virus_bit	equ	00100000b; bit-5 = virus protection
+rt_cmos_password_bit	equ	00010000b; bit-4 = password check
+rt_cmos_parity_bit	equ	00001000b; bit-3 = parity check
+rt_cmos_6064_bit	equ	00000100b; bit-2 = 60/64 emulation
+					 ; bit1-0..not used
+
+;-----------------------------------------------------------------------;
+;			CONTROLLER_DETAILS_STRUC			;
+;-----------------------------------------------------------------------;
+CHANNEL_DETAILS_STRUC	struc
+  wBasePortAddress		dw	?	; Base Port Address
+  wControlPortAddress		dw	?	; Control Port Address
+  wBusMasterPortAddress		dw	?	; Bus Master Port Address
+  wPtrISR			dw	?	; ptr to IRQ ISR
+  bIRQ				db	?	; IRQ Value
+  wBusDeviceFunction		dw	?	; Bus#, Device#, Function#
+CHANNEL_DETAILS_STRUC	ends
+
+;-----------------------------------------------------------------------;
+;			bMiscInfo Details				;
+;-----------------------------------------------------------------------;
+; following information is built from setup question
+i13_virus_protection_bit	equ	00000001b; bit-0 = virus protection information
+						 ;	   0 = disabled, 1 = enabled
+; following information is built from IDE_PARAM_VALIDATE_BIT in _MISC_INFO byte
+i13_ata_parameter_validate_bit	equ	00000010b; bit-1 = ATA parameter validate information
+						 ;	   0 = do not vaildate user selection
+						 ;	   1 = validate user selection
+i13_fdd_setup_bit		equ	00000100b; bit-2 = FDD init information
+						 ;	   0 = do not execute FDD setup
+						 ;	   1 = execute FDD setup
+i13_display_smart_status_bit	equ	00001000b; bit-3 = Display SMART staus information
+						 ;	   0 = do not display SMART status
+						 ;	   1 = display SMART status
+i13_display_dma_status_bit	equ	00010000b; bit-4 = Display DMA staus information
+						 ;	   0 = do not display DMA status
+i13_activate_INT13_ISR_bit		equ	00100000b; bit-5 = 1 to
+
+;						 ; Bit7-5= not used
+
+;-----------------------------------------------------------------------;
+;		ATA(PI) INFORMATION USED BY SETUP SERVER		;
+;-----------------------------------------------------------------------;
+SETUP_ATA_INFO_STRUC	struc
+	bType		db	?	; device type 0/1/2/3 for None/HDD/CDROM/ARMD
+	wInfo		dw	?	; bit-mapped information (bit definitions, see below)
+	wCylinder	dw	?	; #of cylinders (1-based)
+	bHead		db	?	; #of heads (1-based)
+	bSPT		db	?	; #of sectors per track
+	dNoOfSectors	dd	?	; total #of sectors
+	bPIOMode	db	?	; PIO Mode
+	bADMAMode	db	?	; Async DMA Mode (single/multi word depends on the INFO Word)
+	bUDMAMode	db	?	; Sync (Ultra) DMA Mode
+	bMultiSector	db	?	; #of sectors that can be xferred in one interrupt
+	bSizeString	db     8 dup (?); ASCIIZ Size string
+	bVendorString	db    41 dup (?); ASCIIZ Vendor string
+SETUP_ATA_INFO_STRUC	ends
+
+;-----------------------------------------------------------------------;
+;			SETUP_ATA_TABLE					;
+; this table contains the information regarding the base address and the;
+; device selection value to be used by BIOS for auto-detecting all the	;
+; ATA(PI) devices before going to Setup.				;
+;-----------------------------------------------------------------------;
+SETUP_ATA_TABLE_STRUC STRUC
+	wBasePortAddress	dw	?	; base port address
+	bDeviceSelection	db	?	; 80h/81h for master/slave
+SETUP_ATA_TABLE_STRUC ENDS
+
+;-----------------------------------------------------------------------;
+;	INFO WORD DETAILS in SETUP_ATA_INFO_STRUC			;
+;-----------------------------------------------------------------------;
+chs_bit			equ	00000001b; bit-0 = 1..CHS information valid
+pio_bit			equ	00000010b; bit-1 = 1..PIO supported
+block_bit		equ	00000100b; bit-2 = 1..block xfer supported
+lba_bit			equ	00001000b; bit-3 = 1..LBA translation supported
+smart_bit		equ	00010000b; bit-4 = 1..SMART supported
+async_sw_dma_bit	equ	00100000b; bit-5 = 1..Async SingleWord DMA supported
+async_mw_dma_bit	equ	01000000b; bit-6 = 1..Async MultiWord DMA supported
+sync_dma_bit		equ	10000000b; bit-7 = 1..Sync DMA supported
+
+;-----------------------------------------------------------------------;
+;			BOOT_BLOCK_FLAG					;
+; these bits define the different programming options based on the keys	;
+; pressed during power-on.						;
+;-----------------------------------------------------------------------;
+; NOTE: the HALT_AFTER_PRGRAM_BIT is build during BIOS building, all other
+; bits are set/reset properly in recovery code according to the forced
+; recovery condition (e.g. key-strokes pressed) during power-on.
+halt_after_program_bit	equ	00000001b; bit-0 = 0..reset after programming
+					 ;	   1..halt after programming
+destroy_cmos_bit	equ	00000010b; bit-1 = 0..do not destroy cmos
+					 ;	   1..destroy cmos
+destroy_nvram_bit	equ	00000100b; bit-2 = 0..do not destroy NVRAM
+					 ;	   1..destroy NVRAM
+recovery_request_bit	equ	00001000b; bit-3 = 0..Do not force FLASH recovery
+					 ;         1..Force FLASH recovery
+recovery_result_bit	equ	00010000b; bit-4 = 0..FLASH recovery success
+					 ;         1..FLASH recovery failed
+					 ; bit-5.....reserved for future use
+rom_checksum_bit	equ	01000000b; bit-6 = 0..existing ROM checksum good
+					 ;	   1..existing ROM checksum bad
+flash_program_bit	equ	10000000b; bit-7 = 0..do not program Flash part
+					 ;	   1..program Flash part
+
+;-----------------------------------------------------------------------;
+;		ATAPI DEVICE SUPPORT IN BOOT BLOCK RECOVERY		;
+;-----------------------------------------------------------------------;
+;			ATAPI_HARDWARE_ENTRY				;
+;-----------------------------------------------------------------------;
+ATAPI_HARDWARE_ENTRY_STRUC	struc
+	wBasePort		dw	?	; Base Port Address
+	wControlPort		dw	?	; Control Port Address
+	bDriveSelection		db	?	; Drive Selection Parameter
+	bIRQ			db	?	; IRQ used
+ATAPI_HARDWARE_ENTRY_STRUC	ends
+
+;-----------------------------------------------------------------------;
+;			ATAPI_HARDWARE_INFO				;
+;-----------------------------------------------------------------------;
+ATAPI_HARDWARE_INFO_STRUC	struc
+	wNoEntry		dw	?	; #of entries present
+ATAPI_HARDWARE_INFO_STRUC	ends
+
+
+;-----------------------------------------------------------------------;
+;		WFM LOCKOUT CAPABILITIES BIT MAP DEFINITION		;
+;-----------------------------------------------------------------------;
+;				     1         0
+;				5432109876543210
+wfm_hard_onoff_bit	equ	0000000000000001b; bit-0, Reserved (No longer used)
+wfm_soft_onoff_bit	equ	0000000000000010b; bit-1, Soft On/Off
+wfm_reset_switch_bit	equ	0000000000000100b; bit-2, Reset Button
+wfm_mouse_bit		equ	0000000000001000b; bit-3, Mouse
+wfm_ctrl_alt_del_bit	equ	0000000000010000b; bit-4, Ctrl-Alt-Del
+wfm_all_key_ecad_bit	equ	0000000000100000b; bit-5, All Keyboard Activity except Ctrl-Alt-Del
+
+wfm_not_used_bits	equ	1111111111000000b; bit15-6..Not used
+
+
+;-----------------------------------------------------------------------;
+;	INFORMATION ABOUT THE MEMORY SIZING MODULE OUTSIDE BOOTBLOCK	;
+;-----------------------------------------------------------------------;
+;		MEMORY SIZING MODULE INFO STRUCTURE			;
+; this information will be present at the start of memory sizing code.	;
+;-----------------------------------------------------------------------;
+MEMORY_SIZING_INFO_STRUC	struc
+	dEntryOffset	dd	1 dup (?)	; entry offset of memory sizing code
+	wEntrySelector	dw	1 dup (?)	; entry selector of memory sizing code
+	wOffsetGDTLabel	dw	1 dup (?)	; pointer to GDT Label having GDT table address and length
+	wOffsetGDTTable	dw	1 dup (?)	; pointer to GDT Table
+MEMORY_SIZING_INFO_STRUC	ends
+
+;-----------------------------------------------------------------------;
+;	 	GDT LABEL STRUCTURE IN MEMORY SIZING MODULE		;
+; the GDT Label contains information about the length and the physical	;
+; address of the GDT table.						;
+;-----------------------------------------------------------------------;
+MEMORY_SIZING_GDT_LABEL_STRUC	struc
+  wLength		dw	1 dup (?)	; length (0-based) of GDT table
+  dGDTTableAddress	dd	1 dup (?)	; 32Bit physical address of GDT table
+MEMORY_SIZING_GDT_LABEL_STRUC	ends
+
+;-----------------------------------------------------------------------;
+;	 	GDT TABLE STRUCTURE IN MEMORY SIZING MODULE		;
+; the GDT Table information which is present in memory sizing module.	;
+;-----------------------------------------------------------------------;
+MEMORY_SIZING_GDT_TABLE_STRUC	struc
+  bDummyDescriptor		db	8 dup (?)	; dummy descriptor
+  bMemorySizeCodeDescriptor	db	8 dup (?)	; memory sizing code descriptor
+  bMemorySizeDataDescriptor	db	8 dup (?)	; memory sizing data descriptor
+  b4GBCodeDescriptor		db	8 dup (?)	; Flat mode code descriptor
+  b4GBDataDescriptor		db	8 dup (?)	; Flat mode data descriptor
+  bF000CodeDescriptor		db	8 dup (?)	; F000 code descriptor
+  bF000DataDescriptor		db	8 dup (?)	; F000 data descriptor
+MEMORY_SIZING_GDT_TABLE_STRUC	ends
+
+;-----------------------------------------------------------------------;
+ss_value_for_cs		equ	offset MEMORY_SIZING_GDT_TABLE_STRUC.bMemorySizeDataDescriptor
+ss_value_for_f000	equ	offset MEMORY_SIZING_GDT_TABLE_STRUC.bF000DataDescriptor
+flat_ds_value		equ	offset MEMORY_SIZING_GDT_TABLE_STRUC.b4GBDataDescriptor
+;-----------------------------------------------------------------------;
+
+
+;-----------------------------------------------------------------------;
+CDROM_BUF_LENGTH	equ	80h
+;-----------------------------------------------------------------------;
+
+
+;============================================================================
+; For eKernel [Start]
+;============================================================================
+ASCII_CHAR_CR			EQU	0Dh
+ASCII_CHAR_LF			EQU	0Ah
+TRUE				EQU	0FFh
+FALSE				EQU	00
+
+
+;----------------------------------------------------------------------------
+;		Structure used in TDB
+;----------------------------------------------------------------------------
+
+stTblEntryNEAR STRUCT
+	EntryPtr	DW	0000h
+stTblEntryNEAR ENDS
+
+
+stIDAndTblEntryNEAR STRUCT
+	EntryID		DW	0000h
+	EntryPtr	DW	0000h
+stIDAndTblEntryNEAR ENDS
+
+
+stTblEntryFAR STRUCT
+	EntryPtr	DD	0000h
+stTblEntryFAR ENDS
+
+
+stIDAndTblEntryFAR STRUCT
+	EntryID		DW	0000h
+	EntryPtr	DD	0000h
+stIDAndTblEntryFAR ENDS
+
+
+;============================================================================
+; B I T 	E Q U A T E S
+;============================================================================
+BIT_0				EQU	01h
+BIT_1				EQU	02h
+BIT_2				EQU	04h
+BIT_3				EQU	008h
+BIT_4				EQU	010h
+BIT_5				EQU	020h
+BIT_6				EQU	040h
+BIT_7				EQU	080h
+BIT_8				EQU	0100h
+BIT_9				EQU	0200h
+BIT_10				EQU	0400h
+BIT_11				EQU	0800h
+BIT_12				EQU	01000h
+BIT_13				EQU	02000h
+BIT_14				EQU	04000h
+BIT_15				EQU	08000h
+BIT_16				EQU     010000h
+BIT_17				EQU	020000h
+BIT_18				EQU	040000h
+BIT_19				EQU	080000h
+BIT_20				EQU	0100000h
+BIT_21				EQU	0200000h
+BIT_22				EQU	0400000h
+BIT_23				EQU	0800000h
+BIT_24				EQU	01000000h
+BIT_25				EQU	02000000h
+BIT_26				EQU	04000000h
+BIT_27				EQU	08000000h
+BIT_28				EQU	010000000h
+BIT_29				EQU	020000000h
+BIT_30				EQU	040000000h
+BIT_31				EQU	080000000h
+
+BIT0				equ	001h
+BIT1				equ	002h
+BIT2				equ	004h
+BIT3				equ	008h
+BIT4				equ	010h
+BIT5				equ	020h
+BIT6				equ	040h
+BIT7				equ	080h
+BIT8				equ	100h
+BIT9				equ	200h
+BIT10				equ	400h
+BIT11				equ	800h
+BIT12				equ	1000h
+BIT13				equ	2000h
+BIT14				equ	4000h
+BIT15				equ	8000h
+BIT16				equ	10000h
+BIT17				equ	20000h
+BIT18				equ	40000h
+BIT19				equ	80000h
+BIT20				equ	100000h
+BIT21				equ	200000h
+BIT22				equ	400000h
+BIT23				equ	800000h
+BIT24				equ	1000000h
+BIT25				equ	2000000h
+BIT26				equ	4000000h
+BIT27				equ	8000000h
+BIT28				equ	10000000h
+BIT29				equ	20000000h
+BIT30				equ	40000000h
+BIT31				equ	80000000h
+
+
+;============================================================================
+; C M O S
+;============================================================================
+CMOS_DIAG_STS_0Eh		EQU	08Eh
+  CDS_0Eh_DATE_TIME_ERR_BIT	EQU	BIT_2
+  CDS_0Eh_HDD_ERR_BIT		EQU	BIT_3
+  CDS_0Eh_INVALID_CONFIG_BIT	EQU	BIT_5
+  CDS_0Eh_BAD_CHECKSUM_BIT	EQU	BIT_6
+  CDS_0Eh_RTC_LOST_POWER_BIT	EQU	BIT_7
+CMOS_SHUTDOWN_STS_0Fh		EQU	08Fh
+CMOS_MACHINE_CONFIG_14h		EQU	094h
+CMOS_BASE_MEM_LOW_15h     	EQU	095h
+CMOS_BASE_MEM_HIGH_16h     	EQU	096h
+CMOS_KB_MEM_LOW_17h		EQU	097h
+CMOS_KB_MEM_HIGH_18h		EQU	098h
+CMOS_KB_MEM_LOW_30h    		EQU	0B0h
+  CMOS_30h_FLASH_UPDATE_REQ_SIGN EQU	055AAh
+CMOS_KB_MEM_HIGH_31h		EQU	0B1h
+CMOS_SCRATCH_33h       		EQU	0B3h
+  CSCR_33h_CACHE_GOOD_BIT	EQU	00000001b
+  CSCR_33h_SOFT_RESET_BIT	EQU	00000100b
+  CSCR_33h_FLASH_UPDATE_REQ_BIT	EQU	01000000b
+  CSCR_33h_MEM_EXPANSION_BIT	EQU	10000000b
+CMOS_SCRATCH_34h       		EQU	0B4h
+CSCR_34h_NVRAM_PRESENT_BIT	EQU	10000000b
+CMOS_MB_MEM_LOW_35h    		EQU	0B5h
+CMOS_MB_MEM_HIGH_36h		EQU	0B6h
+
+
+;============================================================================
+; C O M P O N E N T	I D s	F O R	 B I O S    C O M P O N E N T S
+;============================================================================
+;; 000h-03Fh : CIDs for CORE compnents.
+CID_KERNEL			EQU	000h
+CID_CPU				EQU	001h
+CID_FLASH			EQU	002h
+CID_SUPER_IO			EQU	003h
+;; 040h-04Fh : CIDs for CHIPSET compnents.
+CID_CHIPSET_BASE		EQU	040h
+CID_NORTH_BRIDGE		EQU	041h
+CID_SOUTH_BRIDGE		EQU	042h
+;; 050h-06Fh : CIDs for BOARD compnents.
+CID_BOARD_BASE			EQU	050h
+CID_OEM				EQU	051h
+;; 070h-07Fh : CIDs RESERVED for future use.
+CID_CUSTOM_FOR_OEM		EQU	070h
+;; 080h-0BFh : CIDs for optional eMODULEs.
+CID_SMI				EQU	080h
+CID_USB				EQU	081h
+CID_ACPI			EQU	082h
+CID_SMBIOS			EQU	083h
+CID_SREDIR			EQU	084h
+CID_DEBUGGER			EQU	085h
+;; 0C0h-0F9h : CIDs RESERVED for future use.
+;; 0FAh-0FFh : CIDs for temperory usage till a unique CID is allocated.
+CID_TEMP_0			EQU	0FAh
+CID_TEMP_1			EQU	0FBh
+CID_TEMP_2			EQU	0FCh
+CID_TEMP_3			EQU	0FDh
+CID_TEMP_4			EQU	0FEh
+CID_UNDEFINED			EQU	0FFh
+
+
+;============================================================================
+; B I O S	T A B L E S
+;============================================================================
+
+
+;----------------------------------------------------------------------------
+;		BIOS Table Types
+;----------------------------------------------------------------------------
+TT_DUMMY			EQU	000h
+;;TT_MEM_MAPPED_DEV_INIT		EQU	010h
+TT_IO_MAPPED_DEV_INIT		EQU	020h
+TT_PCI_DEV_INIT			EQU	030h
+TT_QBASED_PCI_DEV_INIT		EQU	031h
+
+
+;----------------------------------------------------------------------------
+;		Structures used in BIOS tables
+;----------------------------------------------------------------------------
+stBTblInfo	STRUCT
+	bTblType		DB	TT_DUMMY
+	dProcessingFunc		DD	00000000h
+stBTblInfo	ENDS
+
+
+stBTblHdr	STRUCT
+	bTblType		DB	TT_DUMMY
+	wTblStart		DW	0000h
+	wTblEnd			DW	0000h
+	dwData1			DW	0000h
+	dData2			DD	00000000h
+stBTblHdr	ENDS
+
+
+stReg	STRUCT
+	bRegIndex		DB	0FFh
+	bANDMask 		DB	0FFh
+	bORMask			DB	00h
+stReg	ENDS
+
+
+stQBasedReg	STRUCT
+	wSetupQst		DW	0FFFFh
+	bRegIndex		DB	0FFh
+	bMappedBitMask 		DB	00h
+	dCallBackFn		DD	0000000h
+stQBasedReg	ENDS
+
+
+;============================================================================
+; E R R O R	M A N A G E R
+;============================================================================
+;----------------------------------------------------------------------------
+;		Structure to define Error Objects
+;----------------------------------------------------------------------------
+stBIOSError STRUCT
+	wErrorCode		DW	00000h;Bit[0-7] - Error number.
+					      ;Bit[8-15] - Module ID.
+
+	wErrorAttrib		DW	00000h;Bit[0-3] - Error type.
+	  ERROR_TYPE_MASK	EQU	0000Fh
+	    ET_NOT_AN_ERR	EQU	00000h
+	    ET_INFORMAL		EQU	00001h
+	    ET_WARNING 		EQU	00002h
+	    ET_GENERAL	 	EQU	00003h
+	    ET_CMOS_RELATED	EQU	00004h
+	    ET_FATAL		EQU	00005h
+	    ;			EQU	00006h	;Reserved for CORE
+	    ;			EQU	00007h  ;Furure use.
+
+	    ET_OEM1		EQU	00008h 	; Types 08-0Fh : can be used bye OEMs
+
+	  MAPS_TO_SMBIOS_ERR_BIT EQU	BIT_4 ;Bit[4]-Set for SMBIOS mapped errs.
+					      ;Bit[5-15] - RESERVED.
+
+	wDisplayErrorInfoProcOffset DW	00h; = 0FFFFh for string token.
+	wDisplayErrorInfoProcSeg    DW	00h; = Token number for string token.
+stBIOSError ENDS
+
+;----------------------------------------------------------------------------
+;		Error Codes mapped to SMBIOS Error Bits
+;----------------------------------------------------------------------------
+;All commented error codes are not implemented in the current CORE.
+TIMER_COUNT_RW_ERR		EQU	(CID_KERNEL SHL 8) + 000h ;Bit-00
+;MASTER_PIC_ERR			EQU	(CID_KERNEL SHL 8) + 001h ;Bit-01
+;SLAVE_PIC_ERR			EQU	(CID_KERNEL SHL 8) + 002h ;Bit-02
+CMOS_BATTERY_ERR		EQU	(CID_KERNEL SHL 8) + 003h ;Bit-03
+CMOS_DIAG_STS_ERR		EQU	(CID_KERNEL SHL 8) + 004h ;Bit-04
+CMOS_CHECKSUM_ERR		EQU	(CID_KERNEL SHL 8) + 005h ;Bit-05
+;CMOS_CONFIG_ERR		EQU	(CID_KERNEL SHL 8) + 006h ;Bit-06
+;MOUSE_KBD_SWAP_ERR		EQU	(CID_KERNEL SHL 8) + 007h ;Bit-07
+KBD_LOCK_ERR			EQU	(CID_KERNEL SHL 8) + 008h ;Bit-08
+NO_KBD_ERR			EQU	(CID_KERNEL SHL 8) + 009h ;Bit-09
+KBC_BAT_TEST_ERR		EQU	(CID_KERNEL SHL 8) + 00Ah ;Bit-10
+CMOS_MEMORY_SIZE_ERR		EQU	(CID_KERNEL SHL 8) + 00Bh ;Bit-11
+RAM_RW_TEST_ERR			EQU	(CID_KERNEL SHL 8) + 00Ch ;Bit-12
+;CACHE_MEMORY_ERR		EQU	(CID_KERNEL SHL 8) + 00Dh ;Bit-13
+FDD_0_ERR 			EQU	(CID_KERNEL SHL 8) + 00Eh ;Bit-14
+FDD_1_ERR 			EQU	(CID_KERNEL SHL 8) + 00Fh ;Bit-15
+FLOPPY_CONTROLLER_ERR		EQU	(CID_KERNEL SHL 8) + 010h ;Bit-16
+;ATA_DRIVES_REDUCED_ERR		EQU	(CID_KERNEL SHL 8) + 011h ;Bit-17
+CMOS_DATE_TIME_ERR		EQU	(CID_KERNEL SHL 8) + 012h ;Bit-18
+;DDC_MONITOR_CONFIG_CHANGE_ERR	EQU	(CID_KERNEL SHL 8) + 013h ;Bit-19
+NO_PS2_MOUSE_ERR     		EQU	(CID_KERNEL SHL 8) + 014h ;Bit-20
+
+	;; No specific errors are defined for Bit[21-38]
+
+	;; in SMBIOS Specification-V2.3. Some of these bits are for OEM
+	;; asignment. So, as per as the CORE is conserned, we can use the
+	;; corressponding error codes (Error codes from 14h-26h) to define
+	;; non-SMBIOS mapped errors, if needed in future.
+
+;PCI_MEM_CONFLICT_ERR		EQU	(CID_KERNEL SHL 8) + 027h ;Bit-39
+;PCI_IO_CONFLICT_ERR		EQU	(CID_KERNEL SHL 8) + 028h ;Bit-40
+;PCI_IRQ_CONFLICT_ERR		EQU	(CID_KERNEL SHL 8) + 029h ;Bit-41
+;PNP_MEM_CONFLICT_ERR		EQU	(CID_KERNEL SHL 8) + 02Ah ;Bit-42
+;PNP_MEM32_CONFLICT_ERR		EQU	(CID_KERNEL SHL 8) + 02Bh ;Bit-43
+;PNP_IO_CONFLICT_ERR		EQU	(CID_KERNEL SHL 8) + 02Ch ;Bit-44
+;PNP_IRQ_CONFLICT_ERR		EQU	(CID_KERNEL SHL 8) + 02Dh ;Bit-45
+;PNP_DMA_CONFLICT_ERR		EQU	(CID_KERNEL SHL 8) + 02Eh ;Bit-46
+;PNP_SERIAL_ID_CHECKSUM_ERR	EQU	(CID_KERNEL SHL 8 +  02Fh ;Bit-47
+;PNP_RS_DATA_CHECKSUM_ERR	EQU	(CID_KERNEL SHL 8) + 030h ;Bit-48
+;STATIC_RS_CONFLICT_ERR		EQU	(CID_KERNEL SHL 8) + 031h ;Bit-49
+;NVRAM_CHECKSUM_ERR		EQU	(CID_KERNEL SHL 8) + 032h ;Bit-50
+;SYSTEM_DEV_RS_CONFLICT_ERR 	EQU	(CID_KERNEL SHL 8) + 033h ;Bit-51
+;NO_PRIMARY_OUTPUT_DEV_ERR	EQU	(CID_KERNEL SHL 8) + 034h ;Bit-52
+;NO_PRIMARY_INPUT_DEV_ERR	EQU	(CID_KERNEL SHL 8) + 035h ;Bit-53
+;NO_PRIMARY_BOOT_DEV_ERR	EQU	(CID_KERNEL SHL 8) + 036h ;Bit-54
+;NVRAM_CLEARED_BY_JUMPER_ERR	EQU	(CID_KERNEL SHL 8) + 037h ;Bit-55
+;INVALID_NVRAM_DATA_ERR		EQU	(CID_KERNEL SHL 8) + 038h ;Bit-56
+;FDC_RS_CONFLICT_ERR		EQU	(CID_KERNEL SHL 8) + 039h ;Bit-57
+;PRI_ATA_RS_CONFLICT_ERR	EQU	(CID_KERNEL SHL 8) + 03Ah ;Bit-58
+;SEC_ATA_RS_CONFLICT_ERR	EQU	(CID_KERNEL SHL 8) + 03Bh ;Bit-59
+;PARALLEL_PORT_RS_CONFLICT_ERR	EQU	(CID_KERNEL SHL 8) + 03Ch ;Bit-60
+;SERIAL_PORT1_RS_CONFLICT_ERR	EQU	(CID_KERNEL SHL 8) + 03Dh ;Bit-61
+;SERIAL_PORT2_RS_CONFLICT_ERR	EQU	(CID_KERNEL SHL 8) + 03Eh ;Bit-62
+;AUDIO_RS_CONFLICT_ERR		EQU	(CID_KERNEL SHL 8) + 03Fh ;Bit-63
+
+;----------------------------------------------------------------------------
+;		Error Codes NOT mapped to SMBIOS Error Bits
+;----------------------------------------------------------------------------
+REFRESH_TIMER_ERR		EQU	(CID_KERNEL SHL 8) + 040h
+DISPLAY_MEMORY_ERR		EQU	(CID_KERNEL SHL 8) + 041h
+CMOS_DISPLAY_ERR		EQU	(CID_KERNEL SHL 8) + 042h
+INSERT_FUNC_KEY_ERR		EQU	(CID_KERNEL SHL 8) + 043h
+DMAC_PAGE_REG_ERR		EQU	(CID_KERNEL SHL 8) + 044h
+DMAC1_CH_REG_ERR		EQU	(CID_KERNEL SHL 8) + 045h
+DMAC2_CH_REG_ERR		EQU	(CID_KERNEL SHL 8) + 046h
+PMM_MEM_ALLOC_ERR		EQU	(CID_KERNEL SHL 8) + 047h
+PASSWORD_CHECK_ERR		EQU	(CID_KERNEL SHL 8) + 048h
+SEGMENT_REG_ERR			EQU	(CID_KERNEL SHL 8) + 049h
+ADM_MODULE_ERR			EQU	(CID_KERNEL SHL 8) + 04Ah
+LANGUAGE_MODULE_ERR		EQU	(CID_KERNEL SHL 8) + 04Bh
+KBC_INTERFACE_ERR		EQU	(CID_KERNEL SHL 8) + 04Ch
+HDD_0_ERR 			EQU	(CID_KERNEL SHL 8) + 04Dh
+HDD_1_ERR 			EQU	(CID_KERNEL SHL 8) + 04Eh
+HDD_2_ERR 			EQU	(CID_KERNEL SHL 8) + 04Fh
+HDD_3_ERR 			EQU	(CID_KERNEL SHL 8) + 050h
+HDD_4_ERR 			EQU	(CID_KERNEL SHL 8) + 051h
+HDD_5_ERR 			EQU	(CID_KERNEL SHL 8) + 052h
+HDD_6_ERR 			EQU	(CID_KERNEL SHL 8) + 053h
+HDD_7_ERR 			EQU	(CID_KERNEL SHL 8) + 054h
+ATAPI_0_ERR 			EQU	(CID_KERNEL SHL 8) + 055h
+ATAPI_1_ERR 			EQU	(CID_KERNEL SHL 8) + 056h
+ATAPI_2_ERR 			EQU	(CID_KERNEL SHL 8) + 057h
+ATAPI_3_ERR 			EQU	(CID_KERNEL SHL 8) + 058h
+ATAPI_4_ERR 			EQU	(CID_KERNEL SHL 8) + 059h
+ATAPI_5_ERR 			EQU	(CID_KERNEL SHL 8) + 05Ah
+ATAPI_6_ERR 			EQU	(CID_KERNEL SHL 8) + 05Bh
+ATAPI_7_ERR 			EQU	(CID_KERNEL SHL 8) + 05Ch
+ATA_SMART_FEATURE_ERR		EQU	(CID_KERNEL SHL 8) + 05Dh
+PASSWORD_CHECK_ERR_NON_CRITICAL	EQU	(CID_KERNEL SHL 8) + 05Eh
+DUMMY_BIOS_ERR			EQU	(CID_KERNEL SHL 8) + 0FFh
+
+UNDEFINED_BIOS_ERROR		EQU	(CID_UNDEFINED SHL 8) + 0FFh
+;----------------------------------------------------------------------------
+;		Error Attributes
+;----------------------------------------------------------------------------
+ATTRIB_DUMMY_BIOS_ERR		EQU	ET_NOT_AN_ERR
+
+;----------------------------------------------------------------------------
+;		Structure to define beeps codes for BIOS errors
+;----------------------------------------------------------------------------
+stBeepCode STRUCT
+	wErrorCode		DW	00000h;Error Code.
+	bBeepCode		DB	000h  ;Associated beep code.
+stBeepCode ENDS
+
+;----------------------------------------------------------------------------
+;		Beep Codes
+;----------------------------------------------------------------------------
+BC_REFRESH_TIMER_ERR	EQU	001h
+BC_RAM_RW_TEST_ERR	EQU	003h
+BC_KBC_BAT_TEST_ERR	EQU	006h
+except_err_beep_count	EQU	007h	; Exception interrupt.
+BC_DISPLAY_MEMORY_ERR	EQU	0008h
+
+
+;============================================================================
+; I N P U T	D E V I C E
+;============================================================================
+;----------------------------------------------------------------------------
+;		Structure to define BIOS key objects
+;----------------------------------------------------------------------------
+stBIOSKey STRUCT
+	wScanCode		DW	00000h
+	dORMaskForUserReq	DD	00000h
+stBIOSKey ENDS
+
+
+;============================================================================
+; O U T P U T	D E V I C E
+;============================================================================
+CURSOR_POS_FOR_BIOS_VERSION_INFO EQU	01300h
+CURSOR_COLUMN_FOR_IDE_INFO 	EQU	0Ch
+DEFAULT_TEXT_ATTRIB		EQU	07h
+
+;----------------------------------------------------------------------------
+;		Output API equates
+;----------------------------------------------------------------------------
+GET_VIDEO_MODE_FN		EQU	00h
+SET_VIDEO_MODE_FN		EQU	01h
+GET_CURSOR_POS_FN		EQU	02h
+SET_CURSOR_POS_FN		EQU	03h
+SET_CURSOR_TYPE_FN		EQU	04h
+DISPLAY_ATTRIB_CHAR_FN		EQU	05h
+READ_ATTRIB_CHAR_FN		EQU	06h
+DISPLAY_ATTRIB_TOKEN_MSG_FN	EQU	07h
+LAST_RT_OUTPUT_API_FN		EQU	07h
+DISPLAY_LOGO_FN			EQU	08h
+DISPLAY_TOKEN_MESSAGE_UNBUFFERED EQU 	09h
+;============================================================================
+; For eKernel [End]
+;============================================================================
+
+
+
+;************************************************************************
+;************************************************************************
+;**                                                                    **
+;**         (C)Copyright 1985-2016, American Megatrends, Inc.          **
+;**                                                                    **
+;**                          All Rights Reserved.                      **
+;**                                                                    **
+;**          5555 Oakbrook Pkwy Suite 200, Norcross, GA 30093          **
+;**                                                                    **
+;**                          Phone (770)-246-8600                      **
+;**                                                                    **
+;************************************************************************
+;************************************************************************
+.list
+;End of Inclusion guard
+endif	;_mbiosequ_equ_
+
+
+

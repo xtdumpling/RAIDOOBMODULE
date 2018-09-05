@@ -1,0 +1,120 @@
+#****************************************************************************
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.00
+#      Bug Fixed:  Support SMC Memory map-out function.
+#      Reason:     
+#      Auditor:    Ivern Yeh
+#      Date:       Jul/07/2016
+#
+#/** @file
+#  Component description file for the Platform Error Handler.
+#
+#  Copyright (c) 2009 - 2016, Intel Corporation.
+#  All rights reserved. This software and associated documentation
+#  (if any) is furnished under a license and may only be used or
+#  copied in accordance with the terms of the license.  Except as
+#  permitted by such license, no part of this software or
+#  documentation may be reproduced, stored in a retrieval system, or
+#  transmitted in any form or by any means without the express
+#  written consent of Intel Corporation.
+#
+#**/
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = PlatformErrorHandler
+  FILE_GUID                      = 3262D1AD-A8A8-4597-825E-DE6F167C3407
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  VERSION_STRING                 = 1.0
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  ENTRY_POINT                    = InitializePlatformErrHandler
+
+
+[Sources]
+  PlatformErrorHandler.c
+  PlatformErrorHandler.h
+
+[Packages]
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+  IA32FamilyCpuPkg/IA32FamilyCpuPkg.dec
+  # APTIOV_SERVER_OVERRIDE_RC_START
+  #BpCommonPkg/BpCommonPkg.dec  
+  # APTIOV_SERVER_OVERRIDE_RC_END
+  UefiCpuPkg/UefiCpuPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  CpPlatPkg/CpPlatPkg.dec
+  SmcPkg/SmcPkg.dec			#SMCPKG_SUPPORT++
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  DebugLib
+  BaseMemoryLib
+  BaseLib
+  UefiBootServicesTableLib
+  SmmServicesTableLib
+  EmcaLib
+  SynchronizationLib
+  PcdLib
+  PrintLib
+  OemRasLib
+  MpSyncDataLib
+  SetupLib
+  EmcaPlatformHooksLib
+  FpgaConfigurationLib
+
+[Protocols]
+  gEfiPlatformErrorHandlingProtocolGuid
+  gEfiPlatformRasPolicyProtocolGuid
+  gEfiMemRasProtocolGuid
+  gEfiMpServiceProtocolGuid
+  gEfiSmbiosProtocolGuid
+  gEfiCpuCsrAccessGuid
+  gEfiIioSystemProtocolGuid
+  gEfiPlatformTypeProtocolGuid
+
+[Guids]
+  gIioVVarGuid
+  gEfiMemoryConfigDataGuid
+  gEfiSetupVariableGuid
+  gEfiMemoryConfigDataGuid
+  gEfiWheaPlatformMemoryErrorSectionGuid
+  gEfiWheaProcessorGenericErrorSectionGuid
+  gEfiWheaProcessorSpecificErrorSectionGuid
+  gEfiWheaPcieErrorSectionGuid
+  gEfiWheaPciDevErrorSectionGuid
+  gEfiSocketMpLinkVariableGuid
+
+[FixedPcd]
+  gEfiCpuTokenSpaceGuid.PcdCpuMaxLogicalProcessorNumber
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[Depex]
+  gEfiMpServiceProtocolGuid AND
+  gEfiMemRasProtocolGuid AND
+  gEfiIioSystemProtocolGuid AND
+  gEfiPlatformTypeProtocolGuid AND
+  gEfiIioUdsProtocolGuid AND
+  gEfiSmbiosProtocolGuid  
+
+[BuildOptions]
+  MSFT:*_*_*_CC_FLAGS     = /wd4142 /wd4244 /Gs999999 /GL-
+  GCC:*_*_*_CC_FLAGS     = 
+  # Append new linker alignment option (= is Append, == is Replace)
+  MSFT:*_*_*_DLINK_FLAGS = /ALIGN:128
+  GCC:*_*_*_DLINK_FLAGS = -z common-page-size=0x80
+
+[PCD]
+#  gSmcPkgTokenSpaceGuid.PcdSMCMapOutDIMM  			#SMCPKG_SUPPORT++

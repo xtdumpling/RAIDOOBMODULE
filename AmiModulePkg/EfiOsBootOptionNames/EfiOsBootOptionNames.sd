@@ -1,0 +1,104 @@
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**       (C)Copyright 1993-2016 Supermicro Computer, Inc.           **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
+//  File History
+//
+//  Rev. 1.04
+//    Bug Fix: Draft template.
+//    Reason:
+//    Auditor:  Kasber Chen
+//    Date:     Nov/04/2016
+//
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**           5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093      **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
+
+#include <Token.h>
+
+#ifdef SETUP_DATA_DEFINITION
+/***********************************************************/
+/* Put NVRAM data definitions here.
+/* For example:	UINT8 Data1;
+/* These definitions will be converted by the build process
+/* to a definitions of SETUP_DATA fields.
+/***********************************************************/
+#endif
+
+#if defined(VFRCOMPILE) && !defined(CONTROLS_ARE_DEFINED)
+#define CONTROL_DEFINITION
+#endif
+
+#ifdef CONTROL_DEFINITION
+///
+/// Put control definitions here.
+///
+
+#define EOBON_ONEOF_NEW_OPTION_POLICY\
+        oneof varid   = NEW_OPTION_POLICY.NewOptionPolicy,\
+            prompt    = STRING_TOKEN(STR_NEW_OPTION_POLICY),\
+            help      = STRING_TOKEN(STR_NEW_OPTION_POLICY_HELP),\
+            default = NEW_UEFI_OS_OPTION_ORDER_POLICY,\
+            option text  = STRING_TOKEN(STR_NEW_OPTION_POLICY_NOT_OVERRIDE),       value = 0, flags = RESET_REQUIRED;\
+            option text  = STRING_TOKEN(STR_NEW_OPTION_POLICY_FIRST),              value = 1, flags = RESET_REQUIRED;\
+            option text  = STRING_TOKEN(STR_NEW_OPTION_POLICY_LAST),               value = 2, flags = RESET_REQUIRED;\
+        endoneof;
+        
+#endif 
+        
+#ifdef CONTROLS_WITH_DEFAULTS
+///
+/// List macros of all the controls attached to the actual data.
+///
+    EOBON_ONEOF_NEW_OPTION_POLICY
+#endif
+
+#ifdef BOOT_FORM_SET
+
+#ifdef FORM_SET_TYPEDEF
+        typedef struct {
+            UINT8  NewOptionPolicy;
+        } NEW_OPTION_POLICY;
+#endif
+
+	#ifdef FORM_SET_VARSTORE
+		varstore NEW_OPTION_POLICY,
+		key   = AUTO_ID(EOBON_NEW_OPTION_POLICY_KEY),
+		name  = NewOptionPolicy,
+		guid  = {0x69ECC1BE, 0xA981, 0x446D, 0x8E, 0xB6, 0xAF, 0x0E, 0x53, 0xD0, 0x6C, 0xE8}; //EFI_OS_BOOT_OPTION_NAMES_GUID
+	#endif
+
+  	#ifdef FORM_SET_ITEM
+  	suppressif SMC_SETUP_STYLE;	//SMCPKG_SUPPORT S
+        EOBON_ONEOF_NEW_OPTION_POLICY
+        endif;	//SMCPKG_SUPPORT E
+	#endif 	//#ifdef FORM_SET_FORM
+						
+#endif	//#ifdef BOOT_FORM_SET
+
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**           5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093      **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************

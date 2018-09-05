@@ -1,0 +1,96 @@
+TOKEN
+    Name  = "TPM12_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable TCG support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+    Master = Yes
+    Token = "TCG2Support" "=" "1"
+End
+
+TOKEN
+    Name  = "TPM_DRIVER_WAIT"
+    Value  = "005h"
+    Help  = "Delay count for TPM wait loop. Default is 50us. Please dont change to less than 2 (4us)."
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "ACPI_TIMER_OFFSET"
+    Value  = "008h"
+    Help  = "Offset for ACPI timer"
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "TimerBaseReg"
+    Value  = "$(PM_BASE_ADDRESS)"
+    Help  = "Offset for ACPI timer"
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "DELAY_AMOUNT"
+    Value  = "030"
+    Help  = "Delay amount for TPM wait loop. Default is 5us. Please dont change to less than 2 (2us)."
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+
+INFComponent
+    Name  = "TisLib12"
+    File  = "TisLib12.inf"
+    Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+    Class  = "BaseTisLib12"
+    Instance  = "AmiModulePkg.TisLib12"
+End
+
+INFComponent
+    Name  = "TisLib20"
+    File  = "TisLib20.inf"
+    Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+    Class  = "BaseTisLib20"
+    Instance  = "AmiModulePkg.TisLib20"
+End
+
+INFComponent
+    Name  = "TisLib12x32"
+    File  = "TisLib12x32.inf"
+    Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+    Class  = "BaseTisLib12x32"
+    Instance  = "AmiModulePkg.TisLib12x32"
+End
+
+INFComponent
+    Name  = "TisLib20x32"
+    File  = "TisLib20x32.inf"
+    Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+    Class  = "BaseTisLib20x32"
+    Instance  = "AmiModulePkg.TisLib20x32"
+End
+
+
+
+

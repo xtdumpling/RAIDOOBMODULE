@@ -1,0 +1,70 @@
+## @file
+#  Status Code Handler Driver which produces general handlers and hook them
+#  onto the status code router.
+#
+#  Copyright (c) 2006 - 2016, Intel Corporation.
+#
+#  All rights reserved. This program and the accompanying materials
+#  are licensed and made available under the terms and conditions of the BSD License
+#  which accompanies this distribution. The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.php
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+#
+##
+
+[Defines]
+  INF_VERSION             = 0x00010005
+  BASE_NAME               = DxeSetupLib
+  FILE_GUID               = E92E7B25-7CE3-489e-B985-DC9ED7BF2091
+  MODULE_TYPE             = BASE
+  VERSION_STRING          = 1.0
+  LIBRARY_CLASS           = SetupLib | DXE_DRIVER DXE_SMM_DRIVER DXE_RUNTIME_DRIVER UEFI_DRIVER
+
+[Sources]
+  DxeSetupLib.c
+     
+[Packages]  
+  MdePkg/MdePkg.dec
+  CpRcPkg/CpRcPkg.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  PurleySktPkg/Me/MePkg.dec
+  PurleySktPkg/Ie/IePkg.dec
+
+[LibraryClasses]
+  DebugLib
+  UefiLib
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  BaseMemoryLib
+  MemoryAllocationLib
+  DxeServicesTableLib
+  
+[Protocols]
+  gEfiSmmBase2ProtocolGuid
+
+[Guids]
+  gEfiSocketIioVariableGuid
+  gEfiSocketCommonRcVariableGuid
+  gEfiSocketMpLinkVariableGuid
+  gEfiSocketMemoryVariableGuid
+  gEfiSocketPowermanagementVarGuid
+  gEfiSocketProcessorCoreVarGuid
+  gEfiSetupVariableGuid
+  gEfiPchRcVariableGuid
+  gEfiMeRcVariableGuid
+  gEfiIeRcVariableGuid
+  gFpgaSocketVariableGuid
+
+[Pcd]
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[Depex]
+  TRUE

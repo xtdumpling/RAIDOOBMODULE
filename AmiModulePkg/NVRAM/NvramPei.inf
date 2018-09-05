@@ -1,0 +1,62 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = NvramPei
+  FILE_GUID                      = 838DCF34-907B-4d55-9A4B-A0EF7167B5F4
+  MODULE_TYPE                    = PEIM
+  ENTRY_POINT                    = PeiInitNvram
+
+[Sources]  
+  NVRAM.h	
+  NvramRead.c	
+  NvramPei.c
+
+[Packages]
+  MdePkg/MdePkg.dec   
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec 
+  AmiModulePkg/AmiModulePkg.dec
+  
+[LibraryClasses]
+  AmiPeiLib
+  AmiCspLib
+  PeimEntryPoint
+  AmiRomLayoutLib
+
+[Ppis]
+  gEfiPeiReadOnlyVariable2PpiGuid        ## PRODUCES 
+  gEfiPeiReadOnlyVariablePpiGuid		 ## PRODUCES
+
+[Guids]
+  gAmiNvramMainRomAreaGuid
+  gAmiNvramBackupRomAreaGuid
+
+[Depex]
+  TRUE
+  
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

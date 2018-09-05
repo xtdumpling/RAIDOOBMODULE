@@ -1,0 +1,342 @@
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
+
+//
+// @file  BmcUserSetting.sd
+//
+// BMC User Setting log form set
+//
+
+#ifdef SERVER_MGMT_CONFIGURATION_DATA_DEFINITION
+//***********************************************************
+// Put NVRAM data definitions here.
+// For example:    UINT8 Data1;
+// These definitions will be converted by the build process
+// to a definitions of SERVER_MGMT_CONFIGURATION_DATA fields.
+//***********************************************************
+    CHAR16          AddBmcUserName[17];
+    UINT16          AddBmcUserPassword[BMC_USER_PASSWORD_MAX_SIZE];
+    UINT8           AddBmcChannelNo;
+    UINT8           AddBmcUserPrivilegeLimit;
+
+    CHAR16          DeleteBmcUserName[17];
+
+    CHAR16          ChangeUserSettingsBmcCurrentUserName[17];
+    UINT8           ChangeUserSettingsBmcUser;
+    UINT8           ChangeUserSettingsBmcChannelNo;
+    UINT16          ChangeUserSettingsBmcUserPassword[BMC_USER_PASSWORD_MAX_SIZE];
+    UINT8           ChangeUserSettingsBmcUserPrivilegeLimit;
+
+    UINT8           ChangeUserSettingsValidBmcUser;
+    UINT8           ChangeUserSettingsValidBmcUserCredentials;
+    UINT8           AddBmcUserMaximumPossibleUserPrivilegeLevel;
+    UINT8           ChangeUserSettingsBmcUserMaximumPossibleUserPrivilegeLevel;
+
+#endif //#ifdef SERVER_MGMT_CONFIGURATION_DATA_DEFINITION
+
+#if defined(VFRCOMPILE) && !defined(CONTROLS_ARE_DEFINED)
+#define CONTROL_DEFINITION
+#endif
+
+#ifdef CONTROL_DEFINITION
+
+#define BMCUSERSETTINGS_STRING_ADDBMCUSERNAME\
+    string varid = SERVER_MGMT_CONFIGURATION_DATA.AddBmcUserName,\
+        prompt = STRING_TOKEN(STR_BMC_USER_NAME),\
+        help = STRING_TOKEN(STR_BMC_USER_NAME_HELP),\
+        flags = INTERACTIVE,\
+        key = AUTO_ID(ADD_BMC_USER_NAME_KEY),\
+        minsize = 1,\
+        maxsize = 16,\
+        default = STRING_TOKEN(STR_NULL_STRING),\
+        default = STRING_TOKEN(STR_NULL_STRING), defaultstore = AmiMfgDefault,\
+    endstring;
+
+#define BMCUSERSETTINGS_PASSWORD_ADDBMCUSERPASSWORD\
+    password varid = SERVER_MGMT_CONFIGURATION_DATA.AddBmcUserPassword,\
+        prompt = STRING_TOKEN(STR_BMC_USER_PASSWORD),\
+        help = STRING_TOKEN(STR_BMC_USER_PASSWORD_HELP),\
+        flags = INTERACTIVE,\
+        key = AUTO_ID(ADD_BMC_USER_PASSWORD_KEY),\
+        minsize = BMC_USER_PASSWORD_MIN_SIZE,\
+        maxsize = BMC_USER_PASSWORD_MAX_SIZE,\
+        encoding = 1,\
+        default = STRING_TOKEN(STR_NULL_STRING),\
+        default = STRING_TOKEN(STR_NULL_STRING), defaultstore = AmiMfgDefault,\
+    endpassword;
+
+#define BMCUSERSETTINGS_NUMERIC_ADDBMCCHANNELNUMBER\
+    numeric varid = SERVER_MGMT_CONFIGURATION_DATA.AddBmcChannelNo,\
+        prompt  = STRING_TOKEN (STR_BMC_CHANNEL_NUMBER),\
+        help    = STRING_TOKEN (STR_BMC_CHANNEL_NUMBER_HELP),\
+        flags   = INTERACTIVE,\
+        key = AUTO_ID(ADD_BMC_USER_CHANNEL_NO_KEY),\
+        minimum = 0,\
+        maximum = 15,\
+        default = 0,\
+        default = 0, defaultstore = AmiMfgDefault,\
+    endnumeric;
+
+#define BMCUSERSETTINGS_ONEOF_ADDBMCUSERPRIVILEGELIMIT\
+    oneof varid = SERVER_MGMT_CONFIGURATION_DATA.AddBmcUserPrivilegeLimit,\
+        questionid = AUTO_ID(ADD_BMC_USER_PRIVILEGE_LIMIT_KEY),\
+        prompt      = STRING_TOKEN(STR_BMC_USER_PRIVILEGE_LIMIT),\
+        help        = STRING_TOKEN(STR_BMC_USER_PRIVILEGE_LIMIT_HELP),\
+        option text = STRING_TOKEN(STR_RESERVED), value = 0, flags = INTERACTIVE;\
+    suppressif  ideqval SERVER_MGMT_CONFIGURATION_DATA.AddBmcUserMaximumPossibleUserPrivilegeLevel == 0;\
+        option text = STRING_TOKEN(STR_CALLBACK), value = 1, flags = INTERACTIVE;\
+    suppressif  ideqval SERVER_MGMT_CONFIGURATION_DATA.AddBmcUserMaximumPossibleUserPrivilegeLevel == 1;\
+        option text = STRING_TOKEN(STR_USER), value = 2, flags = INTERACTIVE;\
+    suppressif  ideqval SERVER_MGMT_CONFIGURATION_DATA.AddBmcUserMaximumPossibleUserPrivilegeLevel == 2;\
+        option text = STRING_TOKEN(STR_OPERATOR),  value = 3, flags = INTERACTIVE;\
+    suppressif  ideqval SERVER_MGMT_CONFIGURATION_DATA.AddBmcUserMaximumPossibleUserPrivilegeLevel == 3;\
+        option text = STRING_TOKEN(STR_ADMINISTRATOR), value = 4, flags = INTERACTIVE;\
+    suppressif  ideqval SERVER_MGMT_CONFIGURATION_DATA.AddBmcUserMaximumPossibleUserPrivilegeLevel == 4;\
+        option text = STRING_TOKEN(STR_OEM_PROPRIETARY), value = 5, flags = INTERACTIVE;\
+        default = 0,\
+        default = 0, defaultstore = AmiMfgDefault,\
+    endif\
+    endif\
+    endif\
+    endif\
+    endif\
+    endoneof;
+
+#define BMCUSERSETTINGS_STRING_DELETEBMCUSERNAME\
+    string varid = SERVER_MGMT_CONFIGURATION_DATA.DeleteBmcUserName,\
+        prompt = STRING_TOKEN(STR_BMC_USER_NAME),\
+        help = STRING_TOKEN(STR_BMC_USER_NAME_HELP),\
+        flags = INTERACTIVE,\
+        key = AUTO_ID(DELETE_BMC_USER_NAME_KEY),\
+        minsize = 1,\
+        maxsize = 16,\
+        default = STRING_TOKEN(STR_NULL_STRING),\
+        default = STRING_TOKEN(STR_NULL_STRING), defaultstore = AmiMfgDefault,\
+    endstring;
+    
+#define BMCUSERSETTINGS_TEXT_DELETEBMCUSERPASSWORD\
+    text\
+      help   = STRING_TOKEN (STR_BMC_USER_PASSWORD_HELP),\
+      text   = STRING_TOKEN (STR_BMC_USER_PASSWORD),\
+      flags  = INTERACTIVE,\
+      key    = AUTO_ID(DELETE_BMC_USER_PASSWORD_KEY);
+
+#define BMCUSERSETTINGS_STRING_CHANGEUSERSETTINGSBMCCURRENTUSERNAME\
+    string varid = SERVER_MGMT_CONFIGURATION_DATA.ChangeUserSettingsBmcCurrentUserName,\
+        prompt = STRING_TOKEN(STR_BMC_USER_NAME),\
+        help = STRING_TOKEN(STR_BMC_USER_NAME_HELP),\
+        flags = INTERACTIVE,\
+        key = AUTO_ID(CHANGE_USER_SETTINGS_BMC_CURRENT_USER_NAME_KEY),\
+        minsize = 1,\
+        maxsize = 16,\
+        default = STRING_TOKEN(STR_NULL_STRING),\
+        default = STRING_TOKEN(STR_NULL_STRING), defaultstore = AmiMfgDefault,\
+    endstring;
+
+#define BMCUSERSETTINGS_TEXT_CHANGEUSERSETTINGSBMCCURRENTUSERPASSWORD\
+    text\
+      help   = STRING_TOKEN (STR_BMC_USER_PASSWORD_HELP),\
+      text   = STRING_TOKEN (STR_BMC_USER_PASSWORD),\
+      flags  = INTERACTIVE,\
+      key    = AUTO_ID(CHANGE_USER_SETTINGS_BMC_USER_CURRENT_PASSWORD_KEY);
+
+#define BMCUSERSETTINGS_NUMERIC_CHANGEUSERSETTINGSBMCCHANNELNUMBER\
+    numeric varid = SERVER_MGMT_CONFIGURATION_DATA.ChangeUserSettingsBmcChannelNo,\
+        prompt  = STRING_TOKEN (STR_BMC_CHANNEL_NUMBER),\
+        help    = STRING_TOKEN (STR_BMC_CHANNEL_NUMBER_HELP),\
+        flags   = INTERACTIVE,\
+        key     = AUTO_ID(CHANGE_USER_SETTINGS_BMC_USER_CHANNEL_NO_KEY),\
+        minimum = 0,\
+        maximum = 15,\
+        default = 0,\
+        default = 0, defaultstore = AmiMfgDefault,\
+    endnumeric;
+
+#define BMCUSERSETTINGS_ONEOF_CHANGEUSERSETTINGSBMCUSERPRIVILEGELIMIT\
+    oneof varid = SERVER_MGMT_CONFIGURATION_DATA.ChangeUserSettingsBmcUserPrivilegeLimit,\
+        questionid = AUTO_ID(CHANGE_USER_SETTINGS_BMC_USER_PRIVILEGE_LIMIT_KEY),\
+        prompt      = STRING_TOKEN(STR_BMC_USER_PRIVILEGE_LIMIT),\
+        help        = STRING_TOKEN(STR_BMC_USER_PRIVILEGE_LIMIT_HELP),\
+        option text = STRING_TOKEN(STR_RESERVED), value = 0, flags = INTERACTIVE;\
+    suppressif  ideqval SERVER_MGMT_CONFIGURATION_DATA.ChangeUserSettingsBmcUserMaximumPossibleUserPrivilegeLevel == 0;\
+        option text = STRING_TOKEN(STR_CALLBACK), value = 1, flags = INTERACTIVE;\
+    suppressif  ideqval SERVER_MGMT_CONFIGURATION_DATA.ChangeUserSettingsBmcUserMaximumPossibleUserPrivilegeLevel == 1;\
+        option text = STRING_TOKEN(STR_USER), value = 2, flags = INTERACTIVE;\
+    suppressif  ideqval SERVER_MGMT_CONFIGURATION_DATA.ChangeUserSettingsBmcUserMaximumPossibleUserPrivilegeLevel == 2;\
+        option text = STRING_TOKEN(STR_OPERATOR),  value = 3, flags = INTERACTIVE;\
+    suppressif  ideqval SERVER_MGMT_CONFIGURATION_DATA.ChangeUserSettingsBmcUserMaximumPossibleUserPrivilegeLevel == 3;\
+        option text = STRING_TOKEN(STR_ADMINISTRATOR), value = 4, flags = INTERACTIVE;\
+    suppressif  ideqval SERVER_MGMT_CONFIGURATION_DATA.ChangeUserSettingsBmcUserMaximumPossibleUserPrivilegeLevel == 4;\
+        option text = STRING_TOKEN(STR_OEM_PROPRIETARY), value = 5, flags = INTERACTIVE;\
+        default = 0,\
+        default = 0, defaultstore = AmiMfgDefault,\
+    endif\
+    endif\
+    endif\
+    endif\
+    endif\
+    endoneof;
+
+#define BMCUSERSETTINGS_PASSWORD_CHANGEUSERSETTINGSBMCUSERPASSWORD\
+    password varid = SERVER_MGMT_CONFIGURATION_DATA.ChangeUserSettingsBmcUserPassword,\
+        prompt = STRING_TOKEN(STR_BMC_CHANGE_USER_PASSWORD),\
+        help = STRING_TOKEN(STR_BMC_CHANGE_USER_PASSWORD_HELP),\
+        flags = INTERACTIVE,\
+        key = AUTO_ID(CHANGE_USER_SETTINGS_BMC_USER_PASSWORD_KEY),\
+        minsize = BMC_USER_PASSWORD_MIN_SIZE,\
+        maxsize = BMC_USER_PASSWORD_MAX_SIZE,\
+        encoding = 1,\
+        default = STRING_TOKEN(STR_NULL_STRING),\
+        default = STRING_TOKEN(STR_NULL_STRING), defaultstore = AmiMfgDefault,\
+    endpassword;
+
+#define BMCUSERSETTINGS_ONEOF_CHANGEUSERSETTINGSBMCUSER\
+    oneof varid = SERVER_MGMT_CONFIGURATION_DATA.ChangeUserSettingsBmcUser,\
+        questionid = AUTO_ID(CHANGE_USER_SETTINGS_BMC_USER_KEY),\
+        prompt      = STRING_TOKEN(STR_BMC_USER),\
+        help        = STRING_TOKEN(STR_BMC_USER_HELP),\
+        option text = STRING_TOKEN(STR_USER_ENABLE), value = 1, flags = INTERACTIVE;\
+        option text = STRING_TOKEN(STR_USER_DISABLE), value = 0, flags = INTERACTIVE;\
+        default = 0,\
+        default = 0, defaultstore = AmiMfgDefault,\
+    endoneof;
+
+#endif //#ifdef CONTROL_DEFINITION
+
+#ifdef CONTROLS_WITH_DEFAULTS
+
+BMCUSERSETTINGS_NUMERIC_ADDBMCCHANNELNUMBER
+BMCUSERSETTINGS_ONEOF_ADDBMCUSERPRIVILEGELIMIT
+BMCUSERSETTINGS_ONEOF_CHANGEUSERSETTINGSBMCUSER
+BMCUSERSETTINGS_NUMERIC_CHANGEUSERSETTINGSBMCCHANNELNUMBER
+BMCUSERSETTINGS_ONEOF_CHANGEUSERSETTINGSBMCUSERPRIVILEGELIMIT
+
+#endif //#ifdef CONTROLS_WITH_DEFAULTS
+
+#ifdef SERVER_MGMT_FORM_SET
+
+    #ifdef FORM_SET_TYPEDEF
+    //
+    // If you need any additional type definitions add them here
+    //
+    #include <Token.h>
+    #endif
+
+    #ifdef FORM_SET_VARSTORE
+    //
+    //If you need custom varstore's define them here
+    //
+    #endif
+
+    #ifdef FORM_SET_ITEM
+    //
+    // Define controls to be added to the main page of the formset
+    //
+    #endif
+
+    #ifdef FORM_SET_GOTO
+        suppressif  ideqval SERVER_MGMT_CONFIGURATION_DATA.BmcSupport == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+        goto BMC_USER_SETTINGS_FORM,
+            prompt = STRING_TOKEN(STR_BMC_USER_SETTINGS_TITLE),
+            help   = STRING_TOKEN(STR_BMC_USER_SETTINGS_HELP),
+            flags  = INTERACTIVE,
+            key    = AUTO_ID(BMC_USER_SETTINGS_KEY);
+        SUPPRESS_GRAYOUT_ENDIF
+    #endif
+
+    #ifdef FORM_SET_FORM
+        #ifndef BMC_USER_SETTINGS_FORM_SERVERMGMT
+        #define BMC_USER_SETTINGS_FORM_SERVERMGMT
+        form formid = AUTO_ID(BMC_USER_SETTINGS_FORM),
+            title  = STRING_TOKEN (STR_BMC_USER_SETTINGS_TITLE);
+            subtitle text = STRING_TOKEN(STR_BMC_USER_SETTINGS_TITLE);
+            subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+            goto BMC_ADD_USER_FORM,
+                prompt = STRING_TOKEN(STR_ADD_BMC_USER),
+                help   = STRING_TOKEN(STR_ADD_BMC_USER_HELP),
+                flags  = INTERACTIVE,
+                key    = AUTO_ID(ADD_BMC_USER_KEY);
+
+            subtitle text = STRING_TOKEN(STR_NULL_STRING);
+            goto BMC_DELETE_USER_FORM,
+                prompt = STRING_TOKEN(STR_DELETE_BMC_USER),
+                help   = STRING_TOKEN(STR_DELETE_BMC_USER_HELP),
+                flags  = INTERACTIVE,
+                key    = AUTO_ID(DELETE_BMC_USER_KEY);
+
+            subtitle text = STRING_TOKEN(STR_NULL_STRING);
+            goto BMC_CHANGE_USER_SETTINGS_FORM,
+                prompt = STRING_TOKEN(STR_CHANGE_BMC_USER_SETTINGS),
+                help   = STRING_TOKEN(STR_CHANGE_BMC_USER_SETTINGS_HELP),
+                flags  = INTERACTIVE,
+                key    = AUTO_ID(CHANGE_BMC_USER_SETTINGS_KEY);
+        endform;
+
+        form formid = AUTO_ID(BMC_ADD_USER_FORM),
+            title  = STRING_TOKEN (STR_BMC_ADD_USER_TITLE);
+            subtitle text = STRING_TOKEN(STR_BMC_ADD_USER_TITLE);
+            subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+            BMCUSERSETTINGS_STRING_ADDBMCUSERNAME
+            BMCUSERSETTINGS_PASSWORD_ADDBMCUSERPASSWORD
+            BMCUSERSETTINGS_NUMERIC_ADDBMCCHANNELNUMBER
+            BMCUSERSETTINGS_ONEOF_ADDBMCUSERPRIVILEGELIMIT
+        endform;
+
+        form formid = AUTO_ID(BMC_DELETE_USER_FORM),
+            title  = STRING_TOKEN (STR_BMC_DELETE_USER_TITLE);
+            subtitle text = STRING_TOKEN(STR_BMC_DELETE_USER_TITLE);
+            subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+            BMCUSERSETTINGS_STRING_DELETEBMCUSERNAME
+            BMCUSERSETTINGS_TEXT_DELETEBMCUSERPASSWORD
+        endform;
+
+        form formid = AUTO_ID(BMC_CHANGE_USER_SETTINGS_FORM),
+            title  = STRING_TOKEN (STR_BMC_CHANGE_USER_SETTINGS_TITLE);
+            subtitle text = STRING_TOKEN(STR_BMC_CHANGE_USER_SETTINGS_TITLE);
+            subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+                BMCUSERSETTINGS_STRING_CHANGEUSERSETTINGSBMCCURRENTUSERNAME
+            grayoutif  ideqval SERVER_MGMT_CONFIGURATION_DATA.ChangeUserSettingsValidBmcUser == 0;
+                BMCUSERSETTINGS_TEXT_CHANGEUSERSETTINGSBMCCURRENTUSERPASSWORD
+            endif;
+
+            grayoutif  ideqval SERVER_MGMT_CONFIGURATION_DATA.ChangeUserSettingsValidBmcUserCredentials == 0;
+                BMCUSERSETTINGS_ONEOF_CHANGEUSERSETTINGSBMCUSER
+                BMCUSERSETTINGS_PASSWORD_CHANGEUSERSETTINGSBMCUSERPASSWORD
+                BMCUSERSETTINGS_NUMERIC_CHANGEUSERSETTINGSBMCCHANNELNUMBER
+                BMCUSERSETTINGS_ONEOF_CHANGEUSERSETTINGSBMCUSERPRIVILEGELIMIT
+            endif;
+        endform;
+
+        #endif //#ifndef BMC_USER_SETTINGS_FORM_SERVERMGMT
+    #endif //#ifdef FORM_SET_FORM
+#endif //#ifdef SERVER_MGMT_FORM_SET
+
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**         5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093     **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************

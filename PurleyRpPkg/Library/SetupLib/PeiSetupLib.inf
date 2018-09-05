@@ -1,0 +1,64 @@
+## @file
+#
+#  Copyright (c) 2009 - 2016, Intel Corporation. All rights reserved.<BR>
+#  This program and the accompanying materials
+#  are licensed and made available under the terms and conditions of the BSD License
+#  which accompanies this distribution. The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.php
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = PeiSetupLib
+  FILE_GUID                      = C27D6383-F718-490c-8959-CB8370263329
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = SetupLib | PEIM
+
+
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+
+# APTIOV_SERVER_OVERRIDE_RC_START : To remove the Common icon display in source tree.
+[Sources] 
+# APTIOV_SERVER_OVERRIDE_RC_END : To remove the Common icon display in source tree.
+  PeiSetupLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  PurleySktPkg/SocketPkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  PurleySktPkg/Me/MePkg.dec
+  PurleySktPkg/Ie/IePkg.dec
+
+[LibraryClasses]
+  DebugLib
+  BaseMemoryLib
+  MemoryAllocationLib
+
+[Guids]
+  gEfiSocketIioVariableGuid
+  gEfiSocketCommonRcVariableGuid
+  gEfiSocketMpLinkVariableGuid
+  gEfiSocketMemoryVariableGuid
+  gEfiSocketPowermanagementVarGuid
+  gEfiSocketProcessorCoreVarGuid
+  gEfiSetupVariableGuid
+  gEfiPchRcVariableGuid
+  gEfiMeRcVariableGuid
+  gEfiIeRcVariableGuid
+  gFpgaSocketVariableGuid
+
+[Pcd.common]
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+

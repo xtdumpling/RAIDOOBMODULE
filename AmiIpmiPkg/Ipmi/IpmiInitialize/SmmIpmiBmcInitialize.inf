@@ -1,0 +1,89 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+#
+# @file SmmIpmiBmcInitialize.inf
+#
+# INF description file for SmmIpmiBmcInitialize driver
+#
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SmmIpmiBmcInitialize
+  FILE_GUID                      = E8C729FE-FB0A-4344-AD7E-48784116C9EF
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  VERSION_STRING                 = 1.0
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  ENTRY_POINT                    = InitializeIpmiSmmPhysicalLayer
+
+[Sources]
+  SmmIpmiBmcInitialize.c
+  ../BmcCommonAccess/DxeSmmIpmiBmc.h
+  ../BmcCommonAccess/IpmiBmc.h
+  ../BmcCommonAccess/IpmiBmc.c
+  ../BmcCommonAccess/KcsBmc.h
+  ../BmcCommonAccess/KcsBmc.c
+  ../BmcCommonAccess/BtBmc.c
+  ../BmcCommonAccess/BtBmc.h
+  ../BmcCommonAccess/IpmbBmc.c
+  ../BmcCommonAccess/IpmbBmc.h
+  ../BmcCommonAccess/SsifBmc.c
+  ../BmcCommonAccess/SsifBmc.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiIpmiPkg/AmiIpmiPkg.dec
+#APTIOV_SERVER_OVERRIDE_START: Security Vulnerability
+  AmiModulePkg/AmiModulePkg.dec
+#APTIOV_SERVER_OVERRIDE_END: Security Vulnerability
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  MemoryAllocationLib
+  TimerLib
+  DebugLib
+  SmmServicesTableLib
+  IoLib
+#APTIOV_SERVER_OVERRIDE_START: Security Vulnerability
+  AmiBufferValidationLib
+#APTIOV_SERVER_OVERRIDE_END: Security Vulnerability
+
+[Protocols]
+  gEfiSmmIpmiTransportProtocolGuid    #PRODUCES
+  gEfiI2cMasterProtocolGuid           #CONSUMES
+  gEfiSmbusHcProtocolGuid             #CONSUMES
+
+[Guids]
+
+[Pcd]
+
+[Depex]
+  gEfiDxeIpmiTransportProtocolGuid
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**         5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093     **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

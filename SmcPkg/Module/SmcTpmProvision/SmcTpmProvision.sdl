@@ -1,0 +1,102 @@
+#****************************************************************************
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#
+#  File History
+#
+#  Rev. 1.04
+#    Bug Fix : 1. [Fixes] Fixed the system cannot enter to TXT Environment when
+#              using TPM 1.2 on production platform.
+#              2. [Fixes] Fixed TPM 2.0 BIOS-Based Provisioning table doesn't 
+#              set PW flag to PS LCP Data for production platform.
+#    Reason  : Bug Fixed.
+#    Auditor : Joe Jhang
+#    Date    : Jul/20/2017
+#
+#  Rev. 1.03
+#    Bug Fix : N/A.
+#    Reason  : Set "BUILT_IN_TPM_PROVISIONING_TABLE_SUPPORT" token to "Enabled" 
+#              by default for provisioning TPM by built-in BIOS ROM.
+#    Auditor : Joe Jhang
+#    Date    : Jan/24/2017
+#
+#  Rev. 1.02
+#    Bug Fix : N/A.
+#    Reason  : Added BUILT_IN_TPM_PROVISIONING_TABLE_SUPPORT token in SDL and
+#              set to disabled by default for provisioning TPM remotely.
+#    Auditor : Joe Jhang
+#    Date    : Jan/20/2017
+#
+#  Rev. 1.01
+#    Bug Fix : N/A.
+#    Reason  : Implemented PPI-x OOB to check TPM provisioning table signature.
+#    Auditor : Joe Jhang
+#    Date    : Jan/10/2017
+#
+#  Rev. 1.00
+#    Bug Fix : N/A.
+#    Reason  : Initialized source code from Intel.
+#    Auditor : Joe Jhang
+#    Date    : Jan/09/2017
+#
+#****************************************************************************
+#****************************************************************************
+TOKEN
+	Name  = "SMC_TPM_PROVISION_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch enable TpmProvision Driver Support"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "BUILT_IN_TPM_PROVISIONING_TABLE_SUPPORT"
+	Value  = "1"
+	Help  = "Main token switch to enable built-in TPM provisioning table in BIOS ROM."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+PATH
+	Name  = "SmcTpmProvision_DIR"
+End
+
+FFS_FILE
+	Name  = "SmcTpmProvisionDxe"
+	FD_AREA  = "FV_MAIN"
+	INFComponent  = "SmcPkg.SmcTpmProvisionDxe"
+End
+
+# Following is added for EDKII style to include the .inf file into build system
+
+INFComponent
+        Name  = "SmcTpmProvisionDxe"
+        File  = "SmcTpmProvisionDXe.inf"
+        Package  = "SmcPkg"
+        ModuleTypes  = "DXE_DRIVER"
+End
+
+FFS_FILE
+    	Name  = "ProvisionTableStatement"
+	FD_AREA  = "FV_MAIN"
+    	FILE_Stmt  = "SmcPkg\Module\SmcTpmProvision\ProvisioningTables\ProvisionTable_NPW_Statement.txt"
+	Token = "BUILT_IN_TPM_PROVISIONING_TABLE_SUPPORT" "=" "1"
+	Token = "OFFICIAL_RELEASE" "=" "0"
+End
+
+FFS_FILE
+    	Name  = "ProvisionTableStatement"
+	FD_AREA  = "FV_MAIN"
+    	FILE_Stmt  = "SmcPkg\Module\SmcTpmProvision\ProvisioningTables\ProvisionTable_PW_Statement.txt"
+	Token = "BUILT_IN_TPM_PROVISIONING_TABLE_SUPPORT" "=" "1"
+	Token = "OFFICIAL_RELEASE" "=" "1"
+End
+
+

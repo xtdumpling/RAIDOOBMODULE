@@ -1,0 +1,100 @@
+## @file
+#
+#  Copyright (c) 2009 - 2016, Intel Corporation. All rights reserved.<BR>
+#
+#  This program and the accompanying materials
+#  are licensed and made available under the terms and conditions of the BSD License
+#  which accompanies this distribution. The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.php
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+#
+##
+
+[Defines]
+  INF_VERSION                 = 0x00010005
+  BASE_NAME                   = AcpiSmmPlatform
+  FILE_GUID                   = F5AC7057-5650-466e-B692-76A47223EFB0
+  MODULE_TYPE                 = DXE_SMM_DRIVER
+  VERSION_STRING              = 1.0
+  PI_SPECIFICATION_VERSION    = 0x0001000A
+  ENTRY_POINT                 = InitAcpiSmmPlatform
+
+[Sources]
+  AcpiSmmPlatform.c
+  AcpiSmmPlatform.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  CpPlatPkg/CpPlatPkg.dec
+# APTIOV_SERVER_OVERRIDE_RC_START
+#  SecurityPkg/SecurityPkg.dec
+# APTIOV_SERVER_OVERRIDE_RC_END
+  PurleySktPkg/Me/MePkg.dec
+
+[LibraryClasses]
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  UefiDriverEntryPoint
+  DebugLib
+  IoLib
+  PciLib
+  BaseMemoryLib
+  BaseLib
+  SmmServicesTableLib
+  PcdLib
+  HobLib
+  S3BootScriptLib
+  LockBoxLib
+  MmPciLib
+  SetupLib
+  PchCycleDecodingLib
+  PchPcrLib
+  ReportStatusCodeLib
+  UsraLib
+
+
+[Protocols]
+  gEfiSmmPowerButtonDispatch2ProtocolGuid
+  gEfiSmmSxDispatch2ProtocolGuid
+  gEfiPciRootBridgeIoProtocolGuid
+  gEfiVariableArchProtocolGuid
+  gEfiVariableWriteArchProtocolGuid
+  gEfiGlobalNvsAreaProtocolGuid
+  gEfiIioUdsProtocolGuid
+  gEfiSmmSwDispatch2ProtocolGuid
+
+[Guids]
+  gEfiAcpiVariableCompatiblityGuid
+  gEfiSetupVariableGuid
+  gEfiSmmPeiSmramMemoryReserveGuid
+  gPchS3CodeInLockBoxGuid
+  gPchS3ContextInLockBoxGuid
+  gEfiPchRcVariableGuid
+
+[Pcd]
+  gEfiMdeModulePkgTokenSpaceGuid.PcdProgressCodeS3SuspendStart
+  gEfiIntelFrameworkModulePkgTokenSpaceGuid.PcdS3AcpiReservedMemorySize
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[Depex]
+  gEfiSmmPowerButtonDispatch2ProtocolGuid AND
+  gEfiSmmSxDispatch2ProtocolGuid AND
+  gEfiPciRootBridgeIoProtocolGuid AND
+  gEfiVariableArchProtocolGuid AND
+  gEfiVariableWriteArchProtocolGuid AND
+  gEfiGlobalNvsAreaProtocolGuid
+
+
+

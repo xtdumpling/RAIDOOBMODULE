@@ -1,0 +1,495 @@
+TOKEN
+	Name  = "AmiStatusCode_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable Status Code support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "STRING_STATUS_SUPPORT"
+	Value  = "1"
+	Help  = "Enables/Disables all string-based status code routines \defined by the ReportStringStatus eLink"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SERIAL_STATUS_SUPPORT"
+	Value  = "1"
+	Help  = "Enables/Disables serail port status code routine"
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "STRING_STATUS_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "SERIAL_CHECKPOINT_ENABLE"
+	Value  = "0"
+	Help  = "Enables/Disables Checkpoints over Serial Port."
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "SERIAL_STATUS_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "RUNTIME_TRACE_SUPPORT"
+	Value  = "1"
+	Help  = "Enables/Disables support of trace messages in Runtime"
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "DEBUG_MODE" "!=" "0"
+End
+
+TOKEN
+	Name  = "DATAHUB_STATUS_SUPPORT"
+	Value  = "1"
+	Help  = "Enables/Disables logging of the status codes into a data hub"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "CONOUT_CHECKPOINTS_SUPPORT"
+	Value  = "1"
+	Help  = "Enables/Disables checkpoint display on the ConOut devices\(right bottom corner)"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "CON_OUT_CHECKPOINTS_IN_QUIET_MODE"
+	Value  = "1"
+	Help  = "Enables/Disables checkpoints display on the ConOut devices\in quiet mode (only in effect when CONOUT_CHECKPOINTS_SUPPORT is enabled)"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "CHECKPOINT_PROGRESS_CODES_MAP"
+	Value  = "ProgressCheckpointMap"
+	Help  = "Name of the table that establishes mapping between progress codes and checkpoints.\Clone this token to support custom checkpoint lists."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "CHECKPOINT_ERROR_CODES_MAP"
+	Value  = "ErrorCheckpointMap"
+	Help  = "Name of the table that establishes mapping between error codes and checkpoints.\Clone this token to support custom checkpoint lists."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "BEEP_ENABLE"
+	Value  = "1"
+	Help  = "This flag enables/disables all firmware beeps"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "BEEP_PROGRESS_CODES_MAP"
+	Value  = "ProgressBeepMap"
+	Help  = "Name of the table that establishes mapping between progress codes and number of beeps.\Clone this token to support custom beep codes."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "BEEP_ERROR_CODES_MAP"
+	Value  = "ErrorBeepMap"
+	Help  = "Name of the table that establishes mapping between error codes and number of beeps.\Clone this token to support custom beep codes."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "DETAILED_ERROR_MESSAGES"
+	Value  = "1"
+	Help  = "When this token is enabled, error codes are converted into a human readable strings, which increases the ROM footprint. Keep this token off if ROM space is a concern."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "STATUS_CODE_VERSION"
+	Value  = "18"
+	Help  = "Version of the status code module."
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+	Lock = Yes
+End
+
+PATH
+	Name  = "STATUS_CODE_DIR"
+End
+
+MODULE
+	Help  = "Includes StatusCodeAmi.mak to Project"
+	File  = "StatusCodeAmi.mak"
+End
+
+ELINK
+	Name  = "PeiStatusCodeInitialize"
+	Help  = "This is a list of initialization routines for status code subcomponents. The routines are called during initialization of the StatusCode module\The child eLink can be in one of the following formats:\'InitFunctionName,' - The function will be called in PEI as well as in DXE\'PEI(InitFunctionName),' - The function will only be called in PEI\'DXE(InitFunctionName),' - The function will only be called in DXE\"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "DxeStatusCodeInitialize"
+	Help  = "This is a list of initialization routines for status code subcomponents. The routines are called during initialization of the StatusCode module\The child eLink can be in one of the following formats:\'InitFunctionName,' - The function will be called in PEI as well as in DXE\'PEI(InitFunctionName),' - The function will only be called in PEI\'DXE(InitFunctionName),' - The function will only be called in DXE\"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "PeiReportSimpleStatus"
+	Help  = "This is a list of status code routines that consume only status code type and value. \The child eLink must be in the following format: 'FunctionName,'"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "DxeReportSimpleStatus"
+	Help  = "This is a list of status code routines that consume only status code type and value. \The child eLink must be in the following format: 'FunctionName,'"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "RtReportSimpleStatus"
+	Help  = "This is a list of status code routines that consume only status code type and value. \The child eLink must be in the following format: 'FunctionName,'"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "SmmReportSimpleStatus"
+	Help  = "This is a list of status code routines that consume only status code type and value. \The child eLink must be in the following format: 'FunctionName,'"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "PeiReportMiscStatus"
+	Help  = "This is a list of status code routines that consume all available status code data. \The child eLink must be in the following format: 'FunctionName,'"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "DxeReportMiscStatus"
+	Help  = "This is a list of status code routines that consume all available status code data. \The child eLink must be in the following format: 'FunctionName,'"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "RtReportMiscStatus"
+	Help  = "This is a list of status code routines that consume all available status code data. \The child eLink must be in the following format: 'FunctionName,'"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "SmmReportMiscStatus"
+	Help  = "This is a list of status code routines that consume all available status code data. \The child eLink must be in the following format: 'FunctionName,'"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "CheckPointStatus,"
+	Parent  = "PeiReportSimpleStatus"
+	Help  = "This is a list of checkpoint routines. \The child eLink must be in the following format: 'FunctionName,'"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "CheckPointStatus,"
+	Parent  = "DxeReportSimpleStatus"
+	Help  = "This is a list of checkpoint routines. \The child eLink must be in the following format: 'FunctionName,'"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "CheckPointStatus,"
+	Parent  = "RtReportSimpleStatus"
+	Help  = "This is a list of checkpoint routines. \The child eLink must be in the following format: 'FunctionName,'"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "CheckPointStatus,"
+	Parent  = "SmmReportSimpleStatus"
+	Help  = "This is a list of checkpoint routines. \The child eLink must be in the following format: 'FunctionName,'"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "BeepService,"
+	Parent  = "PeiReportMiscStatus"
+	Token = "BEEP_ENABLE" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "BeepService,"
+	Parent  = "DxeReportMiscStatus"
+	Token = "BEEP_ENABLE" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "BeepStatus,"
+	Parent  = "PeiReportSimpleStatus"
+	Token = "BEEP_ENABLE" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "BeepStatus,"
+	Parent  = "DxeReportSimpleStatus"
+	Token = "BEEP_ENABLE" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "PeiReportStringStatus"
+	Help  = "This is a list of status code routines that consume strings. \The child eLink must be in the following format: 'FunctionName,'"
+	Token = "STRING_STATUS_SUPPORT" "=" "1"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "DxeReportStringStatus"
+	Help  = "This is a list of status code routines that consume strings. \The child eLink must be in the following format: 'FunctionName,'"
+	Token = "STRING_STATUS_SUPPORT" "=" "1"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "RtReportStringStatus"
+	Help  = "This is a list of status code routines that consume strings. \The child eLink must be in the following format: 'FunctionName,'"
+	Token = "STRING_STATUS_SUPPORT" "=" "1"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "SmmReportStringStatus"
+	Help  = "This is a list of status code routines that consume strings. \The child eLink must be in the following format: 'FunctionName,'"
+	Token = "STRING_STATUS_SUPPORT" "=" "1"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "PeiReportCheckpoint"
+	Help  = "This is a list of checkpoint display routines. \The child eLink must be in the following format: 'FunctionName,'"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "DxeReportCheckpoint"
+	Help  = "This is a list of checkpoint display routines. \The child eLink must be in the following format: 'FunctionName,'"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "RtReportCheckpoint"
+	Help  = "This is a list of checkpoint display routines. \The child eLink must be in the following format: 'FunctionName,'"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "SmmReportCheckpoint"
+	Help  = "This is a list of checkpoint display routines. \The child eLink must be in the following format: 'FunctionName,'"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "Port80Checkpoint,"
+	Parent  = "PeiReportCheckpoint"
+	Help  = "Port 0x80 checkpoints"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "Port80Checkpoint,"
+	Parent  = "DxeReportCheckpoint"
+	Help  = "Port 0x80 checkpoints"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "Port80Checkpoint,"
+	Parent  = "RtReportCheckpoint"
+	Help  = "Port 0x80 checkpoints"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "Port80Checkpoint,"
+	Parent  = "SmmReportCheckpoint"
+	Help  = "Port 0x80 checkpoints"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "DataHubStatusCode,"
+	Parent  = "DxeReportMiscStatus"
+	Help  = "DataHub status code routine (DXE only).\Logs prorgess and error status codes into data hub"
+	Token = "DATAHUB_STATUS_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "SerialOutput,"
+	Parent  = "PeiReportStringStatus"
+	Help  = "Serial port string status code"
+	Token = "SERIAL_STATUS_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "SerialOutput,"
+	Parent  = "DxeReportStringStatus"
+	Help  = "Serial port string status code"
+	Token = "SERIAL_STATUS_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "SerialOutput,"
+	Parent  = "RtReportStringStatus"
+	Help  = "Serial port string status code"
+	Token = "SERIAL_STATUS_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "SerialOutput,"
+	Parent  = "SmmReportStringStatus"
+	Help  = "Serial port string status code"
+	Token = "SERIAL_STATUS_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "ConOutCheckpoint,"
+	Parent  = "DxeReportCheckpoint"
+	Help  = "ConOut Checkpoints (DXE only)"
+	Token = "CONOUT_CHECKPOINTS_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "SerialCheckpoint,"
+	Parent  = "PeiReportCheckpoint"
+	Help  = "Checkpoints over Serial Port"
+	Token = "SERIAL_CHECKPOINT_ENABLE" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "SerialCheckpoint,"
+	Parent  = "DxeReportCheckpoint"
+	Help  = "Checkpoints over Serial Port"
+	Token = "SERIAL_CHECKPOINT_ENABLE" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "SerialStatusInit,"
+	Parent  = "PeiStatusCodeInitialize"
+	Help  = "Serial port status code initialization routine"
+	Token = "SERIAL_STATUS_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "SerialStatusInit,"
+	Parent  = "DxeStatusCodeInitialize"
+	Help  = "Serial port status code initialization routine"
+	Token = "SERIAL_STATUS_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "ConOutCpInit,"
+	Parent  = "DxeStatusCodeInitialize"
+	Help  = "ConOut checkpoints initialization routine (DXE only)"
+	Token = "CONOUT_CHECKPOINTS_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "DataHubInit,"
+	Parent  = "DxeStatusCodeInitialize"
+	Help  = "DataHub status code initialization routine (DXE only).\Logs prorgess and error status codes into data hub"
+	Token = "DATAHUB_STATUS_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "PeiErrorCodeActions"
+	Help  = "List of actions to perform when error of a particular type is detected in PEI.\The child eLink has the following format: \ERROR_ACTION(Value,Action)\where\Value - error code value (error values are defined in AmiStatusCodes.h)\Action - error action. Function with the following interface:\VOID (ERROR_CODE_ACTION)(\    IN VOID *PeiServices, IN EFI_STATUS_CODE_VALUE Value\);\Custom or standard action can be used.\The following standard actions are defined:\Halt, ResetOrHalt, ResetOrResume\"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "DxeErrorCodeActions"
+	Help  = "List of actions to perform when error of a particular type is detected in DXE.\The child eLink has the following format: \ERROR_ACTION(Value,Action)\where\Value - error code value (error values are defined in AmiStatusCodes.h)\Action - error action. Function with the following interface:\VOID (ERROR_CODE_ACTION)(\    IN VOID *PeiServices, IN EFI_STATUS_CODE_VALUE Value\);\Custom or standard action can be used.\The following standard actions are defined:\Halt, ResetOrHalt, ResetOrResume\"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "RtErrorCodeActions"
+	Help  = "List of actions to perform when error of a particular type is detected in DXE.\The child eLink has the following format: \ERROR_ACTION(Value,Action)\where\Value - error code value (error values are defined in AmiStatusCodes.h)\Action - error action. Function with the following interface:\VOID (ERROR_CODE_ACTION)(\    IN VOID *PeiServices, IN EFI_STATUS_CODE_VALUE Value\);\Custom or standard action can be used.\The following standard actions are defined:\Halt, ResetOrHalt, ResetOrResume\"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "SmmErrorCodeActions"
+	Help  = "List of actions to perform when error of a particular type is detected in DXE.\The child eLink has the following format: \ERROR_ACTION(Value,Action)\where\Value - error code value (error values are defined in AmiStatusCodes.h)\Action - error action. Function with the following interface:\VOID (ERROR_CODE_ACTION)(\    IN VOID *PeiServices, IN EFI_STATUS_CODE_VALUE Value\);\Custom or standard action can be used.\The following standard actions are defined:\Halt, ResetOrHalt, ResetOrResume\"
+	InvokeOrder = ReplaceParent
+End
+
+INFComponent
+	Name  = "StatusCodePei"
+	File  = "StatusCodePei.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "PEIM"
+End
+
+INFComponent
+	Name  = "StatusCodeDxe"
+	File  = "StatusCodeDxe.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "DXE_RUNTIME_DRIVER"
+End
+
+INFComponent
+	Name  = "StatusCodeSmm"
+	File  = "StatusCodeSmm.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "SMM_SUPPORT" "=" "1"
+End
+
+FFS_FILE
+	Name  = "StatusCodePei"
+	FD_AREA  = "FV_BB"
+	INFComponent  = "AmiModulePkg.StatusCodePei"
+	Apriori_Index  = "0"
+End
+
+FFS_FILE
+	Name  = "StatusCodeDxe"
+	FD_AREA  = "FV_MAIN"
+	INFComponent  = "AmiModulePkg.StatusCodeDxe"
+	Apriori_Index  = "0"
+End
+
+FFS_FILE
+	Name  = "StatusCodeSmm"
+	FD_AREA  = "FV_MAIN"
+	INFComponent  = "AmiModulePkg.StatusCodeSmm"
+	Apriori_Index  = "0"
+	Token = "SMM_SUPPORT" "=" "1"
+End
+

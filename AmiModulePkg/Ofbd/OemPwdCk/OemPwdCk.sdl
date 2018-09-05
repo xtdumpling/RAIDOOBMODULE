@@ -1,0 +1,57 @@
+TOKEN
+	Name  = "OEMPWDCK_SUPPORT"
+	Value  = "0"
+	Help  = "Switch for Enabling OEM Password Checking support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "[OFBD OEM Password Checking]"
+	Help  = "See detail description in each token's help box."
+	TokenType = Expression
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "OEM_PWDCK_SAMPLE_TEST"
+	Value  = "1"
+	Help  = "Test Supervisor password checking Function"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PASSWORD_RETRY_NUM"
+	Value  = "3"
+	Help  = "Password Retry Num."
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "OEM_PWDCK_SAMPLE_TEST" "=" "1"
+End
+
+PATH
+	Name  = "OFBD_OEMPWDCK_DIR"
+End
+
+ELINK
+	Name  = "$(OFBD_OEMPWDCK_DIR)/OemPwdCk.h"
+	Parent  = "OFBD_FUNC_INCLUDE_FILES"
+	InvokeOrder = BeforeParent
+End
+
+ELINK
+	Name  = "$(OFBD_OEMPWDCK_DIR)/OemPwdCk.c"
+	Parent  = "OFBD_FUNC_SOURCES_FILES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "OEMPWDCKEntry,"
+	Parent  = "OFBD_INIT_FUNC_LIST"
+	Token = "OEMPWDCK_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+

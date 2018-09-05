@@ -1,0 +1,65 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+## @file
+#
+##
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+
+
+[Defines]
+INF_VERSION     = 0x00010005
+VERSION_STRING  = 1.0
+BASE_NAME       = TcgPlatformSetupPolicy
+MODULE_TYPE     = DXE_DRIVER
+FILE_GUID       = 196CA3D8-9A5A-4735-B328-8FFC1D93D188
+ENTRY_POINT     = TcgPlatformSetupPolicyEntryPoint
+
+[Sources]
+TcgPlatformSetupPolicy.c
+
+[LibraryClasses]
+UefiDriverEntryPoint
+UefiLib
+
+[Protocols]
+gTcgPlatformSetupPolicyGuid
+gBdsAllDriversConnectedProtocolGuid
+
+[Guids]
+gSetupVariableGuid
+gTcgPpiSyncFlagGuid
+gTcgInternalflagGuid
+
+[Packages]
+MdePkg\MdePkg.dec
+AmiCompatibilityPkg\AmiCompatibilityPkg.dec
+AmiModulePkg\AmiModulePkg.dec
+AmiTcgPkg\AmiTcgPkg.dec
+$(AdditionalTcgSetupPolicyPackages)
+
+[Depex]
+  $(AdditionalTcgSetupPolicyDepex)
+  TRUE
+

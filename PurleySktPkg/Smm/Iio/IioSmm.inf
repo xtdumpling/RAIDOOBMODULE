@@ -1,0 +1,57 @@
+## @file
+#
+#  Copyright (c) 2009 - 2016, Intel Corporation. All rights reserved.<BR>
+#
+#  This program and the accompanying materials
+#  are licensed and made available under the terms and conditions of the BSD License
+#  which accompanies this distribution. The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.php
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = IioSmm
+  FILE_GUID                      = AAD10051-5D94-4b9f-B778-E4555EE3CCCA
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  VERSION_STRING                 = 1.0
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  ENTRY_POINT                    = IioSmmDriverEntryPoint 
+
+[Sources]
+  IioSmm.c
+  IioSmm.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  PurleySktPkg/SocketPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec 
+  ServerCommonPkg/ServerCommonPkg.dec
+
+[LibraryClasses]
+  PciExpressLib
+  DebugLib
+  BaseMemoryLib
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  SmmServicesTableLib
+  PlatformHooksLib
+  
+[Protocols]
+  gEfiIioUdsProtocolGuid             ## CONSUMES
+  gEfiSmmSxDispatch2ProtocolGuid      ## CONSUMES
+  gEfiIioSystemProtocolGuid
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[Depex]
+  gEfiSmmSxDispatch2ProtocolGuid AND
+  gEfiIioSystemProtocolGuid
+  
+

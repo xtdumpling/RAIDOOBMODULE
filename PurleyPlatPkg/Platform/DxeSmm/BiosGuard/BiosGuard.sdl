@@ -1,0 +1,21 @@
+TOKEN
+	Name  = "BiosGuardServices_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable BiosGuard support in Project"
+	TokenType = Boolean
+    Master = Yes
+End
+
+INFComponent
+	Name  = "BiosGuardServices"
+	File  = "BiosGuardServices.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "BiosGuardServices_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+    Class  = "USRATraceLib"
+    Instance  = "PurleySktPkg.USRATraceLib"
+    Override  = "PurleyPlatPkg.BiosGuardServices"
+End

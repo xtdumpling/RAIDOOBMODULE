@@ -1,0 +1,25 @@
+TOKEN
+    Name  = "PeiFrb_SUPPORT"
+    Value  = "1"
+    Help  = "Switch for Enabling PeiFrb support in the project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    Master = Yes
+End
+
+INFComponent
+    Name  = "PeiFrb"
+    File  = "PeiFrb.inf"
+    Package  = "AmiIpmiPkg"
+    ModuleTypes  = "PEIM"
+    Help  = "Includes PeiFrb.inf to Project."
+End
+
+FFS_FILE
+    Name  = "PeiFrb"
+    FD_AREA  = "FV_BB"
+    INFComponent  = "AmiIpmiPkg.PeiFrb"
+    Apriori_Index  = "4"
+    Help  = "Includes PeiFrb driver in FV_BB and dispatches based on a priori index."
+End

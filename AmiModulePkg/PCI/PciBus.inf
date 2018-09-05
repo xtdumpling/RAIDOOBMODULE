@@ -1,0 +1,69 @@
+## @file
+#  PciBus Driver implementation
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = PciBus
+  FILE_GUID                      = 3C1DE39F-D207-408a-AACC-731CFB7F1DD7
+  MODULE_TYPE                    = UEFI_DRIVER#DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = PciBusEntryPoint
+
+[Sources]
+  PciBus.c	
+
+[Packages]
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec #in order to include AmiCom.Pkg /Portocol /BootScriptSave.h
+  AmiModulePkg/AmiModulePkg.dec
+  SmcPkg/SmcPkg.dec     #SMCPKG_SUPPORT
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  AmiDxeLib
+  AmiCspLib
+  AmiPciBusLib
+  AmiSdlLib
+  AmiPciExpressLib
+  AmiPciExpressGen3Lib
+  AmiPciHotPlugLib
+  AmiSriovLib
+# APTIOV_SERVER_OVERRIDE_START
+  PcdLib
+# APTIOV_SERVER_OVERRIDE_END
+  SmcLib                #SMCPKG_SUPPORT
+  
+[Protocols]
+  gEfiPciIoProtocolGuid                                 #PRODUCE
+  gEfiDriverBindingProtocolGuid                         #PRODUCE
+  gEfiBusSpecificDriverOverrideProtocolGuid             #PRODUCE
+  gAmiExtPciBusProtocolGuid                             #PRODUCE
+  gEfiLoadFile2ProtocolGuid                             #PRODUCE
+  gEfiComponentName2ProtocolGuid                        #PRODUCE
+  gEfiPciEnumerationCompleteProtocolGuid                #PRODUCE
+  gEfiPciHostBridgeResourceAllocationProtocolGuid       #CONSUME
+  gEfiPciRootBridgeIoProtocolGuid                       #CONSUME
+  gEfiDevicePathProtocolGuid                            #CONSUME
+  gEfiIncompatiblePciDeviceSupportProtocolGuid          #CONSUME
+  gEfiS3SaveStateProtocolGuid                           #CONSUME
+  gAmiOpromPolicyProtocolGuid                           #CONSUME
+  gAmiPciPortCompatibilityProtocolGuid                  #CONSUME
+  gEfiDecompressProtocolGuid                            #CONSUME
+  gEfiPciHotPlugInitProtocolGuid                        #CONSUME
+  gEfiPciPlatformProtocolGuid                           #CONSUME
+  gEfiPciOverrideProtocolGuid                           #CONSUME
+  gEfiIncompatiblePciDeviceSupportProtocolGuid          #CONSUME
+  gAmiCsmOpromPolicyProtocolGuid                        #CONSUME
+  gAmiOptionRomPolicyProtocolGuid                       #PRODUCE
+  gEfiDxeSmmReadyToLockProtocolGuid                     #CONSUME
+
+# APTIOV_SERVER_OVERRIDE_START
+[Pcd]
+  gAmiModulePkgTokenSpaceGuid.AmiPcdPciOutOfResourcesStatus
+  gSmcPkgTokenSpaceGuid.PcdSmcAOCLocation       #SMCPKG_SUPPORT
+  gSmcPkgTokenSpaceGuid.PcdSmcAOCExtendFlag     #SMCPKG_SUPPORT
+  gSmcPkgTokenSpaceGuid.PcdSmcRiserID           #SMCPKG_SUPPORT
+# APTIOV_SERVER_OVERRIDE_END

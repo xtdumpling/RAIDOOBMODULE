@@ -1,0 +1,85 @@
+TOKEN
+    Name  = "BoardPciRes_SUPPORT"
+    Value  = "0"
+    Help  = "Main switch to enable PCI out of Resource support in Project"
+    TokenType = Boolean
+    TargetMAK = Yes
+    TargetH = Yes
+    Master = Yes
+End
+
+TOKEN
+	Name  = "PCI_OUT_OF_RESOURCE_SETUP_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable PCI out of Resource Setup Page support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+PATH
+	Name  = "PciOutOfResourceSetupPage_DIR"
+End
+
+MODULE
+	Help  = "Includes PciOutOfResourceSetupPage.mak to Project"
+	File  = "PciOutOfResourceSetupPage.mak"
+End
+
+#ELINK
+#	Name  = "$(BUILD_DIR)\PciOutOfResourceSetupPage.ffs"
+#	Parent  = "FV_MAIN"
+#	InvokeOrder = AfterParent
+#End
+
+#ELINK
+#	Name  = "$(BUILD_DIR)\$(PciOutOfResourceSetupPage_DIR)"
+#	Parent  = "IFR_DIR_LIST"
+#	InvokeOrder = BeforeParent
+#End
+
+ELINK
+	Name  = "PciOutOfResourceSetupPage_SDBS"
+	Help  = "List of SDB files with the string overrides for the PCI out of Resource Setup Page component"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "PciOutOfResourceSetupPage_CIFS"
+	Help  = "List of CIF files of the PCI out of Resource Setup Page plug-ins"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "PciOutOfResourceSetupPage_DEFINITIONS"
+	Help  = "List of SD files of the PCI out of Resource Setup Page plug-ins"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "PciOutOfResourceSetupPageFunctions"
+	Help  = "List of callback functions of the PCI out of Resource Setup Page plug-ins"
+	InvokeOrder = ReplaceParent
+End
+
+INFComponent
+  Name  = "PciOutOfResourceSetupPage"
+  File  = "PciOutOfResourceSetupPage.inf"
+  Package  = "AmiModulePkg"
+  ModuleTypes  = "DXE_DRIVER"
+End
+
+ELINK
+	Name  = "$(ABS_BUILD_DIR)$(PATH_SLASH)$(PLATFORM_NAME)$(PATH_SLASH)$(TARGET)_$(TOOL_CHAIN_TAG)\X64\Board\EM\PciRes\PciOutOfResourceSetupPage\OUTPUT"
+	Parent  = "IFR_DIR_LIST"
+	InvokeOrder = BeforeParent
+	Token = "X64_SUPPORT" "=" "1"
+End
+
+ELINK
+	Name  = "$(ABS_BUILD_DIR)$(PATH_SLASH)$(PLATFORM_NAME)$(PATH_SLASH)$(TARGET)_$(TOOL_CHAIN_TAG)\IA32\Board\EM\PciRes\PciOutOfResourceSetupPage\OUTPUT"
+	Parent  = "IFR_DIR_LIST"
+	InvokeOrder = BeforeParent
+	Token = "X64_SUPPORT" "=" "0"
+End

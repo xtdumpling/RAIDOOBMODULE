@@ -1,0 +1,19 @@
+#include <AmiCertificate.h>
+#include "Token.h"
+#pragma pack(1)
+// Dummy Capsule Hdr
+//---------------------------------------------------------------------------
+// Creating a placeholder FFS for embedded FwCapsule Hdr
+//---------------------------------------------------------------------------
+APTIO_FW_CAPSULE_HEADER dummyHdr = 
+    {  { APTIO_FW_CAPSULE_GUID,
+        FWCAPSULE_MAX_HDR_SIZE,
+        CAPSULE_FLAGS_PERSIST_ACROSS_RESET | 
+           CAPSULE_FLAGS_FWCERTBLOCK_VALID, // 1 - sig is invalid
+        FWCAPSULE_MAX_HDR_SIZE 
+        },
+        FWCAPSULE_MAX_HDR_SIZE,         // Rom Offs
+        sizeof(APTIO_FW_CAPSULE_HEADER) // RomLayout Offs
+    };
+char pad[FWCAPSULE_MAX_HDR_SIZE-sizeof(APTIO_FW_CAPSULE_HEADER)] = {0x55, 0xAA};
+

@@ -1,0 +1,27 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = PciTableInit
+  FILE_GUID                      = DEF30E37-7AEC-4f69-91A2-CF099E2729F2
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = CspLibPeiInit
+
+[Sources]
+  CspLibPei.c
+
+
+[Packages]
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+
+[LibraryClasses]
+  AmiPeiLib
+  PeimEntryPoint
+
+[Ppis]
+  gAmiPeiPciTableInitPpiGuid #PRODUCED
+  
+[Depex]
+  TRUE
+  

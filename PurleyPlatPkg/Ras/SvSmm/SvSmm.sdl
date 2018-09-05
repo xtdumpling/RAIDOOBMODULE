@@ -1,0 +1,39 @@
+TOKEN
+	Name  = "SvSmm_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling SvSmm support in the project"
+	TokenType = Boolean
+	TargetH = Yes
+	TargetMAK = Yes
+        Master = Yes
+End
+
+TOKEN
+	Name  = "SvSmmHandler_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable SvSmmHandler support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "SvSmmSupport_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable SvSmmSupport support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "SvSmmHandler"
+	File  = "SvSmmHandler\SvSmmHandler.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "SvSmmHandler_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "SvSmmSupport"
+	File  = "SvSmmSupport\SvSmmSupport.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "DXE_RUNTIME_DRIVER"
+	Token = "SvSmmSupport_SUPPORT" "=" "1"
+End

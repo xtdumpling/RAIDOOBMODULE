@@ -1,0 +1,85 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  BASE_NAME                      = NvramSmm
+  FILE_GUID                      = 447A1B58-8F3E-4658-ABAA-9E7B2280B90A
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  ENTRY_POINT                    = NvramSmmInit
+
+[Sources]  
+  NVRAM.h	
+  NvramRead.c
+  NvramDxeCommon.h	
+  NvramDxeCommon.c
+  NvramSmm.c
+  NvramSmi.h
+  NvramSmi.c
+  
+
+[Packages]
+  MdePkg/MdePkg.dec   
+  MdeModulePkg/MdeModulePkg.dec   
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec 
+  AmiModulePkg/AmiModulePkg.dec
+  
+[LibraryClasses]
+  AmiDxeLib
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  AmiCriticalSectionLib
+  AmiBufferValidationLib
+  PcdLib
+  
+[Protocols]  
+  gEfiFirmwareVolume2ProtocolGuid
+  gAmiSmmFlashProtocolGuid
+  gEfiSmmVariableProtocolGuid
+  gEfiSmmCommunicationProtocolGuid
+  gEfiSmmReadyToLockProtocolGuid
+  gAmiSmmNvramUpdateProtocolGuid
+  
+[Guids] 
+  gEfiGlobalVariableGuid
+  gEfiHobListGuid
+  gAmiNvramSmmCommunicationGuid
+  gEfiImageSecurityDatabaseGuid
+  gEfiHardwareErrorVariableGuid
+  
+[Depex]
+  gAmiSmmFlashProtocolGuid AND # Used
+  SmmRsTableGuid AND # NVRAMSMM driver populates variable service pointers in the SmmRsTableGuid table
+  gEfiSmmCommunicationProtocolGuid AND # To make sure NVRAMDXE is ready to start using SMM API (see ActivateSmmWrapper in NvramSmiDxe.c)
+  gEfiVariableArchProtocolGuid # To make sure NVRAMSMM is launched after NVRAMDXE
+
+[Pcd]
+  gEfiMdeModulePkgTokenSpaceGuid.PcdVariableStoreSize
+  gAmiModulePkgTokenSpaceGuid.AmiPcdNvramResetPropertyMask
+  
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

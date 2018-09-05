@@ -1,0 +1,44 @@
+TOKEN
+	Name  = "RtErrorLogGpnv_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable RtErrorLogGpnv support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+	Token = "GpnvErrorLogging_SUPPORT" "=" "1"
+End
+
+ELINK
+	Name  = "LogPciErrorToGpnv,"
+	Parent  = "PciErrorHandlers"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "LogMemErrorToGpnv,"
+	Parent  = "MemErrorHandlers"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+    	Name  = "LogProcessorErrorToGpnv,"
+    	Parent  = "ProcessorErrorHandlers"
+    	InvokeOrder = AfterParent
+End
+
+INFComponent
+	Name  = "RtErrorLogGpnvLib"
+	File  = "RtErrorLogGpnv.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "RtErrorLogGpnv_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "RtErrorLogGpnvLib"
+	Instance  = "PurleyPlatPkg.RtErrorLogGpnvLib"
+	Arch  = "common"
+	ModuleTypes  = "DXE_DRIVER DXE_SMM_DRIVER"
+	Token = "RtErrorLogGpnv_SUPPORT" "=" "1"
+End

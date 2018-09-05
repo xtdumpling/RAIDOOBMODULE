@@ -1,0 +1,52 @@
+//
+// This file contains an 'Intel Peripheral Driver' and is      
+// licensed for Intel CPUs and chipsets under the terms of your
+// license agreement with Intel or your vendor.  This file may 
+// be modified by the user, subject to additional terms of the 
+// license agreement                                           
+//
+// 
+// Module Name:
+//
+//    ErrorManager.vfr
+// 
+// Abstract:
+// 
+//    Special formset for error manager.
+// 
+// Revision History: 
+// 
+// --*/
+
+#include "Configuration.h"
+#include "PlatformStrDefs.h"
+#include <Guid/SetupVariable.h>
+#include "Common.hfr"
+
+
+formset 
+  guid  = SYSTEM_CONFIGURATION_GUID,
+  title = STRING_TOKEN(STR_ERROR_MANAGER_TITLE),
+  help = STRING_TOKEN(STR_NULL_STRING),
+  class = ERROR_MANAGER_KEY_ID,
+  subclass = 0,
+  
+  varstore ERROR_MANAGER,
+    key = ERROR_MANAGER_KEY_ID,
+    name = ErrorManager,
+    guid = ERROR_MANAGER_GUID;
+
+  form formid = 1,
+
+    title = STRING_TOKEN(STR_ERROR_MANAGER_TITLE);
+
+    suppressif ideqvallist ERROR_MANAGER.ErrorCount == 0xFFFF;
+      goto 1,
+        prompt = STRING_TOKEN(STR_NULL_ERRCNT_STRING),
+        help = STRING_TOKEN(STR_NULL_STRING);
+    endif;
+
+  endform;
+
+endformset;
+

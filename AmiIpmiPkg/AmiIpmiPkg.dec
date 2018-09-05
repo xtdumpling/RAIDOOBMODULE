@@ -1,0 +1,173 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+## @file AmiIpmiPkg.dec
+#   This is AmiIpmiPkg declaration file which includes all Guids, Pcds,
+#   Protocols etc which are common to this package.
+##
+
+[Defines]
+  DEC_SPECIFICATION              = 0x00010005
+  PACKAGE_NAME                   = AmiIpmiPkg
+  PACKAGE_GUID                   = 3A21584F-1306-40ac-AF65-818CAF445B31
+  PACKAGE_VERSION                = 0.1
+
+[Includes]
+#
+# Define include file paths
+#
+  ../
+  ../Build
+  Include
+  Include/Include
+  Include/Ppi
+  Include/Protocol
+
+[Guids]
+  ## AmiIpmiPkg Token Space Guid.
+  gAmiIpmiPkgTokenSpaceGuid       = { 0x1e21c326, 0xd40, 0x40f2, { 0x9f, 0x2, 0x3a, 0x9b, 0x78, 0x38, 0xaa, 0x6b } }
+
+  ## AmiIpmiPkg\Include\Include\ServerMgmtSetupVariable.h
+  gEfiServerMgmtSetupVariableGuid = { 0x1239999, 0xfc0e, 0x4b6e, { 0x9e, 0x79, 0xd5, 0x4d, 0x5d, 0xb6, 0xcd, 0x20 } }
+
+  ## AmiIpmiPkg\Ipmi\PeiIpmiCmosClear\PeiIpmiCmosClear.h
+  gEfiIpmiCmosClearVariableGuid   = { 0x675b8766, 0x7f03, 0x4181, { 0x9b, 0xe1, 0x73, 0xbc, 0x45, 0xdf, 0xf7, 0x99 } }
+
+  ## AmiIpmiPkg\Ipmi\IpmiBoot\IpmiBoot.h
+  gEfiIpmiBootGuid                = { 0x842680f2, 0x1a9c, 0x48e6, { 0xa4, 0x33, 0xbe, 0x9a, 0xcb, 0xd, 0xd4, 0x38 } }
+
+[Ppis]
+  ## AmiIpmiPkg\Include\Ppi\IpmiTransportPpi.h
+  gEfiPeiIpmiTransportPpiGuid     = { 0x8122cebd, 0xf4fd, 0x4ea8, { 0x97, 0x6c, 0xf0, 0x3, 0xad, 0xdc, 0x4c, 0xb4 } }
+
+  ## AmiIpmiPkg\Include\Ppi\IpmiUsbTransportPpi.h
+  gEfiPeiIpmiUsbTransportPpiGuid  = { 0xcbdd2397, 0xd2c5, 0x415b, { 0xbd, 0x77, 0x96, 0x30, 0xa1, 0xb7, 0x85, 0x3d } }
+
+  ## AmiIpmiPkg\Include\Ppi\PeiSelPpi.h
+  gEfiPeiSelPpiGuid               = { 0xe50b6e5d, 0x359b, 0x4be0, { 0xa0, 0xb0, 0x7, 0x15, 0xa3, 0x1, 0xa6, 0x6 } }
+
+[Protocols]
+  ## AmiIpmiPkg\Include\Protocol\IpmiTransportProtocol.h
+  gEfiDxeIpmiTransportProtocolGuid    = { 0x4a1d0e66, 0x5271, 0x4e22, { 0x83, 0xfe, 0x90, 0x92, 0x1b, 0x74, 0x82, 0x13 } }
+
+  ## AmiIpmiPkg\Include\Protocol\IpmiTransportProtocol.h
+  gEfiSmmIpmiTransportProtocolGuid    = { 0x1dbd1503, 0xa60, 0x4230, { 0xaa, 0xa3, 0x80, 0x16, 0xd8, 0xc3, 0xde, 0x2f } }
+
+  ## AmiIpmiPkg\Include\Protocol\IpmiSelfTestLogProtocol.h
+  gEfiBmcSelfTestLogProtocolGuid      = { 0x9FE6A332, 0x1A1F, 0x43e3, { 0xBD, 0x25, 0xF7, 0x89, 0x1C, 0x6F, 0xC7, 0x4A } }
+
+  ## AmiIpmiPkg\Include\Protocol\FrbProtocol.h
+  gEfiSmFrbProtocolGuid               = { 0xbc5f861c, 0x86ed, 0x417e, { 0xbb, 0x7b, 0x6c, 0x2, 0x6b, 0xcd, 0x75, 0x5b } }
+
+  ## AmiIpmiPkg\Include\Protocol\SelProtocol.h
+  gEfiSelStatusCodeProtocolGuid       = { 0xbc5f861c, 0x86ed, 0x417e, { 0xbb, 0x7b, 0x6c, 0x2, 0x6b, 0xdc, 0x65, 0x23 } }
+
+  ## AmiIpmiPkg\Include\Protocol\RedirFruProtocol.h
+  gEfiRedirFruProtocolGuid            = { 0x28638cfa, 0xea88, 0x456c, { 0x92, 0xa5, 0xf2, 0x49, 0xca, 0x48, 0x85, 0x35 } }
+
+  ## AmiIpmiPkg\Include\Protocol\RedirElogProtocol.h
+  gEfiRedirElogProtocolGuid           = { 0x16d11030, 0x71ba, 0x4e5e, { 0xa9, 0xf9, 0xb4, 0x75, 0xa5, 0x49, 0x4, 0x8a } }
+
+  ## AmiIpmiPkg\Include\Protocol\IpmiUsbTransportProtocol.h
+  gEfiDxeIpmiUsbTransportProtocolGuid = { 0x42D353B0, 0x8C1E, 0x4ACA, { 0xBE, 0xAC, 0x28, 0xFB, 0x24, 0xF2, 0x0C, 0x42 } }
+
+[PcdsFixedAtBuild]
+  ## Default Manufacturer string.
+  gAmiIpmiPkgTokenSpaceGuid.PcdStrMfg|L"To be filled by O.E.M."|VOID*|0x40000031
+
+  ## Default Product string.
+  gAmiIpmiPkgTokenSpaceGuid.PcdStrProduct|L"To be filled by O.E.M."|VOID*|0x40000032
+#APTIOV_SERVER_OVERRIDE_START : To include PcdsDynamic in PcdsDynamicEx
+[PcdsDynamic,PcdsDynamicEx]
+#APTIOV_SERVER_OVERRIDE_END : To include PcdsDynamic in PcdsDynamicEx
+# Smbios Type 1 Strings - These strings will be updated at runtime by IpmiRedirFru driver.
+  ## System Manufacturer
+  gAmiIpmiPkgTokenSpaceGuid.PcdSystemManufacturer|L"To be filled by O.E.M.To be filled by O.E.M.To be filled by O.E.M."|VOID*|0x40000011
+
+  ## System Product Name
+  gAmiIpmiPkgTokenSpaceGuid.PcdSystemProductName|L"To be filled by O.E.M.To be filled by O.E.M.To be filled by O.E.M."|VOID*|0x40000012
+
+  ## System Version
+  gAmiIpmiPkgTokenSpaceGuid.PcdSystemVersion|L"To be filled by O.E.M.To be filled by O.E.M.To be filled by O.E.M."|VOID*|0x40000013
+
+  ## System Serial Number
+  gAmiIpmiPkgTokenSpaceGuid.PcdSystemSerialNumber|L"To be filled by O.E.M.To be filled by O.E.M.To be filled by O.E.M."|VOID*|0x40000014
+
+  ## System UUID (128 bit)
+  gAmiIpmiPkgTokenSpaceGuid.PcdSystemUuid|{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}|VOID*|0x40000015
+
+# Smbios Type 2 Strings - These strings will be updated at runtime by IpmiRedirFru driver.
+  ## Base Board Manufacturer
+  gAmiIpmiPkgTokenSpaceGuid.PcdBaseBoardManufacturer|L"To be filled by O.E.M.To be filled by O.E.M.To be filled by O.E.M."|VOID*|0x40000017
+
+  ## Base Board Product Name
+  gAmiIpmiPkgTokenSpaceGuid.PcdBaseBoardProductName|L"To be filled by O.E.M.To be filled by O.E.M.To be filled by O.E.M."|VOID*|0x40000018
+
+  ## Base Board Version
+  gAmiIpmiPkgTokenSpaceGuid.PcdBaseBoardVersion|L"To be filled by O.E.M.To be filled by O.E.M.To be filled by O.E.M."|VOID*|0x40000019
+
+  ## Base Board Serial Number
+  gAmiIpmiPkgTokenSpaceGuid.PcdBaseBoardSerialNumber|L"To be filled by O.E.M.To be filled by O.E.M.To be filled by O.E.M."|VOID*|0x4000001A
+
+  ## Base Board Asset Tag
+  gAmiIpmiPkgTokenSpaceGuid.PcdBaseBoardAssetTag|L"To be filled by O.E.M.To be filled by O.E.M.To be filled by O.E.M."|VOID*|0x4000001B
+
+# Smbios Type 3 Strings - These strings will be updated at runtime by IpmiRedirFru driver.
+  ## Chassis Manufacturer
+  gAmiIpmiPkgTokenSpaceGuid.PcdChassisManufacturer|L"To be filled by O.E.M.To be filled by O.E.M.To be filled by O.E.M."|VOID*|0x40000021
+
+  ## Chassis Version
+  gAmiIpmiPkgTokenSpaceGuid.PcdChassisVersion|L"To be filled by O.E.M.To be filled by O.E.M.To be filled by O.E.M."|VOID*|0x40000022
+
+  ## Chassis Serial Number
+  gAmiIpmiPkgTokenSpaceGuid.PcdChassisSerialNumber|L"To be filled by O.E.M.To be filled by O.E.M.To be filled by O.E.M."|VOID*|0x40000023
+
+  ## Chassis Asset Tag
+  gAmiIpmiPkgTokenSpaceGuid.PcdChassisAssetTag|L"To be filled by O.E.M.To be filled by O.E.M.To be filled by O.E.M."|VOID*|0x40000024
+
+  ## Chassis Type
+  #  Default value is Unknown (2).
+  #  Please refer MdePkg\Include\IndustryStandard\SmBios.h for other values.
+  gAmiIpmiPkgTokenSpaceGuid.PcdChassisType|0x02|UINT8|0x40000025
+
+  ## Sdr Version Number
+  gAmiIpmiPkgTokenSpaceGuid.PcdSdrVersionNo|L"Unknown"|VOID*|0x4000002F
+
+  ## Bulk Data Transfer Interface Type
+  #  Default value is NonUsbInterface(2)
+  #  Possible values for BulkDataTransferInterfaceType: UsbInterface(1)/NonUsbInterface(2)
+  gAmiIpmiPkgTokenSpaceGuid.BulkDataTransferInterfaceType|0x02|UINT8|0x40000033
+
+  ## Bulk Data Trasfer Timeout to be sent to UsbBulkTransfer method
+  #  The default value is 65535 milliseconds.
+  gAmiIpmiPkgTokenSpaceGuid.BulkDataTransferTimeout|65535|UINT16|0x40000034
+
+  ## Store NVRAM variable value "When SEL is Full" Setup option to be used in PEI driver
+  #  Default value is Do Nothing (0).
+  #  Possible values are: Do Nothing (0) and Erase immediately (1)
+  gAmiIpmiPkgTokenSpaceGuid.SelFullBehaviour|0x00|UINT8|0x40000035
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**         5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093     **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+  

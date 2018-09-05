@@ -1,0 +1,76 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+## @file
+[Defines]
+    INF_VERSION     = 0x00010005
+    VERSION_STRING  = 1.0
+    BASE_NAME       = TcgCoreHook
+    MODULE_TYPE     = DXE_DRIVER
+    LIBRARY_CLASS   = NULL
+    FILE_GUID       = 23C47E2B-11B3-4f27-9879-C6B9D2B689C9
+
+[Sources]
+    TcgCoreHook.c
+    TcgCoreHook.h
+
+[LibraryClasses]
+    BaseLib
+    BaseTisLib12
+    BaseTisLib20
+    ShaLib
+    BaseCrbLibDxe
+    MemoryAllocationLib
+    UefiLib
+    BaseAmiTcmlib
+    TpmReportStatusCodeWrapperLibDxe
+
+[Ppis]
+    #amiFVhoblistguid
+    
+[Protocols]
+    gEfiTpmDeviceProtocolGuid
+    gAmiTpmSupportTypeProtocolguid
+    gEfiFirmwareVolume2ProtocolGuid
+    gEfiFirmwareVolumeBlockProtocolGuid
+    gEfiDiskIoProtocolGuid
+    gEfiTcgPlatformProtocolGuid
+    gEfiTcgProtocolGuid
+    gEfiTpmDeviceProtocolGuid
+    gEfiTrEEProtocolGuid
+    AmiProtocolInternalHlxeGuid
+    
+[Guids]
+    ExtendedDataGuid    
+    amiFVhoblistguid
+
+[Packages]
+    MdePkg/MdePkg.dec
+    UefiCpuPkg/UefiCpuPkg.dec
+    AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+    AmiModulePkg/AmiModulePkg.dec
+    AmiTsePkg/AmiTsePkg.dec
+    AmiTcgPkg/AmiTcgPkg.dec
+
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************

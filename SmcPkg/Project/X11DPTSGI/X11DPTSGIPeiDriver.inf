@@ -1,0 +1,68 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.00
+#       Bug fixed:   Initialize revision
+#       Reason:      Clone from Sample folder.
+#       Auditor:     Jacker Yeh
+#       Date:        Feb/04/2016
+#
+#****************************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = X11DPTSGIPeiDriver
+  FILE_GUID                      = 44cdfa70-2c7c-4791-9aa3-eae8777f0a8b
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = X11DPTSGIPeiDriverInit
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+#
+
+[Sources]
+  X11DPTSGIPeiDriver.c
+  X11DPTSGIPeiDriver.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+#  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  SmcPkg/SmcPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec      
+[LibraryClasses]
+#  AmiPeiLib
+#  AmiCspLib
+  PeimEntryPoint
+  SmcCspLib
+  PciLib
+  SmcLib
+[Ppis]
+  gEfiPeiReadOnlyVariable2PpiGuid
+[Pcd]
+  gSmcPkgTokenSpaceGuid.PcdSGINodeIsA1B1
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe1BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe2BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT1BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT2BDF  
+[Guids]
+  gEfiSocketIioVariableGuid
+
+[Depex]
+  TRUE
+
+#**********************************************************************

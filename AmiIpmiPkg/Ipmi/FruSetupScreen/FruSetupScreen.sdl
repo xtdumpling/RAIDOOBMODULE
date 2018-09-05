@@ -1,0 +1,148 @@
+TOKEN
+    Name  = FruSetupScreen_SUPPORT
+    Value  = 1
+    Help  = "Main switch to enable FruSetupScreen support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    Master = Yes
+End
+
+PATH
+    Name  = "FruSetupScreen_DIR"
+    Path  = "AmiIpmiPkg/Ipmi/FruSetupScreen"
+    Help = "Path to FruSetupScreen sub module in project."
+End
+
+ELINK
+    Name  = "$(FruSetupScreen_DIR)/FruSetupScreen.c"
+    Parent  = "ServerMgmtSetupCallbackFiles"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include FruSetupScreen.c file in ServerMgmtSetup callback files list."
+End
+
+ELINK
+    Name  = "InitFruStrings,"
+    Parent  = "ServerMgmtStringInit"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include default function to initialize FRU information in Setup."
+End
+
+ELINK
+    Name  = "$(FruSetupScreen_DIR)/FruSetupScreen.sd"
+    Parent  = "SERVER_MGMT_SETUP_DEFINITIONS"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include FruSetupScreen.sd file in ServerMgmtSetup definitions files list."
+End
+
+ELINK
+    Name  = "$(FruSetupScreen_DIR)/FruSetupScreen.uni"
+    Parent  = "ServerMgmtSetupStringFiles"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include FruSetupScreen.uni file in ServerMgmtSetup string files list."
+End
+
+ELINK
+    Name  = "gAmiIpmiPkgTokenSpaceGuid.PcdStrMfg"
+    Parent  = "AdditionalServerMgmtSetupPcds"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include PcdStrMfg in Additional ServerMgmtSetup Pcds list."
+End
+
+ELINK
+    Name  = "gAmiIpmiPkgTokenSpaceGuid.PcdStrProduct"
+    Parent  = "AdditionalServerMgmtSetupPcds"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include PcdStrProduct in Additional ServerMgmtSetup Pcds list."
+End
+
+ELINK
+    Name  = "gAmiIpmiPkgTokenSpaceGuid.PcdSystemManufacturer"
+    Parent  = "AdditionalServerMgmtSetupPcds"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include PcdSystemManufacturer in Additional ServerMgmtSetup Pcds list."
+End
+
+ELINK
+    Name  = "gAmiIpmiPkgTokenSpaceGuid.PcdSystemProductName"
+    Parent  = "AdditionalServerMgmtSetupPcds"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include PcdSystemProductName in Additional ServerMgmtSetup Pcds list."
+End
+
+ELINK
+    Name  = "gAmiIpmiPkgTokenSpaceGuid.PcdSystemVersion"
+    Parent  = "AdditionalServerMgmtSetupPcds"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include PcdSystemVersion in Additional ServerMgmtSetup Pcds list."
+End
+
+ELINK
+    Name  = "gAmiIpmiPkgTokenSpaceGuid.PcdSystemSerialNumber"
+    Parent  = "AdditionalServerMgmtSetupPcds"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include PcdSystemSerialNumber in Additional ServerMgmtSetup Pcds list."
+End
+
+ELINK
+    Name  = "gAmiIpmiPkgTokenSpaceGuid.PcdBaseBoardManufacturer"
+    Parent  = "AdditionalServerMgmtSetupPcds"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include PcdBaseBoardManufacturer in Additional ServerMgmtSetup Pcds list."
+End
+
+ELINK
+    Name  = "gAmiIpmiPkgTokenSpaceGuid.PcdBaseBoardProductName"
+    Parent  = "AdditionalServerMgmtSetupPcds"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include PcdBaseBoardProductName in Additional ServerMgmtSetup Pcds list."
+End
+
+ELINK
+    Name  = "gAmiIpmiPkgTokenSpaceGuid.PcdBaseBoardVersion"
+    Parent  = "AdditionalServerMgmtSetupPcds"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include PcdBaseBoardVersion in Additional ServerMgmtSetup Pcds list."
+End
+
+ELINK
+    Name  = "gAmiIpmiPkgTokenSpaceGuid.PcdBaseBoardSerialNumber"
+    Parent  = "AdditionalServerMgmtSetupPcds"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include PcdBaseBoardSerialNumber in Additional ServerMgmtSetup Pcds list."
+End
+
+ELINK
+    Name  = "gAmiIpmiPkgTokenSpaceGuid.PcdChassisManufacturer"
+    Parent  = "AdditionalServerMgmtSetupPcds"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include PcdChassisManufacturer in Additional ServerMgmtSetup Pcds list."
+End
+
+ELINK
+    Name  = "gAmiIpmiPkgTokenSpaceGuid.PcdChassisVersion"
+    Parent  = "AdditionalServerMgmtSetupPcds"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include PcdChassisVersion in Additional ServerMgmtSetup Pcds list."
+End
+
+ELINK
+    Name  = "gAmiIpmiPkgTokenSpaceGuid.PcdChassisSerialNumber"
+    Parent  = "AdditionalServerMgmtSetupPcds"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include PcdChassisSerialNumber in Additional ServerMgmtSetup Pcds list."
+End
+
+ELINK
+    Name  = "gAmiIpmiPkgTokenSpaceGuid.PcdSdrVersionNo"
+    Parent  = "AdditionalServerMgmtSetupPcds"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include PcdSdrVersionNo in Additional ServerMgmtSetup Pcds list."
+End
+
+ELINK
+    Name  = "gAmiIpmiPkgTokenSpaceGuid.PcdSystemUuid"
+    Parent  = "AdditionalServerMgmtSetupPcds"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include PcdSystemUuid in Additional ServerMgmtSetup Pcds list."
+End

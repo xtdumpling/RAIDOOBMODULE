@@ -1,0 +1,69 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+## @file
+#   ROM Layout DXE Driver
+#   This driver must be in the DXE Core FV.
+##
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = RomLayoutDxe
+  FILE_GUID                      = AB7ED12E-1D78-4635-AB87-23F00A911EC7
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = RomLayoutDxeEntryPoint
+  
+[Sources]
+  RomLayoutDxe.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  DxeServicesTableLib
+  HobLib
+  AmiRomLayoutLib
+  BaseMemoryLib
+  PerformanceLib
+
+[Guids]
+  gAmiRecoveryImageHobGuid  
+  
+[Protocols]
+  gEfiFirmwareVolume2ProtocolGuid
+  AmiRomLayoutProtocolGuid
+
+[Pcd]
+  gAmiModulePkgTokenSpaceGuid.PcdUseNewImageOnFlashUpdate
+
+[Depex]
+  TRUE
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

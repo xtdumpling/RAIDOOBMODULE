@@ -1,0 +1,66 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+#
+# @file AmiPciBusSetupOverrideLib.inf
+#
+# INF description file for AmiPciBusSetupOverrideLib driver.
+#
+
+[Defines]
+INF_VERSION             = 0x00010015
+VERSION_STRING          = 1.0
+BASE_NAME               = AmiPciBusSetupOverrideLib 
+MODULE_TYPE             = DXE_DRIVER
+LIBRARY_CLASS           = AmiPciBusSetupOverrideLib | DXE_DRIVER DXE_RUNTIME_DRIVER UEFI_DRIVER
+FILE_GUID               = D4A8CBBA-8AC6-40EB-9E72-2BB003CD2050
+
+CONSTRUCTOR             = AmiPciBusSetupOverrideLibConstructor
+
+[Sources]
+AmiPciBusSetupOverrideLib.c
+
+[LibraryClasses]
+BaseLib
+DebugLib
+UefiLib
+UefiBootServicesTableLib
+SetupLib
+
+[Protocols]
+
+[Packages]
+MdePkg/MdePkg.dec
+AmiModulePkg/AmiModulePkg.dec
+AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+AmiCRBPkg/AmiCRBPkg.dec
+PurleyPlatPkg/PlatPkg.dec
+PurleySktPkg/SocketPkg.dec
+CpRcPkg/RcPlatPurley.dec  
+PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**         5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093     **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

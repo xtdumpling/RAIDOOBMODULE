@@ -1,0 +1,71 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#** 5555 Oakbrook Parkway, Suite 200, Norcross,GA 30093              **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+[Defines]
+    INF_VERSION                = 0x00010005
+    BASE_NAME                  = BiosGuardPeiApRecoveryCapsule
+    FILE_GUID                  = C776AEA2-AA27-446e-975B-E0BEA9078BD9
+    MODULE_TYPE                = PEIM
+    VERSION_STRING             = 1.0
+    PI_SPECIFICATION_VERSION   = 0x0001000A
+    ENTRY_POINT                = BiosGuardPeiApRecoveryCapsuleEntry
+
+[Sources]
+    BiosGuardPeiApRecoveryCapsule.c
+    BiosGuardPeiApRecoveryCapsule.h
+
+[Packages]
+    MdePkg/MdePkg.dec
+    MdeModulePkg/MdeModulePkg.dec
+    AmiModulePkg/AmiModulePkg.dec
+    AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+    AmiCryptoPkg/AmiCryptoPkg.dec
+    PurleyPlatPkg/PlatPkg.dec
+    PurleySktPkg/SocketPkg.dec
+    PurleySktPkg/Me/MePkg.dec
+    CpRcPkg/CpRcPkg.dec
+  
+[LibraryClasses]
+    PeimEntryPoint
+    PeiServicesLib
+    DebugLib
+    BaseMemoryLib
+    
+[Pcd]
+    
+[Ppis]
+    gEfiPeiReadOnlyVariable2PpiGuid
+    gEfiPeiBootInRecoveryModePpiGuid
+    gFlashUpdBootModePpiGuid
+
+[Guids]
+    gEfiSetupVariableGuid
+    gMemoryInitDoneSentGuid
+
+[Depex]
+    gEfiPeiReadOnlyVariable2PpiGuid
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#** 5555 Oakbrook Parkway, Suite 200, Norcross,GA 30093              **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

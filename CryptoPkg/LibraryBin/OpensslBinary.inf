@@ -1,0 +1,97 @@
+## @file
+#  This module provides openSSL Library implementation.
+#
+#  Copyright (c) 2010 - 2015, Intel Corporation. All rights reserved.<BR>
+#  This program and the accompanying materials
+#  are licensed and made available under the terms and conditions of the BSD License
+#  which accompanies this distribution.  The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.php
+#
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = OpensslLib
+  MODULE_UNI_FILE                = OpensslLib.uni
+  FILE_GUID                      = C873A7D0-9824-409f-9B42-2C158B992E69
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = OpensslLib
+  DEFINE OPENSSL_PATH            = openssl-1.1.0b
+  DEFINE OPENSSL_FLAGS           = $(OPENSSL_STDIO_FLAG) $(OPENSSL_FP_API_FLAG) -DOPENSSL_NO_SSL3 -DOPENSSL_NO_SSL3_METHOD -DL_ENDIAN -DOPENSSL_SMALL_FOOTPRINT -D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE
+#AptioV - Porting >>>
+# Adding OPENSSL_STDIO_FLAG and OPENSSL_FP_API_FLAG OPENSSL_NO_SSL3 OPENSSL_NO_SSL3_METHOD
+# Other defined flags in opensslconf.h
+#AptioV - Porting <<<
+
+#  VALID_ARCHITECTURES           = IA32 X64 IPF ARM AARCH64
+#
+[Binaries.IA32]
+  LIB | IA32/$(OPENSSL_LIB)
+
+[Binaries.X64]
+  LIB | X64/$(OPENSSL_LIB)
+
+[Packages]
+  MdePkg/MdePkg.dec
+  CryptoPkg/CryptoPkg.dec
+
+[LibraryClasses]
+  DebugLib
+
+[BuildOptions]
+   #
+   # Override MSFT build option to remove /W4 (to silence warning messages when building OpenSSL).
+   #
+# AMI PORTING BEGIN  - Remove flags to enable debugging
+   MSFT:DEBUG_VS2003_IA32_CC_FLAGS        == /nologo /c /WX /Gs32768 /Gy /D UNICODE /GL /FIAutoGen.h /EHs-c- /GR- /GF /GX- /Zi /Gm -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) /w -DTHIRTY_TWO_BIT
+   MSFT:RELEASE_VS2003_IA32_CC_FLAGS      == /nologo /c /WX /Gs32768 /Gy /D UNICODE  /GL /FIAutoGen.h /EHs-c- /GR- /GF /GX- -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) /w  -DTHIRTY_TWO_BIT
+   MSFT:DEBUG_VS2003xASL_IA32_CC_FLAGS    == /nologo /c /WX /Gs32768 /Gy /D UNICODE  /GL /FIAutoGen.h /EHs-c- /GR- /GF /GX- /Zi /Gm -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) /w -DTHIRTY_TWO_BIT
+   MSFT:RELEASE_VS2003xASL_IA32_CC_FLAGS  == /nologo /c /WX /Gs32768 /Gy /D UNICODE  /GL /FIAutoGen.h /EHs-c- /GR- /GF /GX- -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) /w -DTHIRTY_TWO_BIT
+   MSFT:DEBUG_DDK3790_IA32_CC_FLAGS       == /nologo /c /WX /Gy /Gs32768 /D UNICODE  /GL /FIAutoGen.h /EHs-c- /GR- /GF /Zi /Gm -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) /w -DTHIRTY_TWO_BIT
+   MSFT:RELEASE_DDK3790_IA32_CC_FLAGS     == /nologo /c /WX /Gy /Gs32768 /D UNICODE  /GL /FIAutoGen.h /EHs-c- /GR- /GF -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) /w -DTHIRTY_TWO_BIT
+   MSFT:DEBUG_DDK3790xASL_IA32_CC_FLAGS   == /nologo /c /WX /Gy /Gs32768 /D UNICODE  /GL /FIAutoGen.h /EHs-c- /GR- /GF /Zi /Gm -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) /w -DTHIRTY_TWO_BIT
+   MSFT:RELEASE_DDK3790xASL_IA32_CC_FLAGS == /nologo /c /WX /Gy /Gs32768 /D UNICODE  /GL /FIAutoGen.h /EHs-c- /GR- /GF -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) /w -DTHIRTY_TWO_BIT
+   MSFT:DEBUG_*_IA32_CC_FLAGS             == /nologo /c /WX /GS- /Gs32768 /D UNICODE  /GL /FIAutoGen.h /EHs-c- /GR- /GF /Gy /Zi /Gm -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) /w -DTHIRTY_TWO_BIT
+   MSFT:RELEASE_*_IA32_CC_FLAGS           == /nologo /c /WX /GS- /Gs32768 /D UNICODE  /GL /FIAutoGen.h /EHs-c- /GR- /GF -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) /w -DTHIRTY_TWO_BIT
+   MSFT:NOOPT_*_IA32_CC_FLAGS             == /nologo /c /WX /GS- /Gs32768 /D UNICODE  /FIAutoGen.h /EHs-c- /GR- /GF /Gy /Zi /Gm -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) /w -DTHIRTY_TWO_BIT
+   MSFT:DEBUG_*_X64_CC_FLAGS              == /nologo /c /WX /GS- /X /Gs32768 /D UNICODE  /GL /Gy /FIAutoGen.h /EHs-c- /GR- /GF /Zi /Gm -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) /w -DSIXTY_FOUR_BIT
+   MSFT:RELEASE_*_X64_CC_FLAGS            == /nologo /c /WX /GS- /X /Gs32768 /D UNICODE  /GL /Gy /FIAutoGen.h /EHs-c- /GR- /GF -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) /w -DSIXTY_FOUR_BIT
+   MSFT:NOOPT_*_X64_CC_FLAGS              == /nologo /c /WX /GS- /X /Gs32768 /D UNICODE /Gy /FIAutoGen.h /EHs-c- /GR- /GF /Zi /Gm -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) /w -DSIXTY_FOUR_BIT
+   MSFT:DEBUG_*_IPF_CC_FLAGS              == /nologo /c /WX /GS- /X /EHs-c- /GR- /Gy  /GL /FIAutoGen.h /QIPF_fr32 /Zi -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) /w -DSIXTY_FOUR_BIT
+   MSFT:RELEASE_*_IPF_CC_FLAGS            == /nologo /c /WX /GS- /X /EHs-c- /GR- /Gy  /GL /FIAutoGen.h /QIPF_fr32 -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) /w -DSIXTY_FOUR_BIT
+   MSFT:NOOPT_*_IPF_CC_FLAGS              == /nologo /c /WX /GS- /X /EHs-c- /GR- /Gy  /FIAutoGen.h /QIPF_fr32 /Zi -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) /w -DSIXTY_FOUR_BIT
+# AMI PORTING END  - Remove flags to enable debugging
+
+  INTEL:*_*_IA32_CC_FLAGS   = -U_WIN32 -U_WIN64 -U_MSC_VER -U__ICC $(OPENSSL_FLAGS) /w -DTHIRTY_TWO_BIT
+  INTEL:*_*_X64_CC_FLAGS    = -U_WIN32 -U_WIN64 -U_MSC_VER -U__ICC $(OPENSSL_FLAGS) /w -DSIXTY_FOUR_BIT
+  INTEL:*_*_IPF_CC_FLAGS    = -U_WIN32 -U_WIN64 -U_MSC_VER -U__ICC $(OPENSSL_FLAGS) /w -DSIXTY_FOUR_BIT
+
+  GCC:*_*_IA32_CC_FLAGS     = -U_WIN32 -U_WIN64 $(OPENSSL_FLAGS) -w -DTHIRTY_TWO_BIT
+  GCC:*_*_X64_CC_FLAGS      = -U_WIN32 -U_WIN64 $(OPENSSL_FLAGS) -w -DSIXTY_FOUR_BIT_LONG -UNO_BUILTIN_VA_FUNCS
+  GCC:*_*_IPF_CC_FLAGS      = -U_WIN32 -U_WIN64 $(OPENSSL_FLAGS) -w -DSIXTY_FOUR_BIT_LONG
+  GCC:*_*_ARM_CC_FLAGS      = $(OPENSSL_FLAGS) -w -DTHIRTY_TWO_BIT
+  GCC:*_*_AARCH64_CC_FLAGS  = $(OPENSSL_FLAGS) -w -DSIXTY_FOUR_BIT_LONG
+
+  # suppress the following warnings in openssl so we don't break the build with warnings-as-errors:
+  # 1295: Deprecated declaration <entity> - give arg types
+  #  550: <entity> was set but never used
+  # 1293: assignment in condition
+  #  111: statement is unreachable (invariably "break;" after "return X;" in case statement)
+  #   68: integer conversion resulted in a change of sign ("if (Status == -1)")
+  #  177: <entity> was declared but never referenced
+  #  223: function <entity> declared implicitly
+  #  144: a value of type <type> cannot be used to initialize an entity of type <type>
+  #  513: a value of type <type> cannot be assigned to an entity of type <type>
+  #  188: enumerated type mixed with another type (i.e. passing an integer as an enum without a cast)
+  # 1296: Extended constant initialiser used
+  RVCT:*_*_ARM_CC_FLAGS     = $(OPENSSL_FLAGS) --library_interface=aeabi_clib99 --fpu=vfpv3 -DTHIRTY_TWO_BIT --diag_suppress=1296,1295,550,1293,111,68,177,223,144,513,188
+  XCODE:*_*_IA32_CC_FLAGS   = -mmmx -msse -U_WIN32 -U_WIN64 $(OPENSSL_FLAGS) -w -DTHIRTY_TWO_BIT
+  XCODE:*_*_X64_CC_FLAGS    = -mmmx -msse -U_WIN32 -U_WIN64 $(OPENSSL_FLAGS) -w -DSIXTY_FOUR_BIT_LONG
+#### AMI PORTING BEGIN  #####
+   GCC:*_*_AARCH64_CC_FLAGS	      = $(OPENSSL_FLAGS) -DSIXTY_FOUR_BIT
+   GCC:*_*_ARM_CC_FLAGS	              = $(OPENSSL_FLAGS) -DTHIRTY_TWO_BIT
+#### AMI PORTING END  #####

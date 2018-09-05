@@ -1,0 +1,78 @@
+ ## @file
+ #**********************************************************************
+ #**********************************************************************
+ #**                                                                  **
+ #**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+ #**                                                                  **
+ #**                       All Rights Reserved.                       **
+ #**                                                                  **
+ #**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+ #**                                                                  **
+ #**                       Phone: (770)-246-8600                      **
+ #**                                                                  **
+ #**********************************************************************
+ #**********************************************************************
+ ##
+ 
+ [Defines]
+ DEC_SPECIFICATION              = 0x00010005
+ PACKAGE_NAME                   = AmiChipsetModulePkg
+ PACKAGE_GUID                   = D528069B-F350-469a-8EE7-1DB000FA8DE3
+ PACKAGE_VERSION                = 0.1
+ 
+ #
+ # The following information is for reference only and not required by the build tools.
+ #
+ #  VALID_ARCHITECTURES           = IA32 X64 IPF EBC
+ #
+ 
+[Includes]
+  Include
+# APTIOV_SERVER_OVERRIDE_START : Removed unused Reference
+#  Include/Ppi
+#  Include/Protocol
+# APTIOV_SERVER_OVERRIDE_END : Removed unused Reference
+  ../Build
+# APTIOV_SERVER_OVERRIDE_START : Added AmiCrbPkg reference.
+   ../AmiCRBPkg/Board/SB
+  ../AmiCRBPkg/Chipset/SB
+  ../AmiCRBPkg/Board/NB
+  ../AmiCRBPkg/Chipset/NB
+# APTIOV_SERVER_OVERRIDE_END : Added AmiCrbPkg reference.
+ 
+[LibraryClasses]
+ 
+ 
+[Guids]
+  gAmiChipsetModulePkgTokenSpaceGuid={0xe938c9be,0xcfc2,0x4a9d,{0xa3,0xcd,0x96,0x53,0xd8,0x13,0x30,0x09}}
+ 
+[Protocols]
+  gEfiSmmIoTrapDispatchProtocolGuid={0xbd18369d,0xc242,0x45ca,{0x82,0xad,0x13,0x8a,0xc2,0xe2,0x9b,0xab}}
+  gEfiGlobalNvsAreaProtocolGuid={0x74e1e48, 0x8132, 0x47a1,{0x8c, 0x2c, 0x3f, 0x14, 0xad, 0x9a, 0x66, 0xdc}}
+  gAmiPeriodicSmiControlProtocolGuid={ 0x801e9def, 0xddbb, 0x4ca3, { 0x96, 0x98, 0xc9, 0x15, 0x8e, 0xb8, 0x6a, 0xea } }
+ 
+[Ppis]
+  gOemPchPlatformPolicyOverridePpiGuid={0x61187967, 0x9a77, 0x419d,{0xaa, 0xea, 0x64, 0xdd, 0x56, 0x19, 0x08, 0x15}}
+
+# APTIOV_SERVER_OVERRIDE_START : Removed unwanted PCD.
+[PcdsFixedAtBuild]
+#  gAmiChipsetModulePkgTokenSpaceGuid.PcdGpioPortBaseAddress|0x0500|UINT16|0x20000012
+#  gAmiChipsetModulePkgTokenSpaceGuid.PcdRcrbBaseAddress|0xfed1c000|UINT32|0x20000013
+
+[PcdsDynamic]
+#  gAmiChipsetModulePkgTokenSpaceGuid.PcdSbWakeType|0x0|UINT8|0x20000014
+# APTIOV_SERVER_OVERRIDE_END : Removed unwanted PCD.
+
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************

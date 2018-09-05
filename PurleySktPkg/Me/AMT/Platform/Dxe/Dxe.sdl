@@ -1,0 +1,44 @@
+TOKEN
+	Name  = "AmtPlatformDxe_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling AmtPlatformDxe support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "AmtSetup_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable AmtSetup support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "AsfTable_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable AsfTable support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "ASFVerbosity_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable ASFVerbosity support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "AsfTable"
+	File  = "AsfTable\AsfTable.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "AsfTable_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "ASFVerbosity"
+	File  = "ASFVerbosity\ASFVerbosity.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "ASFVerbosity_SUPPORT" "=" "1"
+End

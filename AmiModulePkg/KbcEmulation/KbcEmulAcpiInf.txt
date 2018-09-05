@@ -1,0 +1,54 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+## @file KbcEmul.inf
+#  Provides functions to enable the SMI event for port 60/64 and install the Trap handle protocol.
+##
+[Defines]
+  INF_VERSION                    = 0x00010015
+  VERSION_STRING                 = 1.0
+  BASE_NAME                      = KbcEmulAcpiLib
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  FILE_GUID                      = 069A0313-FECE-44bc-831A-F75734B9577A
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  LIBRARY_CLASS                  = KbcEmulAcpiLib
+
+[Sources]
+  ../AmiModulePkg/KbcEmulation/KbcEmulAcpi.c
+  
+[LibraryClasses]
+  AmiDxeLib
+  UefiDriverEntryPoint
+
+[Packages]
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  MdePkg/MdePkg.dec
+  @Token(KBCEMULACPI_PACKAGES)
+  
+[Protocols]
+  gEfiAcpiEnDispatchProtocolGuid
+  gEfiAcpiDisDispatchProtocolGuid
+  
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************

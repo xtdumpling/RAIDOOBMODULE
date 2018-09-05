@@ -1,0 +1,377 @@
+
+;*****************************************************************;
+;*****************************************************************;
+;**                                                             **;
+;**      (C)Copyright 1985-2007, American Megatrends, Inc.      **;
+;**                                                             **;
+;**                     All Rights Reserved.                    **;
+;**                                                             **;
+;**           6145-F Northbelt Pkwy, Norcross, GA 30071         **;
+;**                                                             **;
+;**                     Phone (770)-246-8600                    **;
+;**                                                             **;
+;*****************************************************************;
+;*****************************************************************;
+;****************************************************************************;
+; $Header: /Alaska/SOURCE/Modules/CSM/Generic/RT32/pci.equ 1     12/12/07 12:44p Olegi $
+;
+; $Revision: 1 $
+;
+; $Date: 12/12/07 12:44p $
+;****************************************************************************;
+;****************************************************************************;
+
+					;(CORE0132)>
+;PCI_SPEC_VERSION	equ	0210h	;Version of PCI spec implemented
+PCI_SPEC_VERSION	equ	0300h	;Version of PCI spec implemented
+					;<(CORE0132)
+
+PCI_SPEC_CYCLE_M1	equ	10h
+PCI_SPEC_CYCLE_M2	equ	20h
+PCI_CFG_SPACE_M1	equ	01h
+PCI_CFG_SPACE_M2	equ	02h
+
+MAX_PCI_DEVICE_NUM	equ	1Fh	;Highest allowable PCI device number
+
+; Standard PCI configuration register offsets and relevant values
+;------------------------------------------------------------------------------
+PCI_REG_VENDID		equ	00h	;PCI vendor ID register
+PCI_REG_DEVID		equ	02h	;PCI device ID register
+PCI_REG_COMMAND		equ	04h	;PCI command register
+  CMD_DEV_DISABLE	equ	00h	;Disables device when written to cmd reg
+  CMD_IO_SPACE		equ	01h	;IO space enable bit
+  CMD_MEM_SPACE		equ	02h	;Memory space enable bit
+  CMD_BUS_MASTER	equ	04h	;Bus master enable bit
+  CMD_SPECIAL_CYCLE	equ	08h	;Special cycle enable bit
+  CMD_MEM_INVALIDATE	equ	10h	;Memory write & invalidate enable bit
+  CMD_PAL_SNOOP		equ	20h	;VGA palette snoop enable bit
+  CMD_PARITY		equ	40h	;Parity error enable bit
+  CMD_WAIT_CYCLE	equ	80h	;Wait cycle control bit
+  CMD_SERR		equ	100h	;SERR# enable bit
+  CMD_FAST_BTOB		equ	200h	;Fast back-to-back enable bit
+PCI_REG_STATUS		equ	06h	;PCI status register
+  STAT_RESET_ALL	equ	0FFFFh	;Resets all status bits
+PCI_REG_REVID		equ	08h	;PCI revision ID register
+PCI_REG_IF_TYPE		equ	09h	;PCI interface type register
+PCI_REG_SUB_TYPE	equ	0Ah	;PCI sub type register
+PCI_REG_BASE_TYPE	equ	0Bh	;PCI base type register
+PCI_REG_LINE_SIZE	equ	0Ch	;PCI cache line size register
+PCI_REG_LATENCY		equ	0Dh	;PCI latency timer register
+PCI_REG_HEADER_TYPE	equ	0Eh	;PCI header type register
+  MULTI_FUNC_BIT	equ	80h	;If set, device is multi function
+  PCI_CFG_HEADER_STD	equ	00h	;Standard PCI config space
+  PCI_CFG_HEADER_PPB	equ	01h	;PCI-PCI bridge config space
+  PCI_CFG_HEADER_CBB	equ	02h	;CARDBUS bridge config space
+PCI_REG_BIST		equ	0Fh	;PCI built in self test register
+PCI_REG_FIRST_BASE_ADD	equ	10h	;PCI first base address register
+PCI_REG_LAST_BASE_ADD	equ	24h	;PCI last base address register
+  PCI_BASE_ADD_PORT_BIT equ	01h	;If set, base add reg is for I/O port
+  PCI_BASE_ADD_MEMTYPE	equ	06h	;Bits in lower word that are mem type
+    PCI_BASE_ADD_MT_32	equ	00h	;Memory must be located at 32 bit add
+    PCI_BASE_ADD_MT_20	equ	02h	;Memory must be located at 20 bit add
+    PCI_BASE_ADD_MT_64	equ	04h	;Memory must be located at 64 bit add
+  PCI_BASE_ADD_PREFETCH	equ	08h	;If set, memory is prefetchable
+  PCI_BASE_ADD_MEMMASK	equ	0FFF0h	;Bits in lower word that are memory mask
+  PCI_BASE_ADD_PORTMASK	equ	0FFFCh	;Bits in lower word that are port mask
+PCI_REG_ROM_BASE_ADD	equ	30h	;PCI expansion ROM base address register
+  PCI_BASE_ADD_ROMMASK	equ	0FC00h	;Bits in lower word that are ROM mask
+PCI_REG_INT_LINE	equ	3Ch	;PCI interrupt line register
+PCI_REG_INT_PIN		equ	3Dh	;PCI interrupt pin register
+PCI_REG_MAX_GNT		equ	3Eh	;PCI max grant register
+PCI_REG_MAX_LAT		equ	3Fh	;PCI max latency register
+
+PCIE_ACCESS_BIT		equ	08000h	;(CORE0132+)
+
+PCI_REG_MAX_ADDRESS	equ	0FF00h	;Invalid PCI register address bits
+PCI_REG_ADDRESS_BYTE	equ	PCI_REG_MAX_ADDRESS + 0000h
+PCI_REG_ADDRESS_WORD	equ	PCI_REG_MAX_ADDRESS + 0001h
+PCI_REG_ADDRESS_DWORD	equ	PCI_REG_MAX_ADDRESS + 0003h
+
+
+; PCI Expansion ROM Header - At offset 0 in each PCI ROM image
+;------------------------------------------------------------------------------
+pci_rom_header		struc
+pci_rom_signature	dw ?		;Always equal to AA55h
+pci_rom_init_size	db ?		;Size in 512 byte blocks
+pci_rom_init_entry	dd ?		;JMP instruction (entry point for init)
+pci_rom_reserved	db 11h dup (?)
+pci_rom_data_struc_ptr	dw ?		;Offset of PCI ROM Data Structure
+pci_rom_header		ends
+
+
+PCIR_SIGNATURE		equ 52494350h	;ASCII "PCIR" signature (see below)
+PCIRD_CUR_STRUC_REV	equ 00h		;Current rev level of following struc
+
+; PCI Expansion ROM Data Structure - Each ROM image should have one
+;------------------------------------------------------------------------------
+pci_rom_data_struc	struc
+pcird_signature		dd ?		;Should equal to PCIR_SIGNATURE
+pcird_vendid		dw ?		;PCI Vendor ID
+pcird_devid		dw ?		;PCI Device ID
+pcird_vpd_ptr		dw ?		;Pointer to Vital Product Data struc
+pcird_struc_len		dw ?		;Length of this structure (18h)
+pcird_struc_rev		db ?		;Revision number of this structure (00)
+pcird_base_type		db ?		;Class code - base type
+pcird_sub_type		db ?		;Class code - sub type
+pcird_if_type		db ? 		;Class code - interface type
+pcird_image_len		dw ?		;Length of this ROM image/512
+pcird_code_rev		dw ?		;Vendor defined rev level of ROM code
+pcird_code_type		db ?		;Type of code in image (see equ's below)
+pcird_indicator		db ?		;Indocator flags (see equ's below)
+pcird_reserved		dw ?
+pci_rom_data_struc	ends
+
+					;(CORE0132+)>
+pci_rom_data_struc_30	struc
+pcird_signature		dd ?		;Should equal to PCIR_SIGNATURE
+pcird_vendid		dw ?		;PCI Vendor ID
+pcird_devid			dw ?		;PCI Device ID
+pcird_vpd_ptr		dw ?		;Pointer to Vital Product Data struc
+pcird_struc_len		dw ?		;Length of this structure (18h)
+pcird_struc_rev		db ?		;Revision number of this structure (3)
+pcird_base_type		db ?		;Class code - base type
+pcird_sub_type		db ?		;Class code - sub type
+pcird_if_type		db ? 		;Class code - interface type
+pcird_image_len		dw ?		;Length of this ROM image/512
+pcird_code_rev		dw ?		;Vendor defined rev level of ROM code
+pcird_code_type		db ?		;Type of code in image (see equ's below)
+pcird_indicator		db ?		;Indocator flags (see equ's below)
+pcird_max_runtime	dw ?
+pci_rom_data_struc_30	ends
+
+forged_image struct
+	header pci_rom_header <>
+	real_image_seg	dw	?
+	real_image_off	dd	?	
+	pcidata pci_rom_data_struc_30 <>
+	chsum	db ?
+	dummy_code	db  ?
+;	dummy_code	db  dummy_code_size  DUP(?)
+forged_image ends
+
+
+dim_device_data struct
+	is_video db ?
+	revision db ?			; PCI revision of ROM Image
+	init_image_seg dw ?		; seg of the initial location of ROM Image
+	init_image_off dd ?		; offest of the initial location of ROM Image
+	rt_seg dw ?			; seg of the mem where runtime image will be placed
+dim_device_data ends
+					;<(CORE0132)
+
+; Values for pcird_code_type - Indicates which processor this code is for
+;------------------------------------------------------------------------------
+PCI_ROM_CODE_X86	equ 00h		;Code is for x86/AT architecture
+PCI_ROM_CODE_OPENBOOT	equ 01h		;Code is for OpenBoot architecture
+
+
+; Defined bits in pcird_indicator
+;------------------------------------------------------------------------------
+PCIRD_IND_LAST_IMAGE	equ 80h		;Bit 7: If set, this image is the last
+
+
+
+; PCI - PCI Bridge Constants and Structures
+;==============================================================================
+					;(CORE0155.1-)>
+;PCI_MAX_BUSSES	equ 32			;Maximum number of PCI busses in a
+					; system.  This is 16 because busses
+					; own I/O space in units of 4k
+					; granularity.
+					;<(CORE0155.1)
+
+; PCI-PCI Bridge configuration register offsets and relevant values
+;------------------------------------------------------------------------------
+PPB_REG_PRI_BUS_NUM	equ 18h		;Primary bus number register
+PPB_REG_SEC_BUS_NUM	equ 19h		;Secondary bus number register
+PPB_REG_SUB_BUS_NUM	equ 1Ah		;Subordinate bus number register
+PPB_REG_IO_BASE		equ 1Ch		;I/O space base address register
+PPB_REG_IO_LIMIT	equ 1Dh		;I/O space limit register
+PPB_REG_MEM_BASE	equ 20h		;Memory space base address register
+PPB_REG_MEM_LIMIT	equ 22h		;Memory space limit register
+PPB_REG_PFMEM_BASE	equ 24h		;Prefetchable memory space base address
+PPB_REG_PFMEM_LIMIT	equ 26h		;Prefetchable memory space limit reg
+PPB_REG_PFMEM_BASE_U32	equ 28h		;Prefetchable memory base upper 32 bits
+PPB_REG_PFMEM_LIMIT_U32	equ 2Ch		;Prefetchable memory limit upper 32 bits
+PPB_REG_IO_BASE_U16	equ 30h		;I/O space base upper 16 bits
+PPB_REG_IO_LIMIT_U16	equ 32h		;I/O space limit upper 16 bits
+PPB_REG_ROM_BASE_ADD	equ 38h		;PPB expansion ROM base address register ;(CORE0144.1+)
+PPB_REG_BRIDGE_CONTROL	equ 3Eh		;Bridge control register
+  BC_PARITY_ENABLE	equ 01h		;  Parity enable bit
+  BC_SERR_ENABLE	equ 02h		;  SERR enable bit
+  BC_ISA_ENABLE		equ 04h		;  ISA enable bit
+  BC_VGA_ENABLE		equ 08h		;  VGA enable bit
+  BC_MASTER_ABORT_MODE	equ 20h		;  Master abort mode behavior bit
+  BC_SEC_BUS_RESET	equ 40h		;  Secondary bus reset bit
+  BC_FAST_B2B_ENABLE	equ 80h		;  Fast back to back enable bit
+
+
+; PCI Bus Table Entry Structure
+;------------------------------------------------------------------------------
+pci_bus_entry	struc
+pbe_parent_bus		db ?		;Bus number of this bus's parent bus
+pbe_parent_bus_dev	db ?		;Device/function number of this bus's
+					;   bridge on parent bus
+pbe_flags		db ?		;See PBEF_????? values below
+pbe_reserved		db ?		;Force size of struc to power of 2
+pbe_bus_to_global_int	db 4 dup (?)	;This bus's Int A/B/C/D map to these
+pbe_io_start		dw ?		;Start of this bus's I/O space
+pbe_reserved2		dw ?		;So pbe_io_start may be accessed as dword
+pbe_io_size		dw ?		;Size of this bus's I/O space
+pbe_reserved3		dw ?		;So pbe_io_size may be accessed as dword
+
+pbe_mem_start		dd ?		;Start of this bus's memory space
+pbe_mem_size		dd ?		;Size of this bus's memory space
+pbe_pfmem_start		dd ?		;Start of this bus's prefetchable memory
+pbe_pfmem_size		dd ?		;Size of this bus's prefetchable memory
+
+pbe_io_local_start	dw ?		;Start of this bus's local device's I/O
+pbe_reserved4		dw ?
+pbe_mem_local_start	dd ?		;Start of this bus's local device's mem
+pbe_pfmem_local_start	dd ?		;Start of this bus's local device's pfmem
+pbe_sec_bus		db ?		;Secondary bus number
+pbe_sub_bus		db ?		;Subordinate bus number
+pbe_irq			db ?		;			 (Core0035+)
+pbe_reserved5		db ?		; 2 dup (?)	;Force size of struc to power of 2 (Core0035-+)
+					;(CORE0057.2)>
+ifdef	RM2
+;WKH PCI remove doubling start;
+;.......................................................................
+pbe_io_align		dw ?		;Alignment needed by bus's I/O space
+pbe_mem_align		dd ?		;Alignment needed by bus's mem space
+pbe_pfmem_align		dd ?		;Alignment needed by bus's pfmem space
+pbe_reserved6		db 6 dup (?)	;Force size of struc to power of 2
+else
+pbe_reserved6		db 16 dup (?)	;Force size of struc to power of 2
+endif
+;(CORE0086+)>
+pbe_upfmem_start_Lo	dd ?		;Start of this bus's 64 bit prefetchable memory (lower DWORD)
+pbe_upfmem_start_Hi	dd ?		;Start of this bus's 64 bit prefetchable memory (upper DWORD)
+pbe_upfmem_size_Lo	dd ?		;Size of this bus's 64 bit prefetchable memory (lower DWORD)
+pbe_upfmem_size_Hi	dd ?		;Size of this bus's 64 bit prefetchable memory (upper DWORD)
+
+pbe_upfmem_local_start_Lo	dd ?	;Start of this bus's local 64 bit prefetchable memory (lower DWORD
+pbe_upfmem_local_start_Hi	dd ?	;Start of this bus's local 64 bit prefetchable memory (upper DWORD)
+pbe_upfmem_align_Lo	dd ?		;Alignment needed by bus's 64 bit pfmem space (lower DWORD
+pbe_upfmem_align_Hi	dd ?		;Alignment needed by bus's 64 bit pfmem space (upper DWORD)
+
+pbe_reserved7		db 32 dup (?)	;Force size of struc to power of 2
+;<(CORE0086+)
+;.......................................................................
+;WKH PCI remove doubling end;
+					;<(CORE0057.2)
+pci_bus_entry	ends
+
+;(CORE0086)>
+;PCI_BUS_ENTRY_SIZE_SHIFT	equ 6	;Size of above structure Log 2
+PCI_BUS_ENTRY_SIZE_SHIFT	equ 7	;Size of above structure Log 2
+;<(CORE0086)
+
+
+; Values for pci_bus_entry.pbe_flags
+;------------------------------------------------------------------------------
+PBEF_HOST_BRIDGE	EQU 01h		;Bit 0: If set, bridge is a host bridge
+PBEF_HOTPLUG_ENTRY	EQU 02h		;Bit 1: If set, empty Hot Plug Slot
+PBEF_VGA_PRESENT	EQU 04h		; Bit2=1, HostBridge has VGA decoding
+PBEF_PCEI_ROOT_PORT	EQU 08h		;Bit 3: If set Bridge is PCIE root port (Core0035+)
+PBEF_CARDBUS_ENTRY	EQU 10h		;Bit 4: If set Bridge is CardBus (BUG#2503+)
+;(CORE0086+)>
+;(CORE0086.1+)>
+PBEF_COMP_BRIDGE	EQU 20h		;Bit 5: If set, bridge is a compatibility bridge
+;<(CORE0086.1+)
+PBEF_M64_BIT		EQU 40h		;Bit 6: Regular memory. If set, 64 bit bus
+PBEF_PFM64_BIT		EQU 80h		;Bit 7: Prefetchable memory. If set, 64 bit bus
+;<(CORE0086+)
+
+; AMI IRQ Routing Table Header ($IRT) Structure
+;------------------------------------------------------------------------------
+AMIIRQ_HEADER	struc
+	dSignature	dd	?	;'$IRT' signature
+	bTotalEntries	db	?	;total number of slot entries present in the table
+	bUsedEntries	db	?	;number of used slot entries in the table
+	wExclusiveIRQ	dw	?	;bitmap of IRQs used exclusively for PCI
+	wPtrIRQSlotStart dw	?	;pointer to start of IRQ slot entries
+AMIIRQ_HEADER	ends
+
+; MS IRQ Routing Table Header Structure
+;------------------------------------------------------------------------------
+MSIRQ_HEADER	struc
+	dSignature	dd	?	;'$PIR' signature
+	wVersion	dw	?	;version (low byte = minor, high byte = major)
+	wSize		dw	?	;length of routing table including header and slots
+	bRouterBus	db	?	;PCI IRQ Router bus#
+	bRouterDevFunc	db	?	;PCI IRQ Router dev#(7:3), func#(2:0)
+	wExclusiveIRQ	dw	?	;bitmap of IRQs used exclusively for PCI
+	dCompatibleRouter dd	?	;VendorID, DeviceID of compatible IRQ router (low word = VendorID, high word = DeviceID)
+	dMiniPortData	dd	?	;MiniPort Data
+	bReserved	db	11 dup(?); reserved bytes (set to 0)
+	bChecksum	db	?	;checksum
+MSIRQ_HEADER	ends
+; PCI_IRQ_ENTRY follows the MSIRQ_HEADER, one entry per slot
+
+; PCI IRQ Routing Table Entry Structure
+;------------------------------------------------------------------------------
+pci_irq_entry	struc
+pirq_bus_number		db ?		;PCI bus number of device
+pirq_device_number	db ?		;PCI device number of device (in upper 5 bits)
+pirq_inta_reg		db ?		;Chipset register for this dev's Int A Pin
+pirq_inta_irqs		dw ?		;Bitmap of IRQs routable to Int A Pin
+pirq_intb_reg		db ?		;Chipset register for this dev's Int B Pin
+pirq_intb_irqs		dw ?		;Bitmap of IRQs routable to Int B Pin
+pirq_intc_reg		db ?		;Chipset register for this dev's Int C Pin
+pirq_intc_irqs		dw ?		;Bitmap of IRQs routable to Int C Pin
+pirq_intd_reg		db ?		;Chipset register for this dev's Int D Pin
+pirq_intd_irqs		dw ?		;Bitmap of IRQs routable to Int D Pin
+pirq_phys_slot		db ?		;Physical slot number of device
+pirq_reserved		db ?
+pci_irq_entry	ends
+
+
+; PCI IDE Busmaster Table Entry Structure
+;------------------------------------------------------------------------------
+pci_buside_entry	struc
+pbide_pri_base_address	dw ?		;Base address of IDE's primary channel (i.e. 1F0)
+pbide_sec_base_address	dw ?		;Base address of IDE's secondary channel (i.e. 170)
+pbide_bus_dev_func	dw ?		;PCI Bus / Device / Function number of PCI IDE
+pbide_bus_base_address	dw ?		;Base address if IDE's busmaster control regs
+pci_buside_entry	ends
+
+; Hot Plug PCI Hardware Resource Table (HRT) Header Structure
+;------------------------------------------------------------------------------
+hrt_header	struc
+	dSignature	dd	?	;'$HRT' signature
+	wUnusedIRQ	dw	?	;bitmapped of unused IRQ (unused by EISA/PCI devices)
+	wUsedIRQ	dw	?	;bitmapped of used IRQs (used by PCI devices)
+	bEntry		db	?	;#of entries in HRT table that follows header
+	bVersion	db	?	;version#
+	bReserved	db	6 dup(?); reserved bytes
+hrt_header	ends
+
+; Hot Plug PCI Hardware Resource Table (HRT) Slot Structure
+;------------------------------------------------------------------------------
+hrt_slot	struc
+	bDeviceNumber	db	?	;device number of this slot
+	bPrimaryBus	db	?	;primary bus# of this slot
+	bSecondaryBus	db	?	;secondary bus# of this slot
+	bMaxSubBus	db	?	;maximum subordinate bus# of this slot
+	wIOAddress	dw	?	;allocated IO space start address
+	wIOSize		dw	?	;allocated IO space size in bytes
+	wNPMemoryAddress dw	?	;bit31-16 of allocated non-prefetchable memory space staring address
+	wNPMemorySize	dw	?	;allocated non-prefetchable memory space size in 64k chunks
+	wPMemoryAddress	dw	?	;bit31-16 of allocated prefetchable memory space staring address
+	wPMemorySize	dw	?	;allocated prefetchable memory space size in 64k chunks
+hrt_slot	ends
+;------------------------------------------------------------------------------
+;*****************************************************************;
+;*****************************************************************;
+;**                                                             **;
+;**      (C)Copyright 1985-2007, American Megatrends, Inc.      **;
+;**                                                             **;
+;**                     All Rights Reserved.                    **;
+;**                                                             **;
+;**           6145-F Northbelt Pkwy, Norcross, GA 30071         **;
+;**                                                             **;
+;**                     Phone (770)-246-8600                    **;
+;**                                                             **;
+;*****************************************************************;
+;*****************************************************************;

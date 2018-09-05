@@ -1,0 +1,36 @@
+TOKEN
+    Name  = "KbcIoTrap_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable KbcIoTrap_SUPPORT support in Project"
+    TokenType = Boolean
+    Master = Yes
+    Token = "IOTRAP_EMUL_SUPPORT" "=" "1"
+End
+
+INFComponent
+    Name  = "KbcIoTrap"
+    File  = "KbcIoTrap.inf"
+    Package  = "AmiModulePkg"
+End
+
+INFComponent
+    Name  = "KbcIoTrapDxe"
+    File  = "KbcIoTrapDxe.inf"
+    Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiModulePkg.KbcIoTrapDxe"
+    ModuleTypes  = "DXE_DRIVER"
+    Override  = "AmiModulePkg.KbcEmulDxe"
+    Token = "IOTRAP_EMUL_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiModulePkg.KbcIoTrap"
+    ModuleTypes  = "DXE_SMM_DRIVER"
+    Override  = "AmiModulePkg.KbcEmul"
+    Token = "IOTRAP_EMUL_SUPPORT" "=" "1"
+End

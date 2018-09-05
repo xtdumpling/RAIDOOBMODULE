@@ -1,0 +1,41 @@
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = BiosGuardSmm
+  FILE_GUID                      = 44FE07D3-C312-4ad4-B892-269AB069C8E1
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = BiosGuardSmmEntry
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+
+[Sources]
+  BiosGuardSmm.c
+  BiosGuardSmm.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  
+[LibraryClasses]
+  BaseLib
+  DebugLib
+  BaseMemoryLib
+  UefiDriverEntryPoint
+  UefiRuntimeServicesTableLib
+  SmmServicesTableLib
+  IoLib
+  AmiCspLib
+  AmiDxeLib
+
+[Protocols]
+  gEfiSmmSxDispatch2ProtocolGuid
+  gEfiSmmVariableProtocolGuid
+
+[Depex]
+  gEfiSmmVariableProtocolGuid AND
+  gEfiSmmSxDispatch2ProtocolGuid

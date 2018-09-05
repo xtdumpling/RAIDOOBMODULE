@@ -1,0 +1,47 @@
+TOKEN
+    Name  = "TcgCoreHookSupport"
+    Value  = "1"
+    Help  = "Enable or Disable TcgCoreHook"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes
+    TargetMAK = Yes
+    Master = Yes
+    Token = "TCG2Support" "=" "1"
+End
+
+ELINK
+    Name  = "TcgHookCoreinit,"
+    Parent  = "DxeCoreInitialize"
+    InvokeOrder = AfterParent
+End
+
+INFComponent
+    Name  = "TcgCoreHook"
+    File  = "TcgCoreHook.inf"
+    Package  = "MdeModulePkg"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "MdeModulePkg.TcgCoreHook"
+    Override = "MdeModulePkg.DxeMain"
+End
+
+TOKEN
+    Name  = "SAVE_ENTIRE_FV_IN_MEM"
+    Value  = "0"
+    Help  = "Switch to enable to copy Entire Firmware Volume to Ram."
+    TokenType = Boolean
+    TargetMAK = Yes
+    TargetH = Yes
+End
+TOKEN
+    Name  = "SAVE_ENTIRE_FV_IN_MEM"
+    Value  = "1"
+    Help  = "Switch to enable to copy Entire Firmware Volume to Ram."
+    TokenType = Boolean
+    TargetMAK = Yes
+    TargetH = Yes
+    Token = "PeiRamBootSupport" "=" "1"
+End

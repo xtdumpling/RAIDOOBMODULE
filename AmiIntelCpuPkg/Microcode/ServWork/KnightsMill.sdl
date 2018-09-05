@@ -1,0 +1,24 @@
+TOKEN
+    Name  = "SERVWORK_8065X"
+    Value = "0"
+    Help  = "Intel(R) Knights Mill Server"
+    TokenType = Boolean
+    Master = Yes
+End
+
+TOKEN
+    Name  = "SERVWORK_M0880650"
+    Value  = "1"
+    Help  = "Intel(R) Knights Mill Processor A-0 Stepping"
+    TokenType = Boolean
+    Token = "NON_PRODUCTION_MICROCODE" "=" "1"
+End
+
+ELINK
+    Name  = "$(MICROCODE_SERVWORK_DIR)/M0880650_FFFF0009.mcb"
+    Parent  = "MICROCODE_FILES"
+    Help  = "Intel(R) Knights Mill Processor A-0 Stepping"
+    Token = "SERVWORK_M0880650" "=" "1"
+    InvokeOrder = AfterParent
+End
+

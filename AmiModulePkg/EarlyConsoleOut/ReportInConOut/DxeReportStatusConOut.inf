@@ -1,0 +1,70 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+
+## @file DxeReportStatusConOut.inf
+#  DXE driver that displays the Status code in the Con out devices
+##
+
+
+[Defines]
+  INF_VERSION               = 0x00010005
+  VERSION_STRING            = 1.0
+  BASE_NAME                 = DxeReportStatusConOut
+  MODULE_TYPE               = DXE_DRIVER
+  FILE_GUID                 = 0F5DD251-6C8B-4752-8110-FCDF57EEDFB2
+  ENTRY_POINT               = InitializeDxeReportStatus
+
+[Sources]
+  DxeReportStatusConOut.c
+  DxeReportStatusConOut.h
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  DebugLib
+  PrintLib
+  UefiLib
+  ReportStatusCodeLib
+
+[Protocols]
+  gEfiRscHandlerProtocolGuid           
+  gAmiDxeTextOutProtocolGuid           
+  gAmiDxeConsplitterTextOutProtocolGuid
+  gEfiSimpleTextOutProtocolGuid
+          
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/EarlyConsoleOut/AmiEarlyConsoleOutPkg.dec 
+  
+[Depex]
+  gEfiRscHandlerProtocolGuid AND
+  gAmiDxeTextOutProtocolGuid
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+  

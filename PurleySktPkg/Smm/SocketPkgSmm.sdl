@@ -1,0 +1,67 @@
+TOKEN
+	Name  = "SocketPkgSmm_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling SocketPkgSmmsupport in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "SmmAccess_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable SmmAccess support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "IioSmm_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable IioSmm support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "SmmAccessPei_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable SmmAccessPei support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "FpgaSmm_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable FpgaSmm support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "SmmAccess"
+	File  = "Access\SmmAccess.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "SmmAccess_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "IioSmm"
+	File  = "Iio\IioSmm.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "IioSmm_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "SmmAccessPei"
+	File  = "SmmAccessPei\SmmAccessPei.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "PEIM"
+	Token = "SmmAccessPei_SUPPORT" "=" "1"
+End
+
+INFComponent
+    Name  = "FpgaSmm"
+    File  = "FpgaInit\FpgaSmm\FpgaSmm.inf"
+    Package  = "PurleySktPkg"
+    ModuleTypes  = "DXE_SMM_DRIVER"
+    Token = "FpgaSmm_SUPPORT" "=" "1"
+End

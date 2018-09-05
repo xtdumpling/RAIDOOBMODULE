@@ -1,0 +1,67 @@
+## @file
+#  PlatformEarlyInit PEIM
+#
+#  Copyright (c) 2009 - 2016, Intel Corporation. All rights reserved.<BR>
+#
+#  This program and the accompanying materials
+#  are licensed and made available under the terms and conditions of the BSD License
+#  which accompanies this distribution. The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.php
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = UncoreInitPeim
+  FILE_GUID                      = D71C8BA4-4AF2-4d0d-B1BA-F2409F0C20D3
+  MODULE_TYPE                    = PEIM
+  ENTRY_POINT                    = UncoreInit
+
+[Sources]
+  UncoreInit.c
+
+[Packages]
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  MdePkg/MdePkg.dec
+  PurleySktPkg/SocketPkg.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+
+[LibraryClasses]
+  PeimEntryPoint
+  ProcMemInitLib
+
+[Pcd]
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[Guids]
+
+[Ppis]
+  gEfiPeiCpuIoPpiInstalledGuid
+  gEfiPciCfg2PpiGuid
+  gEfiPeiReadOnlyVariable2PpiGuid
+  gPeiBaseMemoryTestPpiGuid
+  gPeiPlatformMemorySizePpiGuid
+  gPchResetPpiGuid
+  gDirtyWarmResetGuid
+
+
+[Depex]
+  gEfiPeiCpuIoPpiInstalledGuid AND
+  gEfiPciCfg2PpiGuid AND
+  gEfiPeiReadOnlyVariable2PpiGuid AND
+  gPeiBaseMemoryTestPpiGuid AND
+  gPeiPlatformMemorySizePpiGuid
+
+[BuildOptions]
+  MSFT:*_*_*_CC_FLAGS     = /W4 /Gs1310720 /GF /GL- /wd4214 /wd4334 /wd4142 /wd4819 /DIA32
+  GCC:*_*_*_CC_FLAGS     = -DIA32
+
+

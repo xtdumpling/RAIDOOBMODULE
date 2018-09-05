@@ -1,0 +1,84 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+#**********************************************************************
+# $Header:  $
+#
+# $Revision:  $
+#
+# $Date:  $
+#**********************************************************************
+#<AMI_FHDR_START>
+#
+# Name:  GenericElog.inf
+#
+# Description:	INF description file for GenericElog Driver
+#
+#<AMI_FHDR_END>
+#**********************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = GenericElog
+  FILE_GUID                      = 3B0673A3-5197-454c-BA76-E2D0C8C48EFD
+  MODULE_TYPE                    = DXE_RUNTIME_DRIVER
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = InitializeGenericElog
+
+[Sources]
+  GenericElog.c
+  GenericElog.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  MemoryAllocationLib
+  BaseLib  
+  DebugLib
+  BaseMemoryLib
+  UefiLib
+
+[Protocols]
+  gEfiGenericElogProtocolGuid             #PRODUCES
+  gEfiRedirElogProtocolGuid               #CONSUMES
+
+[Guids]
+  gEfiEventVirtualAddressChangeGuid
+  
+[Pcd]
+
+[Depex]
+  TRUE
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**         5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

@@ -1,0 +1,64 @@
+
+
+[Defines]
+INF_VERSION = 0x00010015
+VERSION_STRING = 1.0
+BASE_NAME = EzportPlusBin
+MODULE_TYPE = BASE
+LIBRARY_CLASS = EzportPlusBin
+
+[binaries.IA32]
+LIB | TseStyleEzportPlus.lib
+[binaries.X64]
+LIB | TseStyleEzportPlusx64.lib
+[binaries.AARCH64]
+LIB | TseStyleEzportPlusAarch64.lib
+
+[Sources]
+
+
+[Packages]
+  AmiTsePkg/AmiTsePkg.dec
+  AmiTsePkg/AmiTsePrivatePkg.dec
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  
+
+[Protocols]
+  gEfiUnicodeCollation2ProtocolGuid
+  gEfiUnicodeCollationProtocolGuid
+  gEfiOEMBadgingProtocolGuid
+  gEfiSimpleFileSystemProtocolGuid
+#  gEfiLegacyBiosProtocolGuid
+  gEfiUnicodeCollation2ProtocolGuid
+  gEfiUnicodeCollationProtocolGuid
+  gEfiBlockIoProtocolGuid
+  gEfiFirmwareVolumeProtocolGuid
+  gEfiSimpleTextInProtocolGuid
+  gEfiLoadedImageProtocolGuid
+
+[Guids]
+  gEfiConsoleOutDeviceGuid
+  
+ [LibraryClasses]
+  MemoryAllocationLib
+  BaseLib
+  BaseMemoryLib
+  PerformanceLib
+  DevicePathLib
+  DebugLib
+  UefiLib
+  PrintLib
+#  UefiDriverEntryPoint
+#  AmiIntrinsicLib
+  ReportStatusCodeLib
+  
+  
+ [BuildOptions]
+MSFT:*_*_*_CC_FLAGS = /DTSE_FOR_APTIO_4_50 
+GCC:*_*_*_CC_FLAGS = -DTSE_FOR_APTIO_4_50  
+*_*_*_BUILD_FLAGS   = -s 

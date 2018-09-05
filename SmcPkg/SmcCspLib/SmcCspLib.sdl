@@ -1,0 +1,201 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.01
+#    Bug Fixed: Remove Ctrl home feature.
+#    Reason   : 
+#    Auditor  : Chen Lin
+#    Date     : Jul/17/2017
+#
+#
+#  Rev. 1.00
+#       Bug fixed:   Initialize revision
+#       Reason:      Get base code from Grantley
+#       Auditor:     Kasber Chen
+#       Date:        May/16/2016
+#****************************************************************************
+TOKEN
+  	Name      = "SMC_CSP_LIB_SUPPORT"
+  	Value     = "1"
+  	TokenType = Boolean
+  	TargetEQU = Yes
+  	TargetMAK = Yes
+  	TargetH   = Yes
+  	Master    = Yes
+  	Help      = "Main switch to enable smc Csp Lib support in Project"
+End
+
+PATH
+  Name  = "SMC_CSP_LIB_DIR"
+End
+
+TOKEN
+	Name  = "  ====== GPIO Define ======  "
+	TokenType = Integer
+End
+
+TOKEN
+	Name      = "SMC_GPP_A"
+	Value     = "0x01000000"
+	Help      = "GPIO_SKL_H_GROUP_GPP_A"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH   = Yes
+End
+
+TOKEN
+	Name      = "SMC_GPP_B"
+	Value     = "0x01010000"
+	Help      = "GPIO_SKL_H_GROUP_GPP_B"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH   = Yes
+End
+
+TOKEN
+	Name      = "SMC_GPP_C"
+	Value     = "0x01020000"
+	Help      = "GPIO_SKL_H_GROUP_GPP_C"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH   = Yes
+End
+
+TOKEN
+	Name      = "SMC_GPP_D"
+	Value     = "0x01030000"
+	Help      = "GPIO_SKL_H_GROUP_GPP_D"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH   = Yes
+End
+
+TOKEN
+	Name      = "SMC_GPP_E"
+	Value     = "0x01040000"
+	Help      = "GPIO_SKL_H_GROUP_GPP_E"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH   = Yes
+End
+
+TOKEN
+	Name      = "SMC_GPP_F"
+	Value     = "0x01050000"
+	Help      = "GPIO_SKL_H_GROUP_GPP_F"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH   = Yes
+End
+
+TOKEN
+	Name      = "SMC_GPP_G"
+	Value     = "0x01060000"
+	Help      = "GPIO_SKL_H_GROUP_GPP_G"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH   = Yes
+End
+
+TOKEN
+	Name      = "SMC_GPP_H"
+	Value     = "0x01070000"
+	Help      = "GPIO_SKL_H_GROUP_GPP_H"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH   = Yes
+End
+TOKEN
+	Name      = "SMC_GPP_I"
+	Value     = "0x01080000"
+	Help      = "GPIO_SKL_H_GROUP_GPP_I"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH   = Yes
+End
+
+TOKEN
+	Name      = "SMC_GPP_J"
+	Value     = "0x01090000"
+	Help      = "GPIO_SKL_H_GROUP_GPP_J"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH   = Yes
+End
+
+TOKEN
+	Name      = "SMC_GPP_K"
+	Value     = "0x010A0000"
+	Help      = "GPIO_SKL_H_GROUP_GPP_K"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH   = Yes
+End
+
+TOKEN
+	Name      = "SMC_GPP_L"
+	Value     = "0x010B0000"
+	Help      = "GPIO_SKL_H_GROUP_GPP_L"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH   = Yes
+End
+
+TOKEN
+	Name      = "SMC_GPD"
+	Value     = "0x010C0000"
+	Help      = "GPIO_SKL_H_GPD"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH   = Yes
+End
+
+INFComponent
+        Name  = "SmcCspLib"
+        File  = "SmcCspLib.inf"
+        Package  = "SMCPkg"
+        ModuleTypes  = "BASE"
+End
+
+LibraryMapping
+	Class  = "SmcCspLib"
+	Instance  = "SmcPkg.SmcCspLib"
+End
+
+ELINK
+	Name  = "$(SMC_CSP_LIB_DIR)/SmcCheckRecovery.c"
+	Parent  = "AMI_CSP_PEI_SOURCES"
+	InvokeOrder = AfterParent
+	Token = "BIOS_Restore_button" "=" "1"
+End
+
+ELINK
+	Name  = "$(SMC_CSP_LIB_DIR)/SmcCheckRecovery.c"
+	Parent  = "AMI_CSP_DXE_SOURCES"
+	InvokeOrder = AfterParent
+	Token = "BIOS_Restore_button" "=" "1"
+End
+
+ELINK
+	Name  = "SMCCheckRecovery,"
+	Parent  = "IsRecovery"
+	InvokeOrder = AfterParent
+	Token = "BIOS_Restore_button" "=" "1"
+End
+
+#ELINK
+#  Name        = "$(SMC_CSP_LIB_DIR)/SmcCtrlHome.c"
+#  Parent      = "AMI_CSP_PEI_SOURCES"
+#  InvokeOrder = AfterParent
+#End
+
+#ELINK
+#  Name        = "SmcCtrlHomePressed,"
+#  Parent      = "IsRecovery"
+#  InvokeOrder = AfterParent
+#End

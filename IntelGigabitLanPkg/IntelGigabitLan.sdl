@@ -1,0 +1,43 @@
+TOKEN
+	Name  = "IntelGigabitLan_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable Intel Gigabit Lan network chip support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "GigabitLanDependency"
+	Value  = "1"
+	Help  = "Switch dependency file to \0-IntelGigabitLanBinFdfFileStatement.txt,\1-IntelGigabitLan.inf"
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+	TOKEN = "IntelGigabitLan_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name = "IntelGigabitLan"
+	File = "IntelGigabitLan.inf"
+	Package = "IntelGigabitLanPkg"
+	ModuleTypes = "UEFI_DRIVER"	
+	TOKEN = "GigabitLanDependency" "=" "1"
+End
+
+FFS_FILE
+	Name  = "IntelGigabitLan"
+	FD_AREA  = "FV_MAIN"
+	INFComponent  = "IntelGigabitLanPkg.IntelGigabitLan"
+#	Rule_Override = "EfiBinary"
+	Token = "GigabitLanDependency" "=" "1"
+End
+
+FFS_FILE
+	Name  = "IntelGigabitLan"
+	FD_AREA  = "FV_MAIN"
+	FILE_Stmt  = "IntelGigabitLanPkg\IntelGigabitLanBinFdfFileStatement.txt"
+	Token = "GigabitLanDependency" "=" "0"
+End

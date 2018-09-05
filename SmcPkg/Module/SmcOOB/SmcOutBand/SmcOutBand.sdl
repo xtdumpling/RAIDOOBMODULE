@@ -1,0 +1,66 @@
+#****************************************************************************
+#****************************************************************************
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.01
+#    Bug Fix:  Re-write SmcOutBand module.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Aug/02/2016
+#
+#  Rev. 1.00
+#    Bug Fix:  Initial revision.
+#    Reason:   
+#    Auditor:  Kasber Chen
+#    Date:     May/25/2016
+#
+#****************************************************************************
+
+TOKEN
+    Name          = "SmcOutBand_SUPPORT"
+    Value         = "1"
+    TokenType     = Boolean
+    TargetEQU     = Yes
+    TargetMAK     = Yes
+    TargetH       = Yes
+    Master        = Yes
+    Token         = "IPMI_SUPPORT" "=" "1"
+End
+
+PATH
+    Name          = "SmcOutBand_DIR"
+End
+
+INFComponent
+    Name          = "SmcOutBand"
+    File          = "SmcOutBandBin.inf"
+    Package       = "SmcPkg"
+    ModuleTypes   = "DXE_DRIVER"
+    Token         = "SMC_OOB_SOURCES" "=" "0"
+End
+
+INFComponent
+    Name          = "SmcOutBand"
+    File          = "SmcOutBandDbg.inf"
+    Package       = "SmcPkg"
+    ModuleTypes   = "DXE_DRIVER"
+    Token         = "SMC_OOB_SOURCES" "=" "1"
+End
+
+INFComponent
+    Name          = "SmcOutBand"
+    File          = "SmcOutBand.inf"
+    Package       = "SmcPkg"
+    ModuleTypes   = "DXE_DRIVER"
+    Token         = "SMC_OOB_SOURCES" "=" "2"
+End
+
+FFS_FILE
+    Name          = "SmcOutBand"
+    FD_AREA       = "FV_MAIN"
+    INFComponent  = "SmcPkg.SmcOutBand"
+End
+

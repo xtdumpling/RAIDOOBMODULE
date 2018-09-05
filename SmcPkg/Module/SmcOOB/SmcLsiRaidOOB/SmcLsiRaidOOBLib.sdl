@@ -1,0 +1,50 @@
+##****************************************************************************
+##****************************************************************************
+##**                                                                        **
+##**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+##**                                                                        **
+##****************************************************************************
+##****************************************************************************
+#
+#  File History
+#
+#  Rev. 1.00
+#    Bug Fix:  Initial revision.
+#    Reason:   
+#    Auditor:  Durant Lin
+#    Date:     Aug/13/2018
+#
+#****************************************************************************
+
+TOKEN
+    Name          = "SmcLsiRaidOOBLIB_SUPPORT"
+    Value         = "1"
+    TokenType     = Boolean
+    TargetEQU     = Yes
+    TargetMAK     = Yes
+    TargetH       = Yes
+    Master        = Yes
+End
+
+PATH
+    Name          = "SmcLsiRaidOOBLIB_DIR"
+End
+
+INFComponent
+    Name          = "SmcLsiRaidOOBLib"
+    File          = "SmcLsiRaidOOBLib.inf"
+    Package       = "SmcPkg"
+    ModuleTypes   = "DXE_DRIVER"
+End
+
+LibraryMapping
+	Class  = "SmcLsiRaidOOBLib"
+	Instance  = "SmcPkg.SmcLsiRaidOOBLib"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "SmcPkg.SmcLsiRaidOOBLib"
+	Override = "SmcPkg.SmcLsiRaidOOBSetup"
+End
+

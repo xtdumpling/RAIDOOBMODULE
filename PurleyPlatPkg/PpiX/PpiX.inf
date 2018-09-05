@@ -1,0 +1,136 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+## @file
+#   This driver installs PpiX Architectural Protocol
+##
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF EBC
+#
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+# APTIOV_SERVER_OVERRIDE_START : Naming Changes and commented unused UNI file
+##  BASE_NAME                      = DxeTcg2PhysicalPresenceLib
+  BASE_NAME = PpiX
+##  MODULE_UNI_FILE                = DxeTcg2PhysicalPresenceLib.uni
+  FILE_GUID                      = A94217A2-D60F-4B92-A614-6BE30D4D5834
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+##  LIBRARY_CLASS                  = Tcg2PhysicalPresenceLib|DXE_DRIVER DXE_RUNTIME_DRIVER DXE_SAL_DRIVER UEFI_APPLICATION UEFI_DRIVER 
+  LIBRARY_CLASS                  = PpiXLib | DXE_DRIVER DXE_RUNTIME_DRIVER DXE_SAL_DRIVER UEFI_APPLICATION UEFI_DRIVER 
+# APTIOV_SERVER_OVERRIDE_END : Naming Changes and commented unused UNI file
+
+[Sources]
+# APTIOV_SERVER_OVERRIDE_START : Change in file names and removed unnecessary files
+##..DxeTcg2PhysicalPresenceLib.c
+##  DxeOobOneTouch.c
+##  DxeOobOneTouch.h
+##  DxeOneTouchPlatform.c
+##  DxeOneTouchPlatform.h
+##  PhysicalPresenceStrings.uni
+##  ../../Include/Guid/Tcg2PhysicalPresenceData.h
+##  ../../Include/Library/Tcg2PhysicalPresenceLib.h
+##  ../../Include/Library/Tcg2PpVendorLib.h
+PpixOobTask.c
+PpixOobTask.h
+PpixOobPlatform.c
+PpixOobPlatform.h
+# APTIOV_SERVER_OVERRIDE_END : Change in file names and removed unnecessary files
+
+[Packages]
+
+MdePkg/MdePkg.dec
+MdeModulePkg/MdeModulePkg.dec
+# APTIOV_SERVER_OVERRIDE_START : Removed Intel specifice Dec's
+##  SecurityPkg/SecurityPkg.dec
+# APTIOV_SERVER_OVERRIDE_START : Removed Intel specifice Dec's
+
+PurleyPlatPkg/PlatPkg.dec
+PurleySktPkg/SocketPkg.dec
+CpRcPkg/CpRcPkg.dec
+CpPcPlatPkg/CpPcPlatPkg.dec
+PurleySktPkg/Me/MePkg.dec
+# APTIOV_SERVER_OVERRIDE_START : Removed Intel specifice Dec's & added needed Dec's of AMI
+##  CpPlatPkg/CpPlatPkg.dec
+AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+AmiModulePkg/AmiModulePkg.dec
+IntelFrameworkPkg/IntelFrameworkPkg.dec
+IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+AmiTsePkg/AmiTsePkg.dec
+# APTIOV_SERVER_OVERRIDE_END : Removed Intel specifice Dec's & added needed Dec's of AMI
+
+[LibraryClasses]
+# APTIOV_SERVER_OVERRIDE_START : Removed unnecessary libraries and added AMI needs
+  MemoryAllocationLib
+##  UefiLib
+  UefiBootServicesTableLib
+##  UefiDriverEntryPoint
+  UefiRuntimeServicesTableLib
+  BaseLib
+  BaseMemoryLib
+  DebugLib
+##  PrintLib
+##  HiiLib
+  HobLib
+##  Tpm2CommandLib
+##  Tcg2PpVendorLib
+##  PasswordEncodeLib
+  PttHeciLib
+##  TimerLib
+##  BeepLib
+  MeStorageLib
+  BaseCryptLib
+  PasswordEncode
+# APTIOV_SERVER_OVERRIDE_END : Removed unnecessary libraries and added AMI needs
+
+[Protocols]
+# APTIOV_SERVER_OVERRIDE_START : Removed unnecessary protocols
+  gEfiTcg2ProtocolGuid                 ## CONSUMES
+  gEfiTcgProtocolGuid                  ## CONSUMES
+##  gEdkiiVariableLockProtocolGuid       ## CONSUMES
+# APTIOV_SERVER_OVERRIDE_END : Removed unnecessary protocols
+
+[Guids]
+# APTIOV_SERVER_OVERRIDE_START : Removed unnecessary Guids
+  ## CONSUMES           ## HII
+  ## SOMETIMES_PRODUCES ## Variable:L"Tcg2PhysicalPresence"
+  ## SOMETIMES_CONSUMES ## Variable:L"Tcg2PhysicalPresence"
+  ## SOMETIMES_PRODUCES ## Variable:L"Tcg2PhysicalPresenceFlags"
+  ## SOMETIMES_CONSUMES ## Variable:L"Tcg2PhysicalPresenceFlags"
+##  gEfiTcg2PhysicalPresenceGuid
+  gEfiSocketProcessorCoreVarGuid
+  gEfiSocketIioVariableGuid
+  gEfiMeRcVariableGuid
+# APTIOV_SERVER_OVERRIDE_END : Removed unnecessary Guids
+
+[FixedPcd]
+# APTIOV_SERVER_OVERRIDE_START : Removed unnecessary PCD's
+##  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+# APTIOV_SERVER_OVERRIDE_END : Removed unnecessary PCD's
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

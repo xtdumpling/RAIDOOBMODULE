@@ -1,0 +1,40 @@
+TOKEN
+    Name  = "SmiVariable_SUPPORT"
+    Value = "1"
+    Help  = "Main switch to enable SmiVariable support in Project"
+    TokenType = Boolean
+    TargetMAK = Yes
+    Master = Yes
+End
+
+PATH
+    Name = "SmiVariable_DIR"
+    Path = "AmiModulePkg\SmiVariable"
+End
+
+ELINK
+	Name  = "SmiVariableHook"
+	Help  = "Called before SmiVariable handler. If status, returned from the hook, will be other than EFI_UNSUPPORTED - execution of handler will be terminated and this status will be returned to the caller. Validation of the data, passed to the hook, is responsibility of the hook implementer. "
+	InvokeOrder = ReplaceParent
+End
+
+OUTPUTREGISTER
+    Name  = "SMI_VAR_ELINKS_H"
+    Path  = "Build"
+    File  = "SmiVarElink.h"
+    Template  = "SmiVarElinkTempl.txt"
+End
+
+INFComponent
+    Name = "SmiVariable"
+    File = "SmiVariable.inf"
+    Package = "AmiModulePkg"
+    ModuleTypes = "DXE_SMM_DRIVER"
+End
+
+INFComponent
+    Name = "ExportHiiDb"
+    File = "ExportHiiDb.inf"
+    Package = "AmiModulePkg"
+    ModuleTypes = "DXE_DRIVER"
+End

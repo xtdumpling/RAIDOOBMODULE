@@ -1,0 +1,73 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+## @file
+#
+##
+[Defines]
+INF_VERSION 				= 0x00010005
+VERSION_STRING 				= 1.0
+BASE_NAME 				= AmiTcgNvflagSample
+MODULE_TYPE 				= DXE_DRIVER
+FILE_GUID 				= 50F6096D-7C98-4c78-9A1D-C5A1833B6A88
+ENTRY_POINT 				= AmiTcgPpiNvflagEntry
+
+[Sources]
+AmiTcgNvflagSample.c
+AmiTcgNvflagSample.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  AmiTcgPkg/AmiTcgPkg.dec
+
+[LibraryClasses]
+   UefiDriverEntryPoint
+   BaseTisLib12
+   UefiLib
+   BaseMemoryLib
+   BaseAmiTcmlib
+   TpmReportStatusCodeWrapperLibDxe
+   AmiTcgLibDxe
+
+[Guids]   
+   FlagsStatusguid
+   mAmiPpiInternalVarGuid
+   mAmiTcgInterfaceVarGuid
+   AmiBiosPpiFlagsManagementGuid 
+[Protocols]
+  gEfiTcgProtocolGuid
+  gEfiTpmDeviceProtocolGuid
+  gEdkiiVariableLockProtocolGuid
+  #AmiBiosPpiFlagsManagementGuid
+
+[Depex]
+    gEfiTcgProtocolGuid
+
+[BuildOptions.X64]
+  
+
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************

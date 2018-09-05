@@ -1,0 +1,93 @@
+#****************************************************************************
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.02
+#    Bug Fix:  Preserve 64K SMC ROMHOLE.
+#    Reason:   Separate OA3 and SMC ROMHOLE.
+#    Auditor:  Kasber Chen
+#    Date:     Sep/01/2016
+#
+#  Rev. 1.01
+#    Bug Fix:  Fix system hangs at Sum InBand command.
+#    Reason:   Because of using Boot Service in SMM. Separate SmcRomHole into two libraries - DXE and SMM.
+#    Auditor:  Hartmann Hsieh
+#    Date:     Jul/12/2016
+#
+#  Rev. 1.00
+#    Bug Fix:  Initialize revision.
+#    Reason:   Get base code from Grantley
+#    Auditor:  Kasber Chen
+#    Date:     May/04/2016
+#
+#*****************************************************************************
+
+TOKEN
+	Name  = "SmcRomHole_SUPPORT"
+	Value  = "1"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+End
+
+PATH
+	Name  = "SMC_ROM_HOLE_DIR"
+End
+
+TOKEN
+	Name  = "SMC_ROM_HOLE_LOCATION"
+	Value  = "$(FV_BB_BASE) - $(FIT_AREA) - $(SMC_ROM_HOLE_SIZE)"
+	Help  = "Base Address of the SMC SMBIOS DATA. The address must overlaps with OEM_ACTIVATION_TABLE_ADDRESS."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Range  = "From: FV_BB - 1Block To: FV_BB"
+End
+
+TOKEN
+	Name  = "SMC_ROM_HOLE_SIZE"
+	Value  = "0x10000"
+	Help  = "Size of the SMC ROM HOLE."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Range  = "From: 1 - 10"
+End
+
+ELINK
+	Name   = "SmcRomHoleUpdateBlockTypeId,"
+	Parent = "SMIFlashEndHandlerList"
+	InvokeOrder = AfterParent
+End
+
+INFComponent
+    Name  = "SmcRomHole"
+    File  = "SmcRomHole.inf"
+    Package  = "SmcPkg"
+End
+
+LibraryMapping
+	Class  = "SmcRomHoleLib"
+	Instance  = "SmcPkg.SmcRomHole"
+End
+
+INFComponent
+    Name  = "SmcRomHoleSmm"
+    File  = "SmcRomHoleSmm.inf"
+    Package  = "SmcPkg"
+End
+
+LibraryMapping
+	Class  = "SmcRomHoleSmmLib"
+	Instance  = "SmcPkg.SmcRomHoleSmm"
+End
+

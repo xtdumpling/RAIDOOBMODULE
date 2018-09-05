@@ -1,0 +1,135 @@
+TOKEN
+	Name  = "SmbiosFlashData_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable SmbiosFlashData support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+	Master = Yes
+	Token = "SmbiosDMIEdit_SUPPORT" "=" "1"
+    Token = "SMBIOS_DMIEDIT_DATA_LOC" "!=" "2"
+End
+
+TOKEN
+	Name  = "FLASHDATA_SIZE"
+	Value  = "2048"
+	Help  = "SMBIOS Flash Data size."
+	TokenType = Integer
+	TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "SMBIOS_FLASH_BLOCK_SIZE"
+    Value  = "$(FLASH_BLOCK_SIZE) - 0xA0"
+    Help  = "SMBIOS Flash Block Size minus header"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+	Name  = "FV_SMBIOS_SIZE"
+	Value  = "$(FLASH_BLOCK_SIZE)"
+	Help  = "Smbios FV size"
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "SMBIOS_DMIEDIT_DATA_LOC" "=" "1"
+End
+
+TOKEN
+	Name  = "FV_SMBIOS_SIZE"
+	Value  = "2 * $(FLASH_BLOCK_SIZE)"
+	Help  = "Smbios FV size"
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "SMBIOS_DMIEDIT_DATA_LOC" "=" "1"
+	Token = "FLASHDATA_SIZE" ">" "$(SMBIOS_FLASH_BLOCK_SIZE)"
+End
+
+TOKEN
+	Name  = "FV_SMBIOS_BASE"
+	Value  = "$(FV_BB_BASE) - $(FV_SMBIOS_SIZE)"
+	Help  = "Smbios FV Base Address"
+	TokenType = Integer
+	TargetH = Yes
+	Token = "SMBIOS_DMIEDIT_DATA_LOC" "=" "1"
+End
+
+TOKEN
+	Name  = "FV_SMBIOS_OFFSET"
+	Value  = "$(FLASH_SIZE) - $(FV_BB_SIZE) - $(FV_SMBIOS_SIZE)"
+	Help  = "Smbios FV Offset"
+	TokenType = Integer
+	TargetH = Yes
+	Token = "SMBIOS_DMIEDIT_DATA_LOC" "=" "1"
+End
+
+PATH
+	Name  = "SMBIOS_FLASHDATA_DIR"
+End
+
+INFComponent
+    Name  = "SmbiosFlashData"
+    File  = "SmbiosFlashData.inf"
+    Package  = "AmiCompatibilityPkg"
+	ModuleTypes  = "USER_DEFINED"
+    Token = "SMBIOS_TABLES_BUILD_TYPE" "=" "0"
+End
+
+INFComponent
+    Name  = "SmbiosFlashDataDt"
+    File  = "SmbiosFlashDataDt.inf"
+    Package  = "AmiCompatibilityPkg"
+    ModuleTypes  = "USER_DEFINED"
+    Token = "SMBIOS_TABLES_BUILD_TYPE" "=" "1"
+End
+
+FFS_FILE
+    Name  = "SmbiosFlashData"
+    FD_AREA  = "FV_BB"
+    INFComponent  = "AmiCompatibilityPkg.SmbiosFlashData"
+    Rule_Override  = "Uncompressed"
+    Token = "SMBIOS_DMIEDIT_DATA_LOC" "=" "0"
+    Token = "SMBIOS_TABLES_BUILD_TYPE" "=" "0"
+End
+
+FFS_FILE
+    Name  = "SmbiosFlashDataDt"
+    FD_AREA  = "FV_BB"
+    INFComponent  = "AmiCompatibilityPkg.SmbiosFlashDataDt"
+    Rule_Override  = "Uncompressed"
+    Token = "SMBIOS_DMIEDIT_DATA_LOC" "=" "0"
+    Token = "SMBIOS_TABLES_BUILD_TYPE" "=" "1"
+End
+
+FFS_FILE
+	Name  = "SmbiosFlashData"
+	FD_AREA  = "FV_SMBIOS"
+	INFComponent  = "AmiCompatibilityPkg.SmbiosFlashData"
+	Rule_Override  = "Uncompressed"
+	Token = "SMBIOS_DMIEDIT_DATA_LOC" "=" "1"
+	Token = "SMBIOS_TABLES_BUILD_TYPE" "=" "0"
+End
+
+FFS_FILE
+	Name  = "SmbiosFlashData"
+	FD_AREA  = "FV_SMBIOS"
+	INFComponent  = "AmiCompatibilityPkg.SmbiosFlashDataDt"
+	Rule_Override  = "Uncompressed"
+	Token = "SMBIOS_DMIEDIT_DATA_LOC" "=" "1"
+	Token = "SMBIOS_TABLES_BUILD_TYPE" "=" "1"
+End
+
+FD_AREA
+	Name  = "FV_SMBIOS"
+	TYPE  = "FV"
+	FD_INFO  = "AMIROM"
+	Offset  = "$(FV_SMBIOS_OFFSET)"
+	Size  = "$(FV_SMBIOS_SIZE)"
+	Layout_Attribute  = "0x808"
+	Alignment  = "16"
+	Guid  = "F649FC2D-C0E6-4262-AD51-0CE64F76429F"
+	Token = "SMBIOS_DMIEDIT_DATA_LOC" "=" "1"
+End

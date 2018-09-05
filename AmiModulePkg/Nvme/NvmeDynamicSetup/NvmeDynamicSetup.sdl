@@ -1,0 +1,49 @@
+TOKEN
+    Name  = "NvmeDynamicSetup_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable NvmeDynamicSetup support in Project which will disable Static Setup page control"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes
+    Master = Yes
+    Token = "NVME_SETUP" "=" "1"
+End
+
+TOKEN
+    Name  = "MAXIMUM_NVME_CONTROLLER_DISPLAY"
+    Value  = "16"
+    Help  = "Number of controllers to be displayed in Setup page"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+PATH
+    Name = "NVMEDYNAMICSETUP_DIR"
+End
+
+INFComponent
+    Name  = "NvmeDynamicSetup"
+    File  = "NvmeDynamicSetup.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_DRIVER"
+    Token = "NvmeDynamicSetup_SUPPORT" "=" "1"
+End
+
+ELINK
+    Name = "{ { 0x5E39CF2E, 0x6712, 0x45AB, { 0x84, 0xC4, 0x35, 0xD3, 0xC6, 0xA3, 0x68, 0x6D } }, 0, NULL},"
+    Parent  = "AMITSE_HIDDEN_PAGE_LIST"
+    Help  = "Provide GUIDs of dynmaic formset to suppress. Terminate entry with comma"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name = "$(NVMEDYNAMICSETUP_DIR)/NvmeDynamicSetup.sd"
+    Parent = "SETUP_DEFINITIONS"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(NVMEDYNAMICSETUP_DIR)/NvmeDynamicSetup.uni"
+    Parent  = "SetupStringFiles"
+    InvokeOrder = AfterParent
+End

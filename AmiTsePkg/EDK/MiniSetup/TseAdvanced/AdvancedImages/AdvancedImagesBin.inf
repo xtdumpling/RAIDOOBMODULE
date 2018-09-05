@@ -1,0 +1,62 @@
+
+
+[Defines]
+INF_VERSION = 0x00010015
+VERSION_STRING = 1.0
+BASE_NAME = TseAdvancedImagesBin
+MODULE_TYPE = BASE
+LIBRARY_CLASS = TseAdvancedImagesBin
+
+[binaries.IA32]
+BIN | TseAdvancedImages.lib
+[binaries.X64]
+BIN | TseAdvancedImagesx64.lib
+[binaries.AARCH64]
+BIN | TseAdvancedImagesAarch64.lib
+
+[Sources]
+
+
+[Packages]
+  AmiTsePkg/AmiTsePkg.dec
+  AmiTsePkg/AmiTsePrivatePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  MdePkg/MdePkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  
+
+[Protocols]
+  gEfiUnicodeCollation2ProtocolGuid
+  gEfiUnicodeCollationProtocolGuid
+  gEfiOEMBadgingProtocolGuid
+  gEfiSimpleFileSystemProtocolGuid
+#  gEfiLegacyBiosProtocolGuid
+  gEfiUnicodeCollation2ProtocolGuid
+  gEfiUnicodeCollationProtocolGuid
+  gEfiBlockIoProtocolGuid
+  gEfiFirmwareVolumeProtocolGuid
+  gEfiSimpleTextInProtocolGuid
+  gEfiLoadedImageProtocolGuid
+
+[Guids]
+  gEfiConsoleOutDeviceGuid
+  
+[LibraryClasses]
+  MemoryAllocationLib
+  BaseLib
+  BaseMemoryLib
+  PerformanceLib
+  DevicePathLib
+  DebugLib
+  UefiLib
+  PrintLib
+  UefiDriverEntryPoint
+#  AmiIntrinsicLib
+  ReportStatusCodeLib
+  
+[BuildOptions]
+MSFT:*_*_*_CC_FLAGS = /DTSE_FOR_APTIO_4_50  
+GCC:*_*_*_CC_FLAGS = -DTSE_FOR_APTIO_4_50  

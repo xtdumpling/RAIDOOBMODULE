@@ -1,0 +1,55 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+## @file
+#   This driver creates the TCG library
+##
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+
+
+[Defines]
+INF_VERSION = 0x00010005
+VERSION_STRING = 1.0
+BASE_NAME = TisLib20
+MODULE_TYPE = DXE_DRIVER
+LIBRARY_CLASS = BaseTisLib20
+FILE_GUID = 8B4E53DC-A6BF-46ff-A09D-42874795C816
+
+[Sources]
+ TpmLib20.c
+ TcgCommon20.c
+	
+[LibraryClasses]
+ShaLib
+TimerLib
+
+[Guids]
+ gEfiHobListGuid            
+
+[Packages]
+AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+MdePkg/MdePkg.dec
+AmiModulePkg/AmiModulePkg.dec
+ AmiTcgPkg/AmiTcgPkg.dec
+

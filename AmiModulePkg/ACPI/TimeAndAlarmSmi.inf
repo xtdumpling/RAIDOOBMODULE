@@ -1,0 +1,31 @@
+[Defines]
+    INF_VERSION = 0x00010005
+    VERSION_STRING = 1.0
+    PI_SPECIFICATION_VERSION = 0x0001000A
+    BASE_NAME = TimeAndAlarmSmi
+    MODULE_TYPE = DXE_SMM_DRIVER
+    FILE_GUID = 88F34ACA-3A7B-FF3C-D401-16A3B6834F2A
+    ENTRY_POINT = AtadSmiEntry
+
+[Sources]
+    AtadSmi.h
+    AtadSmi.c
+
+[Packages]
+    MdePkg/MdePkg.dec
+    IntelFrameworkPkg/IntelFrameworkPkg.dec
+    AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+    AmiModulePkg/AmiModulePkg.dec
+
+[LibraryClasses]
+    AmiDxeLib
+    UefiDriverEntryPoint
+    
+[Protocols]  
+ gEfiSmmCommunicationProtocolGuid
+ gEfiSmmSwDispatch2ProtocolGuid
+
+[Depex.common.DXE_SMM_DRIVER]
+    ##gEfiSmmBase2ProtocolGuid AND 
+    gEfiSmmSwDispatch2ProtocolGuid AND
+    gEfiAcpiSdtProtocolGuid  

@@ -1,0 +1,2435 @@
+//****************************************************************************
+//****************************************************************************
+//**                                                                        **
+//**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+//**                                                                        **
+//****************************************************************************
+//****************************************************************************
+//  File History
+//
+//  Rev. 1.09
+//    Bug Fix:  Set OppSrefEn setup item MANUFACTURING value to same as DEFAULT value. (DISABLED)
+//    Reason:   
+//    Auditor:  Jacker Yeh
+//    Date:     May/23/2017
+//
+//  Rev. 1.08
+//    Bug Fix:  Add tCCD_L Relaxation item under Memory Configuration menu.
+//    Reason:   Missed update on SVN 1175
+//    Auditor:  Jacker Yeh
+//    Date:     Apr/11/2017
+//
+//  Rev. 1.04
+//    Bug Fix:  Remove redundant suppressif for ADRDataSaveMode.
+//    Reason:   
+//    Auditor:  Jason Hsu
+//    Date:     Apr/06/2017
+//
+//  Rev. 1.03
+//    Bug Fix:  Draft template.
+//    Reason:   
+//    Auditor:  Kasber Chen
+//    Date:     Dec/16/2016
+//
+//  Rev. 1.02       Default disable setup item "Rank Margin Tool", "Backside RMT" and "RMT On Cold Fast Boot" to reduce boot time.
+//      Bug Fixed:
+//      Reason:     Refer the help message of these items, it should be disabled in production releases.
+//      Auditor:    Jimmy Chiu
+//      Date:       Sep/08/2016
+//
+//  Rev. 1.01
+//      Bug Fixed:  Support SMC Memory map-out function.
+//      Reason:     
+//      Auditor:    Ivern Yeh
+//      Date:       Jul/07/2016
+//
+//  Rev. 1.0
+//      Bug Fixed:  add RC error log to BMC and report error DIMM To screen(refer to Grantley)
+//      Reason:     
+//      Auditor:    Timmy Wang
+//      Date:       May/26/2016
+//
+//****************************************************************************
+//
+// This file contains an 'Intel Peripheral Driver' and is
+// licensed for Intel CPUs and chipsets under the terms of your
+// license agreement with Intel or your vendor.  This file may
+// be modified by the user, subject to additional terms of the
+// license agreement
+//
+// *++
+//
+// Copyright (c) 1999 - 2016 Intel Corporation. All rights reserved
+// This software and associated documentation (if any) is furnished
+// under a license and may only be used or copied in accordance
+// with the terms of the license. Except as permitted by such
+// license, no part of this software or documentation may be
+// reproduced, stored in a retrieval system, or transmitted in any
+// form or by any means without the express written consent of
+// Intel Corporation.
+//
+//
+// Module Name:
+//
+//   MemorySetup.hfr
+//
+// Abstract:
+//
+//   Memory Setup formset.
+//
+// Revision History:
+//
+// --*/
+
+  #include "MemDefaults.h"
+
+  form formid = VFR_FORMID_MEMORY,
+
+    title = STRING_TOKEN(STR_MEMORY_CONFIG_FORM_TITLE);
+
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+    subtitle text = STRING_TOKEN(STR_IOH_MEM_FORM_TITLE);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+#if SMCPKG_SUPPORT && MemoryMapOut_SUPPORT 
+    suppressif 1;
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.MemMapOut,
+      prompt   = STRING_TOKEN (STR_MEMORY_MAPOUT_PROMPT),
+      help     = STRING_TOKEN (STR_MEMORY_MAPOUT_HELP),
+      option text = STRING_TOKEN (STR_ENABLED_STRING),  value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
+      option text = STRING_TOKEN (STR_DISABLED_STRING), value = 0, flags =  RESET_REQUIRED;
+    endoneof;
+    endif;
+#endif	//#if SMCPKG_SUPPORT && MemoryMapOut_SUPPORT
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.EnforcePOR,
+      prompt   = STRING_TOKEN (STR_ENFORCE_POR_PROMPT),
+      help     = STRING_TOKEN (STR_ENFORCE_POR_HELP),
+      option text = STRING_TOKEN (STR_AUTO),            value = ENFORCE_POR_AUTO, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+      option text = STRING_TOKEN (STR_POR),             value = ENFORCE_POR_EN, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN (STR_DISABLED_STRING), value = ENFORCE_POR_DIS, flags = RESET_REQUIRED;
+//      option text = STRING_TOKEN (STR_STRETCH),         value = ENFORCE_STRETCH_EN, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.pprType,
+      prompt   = STRING_TOKEN (STR_PPR_TYPE),
+      help     = STRING_TOKEN (STR_PPR_TYPE_HELP),
+      option text = STRING_TOKEN (STR_AUTO),            value = PPR_TYPE_AUTO, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+      option text = STRING_TOKEN (STR_PPR_TYPE_HARD),   value = PPR_TYPE_HARD, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN (STR_PPR_TYPE_SOFT),   value = PPR_TYPE_SOFT, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN (STR_PPR_DISABLED),    value = PPR_DISABLED, flags = RESET_REQUIRED;
+    endoneof;
+
+//    grayoutif NOT ideqval EMCA.EmcaCsmiEn == 1 AND NOT ideqval SYSTEM_RAS_SETUP.SystemErrorEn == 1;
+      oneof varid  = SOCKET_MEMORY_CONFIGURATION.pprErrInjTest,
+        prompt   = STRING_TOKEN (STR_PPR_ERR_INJ),
+        help     = STRING_TOKEN (STR_PPR_ERR_INJ_HELP),
+        option text = STRING_TOKEN(STR_DISABLED_STRING),         value = 0, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED_STRING),          value = 1, flags = RESET_REQUIRED;
+      endoneof;
+//    endif;
+
+    oneof varid = SOCKET_MEMORY_CONFIGURATION.DdrFreqLimit,
+        prompt  = STRING_TOKEN(STR_XMP_DDR_FREQ_LIMIT_PROMPT),
+        help    = STRING_TOKEN(STR_XMP_DDR_FREQ_LIMIT_HELP),
+        option text = STRING_TOKEN(STR_AUTO),           value = 0, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+//SMCPKG_SUPPORT        option text = STRING_TOKEN(STR_DDR_FREQ_800_STRING), value = 1, flags = RESET_REQUIRED;
+//SMCPKG_SUPPORT        option text = STRING_TOKEN(STR_DDR_FREQ_1000_STRING), value = 2, flags = RESET_REQUIRED;
+//SMCPKG_SUPPORT        option text = STRING_TOKEN(STR_DDR_FREQ_1066_STRING), value = 3, flags = RESET_REQUIRED;
+//SMCPKG_SUPPORT        option text = STRING_TOKEN(STR_DDR_FREQ_1200_STRING), value = 4, flags = RESET_REQUIRED;
+//SMCPKG_SUPPORT        option text = STRING_TOKEN(STR_DDR_FREQ_1333_STRING), value = 5, flags = RESET_REQUIRED;
+//SMCPKG_SUPPORT        option text = STRING_TOKEN(STR_DDR_FREQ_1400_STRING), value = 6, flags = RESET_REQUIRED;
+//SMCPKG_SUPPORT        option text = STRING_TOKEN(STR_DDR_FREQ_1600_STRING), value = 7, flags = RESET_REQUIRED;
+//SMCPKG_SUPPORT        option text = STRING_TOKEN(STR_DDR_FREQ_1800_STRING), value = 8, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_DDR_FREQ_1866_STRING), value = 9, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_DDR_FREQ_2000_STRING), value = 10, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_DDR_FREQ_2133_STRING), value = 11, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_DDR_FREQ_2200_STRING), value = 12, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_DDR_FREQ_2400_STRING), value = 13, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_DDR_FREQ_2600_STRING), value = 14, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_DDR_FREQ_2666_STRING), value = 15, flags = RESET_REQUIRED;
+//SMCPKG_SUPPORT        option text = STRING_TOKEN(STR_DDR_FREQ_2800_STRING), value = 16, flags = RESET_REQUIRED;
+//SMCPKG_SUPPORT        option text = STRING_TOKEN(STR_DDR_FREQ_2933_STRING), value = 17, flags = RESET_REQUIRED;
+//SMCPKG_SUPPORT        option text = STRING_TOKEN(STR_DDR_FREQ_3000_STRING), value = 18, flags = RESET_REQUIRED;
+//SMCPKG_SUPPORT        option text = STRING_TOKEN(STR_DDR_FREQ_3200_STRING), value = 19, flags = RESET_REQUIRED;
+//SMCPKG_SUPPORT        option text = STRING_TOKEN(STR_DDR_FREQ_3400_STRING), value = 20, flags = RESET_REQUIRED;
+//SMCPKG_SUPPORT        option text = STRING_TOKEN(STR_DDR_FREQ_3466_STRING), value = 21, flags = RESET_REQUIRED;
+//SMCPKG_SUPPORT        option text = STRING_TOKEN(STR_DDR_FREQ_3600_STRING), value = 22, flags = RESET_REQUIRED;
+//SMCPKG_SUPPORT        option text = STRING_TOKEN(STR_DDR_FREQ_3733_STRING), value = 23, flags = RESET_REQUIRED;
+//SMCPKG_SUPPORT        option text = STRING_TOKEN(STR_DDR_FREQ_3800_STRING), value = 24, flags = RESET_REQUIRED;
+//SMCPKG_SUPPORT        option text = STRING_TOKEN(STR_DDR_FREQ_4000_STRING), value = 25, flags = RESET_REQUIRED;
+//SMCPKG_SUPPORT        option text = STRING_TOKEN(STR_DDR_FREQ_4200_STRING), value = 26, flags = RESET_REQUIRED;
+//SMCPKG_SUPPORT        option text = STRING_TOKEN(STR_DDR_FREQ_4266_STRING), value = 27, flags = RESET_REQUIRED;
+//SMCPKG_SUPPORT        option text = STRING_TOKEN(STR_DDR_FREQ_4400_STRING), value = 28, flags = RESET_REQUIRED;
+    endoneof;
+
+    grayoutif  ideqval SOCKET_MEMORY_CONFIGURATION.DdrFreqLimit == 0 OR
+                ideqval SOCKET_MEMORY_CONFIGURATION.DdrFreqLimit == 2 OR
+                ideqval SOCKET_MEMORY_CONFIGURATION.DdrFreqLimit == 3 OR
+                ideqval SOCKET_MEMORY_CONFIGURATION.DdrFreqLimit == 5 OR
+                ideqval SOCKET_MEMORY_CONFIGURATION.DdrFreqLimit == 6 OR
+                ideqval SOCKET_MEMORY_CONFIGURATION.DdrFreqLimit == 8 OR
+                ideqval SOCKET_MEMORY_CONFIGURATION.DdrFreqLimit == 9 OR
+                ideqval SOCKET_MEMORY_CONFIGURATION.DdrFreqLimit == 10 OR
+                ideqval SOCKET_MEMORY_CONFIGURATION.DdrFreqLimit == 11 OR
+                ideqval SOCKET_MEMORY_CONFIGURATION.DdrFreqLimit == 12 OR
+                ideqval SOCKET_MEMORY_CONFIGURATION.DdrFreqLimit == 14 OR
+                ideqval SOCKET_MEMORY_CONFIGURATION.DdrFreqLimit == 15 OR
+                ideqval SOCKET_MEMORY_CONFIGURATION.DdrFreqLimit == 16 OR
+                ideqval SOCKET_MEMORY_CONFIGURATION.DdrFreqLimit == 17 OR
+                ideqval SOCKET_MEMORY_CONFIGURATION.DdrFreqLimit == 18 OR
+                ideqval SOCKET_MEMORY_CONFIGURATION.DdrFreqLimit == 20 OR
+                ideqval SOCKET_MEMORY_CONFIGURATION.DdrFreqLimit == 21 OR
+                ideqval SOCKET_MEMORY_CONFIGURATION.DdrFreqLimit == 22 OR
+                ideqval SOCKET_MEMORY_CONFIGURATION.DdrFreqLimit == 23 OR
+                ideqval SOCKET_MEMORY_CONFIGURATION.DdrFreqLimit == 24 OR
+                ideqval SOCKET_MEMORY_CONFIGURATION.DdrFreqLimit == 26 OR
+                ideqval SOCKET_MEMORY_CONFIGURATION.DdrFreqLimit == 27 OR
+                ideqval SOCKET_MEMORY_CONFIGURATION.DdrFreqLimit == 28;
+      oneof varid   = SOCKET_MEMORY_CONFIGURATION.imcBclk,
+          prompt      = STRING_TOKEN (STR_IMC_BCLK_PROMPT),
+          help        = STRING_TOKEN (STR_IMC_BCLK_HELP),
+          option text = STRING_TOKEN (STR_AUTO),            value = IMC_BCLK_AUTO, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT | INTERACTIVE;
+          option text = STRING_TOKEN (STR_100),             value = IMC_BCLK_100, flags = RESET_REQUIRED | INTERACTIVE;
+          option text = STRING_TOKEN (STR_133),             value = IMC_BCLK_133, flags = RESET_REQUIRED | INTERACTIVE;
+      endoneof;
+    endif;
+
+    oneof varid = SOCKET_MEMORY_CONFIGURATION.promoteMrcWarnings,
+        prompt  = STRING_TOKEN(STR_PROMOTE_MRC_WARNING_PROMPT),
+        help    = STRING_TOKEN(STR_PROMOTE_MRC_WARNING_HELP),
+        option text = STRING_TOKEN(STR_DISABLED_STRING),         value = 0, flags = RESET_REQUIRED|MANUFACTURING | DEFAULT;	//SMCPKG_SUPPORT++
+        option text = STRING_TOKEN(STR_ENABLED_STRING),          value = 1, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.promoteWarnings,
+        prompt   = STRING_TOKEN (STR_PROMOTE_WARNINGS_PROMPT),
+        help     = STRING_TOKEN (STR_PROMOTE_WARNINGS_HELP),
+        option text = STRING_TOKEN (STR_DISABLE), value = 0, flags =  MANUFACTURING | DEFAULT | RESET_REQUIRED;			//SMCPKG_SUPPORT++
+        option text = STRING_TOKEN (STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid = SOCKET_MEMORY_CONFIGURATION.haltOnMemErr,
+        prompt  = STRING_TOKEN(STR_HALT_ON_MEM_TRAINING_ERROR_PROMPT),
+        help    = STRING_TOKEN(STR_HALT_ON_MEM_TRAINING_ERROR_HELP),
+        option text = STRING_TOKEN(STR_DISABLED_STRING),         value = 0, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;	//SMCPKG_SUPPORT++
+        option text = STRING_TOKEN(STR_ENABLED_STRING),          value = 1, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.MultiThreaded,
+        prompt   = STRING_TOKEN (STR_MULTI_THREADED_PROMPT),
+        help     = STRING_TOKEN (STR_MULTI_THREADED_HELP),
+        option text = STRING_TOKEN (STR_AUTO),            value = MULTI_THREADED_AUTO, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_DISABLED_STRING), value = MULTI_THREADED_DIS, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_ENABLED_STRING),  value = MULTI_THREADED_EN, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.EccSupport,
+        prompt   = STRING_TOKEN (STR_ECC_SUPPORT_PROMPT),
+        help     = STRING_TOKEN (STR_ECC_SUPPORT_HELP),
+        option text = STRING_TOKEN (STR_AUTO),    value = ECC_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_DISABLE), value = ECC_DIS, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_ENABLE),  value = ECC_EN, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.spdCrcCheck,
+        prompt   = STRING_TOKEN (STR_SPD_CRC_CHECK_PROMPT),
+        help     = STRING_TOKEN (STR_SPD_CRC_CHECK_HELP),
+        option text = STRING_TOKEN (STR_AUTO),    value = SPD_CRC_CHECK_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_DISABLE), value = SPD_CRC_CHECK_DIS, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_ENABLE),  value = SPD_CRC_CHECK_EN, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.logParsing,
+        prompt   = STRING_TOKEN (STR_LOG_PARSING_PROMPT),
+        help     = STRING_TOKEN (STR_LOG_PARSING_HELP),
+        option text = STRING_TOKEN (STR_DISABLE), value = ECC_DIS, flags =  RESET_REQUIRED; //SGI
+        option text = STRING_TOKEN (STR_ENABLE),  value = ECC_EN, flags = MANUFACTURING | DEFAULT |RESET_REQUIRED;//SGI
+    endoneof;
+
+
+
+    //oneof varid  = SOCKET_MEMORY_CONFIGURATION.lrdimmRankMult,
+    //    prompt   = STRING_TOKEN (STR_RANK_MULT_PROMPT),
+    //    help     = STRING_TOKEN (STR_RANK_MULT_HELP),
+    //    option text = STRING_TOKEN (STR_AUTO),  value = RANK_MULT_AUTO, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+    //    option text = STRING_TOKEN (STR_ENABLED_STRING), value = RANK_MULT_EN, flags = RESET_REQUIRED;
+    //endoneof;
+
+
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.lrdimmModuleDelay,
+        prompt   = STRING_TOKEN (STR_MODULE_DELAY_PROMPT),
+        help     = STRING_TOKEN (STR_MODULE_DELAY_HELP),
+        option text = STRING_TOKEN (STR_DISABLED_STRING), value = MODULE_DELAY_DIS, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_AUTO),            value = MODULE_DELAY_AUTO, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+    endoneof;
+
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.HwMemTest,
+        prompt   = STRING_TOKEN (STR_MEM_TEST_PROMPT),
+        help     = STRING_TOKEN (STR_MEM_TEST_HELP),
+        option text = STRING_TOKEN (STR_AUTO),    value = MEM_TEST_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_DISABLE), value = MEM_TEST_DIS, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_ENABLE),  value = MEM_TEST_EN, flags = RESET_REQUIRED;
+    endoneof;
+
+    numeric varid = SOCKET_MEMORY_CONFIGURATION.MemTestLoops,
+        prompt  = STRING_TOKEN(STR_MEM_TEST_LOOPS_PROMPT),
+        help    = STRING_TOKEN(STR_MEM_TEST_LOOPS_HELP),
+        flags     = RESET_REQUIRED,
+        minimum   = 0,
+        maximum   = 65535,
+        step      = 0,
+        default   = MEM_TEST_LOOPS_DEFAULT, defaultstore = MyStandardDefault,
+        default   = MEM_TEST_LOOPS_DEFAULT, defaultstore = MyManufactureDefault,
+    endnumeric;
+
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.DdrMemoryType,
+        prompt   = STRING_TOKEN (STR_DDR_MEMORY_TYPE_PROMPT),
+        help     = STRING_TOKEN (STR_DDR_MEMORY_TYPE_HELP),
+        option text = STRING_TOKEN(STR_RDIMM_ONLY),       value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_UDIMM_ONLY),       value = 1, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_UDIMM_RDIMM),      value = 2, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+    endoneof;
+
+//SMCPKG_SUPPORT - Start
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.RankMargin,
+        prompt   = STRING_TOKEN (STR_RMT_PROMPT),
+        help     = STRING_TOKEN (STR_RMT_HELP),
+        option text = STRING_TOKEN (STR_AUTO),     value = RMT_AUTO, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_DISABLED), value = RMT_DIS, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_ENABLED),  value = RMT_EN, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.EnableBacksideRMT,
+        prompt   = STRING_TOKEN (STR_BACKSIDE_RMT_PROMPT),
+        help     = STRING_TOKEN (STR_BACKSIDE_RMT_HELP),
+        option text = STRING_TOKEN (STR_AUTO),      value = BACKSIDE_RMT_AUTO, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_DISABLE),   value = BACKSIDE_RMT_DISABLE,  flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_ENABLE),    value = BACKSIDE_RMT_ENABLE,   flags = RESET_REQUIRED;
+    endoneof;
+//SMCPKG_SUPPORT - End
+
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.EnableBacksideCMDRMT,
+        prompt   = STRING_TOKEN (STR_BACKSIDE_CMD_RMT_PROMPT),
+        help     = STRING_TOKEN (STR_BACKSIDE_CMD_RMT_HELP),
+        option text = STRING_TOKEN (STR_DISABLE),   value = RMT_DIS, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_ENABLE),    value = RMT_EN,  flags = RESET_REQUIRED;
+    endoneof;
+
+    numeric varid = SOCKET_MEMORY_CONFIGURATION.rmtPatternLength,
+        prompt    = STRING_TOKEN (STR_RMT_PATTERN_PROMPT),
+        help      = STRING_TOKEN (STR_RMT_PATTERN_HELP),
+        flags     = RESET_REQUIRED,
+        minimum   = 1,
+        maximum   = 9000000,
+        step      = 0,
+        default   = RMT_PATTERN_LENGTH, defaultstore = MyStandardDefault,
+        default   = RMT_PATTERN_LENGTH, defaultstore = MyManufactureDefault,
+    endnumeric;
+
+    numeric varid = SOCKET_MEMORY_CONFIGURATION.rmtPatternLengthExt,
+        prompt    = STRING_TOKEN (STR_RMT_PATTERN_CMD_CTL_VREF_PROMPT),
+        help      = STRING_TOKEN (STR_RMT_PATTERN_CMD_CTL_VREF_HELP),
+        flags     = RESET_REQUIRED,
+        minimum   = 1,
+        maximum   = 9000000,
+        step      = 0,
+        default   = RMT_PATTERN_LENGTH_CMD_CTL_VREF, defaultstore = MyStandardDefault,
+        default   = RMT_PATTERN_LENGTH_CMD_CTL_VREF, defaultstore = MyManufactureDefault,
+    endnumeric;
+
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.perbitmargin,
+        prompt   = STRING_TOKEN (STR_PER_BIT_MARGIN_PROMPT),
+        help     = STRING_TOKEN (STR_PER_BIT_MARGIN_HELP),
+        option text = STRING_TOKEN (STR_AUTO),    value = PER_BIT_MARGIN_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_DISABLE), value = PER_BIT_MARGIN_DISABLE, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_ENABLE),  value = PER_BIT_MARGIN_ENABLE, flags = RESET_REQUIRED;
+    endoneof;
+    
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.EnableNgnBcomMargining,
+        prompt   = STRING_TOKEN (STR_NGN_BCOM_MARGIN_PROMPT),
+        help     = STRING_TOKEN (STR_NGN_BCOM_MARGIN_HELP),
+        option text = STRING_TOKEN (STR_DISABLE),   value = RMT_DIS, flags = MANUFACTURING | RESET_REQUIRED | DEFAULT;
+        option text = STRING_TOKEN (STR_ENABLE),    value = RMT_EN,  flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.AttemptFastBoot,
+        prompt   = STRING_TOKEN (STR_ATTEMPT_FAST_BOOT_PROMPT),
+        help     = STRING_TOKEN (STR_ATTEMPT_FAST_BOOT_HELP),
+        option text = STRING_TOKEN (STR_AUTO),    value = FAST_BOOT_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_DISABLE), value = FAST_BOOT_DIS, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_ENABLE),  value = FAST_BOOT_EN, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.AttemptFastBootCold,
+        prompt   = STRING_TOKEN (STR_ATTEMPT_FAST_BOOT_COLD_PROMPT),
+        help     = STRING_TOKEN (STR_ATTEMPT_FAST_BOOT_COLD_HELP),
+        option text = STRING_TOKEN (STR_AUTO),    value = FAST_BOOT_COLD_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_DISABLE), value = FAST_BOOT_COLD_DIS, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_ENABLE),  value = FAST_BOOT_COLD_EN, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.MemTestOnFastBoot,
+        prompt   = STRING_TOKEN (STR_MEM_TEST_FAST_BOOT_PROMPT),
+        help     = STRING_TOKEN (STR_MEM_TEST_FAST_BOOT_HELP),
+        option text = STRING_TOKEN (STR_AUTO),    value = MEM_TEST_FAST_BOOT_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_DISABLE), value = MEM_TEST_FAST_BOOT_DIS, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_ENABLE),  value = MEM_TEST_FAST_BOOT_EN, flags = RESET_REQUIRED;
+    endoneof;
+
+//SMCPKG_SUPPORT - Start
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.RmtOnColdFastBoot,
+        prompt   = STRING_TOKEN (STR_RMT_COLD_FAST_BOOT_PROMPT),
+        help     = STRING_TOKEN (STR_RMT_COLD_FAST_BOOT_HELP),
+        option text = STRING_TOKEN (STR_AUTO),    value = RMT_COLD_FAST_BOOT_AUTO, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_DISABLE), value = RMT_COLD_FAST_BOOT_DIS, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_ENABLE),  value = RMT_COLD_FAST_BOOT_EN, flags = RESET_REQUIRED;
+    endoneof;
+//SMCPKG_SUPPORT - End
+
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.bdatEn,
+        prompt   = STRING_TOKEN (STR_BDAT_EN_PROMPT),
+        help     = STRING_TOKEN (STR_BDAT_EN_HELP),
+        option text = STRING_TOKEN (STR_DISABLED_STRING), value = 0, flags = MANUFACTURING | RESET_REQUIRED  | DEFAULT;
+        option text = STRING_TOKEN (STR_ENABLED_STRING),  value = 1, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.ScrambleEnDDRT,
+        prompt   = STRING_TOKEN (STR_SCRAMBLE_EN_DDRT_PROMPT),
+        help     = STRING_TOKEN (STR_SCRAMBLE_EN_DDRT_HELP),
+        option text = STRING_TOKEN (STR_AUTO),     value = SCRAMBLE_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_DISABLED), value = SCRAMBLE_DISABLE, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_ENABLED),  value = SCRAMBLE_ENABLE, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.ScrambleEn,
+        prompt   = STRING_TOKEN (STR_SCRAMBLE_EN_PROMPT),
+        help     = STRING_TOKEN (STR_SCRAMBLE_EN_HELP),
+        option text = STRING_TOKEN (STR_AUTO),     value = SCRAMBLE_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_DISABLED), value = SCRAMBLE_DISABLE, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_ENABLED),  value = SCRAMBLE_ENABLE, flags = RESET_REQUIRED;
+    endoneof;
+
+#if SMCPKG_SUPPORT
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.tCCDLRelaxation,
+      prompt   = STRING_TOKEN (STR_TCCDL_RELAX_PROMPT),
+      help     = STRING_TOKEN (STR_TCCDL_RELAX_HELP),     
+      option text = STRING_TOKEN (STR_DISABLED_STRING), value = 0, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN (STR_AUTO),   value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+    endoneof;
+#endif
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.allowCorrectableError,
+        prompt   = STRING_TOKEN (STR_ALLOW_CORRECTABLE_ERROR_EN_PROMPT),
+        help     = STRING_TOKEN (STR_ALLOW_CORRECTABLE_ERROR_EN_HELP),
+        option text = STRING_TOKEN (STR_AUTO),     value = ALLOW_CORRECTABLE_ERROR_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_DISABLED), value = ALLOW_CORRECTABLE_ERROR_DISABLE, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_ENABLED),  value = ALLOW_CORRECTABLE_ERROR_ENABLE, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.WrCRC,
+        prompt   = STRING_TOKEN (STR_WR_CRC_PROMPT),
+        help     = STRING_TOKEN (STR_WR_CRC_HELP),
+        option text = STRING_TOKEN (STR_AUTO),     value = WR_CRC_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_DISABLED), value = WR_CRC_DISABLE, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_ENABLED),  value = WR_CRC_ENABLE, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid = SOCKET_MEMORY_CONFIGURATION.dimmIsolation,
+        prompt  = STRING_TOKEN(STR_DIMM_ISOLATION_PROMPT),
+        help    = STRING_TOKEN(STR_DIMM_ISOLATION_HELP),
+        option text = STRING_TOKEN (STR_AUTO),                   value = DIMM_ISOLATION_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_DISABLED_STRING),         value = DIMM_ISOLATION_DISABLE, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED_STRING),          value = DIMM_ISOLATION_ENABLE, flags = RESET_REQUIRED;
+    endoneof;
+
+    // 4928664 [MRC] Disable 2tCK for NVMDIMM because it is not supported
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.volMemMode == VOL_MEM_MODE_2LM OR
+               ideqval SOCKET_MEMORY_CONFIGURATION.dfxPerMemMode == PER_MEM_MODE;
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.WritePreamble,
+      prompt   = STRING_TOKEN (STR_WRITE_PREAMBLE_PROMPT),
+      help     = STRING_TOKEN (STR_WRITE_PREAMBLE_HELP),
+      option text = STRING_TOKEN (STR_AUTO),            value = WRITE_PREAMBLE_DEFAULT, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+      option text = STRING_TOKEN (STR_1TCLK),           value = PREAMBLE_1TCLK, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN (STR_2TCLK),           value = PREAMBLE_2TCLK, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.ReadPreamble,
+      prompt   = STRING_TOKEN (STR_READ_PREAMBLE_PROMPT),
+      help     = STRING_TOKEN (STR_READ_PREAMBLE_HELP),
+      option text = STRING_TOKEN (STR_AUTO),            value = READ_PREAMBLE_DEFAULT, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+      option text = STRING_TOKEN (STR_1TCLK),           value = PREAMBLE_1TCLK, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN (STR_2TCLK),           value = PREAMBLE_2TCLK, flags = RESET_REQUIRED;
+    endoneof;
+    endif;
+
+    numeric varid = SOCKET_MEMORY_CONFIGURATION.ScrambleSeedLow,
+        prompt    = STRING_TOKEN (STR_SCRAMBLE_SEED_LOW_PROMPT),
+        help      = STRING_TOKEN (STR_SCRAMBLE_SEED_LOW_HELP),
+        flags     = RESET_REQUIRED,
+        minimum   = 0,
+        maximum   = MAX_SCRAMBLE_SEED_LOW,
+        step      = 0,
+        default   = SCRAMBLE_SEED_LOW, defaultstore = MyStandardDefault,
+        default   = SCRAMBLE_SEED_LOW, defaultstore = MyManufactureDefault,
+    endnumeric;
+
+    numeric varid = SOCKET_MEMORY_CONFIGURATION.ScrambleSeedHigh,
+        prompt    = STRING_TOKEN (STR_SCRAMBLE_SEED_HIGH_PROMPT),
+        help      = STRING_TOKEN (STR_SCRAMBLE_SEED_HIGH_HELP),
+        flags     = RESET_REQUIRED,
+        minimum   = 0,
+        maximum   = MAX_SCRAMBLE_SEED_HIGH,
+        step      = 0,
+        default   = SCRAMBLE_SEED_HIGH, defaultstore = MyStandardDefault,
+        default   = SCRAMBLE_SEED_HIGH, defaultstore = MyManufactureDefault,
+    endnumeric;
+
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.ADREn,
+        prompt   = STRING_TOKEN (STR_ADR_ENABLE),
+        help     = STRING_TOKEN (STR_ADR_ENABLE_HELP),
+        option text = STRING_TOKEN (STR_DISABLED_STRING), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_ENABLED_STRING),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+    endoneof;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.ADREn == 0;
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.LegacyADRModeEn,
+        prompt   = STRING_TOKEN (STR_ADR_LEGACYMODE_EN),
+        help     = STRING_TOKEN (STR_ADR_LEGACYMODE_EN_HELP),
+        option text = STRING_TOKEN (STR_DISABLED_STRING), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN (STR_ENABLED_STRING),  value = 1, flags = RESET_REQUIRED ;
+    endoneof;
+
+
+#ifdef NVMEM_FEATURE_EN
+// Supermicro ++ remove for SUM
+//    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.ADREn == 0;
+// Supermicro --
+        oneof varid  = SOCKET_MEMORY_CONFIGURATION.ADRDataSaveMode,
+        prompt   = STRING_TOKEN (STR_ADR_DATA_SAVE_MODE),
+        help     = STRING_TOKEN (STR_ADR_DATA_SAVE_MODE_HELP),
+        option text = STRING_TOKEN (STR_ADR_DATASAVE_DIS), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_ADR_DATASAVE_BBU), value = 1, flags = RESET_REQUIRED;
+#ifdef MEM_NVDIMM_EN
+        option text = STRING_TOKEN (STR_ADR_DATASAVE_NVDIMM), value = 2, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+#endif
+        endoneof;
+// Supermicro ++ remove for SUM
+//    endif;
+// Supermicro --
+#endif
+
+#ifdef MEM_NVDIMM_EN
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.ADRDataSaveMode == 2;
+#endif
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.check_pm_sts,
+        prompt   = STRING_TOKEN (STR_CHECK_PM_STS),
+        help     = STRING_TOKEN (STR_CHECK_PM_STS_HELP),
+        option text = STRING_TOKEN (STR_DISABLED_STRING), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN (STR_ENABLED_STRING),  value = 1, flags = RESET_REQUIRED;
+    endoneof;
+#ifdef MEM_NVDIMM_EN
+	endif;
+#endif
+
+#ifdef MEM_NVDIMM_EN
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.ADRDataSaveMode == 2;
+#endif
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.check_platform_detect,
+        prompt   = STRING_TOKEN (STR_CHECK_PLATFORM),
+        help     = STRING_TOKEN (STR_CHECK_PLATFORM_HELP),
+        option text = STRING_TOKEN (STR_DISABLED_STRING), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN (STR_ENABLED_STRING),  value = 1, flags = RESET_REQUIRED;
+    endoneof;
+#ifdef MEM_NVDIMM_EN
+	endif;
+#endif
+
+#ifdef MEM_NVDIMM_EN
+    suppressif NOT ideqval SOCKET_MEMORY_CONFIGURATION.ADRDataSaveMode == 2;
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.eraseArmNVDIMMS,
+        prompt   = STRING_TOKEN (STR_ERASEARM_NVDIMM),
+        help     = STRING_TOKEN (STR_ERASEARM_NVDIMM_HELP),
+        option text = STRING_TOKEN (STR_DISABLED_STRING), value = 0, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN (STR_ENABLED_STRING),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+    endoneof;
+
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.restoreNVDIMMS,
+        prompt   = STRING_TOKEN (STR_RESTORE_NVDIMM),
+        help     = STRING_TOKEN (STR_RESTORE_NVDIMM_HELP),
+        option text = STRING_TOKEN (STR_DISABLED_STRING), value = 0, flags = RESET_REQUIRED ;
+        option text = STRING_TOKEN (STR_ENABLED_STRING),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+    endoneof;
+
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.interNVDIMMS,
+        prompt   = STRING_TOKEN (STR_INTERLEAVE_NVDIMM),
+        help     = STRING_TOKEN (STR_INTERLEAVE_NVDIMM_HELP),
+        option text = STRING_TOKEN (STR_DISABLED_STRING), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT ;
+        option text = STRING_TOKEN (STR_ENABLED_STRING),  value = 1, flags = RESET_REQUIRED;
+    endoneof;
+    endif;
+#endif
+   endif;
+
+    oneof varid = SOCKET_MEMORY_CONFIGURATION.CustomRefreshRateEn,
+        prompt  = STRING_TOKEN(STR_CUSTOMREFRESHRATEEN_PROMPT),
+        help    = STRING_TOKEN(STR_CUSTOMREFRESHRATEEN_HELP),
+        option text = STRING_TOKEN(STR_DISABLED_STRING),    value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLED_STRING),    value = 1, flags = RESET_REQUIRED;
+    endoneof;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.CustomRefreshRateEn == 0;
+      numeric varid = SOCKET_MEMORY_CONFIGURATION.CustomRefreshRate,
+        prompt    = STRING_TOKEN(STR_CUSTOMREFRESHRATE_PROMPT),
+        help      = STRING_TOKEN(STR_CUSTOMREFRESHRATE_HELP),
+        flags     = RESET_REQUIRED,
+        minimum   = 20,
+        maximum   = 40,
+        step      = 1,
+        default   = Cust_Refresh_Rate_Default, defaultstore = MyStandardDefault,
+        default   = Cust_Refresh_Rate_Default, defaultstore = MyManufactureDefault,
+      endnumeric;
+    endif;
+
+
+    numeric varid = SOCKET_MEMORY_CONFIGURATION.mcBgfThreshold,
+        prompt    = STRING_TOKEN (STR_MC_BGF_THRESHOLD_PROMPT),
+        help      = STRING_TOKEN (STR_MC_BGF_THRESHOLD_HELP),
+        flags     = RESET_REQUIRED,
+        minimum   = 0,
+        maximum   = MAX_MC_BGF_THRESHOLD,
+        step      = 1,
+        default = 0 , defaultstore = MyStandardDefault,
+        default = 0 , defaultstore = MyManufactureDefault,
+    endnumeric;
+
+    numeric varid = SOCKET_MEMORY_CONFIGURATION.dllResetTestLoops,
+        prompt    = STRING_TOKEN (STR_DLL_RESET_TEST_PROMPT),
+        help      = STRING_TOKEN (STR_DLL_RESET_TEST_HELP),
+        flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+        minimum   = 0,
+        maximum   = 0xFF,
+        step      = 0x0,                 // Stepping of 0 equates to a manual entering of a value,
+                                                         // otherwise it will auto-increment with a left/right arrow
+        default   = DLL_RESET_TEST_LOOPS, defaultstore = MyStandardDefault,
+        default   = DLL_RESET_TEST_LOOPS, defaultstore = MyManufactureDefault,
+    endnumeric;
+
+    oneof varid = SOCKET_MEMORY_CONFIGURATION.oppReadInWmm,
+        prompt  = STRING_TOKEN(STR_OPP_READ_DURING_WMM_PROMPT),
+        help    = STRING_TOKEN(STR_OPP_READ_DURING_WMM_HELP),
+        option text = STRING_TOKEN(STR_AUTO),                    value = OPP_RD_WMM_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_DISABLED_STRING),         value = OPP_RD_WMM_DIS, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED_STRING),          value = OPP_RD_WMM_EN, flags = RESET_REQUIRED;
+    endoneof;
+
+    numeric varid = SOCKET_MEMORY_CONFIGURATION.normOppInterval,
+        prompt    = STRING_TOKEN(STR_NORM_OPP_INTERVAL_PROMPT),
+        help      = STRING_TOKEN(STR_NORM_OPP_INTERVAL_HELP),
+        flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+        minimum   = 0,
+        maximum   = 0xFFFF,
+        step      = 0,       // Stepping of 0 equates to a manual entering of a value,
+                             // otherwise it will auto-increment with a left/right arrow
+        default = NORMAL_OPPERATION_INTERVAL , defaultstore = MyStandardDefault,
+        default = NORMAL_OPPERATION_INTERVAL , defaultstore = MyManufactureDefault,
+    endnumeric;
+
+    oneof varid = SOCKET_MEMORY_CONFIGURATION.caParity,
+        prompt  = STRING_TOKEN(STR_CA_PARITY_PROMPT),
+        help    = STRING_TOKEN(STR_CA_PARITY_HELP),
+        option text = STRING_TOKEN (STR_AUTO),                   value = CA_PARITY_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_DISABLED_STRING),         value = CA_PARITY_DISABLE, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED_STRING),          value = CA_PARITY_ENABLE, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid = SOCKET_MEMORY_CONFIGURATION.smbSpeed,
+        prompt  = STRING_TOKEN(STR_SMB_SPEED_PROMPT),
+        help    = STRING_TOKEN(STR_SMB_SPEED_HELP),
+        option text = STRING_TOKEN (STR_AUTO),                            value = SMB_CLK_DEFAULT, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_SMB_100K),                         value = SMB_CLK_100K,    flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_SMB_400K),                         value = SMB_CLK_400K,    flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_SMB_1M),                           value = SMB_CLK_1M,      flags = RESET_REQUIRED;
+    endoneof;
+    oneof varid = SOCKET_MEMORY_CONFIGURATION.mrcRepeatTest,
+        prompt  = STRING_TOKEN(STR_DDR_CYCLING_PROMPT),
+        help    = STRING_TOKEN(STR_DDR_CYCLING_HELP),
+        option text = STRING_TOKEN(STR_DISABLED_STRING),         value = DDR_CYCLING_DIS, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED_STRING),          value = DDR_CYCLING_EN, flags = RESET_REQUIRED;
+    endoneof;
+
+    numeric varid = SOCKET_MEMORY_CONFIGURATION.memFlows,
+        prompt  = STRING_TOKEN(STR_MEM_FLOWS_PROMPT),
+        help    = STRING_TOKEN(STR_MEM_FLOWS_HELP),
+        flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+        minimum   = 0x0,
+        maximum   = 0xFFFFFFFF,
+        step      = 0,
+        default   = 0xFFFFFFFF, defaultstore = MyStandardDefault,
+        default   = 0xFFFFFFFF, defaultstore = MyManufactureDefault,
+    endnumeric;
+
+    numeric varid = SOCKET_MEMORY_CONFIGURATION.memFlowsExt,
+        prompt  = STRING_TOKEN(STR_MEM_FLOWS_EXT_PROMPT),
+        help    = STRING_TOKEN(STR_MEM_FLOWS_EXT_HELP),
+        flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+        minimum   = 0x0,
+        maximum   = 0xFFFFFFFF,
+        step      = 0,
+        default   = 0xFFFFFFFF, defaultstore = MyStandardDefault,
+        default   = 0xFFFFFFFF, defaultstore = MyManufactureDefault,
+    endnumeric;
+
+    oneof varid = SOCKET_MEMORY_CONFIGURATION.rankMaskEn,
+        prompt  = STRING_TOKEN(STR_RANK_MASK_EN_PROMPT),
+        help    = STRING_TOKEN(STR_RANK_MASK_EN_HELP),
+        option text = STRING_TOKEN(STR_DISABLED_STRING),         value = 0, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED_STRING),          value = 1, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.Blockgnt2cmd1cyc,
+        prompt   = STRING_TOKEN (STR_BLOCK_GNT2CMD1CYC_PROMPT),
+        help     = STRING_TOKEN (STR_BLOCK_GNT2CMD1CYC_HELP),
+        option text = STRING_TOKEN (STR_PO_SAFE), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_POR),     value = 1, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+    endoneof;
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.Disddrtopprd,
+        prompt   = STRING_TOKEN (STR_DIS_DDRT_OPPRD_PROMPT),
+        help     = STRING_TOKEN (STR_DIS_DDRT_OPPRD_HELP),
+        option text = STRING_TOKEN (STR_PO_SAFE), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_POR),     value = 1, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+    endoneof;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.rankMaskEn == 0;
+        numeric varid = SOCKET_MEMORY_CONFIGURATION.sck0ch0,
+            prompt    = STRING_TOKEN (STR_SCKT_0_CH_0_RANK_EN_PROMPT),
+            help      = STRING_TOKEN (STR_SOCKET_0_CH_0_RANK_EN_HELP),
+            flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+            minimum   = 0,
+            maximum   = 0xFF,
+            step      = 0,        // Stepping of 0 equates to a manual entering of a value,
+                                  // otherwise it will auto-increment with a left/right arrow
+            default   = 0xFF, defaultstore = MyStandardDefault,
+            default   = 0xFF, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_MEMORY_CONFIGURATION.sck0ch1,
+            prompt    = STRING_TOKEN (STR_SCKT_0_CH_1_RANK_EN_PROMPT),
+            help      = STRING_TOKEN (STR_SOCKET_0_CH_1_RANK_EN_HELP),
+            flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+            minimum   = 0,
+            maximum   = 0xFF,
+            step      = 0,        // Stepping of 0 equates to a manual entering of a value,
+                                  // otherwise it will auto-increment with a left/right arrow
+            default   = 0xFF, defaultstore = MyStandardDefault,
+            default   = 0xFF, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_MEMORY_CONFIGURATION.sck0ch2,
+            prompt    = STRING_TOKEN (STR_SCKT_0_CH_2_RANK_EN_PROMPT),
+            help      = STRING_TOKEN (STR_SOCKET_0_CH_2_RANK_EN_HELP),
+            flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+            minimum   = 0,
+            maximum   = 0xFF,
+            step      = 0,        // Stepping of 0 equates to a manual entering of a value,
+                                  // otherwise it will auto-increment with a left/right arrow
+            default   = 0xFF, defaultstore = MyStandardDefault,
+            default   = 0xFF, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_MEMORY_CONFIGURATION.sck0ch3,
+            prompt    = STRING_TOKEN (STR_SCKT_0_CH_3_RANK_EN_PROMPT),
+            help      = STRING_TOKEN (STR_SOCKET_0_CH_3_RANK_EN_HELP),
+            flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+            minimum   = 0,
+            maximum   = 0xFF,
+            step      = 0,        // Stepping of 0 equates to a manual entering of a value,
+                                  // otherwise it will auto-increment with a left/right arrow
+            default   = 0xFF, defaultstore = MyStandardDefault,
+            default   = 0xFF, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_MEMORY_CONFIGURATION.sck0ch4,
+            prompt    = STRING_TOKEN (STR_SCKT_0_CH_4_RANK_EN_PROMPT),
+            help      = STRING_TOKEN (STR_SOCKET_0_CH_4_RANK_EN_HELP),
+            flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+            minimum   = 0,
+            maximum   = 0xFF,
+            step      = 0,        // Stepping of 0 equates to a manual entering of a value,
+                                  // otherwise it will auto-increment with a left/right arrow
+            default   = 0xFF, defaultstore = MyStandardDefault,
+            default   = 0xFF, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_MEMORY_CONFIGURATION.sck0ch5,
+            prompt    = STRING_TOKEN (STR_SCKT_0_CH_5_RANK_EN_PROMPT),
+            help      = STRING_TOKEN (STR_SOCKET_0_CH_5_RANK_EN_HELP),
+            flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+            minimum   = 0,
+            maximum   = 0xFF,
+            step      = 0,        // Stepping of 0 equates to a manual entering of a value,
+                                  // otherwise it will auto-increment with a left/right arrow
+            default   = 0xFF, defaultstore = MyStandardDefault,
+            default   = 0xFF, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_MEMORY_CONFIGURATION.sck1ch0,
+            prompt    = STRING_TOKEN (STR_SCKT_1_CH_0_RANK_EN_PROMPT),
+            help      = STRING_TOKEN (STR_SOCKET_1_CH_0_RANK_EN_HELP),
+            flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+            minimum   = 0,
+            maximum   = 0xFF,
+            step      = 0,        // Stepping of 0 equates to a manual entering of a value,
+                                  // otherwise it will auto-increment with a left/right arrow
+            default   = 0xFF, defaultstore = MyStandardDefault,
+            default   = 0xFF, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_MEMORY_CONFIGURATION.sck1ch1,
+            prompt    = STRING_TOKEN (STR_SCKT_1_CH_1_RANK_EN_PROMPT),
+            help      = STRING_TOKEN (STR_SOCKET_1_CH_1_RANK_EN_HELP),
+            flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+            minimum   = 0,
+            maximum   = 0xFF,
+            step      = 0,        // Stepping of 0 equates to a manual entering of a value,
+                                  // otherwise it will auto-increment with a left/right arrow
+            default   = 0xFF, defaultstore = MyStandardDefault,
+            default   = 0xFF, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_MEMORY_CONFIGURATION.sck1ch2,
+            prompt    = STRING_TOKEN (STR_SCKT_1_CH_2_RANK_EN_PROMPT),
+            help      = STRING_TOKEN (STR_SOCKET_1_CH_2_RANK_EN_HELP),
+            flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+            minimum   = 0,
+            maximum   = 0xFF,
+            step      = 0,        // Stepping of 0 equates to a manual entering of a value,
+                                  // otherwise it will auto-increment with a left/right arrow
+            default   = 0xFF, defaultstore = MyStandardDefault,
+            default   = 0xFF, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_MEMORY_CONFIGURATION.sck1ch3,
+            prompt    = STRING_TOKEN (STR_SCKT_1_CH_3_RANK_EN_PROMPT),
+            help      = STRING_TOKEN (STR_SOCKET_1_CH_3_RANK_EN_HELP),
+            flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+            minimum   = 0,
+            maximum   = 0xFF,
+            step      = 0,        // Stepping of 0 equates to a manual entering of a value,
+                                  // otherwise it will auto-increment with a left/right arrow
+            default   = 0xFF, defaultstore = MyStandardDefault,
+            default   = 0xFF, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_MEMORY_CONFIGURATION.sck1ch4,
+            prompt    = STRING_TOKEN (STR_SCKT_1_CH_4_RANK_EN_PROMPT),
+            help      = STRING_TOKEN (STR_SOCKET_1_CH_4_RANK_EN_HELP),
+            flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+            minimum   = 0,
+            maximum   = 0xFF,
+            step      = 0,        // Stepping of 0 equates to a manual entering of a value,
+                                  // otherwise it will auto-increment with a left/right arrow
+            default   = 0xFF, defaultstore = MyStandardDefault,
+            default   = 0xFF, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_MEMORY_CONFIGURATION.sck1ch5,
+            prompt    = STRING_TOKEN (STR_SCKT_1_CH_5_RANK_EN_PROMPT),
+            help      = STRING_TOKEN (STR_SOCKET_1_CH_5_RANK_EN_HELP),
+            flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+            minimum   = 0,
+            maximum   = 0xFF,
+            step      = 0,        // Stepping of 0 equates to a manual entering of a value,
+                                  // otherwise it will auto-increment with a left/right arrow
+            default   = 0xFF, defaultstore = MyStandardDefault,
+            default   = 0xFF, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_MEMORY_CONFIGURATION.sck2ch0,
+            prompt    = STRING_TOKEN (STR_SCKT_2_CH_0_RANK_EN_PROMPT),
+            help      = STRING_TOKEN (STR_SOCKET_2_CH_0_RANK_EN_HELP),
+            flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+            minimum   = 0,
+            maximum   = 0xFF,
+            step      = 0,        // Stepping of 0 equates to a manual entering of a value,
+                                  // otherwise it will auto-increment with a left/right arrow
+            default   = 0xFF, defaultstore = MyStandardDefault,
+            default   = 0xFF, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_MEMORY_CONFIGURATION.sck2ch1,
+            prompt    = STRING_TOKEN (STR_SCKT_2_CH_1_RANK_EN_PROMPT),
+            help      = STRING_TOKEN (STR_SOCKET_2_CH_1_RANK_EN_HELP),
+            flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+            minimum   = 0,
+            maximum   = 0xFF,
+            step      = 0,        // Stepping of 0 equates to a manual entering of a value,
+                                  // otherwise it will auto-increment with a left/right arrow
+            default   = 0xFF, defaultstore = MyStandardDefault,
+            default   = 0xFF, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_MEMORY_CONFIGURATION.sck2ch2,
+            prompt    = STRING_TOKEN (STR_SCKT_2_CH_2_RANK_EN_PROMPT),
+            help      = STRING_TOKEN (STR_SOCKET_2_CH_2_RANK_EN_HELP),
+            flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+            minimum   = 0,
+            maximum   = 0xFF,
+            step      = 0,        // Stepping of 0 equates to a manual entering of a value,
+                                  // otherwise it will auto-increment with a left/right arrow
+            default   = 0xFF, defaultstore = MyStandardDefault,
+            default   = 0xFF, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_MEMORY_CONFIGURATION.sck2ch3,
+            prompt    = STRING_TOKEN (STR_SCKT_2_CH_3_RANK_EN_PROMPT),
+            help      = STRING_TOKEN (STR_SOCKET_2_CH_3_RANK_EN_HELP),
+            flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+            minimum   = 0,
+            maximum   = 0xFF,
+            step      = 0,        // Stepping of 0 equates to a manual entering of a value,
+                                  // otherwise it will auto-increment with a left/right arrow
+            default   = 0xFF, defaultstore = MyStandardDefault,
+            default   = 0xFF, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_MEMORY_CONFIGURATION.sck2ch4,
+            prompt    = STRING_TOKEN (STR_SCKT_2_CH_4_RANK_EN_PROMPT),
+            help      = STRING_TOKEN (STR_SOCKET_2_CH_4_RANK_EN_HELP),
+            flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+            minimum   = 0,
+            maximum   = 0xFF,
+            step      = 0,        // Stepping of 0 equates to a manual entering of a value,
+                                  // otherwise it will auto-increment with a left/right arrow
+            default   = 0xFF, defaultstore = MyStandardDefault,
+            default   = 0xFF, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_MEMORY_CONFIGURATION.sck2ch5,
+            prompt    = STRING_TOKEN (STR_SCKT_2_CH_5_RANK_EN_PROMPT),
+            help      = STRING_TOKEN (STR_SOCKET_2_CH_5_RANK_EN_HELP),
+            flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+            minimum   = 0,
+            maximum   = 0xFF,
+            step      = 0,        // Stepping of 0 equates to a manual entering of a value,
+                                  // otherwise it will auto-increment with a left/right arrow
+            default   = 0xFF, defaultstore = MyStandardDefault,
+            default   = 0xFF, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_MEMORY_CONFIGURATION.sck3ch0,
+            prompt    = STRING_TOKEN (STR_SCKT_3_CH_0_RANK_EN_PROMPT),
+            help      = STRING_TOKEN (STR_SOCKET_3_CH_0_RANK_EN_HELP),
+            flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+            minimum   = 0,
+            maximum   = 0xFF,
+            step      = 0,        // Stepping of 0 equates to a manual entering of a value,
+                                  // otherwise it will auto-increment with a left/right arrow
+            default   = 0xFF, defaultstore = MyStandardDefault,
+            default   = 0xFF, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_MEMORY_CONFIGURATION.sck3ch1,
+            prompt    = STRING_TOKEN (STR_SCKT_3_CH_1_RANK_EN_PROMPT),
+            help      = STRING_TOKEN (STR_SOCKET_3_CH_1_RANK_EN_HELP),
+            flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+            minimum   = 0,
+            maximum   = 0xFF,
+            step      = 0,        // Stepping of 0 equates to a manual entering of a value,
+                                  // otherwise it will auto-increment with a left/right arrow
+            default   = 0xFF, defaultstore = MyStandardDefault,
+            default   = 0xFF, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_MEMORY_CONFIGURATION.sck3ch2,
+            prompt    = STRING_TOKEN (STR_SCKT_3_CH_2_RANK_EN_PROMPT),
+            help      = STRING_TOKEN (STR_SOCKET_3_CH_2_RANK_EN_HELP),
+            flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+            minimum   = 0,
+            maximum   = 0xFF,
+            step      = 0,        // Stepping of 0 equates to a manual entering of a value,
+                                  // otherwise it will auto-increment with a left/right arrow
+            default   = 0xFF, defaultstore = MyStandardDefault,
+            default   = 0xFF, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_MEMORY_CONFIGURATION.sck3ch3,
+            prompt    = STRING_TOKEN (STR_SCKT_3_CH_3_RANK_EN_PROMPT),
+            help      = STRING_TOKEN (STR_SOCKET_3_CH_3_RANK_EN_HELP),
+            flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+            minimum   = 0,
+            maximum   = 0xFF,
+            step      = 0,        // Stepping of 0 equates to a manual entering of a value,
+                                  // otherwise it will auto-increment with a left/right arrow
+            default   = 0xFF, defaultstore = MyStandardDefault,
+            default   = 0xFF, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_MEMORY_CONFIGURATION.sck3ch4,
+            prompt    = STRING_TOKEN (STR_SCKT_3_CH_4_RANK_EN_PROMPT),
+            help      = STRING_TOKEN (STR_SOCKET_3_CH_4_RANK_EN_HELP),
+            flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+            minimum   = 0,
+            maximum   = 0xFF,
+            step      = 0,        // Stepping of 0 equates to a manual entering of a value,
+                                  // otherwise it will auto-increment with a left/right arrow
+            default   = 0xFF, defaultstore = MyStandardDefault,
+            default   = 0xFF, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_MEMORY_CONFIGURATION.sck3ch5,
+            prompt    = STRING_TOKEN (STR_SCKT_3_CH_5_RANK_EN_PROMPT),
+            help      = STRING_TOKEN (STR_SOCKET_3_CH_5_RANK_EN_HELP),
+            flags     = RESET_REQUIRED | DISPLAY_UINT_HEX,
+            minimum   = 0,
+            maximum   = 0xFF,
+            step      = 0,        // Stepping of 0 equates to a manual entering of a value,
+                                  // otherwise it will auto-increment with a left/right arrow
+            default   = 0xFF, defaultstore = MyStandardDefault,
+            default   = 0xFF, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+    endif;
+
+    //
+    // Jump to Memory Topology display form
+    //
+    goto VFR_FORMID_MEMTOPOLOGY_DISPLAY,
+        prompt  = STRING_TOKEN(STR_MEMTOPOLOGY_DISPLAY_FORM_TITLE),
+        help    = STRING_TOKEN(STR_MEMTOPOLOGY_DISPLAY_FORM_HELP);
+
+    // Page Policy
+    goto VFR_FORMID_PAGE_POLICY_DISPLAY,
+      prompt  = STRING_TOKEN(STR_PAGE_POLICY_DISPLAY_FORM_TITLE),
+      help    = STRING_TOKEN(STR_PAGE_POLICY_DISPLAY_FORM_HELP);
+
+    // Memory Training
+    goto VFR_FORMID_MEMORY_TRAINING_DISPLAY,
+      prompt  = STRING_TOKEN(STR_MEMORY_TRAINING_DISPLAY_FORM_TITLE),
+      help    = STRING_TOKEN(STR_MEMORY_TRAINING_DISPLAY_FORM_HELP);
+
+    // XMP Profiles
+    goto VFR_FORMID_XMP_DISPLAY,
+      prompt  = STRING_TOKEN(STR_XMP_FORM_SUBTITLE),
+      help    = STRING_TOKEN(STR_XMP_PROFILE_HELP);
+
+    // Memory Mapping
+    goto VFR_FORMID_MEM_MAP,
+      prompt  = STRING_TOKEN(STR_MEM_MAP_SUBTITLE),
+      help    = STRING_TOKEN(STR_MEM_MAP_HELP);
+
+    // Memory RAS
+    goto VFR_FORMID_MEMORY_RAS,
+      prompt  = STRING_TOKEN(STR_MEMORY_RAS_CONFIG_FORM_TITLE),
+      help    = STRING_TOKEN(STR_MEMORY_RAS_CONFIG_FORM_HELP);
+
+    // NGN memory
+    goto VFR_FORMID_MEMORY_NGN,
+      prompt  = STRING_TOKEN(STR_MEMORY_NGN_CONFIG_FORM_TITLE),
+      help    = STRING_TOKEN(STR_MEMORY_NGN_CONFIG_FORM_HELP);
+    goto VFR_FORMID_MEMORY_DFX,
+      prompt  = STRING_TOKEN(STR_MEMORY_DFX_CONFIG_FORM_TITLE),
+      help    = STRING_TOKEN(STR_MEMORY_DFX_CONFIG_FORM_HELP);
+#ifdef SSA_FLAG
+     // BIOS_SSA_RMT
+    goto VFR_FORMID_MEMORY_BIOS_SSA_CONFIG_MENU,
+      prompt  = STRING_TOKEN(STR_BIOS_SSA_CONFIG_MENU_SUBTITLE),
+      help    = STRING_TOKEN(STR_BIOS_SSA_CONFIG_MENU_HELP);
+#endif //SSA_FLAG
+  endform;
+
+form formid = VFR_FORMID_MEMTOPOLOGY_DISPLAY,
+    title   = STRING_TOKEN(STR_MEMTOPOLOGY_DISPLAY_FORM_TITLE);
+
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+    subtitle  text = STRING_TOKEN(STR_MEM_STRING1);
+    subtitle  text = STRING_TOKEN(STR_MEM_STRING2);
+    subtitle  text = STRING_TOKEN(STR_MEM_STRING3);
+    subtitle  text = STRING_TOKEN(STR_MEM_STRING4);
+    subtitle  text = STRING_TOKEN(STR_MEM_STRING5);
+    subtitle  text = STRING_TOKEN(STR_MEM_STRING6);
+    subtitle  text = STRING_TOKEN(STR_MEM_STRING7);
+    subtitle  text = STRING_TOKEN(STR_MEM_STRING8);
+    subtitle  text = STRING_TOKEN(STR_MEM_STRING9);
+    subtitle  text = STRING_TOKEN(STR_MEM_STRING10);
+    subtitle  text = STRING_TOKEN(STR_MEM_STRING11);
+    subtitle  text = STRING_TOKEN(STR_MEM_STRING12);
+    subtitle  text = STRING_TOKEN(STR_MEM_STRING13);
+    subtitle  text = STRING_TOKEN(STR_MEM_STRING14);
+    subtitle  text = STRING_TOKEN(STR_MEM_STRING15);
+    subtitle  text = STRING_TOKEN(STR_MEM_STRING16);
+    subtitle  text = STRING_TOKEN(STR_MEM_STRING17);
+    subtitle  text = STRING_TOKEN(STR_MEM_STRING18);
+    subtitle  text = STRING_TOKEN(STR_MEM_STRING19);
+    subtitle  text = STRING_TOKEN(STR_MEM_STRING20);
+    subtitle  text = STRING_TOKEN(STR_MEM_STRING21);
+    subtitle  text = STRING_TOKEN(STR_MEM_STRING22);
+    subtitle  text = STRING_TOKEN(STR_MEM_STRING23);
+    subtitle  text = STRING_TOKEN(STR_MEM_STRING24);
+//SGI    subtitle  text = STRING_TOKEN(STR_MEM_STRING25);
+//SGI    subtitle  text = STRING_TOKEN(STR_MEM_STRING26);
+//SGI    subtitle  text = STRING_TOKEN(STR_MEM_STRING27);
+//SGI    subtitle  text = STRING_TOKEN(STR_MEM_STRING28);
+//SGI    subtitle  text = STRING_TOKEN(STR_MEM_STRING29);
+//SGI    subtitle  text = STRING_TOKEN(STR_MEM_STRING30);
+//SGI    subtitle  text = STRING_TOKEN(STR_MEM_STRING31);
+//SGI    subtitle  text = STRING_TOKEN(STR_MEM_STRING32);
+//SGI    subtitle  text = STRING_TOKEN(STR_MEM_STRING33);
+//SGI    subtitle  text = STRING_TOKEN(STR_MEM_STRING34);
+//SGI    subtitle  text = STRING_TOKEN(STR_MEM_STRING35);
+//SGI    subtitle  text = STRING_TOKEN(STR_MEM_STRING36);
+//SGI    subtitle  text = STRING_TOKEN(STR_MEM_STRING37);
+//SGI    subtitle  text = STRING_TOKEN(STR_MEM_STRING38);
+//SGI    subtitle  text = STRING_TOKEN(STR_MEM_STRING39);
+//SGI    subtitle  text = STRING_TOKEN(STR_MEM_STRING40);
+//SGI    subtitle  text = STRING_TOKEN(STR_MEM_STRING41);
+//SGI    subtitle  text = STRING_TOKEN(STR_MEM_STRING42);
+//SGI    subtitle  text = STRING_TOKEN(STR_MEM_STRING43);
+//SGI    subtitle  text = STRING_TOKEN(STR_MEM_STRING44);
+//SGI    subtitle  text = STRING_TOKEN(STR_MEM_STRING45);
+//SGI    subtitle  text = STRING_TOKEN(STR_MEM_STRING46);
+//SGI    subtitle  text = STRING_TOKEN(STR_MEM_STRING47);
+//SGI    subtitle  text = STRING_TOKEN(STR_MEM_STRING48);
+
+endform;
+
+form formid = VFR_FORMID_PAGE_POLICY_DISPLAY,
+    title   = STRING_TOKEN(STR_PAGE_POLICY_DISPLAY_FORM_TITLE);
+
+    oneof varid = SOCKET_MEMORY_CONFIGURATION.PagePolicy,
+        prompt  = STRING_TOKEN(STR_PAGE_POLICY_PROMPT),
+        help    = STRING_TOKEN(STR_PAGE_POLICY_HELP),
+        option text = STRING_TOKEN(STR_AUTO),               value = CLOSED_PAGE_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_CLOSED_PAGE),        value = CLOSED_PAGE_EN, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ADAPTIVE_PAGE),      value = OPEN_PAGE_ADAPTIVE, flags = RESET_REQUIRED;
+    endoneof;
+
+endform;
+
+    form formid = VFR_FORMID_MEMORY_TRAINING_DISPLAY,
+    title   = STRING_TOKEN(STR_MEMORY_TRAINING_DISPLAY_FORM_TITLE);
+
+    //oneof varid  = SOCKET_MEMORY_CONFIGURATION.txEqCalibration,
+     //   prompt   = STRING_TOKEN (STR_TX_EQ_PROMPT),
+     //   help     = STRING_TOKEN (STR_TX_EQ_HELP),
+     //   option text = STRING_TOKEN (STR_AUTO),    value = TX_EQ_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+     //   option text = STRING_TOKEN (STR_DISABLE), value = TX_EQ_DISABLE, flags = RESET_REQUIRED;
+     //   option text = STRING_TOKEN (STR_ENABLE),  value = TX_EQ_ENABLE, flags = RESET_REQUIRED;
+    //endoneof;
+
+    //oneof varid  = SOCKET_MEMORY_CONFIGURATION.iModeTraining,
+    //    prompt   = STRING_TOKEN (STR_IMODE_PROMPT),
+    //    help     = STRING_TOKEN (STR_IMODE_HELP),
+    //    option text = STRING_TOKEN (STR_AUTO),    value = IMODE_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+    //    option text = STRING_TOKEN (STR_DISABLE), value = IMODE_DISABLE, flags = RESET_REQUIRED;
+    //    option text = STRING_TOKEN (STR_ENABLE),  value = IMODE_ENABLE, flags = RESET_REQUIRED;
+    //endoneof;
+
+   //oneof varid  = SOCKET_MEMORY_CONFIGURATION.earlyCmdTraining,
+   //     prompt   = STRING_TOKEN (STR_EARLY_CMD_TRAINING_PROMPT),
+   //     help     = STRING_TOKEN (STR_EARLY_CMD_TRAINING_HELP),
+   //     option text = STRING_TOKEN (STR_AUTO),    value = EARLY_CMD_CLK_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+   //     option text = STRING_TOKEN (STR_DISABLE), value = EARLY_CMD_CLK_DIS, flags = RESET_REQUIRED;
+   //     option text = STRING_TOKEN (STR_ENABLE),  value = EARLY_CMD_CLK_EN, flags = RESET_REQUIRED;
+   // endoneof;
+
+    //oneof varid  = SOCKET_MEMORY_CONFIGURATION.earlyCtlTraining,
+    //    prompt   = STRING_TOKEN (STR_EARLY_CTL_TRAINING_PROMPT),
+    //    help     = STRING_TOKEN (STR_EARLY_CTL_TRAINING_HELP),
+    //    option text = STRING_TOKEN (STR_AUTO),    value = EARLY_CTL_CLK_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+    //    option text = STRING_TOKEN (STR_DISABLE), value = EARLY_CTL_CLK_DIS, flags = RESET_REQUIRED;
+    //    option text = STRING_TOKEN (STR_ENABLE),  value = EARLY_CTL_CLK_EN, flags = RESET_REQUIRED;
+    //endoneof;
+
+    //oneof varid  = SOCKET_MEMORY_CONFIGURATION.advancedClkTraining,
+    //    prompt   = STRING_TOKEN (STR_ADVANCED_CLK_TRAINING_PROMPT),
+    //    help     = STRING_TOKEN (STR_ADVANCED_CLK_TRAINING_HELP),
+    //    option text = STRING_TOKEN (STR_AUTO),    value = CMD_CLK_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+    //    option text = STRING_TOKEN (STR_DISABLE), value = CMD_CLK_DIS, flags = RESET_REQUIRED;
+    //    option text = STRING_TOKEN (STR_ENABLE),  value = CMD_CLK_EN, flags = RESET_REQUIRED;
+    //endoneof;
+
+    //oneof varid  = SOCKET_MEMORY_CONFIGURATION.RoundTripLatency,
+    //    prompt   = STRING_TOKEN (STR_ROUND_TRIP_LATENCY_PROMPT),
+    //    help     = STRING_TOKEN (STR_ROUND_TRIP_LATENCY_HELP),
+    //    option text = STRING_TOKEN (STR_AUTO),    value = ROUND_TRIP_LATENCY_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+    //    option text = STRING_TOKEN (STR_DISABLE), value = ROUND_TRIP_LATENCY_DIS, flags = RESET_REQUIRED;
+    //    option text = STRING_TOKEN (STR_ENABLE),  value = ROUND_TRIP_LATENCY_ENABLE, flags = RESET_REQUIRED;
+    //endoneof;
+
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.DutyCycleTraining,
+        prompt   = STRING_TOKEN (STR_DUTY_CYCLE_PROMPT),
+        help     = STRING_TOKEN (STR_DUTY_CYCLE_HELP),
+        option text = STRING_TOKEN (STR_AUTO),    value = DUTY_CYCLE_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_DISABLE), value = DUTY_CYCLE_DISABLE, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_ENABLE),  value = DUTY_CYCLE_ENABLE, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid = SOCKET_MEMORY_CONFIGURATION.readVrefCenter,
+        prompt  = STRING_TOKEN(STR_READ_VREF_CENTERING_PROMPT),
+        help    = STRING_TOKEN(STR_READ_VREF_CENTERING_HELP),
+        option text = STRING_TOKEN (STR_AUTO),    value = RX_VREF_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_DISABLE), value = RX_VREF_DISABLE, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_ENABLE),  value = RX_VREF_ENABLE, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid = SOCKET_MEMORY_CONFIGURATION.eyeDiagram,
+        prompt      = STRING_TOKEN(STR_EYE_DIAGRAM_PROMPT),
+        help        = STRING_TOKEN(STR_EYE_DIAGRAM_HELP),
+        option text = STRING_TOKEN(STR_AUTO),             value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_DISABLED_STRING),  value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED_STRING),   value = 1, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid = SOCKET_MEMORY_CONFIGURATION.turnaroundOpt,
+        prompt  = STRING_TOKEN(STR_TURNAROUND_PROMPT),
+        help    = STRING_TOKEN(STR_TURNAROUND_HELP),
+        option text = STRING_TOKEN (STR_AUTO),    value = TURNAROUND_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_DISABLE), value = TURNAROUND_DISABLE, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_ENABLE),  value = TURNAROUND_ENABLE, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid = SOCKET_MEMORY_CONFIGURATION.oneRankTimingMode,
+        prompt  = STRING_TOKEN(STR_ONERANKTIMINGMODE_PROMPT),
+        help    = STRING_TOKEN(STR_ONERANKTIMINGMODE_HELP),
+        option text = STRING_TOKEN (STR_AUTO),    value = ONE_RANK_TIMING_MODE_DEFAULT, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_DISABLE), value = ONE_RANK_TIMING_MODE_DISABLED, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_ENABLE),  value = ONE_RANK_TIMING_MODE_ENABLED, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid = SOCKET_MEMORY_CONFIGURATION.pda,
+        prompt  = STRING_TOKEN(STR_PDA_PROMPT),
+        help    = STRING_TOKEN(STR_PDA_HELP),
+        option text = STRING_TOKEN (STR_AUTO),    value = PDA_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_DISABLE), value = PDA_DISABLE, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_ENABLE),  value = PDA_ENABLE, flags = RESET_REQUIRED;
+    endoneof;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.pda == 0;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.wrVrefCenter,
+          prompt  = STRING_TOKEN(STR_WRITE_VREF_CENTERING_PROMPT),
+          help    = STRING_TOKEN(STR_WRITE_VREF_CENTERING_HELP),
+          option text = STRING_TOKEN (STR_AUTO),    value = TX_VREF_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+          option text = STRING_TOKEN (STR_DISABLE), value = TX_VREF_DISABLE, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN (STR_ENABLE),  value = TX_VREF_ENABLE, flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    endform;
+
+    // Memory Thermal
+    form formid = VFR_FORMID_MEM_THERMAL_ID,
+    title   = STRING_TOKEN(STR_MEM_THERMAL_SUBTITLE);
+
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.thermalthrottlingsupport,
+        prompt  = STRING_TOKEN(STR_FAN_SPD_CTRL_THRTL_MODE),
+        help    = STRING_TOKEN(STR_FAN_SPD_CTRL_THRTL_MODE_HELP),
+        option text = STRING_TOKEN(STR_DISABLED_STRING),               value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_OPEN_LOOP_THERMAL_THROTTLING),  value = 1, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_CLOSE_LOOP_THERMAL_THROTTLING), value = 2, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_CLOSE_LOOP_PECI_THERMAL_THROTTLING),  value = 3, flags = RESET_REQUIRED;
+      endoneof;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.thermalthrottlingsupport == 0;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.thermalmemtrip,
+        prompt  = STRING_TOKEN(STR_THERMTRIP_CONFIG),
+        help    = STRING_TOKEN(STR_THERMTRIP_CONFIG_HELP),
+          option text = STRING_TOKEN (STR_DISABLE), value = 0, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+          option text = STRING_TOKEN (STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    endform;
+
+    form formid = VFR_FORMID_MEM_PM_CFG_ID,
+    title   = STRING_TOKEN(STR_MEMORY_PM_CONFIG_FORM_TITLE);
+    subtitle text = STRING_TOKEN(STR_MEMORY_PM_CONFIG_FORM_TITLE);
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+    //DRAM RAPL Config
+    goto DRAM_RAPL_FORMID,
+    prompt = STRING_TOKEN(STR_DRAM_RAPL_FORM),
+    help = STRING_TOKEN(STR_DRAM_RAPL_FORM_HELP);
+
+    //Memory Thermal
+    goto VFR_FORMID_MEM_THERMAL_ID,
+    prompt = STRING_TOKEN(STR_MEM_THERMAL_SUBTITLE),
+    help = STRING_TOKEN(STR_MEM_THERMAL_SUBTITLE_HELP);
+
+    //oneof varid = SOCKET_MEMORY_CONFIGURATION.DdrVrPhaseShedding,
+    //    prompt  = STRING_TOKEN(STR_DDR_PHASE_SHEDDING_PROMPT),
+    //    help    = STRING_TOKEN(STR_DDR_PHASE_SHEDDING_PROMPT_HELP),
+    //    option text = STRING_TOKEN(STR_AUTO),             value = PHASE_SHEDDING_AUTO, flags = RESET_REQUIRED;
+    //    option text = STRING_TOKEN (STR_DISABLED_STRING), value = PHASE_SHEDDING_DIS, flags = RESET_REQUIRED;
+    //    option text = STRING_TOKEN (STR_ENABLED_STRING),  value = PHASE_SHEDDING_EN, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+    //endoneof;
+
+    oneof varid = SOCKET_MEMORY_CONFIGURATION.memhotSupport,
+        prompt      = STRING_TOKEN(STR_MEMHOT_THROTTLING_MODE_PROMPT),
+        help        = STRING_TOKEN(STR_MEMHOT_THROTTLING_MODE_PROMPT_HELP),
+        option text = STRING_TOKEN(STR_DISABLED), value = MEMHOT_DIS, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_OUTPUT_ONLY),  value = MEMHOT_OUTPUT_ONLY, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_INPUT_ONLY),  value = MEMHOT_INPUT_ONLY, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_INPUT_OUTPUT_ENABLED),  value = MEMHOT_INPUT_OUTPUT_EN, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid = SOCKET_MEMORY_CONFIGURATION.MemhotOutputOnlyOpt,
+        prompt      = STRING_TOKEN(STR_MEMHOT_OUTPUT_THROTTLING_MODE_PROMPT),
+        help        = STRING_TOKEN(STR_MEMHOT_OUTPUT_THROTTLING_MODE_PROMPT_HELP),
+        option text = STRING_TOKEN(STR_DISABLED), value = MEMHOT_OUTPUT_ONLY_DIS, flags = RESET_REQUIRED | MANUFACTURING;
+        option text = STRING_TOKEN(STR_OUTPUT_H),  value = MEMHOT_OUTPUT_ONLY_HIGH, flags = RESET_REQUIRED | DEFAULT;
+        option text = STRING_TOKEN(STR_OUTPUT_HM),  value = MEMHOT_OUTPUT_ONLY_HIGH_MED, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_OUTPUT_HML),  value = MEMHOT_OUTPUT_ONLY_HIGH_MED_LOW, flags = RESET_REQUIRED;
+    endoneof;
+
+      // Memory Power Savings Advanced Options
+      goto VFR_FORMID_MEM_PWR_SAVE_ADV_ID,
+      prompt  = STRING_TOKEN(STR_MEM_PWR_SAVE_ADV_SUBTITLE),
+      help    = STRING_TOKEN(STR_MEM_PWR_SAVE_ADV_SUBTITLE_HELP);
+
+    endform;
+
+    form formid = VFR_FORMID_MEM_PWR_SAVE_ADV_ID,
+    title = STRING_TOKEN(STR_MEM_PWR_SAVE_ADV_SUBTITLE);
+
+    //CKE MODE AUTO OR OVERRIDE
+      oneof varid     = SOCKET_MEMORY_CONFIGURATION.CkeProgramming,
+          prompt      = STRING_TOKEN(STR_CKE_PROMPT),
+          help        = STRING_TOKEN(STR_CKE_HELP),
+          option text = STRING_TOKEN(STR_AUTO),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_MANUAL),  value = 1, flags = RESET_REQUIRED;
+    endoneof;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.CkeProgramming == 0;
+     goto VFR_FORMID_CKE_DISPLAY,
+        prompt  = STRING_TOKEN(STR_CKE_DISPLAY_FORM_TITLE),
+        help    = STRING_TOKEN(STR_CKE_DISPLAY_FORM_HELP);
+     endif;
+
+      //SREF AUTO OR OVERRIDE
+      oneof varid     = SOCKET_MEMORY_CONFIGURATION.SrefProgramming,
+          prompt      = STRING_TOKEN(STR_SREF_PROMPT),
+          help        = STRING_TOKEN(STR_SREF_HELP),
+          option text = STRING_TOKEN(STR_AUTO),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_MANUAL),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+
+     suppressif ideqval SOCKET_MEMORY_CONFIGURATION.SrefProgramming == 0;
+       goto VFR_FORMID_SREF_DISPLAY,
+          prompt  = STRING_TOKEN(STR_SREF_DISPLAY_FORM_TITLE),
+          help    = STRING_TOKEN(STR_SREF_DISPLAY_FORM_HELP);
+    endif;
+
+            //SREF STATIC AUTO, ENABLE, DISABLE
+      oneof varid     = SOCKET_MEMORY_CONFIGURATION.PkgcSrefEn,
+          prompt      = STRING_TOKEN(STR_SREF_STATIC_PROMPT),
+          help        = STRING_TOKEN(STR_SREF_STATIC_HELP),
+          option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_DISABLE),  value = 0, flags = RESET_REQUIRED;
+      endoneof;
+
+    endform;
+
+      form formid = VFR_FORMID_CKE_DISPLAY,
+        title = STRING_TOKEN(STR_CKE_DISPLAY_FORM_TITLE);
+
+       numeric varid = SOCKET_MEMORY_CONFIGURATION.CkeIdleTimer,
+          prompt    = STRING_TOKEN (STR_CKE_IDLE_TIMER_PROMPT),
+          help      = STRING_TOKEN (STR_CKE_IDLE_TIMER_HELP),
+          flags     = RESET_REQUIRED,
+          minimum   = 0,
+          maximum   = 255,
+          step      = 0,        // Stepping of 0 equates to a manual entering of a value,
+                                // otherwise it will auto-increment with a left/right arrow
+          default   = 20, defaultstore = MyStandardDefault,
+          default   = 20, defaultstore = MyManufactureDefault,
+      endnumeric;
+
+      oneof varid     = SOCKET_MEMORY_CONFIGURATION.ApdEn,
+          prompt      = STRING_TOKEN(STR_APD_PROMPT),
+          help        = STRING_TOKEN(STR_APD_HELP),
+          option text = STRING_TOKEN(STR_ENABLE),    value = 1, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_DISABLE),  value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+      endoneof;
+
+     suppressif ideqval SOCKET_MEMORY_CONFIGURATION.ApdEn == 1;
+      oneof varid     = SOCKET_MEMORY_CONFIGURATION.PpdEn,
+          prompt      = STRING_TOKEN(STR_PPD_PROMPT),
+          help        = STRING_TOKEN(STR_PPD_HELP),
+          option text = STRING_TOKEN(STR_ENABLE),    value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_DISABLE),  value = 0, flags = RESET_REQUIRED;
+      endoneof;
+     endif;
+
+      oneof varid     = SOCKET_MEMORY_CONFIGURATION.DdrtCkeEn,
+          prompt      = STRING_TOKEN(STR_DDRTCKE_PROMPT),
+          help        = STRING_TOKEN(STR_DDRTCKE_HELP),
+          option text = STRING_TOKEN(STR_ENABLE),    value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_DISABLE),  value = 0, flags = RESET_REQUIRED;
+      endoneof;
+
+      endform;
+
+
+        form formid = VFR_FORMID_SREF_DISPLAY,
+        title = STRING_TOKEN(STR_SREF_DISPLAY_FORM_TITLE);
+
+      oneof varid     = SOCKET_MEMORY_CONFIGURATION.OppSrefEn,
+          prompt      = STRING_TOKEN(STR_OPP_SR_PROMPT),
+          help        = STRING_TOKEN(STR_OPP_SR_HELP),
+          option text = STRING_TOKEN(STR_ENABLE),    value = 1, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_DISABLE),  value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+      endoneof;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.OppSrefEn == 0;
+      oneof varid     = SOCKET_MEMORY_CONFIGURATION.DdrtSrefEn,
+          prompt      = STRING_TOKEN(STR_DDRT_SREF_PROMPT),
+          help        = STRING_TOKEN(STR_DDRT_SREF_HELP),
+          option text = STRING_TOKEN(STR_ENABLE),    value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_DISABLE),  value = 0, flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+      oneof varid     = SOCKET_MEMORY_CONFIGURATION.MdllOffEn,
+          prompt      = STRING_TOKEN(MDLL_OFF_PROMPT),
+          help        = STRING_TOKEN(MDLL_OFF_HELP),
+          option text = STRING_TOKEN(STR_ENABLE),    value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_DISABLE),  value = 0, flags = RESET_REQUIRED;
+      endoneof;
+
+    oneof varid = SOCKET_MEMORY_CONFIGURATION.CkMode,
+        prompt      = STRING_TOKEN(STR_CK_SELF_REFRESH_PROMPT),
+        help        = STRING_TOKEN(STR_CK_SELF_REFRESH_PROMPT_HELP),
+        option text = STRING_TOKEN(STR_DRIVEN),     value = CK_SELF_REF_DRIVEN,    flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_PULL_LOW),   value = CK_SELF_REF_LOW,       flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+    endoneof;
+    endform;
+
+    form formid = VFR_FORMID_XMP_DISPLAY,
+    title   = STRING_TOKEN(STR_XMP_FORM_SUBTITLE);
+
+    suppressif NOT ideqval SOCKET_MEMORY_CONFIGURATION.XMPProfilesSup == 0;
+      oneof varid   = SOCKET_MEMORY_CONFIGURATION.XMPMode,
+          prompt      = STRING_TOKEN (STR_XMP_PROFILE_PROMPT),
+          help        = STRING_TOKEN (STR_XMP_PROFILE_HELP),
+          option text = STRING_TOKEN (STR_DISABLED_STRING), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN (STR_MANUAL),          value = 1, flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif  NOT ideqval SOCKET_MEMORY_CONFIGURATION.XMPProfilesSup == 1;
+      oneof varid   = SOCKET_MEMORY_CONFIGURATION.XMPMode,
+          questionid  = KEY_XMP_PROFILE,
+          prompt      = STRING_TOKEN (STR_XMP_PROFILE_PROMPT),
+          help        = STRING_TOKEN (STR_XMP_PROFILE_HELP),
+          option text = STRING_TOKEN (STR_DISABLED_STRING), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT | INTERACTIVE;
+          option text = STRING_TOKEN (STR_MANUAL),          value = 1, flags = RESET_REQUIRED | INTERACTIVE;
+          option text = STRING_TOKEN (STR_XMP_PROFILE1),    value = 2, flags = RESET_REQUIRED | INTERACTIVE;
+      endoneof;
+    endif;
+
+    suppressif  NOT ideqval SOCKET_MEMORY_CONFIGURATION.XMPProfilesSup == 3;
+      oneof varid   = SOCKET_MEMORY_CONFIGURATION.XMPMode,
+          questionid  = KEY_XMP_PROFILE1,
+          prompt      = STRING_TOKEN (STR_XMP_PROFILE_PROMPT),
+          help        = STRING_TOKEN (STR_XMP_PROFILE_HELP),
+          option text = STRING_TOKEN (STR_DISABLED_STRING), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT | INTERACTIVE;
+          option text = STRING_TOKEN (STR_MANUAL),          value = 1, flags = RESET_REQUIRED | INTERACTIVE;
+          option text = STRING_TOKEN (STR_XMP_PROFILE1),    value = 2, flags = RESET_REQUIRED | INTERACTIVE;
+          option text = STRING_TOKEN (STR_XMP_PROFILE2),    value = 3, flags = RESET_REQUIRED | INTERACTIVE;
+      endoneof;
+    endif;
+
+    suppressif   ideqval SOCKET_MEMORY_CONFIGURATION.XMPMode == 0;
+      numeric varid = SOCKET_MEMORY_CONFIGURATION.Vdd,
+          prompt    = STRING_TOKEN (STR_VDD_PROMPT),
+          help      = STRING_TOKEN (STR_VDD_HELP),
+          flags     = RESET_REQUIRED,
+          minimum   = 900,
+          maximum   = 1850,
+          step      = 5,
+          default = 1200, defaultstore = MyStandardDefault,
+          default = 1200, defaultstore = MyManufactureDefault,
+      endnumeric;
+
+      oneof varid     = SOCKET_MEMORY_CONFIGURATION.commandTiming,
+          prompt      = STRING_TOKEN(STR_COMMAND_TIMING_PROMPT),
+          help        = STRING_TOKEN(STR_COMMAND_TIMING_HELP),
+          option text = STRING_TOKEN(STR_AUTO),               value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_1N),                 value = 1, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_2N),                 value = 2, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_3N),                 value = 3, flags = RESET_REQUIRED;
+      endoneof;
+
+      numeric varid = SOCKET_MEMORY_CONFIGURATION.tREFI,
+          prompt    = STRING_TOKEN(STR_REFRESH_RATE),
+          help      = STRING_TOKEN(STR_REFRESH_RATE_HELP),
+          flags     = RESET_REQUIRED,
+          minimum   = 0,
+          maximum   = MAX_REFRESH_RATE,
+          step      = 0,       // Stepping of 0 equates to a manual entering of a value,
+                               // otherwise it will auto-increment with a left/right arrow
+          default = 0, defaultstore = MyStandardDefault,
+          default = 0, defaultstore = MyManufactureDefault,
+      endnumeric;
+
+      numeric varid = SOCKET_MEMORY_CONFIGURATION.tCAS,
+          prompt    = STRING_TOKEN(STR_CAS_LATENCY),
+          help      = STRING_TOKEN(STR_CAS_LATENCY_HELP),
+          flags     = RESET_REQUIRED,
+          minimum   = 0,
+          maximum   = MAX_CAS_LATENCY,
+          step      = 0,       // Stepping of 0 equates to a manual entering of a value,
+                               // otherwise it will auto-increment with a left/right arrow
+          default = 0, defaultstore = MyStandardDefault,
+          default = 0, defaultstore = MyManufactureDefault,
+      endnumeric;
+
+      numeric varid = SOCKET_MEMORY_CONFIGURATION.tRP,
+          prompt    = STRING_TOKEN(STR_TRP_LATENCY),
+          help      = STRING_TOKEN(STR_TRP_LATENCY_HELP),
+          flags     = RESET_REQUIRED,
+          minimum   = 0,
+          maximum   = MAX_TRP_LATENCY,
+          step      = 0,       // Stepping of 0 equates to a manual entering of a value,
+                               // otherwise it will auto-increment with a left/right arrow
+          default = 0, defaultstore = MyStandardDefault,
+          default = 0, defaultstore = MyManufactureDefault,
+      endnumeric;
+
+      numeric varid = SOCKET_MEMORY_CONFIGURATION.tRCD,
+          prompt    = STRING_TOKEN(STR_TRCD_LATENCY),
+          help      = STRING_TOKEN(STR_TRCD_LATENCY_HELP),
+          flags     = RESET_REQUIRED,
+          minimum   = 0,
+          maximum   = MAX_TRCD_LATENCY,
+          step      = 0,       // Stepping of 0 equates to a manual entering of a value,
+                               // otherwise it will auto-increment with a left/right arrow
+          default = 0, defaultstore = MyStandardDefault,
+          default = 0, defaultstore = MyManufactureDefault,
+      endnumeric;
+
+      numeric varid = SOCKET_MEMORY_CONFIGURATION.tRAS,
+          prompt    = STRING_TOKEN(STR_TRAS_LATENCY),
+          help      = STRING_TOKEN(STR_TRAS_LATENCY_HELP),
+          flags     = RESET_REQUIRED,
+          minimum   = 0,
+          maximum   = MAX_TRAS_LATENCY,
+          step      = 0,       // Stepping of 0 equates to a manual entering of a value,
+                               // otherwise it will auto-increment with a left/right arrow
+          default = 0, defaultstore = MyStandardDefault,
+          default = 0, defaultstore = MyManufactureDefault,
+      endnumeric;
+
+      numeric varid = SOCKET_MEMORY_CONFIGURATION.tWR,
+          prompt    = STRING_TOKEN(STR_TWR_LATENCY),
+          help      = STRING_TOKEN(STR_TWR_LATENCY_HELP),
+          flags     = RESET_REQUIRED,
+          minimum   = 0,
+          maximum   = MAX_TWR_LATENCY,
+          step      = 0,       // Stepping of 0 equates to a manual entering of a value,
+                               // otherwise it will auto-increment with a left/right arrow
+          default = 0, defaultstore = MyStandardDefault,
+          default = 0, defaultstore = MyManufactureDefault,
+      endnumeric;
+
+      numeric varid = SOCKET_MEMORY_CONFIGURATION.tRFC,
+          prompt    = STRING_TOKEN(STR_TRFC_LATENCY),
+          help      = STRING_TOKEN(STR_TRFC_LATENCY_HELP),
+          flags     = RESET_REQUIRED,
+          minimum   = 0,
+          maximum   = MAX_TRFC_LATENCY,
+          step      = 0,       // Stepping of 0 equates to a manual entering of a value,
+                               // otherwise it will auto-increment with a left/right arrow
+          default = 0, defaultstore = MyStandardDefault,
+          default = 0, defaultstore = MyManufactureDefault,
+      endnumeric;
+
+      numeric varid = SOCKET_MEMORY_CONFIGURATION.tRRD,
+          prompt    = STRING_TOKEN(STR_TRRD_LATENCY),
+          help      = STRING_TOKEN(STR_TRRD_LATENCY_HELP),
+          flags     = RESET_REQUIRED,
+          minimum   = 0,
+          maximum   = MAX_TRRD_LATENCY,
+          step      = 0,       // Stepping of 0 equates to a manual entering of a value,
+                               // otherwise it will auto-increment with a left/right arrow
+          default = 0, defaultstore = MyStandardDefault,
+          default = 0, defaultstore = MyManufactureDefault,
+      endnumeric;
+
+      numeric varid = SOCKET_MEMORY_CONFIGURATION.tRTP,
+          prompt    = STRING_TOKEN(STR_TRTP_LATENCY),
+          help      = STRING_TOKEN(STR_TRTP_LATENCY_HELP),
+          flags     = RESET_REQUIRED,
+          minimum   = 0,
+          maximum   = MAX_TRTP_LATENCY,
+          step      = 0,       // Stepping of 0 equates to a manual entering of a value,
+                               // otherwise it will auto-increment with a left/right arrow
+          default = 0, defaultstore = MyStandardDefault,
+          default = 0, defaultstore = MyManufactureDefault,
+      endnumeric;
+
+      numeric varid = SOCKET_MEMORY_CONFIGURATION.tWTR,
+          prompt    = STRING_TOKEN(STR_TWTR_LATENCY),
+          help      = STRING_TOKEN(STR_TWTR_LATENCY_HELP),
+          flags     = RESET_REQUIRED,
+          minimum   = 0,
+          maximum   = MAX_TWTR_LATENCY,
+          step      = 0,       // Stepping of 0 equates to a manual entering of a value,
+                               // otherwise it will auto-increment with a left/right arrow
+          default = 0, defaultstore = MyStandardDefault,
+          default = 0, defaultstore = MyManufactureDefault,
+      endnumeric;
+
+      numeric varid = SOCKET_MEMORY_CONFIGURATION.tFAW,
+          prompt    = STRING_TOKEN(STR_TFAW_LATENCY),
+          help      = STRING_TOKEN(STR_TFAW_LATENCY_HELP),
+          flags     = RESET_REQUIRED,
+          minimum   = 0,
+          maximum   = MAX_TFAW_LATENCY,
+          step      = 0,       // Stepping of 0 equates to a manual entering of a value,
+                               // otherwise it will auto-increment with a left/right arrow
+          default = 0, defaultstore = MyStandardDefault,
+          default = 0, defaultstore = MyManufactureDefault,
+      endnumeric;
+
+      numeric varid = SOCKET_MEMORY_CONFIGURATION.tRC,
+          prompt    = STRING_TOKEN(STR_TRC_LATENCY),
+          help      = STRING_TOKEN(STR_TRC_LATENCY_HELP),
+          flags     = RESET_REQUIRED,
+          minimum   = 0,
+          maximum   = MAX_TRC_LATENCY,
+          step      = 0,       // Stepping of 0 equates to a manual entering of a value,
+                               // otherwise it will auto-increment with a left/right arrow
+          default = 0, defaultstore = MyStandardDefault,
+          default = 0, defaultstore = MyManufactureDefault,
+      endnumeric;
+
+      numeric varid = SOCKET_MEMORY_CONFIGURATION.tCWL,
+          prompt    = STRING_TOKEN(STR_TCWL_LATENCY),
+          help      = STRING_TOKEN(STR_TCWL_LATENCY_HELP),
+          flags     = RESET_REQUIRED,
+          minimum   = 0,
+          maximum   = MAX_TCWL_LATENCY,
+          step      = 0,       // Stepping of 0 equates to a manual entering of a value,
+                               // otherwise it will auto-increment with a left/right arrow
+          default = 0, defaultstore = MyStandardDefault,
+          default = 0, defaultstore = MyManufactureDefault,
+      endnumeric;
+    endif;
+    endform;
+
+    form formid = VFR_FORMID_MEM_MAP,
+    title   = STRING_TOKEN(STR_MEM_MAP_SUBTITLE);
+
+    oneof varid = SOCKET_MEMORY_CONFIGURATION.volMemMode,
+        prompt  = STRING_TOKEN(STR_VOL_MEM_MODE),
+        help    = STRING_TOKEN(STR_VOL_MEM_MODE_HELP),
+        option text = STRING_TOKEN(STR_1LM),                  value = VOL_MEM_MODE_1LM,             flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_2LM),                  value = VOL_MEM_MODE_2LM,             flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_AUTO),                 value = VOL_MEM_MODE_AUTO,            flags = RESET_REQUIRED;
+    endoneof;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.volMemMode == VOL_MEM_MODE_2LM;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.memInterleaveGran1LM,
+          prompt  = STRING_TOKEN(STR_MEM_INT_GRAN_1LM),
+          help    = STRING_TOKEN(STR_MEM_INT_GRAN_1LM_HELP),
+          option text = STRING_TOKEN(STR_AUTO),                 value = MEM_INT_GRAN_1LM_AUTO,        flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_256B_256B),            value = MEM_INT_GRAN_1LM_256B_256B,   flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_64B_64B),              value = MEM_INT_GRAN_1LM_64B_64B,     flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif NOT ideqval SOCKET_COMMONRC_CONFIGURATION.NumaEn == NUMA_EN;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.ImcInterleaving,
+          prompt  = STRING_TOKEN(STR_IMC_INTERLEAVING_PROMPT),
+          help    = STRING_TOKEN(STR_IMC_INTERLEAVING_HELP),
+          option text = STRING_TOKEN(STR_AUTO),                  value = IMC_INTER_AUTO, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_1WAY_STRING),           value = IMC_1WAY, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_2WAY_STRING),           value = IMC_2WAY, flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    oneof varid = SOCKET_MEMORY_CONFIGURATION.ChannelInterleaving,
+        prompt  = STRING_TOKEN(STR_CHANNEL_INTERLEAVING_PROMPT),
+        help    = STRING_TOKEN(STR_CHANNEL_INTERLEAVING_HELP),
+        option text = STRING_TOKEN(STR_AUTO),                  value = CH_INTER_AUTO, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_1WAY_STRING),           value = CH_1WAY, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_2WAY_STRING),           value = CH_2WAY, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_3WAY_STRING),           value = CH_3WAY, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid = SOCKET_MEMORY_CONFIGURATION.RankInterleaving,
+        prompt  = STRING_TOKEN(STR_RANK_INTERLEAVING_PROMPT),
+        help    = STRING_TOKEN(STR_RANK_INTERLEAVING_HELP),
+        option text = STRING_TOKEN(STR_AUTO),                  value = RANK_INTER_AUTO, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_1WAY_STRING),           value = RANK_1WAY, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_2WAY_STRING),           value = RANK_2WAY, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_4WAY_STRING),           value = RANK_4WAY, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_8WAY_STRING),           value = RANK_8WAY, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid = SOCKET_MEMORY_CONFIGURATION.SocketInterleaveBelow4GB,
+        prompt  = STRING_TOKEN(STR_SKT_INTERLEAVE_BELOW4GB),
+        help    = STRING_TOKEN(STR_SKT_INTERLEAVE_BELOW4GB_HELP),
+        option text = STRING_TOKEN(STR_DISABLE),        value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),         value = 1, flags = RESET_REQUIRED;
+    endoneof;
+
+endform;
+
+    form formid = VFR_FORMID_MEMORY_NGN,
+    title   = STRING_TOKEN(STR_MEMORY_NGN_CONFIG_FORM_TITLE);
+
+    //Secure Erase
+    goto VFR_FORMID_SECURE_ERASE,
+      prompt  = STRING_TOKEN(STR_SECURE_ERASE_UNIT_SUBTITLE),
+      help    = STRING_TOKEN(STR_SET_SECURE_ERASE_UNIT_HELP);
+
+    oneof varid = SOCKET_MEMORY_CONFIGURATION.setTDPDIMMPower,
+        prompt = STRING_TOKEN(STR_TDP_POWER_PROMPT),
+        help    = STRING_TOKEN(STR_TDP_POWER_HELP),
+        option text = STRING_TOKEN(STR_10W),        value = 10,  flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_12W),        value = 12,  flags = DEFAULT| MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_15W),        value = 15,  flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_18W),        value = 18,  flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.NgnArsOnBoot,
+        prompt   = STRING_TOKEN (STR_NGN_ARS_ON_BOOT_PROMPT),
+        help     = STRING_TOKEN (STR_NGN_ARS_ON_BOOT_HELP),
+        option text = STRING_TOKEN (STR_AUTO),     value = NGN_ARS_ON_BOOT_AUTO, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_DISABLED), value = NGN_ARS_ON_BOOT_DIS, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_ENABLED),  value = NGN_ARS_ON_BOOT_EN, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.LockNgnCsr,
+        prompt   = STRING_TOKEN (STR_LOCK_NGN_CSR_PROMPT),
+        help     = STRING_TOKEN (STR_LOCK_NGN_CSR_HELP),
+        option text = STRING_TOKEN (STR_AUTO),     value = LOCK_NGN_CSR_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_DISABLED), value = LOCK_NGN_CSR_DISABLE, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_ENABLED),  value = LOCK_NGN_CSR_ENABLE, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.NgnDebugLock,
+        prompt   = STRING_TOKEN (STR_NGN_DEBUG_LOCK_PROMPT),
+        help     = STRING_TOKEN (STR_NGN_DEBUG_LOCK_HELP),
+        option text = STRING_TOKEN (STR_AUTO),     value = NGN_DEBUG_LOCK_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_DISABLED), value = NGN_DEBUG_LOCK_DISABLE, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_ENABLED),  value = NGN_DEBUG_LOCK_ENABLE, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.NgnCmdTime,
+        prompt   = STRING_TOKEN (STR_NGN_CMD_TIME_PROMPT),
+        help     = STRING_TOKEN (STR_NGN_CMD_TIME_HELP),
+        option text = STRING_TOKEN (STR_AUTO),     value = NGN_CMD_TIME_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_1N),  value = NGN_CMD_1N, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_2N),  value = NGN_CMD_2N, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.NgnEccCorr,
+        prompt   = STRING_TOKEN (STR_NGN_ECC_CORR_PROMPT),
+        help     = STRING_TOKEN (STR_NGN_ECC_CORR_HELP),
+        option text = STRING_TOKEN (STR_AUTO),     value = NGN_ECC_CORR_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_DISABLED), value = NGN_ECC_CORR_DISABLE, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_ENABLED),  value = NGN_ECC_CORR_ENABLE, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.NgnEccWrChk,
+        prompt   = STRING_TOKEN (STR_NGN_ECC_WR_CHK_PROMPT),
+        help     = STRING_TOKEN (STR_NGN_ECC_WR_CHK_HELP),
+        option text = STRING_TOKEN (STR_AUTO),     value = NGN_ECC_WR_CHK_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_DISABLED), value = NGN_ECC_WR_CHK_DISABLE, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_ENABLED),  value = NGN_ECC_WR_CHK_ENABLE, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.NgnEccRdChk,
+        prompt   = STRING_TOKEN (STR_NGN_ECC_RD_CHK_PROMPT),
+        help     = STRING_TOKEN (STR_NGN_ECC_RD_CHK_HELP),
+        option text = STRING_TOKEN (STR_AUTO),     value = NGN_ECC_RD_CHK_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_DISABLED), value = NGN_ECC_RD_CHK_DISABLE, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_ENABLED),  value = NGN_ECC_RD_CHK_ENABLE, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid = SOCKET_MEMORY_CONFIGURATION.crQosConfig,
+        prompt = STRING_TOKEN(STR_CR_QOS_CONFIG_PROMPT),
+        help    = STRING_TOKEN(STR_CR_QOS_CONFIG_HELP),
+        option text = STRING_TOKEN(STR_CR_QOS_STRING0),        value = 0,  flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_CR_QOS_STRING1),        value = 1,  flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_CR_QOS_STRING2),        value = 2,  flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_CR_QOS_STRING3),        value = 3,  flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_CR_QOS_STRING4),        value = 4,  flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_CR_QOS_STRING5),        value = 5,  flags = RESET_REQUIRED;
+    endoneof;
+
+endform;
+
+    form formid = VFR_FORMID_SECURE_ERASE,
+    title = STRING_TOKEN(STR_SECURE_ERASE_UNIT_SUBTITLE);
+
+    oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs,
+       prompt  = STRING_TOKEN(STR_SET_SECURE_ERASE),
+       help    = STRING_TOKEN(STR_SET_SECURE_ERASE_HELP),
+       option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED;
+       option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+    endoneof;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[0],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S0_CH0),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S0_CH0_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[1],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S0_CH1),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S0_CH1_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[2],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S0_CH2),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S0_CH2_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[3],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S0_CH3),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S0_CH3_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[4],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S0_CH4),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S0_CH4_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[5],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S0_CH5),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S0_CH5_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+#if (MAX_SOCKET > 1)
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[6],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S1_CH0),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S1_CH0_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[7],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S1_CH1),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S1_CH1_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[8],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S1_CH2),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S1_CH2_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[9],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S1_CH3),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S1_CH3_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[10],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S1_CH4),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S1_CH4_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[11],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S1_CH5),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S1_CH5_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+#endif
+
+#if (MAX_SOCKET > 2)
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[12],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S2_CH0),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S2_CH0_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[13],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S2_CH1),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S2_CH1_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[14],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S2_CH2),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S2_CH2_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[15],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S2_CH3),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S2_CH3_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[16],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S2_CH4),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S2_CH4_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[17],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S2_CH5),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S2_CH5_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+#endif
+
+#if (MAX_SOCKET > 3)
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[18],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S3_CH0),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S3_CH0_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[19],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S3_CH1),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S3_CH1_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[20],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S3_CH2),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S3_CH2_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[21],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S3_CH3),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S3_CH3_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[22],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S3_CH4),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S3_CH4_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[23],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S3_CH5),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S3_CH5_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+#endif
+
+#if (MAX_SOCKET > 4)
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[24],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S4_CH0),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S4_CH0_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[25],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S4_CH1),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S4_CH1_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[26],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S4_CH2),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S4_CH2_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[27],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S4_CH3),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S4_CH3_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[28],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S4_CH4),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S4_CH4_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[29],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S4_CH5),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S4_CH5_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+#endif
+
+#if (MAX_SOCKET > 5)
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[30],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S5_CH0),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S5_CH0_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[31],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S5_CH1),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S5_CH1_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[32],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S5_CH2),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S5_CH2_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[33],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S5_CH3),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S5_CH3_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[34],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S5_CH4),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S5_CH4_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[35],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S5_CH5),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S5_CH5_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+#endif
+
+#if (MAX_SOCKET > 6)
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[36],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S6_CH0),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S6_CH0_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[37],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S6_CH1),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S6_CH1_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[38],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S6_CH2),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S6_CH2_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[39],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S6_CH3),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S6_CH3_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[40],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S6_CH4),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S6_CH4_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[41],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S6_CH5),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S6_CH5_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+#endif
+
+#if (MAX_SOCKET > 7)
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[42],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S7_CH0),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S7_CH0_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[43],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S7_CH1),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S7_CH1_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[44],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S7_CH2),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S7_CH2_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[45],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S7_CH3),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S7_CH3_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[46],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S7_CH4),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S7_CH4_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.setSecureEraseAllDIMMs == ENABLE_SECURE_ERASE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.setSecureEraseSktCh[47],
+         prompt  = STRING_TOKEN(STR_SECURE_ERASE_S7_CH5),
+         help    = STRING_TOKEN(STR_SECURE_ERASE_S7_CH5_HELP),
+         option text = STRING_TOKEN(STR_DISABLE),                 value = DISABLE_SECURE_ERASE,      flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_ENABLE),                  value = ENABLE_SECURE_ERASE,       flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+#endif
+
+endform;
+
+#ifdef SSA_FLAG
+    form formid = VFR_FORMID_MEMORY_BIOS_SSA_CONFIG_MENU,
+    title   = STRING_TOKEN(STR_BIOS_SSA_CONFIG_MENU_SUBTITLE);
+
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.EnableBiosSsaLoader,
+        prompt   = STRING_TOKEN (STR_BIOS_SSA_LOADER_PROMPT),
+        help     = STRING_TOKEN (STR_BIOS_SSA_LOADER_HELP),
+        option text = STRING_TOKEN (STR_AUTO),      value = BIOS_SSA_LOADER_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_ENABLE),    value = BIOS_SSA_LOADER_ENABLE,   flags = RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_DISABLE),   value = BIOS_SSA_LOADER_DISABLE,  flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.EnableBiosSsaRMT,
+        prompt   = STRING_TOKEN (STR_BIOS_SSA_RMT_PROMPT),
+        help     = STRING_TOKEN (STR_BIOS_SSA_RMT_HELP),
+        option text = STRING_TOKEN (STR_AUTO),      value = BIOS_SSA_RMT_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_ENABLE),    value = BIOS_SSA_RMT_ENABLE,   flags = RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_DISABLE),   value = BIOS_SSA_RMT_DISABLE,  flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.EnableBiosSsaRMTonFCB,
+        prompt   = STRING_TOKEN (STR_BIOS_SSA_RMT_FCB_PROMPT),
+        help     = STRING_TOKEN (STR_BIOS_SSA_RMT_FCB_HELP),
+        option text = STRING_TOKEN (STR_AUTO),      value = BIOS_SSA_RMT_FCB_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_ENABLE),    value = BIOS_SSA_RMT_FCB_ENABLE,   flags = RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_DISABLE),   value = BIOS_SSA_RMT_FCB_DISABLE,  flags = RESET_REQUIRED;
+    endoneof;
+
+    suppressif ideqvallist SOCKET_MEMORY_CONFIGURATION.EnableBiosSsaRMT == BIOS_SSA_RMT_DISABLE BIOS_SSA_RMT_AUTO;
+      oneof varid  = SOCKET_MEMORY_CONFIGURATION.BiosSsaPerBitMargining,
+          prompt   = STRING_TOKEN (STR_BIOS_SSA_PER_BIT_PROMPT),
+          help     = STRING_TOKEN (STR_BIOS_SSA_PER_BIT_HELP),
+          option text = STRING_TOKEN (STR_AUTO),      value = BIOS_SSA_PER_BIT_MARGINING_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+          option text = STRING_TOKEN (STR_ENABLE),    value = BIOS_SSA_PER_BIT_MARGINING_ENABLE,   flags = RESET_REQUIRED;
+          option text = STRING_TOKEN (STR_DISABLE),   value = BIOS_SSA_PER_BIT_MARGINING_DISABLE,  flags = RESET_REQUIRED;
+      endoneof;
+
+      oneof varid     = SOCKET_MEMORY_CONFIGURATION.BiosSsaDisplayTables,
+          prompt   = STRING_TOKEN (STR_BIOS_SSA_DISPLAY_TABLE_PROMPT),
+          help     = STRING_TOKEN (STR_BIOS_SSA_DISPLAY_TABLE_HELP),
+          option text = STRING_TOKEN (STR_AUTO),      value = BIOS_SSA_DISPLAY_TABLE_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+          option text = STRING_TOKEN (STR_ENABLE),    value = BIOS_SSA_DISPLAY_TABLE_ENABLE,   flags = RESET_REQUIRED;
+          option text = STRING_TOKEN (STR_DISABLE),   value = BIOS_SSA_DISPLAY_TABLE_DISABLE,  flags = RESET_REQUIRED;
+      endoneof;
+
+      oneof varid     = SOCKET_MEMORY_CONFIGURATION.BiosSsaPerDisplayPlots,
+          prompt   = STRING_TOKEN (STR_BIOS_SSA_DISPLAY_PLOTS_PROMPT),
+          help     = STRING_TOKEN (STR_BIOS_SSA_DISPLAY_PLOTS_HELP),
+          option text = STRING_TOKEN (STR_AUTO),      value = BIOS_SSA_DISPLAY_PLOTS_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+          option text = STRING_TOKEN (STR_ENABLE),    value = BIOS_SSA_DISPLAY_PLOTS_ENABLE,   flags = RESET_REQUIRED;
+          option text = STRING_TOKEN (STR_DISABLE),   value = BIOS_SSA_DISPLAY_PLOTS_DISABLE,  flags = RESET_REQUIRED;
+      endoneof;
+
+      numeric varid = SOCKET_MEMORY_CONFIGURATION.BiosSsaLoopCount,
+          prompt    = STRING_TOKEN (STR_BIOS_SSA_LOOP_CNT_PROMPT),
+          help      = STRING_TOKEN (STR_BIOS_SSA_LOOP_CNT_HELP),
+          flags     = RESET_REQUIRED,
+          minimum   = 0,
+          maximum   = 31,
+          step      = 0,   // Stepping of 0 equates to a manual entering of a value,
+                               // otherwise it will auto-increment with a left/right arrow
+          default   = BIOS_SSA_LOOP_CNT_DEFAULT, defaultstore = MyStandardDefault,
+          default   = BIOS_SSA_LOOP_CNT_DEFAULT, defaultstore = MyManufactureDefault,
+      endnumeric;
+
+      oneof varid     = SOCKET_MEMORY_CONFIGURATION.BiosSsaBacksideMargining,
+           prompt   = STRING_TOKEN (STR_BIOS_SSA_BACKSIDE_MARGINING_PROMPT),
+           help     = STRING_TOKEN (STR_BIOS_SSA_BACKSIDE_MARGINING_HELP),
+           option text = STRING_TOKEN (STR_AUTO),       value = BIOS_SSA_BACKSIDE_MARGINING_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+           option text = STRING_TOKEN (STR_ENABLE),    value = BIOS_SSA_BACKSIDE_MARGINING_ENABLE,   flags = RESET_REQUIRED;
+           option text = STRING_TOKEN (STR_DISABLE),   value = BIOS_SSA_BACKSIDE_MARGINING_DISABLE,  flags = RESET_REQUIRED;
+      endoneof;
+
+      oneof varid     = SOCKET_MEMORY_CONFIGURATION.BiosSsaEarlyReadIdMargining,
+          prompt   = STRING_TOKEN (STR_BIOS_SSA_EARLY_READ_ID_PROMPT),
+          help     = STRING_TOKEN (STR_BIOS_SSA_EARLY_READ_ID_HELP),
+          option text = STRING_TOKEN (STR_AUTO),       value = BIOS_SSA_EARLY_READ_ID_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+          option text = STRING_TOKEN (STR_ENABLE),    value = BIOS_SSA_EARLY_READ_ID_ENABLE,   flags = RESET_REQUIRED;
+          option text = STRING_TOKEN (STR_DISABLE),   value = BIOS_SSA_EARLY_READ_ID_DISABLE,  flags = RESET_REQUIRED;
+      endoneof;
+
+      oneof varid     = SOCKET_MEMORY_CONFIGURATION.BiosSsaStepSizeOverride,
+          prompt   = STRING_TOKEN (STR_BIOS_SSA_STEP_SIZE_OVERRIDE_PROMPT),
+          help     = STRING_TOKEN (STR_BIOS_SSA_STEP_SIZE_OVERRIDE_HELP),
+          option text = STRING_TOKEN (STR_AUTO),      value = BIOS_SSA_STEP_SIZE_OVERRIDE_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+          option text = STRING_TOKEN (STR_ENABLE),    value = BIOS_SSA_STEP_SIZE_OVERRIDE_ENABLE,   flags = RESET_REQUIRED;
+          option text = STRING_TOKEN (STR_DISABLE),   value = BIOS_SSA_STEP_SIZE_OVERRIDE_DISABLE,  flags = RESET_REQUIRED;
+      endoneof;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.BiosSsaStepSizeOverride == BIOS_SSA_STEP_SIZE_OVERRIDE_DISABLE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.BiosSsaRxDqs,
+          prompt  = STRING_TOKEN(STR_BIOS_SSA_RXDQS_PROMPT),
+          help    = STRING_TOKEN(STR_BIOS_SSA_RXDQS_HELP),
+          flags     = RESET_REQUIRED,
+          option text = STRING_TOKEN(STR_AUTO),  value = BIOS_SSA_RMT_DEFAULT_VALUE, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_1), value = 1, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_2), value = 2, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_4), value = 4, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_8), value = 8, flags = RESET_REQUIRED;
+     endoneof;
+
+        oneof varid = SOCKET_MEMORY_CONFIGURATION.BiosSsaRxVref,
+            prompt  = STRING_TOKEN(STR_BIOS_SSA_RXVREF_PROMPT),
+            help    = STRING_TOKEN(STR_BIOS_SSA_RXVREF_HELP),
+            flags     = RESET_REQUIRED,
+            option text = STRING_TOKEN(STR_AUTO),  value = BIOS_SSA_RMT_DEFAULT_VALUE, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_1),  value = 1, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_2), value = 2, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_4), value = 4, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_8), value = 8, flags = RESET_REQUIRED;
+       endoneof;
+
+        oneof varid = SOCKET_MEMORY_CONFIGURATION.BiosSsaTxDq,
+            prompt  = STRING_TOKEN(STR_BIOS_SSA_TXDQ_PROMPT),
+            help    = STRING_TOKEN(STR_BIOS_SSA_TXDQ_HELP),
+            flags     = RESET_REQUIRED,
+            option text = STRING_TOKEN(STR_AUTO),  value = BIOS_SSA_RMT_DEFAULT_VALUE, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_1),  value = 1, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_2), value = 2, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_4), value = 4, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_8), value = 8, flags = RESET_REQUIRED;
+       endoneof;
+
+        oneof varid = SOCKET_MEMORY_CONFIGURATION.BiosSsaTxVref,
+            prompt  = STRING_TOKEN(STR_BIOS_SSA_TXVREF_PROMPT),
+            help    = STRING_TOKEN(STR_BIOS_SSA_TXVREF_HELP),
+            flags     = RESET_REQUIRED,
+            option text = STRING_TOKEN(STR_AUTO),  value = BIOS_SSA_RMT_DEFAULT_VALUE, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_1),  value = 1, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_2), value = 2, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_4), value = 4, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_8), value = 8, flags = RESET_REQUIRED;
+       endoneof;
+
+        oneof varid = SOCKET_MEMORY_CONFIGURATION.BiosSsaCmdAll,
+            prompt  = STRING_TOKEN(STR_BIOS_SSA_CMDALL_PROMPT),
+            help    = STRING_TOKEN(STR_BIOS_SSA_CMDALL_HELP),
+            flags     = RESET_REQUIRED,
+            option text = STRING_TOKEN(STR_AUTO),  value = BIOS_SSA_RMT_DEFAULT_VALUE, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_1),  value = 1, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_2), value = 2, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_4), value = 4, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_8), value = 8, flags = RESET_REQUIRED;
+       endoneof;
+
+        oneof varid = SOCKET_MEMORY_CONFIGURATION.BiosSsaCmdVref,
+            prompt  = STRING_TOKEN(STR_BIOS_SSA_CMDVREF_PROMPT),
+            help    = STRING_TOKEN(STR_BIOS_SSA_CMDVREF_HELP),
+            flags     = RESET_REQUIRED,
+            option text = STRING_TOKEN(STR_AUTO),  value = BIOS_SSA_RMT_DEFAULT_VALUE, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_1),  value = 1, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_2), value = 2, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_4), value = 4, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_8), value = 8, flags = RESET_REQUIRED;
+       endoneof;
+
+        oneof varid = SOCKET_MEMORY_CONFIGURATION.BiosSsaCtlAll,
+            prompt  = STRING_TOKEN(STR_BIOS_SSA_CTLALL_PROMPT),
+            help    = STRING_TOKEN(STR_BIOS_SSA_CTLALL_HELP),
+            flags     = RESET_REQUIRED,
+            option text = STRING_TOKEN(STR_AUTO),  value = BIOS_SSA_RMT_DEFAULT_VALUE, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_1),  value = 1, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_2), value = 2, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_4), value = 4, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_8), value = 8, flags = RESET_REQUIRED;
+       endoneof;
+
+        oneof varid = SOCKET_MEMORY_CONFIGURATION.BiosSsaEridDelay,
+            prompt  = STRING_TOKEN(STR_BIOS_SSA_ERID_DELAY_PROMPT),
+            help    = STRING_TOKEN(STR_BIOS_SSA_ERID_DELAY_HELP),
+            flags     = RESET_REQUIRED,
+            option text = STRING_TOKEN(STR_AUTO),  value = BIOS_SSA_RMT_DEFAULT_VALUE, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_1), value = 1, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_2), value = 2, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_4), value = 4, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_8), value = 8, flags = RESET_REQUIRED;
+      endoneof;
+
+        oneof varid = SOCKET_MEMORY_CONFIGURATION.BiosSsaEridVref,
+            prompt  = STRING_TOKEN(STR_BIOS_SSA_ERID_VREF_PROMPT),
+            help    = STRING_TOKEN(STR_BIOS_SSA_ERID_VREF_HELP),
+            flags     = RESET_REQUIRED,
+            option text = STRING_TOKEN(STR_AUTO),  value = BIOS_SSA_RMT_DEFAULT_VALUE, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_1), value = 1, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_2), value = 2, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_4), value = 4, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_8), value = 8, flags = RESET_REQUIRED;
+      endoneof;
+    endif; //suppressif ideqval - BiosSsaStepSizeOverride
+
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.BiosSsaDebugMessages,
+        prompt   = STRING_TOKEN (STR_BIOS_SSA_RMT_DEBUG_MSGS_PROMPT),
+        help     = STRING_TOKEN (STR_BIOS_SSA_RMT_DEBUG_MSGS_HELP),
+        option text = STRING_TOKEN (STR_AUTO),      value = BIOS_SSA_RMT_DEBUG_MSGS_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_ENABLE),    value = BIOS_SSA_RMT_DEBUG_MSGS_ENABLE,   flags = RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_DISABLE),   value = BIOS_SSA_RMT_DEBUG_MSGS_DISABLE,  flags = RESET_REQUIRED;
+    endoneof;
+    endif; //suppressif - EnableBiosSsaRMT
+
+    endform;
+#endif //SSA_FLAG

@@ -1,0 +1,24 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// TSE Elinks MACROs values
+//
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+#define HOOK_LIST_FROM_ELINKS 								@elink(AMITSE_Hooks, "@Child", "", "")
+#define CONTROL_KEY_MAP_LIST 									@elink(CONTROL_KEY_MAP_LIST, "@Child", "", "")
+#define EXIT_PAGE_OPTIONS_LIST 								@elink(EXIT_PAGE_OPTIONS_LIST, "@Child", "", "")
+#define OEM_KEY_CALLBACK_FN 									@elink(OEM_KEY_CALLBACK_LIST, "@Child", "", "")
+#define AMITSE_HIDDEN_PAGE_LIST 								@elink(AMITSE_HIDDEN_PAGE_LIST, "@Child", "", "")
+#define TSE_CALLBACK_SPEC_VERSION 							@Token(TSE_CALLBACK_SPEC_VERSION)
+#define TSE_MAX_POST_HRes(x, y)								(x)
+#define TSE_MAX_POST_VRes(x, y)								(y)
+#define TSE_MAX_POST_X_RES 									TSE_MAX_POST_HRes(@Token(MAX_POST_GC_MODE))
+#define TSE_MAX_POST_Y_RES TSE_MAX_POST_VRes				(@Token(MAX_POST_GC_MODE))
+#define AMITSE_SUBPAGE_AS_ROOT_PAGE_LIST 					@elink(AMITSE_SUBPAGE_AS_ROOT_PAGE_LIST, "@Child", "", "")
+#define AMITSE_ROOT_PAGE_ORDER 								@elink(AMITSE_ROOT_PAGE_ORDER, "@Child", "", "")
+#define PASSWORD_ENOCDE_LIST									@elink(PASSWORD_ENOCDE_LIST, "@Child", "", "")
+#define AMITSE_FILTER_CLASSGUID_FORMSETS 					@elink(AMITSE_FILTER_CLASSGUID_FORMSETS, "@Child", "", "")
+#define AMITSE_SUPPRESS_DYNAMIC_FORMSET_LIST 			@elink(AMITSE_SUPPRESS_DYNAMIC_FORMSET_LIST, "@Child", "", "")
+#define AMITSE_DYNAMICPARSING_HANDLE_SUPPRESS_LIST 	@elink(AMITSE_DYNAMICPARSING_HANDLE_SUPPRESS_LIST, "@Child", "", "")
+#if @Token(TSE_BUILD_AS_APPLICATION) == 1
+	#define STANDALONE_APPLICATION							@Token(TSE_BUILD_AS_APPLICATION)
+#endif

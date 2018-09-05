@@ -1,0 +1,71 @@
+##****************************************************************************
+##****************************************************************************
+##**                                                                        **
+##**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+##**                                                                        **
+##****************************************************************************
+##****************************************************************************
+#
+#  File History
+#
+#  Rev. 1.00
+#    Bug fixed: Initial SMC_OOB_PLATFORM_POLICY for SMC OOB module binary release.
+#    Reason   : 
+#    Auditor  : Jason Hsu
+#    Date     : Jun/09/07
+#
+#*****************************************************************************
+
+TOKEN
+    Name         = "SMC_OOB_PLATFORM_SPECIFIC_FUNC_LIB"
+    Value        = "1"
+    TokenType    = Boolean
+    TargetEQU    = Yes
+    TargetMAK    = Yes
+    TargetH      = Yes
+    Master       = Yes
+End
+
+PATH
+	Name  = "PlatformSpecificFuncLib_DIR"
+End
+
+MODULE
+	Help  = "Includes PlatformSpecificFuncLib.mak to Project"
+	File  = "PlatformSpecificFuncLib.mak"
+End
+
+INFComponent
+	Name  = "PlatformSpecificFuncLib"
+	File  = "../../../../../Build/PlatformSpecificFuncLib.inf"
+	Package  = "SmcPkg"
+End
+
+LibraryMapping
+	Class  = "PlatformSpecificFuncLib"
+	Instance  = "SmcPkg.PlatformSpecificFuncLib"
+End
+
+TOKEN
+    Name         = "MEHLOW_SGX_EXPOSE_SUPPORT"
+    Value        = "0"
+    TokenType    = Boolean
+    TargetEQU    = Yes
+    TargetMAK    = Yes
+    TargetH      = Yes
+End
+
+ELINK
+	Name  = "MehlowSgxOOBCallbackFunc,"
+	Parent  = "PlatformSpecificFuncInit"
+	InvokeOrder = AfterParent
+    Token         = "MEHLOW_SGX_EXPOSE_SUPPORT" "=" "1"
+End
+
+ELINK
+	Name  = "SmcHttpBootCallback,"
+	Parent  = "PlatformSpecificFuncInit"
+	InvokeOrder = AfterParent
+    Token         = "SmcHttpBoot_SUPPORT" "=" "1"
+End
+

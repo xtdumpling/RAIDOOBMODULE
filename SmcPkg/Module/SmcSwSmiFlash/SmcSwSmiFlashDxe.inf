@@ -1,0 +1,58 @@
+#****************************************************************************
+#****************************************************************************
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.00
+#    Bug Fix:  Trigger a software SMI to flash ROM part after BIOS lock.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Sep/30/2016
+#
+#****************************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SmcSwSmiFlashDxe
+  FILE_GUID                      = c3069c81-6717-4fb6-b646-04214894bab4
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = SmcSwSmiFlashDxeEntry
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF EBC
+#
+
+[Sources]
+  SmcSwSmiFlashDxe.c
+
+[Packages]
+  MdePkg/MdePkg.dec   
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec 
+  AmiModulePkg/AmiModulePkg.dec
+  SmcPkg/SmcPkg.dec
+  
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+
+[Pcd]
+
+[Guids]
+  gEfiEventExitBootServicesGuid
+  gEfiEventLegacyBootGuid
+
+[Ppis]
+
+[Protocols]
+  gEfiSmmControl2ProtocolGuid
+
+[Depex]
+  TRUE
+

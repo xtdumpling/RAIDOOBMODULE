@@ -1,0 +1,58 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+
+#
+# @file AmiPcieSegBusPeiLib.inf
+#
+# INF description file for PEI PCIe segment Bus library.
+#
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = AmiPcieSegBusPeiLib
+  FILE_GUID                      = A38455B1-51D5-4ACF-9FC4-2E783723FA1F
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = AmiPcieSegBusLib|PEIM
+
+[Sources]
+  AmiPcieSegBusPei.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  PurleySktPkg/SocketPkg.dec
+  AmiCRBPkg/AmiCRBPkg.dec
+  
+[LibraryClasses]
+  PcdLib
+  
+[Pcd]
+  gAmiCRBPkgTokenSpaceGuid.PcdPcieSegBusTablePtr
+  
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

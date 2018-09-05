@@ -1,0 +1,40 @@
+TOKEN
+	Name  = "FpgaSocketSetup_SUPPORT"
+	Value  = "1"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+	Help  = "Main switch to enable FpgaSocketSetup support in Project"
+End
+
+INFComponent
+	Name  = "FpgaSocketSetup"
+	File  = "FpgaSktSetup.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "FpgaSocketSetup_SUPPORT" "=" "1"
+End
+
+# Form ID of Socket Configuration Tab
+TOKEN
+	Name  = "VFR_FORMID_FPGA_SETUP"
+	Value  = "0x47D0"
+	Help  = "FPGA Socket Configuration main page ID. Value available from PurleySktPkg\Include\FpgaConfiguration.h "
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "AMITSE_ROOT_PAGE_ORDER_SUPPORT" "=" "1"
+End
+
+OUTPUTREGISTER
+	Name = "FpgaSocketSetupXAmiStrings"
+	File = "FpgaSocketSetupXAmiStrings.uni"
+	Path = "Build"
+	Template = "FpgaSocketSetup.txt"
+End
+
+ELINK
+	Name  = "FPGA_SOCKET_SETUP_MAPPING_LANGUAGE_FILES"
+	Help  = "This is a list of UNI files added by OEM to include the mapping language strings."
+	InvokeOrder = ReplaceParent
+End

@@ -1,0 +1,72 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+## @file
+#   
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SmbiosDmiEditAfri
+  FILE_GUID                      = 2A500CFB-920E-49f4-9988-5CE4C0EFD3AB
+  MODULE_TYPE                    = DXE_RUNTIME_DRIVER
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = SmbiosDmiEditAfriInstall
+
+[Sources]  
+  SmbiosDmiEdit.h
+  SmbiosDmiEditAfri.h
+  SmbiosDmiEditFunc.c
+  SmbiosDmiEditAfri.c
+
+[Packages]
+  AmiModulePkg/AmiModulePkg.dec
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+
+[LibraryClasses]
+  AmiDxeLib
+  UefiLib
+  UefiDriverEntryPoint
+  SmbiosDmiEditBoardLib
+  FlashLib
+
+[Protocols]
+  gEfiDriverBindingProtocolGuid
+  gEfiSmmBase2ProtocolGuid
+  gAmiSmbiosFlashDataProtocolGuid
+  gAmiFriProtocolGuid
+
+[Guids]
+  gAmiSmbiosNvramGuid
+  gEfiEventVirtualAddressChangeGuid
+
+[Depex]
+  gAmiFriProtocolGuid
+
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************

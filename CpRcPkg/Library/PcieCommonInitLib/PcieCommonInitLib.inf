@@ -1,0 +1,90 @@
+#
+# This file contains an 'Intel Peripheral Driver' and is      
+# licensed for Intel CPUs and chipsets under the terms of your
+# license agreement with Intel or your vendor.  This file may 
+# be modified by the user, subject to additional terms of the 
+# license agreement                                           
+#
+## @file
+#
+# Copyright (c) 2006 - 2015, Intel Corporation. All rights reserved.<BR>
+#
+#  This software and associated documentation (if any) is furnished
+#  under a license and may only be used or copied in accordance
+#  with the terms of the license. Except as permitted by such
+#  license, no part of this software or documentation may be
+#  reproduced, stored in a retrieval system, or transmitted in any
+#  form or by any means without the express written consent of
+#  Intel Corporation.
+#
+#
+#
+#
+################################################################################
+#
+# Defines Section - statements that will be processed to create a Makefile.
+#
+################################################################################
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = PcieCommonInitLib
+  FILE_GUID                      = 928F3E98-18CA-4c78-AF62-0947A9AB53CC
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = PcieCommonInitLib
+
+[Sources]
+  PcieCommonHelper.c
+  PcieCommonInitLib.c
+  
+################################################################################
+#
+# Package Dependency Section - list of Package files that are required for
+#                              this module.
+#
+################################################################################
+
+[Packages]
+  MdePkg/MdePkg.dec
+  CpRcPkg/CpRcPkg.dec  
+
+
+################################################################################
+#
+# Library Class Section - list of Library Classes that are required for
+#                         this module.
+#
+################################################################################
+
+[LibraryClasses]
+  BaseLib
+  IoLib
+  DebugLib
+#APTIOV_SERVER_OVERRIDE_RC_START : Resolve issue with PCI scan
+#  PciLib
+#APTIOV_SERVER_OVERRIDE_RC_END : Resolve issue with PCI scan
+  S3PciLib  
+  PcdLib
+  MemoryAllocationLib
+  TimerLib
+  DxeS3BootScriptLib
+  SiliconAccessLib
+
+################################################################################
+#
+# Protocol C Name Section - list of Protocol and Protocol Notify C Names
+#                           that this module uses or produces.
+#
+################################################################################
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxNestedLevel
+#APTIOV_SERVER_OVERRIDE_RC_START : Resolve issue with PCI scan
+  gEfiCpRcPkgTokenSpaceGuid.PcdCleanTempBusAssignment
+#APTIOV_SERVER_OVERRIDE_RC_END : Resolve issue with PCI scan
+
+[FeaturePcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdUsraSupportS3
+

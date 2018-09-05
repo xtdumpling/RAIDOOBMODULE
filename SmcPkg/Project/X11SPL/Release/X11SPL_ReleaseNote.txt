@@ -1,0 +1,74 @@
+X11SPL-F release note.
+-------------------------------------------------------------------------------------------------------------
+ CPU Microcode                    | Option ROM/EFI driver                   | Intel RC/TXT/ME
+-------------------------------------------------------------------------------------------------------------
+ CPUID FAMILY                     | ASPEED VBIOS               : 1.03.01    | RC Version : 139.R09 
+ 50652 SkyLake B-0 L-0 : 80000037 | Intel(R) SATA Driver UEFI  : 5.2.0.1029 | SPS : 4.0.03.216
+ 50654 Skylake H-0     : 02000022 | Intel(R) SATA OPROM        : 5.2.0.1029 | BIOS  ACM : 20170602(1.3.1)
+                                  | Intel(R) sSATA Driver UEFI : 5.2.0.1029 | SINIT ACM : 20170510(1.3.0)
+                                  | Intel(R) sSATA OPROM       : 5.2.0.1029 | 
+-------------------------------------------------------------------------------------------------------------
+ BIOS feature            |  Support
+-------------------------------------------------------------------------------------------------------------
+OOB Flash BIOS           |     Y
+OOB Update Setting       |     Y
+OOB Change SMBIOS        |     Y
+InBand Flash BIOS        |     Y
+InBand Update Setting    |     Y
+InBand Change SMBIOS     |     Y
+InBand SMI E7h supported |     Y
+--------------------------------------------------------------------------------------------
+ SW ECO Caused By         |  Status
+--------------------------------------------------------------------------------
+BIOS/IPMI Customization  |     N
+HW Vendor Updates        |     Y
+BIOS/IPMI Workaround     |     N
+BIOS/IPMI Vendor Updates |     Y
+BIOS/IPMI Enhancements   |     Y
+BIOS/IPMI Bug fixes      |     Y
+-------------------------------------------------------------------------------------------------------------
+BIOS          : X11SPL7.705                 Release Date  : 07/05/2017
+BIOS Revision : 1.0a                        BIOS Engineer : YuLin Yang
+IPMI Revision : 1.26                        SVN Revision  : 1779
+BIOS Checksum : 32B7796Dh
+BIOS Change:
+
+1. [Enhancements] Change BIOS revision to 1.0a.
+   Description: Update BIOS revision.
+   Validation : Check BIOS revision.
+
+2. [Enhancements] Update RC 139.R09 PV MR4.
+   Description: None.
+   Validation: None.
+
+3. [Enhancements] Update microcode M9750652_80000037, M9750654_02000022.
+   Description : Update CPU microcode.
+   Validation  : Check revision in Advanced->Processor Configuration -> Microcode Revision is 02000022.
+
+4. [Enhancements] Set eSPI clock to 24MHz and support Quad IO mode.
+   Description: None.
+   Validation: None.
+
+5. [Fixed] Fix failed to apply BIOS CFG in stress test by SUM OOB.
+   Description: a) Remove dummy read solution.
+                b) Add a new token OOB_READ_DATA_FROM_DRAM to enable BMC's DRAM for OOB data delivery.
+                c) The failure rate is about 1/10.
+   Validation: Check BIOS settings can be updated successfully by SUM command "-c ChangeBiosCfg --file BiosCfg --reboot".
+
+6. [Enhancements] Add suffix strings in Setup BBS pages for SUM to identify boot devices if they have the same device name.
+   Description: Suffix strings: (SATA, Port:0), (USB,Port:0), (PciRoot0/PCI,Dev:29,Fun:0/NVMe,NSID:0x1), etc.
+   Validation: a) Install different kind of boot devices in a system.
+               b) Boot into OS and dump a config file of BIOS by SUM command "GetCurrentBiosCfg".
+               c) Restart system and boot into BIOS Setup.
+               d) Check proper suffix strings are added in "BBS Priorities" pages.
+               e) Check the suffix strings are also added in the config file.
+
+-------------------------------------------------------------------------------------------------------------
+BIOS          : X11SPL7.518                 Release Date  : 05/18/2017
+BIOS Revision : 1.0                         BIOS Engineer : YuLin Yang
+IPMI Revision : 1.21
+BIOS Checksum : 2E2A6703h
+BIOS Change:
+
+1. First release.
+

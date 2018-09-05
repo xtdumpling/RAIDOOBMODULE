@@ -1,0 +1,96 @@
+#
+# This file contains an 'Intel Peripheral Driver' and is
+# licensed for Intel CPUs and chipsets under the terms of your
+# license agreement with Intel or your vendor.  This file may
+# be modified by the user, subject to additional terms of the
+# license agreement
+#
+# Copyright (c) 2015 - 2016, Intel Corporation. All rights reserved.<BR>
+# This software and associated documentation (if any) is furnished
+# under a license and may only be used or copied in accordance
+# with the terms of the license. Except as permitted by such
+# license, no part of this software or documentation may be
+# reproduced, stored in a retrieval system, or transmitted in any
+# form or by any means without the express written consent of
+# Intel Corporation.
+#
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = OemIioInitLib
+  FILE_GUID                      = ED874CBA-3A7A-4137-8B1C-EF2FC793A551
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = OemIioInitLib | PEIM DXE_DRIVER DXE_SMM_DRIVER
+
+[Sources.Common]
+  OemIioInit.c
+  OemIioInitCommon.h
+  
+[Sources.Ia32]
+  OemIioInitPei.c
+
+[Sources.x64]
+  OemIioInitDxe.c
+  
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  CpPlatPkg/CpPlatPkg.dec
+  SmcPkg/SmcPkg.dec	#SMCPKG_SUPPORT
+
+[LibraryClasses]
+  HobLib
+  
+[LibraryClasses.X64]
+  IoLib
+  MemoryAllocationLib
+  UefiBootServicesTableLib
+  PlatformHooksLib
+  BaseMemoryLib
+  SetupLib
+
+[Ppis]
+  gEfiPeiReadOnlyVariable2PpiGuid
+  gPchDmiTcVcMapPpiGuid
+  gPchInitPpiGuid
+  gEfiPeiSystemBoardPpiGuid
+  
+[Protocols]
+  gEfiSmbusHcProtocolGuid
+  gEfiIioUdsProtocolGuid
+  gEfiDxeSystemBoardProtocolGuid
+  gEfiVMDDriverProtocolGuid         #PRODUCES
+  gEfiHfiPcieGen3ProtocolGuid       #PRODUCES
+  
+[Guids]
+  gEfiPlatformInfoGuid
+  gEfiHobListGuid
+  gEfiSetupVariableGuid
+  gEfiSocketIioVariableGuid
+  gEfiOpaSocketMapHobGuid
+
+[Pcd]
+  gSmcPkgTokenSpaceGuid.PcdSmcCPU0IIOBus	#SMCPKG_SUPPORT
+  gSmcPkgTokenSpaceGuid.PcdSmcCPU1IIOBus	#SMCPKG_SUPPORT
+  gSmcPkgTokenSpaceGuid.PcdSmcCPU2IIOBus	#SMCPKG_SUPPORT
+  gSmcPkgTokenSpaceGuid.PcdSmcCPU3IIOBus	#SMCPKG_SUPPORT
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxNestedLevel
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[BuildOptions.Ia32]
+  MSFT:*_*_*_CC_FLAGS     = /DIA32
+  GCC:*_*_*_CC_FLAGS     = -DIA32
+
+

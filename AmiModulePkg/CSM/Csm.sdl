@@ -1,0 +1,573 @@
+TOKEN
+	Name  = "CSM_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable AMI CSM support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "CSM16_VERSION_MAJOR"
+	Value  = "7"
+	Help  = "CSM16 major version"
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "CSM16_VERSION_MINOR"
+	Value  = "81"
+	Help  = "CSM16 minor version"
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "CSM_VERSION_BUILD"
+	Value  = "10"
+	Help  = "CSM module build version"
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "AGGRESSIVELY_JOINED_E820_ENTRIES"
+	Value  = "0"
+	Help  = "Turning on this flag would allow only one Type2 memory region above 1MB.\This reduces the total number of E820 entries and could be critical for some OSes that do not tolerate too many E820 entries (FreeBSD 6.0).\Note: when flag is turned on, some memory regions that are available will be declared reserved so OS gets less memory."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PMM_EBDA_LOMEM_SIZE"
+	Value  = "0x60000"
+	Help  = "Amount of memory below 1MB in bytes to be allocated for EBDA and PMM. This size should be a multiple of 32K.\Value should not exceed 512 KB, the remaining part of 640K will be given to IVT, BDA, non-BBS compliant OpROMs. It can also be allocated by other EFI drivers, used for PCI3.0 OpROM execution, etc.\Recommended value is 128 KB."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PMM_LOMEM_SIZE"
+	Value  = "0x30000"
+	Help  = "The total amount of memory below 1MB available for PMM allocations, in bytes. This size should be a multiple of 32K.\Value should not exceed PMM_EBDA_LOMEM_SIZE as the remaining part of it will be given for EBDA."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PMM_HIMEM_SIZE"
+	Value  = "0x9600000"
+	Help  = "PMM area size in bytes above 1MB to be allocated in bytes; this size should 64K aligned."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "LEGACY_TO_EFI_DEFAULT"
+	Value  = "0"
+	Help  = "Default setting for legacy to EFI feature.\Enabled: legacy boot options can be mixed with UEFI. Disabled: if legacy boot fails, next boot attempts are limited to legacy devices only - no UEFI boot will be tried."
+	TokenType = Boolean
+	TargetH = Yes
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "LEGACY_TO_EFI_BOOT_BUFFER_SIZE"
+	Value  = "0x300000"
+	Help  = "Size of buffer used to save memory context before legacy boot."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "OPROM_MAX_ADDRESS"
+	Value  = "0xE7FFF"
+	Help  = "The last address that can be used by Option ROM."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+	Range  = "0xC7FFF...0xEBFFF"
+End
+
+TOKEN
+	Name  = "SKIP_EARLY_BCV_DEVICES"
+	Value  = "{0x3f20105a}"
+	Help  = "List of VID/DIDs (combined to DWORD) that may affect POST if BCV is executed immediately after Option ROM initialization. Separate with commas.\To force skipping ALL BCVs put 0xFFFFFFFF in the beginning of the list."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "INT15_D042_SWSMI"
+	Value  = "0x44"
+	Help  = "SW SMI value to be used in INT15 func D042"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0...0FFh"
+End
+
+TOKEN
+	Name  = "USB_SWSMI"
+	Value  = "0x31"
+	Help  = "SW SMI value to be used in legacy USB"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0...0FFh"
+End
+
+TOKEN
+	Name  = "CSM_SET_ZIP_EMULATION_TYPE"
+	Value  = "0"
+	Help  = "Enable this token to see the option of ZIP drive emulation selection in the Setup."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "CSM_CREATES_ATA_ATAPI_STRINGS"
+	Value  = "1"
+	Help  = "If set, CSM module will produce the names for ATA/ATAPI devices; if reset, names come from TSE."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PXE_BASECODE_ROM"
+	Value  = "0"
+	Help  = "Enable/disable PXE base code.\Enable it for the projects that have splitted PXE ROMs. Note that the other part of the PXE - UNDI - will be included as PCI Option ROM.\"
+	TokenType = Boolean
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "MAX_ADDITIONAL_P2P_BRIDGES"
+	Value  = "32"
+	Help  = "The number of P2P bridges that can be processed in addition to the ones defined in BusNumXlat.INC."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "1...0FFh"
+End
+
+TOKEN
+	Name  = "INTERRUPTS_TO_PRESERVE"
+	Value  = "{0x13, 0x40, 0x08}"
+	Help  = "List of interrupts to be saved after CSM Init call and restored before LegacyBoot.\The default list is defined in CSM.SDL and contains three interrups: int13, int15, and int40."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "CSM_DEFAULT_VMODE_SWITCHING"
+	Value  = "0"
+	Help  = "0 - switch video mode from graphics to text before executing the Option ROM, switch back to graphics afterwards\1 - use text mode during all Option ROMs execution time, no video mode switching during this time frame."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0...1"
+End
+
+TOKEN
+	Name  = "CSM_ALLOW_LARGE_OPROMS"
+	Value  = "0"
+	Help  = "Enabling this switch allows CSM to load and execute legacy Option ROMs larger than 128K. If enabled, the >128KB size will be taken from PCIR structure, not from ROM header."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PXE_BASECODE_ROM_FILE"
+	Value  = "AddOn\Pxebase.lom"
+	Help  = "PXE base code ROM file."
+	TokenType = File
+	TargetMAK = Yes
+	Token = "PXE_BASECODE_ROM" "=" "1"
+End
+
+TOKEN
+	Name  = "CSM_BLOCKIO_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable CsmBlockIo support in Project"
+	TokenType = Boolean
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "CSM_VIDEO_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable CsmVideo support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "INT10_VESA_GO_SUPPORT"
+	Value  = "1"
+	Help  = "Enables/Disables support of the Graphics Output protocol using VESA INT10 extensions"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "INT10_VGA_GO_SUPPORT"
+	Value  = "0"
+	Help  = "Enables/Disables support of the Graphics Output protocol using standard VGA INT10 calls in 640x480 16 color mode.\If both VGA_GO_SUPPORT and VESA_GO_SUPPORT enabled, VGA calls will only be used if VESA extensions are not supported by the video card."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "INT10_SIMPLE_TEXT_SUPPORT"
+	Value  = "1"
+	Help  = "Enables/Disables support of the Simple Text Output protocol using text mode.\If VGA_GO_SUPPORT or VESA_GO_SUPPORT or both enabled, text mode will will only be used if neither VESA nor standard VGA graphical modes are supported"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "INT10_TRUST_EDID_INFORMATION"
+	Value  = "1"
+	Help  = "Some SSUs(Server Switch Units) return invalid EDID information, for these turn this switch off."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "CSM_VGA_64BITBAR_WORKAROUND"
+	Value  = "0"
+	Help  = "VBE is limited to 32 bit for an address of Video Linear Buffer.\If this token is on, the code will attempt to build the correct 64-bit linear buffer address."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "DEFAULT_CSM_LAUNCH_POLICY"
+	Value  = "1"
+	Help  = "Controls default value of CSM Launch Policy setup control"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0 - do not launch CSM, 1 - launch CSM"
+End
+
+TOKEN
+	Name  = "CSMSETUP_ENABLE_ALL_BOOT_OPTIONS"
+	Value  = "0"
+	Help  = "The value of this token corresponds to the the Boot Filtering definitions in CSM.SD"
+	TokenType = Integer
+	TargetH = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "CSMSETUP_LEGACY_ONLY_BOOT_OPTIONS"
+	Value  = "1"
+	Help  = "The value of this token corresponds to the the Boot Filtering definitions in CSM.SD"
+	TokenType = Integer
+	TargetH = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "CSMSETUP_UEFI_ONLY_BOOT_OPTIONS"
+	Value  = "2"
+	Help  = "The value of this token corresponds to the the Boot Filtering definitions in CSM.SD"
+	TokenType = Integer
+	TargetH = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "DEFAULT_BOOT_OPTION_FILTERING_POLICY"
+	Value  = "$(CSMSETUP_ENABLE_ALL_BOOT_OPTIONS)"
+	Help  = "Controls default value of Boot Option Filter setup control"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "$(CSMSETUP_ENABLE_ALL_BOOT_OPTIONS) - Both UEFI and Legacy boot options enabled\$(CSMSETUP_LEGACY_ONLY_BOOT_OPTIONS) - Only Legacy boot options enabled\$(CSMSETUP_UEFI_ONLY_BOOT_OPTIONS) - Only UEFI boot options enabled"
+End
+
+TOKEN
+	Name  = "CSMSETUP_SKIP_OPROMS"
+	Value  = "0"
+	Help  = "The value of this token corresponds to the the Boot Filtering definitions in CSM.SD"
+	TokenType = Integer
+	TargetH = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "CSMSETUP_UEFI_ONLY_OPROMS"
+	Value  = "1"
+	Help  = "The value of this token corresponds to the the Boot Filtering definitions in CSM.SD"
+	TokenType = Integer
+	TargetH = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "CSMSETUP_LEGACY_ONLY_OPROMS"
+	Value  = "2"
+	Help  = "The value of this token corresponds to the the Boot Filtering definitions in CSM.SD"
+	TokenType = Integer
+	TargetH = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "DEFAULT_PXE_OPROM_POLICY"
+	Value  = "$(CSMSETUP_UEFI_ONLY_OPROMS)"
+	Help  = "Default value of Launch PXE OpROM policy setup control"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "$(CSMSETUP_SKIP_OPROMS) - Do not launch\$(CSMSETUP_UEFI_ONLY_OPROMS) - Launch UEFI OpROM only\$(CSMSETUP_LEGACY_ONLY_OPROMS) - Launch Legacy OpROM only"
+End
+
+TOKEN
+	Name  = "DEFAULT_MASS_STORAGE_OPROM_POLICY"
+	Value  = "$(CSMSETUP_UEFI_ONLY_OPROMS)"
+	Help  = "Default value of Launch Storage OpROM policy setup control"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "$(CSMSETUP_SKIP_OPROMS) - Do not launch\$(CSMSETUP_UEFI_ONLY_OPROMS) - Launch UEFI OpROM only\$(CSMSETUP_LEGACY_ONLY_OPROMS) - Launch Legacy OpROM only"
+End
+
+TOKEN
+	Name  = "DEFAULT_VIDEO_OPROM_POLICY"
+	Value  = "$(CSMSETUP_LEGACY_ONLY_OPROMS)"
+	Help  = "Default value of Launch Video OpROM policy setup control"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "$(CSMSETUP_SKIP_OPROMS) - Do not launch\$(CSMSETUP_UEFI_ONLY_OPROMS) - Launch UEFI OpROM only\$(CSMSETUP_LEGACY_ONLY_OPROMS) - Launch Legacy OpROM only"
+End
+
+TOKEN
+	Name  = "ACPI_TIMER_IN_LEGACY_SUPPORT"
+	Value  = "0"
+	Help  = "Enable - CSM16 fixed_delay function will use ACPI timer.\DISABLE - fixed_delay will use BIT4 of port 61h.\NOTE: generally enabling this token is optional; it must be enabled if the chipset does not implement port 61."
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "ACPI_SUPPORT" "=" "1"
+End
+
+PATH
+	Name  = "CSM_DIR"
+End
+
+PATH
+	Name  = "CSM_BLOCKIO_DIR"
+	Path  = "AmiModulePkg/CSM/CsmBlockIo"
+	Help  = "CSM BLOCKIO source directory"
+End
+
+PATH
+	Name  = "CSMVIDEO_DIR"
+	Path  = "AmiModulePkg/CSM/CsmVideo"
+End
+
+MODULE
+	Help  = "Includes csm.mak to Project"
+	File  = "Csm.mak"
+End
+
+ELINK
+	Name  = "CsmPolicyFilter,"
+	Parent  = "BootOptionBootDeviceFilteringFunctions"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "OPROM(1,0,0,$(CSM_DIR)/AmiLegacy16.bin)"
+	Parent  = "CSM_OPROM_LIST"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "CSM_GET_OPROM_VIDEO_SWITCHING_MODE_FUNCTIONS"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "CSM_GET_CUSTOM_PCI_PIRQ_MASK_FUNCTIONS"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "CSM_GET_GATE_A20_INFORMATION_FUNCTIONS"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "CSM_GET_NMI_INFORMATION_FUNCTIONS"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "CSM_GET_OEM_INT_DATA_FUNCTIONS"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "CSM_GET_PLATFORM_HANDLE_FUNCTIONS"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "CSM_GET_PLATFORM_PCI_EMBEDDED_ROM_FUNCTIONS"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "CSM_GET_PLATFORM_EMBEDDED_ROM_FUNCTIONS"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "CSM_CHECK_OEM_PCI_SIBLINGS_FUNCTIONS"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "CSM_ENABLE_OEM_PCI_SIBLINGS_FUNCTIONS"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "CSM_GET_ROUTING_TABLE_FUNCTIONS"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "CSM_BSP_UPDATE_PRT_FUNCTIONS"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "CSM_BSP_PREPARE_TO_BOOT_FUNCTIONS"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "CSM_INIT_LEGACY_MEMORY_FUNCTIONS"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "CSM_16_CALL_COMPANION_FUNCTIONS"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "CSM_CHECK_UEFI_OPROM_POLICY"
+	Help  = "List of callback functions to be called to determine if UEFI Oprom should be executed"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "CsmOemInterrupts"
+	Segment  = "CSMOEM_CSEG"
+	mBODY  = "mBODY_ID_AND_TBL_CSM_ENTRY_NEAR"
+	mEND  = "mEND_TBL_CSM"
+	InvokeOrder = TableFunction
+	OutPOST = Yes
+End
+
+ELINK
+	Name  = "CsmOem16Functions"
+	Segment  = "CSMOEM_CSEG"
+	mBODY  = "mBODY_ID_AND_TBL_CSM_ENTRY_NEAR"
+	mEND  = "mEND_TBL_CSM"
+	InvokeOrder = TableFunction
+	OutPOST = Yes
+End
+
+ELINK
+	Name  = "CSM_OEMINT_SRC"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "CSM_OEM16_SRC"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "CSM_OEMSIG_OBJS"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "CSM_OPROM_LIST"
+	InvokeOrder = ReplaceParent
+End
+
+OUTPUTREGISTER
+	Name  = "EKERNEL_POST"
+	Path  = "Build"
+	File  = "CsmKrnl.csm16"
+End
+
+SEGMENT
+	Name  = "CSMOEM_CSEG"
+	Format  = "SEGMENT PARA PUBLIC 'CODE' USE16"
+End
+
+INFComponent
+	Name  = "CsmDxe"
+	File  = "CsmDxe.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "DXE_DRIVER"
+End
+
+INFComponent
+	Name  = "x86thunk"
+	File  = "x86thunk.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "USER_DEFINED"
+End
+
+INFComponent
+	Name  = "OemCsm16"
+	File  = "../../Build/OemCsm16.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "USER_DEFINED"
+End
+
+INFComponent
+	Name  = "CsmBlockIo"
+	File  = "CsmBlockIo/CsmBlockIo.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "UEFI_DRIVER"
+	Token = "CSM_BLOCKIO_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "CsmVideo"
+	File  = "CsmVideo/CsmVideo.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "UEFI_DRIVER"
+	Token = "CSM_VIDEO_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "CsmPolicy"
+	File  = "CsmPolicy/CsmPolicy.inf"
+	Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "AmiModulePkg.CsmPolicy"
+	Override  = "AmiModulePkg.Bds"
+End
+
+FFS_FILE
+	Name  = "CsmFileStatements"
+	FD_AREA  = "FV_MAIN"
+	FILE_Stmt  = "AmiModulePkg/CSM/CsmFileStatements.txt"
+End
+

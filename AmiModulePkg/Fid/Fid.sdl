@@ -1,0 +1,30 @@
+TOKEN
+	Name  = "Fid_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable RomLayout support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "FW_VERSION_GUID"
+	Value  = "{0xb5c59087, 0xfeac, 0x4b41, {0x9d, 0x80, 0x79, 0xb, 0xa5, 0xaa, 0x7, 0xf}}"
+	Help  = "FW Version GUID inserted into Firmware ID structure.\FW version has to be overridden for every project."
+	TokenType = Expression
+	TargetH = Yes
+	Range  = "GUID"
+End
+
+INFComponent
+	Name  = "Fid"
+	File  = "Fid.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "USER_DEFINED"
+End
+
+FFS_FILE
+	Name  = "Fid"
+	FD_AREA  = "FV_BB"
+	INFComponent  = "AmiModulePkg.Fid"
+	Rule_Override  = "SubtypeGuidUncompressed"
+End
+

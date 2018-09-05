@@ -1,0 +1,98 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+## @file
+#
+##
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = TcgPei
+  FILE_GUID                           = 34989D8E-930A-4a95-AB04-2E6CFDFF6631
+  VERSION_STRING          = 1.0
+  MODULE_TYPE                = PEIM
+  ENTRY_POINT                   = CommonTcgPeiEntryPoint
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF EBC
+#
+
+[Sources]
+xTcgPei.c
+TcgTcmPei.c
+EMpTcmPei.c
+TcgTisPei.c
+TisPei.c
+
+[Packages]
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  MdePkg/MdePkg.dec
+  AmiTcgPkg/AmiTcgPkg.dec
+# APTIOV_SERVER_OVERRIDE_START : System Hangs at TcgPei during Dwr flow when PTT is enabled
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+# APTIOV_SERVER_OVERRIDE_END : System Hangs at TcgPei during Dwr flow when PTT is enabled
+
+[LibraryClasses]
+  PeimEntryPoint
+  BaseLib
+  BaseTisLib12x32
+  BaseAmiTcmlib
+  BaseCrbLibPei
+  DebugLib
+  IoLib
+  PeiServicesLib
+  AmiTcgLibPei
+  TpmReportStatusCodeWrapperLibPei
+# APTIOV_SERVER_OVERRIDE_START : System Hangs at TcgPei during Dwr flow when PTT is enabled
+  PchPmcLib
+# APTIOV_SERVER_OVERRIDE_END : System Hangs at TcgPei during Dwr flow when PTT is enabled
+ 
+
+[Ppis]
+  gPeiTcgPpiGuid
+  gPeiTpmPpiGuid
+  gAmiPlatformSecurityChipGuid
+  gTcgPeiPolicyGuid
+    
+[Guids]
+  gAmiGlobalVariableGuid  
+  gEfiGlobalVariableGuid
+  AmiTcgResetVarHobGuid
+  gAmiLegacyTpmguid
+  gEfiTcgMpDriverHobGuid
+  gEfiTcgMADriverHobGuid
+  gEfiPeiTcgLogHobGuid
+  gAmiTcmSignalguid
+
+[Depex]
+  gEfiPeiReadOnlyVariable2PpiGuid AND
+  gTcgPeiPolicyGuid
+  
+  [BuildOptions.IA32]
+*_*_IA32_CC_FLAGS = -DPEI_COMPILE 
+
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************

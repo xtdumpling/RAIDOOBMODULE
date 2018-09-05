@@ -1,0 +1,99 @@
+#/*++
+# This file contains a 'Sample Driver' and is licensed as such
+# under the terms of your license agreement with Intel or your
+# vendor.  This file may be modified by the user, subject to
+# the additional terms of the license agreement
+#--*/
+#/*++
+#
+#  Copyright (c)  2007 - 2016 Intel Corporation. All rights reserved
+#  This software and associated documentation (if any) is furnished
+#  under a license and may only be used or copied in accordance
+#  with the terms of the license. Except as permitted by such
+#  license, no part of this software or documentation may be
+#  reproduced, stored in a retrieval system, or transmitted in any
+#  form or by any means without the express written consent of
+#  Intel Corporation.
+#
+#  Module Name:
+#
+#    HeciDxe.inf
+#
+#  Abstract:
+#
+#    Component description file for Heci DXE driver
+#
+#--*/
+
+[defines]
+  INF_VERSION    = 0x00010005
+  BASE_NAME      = HeciInitDxe
+  FILE_GUID      = 55E76644-78A5-4a82-A900-7126A5798892
+  MODULE_TYPE    = DXE_DRIVER
+  VERSION_STRING = 1.0
+  ENTRY_POINT    = HeciDxeEntryPoint
+
+[Sources]
+  HeciInit.c
+  Hecidrv.c
+  FwStsSmbios.c
+  EndOfPost.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  PurleySktPkg/SocketPkg.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+  PurleySktPkg/Me/MePkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  # APTIOV_SERVER_OVERRIDE_RC_START
+  #ShellPkg/ShellPkg.dec
+  # APTIOV_SERVER_OVERRIDE_RC_END
+  CpRcPkg/CpRcPkg.dec
+
+[LibraryClasses]
+  UefiBootServicesTableLib
+  UefiDriverEntryPoint
+  UefiRuntimeServicesTableLib
+  DxeServicesTableLib
+  IoLib
+  DxeSpsPolicyLib
+  PerformanceLib
+  RcFviLib
+  S3IoLib
+  MeTypeLib
+  HeciCoreLib
+  HobLib
+  PchPlatformLib
+  MeShowBufferLib
+  MeSpsPolicyAccessDxeLib
+  PchInitCommonLib
+
+[Protocols]
+  gHeciProtocolGuid
+  gMebxProtocolGuid
+  gEfiMeInfoProtocolGuid
+  gAmtReadyToBootProtocolGuid
+  # APTIOV_SERVER_OVERRIDE_RC_START
+  #gEfiShellEnvironment2Guid
+  # APTIOV_SERVER_OVERRIDE_RC_END
+  gWdtProtocolGuid
+  gPchResetProtocolGuid
+
+[Guids]
+  gMePlatformReadyToBootGuid
+  gMeBiosExtensionSetupGuid
+  gEfiSetupEnterGuid
+  gMeBiosPayloadHobGuid
+  gPchPolicyHobGuid
+  gMeFwHobGuid
+  gEfiEndOfDxeEventGroupGuid
+
+[Pcd.common]
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+  gEfiMePkgTokenSpaceGuid.PcdFwStsSmbiosType
+
+[Depex]
+  TRUE
+

@@ -1,0 +1,59 @@
+#****************************************************************************
+#****************************************************************************
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#  
+#  Rev. 1.02
+#    Bug Fix:  Trigger a software SMI to flash ROM part after BIOS lock.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Sep/30/2016
+#
+#  Rev. 1.01
+#    Bug Fix:  Fix system hangs at Sum InBand command.
+#    Reason:   Because of using Boot Service in SMM. Separate SmcRomHole into two libraries - DXE and SMM.
+#    Auditor:  Hartmann Hsieh
+#    Date:     Jul/12/2016
+#
+#  Rev. 1.00
+#    Bug Fix:  Initial revision.
+#    Reason:   
+#    Auditor:  Kasber Chen
+#    Date:     May/26/2016
+#
+#****************************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SmcRomHoleLib
+  FILE_GUID                      = 951a8d2e-194e-43e7-aced-e1c9e3756534
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = SmcRomHoleLib
+  CONSTRUCTOR                    = SmcRomHoleInit
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  SmcPkg/SmcPkg.dec
+
+[LibraryClasses]
+  UefiBootServicesTableLib
+  DebugLib
+  SmcSwSmiFlashLib
+
+[Sources]
+  SmcRomHole.c
+  SmcRomHoleCommon.c
+  
+[Protocols]
+  gFlashProtocolGuid
+  gEfiSmmControl2ProtocolGuid
+  gSmcSwSmiFlashProtocolGuid
+
+[Pcd]
+

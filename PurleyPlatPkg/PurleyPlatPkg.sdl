@@ -1,0 +1,1425 @@
+PCIDEVICE
+	Title  = "Platform ASL Files"
+	Parent  = "PciHost (Virtual)"
+	Attribute  = "0x0"
+	Dev_type  = "Container"
+	Dev  = 00h
+	SleepNum  = 01h
+	ASLfile  = "'PurleyPlatPkg/Acpi/AcpiTables/Dsdt/CommonPlatform.asi;Before Pci Tree','PurleyPlatPkg/Acpi/AcpiTables/Dsdt/AMI_BBN.asl;After Pci Tree','PurleyPlatPkg/Acpi/AcpiTables/Dsdt/AMI_PRW.asl;After Pci Tree','PurleyPlatPkg/Acpi/AcpiTables/Dsdt/PlatformGpe.asi;After Pci Tree','PurleyPlatPkg/Acpi/AcpiTables/Dsdt/PcieSeg.asi;After Pci Tree', 'PurleyPlatPkg/Acpi/AcpiTables/Dsdt/Platform.asl;After Pci Tree'"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	Virtual = Yes
+End
+
+
+# Add WHEA Container object.
+PCIDEVICE
+	Title  = "Whea Asl Container"
+	Parent  = "PciHost (Virtual)"
+	Attribute  = "0x0"
+	Dev_type  = "Container"
+	Dev  = 00h
+	Fun  = 00h
+	ASLfile  = "'PurleyPlatPkg/Acpi/AcpiTables/Dsdt/Whea.asi;After Pci Tree'"
+	Token = "WHEA_SUPPORT" "=" "1"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	Virtual = Yes
+End
+
+TOKEN
+	Name  = "PurleyPlatPkg_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling PurleyPlatPkg support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+PATH
+	Name  = "PurleyPlatPkg_DIR"
+End
+
+MODULE
+	Help  = "Includes PlatformPkg.mak to Project"
+	File  = "PlatformPkg.mak"
+End
+
+PcdMapping
+	Name  = "PcdDebugPropertyMask"
+	GuidSpace  = "gEfiMdePkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0x2F"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdDebugPropertyMask"
+	GuidSpace  = "gEfiMdePkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "00"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+	Token = "SDP_PLATFORM" "=" "1"
+End
+
+PcdMapping
+	Name  = "PcdReportStatusCodePropertyMask"
+	GuidSpace  = "gEfiMdePkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0x06"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdLoadModuleAtFixAddressEnable"
+	GuidSpace  = "gEfiMdeModulePkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdHwErrStorageSize"
+	GuidSpace  = "gEfiMdeModulePkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0x0"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+    Name  = "PcdUse1GPageTable"
+    GuidSpace  = "gEfiMdeModulePkgTokenSpaceGuid"
+    PcdType  = "PcdsDynamicHii"
+    Value  = "TRUE"
+    Arch  = "common"
+    SkuId  = "DEFAULT"
+    VarName  = "1GPageTable"
+    VarGuid  = "gServerCommonTokenSpaceGuid"
+    Offset  = 00h
+    Length  = 00h
+    TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdMaxVariableSize"
+	GuidSpace  = "gEfiMdeModulePkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0x10000"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdShadowPeimOnS3Boot"
+	GuidSpace  = "gEfiMdeModulePkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "TRUE"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdPerformanceLibraryPropertyMask"
+	GuidSpace  = "gEfiMdePkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0x0"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdFSBClock"
+	GuidSpace  = "gEfiMdePkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "100000000"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdPeiCoreMaxPeiStackSize"
+	GuidSpace  = "gEfiMdeModulePkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0x100000"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdPeiCoreMaxFvSupported"
+	GuidSpace  = "gEfiMdeModulePkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "8"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+    Name  = "PcdPeiCoreMaxPpiSupported"
+    GuidSpace  = "gEfiMdeModulePkgTokenSpaceGuid"
+    PcdType  = "PcdsFixedAtBuild"
+    Value  = "180"
+    Arch  = "IA32"
+    Offset  = 00h
+    Length  = 00h
+    TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdMaxSizeNonPopulateCapsule"
+	GuidSpace  = "gEfiMdeModulePkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0x2100000"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmbiosVersion"
+	GuidSpace  = "gEfiMdeModulePkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0x0208"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuIEDRamSize"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0x400000"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuSmmApSyncTimeout"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "10000"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuMaxLogicalProcessorNumber"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "512"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdPlatformType"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "2"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdPlatformCpuMaxCoreFrequency"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "4000"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdPlatformCpuMaxFsbFrequency"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "1066"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuSmmStackSize"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0x10000"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuMicrocodePatchAddress"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0xFFF30060"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+    Name  = "PcdCpuMicrocodePatchAddress"
+    GuidSpace  = "gUefiCpuPkgTokenSpaceGuid"
+    PcdType  = "PcdsFixedAtBuild"
+    Value  = "0xFFF30060"
+    Arch  = "common"
+    Offset  = 00h
+    Length  = 00h
+    TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuMicrocodePatchRegionSize"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0x1FFA0"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+    Name  = "PcdCpuMicrocodePatchRegionSize"
+    GuidSpace  = "gUefiCpuPkgTokenSpaceGuid"
+    PcdType  = "PcdsFixedAtBuild"
+    Value  = "0x1FFA0"
+    Arch  = "common"
+    Offset  = 00h
+    Length  = 00h
+    TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdPerformanceLibraryPropertyMask"
+	GuidSpace  = "gEfiMdePkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0x1"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+	Token = "PERFORMANCE_ENABLE" "=" "1"
+End
+
+PcdMapping
+	Name  = "PcdCpuIEDEnabled"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "TRUE"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+    Name  = "PcdResetOnMemoryTypeInformationChange"
+    GuidSpace  = "gEfiMdeModulePkgTokenSpaceGuid"
+    PcdType  = "PcdsDynamicDefault"
+    Value  = "FALSE"
+    Arch  = "common"
+    SkuId  = "DEFAULT"
+    Offset  = 00h
+    Length  = 00h
+    TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdOpromReservedMemorySize"
+	GuidSpace  = "gEfiIntelFrameworkModulePkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0x27000"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdBusStack"
+	GuidSpace  = "gPlatformTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0x06"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdUboDev"
+	GuidSpace  = "gPlatformTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0x08"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdUboFunc"
+	GuidSpace  = "gPlatformTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0x02"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdUboCpuBusNo0"
+	GuidSpace  = "gPlatformTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0xCC"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdPlatformBootTimeOut"
+	GuidSpace  = "gEfiMdePkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicHii"
+	Value  = "10"
+	Arch  = "common"
+	SkuId  = "DEFAULT"
+	VarName  = "Timeout"
+	VarGuid  = "gEfiGlobalVariableGuid"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+	Token = "DEBUG_FLAGS_ENABLE" "=" "1"
+End
+
+PcdMapping
+	Name  = "PcdPlatformBootTimeOut"
+	GuidSpace  = "gEfiMdePkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicHii"
+	Value  = "0"
+	Arch  = "common"
+	SkuId  = "DEFAULT"
+	VarName  = "Timeout"
+	VarGuid  = "gEfiGlobalVariableGuid"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+	Token = "DEBUG_FLAGS_ENABLE" "=" "0"
+End
+
+PcdMapping
+	Name  = "PcdPlatformMemoryCheck"
+	GuidSpace  = "gServerCommonTokenSpaceGuid"
+	PcdType  = "PcdsDynamicHii"
+	Value  = "0"
+	Arch  = "common"
+	SkuId  = "DEFAULT"
+	VarName  = "MemoryCheck"
+	VarGuid  = "gServerCommonTokenSpaceGuid"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdUefiOptimizedBoot"
+	GuidSpace  = "gServerCommonTokenSpaceGuid"
+	PcdType  = "PcdsDynamicHii"
+	Value  = "TRUE"
+	Arch  = "common"
+	SkuId  = "DEFAULT"
+	VarName  = "UefiOptimizedBoot"
+	VarGuid  = "gServerCommonTokenSpaceGuid"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+
+# Commenting out block of code that is not needed
+#PcdMapping
+#	Name  = "PcdBootState"
+#	GuidSpace  = "gEfiMdePkgTokenSpaceGuid"
+#	PcdType  = "PcdsDynamicHii"
+#	Value  = 'TRUE'
+#	Arch  = "common"
+#	SkuId  = "DEFAULT"
+#	VarName  = 'BootState'
+#	VarGuid  = "gEfiIntelFrameworkModulePkgTokenSpaceGuid"
+#	Offset  = 00h
+#	TargetDSC = Yes
+#End
+PcdMapping
+	Name  = "PcdHardwareErrorRecordLevel"
+	GuidSpace  = "gEfiMdePkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicHii"
+	Value  = "1"
+	Arch  = "common"
+	SkuId  = "DEFAULT"
+	VarName  = "HwErrRecSupport"
+	VarGuid  = "gEfiGlobalVariableGuid"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdBootDeviceScratchPad5Changed"
+	GuidSpace  = "gPlatformTokenSpaceGuid"
+	PcdType  = "PcdsDynamicHii"
+	Value  = "FALSE"
+	Arch  = "common"
+	SkuId  = "DEFAULT"
+	VarName  = "BootDeviceScratchPad"
+	VarGuid  = "gServerCommonTokenSpaceGuid"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSupportUpdateCapsuleReset"
+	GuidSpace  = "gEfiMdeModulePkgTokenSpaceGuid"
+	PcdType  = "PcdsFeatureFlag"
+	Value  = "FALSE"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuSmmEnableBspElection"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsFeatureFlag"
+	Value  = "TRUE"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuHotPlugSupport"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsFeatureFlag"
+	Value  = "$(RAS_CPU_ONLINE_OFFLINE_ENABLE)" # To Resolve Showing Max NumOfCpu as current CPU count in SMST.
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdPciBusHotplugDeviceSupport"
+	GuidSpace  = "gEfiMdeModulePkgTokenSpaceGuid"
+	PcdType  = "PcdsFeatureFlag"
+	Value  = "FALSE"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuConroeFamilyFlag"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsFeatureFlag"
+	Value  = "FALSE"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuCedarMillFamilyFlag"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsFeatureFlag"
+	Value  = "FALSE"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuPrescottFamilyFlag"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsFeatureFlag"
+	Value  = "FALSE"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuNehalemFamilyFlag"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsFeatureFlag"
+	Value  = "FALSE"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuIvyBridgeFamilyFlag"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsFeatureFlag"
+	Value  = "FALSE"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuSandyBridgeFamilyFlag"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsFeatureFlag"
+	Value  = "FALSE"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuHaswellFamilyFlag"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsFeatureFlag"
+	Value  = "TRUE"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuGateA20MDisableFlag"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsFeatureFlag"
+	Value  = "FALSE"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuSmmDebug"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsFeatureFlag"
+	Value  = "TRUE"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuSelectLfpAsBspFlag"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsFeatureFlag"
+	Value  = "TRUE"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuSkylakeFamilyFlag"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsFeatureFlag"
+	Value  = "TRUE"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuSocketIdReassignmentFlag"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsFeatureFlag"
+	Value  = "TRUE"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuSmmCodeAccessCheckSupport"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsFeatureFlag"
+	Value  = "FALSE"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuSmmMsrSaveStateSupport"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsFeatureFlag"
+	Value  = "FALSE"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSupportUnsignedCapsuleImage"
+	GuidSpace  = "gPlatformTokenSpaceGuid"
+	PcdType  = "PcdsFeatureFlag"
+	Value  = "TRUE"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+#
+#
+PcdMapping
+	Name  = "PcdCpuHwCoordination"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	DataType  = "Boolean"
+	Value  = "FALSE"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+
+#PcdMapping
+#	Name  = "PcdCpuSocketId"
+#	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+#	PcdType  = "PcdsDynamicDefault"
+#	Value  = "{0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x0,0x0,0x1,0x0,0x0,0x0,0x2,0x0,0x0,0x0,0x2,0x0,0x0,0x0,0x3,0x0,0x0,0x0,0x3,0x0,0x0,0x0}"
+#	Arch  = "common"
+#	Offset  = 00h
+#	Length  = 00h
+#	TargetDSC = Yes
+#End
+PcdMapping
+	Name  = "PcdCpuSmmMsrSaveStateEnable"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "FALSE"
+	Arch  = "common"
+	SkuId  = "DEFAULT"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuSmmProtectedModeEnable"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "FALSE"
+	Arch  = "common"
+	SkuId  = "DEFAULT"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuProcessorFeatureUserConfiguration"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	DataType  = "Uint32"
+	Value  = "0x002CF6CF"
+	Arch  = "common"
+	SkuId  = "DEFAULT"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuProcessorFeatureUserConfigurationEx1"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0"
+	Arch  = "common"
+	SkuId  = "DEFAULT"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuApInitTimeOutInMicroSeconds"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "200000"
+	Arch  = "common"
+	SkuId  = "DEFAULT"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdAriSupport"
+	GuidSpace  = "gEfiMdeModulePkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "TRUE"
+	Arch  = "common"
+	SkuId  = "DEFAULT"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdWakeOnRTCS5"
+	GuidSpace  = "gEfiPchTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "FALSE"
+	Arch  = "common"
+	SkuId  = "DEFAULT"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdRtcWakeupTimeHour"
+	GuidSpace  = "gEfiPchTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0"
+	Arch  = "common"
+	SkuId  = "DEFAULT"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdRtcWakeupTimeMinute"
+	GuidSpace  = "gEfiPchTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0"
+	Arch  = "common"
+	SkuId  = "DEFAULT"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdRtcWakeupTimeSecond"
+	GuidSpace  = "gEfiPchTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0"
+	Arch  = "common"
+	SkuId  = "DEFAULT"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdPchSataInitReg78Data"
+	GuidSpace  = "gEfiPchTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0xAAAA0000"
+	Arch  = "common"
+	SkuId  = "DEFAULT"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdPchSataInitReg88Data"
+	GuidSpace  = "gEfiPchTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0xAA33AA22"
+	Arch  = "common"
+	SkuId  = "DEFAULT"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+
+# TO resolve the build error.
+PcdMapping
+	Name  = "PcdCpuSmmUseDelayIndication"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsDynamicHii"
+	Value  = "FALSE"
+	Arch  = "common"
+	SkuId  = "DEFAULT"
+	VarName  = "CpuSmmUseDelayIndication"
+	VarGuid  = "gServerCommonTokenSpaceGuid"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+
+
+PcdMapping
+	Name  = "PcdCpuSmmUseBlockIndication"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsDynamicHii"
+	Value  = "FALSE"
+	Arch  = "common"
+	SkuId  = "DEFAULT"
+	VarName  = "CpuSmmUseBlockIndication"
+	VarGuid  = "gServerCommonTokenSpaceGuid"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+
+# TO resolve the build error.
+PcdMapping
+	Name  = "PcdCpuSmmUseSmmEnableIndication"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsDynamicHii"
+	Value  = "FALSE"
+	Arch  = "common"
+	SkuId  = "DEFAULT"
+	VarName  = "CpuSmmUseBlockIndication"
+	VarGuid  = "gServerCommonTokenSpaceGuid"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuSmmSmrr2Base"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	DataType  = "Uint32"
+	Value  = "0"
+	Arch  = "common"
+	SkuId  = "DEFAULT"
+	Offset  = 00h
+	Length  = 04h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuSmmSmrr2Size"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	DataType  = "Uint32"
+	Value  = "0"
+	Arch  = "common"
+	SkuId  = "DEFAULT"
+	Offset  = 00h
+	Length  = 04h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuSmmSmrr2CacheType"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	DataType  = "Uint8"
+	Value  = "5"
+	Arch  = "common"
+	SkuId  = "DEFAULT"
+	Offset  = 00h
+	Length  = 01h
+	Help  = "SMRR2 range cache type. 5: WP(Write Protect), 6: WB(Write Back)"
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuEnergyPolicy"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuTurboOverride"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuAcpiLvl2Addr"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuPackageCStateLimit"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuClockModulationDutyCycle"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuHwCoordination"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "TRUE"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuDcuMode"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuProcessorMsrLockCtrl"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuIioLlcWaysBitMask"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuExpandedIioLlcWaysBitMask"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuRemoteWaysBitMask"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdPchTraceHubEn"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuQlruCfgBitMask"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSbspSelection"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0xFF"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdDebugPrintErrorLevel"
+	GuidSpace  = "gEfiMdePkgTokenSpaceGuid"
+	PcdType  = "PcdsPatchableInModule"
+	Value  = "0x80000046"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+
+# Dynamic mmcfg base address change 
+
+PcdMapping
+	Name  = "PcdPciExpressBaseAddress"
+	GuidSpace  = "gEfiMdePkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x80000000"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+	Token = "DYNAMIC_MMCFG_BASE_SUPPORT" "=" "1"
+End
+
+
+
+PcdMapping
+	Name  = "PcdPciExpressBaseAddress"
+	GuidSpace  = "gEfiMdePkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "$(PCIEX_BASE_ADDRESS)"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+	Token = "DYNAMIC_MMCFG_BASE_SUPPORT" "=" "0"
+End
+
+
+
+PcdMapping
+	Name  = "PcdLegacyBiosCacheLegacyRegion"
+	GuidSpace  = "gEfiIntelFrameworkModulePkgTokenSpaceGuid"
+	PcdType  = "PcdsPatchableInModule"
+	Value  = "FALSE"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdEbdaReservedMemorySize"
+	GuidSpace  = "gEfiIntelFrameworkModulePkgTokenSpaceGuid"
+	PcdType  = "PcdsPatchableInModule"
+	Value  = "0x19000"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "Pcd8259LegacyModeMask"
+	GuidSpace  = "gPcAtChipsetPkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0x0eB8"
+	Arch  = "X64"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+
+#PcdMapping
+#	Name  = "PcdBootManagerMenuFile"
+#	GuidSpace  = "gEfiBpCommonPkgTokenSpaceGuid"
+#	PcdType  = "PcdsFixedAtBuild"
+#	Value  = "{ 0x21, 0xaa, 0x2c, 0x46, 0x14, 0x76, 0x03, 0x45, 0x83, 0x6e, 0x8a, 0xb6, 0xf4, 0x66, 0x23, 0x31 }"
+#	Arch  = "X64"
+#	Offset  = 00h
+#	Length  = 00h
+#	TargetDSC = Yes
+#End
+
+PcdMapping
+	Name  = "PcdS3AcpiReservedMemorySize"
+	GuidSpace  = "gEfiIntelFrameworkModulePkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0x500000"
+	Arch  = "X64"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdS3AcpiReservedMemorySize"
+	GuidSpace  = "gEfiIntelFrameworkModulePkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0x800000"
+	Arch  = "X64"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+	Token = "A_S3" "=" "1"
+End
+
+PcdMapping
+	Name  = "PcdCpuPmStructAddr"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x0"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuRRQCountThreshold"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x0"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdLpcGenPmConSwSmiRstl"
+	GuidSpace  = "gEfiPchTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	DataType  = "Uint8"
+	Value  = "0x40"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+	Token = "PCH_SPT" "=" "0"
+End
+
+PcdMapping
+	Name  = "PcdPchAcpiIoPortBaseAddress"
+	GuidSpace  = "gEfiPchTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	DataType  = "Uint16"
+	Value  = "$(PM_BASE_ADDRESS)"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdPcieMmcfgTablePtr"
+	GuidSpace  = "gEfiCpRcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "{0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,  0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdPerfPkgPchPmBaseFunctionNumber"
+	GuidSpace  = "gServerCommonTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0x2"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+#	Token = "PERFORMANCE_ENABLE" "=" "1" # PEI performance log array out of resources message seen
+End
+
+
+# Add WHEA Container object.
+PcdMapping
+	Name  = "PcdSupportLegacyStack"
+	GuidSpace  = "gPlatformTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "TRUE"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+	Token = "BUILD_WITH_LEGACY_STACK" "=" "1"
+End
+
+PcdMapping
+	Name  = "PcdSupportLegacyStack"
+	GuidSpace  = "gPlatformTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "FALSE"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+	Token = "BUILD_WITH_LEGACY_STACK" "=" "0"
+End
+
+PcdMapping
+	Name  = "PcdCpuSmmCodeAccessCheckEnable"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "TRUE"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuCoreCStateValue"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0"
+	Arch  = "X64" # To resolve warning during build
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdMaxNestedLevel"
+	GuidSpace  = "gEfiCpRcPkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0x00000010"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuMaxLogicalProcessorNumber"
+	GuidSpace  = "gUefiCpuPkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "512"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+# FPGA specific PCD Porting
+PcdMapping
+	Name  = "PcdFlashFdFpgaBase"
+	GuidSpace  = "gCpPlatFlashTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "$(FV_FPGA_BASE)"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+	Token = "FPGA_SUPPORT" "=" "1"
+End
+
+PcdMapping
+	Name  = "PcdFlashFdFpgaSize"
+	GuidSpace  = "gCpPlatFlashTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "$(FV_FPGA_SIZE)"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+	Token = "FPGA_SUPPORT" "=" "1"
+End
+
+PcdMapping
+    Name  = "PcdWsmtProtectionFlags"
+    GuidSpace  = "gPlatformModuleTokenSpaceGuid"
+    PcdType  = "PcdsFixedAtBuild"
+    Value  = "0x07"
+    Arch  = "common"
+    Offset  = 00h
+    Length  = 00h
+    TargetDSC = Yes
+End
+
+PcdMapping
+    Name  = "PcdCleanTempBusAssignment"
+    GuidSpace  = "gEfiCpRcPkgTokenSpaceGuid"
+    PcdType  = "PcdsFixedAtBuild"
+    Value  = "TRUE"
+    Arch  = "common"
+    Offset  = 00h
+    Length  = 00h
+    TargetDSC = Yes
+End

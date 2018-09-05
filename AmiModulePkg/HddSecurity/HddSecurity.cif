@@ -1,0 +1,24 @@
+<component>
+	name = "HddSecurity"
+	category = eModule
+	LocalRoot = "AmiModulePkg\HddSecurity\"
+	RefName = "HddSecurity"
+[INF]
+"HddSecurity.inf"
+"HddSecurityBdsCall.inf"
+[files]
+"HddSecurity.sdl"	
+"HddSecurity.chm"	
+[parts]
+"SmmHddSecurity"
+"AmiTseHddSecurity"
+"HddSecurityIncludes"
+"HddSecDynamicSetup"
+"HddSecStaticSetup"
+[dependency]
+AHCI >= "SS: AptioV;$/AptioV/Source/Modules/AHCI;AHCI_08"
+AmiModulePkg >= "SS: AptioV;$/AptioV/Source/Interfaces/AmiModulePkg;AmiModulePkg_28"
+[dependency.optional]
+AmiModulePkg.IdeBusSrc >= "SS: AptioV;$/AptioV/Source/Modules/IdeBus;IdeBus_06"
+NVMe >= "SS: AptioV;$/AptioV/Source/Modules/NVMe;NVMe_13"
+<endComponent>

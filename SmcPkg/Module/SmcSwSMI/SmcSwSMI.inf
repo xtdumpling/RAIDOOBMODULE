@@ -1,0 +1,54 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2015 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.00
+#    Bug Fix:  Initialize revision
+#    Reason:   
+#    Auditor:  Salmon Chen
+#    Date:     Jan/29/2015
+#
+#****************************************************************************
+#****************************************************************************
+[Defines]
+  INF_VERSION                    = 0x00010005  
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  BASE_NAME                      = SmcSwSMI
+  FILE_GUID                      = AEE17FF6-B810-4A8A-9D4D-8B9C3289C1AC
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = InitializeSmcSwSMI
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+#  
+
+[Sources]  
+  SmcSwSMI.c
+
+[Packages]
+  MdePkg/MdePkg.dec 
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec 
+#  AmiChipsetModulePkg/AmiChipsetModulePkg.dec 
+  AmiModulePkg/AmiModulePkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  AmiDxeLib
+  AmiCspLib    
+
+[Protocols]  
+  gEfiSmmSwDispatch2ProtocolGuid
+
+[Pcd]
+
+[Depex]
+  gEfiSmmSwDispatch2ProtocolGuid
+
+#**********************************************************************

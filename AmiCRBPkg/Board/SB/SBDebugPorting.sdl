@@ -1,0 +1,45 @@
+
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2011, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+
+#*************************************************************************
+#<AMI_FHDR_START>
+#
+# Name:  <SBDEBUGPORTING.SDL>
+#
+# Description:  SB Porting Module Part Add to SB Module
+#
+#<AMI_FHDR_END>
+#*************************************************************************
+
+INFComponent
+    Name  = "DebugPortingLib"
+    File  = "DebugPortingLib.inf"
+    Package  = "AmiCRBPkg"
+    Arch  = "common Ia32 X64"
+End
+
+LibraryMapping
+    Class  = "DebugPortingLib"
+    Instance  = "AmiCRBPkg.DebugPortingLib"
+End
+
+ELINK 
+    Name = "SBPEIDBG_Initialize,"
+    Parent = "PeiDebugInitialize"
+    Priority = 120
+    Token = "PeiDebugger_SUPPORT" "=" "1"
+    InvokeOrder = AfterParent
+End   
+

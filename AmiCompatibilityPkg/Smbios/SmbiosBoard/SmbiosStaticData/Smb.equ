@@ -1,0 +1,1334 @@
+;Inclusion guard
+ifndef 	_SMB_EQU_
+_SMB_EQU_    equ    1
+
+;----------------------------------------------------------------------------
+;    Do not change any structure definition unless otherwise specified
+;----------------------------------------------------------------------------
+
+;****************************************************************************
+;****************************************************************************
+;**                                                                        **
+;**           (C)Copyright 1985-2017, American Megatrends, Inc.            **
+;**                                                                        **
+;**                          All Rights Reserved.                          **
+;**                                                                        **
+;**           5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093            **
+;**                                                                        **
+;**                          Phone: (770)-246-8600                         **
+;**                                                                        **
+;****************************************************************************
+;****************************************************************************
+
+;****************************************************************************
+; $Header: /Alaska/BIN/Modules/SMBIOS/SmbiosStaticData/SMB.EQU 8     4/06/11 10:30a Davidd $
+;
+; $Revision: 8 $
+;
+; $Date: 4/06/11 10:30a $
+;
+;****************************************************************************
+
+;----------------------------------------------------------------------------
+;    GENERAL EQUATES
+;----------------------------------------------------------------------------
+; indicate the presence/absence of an item/structure, used in SMBDESC.DEF
+Present         EQU     1               ; present
+Absent          EQU     0               ; absent
+
+; indicate the item yes/not supported information, used in SMBDESC.DEF
+Yes             EQU     1               ; supported
+No              EQU     0               ; not supported
+
+; indicate the item enabled/disabled information, used in SMBDESC.DEF
+ENABLED         EQU     1               ; enabled
+DISABLED        EQU     0               ; disabled
+
+IEPS_LENGTH     EQU     10h             ; length of IEPS
+DEFINE      textequ <TEXTEQU>
+
+;----------------------------------------------------------------------------
+;    DIFFERENT STRUCTURE TYPE EQUATES
+;----------------------------------------------------------------------------
+; Structure Name                                        Structure Type
+BIOS_INFORMATION_TYPE                           equ     00h     ; type 00
+SYSTEM_INFORMATION_TYPE                         equ     01h     ; type 01
+BASE_BOARD_INFORMATION_TYPE                     equ     02h     ; type 02
+SYSTEM_ENCLOSURE_CHASSIS_TYPE                   equ     03h     ; type 03
+PROCESSOR_INFORMATION_TYPE                      equ     04h     ; type 04
+MEMORY_CONTROLLER_INFORMATION_TYPE              equ     05h     ; type 05
+MEMORY_MODULE_INFORMATION_TYPE                  equ     06h     ; type 06
+CACHE_INFORMATION_TYPE                          equ     07h     ; type 07
+PORT_CONNECTOR_INFORMATION_TYPE                 equ     08h     ; type 08
+SYSTEM_SLOT_INFORMATION_TYPE                    equ     09h     ; type 09
+ONBOARD_DEVICE_INFORMATION_TYPE                 equ     0Ah     ; type 10
+OEM_STRING_INFORMATION_TYPE                     equ     0Bh     ; type 11
+SYSTEM_CONFIGURATION_TYPE                       equ     0Ch     ; type 12
+BIOS_LANGUAGE_INFORMATION_TYPE                  equ     0Dh     ; type 13
+GROUP_ASSOCIATION_TYPE                          equ     0Eh     ; type 14
+EVENTLOG_INFORMATION_TYPE                       equ     0Fh     ; type 15
+MEMORY_ARRAY_INFORMATION_TYPE                   equ     10h     ; type 16
+MEMORY_DEVICE_INFORMATION_TYPE                  equ     11h     ; type 17
+MEMORY_ERROR_INFORMATION_TYPE                   equ     12h     ; type 18
+MEMORY_ARRAY_MAPPED_ADDRESS_INFORMATION_TYPE    equ     13h     ; type 19
+MEMORY_DEVICE_MAPPED_ADDRESS_INFORMATION_TYPE   equ     14h     ; type 20
+BUILTIN_POINTING_DEVICE_TYPE                    equ     15h     ; type 21
+PORTABLE_BATTERY_TYPE                           equ     16h     ; type 22
+SYSTEM_RESET_TYPE                               equ     17h     ; type 23
+HARDWARE_SECURITY_TYPE                          equ     18h     ; type 24
+SYSTEM_POWER_CONTROLS_TYPE                      equ     19h     ; type 25
+VOLTAGE_PROBE_TYPE                              equ     1Ah     ; type 26
+COOLING_DEVICE_TYPE                             equ     1Bh     ; type 27
+TEMPATURE_PROBE_TYPE                            equ     1Ch     ; type 28
+ELECTRICAL_CURRENT_PROBE_TYPE                   equ     1Dh     ; type 29
+OUT_OF_BAND_REMOTE_ACCESS_TYPE                  equ     1Eh     ; type 30
+BOOT_INTEGRITY_SERVICES_TYPE                    equ     1Fh     ; type 31
+SYSTEM_BOOT_INFORMATION_TYPE                    equ     20h     ; type 32
+SIXTYFOUR_BIT_MEMORY_ERROR_INFORMATION_TYPE     equ     21h     ; type 33
+MANAGEMENT_DEVICE_TYPE                          equ     22h     ; type 34
+MANAGEMENT_DEVICE_COMPONENT_TYPE                equ     23h     ; type 35
+MANAGEMENT_DEVICE_THRESHOLD_DATA_TYPE           equ     24h     ; type 36
+MEMORY_CHANNEL_TYPE                             equ     25h     ; type 37
+IPMI_DEVICE_INFORMATION_TYPE                    equ     26h     ; type 38
+SYSTEM_POWER_SUPPLY_TYPE                        equ     27h     ; type 39
+INACTIVE_STRUCTURE_TYPE                         equ     7Eh     ; type 126
+END_OF_TABLE_TYPE                               equ     7Fh     ; type 127
+OEM_IO_GPNV_INFORMATION_TYPE                    equ     0F0h    ; type F0..OEM Defined
+OEM_MEMORY_GPNV_INFORMATION_TYPE                equ     0F1h    ; type F1..OEM Defined
+
+;----------------------------------------------------------------------------
+;    Structure Type 0: No equates used in BIOS INFORMATION Structure
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;    Structure Type 1: Equates used in SYSTEM INFORMATION Structure
+;----------------------------------------------------------------------------
+; Wakeup Type (an enumerated BYTE value)
+; Equate Name                   Value     Meaning
+;                               00h     ; Reserved
+SI_OTHER                equ     01h     ; Other
+SI_UNKNOWN              equ     02h     ; Unknown
+SI_APM_TIMER            equ     03h     ; APM Timer
+SI_MODEM_RING           equ     04h     ; Modem Ring
+SI_LAN_REMOTE           equ     05h     ; LAN Remote
+SI_POWER_SWITCH         equ     06h     ; Power Switch
+SI_PCI_PME              equ     07h     ; PCI PME#
+SI_AC_POWER             equ     08h     ; AC Power Restored
+
+;----------------------------------------------------------------------------
+;    Structure Type 2: Equates used in BASE BOARD INFORMATION Structure
+;----------------------------------------------------------------------------
+; Base Board Type (an enumerated BYTE value)
+; Equate Name                   Value     Meaning
+;                               00h     ; Reserved
+BB_UNKNOWN              equ     01h     ; Unknown
+BB_OTHER                equ     02h     ; Other
+BB_SERVER_BLADE         equ     03h     ; Server Blade
+BB_CONNECTIVITY_SWITCH  equ     04h     ; Connectivity Switch
+BB_SYS_MGMT_MODULE      equ     05h     ; System Management Module
+BB_PROCESSOR_MODULE     equ     06h     ; Processor Module
+BB_IO_MODULE            equ     07h     ; I/O Module
+BB_MEMORY_MODULE        equ     08h     ; Memory Module
+BB_DAUGHTER_BOARD       equ     09h     ; Daughter Board
+BB_MOTHER_BOARD         equ     0Ah     ; Motherboard (includes Processor, Memory, and I/O)
+BB_PROC_MEM_MODULE      equ     0Bh     ; Processor/Memory Module
+BB_PROC_IO_MODULE       equ     0Ch     ; Processor/IO Module
+BB_INTERCONNECT_BOARD   equ     0Dh     ; Interconnect Board
+
+;----------------------------------------------------------------------------
+;    Structure Type 3: Equates used in SYSTEM ENCLOSURE/CHASSIS Structure
+;----------------------------------------------------------------------------
+; System Chassis Type (an enumerated BYTE value)
+; Equate Name                   Value     Meaning
+;                               00h     ; Reserved
+SE_OTHER                equ     01h     ; Other
+SE_UNKNOWN              equ     02h     ; Unknown
+SE_DESKTOP              equ     03h     ; Desktop
+SE_LOW_PROFILE_DTP      equ     04h     ; Low Profile Desktop
+SE_PIZZA_BOX            equ     05h     ; Pizza Box
+SE_MINI_TOWER           equ     06h     ; Mini Tower
+SE_TOWER                equ     07h     ; Tower
+SE_PORTABLE             equ     08h     ; Portable
+SE_LAPTOP               equ     09h     ; Laptop
+SE_NOTEBOOK             equ     0Ah     ; Notebook
+SE_HAND_HELD            equ     0Bh     ; Handheld
+SE_DOCKING_STATION      equ     0Ch     ; Docking Station
+SE_ALL_IN_ONE           equ     0Dh     ; All in One
+SE_SUB_NOTEBOOK         equ     0Eh     ; Sub Notebook
+SE_SPACE_SAVING         equ     0Fh     ; Space Saving
+SE_LUNCH_BOX            equ     10h     ; Lunch Box
+SE_MAIN_SER_CHASIS      equ     11h     ; Main Server Chassis
+SE_EXP_CHASIS           equ     12h     ; Expansion Chassis
+SE_SUB_CHASIS           equ     13h     ; SubChassis
+SE_BUS_EXP_CHASIS       equ     14h     ; Bus Expansion Chassis
+SE_PERPL_CHASIS         equ     15h     ; Peripheral Chassis
+SE_RAID_CHASIS          equ     16h     ; RAID Chassis
+SE_ROCK_MOUNT_CHASIS    equ     17h     ; Rack Mount Chassis
+SE_SEALED_CASE_PC       equ     18h     ; Sealed-case PC
+SE_MULTI_SYS_CHASIS     equ     19h     ; Multi-System Chasis
+SE_COMPACT_PCI          equ     1Ah     ; CompactPCI
+SE_ADVANCED_TCA         equ     1Bh     ; AdvancedTCA
+SE_BLADE                equ     1Ch     ; Blade
+SE_BLADE_ENCLOSURE      equ     1Dh     ; Blade Enclosure
+SE_TABLET               equ     1Eh     ; Tablet
+SE_CONVERTIBLE          equ     1Fh     ; Convertible
+SE_DETACHABLE           equ     20h     ; Detachable
+SE_IOT_GATEWAY          equ     21h     ; IoT Gateway
+SE_EMBEDED_PC           equ     22h     ; Embedded PC
+SE_MINI_PC              equ     23h     ; Mini PC
+SE_STICK_PC             equ     24h     ; Stick PC
+
+;----------------------------------------------------------------------------
+; System Chassis Bootup state, Chassis Power Supply and Chassis Thermal State
+; equates (an enumerated BYTE value)
+; Equate Name                   Value     Meaning
+SCS_OTHER               equ     01h     ; Other
+SCS_UNKNOWN             equ     02h     ; Unknown
+SCS_SAFE                equ     03h     ; Safe
+SCS_WARNING             equ     04h     ; Warning
+SCS_CRITICAL            equ     05h     ; Critical
+SCS_NON_RECOVERABLE     equ     06h     ; Non-recoverable
+
+;----------------------------------------------------------------------------
+; System Chassis Security state equates (an enumerated BYTE value)
+; Equate Name                   Value     Meaning
+SSS_OTHER               equ     01h     ; Other
+SSS_UNKNOWN             equ     02h     ; Unknown
+SSS_NONE                equ     03h     ; None
+SSS_EXT_INTE_LOCKED     equ     04h     ; External interface locked out
+SSS_EXT_INTE_ENABLE     equ     05h     ; External interface enabled
+
+;----------------------------------------------------------------------------
+;    Structure Type 4: Equates used in PROCESSOR INFORMATION Structure
+;----------------------------------------------------------------------------
+; Processor Type equates (an enumerated BYTE value)
+; Equate Name                   Value     Meaning
+CPU_OTHER               equ     01h     ; Other
+CPU_UNKNOWN             equ     02h     ; Unknown
+CPU_CENTRAL_PROCESSOR   equ     03h     ; Central processor
+CPU_MATH_PROCESSOR      equ     04h     ; Math processor
+CPU_DSP_PROCESSOR       equ     05h     ; DSP processor
+CPU_VIDEO_PROCESSOR     equ     06h     ; Video Processor
+
+;----------------------------------------------------------------------------
+; Processor Family equates (an enumerated BYTE value)
+; Equate Name                   Value     Meaning
+FA_OTHER                equ     01h     ; Other
+FA_UNKNOWN              equ     02h     ; Unknown
+FA_8086                 equ     03h     ; 8086
+FA_80286                equ     04h     ; 80286
+FA_80386                equ     05h     ; 80386
+FA_80486                equ     06h     ; 80486
+FA_8087                 equ     07h     ; 8087
+FA_80287                equ     08h     ; 80287
+FA_80387                equ     09h     ; 80387
+FA_80487                equ     0Ah     ; 80487
+FA_PENTIUM_FAMILY       equ     0Bh     ; Pentium family
+FA_PENTIUM_PRO_FAMILY   equ     0Ch     ; Pemtium-Pro family
+FA_PENTIUM_II_FAMILY    equ     0Dh     ; Pentium II family
+FA_PENTIUM_MMX_FAMILY   equ     0Eh     ; Pentium mmx family
+FA_CELERON_FAMILY       equ     0Fh     ; Pentium Celeron family
+FA_PII_XEON_FAMILY      equ     10h     ; Pentium II Xeon family
+FA_PIII_FAMILY          equ     11h     ; Pentium III family
+FA_M1_FAMILY            equ     12h     ; M1 family
+FA_M2_FAMILY            equ     13h     ; M2 family
+FA_CELERON_M            equ     14h     ; Intel(R) Celeron(R) M Processor
+FA_PENTIUM_4_HT         equ     15h     ; Intel(R) Pentium(R) 4 HT Processor
+FA_AMD_DURON_FAMILY     equ     18h     ; AMD Duron family
+FA_K5_FAMILY            equ     19h     ; AMD K5 family
+FA_K6_FAMILY            equ     1Ah     ; AMD K6 family
+FA_K6_2_FAMILY          equ     1Bh     ; AMD K6-2 family
+FA_K6_3_FAMILY          equ     1Ch     ; AMD K6-3 family
+FA_AMD_ATHLON_FAMILY    equ     1Dh     ; AMD Athlon family
+FA_AMD_2900_FAMILY      equ     1Eh     ; AMD29000 family
+FA_K6_2P_FAMILY         equ     1Fh     ; AMD K6-2+ family
+FA_POWER_PC_FAMILY      equ     20h     ; Power Pc family
+FA_POWER_PC_601         equ     21h     ; Power Pc 601 family
+FA_POWER_PC_603         equ     22h     ; Power Pc 603 family
+FA_POWER_PC_603_PLUS    equ     23h     ; Power Pc 603 Plus family
+FA_POWER_PC_604         equ     24h     ; Power Pc 604 family
+FA_POWER_PC_620         equ     25h     ; Power Pc 620 family
+FA_POWER_PC_X704        equ     26h     ; Power Pc x704 family
+FA_POWER_PC_750         equ     27h     ; Power Pc 750 family
+FA_CORE_DUO             equ     28h     ; Intel(R) Core(TM) Duo Processor
+FA_CORE_DUO_MOBILE      equ     29h     ; Intel(R) Core(TM) Duo Mobile Processor
+FA_CORE_SOLO_MOBILE     equ     2Ah     ; Intel(R) Core(TM) Solo Mobile Processor
+FA_ATOM                 equ     2Bh     ; Intel(R) Atom(TM) Processor
+FA_CORE_M               equ     2Ch     ; Intel(R) Core(TM) M Processor
+FA_CORE_M3              equ     2Dh     ; Intel(R) Core(TM) m3 Processor
+FA_CORE_M5              equ     2Eh     ; Intel(R) Core(TM) m5 Processor
+FA_CORE_M7              equ     2Fh     ; Intel(R) Core(TM) m7 Processor
+FA_ALPHA_FAMILY         equ     30h     ; DEC Aplpha family
+FA_ALPHA_21064          equ     31h     ; Alpha 21064
+FA_ALPHA_21066          equ     32h     ; Alpha 21066
+FA_ALPHA_21164          equ     33h     ; Alpha 21164
+FA_ALPHA_21164PC        equ     34h     ; Alpha 21064PC
+FA_ALPHA_21164a         equ     35h     ; Alpha 21164a
+FA_ALPHA_21264          equ     36h     ; Alpha 21264
+FA_ALPHA_21364          equ     37h     ; Alpha 21364
+FA_AMD_TURION_II_ULTRA	equ		38h		; AMD Turion II Ultra Dual-Core Mobile M Processor Family
+FA_AMD_TURION_II_DUAL	equ		39h		; AMD Turion II Dual-Core Mobile M Processor Family
+FA_ATHLON_II_DUAL		equ		3Ah		; AMD Athlon II Dual-Core M Processor
+FA_OPTERON_6100			equ		3Bh		; AMD Opteron 6100 Series Processor
+FA_OPTERON_4100			equ		3Ch		; AMD Opteron 4100 Series Processor
+FA_OPTERON_6200			equ		3Dh		; AMD Opteron 6200 Series Processor
+FA_OPTERON_4200			equ		3Eh		; AMD Opteron 4200 Series Processor
+FA_AMD_FX               equ     3Fh     ; AMD FX(TM) Series Processor
+FA_MIPS_FAMILY          equ     40h     ; Mips family
+FA_MIPS_R4000           equ     41h     ; Mips R4000
+FA_MIPS_R4200           equ     42h     ; Mips R4200
+FA_MIPS_R4400           equ     43h     ; Mips R4400
+FA_MIPS_R4600           equ     44h     ; Mips R4600
+FA_MIPS_R10000          equ     45h     ; Mips R10000
+FA_AMD_C                equ     46h     ; AMD C-Series Processor
+FA_AMD_E                equ     47h     ; AMD E-Series Processor
+FA_AMD_A                equ     48h     ; AMD A-Series Processor
+FA_AMD_G                equ     49h     ; AMD G-Series Processor
+FA_AMD_Z                equ     4Ah     ; AMD Z-Series Processor
+FA_AMD_R                equ     4Bh     ; AMD R-Series Processor
+FA_OPTERON_4300         equ     4Ch     ; AMD Opteron(TM) 4300 Series Processor
+FA_OPTERON_6300         equ     4Dh     ; AMD Opteron(TM) 6300 Series Processor
+FA_OPTERON_3300         equ     4Eh     ; AMD Opteron(TM) 3300 Series Processor
+FA_FIREPRO              equ     4Fh     ; AMD FirePro(TM) Series Processor
+FA_SPARC_FAMILY         equ     50h     ; Sparc family
+FA_SPARC_SUPPERSPARC    equ     51h     ; SupperSPARC
+FA_SPARC_MICROSPARC_II  equ     52h     ; microSPARC II
+FA_SPARC_MICROSPARC_IIep equ    53h     ; microSPARC IIep
+FA_SPARC_ULTRASPARC     equ     54h     ; ultraSPARC
+FA_SPARC_ULTRASPARC_II  equ     55h     ; ultraSPARC II
+FA_SPARC_ULTRASPARC_II_i equ    56h     ; ultraSPARC IIi
+FA_SPARC_ULTRASPARC_III equ     57h     ; ultraSPARC III
+FA_SPARC_ULTRASPARC_III_i equ   58h     ; ultraSPARC IIIi
+FA_68040_FAMILY         equ     60h     ; 68040 family
+FA_68xxx_FAMILY         equ     61h     ; 68xxx family
+FA_68000                equ     62h     ; Motorola 68000 family
+FA_68010                equ     63h     ; Motorola 68010 family
+FA_68020                equ     64h     ; Motorola 68020 family
+FA_68030                equ     65h     ; Motorola 68030 family
+FA_AMD_ATHLON_X4        equ     66h     ; AMD Athlon(TM) X4 Quad-Core Processor Family
+FA_AMD_OPTERON_X1000    equ     67h     ; AMD Opteron(TM) X1000 Series Processor
+FA_AMD_OPTERON_X2000    equ     68h     ; AMD Opteron(TM) X2000 Series APU
+FA_AMD_OPTERON_A        equ     69h     ; AMD Opteron(TM) A Series Processor
+FA_AMD_OPTERON_X3000    equ     6Ah     ; AMD Opteron(TM) X3000 Series APU
+FA_AMD_ZEN              equ     6Bh     ; AMD Zen Processor Family
+FA_HOBBIT_FAMILY        equ     70h     ; Hobbit family
+FA_CRUSOE_TM5000        equ     78h     ; Crusoe TM5000
+FA_CRUSOE_TM3000        equ     79h     ; Crusoe TM3000
+FA_EFFICEON_TM8000      equ     7Ah     ; Efficeon TM8000
+FA_WEITEK_FAMILY        equ     80h     ; Weitek family
+FA_ITANIUM_FAMILY       equ     82h     ; Itanium family
+FA_AMD_ATHLON_64_FAMILY equ     83h     ; AMD Athlon 64 family
+FA_AMD_OPTERON_FAMILY   equ     84h     ; AMD Opteron family
+FA_AMD_SEMPRON_FAMILY   equ     85h     ; AMD Sempron family
+FA_AMD_TURION_FAMILY    equ     86h     ; AMD Turion family
+FA_AMD_OPTERON_DUALCORE equ     87h     ; Dual-Core AMD Opteron family
+FA_AMD_ATHLON_64X2_DUALCORE equ 88h     ; AMD Athlon 64 X2 Dual-Core
+FA_AMD_TURION_64X2_MOBILE equ   89h     ; AMD Turion 64 X2 Mobile
+FA_AMD_QUAD_CORE_OPTERON equ    8Ah     ; Quad-Core AMD Opteron(TM) Processor Family
+FA_AMD_3RD_GEN_OPTERON  equ     8Bh     ; Third-Generation AMD Opteron(TM) Processor Family
+FA_AMD_PHENOM_FX_QUAD_CORE equ  8Ch     ; AMD Phenom(TM) FX Quad-Core Processor Family
+FA_AMD_PHENOM_X4_QUAD_CORE equ  8Dh     ; AMD Phenom(TM) X4 Quad-Core Processor Family
+FA_AMD_PHENOM_X2_DUAL_CORE equ  8Eh     ; AMD Phenom(TM) X2 Dual-Core Processor Family
+FA_AMD_ATHLON_X2_DUAL_CORE equ  8Fh     ; AMD Athlon(TM) X2 Dual-Core Processor Family
+FA_RISC_FAMILY          equ     90h     ; RISC family
+FA_PA_RISC_8500         equ     91h     ; PA-RISC 8500
+FA_PA_RISC_8000         equ     92h     ; PA-RISC 8000
+FA_PA_RISC_7300LC       equ     93h     ; PA-RISC 7300LC
+FA_PA_RISC_7200         equ     94h     ; PA-RISC 7200
+FA_PA_RISC_7100LC       equ     95h     ; PA-RISC 7100LC
+FA_PA_RISC_7100         equ     96h     ; PA-RISC 7100
+FA_V30_FAMILY           equ     0A0h    ; V30 family
+FA_QUAD_CORE_XEON_3200  equ     0A1h    ; Quad-Core Intel(R) Xeon(R) processor 3200 Series
+FA_DUAL_CORE_XEON_3000  equ     0A2h    ; Dual-Core Intel(R) Xeon(R) processor 3000 Series
+FA_QUAD_CORE_XEON_5300  equ     0A3h    ; Quad-Core Intel(R) Xeon(R) processor 5300 Series
+FA_DUAL_CORE_XEON_5100  equ     0A4h    ; Dual-Core Intel(R) Xeon(R) processor 5100 Series
+FA_DUAL_CORE_XEON_5000  equ     0A5h    ; Dual-Core Intel(R) Xeon(R) processor 5000 Series
+FA_DUAL_CORE_XEON_LV    equ     0A6h    ; Dual-Core Intel(R) Xeon(R) processor LV
+FA_DUAL_CORE_XEON_ULV   equ     0A7h    ; Dual-Core Intel(R) Xeon(R) processor ULV
+FA_DUAL_CORE_XEON_7100  equ     0A8h    ; Dual-Core Intel(R) Xeon(R) processor 7100 Series
+FA_QUAD_CORE_XEON_5400  equ     0A9h    ; Quad-Core Intel(R) Xeon(R) processor 5400 Series
+FA_QUAD_CORE_XEON       equ     0AAh    ; Quad-Core Intel(R) Xeon(R) processor
+FA_DUAL_CORE_XEON_5200  equ     0ABh    ; Dual-Core Intel(R) Xeon(R) processor 5200 Series
+FA_DUAL_CORE_XEON_7200  equ     0ACh    ; Dual-Core Intel(R) Xeon(R) processor 7200 Series
+FA_QUAD_CORE_XEON_7300  equ     0ADh    ; Quad-Core Intel(R) Xeon(R) processor 7300 Series
+FA_QUAD_CORE_XEON_7400  equ     0AEh    ; Quad-Core Intel(R) Xeon(R) processor 7400 Series
+FA_MULTI_CORE_XEON_7400 equ     0AFh    ; Multi-Core Intel(R) Xeon(R) processor 7400 Series
+FA_PIII_XEON_FAMILY     equ     0B0h    ; Pentium III Xeon processor
+FA_PIII_SPEED_STEP      equ     0B1h    ; Pentium Processor with Intel Speed Step Technology
+FA_P4_FAMILY            equ     0B2h    ; Pentium 4 Processor
+FA_XEON_FAMILY          equ     0B3h    ; Intel Xeon Family
+FA_AS400_FAMILY         equ     0B4h    ; AS400 Family
+FA_XEON_MP              equ     0B5h    ; Intel Xeon Processor MP
+FA_AMD_ATHLON_XP        equ     0B6h    ; AMD Athlon XP Processor Family
+FA_AMD_ATHLON_MP        equ     0B7h    ; AMD Athlon MP Processor Family
+FA_ITANIUM2             equ     0B8h    ; Intel Itanium2 Processor
+FA_PENTIUM_M_FAMILY     equ     0B9h    ; Intel Pentium M Processor
+FA_CELERON_D_FAMILY     equ     0BAh    ; Intel Celeron D Processor
+FA_PENTIUM_D_FAMILY     equ     0BBh    ; Intel Pentium D Processor
+FA_PENTIUM_EXTREME_FAMILY equ   0BCh    ; Intel Pentium Processor Extreme Edition
+FA_INTEL_CORE_SOLE      equ     0BDh    ; Intel(R) Core(TM) Solo Processor
+FA_INTEL_CORE_2         equ     0BFh    ; Intel(R) Core(TM)2 Duo Processor
+FA_INTEL_CORE_2_SOLO    equ     0C0h    ; Intel(R) Core(TM)2 Solo processor
+FA_INTEL_CORE_2_EXTREME equ     0C1h    ; Intel(R) Core(TM)2 Extreme processor
+FA_INTEL_CORE_2_QUAD    equ     0C2h    ; Intel(R) Core(TM)2 Quad processor
+FA_CORE_2_EXTREME_MOBIL equ     0C3h    ; Intel(R) Core(TM)2 Extreme Mobile processor
+FA_CORE_2_DUO_MOBIL     equ     0C4h    ; Intel(R) Core(TM)2 Duo Mobile processor
+FA_CORE_2_SOLO_MOBIL    equ     0C5h    ; Intel(R) Core(TM)2 Solo Mobile processor
+FA_CORE_I7              equ     0C6h    ; Intel(R) Core(TM)2 i7 processor
+FA_DUAL_CORE_CELERON    equ     0C7h    ; Dual-Core Intel(R) Celeron(R) processor
+FA_IBM390_FAMILY        equ     0C8h    ; IBM390 family
+FA_G4_FAMILY            equ     0C9h    ; G4 family
+FA_G5_FAMILY            equ     0CAh    ; G5 family
+FA_G6_FAMILY            equ     0CBh    ; ESA/390 G6 family
+FA_Z_ARCHITECTURE       equ     0CCh    ; z/Architecture Base
+FA_INTEL_CORE_I5		equ		0CDh	; Intel Core i5 Processor
+FA_INTEL_CORE_I3		equ		0CEh	; Intel Core i3 Processor
+FA_VIA_C7_M             equ     0D2h    ; VIA C7 M Processor
+FA_VIA_C7_D             equ     0D3h    ; VIA C7 D Processor
+FA_VIA_C7               equ     0D4h    ; VIA C7 Processor
+FA_VIA_EDEN             equ     0D5h    ; VIA Eden Processor
+FA_MULTI_CORE_XEON      equ     0D6h    ; Multi-Core Intel(R) Xeon(R) processor
+FA_DUAL_CORE_XEON_3XXX  equ     0D7h    ; Dual-Core Intel(R) Xeon(R) processor 3xxx Series
+FA_QUAD_CORE_XEON_3XXX  equ     0D8h    ; Quad-Core Intel(R) Xeon(R) processor 3xxx Series
+FA_VIA_NANO             equ     0D9h    ; VIA Nano(TM) Processor
+FA_DUAL_CORE_XEON_5XXX  equ     0DAh    ; Dual-Core Intel(R) Xeon(R) processor 5xxx Series
+FA_QUAD_CORE_XEON_5XXX  equ     0DBh    ; Quad-Core Intel(R) Xeon(R) processor 5xxx Series
+FA_DUAL_CORE_XEON_7XXX  equ     0DDh    ; Dual-Core Intel(R) Xeon(R) processor 7xxx Series
+FA_QUAD_CORE_XEON_7XXX  equ     0DEh    ; Quad-Core Intel(R) Xeon(R) processor 7xxx Series
+FA_MULTI_CORE_XEON_7XXX equ     0DFh    ; Multi-Core Intel(R) Xeon(R) processor 7xxx Series
+FA_MULTI_CORE_XEON_3400 equ		0E0h	; Multi-Core Intel(R) Xeon(R) processor 3400 Series
+FA_OPTERON_3000         equ     0E4h    ; AMD Opteron(TM) 3000 Series Processor
+FA_SEMPRON_II           equ     0E5h    ; AMD Sempron(TM) II Processor
+FA_EMBEDED_OPTERON_QUAD_CORE equ 0E6h   ; Embedded AMD Opteron(TM) Quad-Core Processor Family
+FA_PHENOM_TRIPLE_CORE   equ     0E7h    ; AMD Phenom(TM) Triple-Core Processor Family
+FA_TUIRON_ULTRA_DUAL_CORE_MOBILE equ 0E8h ; AMD Tuiron(TM) Ultra Dual-Core Mobile Processor Family
+FA_TUIRON_DUAL_CORE_MOBILE equ  0E9h    ; AMD Tuiron(TM) Dual-Core Mobile Processor Family
+FA_ATHLON_DUAL_CORE     equ     0EAh    ; AMD Athlon(TM) Dual-Core Processor Family
+FA_SEMPRON_SI           equ     0EBh    ; AMD Sempron(TM) SI Processor Family
+FA_PHENOM_II			equ		0ECh	; AMD Phenom II Processor Family
+FA_ATHLON_FAMILY		equ		0EDh	; AMD Athlon II Processor Family
+FA_AMD_OPTERON_6CORE	equ		0EEh	; Six-Core AMD Opteron Processor Family
+FA_AMD_SEMPRON_M		equ		0EFh	; AMD Sempron M Processor Family
+FA_I860_FAMILY          equ     0FAh    ; i860 family
+FA_I960_FAMILY          equ     0FBh    ; i960 family
+FA_PROC_FAMILY_2        equ     0FEh    ; Indicator to obtain the processor
+                                        ; family from the Processor Family 2
+                                        ; field
+FA_ARM_V7               equ     100h    ; ARMv7
+FA_ARM_V8               equ     101h    ; ARMv8
+FA_SH_3                 equ     104h    ; SH-3
+FA_SH_4                 equ     105h    ; SH-4
+FA_ARM                  equ     118h    ; ARM
+FA_STRONG_ARM           equ     119h    ; StrongARM
+FA_6x86                 equ     12Ch    ; 6x86
+FA_MEDIA_GX             equ     12Dh    ; MediaGX
+FA_MII                  equ     12Eh    ; MII
+FA_WINCHIP              equ     140h    ; WinChip
+FA_DSP                  equ     15Eh    ; DSP
+FA_VIDEO_PROCESSOR      equ     1F4h    ; Video Processor
+;----------------------------------------------------------------------------
+; Processor Upgrade equates (an enumerated BYTE value)
+; Equate Name                   Value     Meaning
+UPG_OTHER               equ     01h     ; Other
+UPG_UNKNOWN             equ     02h     ; Unknown
+UPG_DAUGHTER_BOARD      equ     03h     ; Daughter board
+UPG_ZIF_SOCKET          equ     04h     ; ZIF socket
+UPG_REPLACEABLE_PIGGY_BACK equ  05h     ; Replaceable Piggy Back
+UPG_NONE                equ     06h     ; None
+UPG_LIF_SOCKET          equ     07h     ; LIF socket
+UPG_SLOT1               equ     08h     ; Slot 1
+UPG_SLOT2               equ     09h     ; Slot 2
+UPG_370                 equ     0Ah     ; 370 Pin Socket
+UPG_SLOTA               equ     0Bh     ; Slot A
+UPG_SLOTM               equ     0Ch     ; Slot M
+UPG_423                 equ     0Dh     ; Socket 423
+UPG_SOCKETA             equ     0Eh     ; Socket A (Socket 462)
+UPG_SOCKET478           equ     0Fh     ; Socket 478
+UPG_SOCKET754           equ     10h     ; Socket 754
+UPG_SOCKET940           equ     11h     ; Socket 940
+UPG_SOCKET939           equ     12h     ; Socket 939
+UPG_SOCKET604           equ     13h     ; Socket mPGA604
+UPG_SOCKET771           equ     14h     ; Socket LGA771
+UPG_SOCKET775           equ     15h     ; Socket LGA775
+UPG_SOCKET_S1           equ     16h     ; Socket S1
+UPG_SOCKET_AM2          equ     17h     ; Socket AM2
+UPG_SOCKET_F            equ     18h     ; Socket F (1207)
+UPG_SOCKET_LGA_1366     equ     19h     ; Socket LGA 1366
+UPG_SOCKET_G34			equ		1Ah		; Socket G34
+UPG_SOCKET_AM3			equ		1Bh		; Socket AM3
+UPG_SOCKET_C32			equ		1Ch		; Socket C32
+UPG_SOCKET_LGA_1156		equ		1Dh		; Socket LGA 1156
+UPG_SOCKET_LGA_1567		equ		1Eh		; Socket LGA 1567
+UPG_SOCKET_PGA_988A		equ		1Fh		; Socket PGA 988A
+UPG_SOCKET_BGA_1288		equ		20h		; Socket BGA 1288
+UPG_SOCKET_RPGA_988B	equ		21h		; Socket rPGA988B
+UPG_SOCKET_BGA_1023		equ		22h		; Socket BGA 1023
+UPG_SOCKET_BGA_1224		equ		23h		; Socket BGA 1224
+UPG_SOCKET_BGA_1155		equ		24h		; Socket BGA 1155
+UPG_SOCKET_LGA_1356		equ		25h		; Socket LGA 1356
+UPG_SOCKET_LGA_2011		equ		26h		; Socket LGA 2011
+UPG_SOCKET_FS_1  		equ		27h		; Socket FS 1
+UPG_SOCKET_FS_2  		equ		28h		; Socket FS 2
+UPG_SOCKET_FM_1  		equ		29h		; Socket FM 1
+UPG_SOCKET_FM_2  		equ		2Ah		; Socket FM 2
+UPG_SOCKET_LGA_2011_3   equ     2Bh     ; Socket LGA2011-3
+UPG_SOCKET_LGA_1356_3   equ     2Ch     ; Socket LGA1356-3
+UPG_SOCKET_LGA_1150     equ     2Dh     ; Socket LGA1150
+UPG_SOCKET_BGA_1168     equ     2Eh     ; Socket BGA1168
+UPG_SOCKET_BGA_1234     equ     2Fh     ; Socket BGA1234
+UPG_SOCKET_BGA_1364     equ     30h     ; Socket BGA1364
+UPG_SOCKET_AM_4         equ     31h     ; Socket AM4
+UPG_SOCKET_LGA_1151     equ     32h     ; Socket LGA1151
+UPG_SOCKET_BGA_1356     equ     33h     ; Socket BGA1356
+UPG_SOCKET_BGA_1440     equ     34h     ; Socket BGA1440
+UPG_SOCKET_BGA_1515     equ     35h     ; Socket BGA1515
+UPG_SOCKET_LGA_3647_1   equ     36h     ; Socket LGA3647-1
+UPG_SOCKET_SP3          equ     37h     ; Socket SP3
+UPG_SOCKET_SP3_R2       equ     38h     ; Socket SP3r2
+
+;----------------------------------------------------------------------------
+; Processor Voltage (a byte value)
+; Voltage is specified in Bit6-0 of this byte. Bit6-0 is interpreted according
+; to Bit-7.
+; Bit-7 = 0, Standard type
+;           In this case Bit6-0 is a bit-mapped list of allowed voltages
+;           (bit-mapped voltage equates below)
+;    = 1, User defined type
+;           In this case Bit6-0 is an enumerated value calculated as follows
+;           value = 10*the voltage in volts
+;           e.g. for 2.9V, bit6-0 should contain 29 decimal or 13h.
+;----------------------------------------------------------------------------
+; Equate Name               Value           Meaning
+STANDARD            equ     00000000b       ; Bit-7 = 0, Standard (bit6-0 is a list of allowed voltages)
+USER_DEFINED        equ     10000000b       ; Bit-7 = 1, User defined (bit6-0 is an enumerated value)
+
+; Bit-mappes Voltage equates
+VOLT_5              equ     00000001b       ; Bit-0 = 1, 5 Volt
+VOLT_33             equ     00000010b       ; Bit-1 = 1, 3.3 Volt
+VOLT_29             equ     00000100b       ; Bit-2 = 1, 2.9 Volt
+                                            ; Bit6-3.....not defined
+
+;----------------------------------------------------------------------------
+;    Structure Type 5: Equates used in MEMORY CONTROLLER Structure
+;----------------------------------------------------------------------------
+; Memory Controller Error Detecting method equates (an enumerated BYTE value)
+; Equate Name               Value     Meaning
+MC_OTHER            equ     01h     ; Other
+MC_UNKNOWN          equ     02h     ; Unknown
+MC_NONE             equ     03h     ; None
+MC_8BIT_PARITY      equ     04h     ; Parity
+MC_32BIT_ECC        equ     05h     ; 32-bit ECC
+MC_64BIT_ECC        equ     06h     ; 64-bit ECC
+MC_128BIT_ECC       equ     07h     ; 128-bit ECC
+MC_CRC              equ     08h     ; CRC
+
+;----------------------------------------------------------------------------
+; Memory Controller supported Interleave equates (an enumerated BYTE value)
+; Equate Name               Value     Meaning
+IS_OTHER            equ     01h     ; Other
+IS_UNKNOWN          equ     02h     ; Unknown
+IS_ONEWAY_INTLEAVE  equ     03h     ; One-way Interleave
+IS_TWOWAY_INTLEAVE  equ     04h     ; Two-way Interleave
+IS_FORWAY_INTLEAVE  equ     05h     ; Four-way Interleave
+IS_EHTWAY_INTLEAVE  equ     06h     ; Eight-way Interleave
+IS_STNWAY_INTLEAVE  equ     07h     ; Sixteen-way Interleave
+
+;----------------------------------------------------------------------------
+; Memory Controller Current Interleave equates (an enumerated BYTE value)
+; Equate Name               Value     Meaning
+ICS_OTHER           equ     01h     ; Other
+ICS_UNKNOWN         equ     02h     ; Unknown
+ICS_ONEWAY_INTLEAVE equ     03h     ; One-way Interleave
+ICS_TWOWAY_INTLEAVE equ     04h     ; Two-way Interleave
+ICS_FORWAY_INTLEAVE equ     05h     ; Four-way Interleave
+ICS_EHTWAY_INTLEAVE equ     06h     ; Eight-way Interleave
+ICS_STNWAY_INTLEAVE equ     07h     ; Sixteen-way Interleave
+
+;----------------------------------------------------------------------------
+;    Structure Type 6: Equates used in MEMORY MODULE Structure
+;----------------------------------------------------------------------------
+; Memory Speed equates (an enumerated byte value)
+; Equate Name               Value     Meaning
+MM_SPEED_UNKNOWN    equ     00h     ; Memory speed unknown
+                                    ; if memory speed is known, specify it as mentioned in SMBDESC.DEF
+; Memory Module Bank Connection equates (an enumerated byte value)
+; Equate Name               Value     Meaning
+MM_NO_BANK_CONNECTION equ   0Fh     ; No Bank connection
+RAS_1               equ     00      ; Ras-1 line
+RAS_2               equ     01      ; Ras-2 line
+RAS_3               equ     02      ; Ras-3 line
+RAS_4               equ     03      ; Ras-4 line
+RAS_5               equ     04      ; Ras-5 line
+RAS_6               equ     05      ; Ras-6 line
+RAS_7               equ     06      ; Ras-7 line
+RAS_8               equ     07      ; Ras-8 line
+RAS_9               equ     08      ; Ras-9 line
+RAS_10              equ     09      ; Ras-10 line
+RAS_11              equ     10      ; Ras-11 line
+RAS_12              equ     11      ; Ras-12 line
+RAS_13              equ     12      ; Ras-13 line
+RAS_14              equ     13      ; Ras-14 line
+RAS_15              equ     14      ; Ras-15 line
+RAS_16              equ     15      ; Ras-16 line
+
+;----------------------------------------------------------------------------
+; Memory Module Size equates (a byte value)
+;     Bit-7 = 0, module has signle-bank connection
+;           1, module has double-bank connection
+;     Bit6-0= n, where 2^n is the memory module size in MB
+;           (7Dh = Not determinable
+;           7Eh = Module is installed but not enabled
+;           7Fh - Module is not installed)
+;----------------------------------------------------------------------------
+; Equate Name               Value      Meaning
+MM_SINGLE_BANK      equ     00000000b; Bit-7 = 0, Single bank connection
+MM_DOUBLE_BANK      equ     10000000b; Bit-7 = 1, Double bank Connection
+MM_SIZE_NOT_DETERMINABLE equ    7Dh  ; Memory Size is not determinable
+MM_NOT_ENABLED      equ     7Eh      ; Memory Socket is populated but not enabled
+MM_NOT_INSTALLED    equ     7Fh      ; Memory Not installed
+
+;----------------------------------------------------------------------------
+; Memory Module Type equates (Bit-field word Value)
+; Equate Name               Value           Meaning
+;                                1         0
+;                           5432109876543210
+MM_TYPE_OTHER       equ     0000000000000001b; Other type
+MM_TYPE_UNKNOWN     equ     0000000000000010b; Unknown type
+MM_TYPE_STANDARD    equ     0000000000000100b; Standard type
+MM_TYPE_FAST_PAGE_MODE equ  0000000000001000b; Fast page mode type
+MM_TYPE_EDO         equ     0000000000010000b; EDO type
+MM_TYPE_PARITY      equ     0000000000100000b; Parity type
+MM_TYPE_ECC         equ     0000000001000000b; ECC type
+MM_TYPE_SIMM        equ     0000000010000000b; SIMM type
+MM_TYPE_DIMM        equ     0000000100000000b; DIMM type
+MM_TYPE_BURST_EDO   equ     0000001000000000b; BURST EDO type
+MM_TYPE_SDRAM       equ     0000010000000000b; SDRAM type
+                                             ; Bit15-11 Reserved and must be zero
+;----------------------------------------------------------------------------
+;    Structure Type 7: Equates used in CACHE INFORMATION Structure
+;----------------------------------------------------------------------------
+; Cache Error Correction Type equates (an enumerated BYTE value)
+; Equate Name               Value     Meaning
+SR_OTHER            equ     01h     ; Other
+SR_UNKNOWN          equ     02h     ; Unknown
+SR_NONE             equ     03h     ; None
+SR_PARITY           equ     04h     ; Parity
+SR_SINGLEBIT_ECC    equ     05h     ; Single-bit ECC
+SR_MULTIBIT_ECC     equ     06h     ; Multi-bit ECC
+
+;----------------------------------------------------------------------------
+; System Cache Type equates (an enumerated BYTE Value)
+; Equate Name               Value     Meaning
+SCT_OTHER           equ     01h     ; Other
+SCT_UNKNOWN         equ     02h     ; Unknown
+SCT_INSTRUCTION     equ     03h     ; Instruction
+SCT_DATA            equ     04h     ; Data
+SCT_UNIFIED         equ     05h     ; Unified
+
+;----------------------------------------------------------------------------
+; System Cache Associativity equates (an enumerated BYTE Value)
+; Equate Name               Value     Meaning
+CA_OTHER            equ     01h     ; Other
+CA_UNKNOWN          equ     02h     ; Unknown
+CA_DIRECT_MAPPED    equ     03h     ; Direct Mapped
+CA_2WAY_ASSOC       equ     04h     ; 2way Associativity
+CA_4WAY_ASSOC       equ     05h     ; 4way Associativity
+CA_FULLY_ASSOC      equ     06h     ; Fully Associativity
+CA_8WAY_ASSOC       equ     07h     ; 8way Associativity
+CA_16WAY_ASSOC      equ     08h     ; 16way Associativity
+CA_12WAY_ASSOC      equ     09h     ; 12way Associativity
+CA_24WAY_ASSOC      equ     0Ah     ; 24way Associativity
+CA_32WAY_ASSOC      equ     0Bh     ; 32way Associativity
+CA_48WAY_ASSOC      equ     0Ch     ; 48way Associativity
+CA_64WAY_ASSOC      equ     0Dh     ; 64way Associativity
+CA_20WAY_ASSOC      equ     0Eh     ; 20way Associativity
+
+;----------------------------------------------------------------------------
+; Cache Type equates (Bit-field word Value)
+; Equate Name               Value                   Meaning
+;                                1         0
+;                           5432109876543210
+CH_OTHER            equ     0000000000000001b       ; Other
+CH_UNKNOWN          equ     0000000000000010b       ; Unknown
+CH_NON_BURST        equ     0000000000000100b       ; Non-burst
+CH_BURST            equ     0000000000001000b       ; Burst
+CH_PIPELINE_BURST   equ     0000000000010000b       ; Pipeline Burst
+CH_SYNCHRONOUS      equ     0000000000100000b       ; Synchronous
+CH_ASYNCHRONOUS     equ     0000000001000000b       ; Asynchronous
+                                                    ; Bit15-7 is reserved and must be zero
+
+;----------------------------------------------------------------------------
+; Equates used in the WORD defining the following:
+;    Bit15-10= Reserved, must be 0
+;    Bit9-8 = Cache Configuration Operational Mode
+;    Bit-7  = Cache Enable/Disable information at boot time
+;    Bit6-5 = Cache Configuration Location relative to CPU module
+;    Bit4   = Reserved, must be zero
+;    Bit3   = Cache Socket
+;    Bit2-0 = Cache Level
+;----------------------------------------------------------------------------
+; Equate Name               Value                   Meaning
+;                                1         0
+;                           5432109876543210
+; Bit9-8 = Cache Configuration Operational Mode equates
+COM_WRITE_THROUGH   equ     0000000000000000b       ; Write-thru
+COM_WRITE_BACK      equ     0000000100000000b       ; Write-back
+COM_VARIES_WITH_MEM equ     0000001000000000b       ; Varies with Memory Address
+COM_UNKNOWN         equ     0000001100000000b       ; Unknown
+; Bit-7 = Cache Enable/Disable information at Boot time equates
+CACHE_ENABLED       equ     0000000010000000b       ; Enabled
+CACHE_DISABLED      equ     0000000000000000b       ; Disabled
+; Bit6-5 = Cache Configuration Location relative to CPU equates
+CCL_INTERNAL        equ     0000000000000000b       ; Internal
+CCL_EXTERNAL        equ     0000000000100000b       ; External
+CCL_RESERVED        equ     0000000001000000b       ; Reserved
+CCL_UNKNOWN         equ     0000000001100000b       ; Unknown
+; Bit-3 = Cache Configuration Socket equates
+CS_NOT_SOCKETED     equ     0000000000000000b       ; Not socketed
+CS_SOCKETED         equ     0000000000001000b       ; Socketed
+; Bit2-0 = Cache Configuration Level equates
+CL_L1               equ     0000000000000000b       ; Level 1
+CL_L2               equ     0000000000000001b       ; Level 2
+CL_L3               equ     0000000000000010b       ; Level 3
+
+;----------------------------------------------------------------------------
+;    Structure Type 8: Equates used in PORT CONNECTOR INFORMATION Structure
+;----------------------------------------------------------------------------
+; Internal Port Connector Type equates (an enumerated BYTE value)
+; Equate Name               Value   Meaning
+PC_NONE             equ     00h     ; None
+PC_CENTRONICS       equ     01h     ; Centronic
+PC_MINI_CENTRONIC   equ     02h     ; Mini Centronic
+PC_PROPRIETARY      equ     03h     ; Proprietary
+PC_DB25_PIN_MALE    equ     04h     ; DB-25 Pin Male
+PC_DB25_PIN_FEMALE  equ     05h     ; DB-25 Pin Female
+PC_DB15_PIN_MALE    equ     06h     ; DB-15 Pin Male
+PC_DB15_PIN_FEMALE  equ     07h     ; DB-15 Pin Female
+PC_DB9_PIN_MALE     equ     08h     ; DB-9 Pin Male
+PC_DB9_PIN_FEMALE   equ     09h     ; DB-9 Pin female
+PC_RJ_11            equ     0Ah     ; RJ-11
+PC_RJ_45            equ     0Bh     ; RJ-45
+PC_50_PINMINI_SCSI  equ     0Ch     ; 50 Pin mini SCSI
+PC_MINI_DIN         equ     0Dh     ; Mini-DIN
+PC_MICRO_DIN        equ     0Eh     ; Miciro-DIN
+PC_PS_2             equ     0Fh     ; PS/2
+PC_INFRARED         equ     10h     ; Infrared
+PC_HP_HIL           equ     11h     ; HP-HIL
+PC_ACCESS_BUS_USB   equ     12h     ; Access Bus (USB)
+PC_SSA_SCSI         equ     13h     ; SSA SCSI
+PC_CIR_DIN8_MALE    equ     14h     ; Circular DIN-8 Male
+PC_CIR_DIN8_FEMALE  equ     15h     ; Circular DIN-8 Female
+PC_ONBOARD_IDE      equ     16h     ; On board IDE
+PC_ONBOARD_FLOPPY   equ     17h     ; On board Floppy
+PC_DUAL_INLINE_9PIN equ     18h     ; 9 pin dual inline (pin 10 cut)
+PC_DUL_INLINE_25PIN equ     19h     ; 25 pin dual inline (pin 26 cut)
+PC_DUL_INLINE_50PIN equ     1Ah     ; 50 pin dual inline
+PC_DUL_INLINE_68PIN equ     1Bh     ; 68 pin dual inline
+PC_ONBRD_SND_INPUT  equ     1Ch     ; On board sound input from CD-ROM
+PC_CENTRONIC_TYPE14 equ     1Dh     ; Mini-centronic type-14
+PC_CENTRONIC_TYPE26 equ     1Eh     ; Mini-centronic type-26
+PC_MINI_JACK        equ     1Fh     ; Mini-jack (headphones)
+PC_BNC              equ     20h     ; BNC
+PC_IEEE_1394        equ     21h     ; 1394
+PC_SAS_SATA         equ     22h     ; SAS/SATA Plug Receptacle
+PC_PC_98            equ     0A0h    ; PC-98
+PC_PC_98_HIRESO     equ     0A1h    ; PC-98Hireso
+PC_PC_H98           equ     0A2h    ; PC-H98
+PC_PC_98_NOTE       equ     0A3h    ; PC-98Note
+PC_PC_98_FULL       equ     0A4h    ; PC-98Full
+PC_OTHER            equ     0FFh    ; Other- Use Reference Designator Strings to supply information
+
+;----------------------------------------------------------------------------
+; Port Connector Type equates (an enumerated BYTE value)
+; Equate Name               Value   Meaning
+PT_NONE             equ     00h     ; None
+PT_PARL_XT_AT       equ     01h     ; Parallel Port XT/AT Compatible
+PT_PARL_PORT_PS2    equ     02h     ; Parallel Port PS/2
+PT_PARL_PORT_ECP    equ     03h     ; Parallel Port ECP
+PT_PARL_PORT_EPP    equ     04h     ; Parallel Port EPP
+PT_PARL_ECP_EPP     equ     05h     ; Parallel Port ECC/EPP
+PT_SR_PORT_XT_AT    equ     06h     ; Serial Port XT/AT Compatible
+PT_SR_PORT_16450    equ     07h     ; Serial Port 16450 Compatible
+PT_SR_PORT_16550    equ     08h     ; Serial Port 16550 Compatible
+PT_SR_PORT_16550A   equ     09h     ; Serial Port 16550A Compatible
+PT_SCSI_PORT        equ     0Ah     ; SCSI Port
+PT_MIDI_PORT        equ     0Bh     ; MIDI Port
+PT_JOY_STIC_PORT    equ     0Ch     ; Joy stick Port
+PT_KEYBOARD_PORT    equ     0Dh     ; Keyboard Port
+PT_MOUSE_PORT       equ     0Eh     ; Mouse Port
+PT_SSA_SCSI         equ     0Fh     ; SSA SCSI Port
+PT_USB              equ     10h     ; USB Port
+PT_FIREWIRE_1394    equ     11h     ; Firewire-1394 Port
+PT_PCMCIA_TYPE1     equ     12h     ; PCMCIA TYPE I
+PT_PCMCIA_TYPE2     equ     13h     ; PCMCIA TYPE II
+PT_PCMCIA_TYPE3     equ     14h     ; PCMCIA TYPE III
+PT_CARDBUS          equ     15h     ; Cardbus
+PT_ACCESS_BUS_PORT  equ     16h     ; Access bus port
+PT_SCSI2            equ     17h     ; SCSI II
+PT_SCSI_WIDE        equ     18h     ; SCSI Wide
+PT_PC_98            equ     19h     ; PC-98
+PT_PC_98_HIRESO     equ     1Ah     ; PC-98Hireso
+PT_PC_H98           equ     1Bh     ; PC-H98
+PT_VIDEO_PORT       equ     1Ch     ; Video port
+PT_AUDIO_PORT       equ     1Dh     ; Audi port
+PT_MODEM_PORT       equ     1Eh     ; Modem Port
+PT_NETWORK_PORT     equ     1Fh     ; Network port
+PT_SATA_PORT        equ     20h     ; SATA
+PT_SAS_PORT         equ     21h     ; SAS
+PT_8251_COMPATIBLE  equ     0A0h    ; 8251 Compatible
+PT_8251_FIFO_COMP   equ     0A1h    ; 8251 FIFO Compatible
+PT_OTHER            equ     0FFh    ; Other
+
+;----------------------------------------------------------------------------
+;    Structure Type 9: Equates used in SYSTEM SLOT INFORMATION Structure
+;----------------------------------------------------------------------------
+; System Slot Type equates (an enumerated BYTE value)
+; Equate Name               Value   Meaning
+SYS_SLOT_OTHER      equ     01h     ; Other
+SYS_SLOT_UNKNOWN    equ     02h     ; Unknown
+SYS_SLOT_ISA        equ     03h     ; ISA
+SYS_SLOT_MCA        equ     04h     ; MCA
+SYS_SLOT_EISA       equ     05h     ; EISA
+SYS_SLOT_PCI        equ     06h     ; PCI
+SYS_SLOT_PCMCIA     equ     07h     ; PCMCIA
+SYS_SLOT_VL_VESA    equ     08h     ; Vl-vesa
+SYS_SLOT_PROPRIETARY    equ 09h     ; Proprietary type
+SYS_SLOT_PROC_CARD_SLOT equ 0Ah     ; Processor Card slot
+SYS_SLOT_PROP_CARD_SLOT equ 0Bh     ; Proprietary Memory card slot
+SYS_SLOT_IO_RISER_SLOT  equ 0Ch     ; I/O Riser card slot
+SYS_SLOT_NU_BUS     equ     0Dh     ; NuBus
+SYS_SLOT_PCI_66MHZ  equ     0Eh     ; PCI-66Mhz Capable
+SYS_SLOT_AGP        equ     0Fh     ; Advance Graphics Port
+SYS_SLOT_AGP_2X     equ     10h     ; AGP 2X
+SYS_SLOT_AGP_4X     equ     11h     ; AGP 4X
+SYS_SLOT_PCI_X      equ     12h     ; PCI-X
+SYS_SLOT_AGP_8X     equ     13h     ; AGP 8X
+SYS_SLOT_M2_SK1_DP  equ     14h     ; M.2 Socket 1-DP (Mechanical Key A)
+SYS_SLOT_M2_SK1_SD  equ     15h     ; M.2 Socket 1-SD (Mechanical Key E)
+SYS_SLOT_M2_SK2     equ     16h     ; M.2 Socket 2 (Mechanical Key B)
+SYS_SLOT_M2_SK3     equ     17h     ; M.2 Socket 3 (Mechanical Key M)
+SYS_SLOT_MXM_TYPE1  equ     18h     ; MXM Type I
+SYS_SLOT_MXM_TYPE2  equ     19h     ; MXM Type II
+SYS_SLOT_MXM_TYPE3_STD equ  1Ah     ; MXM Type III (standard connector)
+SYS_SLOT_MXM_TYPE3_HE equ   1Bh     ; MXM Type III (HE connector)
+SYS_SLOT_MXM_TYPE4  equ     1Ch     ; MXM Type IV
+SYS_SLOT_MXM_3_A    equ     1Dh     ; MXM 3.0 Type A
+SYS_SLOT_MXM_3_B    equ     1Eh     ; MXM 3.0 Type B
+SYS_SLOT_PCIE_G2    equ     1Fh     ; PCI Express Gen 2 SFF-8639
+SYS_SLOT_PCIE_G3    equ     20h     ; PCI Express Gen 3 SFF-8639
+SYS_SLOT_PCIE_MINI_52_W_BOTTOM  equ 21h ; PCI Express Mini 52-pin
+                                    ; (CEM spec. 2.0) with bottom-side
+                                    ; keep-outs. Use Slot Length field value
+                                    ; 03h (short length) for "half-Mini card"
+                                    ; -only support, 04h (long length) for
+                                    ; "full-Mini card" or dual support
+SYS_SLOT_PCIE_MINI_52_WO_BOTTOM equ 22h ; PCI Express Mini 52-pin
+                                    ; (CEM spec. 2.0) without bottom-side
+                                    ; keep-outs. Use Slot Length field value
+                                    ; 03h (short length) for "half-Mini card"
+                                    ; -only support, 04h (long length) for
+                                    ; "full-Mini card" or dual support
+SYS_SLOT_PCIE_MINI_76_DISPLAY   equ 23h ; PCI Express Mini Mini 76-pin
+                                    ; (CEM spec. 2.0) Corresponds to
+                                    ; Display-Mini card
+SYS_SLOT_PC98_C20   equ     0A0h    ; PC-98/C20
+SYS_SLOT_PC98_C24   equ     0A1h    ; PC-98/C24
+SYS_SLOT_PC98_E     equ     0A2h    ; PC-98/E
+SYS_SLOT_PC98_LOCAL equ     0A3h    ; PC-98/Local Bus
+SYS_SLOT_PC98_CARD  equ     0A4h    ; PC-98 Card
+SYS_SLOT_PCIE       equ     0A5h    ; PCI Express
+SYS_SLOT_PCIE_X1    equ     0A6h    ; PCI Express x1
+SYS_SLOT_PCIE_X2    equ     0A7h    ; PCI Express x2
+SYS_SLOT_PCIE_X4    equ     0A8h    ; PCI Express x4
+SYS_SLOT_PCIE_X8    equ     0A9h    ; PCI Express x8
+SYS_SLOT_PCIE_X16   equ     0AAh    ; PCI Express x16
+SYS_SLOT_PCIE_2     equ     0ABh    ; PCI Express Gen 2
+SYS_SLOT_PCIE_2_X1  equ     0ACh    ; PCI Express Gen 2 x1
+SYS_SLOT_PCIE_2_X2  equ     0ADh    ; PCI Express Gen 2 x2
+SYS_SLOT_PCIE_2_X4  equ     0AEh    ; PCI Express Gen 2 x4
+SYS_SLOT_PCIE_2_X8  equ     0AFh    ; PCI Express Gen 2 x8
+SYS_SLOT_PCIE_2_X16 equ     0B0h    ; PCI Express Gen 2 x16
+SYS_SLOT_PCIE_3     equ     0B1h    ; PCI Express Gen 3
+SYS_SLOT_PCIE_3_X1  equ     0B2h    ; PCI Express Gen 3 x1
+SYS_SLOT_PCIE_3_X2  equ     0B3h    ; PCI Express Gen 3 x2
+SYS_SLOT_PCIE_3_X4  equ     0B4h    ; PCI Express Gen 3 x4
+SYS_SLOT_PCIE_3_X8  equ     0B5h    ; PCI Express Gen 3 x8
+SYS_SLOT_PCIE_3_X16 equ     0B6h    ; PCI Express Gen 3 x16
+
+;----------------------------------------------------------------------------
+; System Slot Data bus width equates (an enumerated BYTE value)
+; Equate Name               Value   Meaning
+DBW_OTHER           equ     01h     ; Other
+DBW_UNKNOWN         equ     02h     ; Unknown
+DBW_8BIT            equ     03h     ; 8-bit
+DBW_16BIT           equ     04h     ; 16-bit
+DBW_32BIT           equ     05h     ; 32-bit
+DBW_64BIT           equ     06h     ; 64-bit
+DBW_128BIT          equ     07h     ; 128-bit
+DBW_1X              equ     08h     ; PCIE 1X
+DBW_2X              equ     09h     ; PCIE 2X
+DBW_4X              equ     0Ah     ; PCIE 4X
+DBW_8X              equ     0Bh     ; PCIE 8X
+DBW_12X             equ     0Ch     ; PCIE 12X
+DBW_16X             equ     0Dh     ; PCIE 16X
+DBW_32X             equ     0Eh     ; PCIE 32X
+
+;----------------------------------------------------------------------------
+; System Slot Usage equates (an enumerated BYTE value)
+; Equate Name               Value   Meaning
+SCU_OTHER           equ     01h     ; Other
+SCU_UNKNOWN         equ     02h     ; Unknown
+SCU_AVAILABLE       equ     03h     ; Available
+SCU_IN_USE          equ     04h     ; In use
+
+;----------------------------------------------------------------------------
+; System Slot Length equates (an enumerated BYTE value)
+; Equate Name               Value   Meaning
+SL_OTHER            equ     01h     ; Other
+SL_UNKNOWN          equ     02h     ; Unknown
+SL_SHORT_LENGTH     equ     03h     ; Short length
+SL_LONG_LENGTH      equ     04h     ; Long length
+
+;----------------------------------------------------------------------------
+; System Slot Characteristic-1 equates (Bit-field byte value)
+; Equate Name               Value           Meaning
+;                           76543210
+
+SCH_UNKNOWN         equ     00000001b       ; Unknown
+SCH_5V              equ     00000010b       ; 5 volt
+SCH_33V             equ     00000100b       ; 3.3 volt
+SCH_SHARED          equ     00001000b       ; Shared
+SCH_PCCARD16        equ     00010000b       ; PC Card bus
+SCH_CARDBUS         equ     00100000b       ; Card bus
+SCH_ZOOMVIDEO       equ     01000000b       ; Zoom Video
+SCH_MODEMRING       equ     10000000b       ; Modem ring resume
+
+;----------------------------------------------------------------------------
+; System Slot Characteristic-2 equates (Bit-field byte value)
+; Equate Name               Value                   Meaning
+;                           76543210
+SCH_PME             equ     0000000100000000b       ; PCI Slot supports Power management (PME#) signal
+SCH_HOT_PLUG        equ     0000001000000000b       ; supports Hot Plug devices
+SCH_PCI_SUPPORT_SMBUS equ   0000010000000000b       ; PCI Slot Supports SMBUS Signal
+                                                    ; Bit7-3 = Reserved set to 0
+;----------------------------------------------------------------------------
+;    Structure Type 10: Equates used in ON-BOARD DEVICE INFORMATION Structure
+;----------------------------------------------------------------------------
+; On-board Device Type equates (an enumerated BYTE value)
+; Equate Name               Value   Meaning
+OBD_OTHER           equ     01h     ; Other
+OBD_UNKNOWN         equ     02h     ; Unknown
+OBD_VIDEO           equ     03h     ; Video
+OBD_SCSI            equ     04h     ; SCSI
+OBD_ETHERNET        equ     05h     ; Ethernet
+OBD_TOKEN_RING      equ     06h     ; Token ring
+OBD_SOUND           equ     07h     ; Sound
+OBD_PATA            equ     08h     ; PATA Controller
+OBD_SATA            equ     09h     ; SATA Controller
+OBD_SAS             equ     0Ah     ; SAS Controller
+
+;----------------------------------------------------------------------------
+;    Structure Type 11: No equates used in OEM STRINGS INFORMATION
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;    Structure Type 12: No equates used in SYSTEM CONFIGURATION
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;    Structure Type 13: Equates used in BIOS LANGUAGE INFORMATION Structure
+;----------------------------------------------------------------------------
+; BIOS Language Flag equates (bit-field byte value)
+; Equate Name               Value           Meaning
+;                           76543210
+LONG_FORMAT         equ     00000000b       ; Long format
+ABBRIVIATED_FORMAT  equ     00000001b       ; Abbreviated format
+                                            ; bit7-1 = reserved
+; Note: In Long Format, each language string is in the form of
+;    "ISO 639 Language name |ISO 3166 Territory Name| Encoding Method"
+;    LONG FORMAT -> db 'en|US|iso8859-1', 0
+;    ABBRIVATED FORMAT -> db 'enUS', 0
+
+;----------------------------------------------------------------------------
+;    Structure Type 14: No equates used in GROUP ASSOCIATION
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;    Structure Type 16: Equates used in PHYSICAL MEMORY ARRAY Structure
+;----------------------------------------------------------------------------
+; Memory Array Location equates (an enumerated BYTE value)
+; Equate Name                       Value   Meaning
+ARRAY_LOC_OTHER             equ     001h    ; Other
+ARRAY_LOC_UNKNOWN           equ     002h    ; Unknown
+ARRAY_LOC_MOTHERBOARD       equ     003h    ; System board/ Motherboard
+ARRAY_LOC_ISAADDONCARD      equ     004h    ; ISA Add on card
+ARRAY_LOC_EISAADDONCARD     equ     005h    ; EISA Add on card
+ARRAY_LOC_PCIADDONCARD      equ     006h    ; PCI Add on card
+ARRAY_LOC_MCAADDONCARD      equ     007h    ; MCA Add on card
+ARRAY_LOC_PCMCIAADDONCARD   equ     008h    ; PCMCIA Add on card
+ARRAY_LOC_PROPADDONCARD     equ     009h    ; Propriatery Add on card
+ARRAY_LOC_NuBus             equ     00Ah    ; Nubus
+ARRAY_LOC_PC98_C20          equ     0A0h    ; PC98/C20
+ARRAY_LOC_PC98_C24          equ     0A1h    ; PC98/C24
+ARRAY_LOC_PC98_E            equ     0A2h    ; PC98-E
+ARRAY_LOC_PC98_LOCALBUS     equ     0A3h    ; PC-98 Local bus
+
+;----------------------------------------------------------------------------
+; Memory Array Use equates (an enumerated BYTE value)
+; Equate Name                       Value   Meaning
+ARRAY_USE_OTHER             equ     01h     ; Other
+ARRAY_USE_UNKNOWN           equ     02h     ; Unknown
+ARRAY_USE_SYSTEM_MEMORY     equ     03h     ; System Memory
+ARRAY_USE_VIDEOMEMORY       equ     04h     ; Video Memory
+ARRAY_USE_FLASHMEMORY       equ     05h     ; Flash Memory
+ARRAY_USE_NONVOLMEMORY      equ     06h     ; Non volatile Memory
+ARRAY_USE_CACHEMEMORY       equ     07h     ; Cache Memory
+
+;----------------------------------------------------------------------------
+; Memory Array Error Correction Type equates (an enumerated BYTE value)
+; Equate Name                       Value   Meaning
+ARRAY_ERROR_OTHER           equ     01h     ; Other
+ARRAY_ERROR_UNKNOWN         equ     02h     ; Unknown
+ARRAY_ERROR_NONE            equ     03h     ; None
+ARRAY_ERROR_PARITY          equ     04h     ; Parity
+ARRAY_ERROR_SINGLEBIT_ECC   equ     05h     ; Single-bit ECC
+ARRAY_ERROR_MULTIBIT_ECC    equ     06h     ; Multi-bit ECC
+ARRAY_ERROR_CRC             equ     07H     ; CRC
+
+;----------------------------------------------------------------------------
+;    Structure Type 17: Equates used in MEMORY DEVICES Structure
+;----------------------------------------------------------------------------
+; Memory Device Form Factor equates (an enumerated BYTE value)
+; Equate Name                       Value   Meaning
+DEVICE_FORMFACTOR_OTHER     equ     01h     ; other
+DEVICE_FORMFACTOR_UNKNOWN   equ     02h     ; unknown
+DEVICE_FORMFACTOR_SIMM      equ     03h     ; SIMM
+DEVICE_FORMFACTOR_SIP       equ     04h     ; SIP
+DEVICE_FORMFACTOR_CHIP      equ     05h     ; CHIP
+DEVICE_FORMFACTOR_DIP       equ     06h     ; DIP
+DEVICE_FORMFACTOR_ZIP       equ     07h     ; ZIP
+DEVICE_FORMFACTOR_PROPCARD  equ     08h     ; Propriatery Card
+DEVICE_FORMFACTOR_DIMM      equ     09h     ; DIMM
+DEVICE_FORMFACTOR_TSOP      equ     0Ah     ; TSOP
+DEVICE_FORMFACTOR_ROWOFCHIP equ     0Bh     ; ROWCHIP
+DEVICE_FORMFACTOR_RIMM      equ     0Ch     ; RIMM
+DEVICE_FORMFACTOR_SODIMM    equ     0Dh     ; SODIMM
+DEVICE_FORMFACTOR_SRIMM     equ     0Eh     ; SRIMM
+DEVICE_FORMFACTOR_FBDIMM    equ     0Fh     ; FB-DIMM
+
+;----------------------------------------------------------------------------
+; Memory Device Type equates (an enumerated BYTE value)
+; Equate Name                       Value   Meaning
+MEMORY_DEVICE_TYPE_OTHER    equ     01h     ; Other
+MEMORY_DEVICE_TYPE_UNKNOWN  equ     02h     ; Unknown
+MEMORY_DEVICE_TYPE_DRAM     equ     03h     ; DRAM
+MEMORY_DEVICE_TYPE_EDRAM    equ     04h     ; EDRAM
+MEMORY_DEVICE_TYPE_VRAM     equ     05h     ; VRAM
+MEMORY_DEVICE_TYPE_SRAM     equ     06h     ; SRAM
+MEMORY_DEVICE_TYPE_RAM      equ     07h     ; RAM
+MEMORY_DEVICE_TYPE_ROM      equ     08h     ; ROM
+MEMORY_DEVICE_TYPE_FLASH    equ     09h     ; FLASH
+MEMORY_DEVICE_TYPE_EEPROM   equ     0Ah     ; EEPROM
+MEMORY_DEVICE_TYPE_FEPROM   equ     0Bh     ; FEPROM
+MEMORY_DEVICE_TYPE_EPROM    equ     0Ch     ; EPROM
+MEMORY_DEVICE_TYPE_CDRAM    equ     0Dh     ; CDRAM
+MEMORY_DEVICE_TYPE_3DRAM    equ     0Eh     ; 3DRAM
+MEMORY_DEVICE_TYPE_SDRAM    equ     0Fh     ; SDRAM
+MEMORY_DEVICE_TYPE_SGRAM    equ     10h     ; SGRAM
+MEMORY_DEVICE_TYPE_RDRAM    equ     11h     ; RDRAM
+MEMORY_DEVICE_TYPE_DDR      equ     12h     ; DDR
+MEMORY_DEVICE_TYPE_DDR2     equ     13h     ; DDR2
+MEMORY_DEVICE_TYPE_DDR2_FB_DIM equ  14h     ; DDR2 FB-DIMM
+MEMORY_DEVICE_TYPE_DDR3     equ     18h     ; DDR3
+MEMORY_DEVICE_TYPE_FBD2     equ     19h     ; FBD2
+MEMORY_DEVICE_TYPE_DDR4     equ     1Ah     ; DDR4
+MEMORY_DEVICE_TYPE_LPDDR    equ     1Bh     ; LPDDR
+MEMORY_DEVICE_TYPE_LPDDR2   equ     1Ch     ; LPDDR2
+MEMORY_DEVICE_TYPE_LPDDR3   equ     1Dh     ; LPDDR3
+MEMORY_DEVICE_TYPE_LPDDR4   equ     1Eh     ; LPDDR4
+
+;----------------------------------------------------------------------------
+;    Structure Type 18: Equates used in 32Bit MEMORY ERROR Structure
+;----------------------------------------------------------------------------
+; 32bit Memory Error equates (an enumerated BYTE value)
+; Equate Name                       Value   Meaning
+ERR_TYP_OTHER               equ     01h     ; Other
+ERR_TYP_UNKNOWN             equ     02h     ; Unknown
+ERR_TYP_OK                  equ     03h     ; OK
+ERR_TYP_BADREAD             equ     04h     ; BAD Read
+ERR_TYP_PARITYERROR         equ     05h     ; Parity Error
+ERR_TYP_SINGLEBITERROR      equ     06h     ; Single bit Error
+ERR_TYP_DOUBLEBITERROR      equ     07h     ; Double bit Error
+ERR_TYP_MULTIBITERROR       equ     08h     ; Multi bit Error
+ERR_TYP_NIBBLEERROR         equ     09h     ; Nibble Error
+ERR_TYP_CHECKSUMERROR       equ     0Ah     ; Checksum Error
+ERR_TYP_CRCERROR            equ     0Bh     ; CRC Error
+ERR_TYP_CORRECTSINGERR      equ     0Ch     ; Correctable Single bit Error
+ERR_TYP_CORRECTEDERROR      equ     0Dh     ; Corrected Error
+ERR_TYP_UNCORRECTABLEERR    equ     0Eh     ; Uncorrectable Error
+
+;----------------------------------------------------------------------------
+; 32bit Memory Error Granularity equates (an enumerated BYTE value)
+; Equate Name                       Value   Meaning
+GRANULARITY_OTHER           equ     01h     ; Other
+GRANULARITY_UNKNOWN         equ     02h     ; Unknown
+GRANULARITY_DEVICELEVEL     equ     03h     ; Device level
+GRANULARITY_MEMPARTIONLEVEL equ     04h     ; Memory Partition Level
+
+;----------------------------------------------------------------------------
+; 32bit Memory Error Operation equates (an enumerated BYTE value)
+; Equate Name                       Value   Meaning
+OPERATION_OTHER             equ     01h     ; Other
+OPERATION_UNKNOWN           equ     02h     ; Unknown
+OPERATION_READ              equ     03h     ; Read
+OPERATION_WRITE             equ     04h     ; Write
+OPERATION_PARTIAL_WRITE     equ     05h     ; Partial Write
+;----------------------------------------------------------------------------
+;    Structure Type 19: No equates used in MEMORY ARRAY MAPPED ADDRESS
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;    Structure Type 20: No equates used in MEMORY DEVICE MAPPED ADDRESS
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;    Structure Type 21: Equates used in Pointing Device Structure
+;----------------------------------------------------------------------------
+; Pointing Device Type equates (an enumerated BYTE value)
+; Equate Name                       Value   Meaning
+POR_OTHER                   equ     01h    ; Other
+POR_UNKNOWN                 equ     02h    ; Unknown
+POR_MOUSE                   equ     03h    ; Mouse
+POR_TRACK_BALL              equ     04h    ; Track ball
+POR_TRACK_POINT             equ     05h    ; Track Point
+POR_GLIDE_POINT             equ     06h    ; Glide Point
+POR_TOUCH_PAD               equ     07h    ; Touch Pad
+POR_TOUCH_SCR               equ     08h    ; Touch Screen
+POR_OPTICAL_SENSOR          equ     09h    ; Optical Sensor
+
+;----------------------------------------------------------------------------
+; Pointing Device Interface equates (an enumerated BYTE value)
+; Equate Name                       Value   Meaning
+PDI_OTHER                   equ     001h    ; Other
+PDI_UNKNOWN                 equ     002h    ; Unknown
+PDI_SERIAL                  equ     003h    ; Serial
+PDI_PS2                     equ     004h    ; PS2
+PDI_INFRARED                equ     005h    ; Infrared
+PDI_HP_HIL                  equ     006h    ; HP-HIL
+PDI_BUS_MOUSE               equ     007h    ; Bus Mouse
+PDI_APPLE_DESKTOP_BUS       equ     008h    ; Apple Desktop Bus
+PDI_BUS_MOUSE_DB9           equ     0A0h    ; Bus Mouse DB9
+PDI_BUS_MOUSE_MICRO_DIN     equ     0A1h    ; Bus Mouse Micro DIN
+PDI_USB                     equ     0A2h    ; USB
+
+;----------------------------------------------------------------------------
+;    Structure Type 22: Equates used in Portable Battery Structure
+;----------------------------------------------------------------------------
+; Device Chemistry Type equates (an enumerated BYTE value)
+; Equate Name                       Value   Meaning
+PBC_OTHER                   equ     01h     ; Other
+PBC_UNKNOWN                 equ     02h     ; Unknown
+PBC_LEAD_ACID               equ     03h     ; Lead ACID
+PBC_NICKEL_CAD              equ     04h     ; Nickle Cadmium
+PBC_NICKEL_HYDRIDE          equ     05h     ; Nickle metal hydride
+PBC_LITHIUM_ION             equ     06h     ; Lithium-ion
+PBC_ZINC_AIR                equ     07h     ; Zinc air
+PBC_LITHIUM_POLYMER         equ     08h     ; Lithium Polymer
+
+;----------------------------------------------------------------------------
+;    Structure Type 23: Equates used in System Reset Structure
+;----------------------------------------------------------------------------
+; Capabilities equates (Bit-field byte value)
+; Equate name                       Value           Meaning
+;                                   76543210
+SRC_SYSTEM_RESET            equ     00000001b; Bit-0  = System Reset enabled
+SRC_BOOT_OPTION_OS          equ     00000010b; Bit2-1 = 01, OS
+SRC_BOOT_OPTION_SU          equ     00000100b; Bit2-1 = 10, System Utilities
+SRC_BOOT_OPTION_NRB         equ     00001100b; Bit2-1 = 11, do not reboot
+SRC_BOOT_OPTION_LIMIT_OS    equ     00000010b; Bit4-3 = 01, OS
+SRC_BOOT_OPTION_LIMIT_SU    equ     00000100b; Bit4-3 = 10, System Utilities
+SRC_BOOT_OPTION_LIMIT_NRB   equ     00001100b; Bit4-3 = 11, do not reboot
+SRC_WATCHDOG_TIMER          equ     00100000b; Bit-5  = Watchdog timer
+                                             ; Bit7-6 = Reserved
+
+;----------------------------------------------------------------------------
+;    Structure Type 24: equates used in Hardware Security Structure
+;----------------------------------------------------------------------------
+; Hardware Security Settings equates (Bit-field byte value)
+; Equate name                               Value           Meaning
+;                                           76543210
+HSS_FRONT_PANEL_RESET_DISABLED      equ     00000000b; Bit1-0 = 00, disabled
+HSS_FRONT_PANEL_RESET_ENABLED       equ     00000001b; Bit1-0 = 01, enabled
+HSS_FRONT_PANEL_RESET_ABSENT        equ     00000010b; Bit1-0 = 10, not implemented
+HSS_FRONT_PANEL_RESET_UNKNOWN       equ     00000011b; Bit1-0 = 11, unknown
+HSS_SUPERVISOR_PASSWORD_DISABLED    equ     00000000b; Bit3-2 = 00, disabled
+HSS_SUPERVISOR_PASSWORD_ENABLED     equ     00000100b; Bit3-2 = 01, enabled
+HSS_SUPERVISOR_PASSWORD_ABSENT      equ     00001000b; Bit3-2 = 10, not implemented
+HSS_SUPERVISOR_PASSWORD_UNKNOWN     equ     00001100b; Bit3-2 = 11, unknown
+HSS_KEYBOARD_PASSWORD_DISABLED      equ     00000000b; Bit5-4 = 00, disabled
+HSS_KEYBOARD_PASSWORD_ENABLED       equ     00000100b; Bit5-4 = 01, enabled
+HSS_KEYBOARD_PASSWORD_ABSENT        equ     00001000b; Bit5-4 = 10, not implemented
+HSS_KEYBOARD_PASSWORD_UNKNOWN       equ     00001100b; Bit5-4 = 11, unknown
+HSS_POWERON_PASSWORD_DISABLED       equ     00000000b; Bit7-6 = 00, disabled
+HSS_POWERON_PASSWORD_ENABLED        equ     00000100b; Bit7-6 = 01, enabled
+HSS_POWERON_PASSWORD_ABSENT         equ     00001000b; Bit7-6 = 10, not implemented
+HSS_POWERON_PASSWORD_UNKNOWN        equ     00001100b; Bit7-6 = 11, unknown
+
+;----------------------------------------------------------------------------
+;    Structure Type 25: No equates used in System Power Controls Structure
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;    Structure Type 26: Equates used in Voltage Probe Structure
+;----------------------------------------------------------------------------
+; Location and Status (a byte value)    Bit7-5 = Status (enumerated value)
+;                                       Bit4-0 = Location (enumerated value)
+; Location
+; Equate name                       Value   Meaning
+PL_OTHER                    equ     01h     ; Other
+PL_UNKNOWN                  equ     02h     ; Unknown
+PL_PROCESSOR                equ     03h     ; Processor
+PL_DISK                     equ     04h     ; Disk
+PL_PERIPHERAL_BAY           equ     05h     ; Peripheral Bay
+PL_SYSTEM_MGMT_MODULE       equ     06h     ; System Management Module
+PL_MOTHERBOARD              equ     07h     ; Motherboard
+PL_MEMORY_MODULE            equ     08h     ; Memory Module
+PL_PROCESSOR_MODULE         equ     09h     ; Processor Module
+PL_POWER_UNIT               equ     0Ah     ; Power Unit
+PL_ADDIN_CARD               equ     0Bh     ; Add-in card
+; Status
+; Equate name                       Value   Meaning
+PS_OTHER                    equ     020h    ; Other
+PS_UNKNOWN                  equ     040h    ; Unknown
+PS_OK                       equ     060h    ; OK
+PS_NON_CRITICAL             equ     080h    ; Non-critical
+PS_CRITICAL                 equ     0A0h    ; Critical
+PS_NON_RECOVERABLE          equ     0C0h    ; Non-recoverable
+
+;----------------------------------------------------------------------------
+;    Structure Type 27: Equates used in Cooling Device Structure
+;----------------------------------------------------------------------------
+; Device Type and Status (a byte value)    Bit7-5 = Status (enumerated value)
+;                                          Bit4-0 = Device Type (enumerated value)
+; Device Type
+; Equate name                       Value   Meaning
+CDT_OTHER                   equ     01h     ; Other
+CDT_UNKNOWN                 equ     02h     ; Unknown
+CDT_FAN                     equ     03h     ; Fan
+CDT_CENTRIFUGAL_BLOWER      equ     04h     ; Centrifugal Blower
+CDT_CHIP_FAN                equ     05h     ; Chip Fan
+CDT_CABINET_FAN             equ     06h     ; Cabinet Fan
+CDT_POWER_SUPPLY_FAN        equ     07h     ; Power Supply Fan
+CDT_HEAT_PIPE               equ     08h     ; Heat Pipe
+CDT_INTEGRATED_FREEZE       equ     09h     ; Integrated Refrigeration
+CDT_ACTIVE_COOLING          equ     14h     ; Active Cooling
+CDT_PASSIVE_COOLING         equ     15h     ; Passive Cooling
+
+;----------------------------------------------------------------------------
+; Status
+; Equate name                       Value   Meaning
+CDS_OTHER                   equ     020h    ; Other
+CDS_UNKNOWN                 equ     040h    ; Unknown
+CDS_OK                      equ     060h    ; OK
+CDS_NON_CRITICAL            equ     080h    ; Non-critical
+CDS_CRITICAL                equ     0A0h    ; Critical
+CDS_NON_RECOVERABLE         equ     0C0h    ; Non-recoverable
+
+;----------------------------------------------------------------------------
+;    Structure Type 28: Equates used in Temperature Probe Structure
+;----------------------------------------------------------------------------
+; This structure uses the same equates as Voltage Probe Structure to
+; indicate corresponding probe location and status.
+
+;----------------------------------------------------------------------------
+;    Structure Type 29: Equates used in Electrical Current Probe Structure
+;----------------------------------------------------------------------------
+; This structure uses the same equates as Voltage Probe Structure to
+; indicate corresponding probe location and status.
+
+;----------------------------------------------------------------------------
+;    Structure Type 30: Equates used in Out-of-Band Remote Access Structure
+;----------------------------------------------------------------------------
+; Connections    Bit7-2 = Reserved
+;           Bit-1  = Outbound Connection    0/1 -> disabled/enabled
+;           Bit-0  = Inbound Connection     0/1 -> disabled/enabled
+; Equate name                           Value           Meaning
+;                                       76543210
+INBOUND_CONNECTION_ENABLED      equ     00000001b; inbound connection
+OUTBOUND_CONNECTION_ENABLED     equ     00000010b; outbound connection
+
+;----------------------------------------------------------------------------
+;    Structure Type 34: Equates used in MANAGEMENT DEVICE  Structure
+;----------------------------------------------------------------------------
+; Management Device Type equates (an enumerated BYTE value)
+; Equate Name                           Value   Meaning
+MGMT_DEVICE_TYPE_OTHER          equ     01h     ; Other
+MGMT_DEVICE_TYPE_UNKNOWN        equ     02h     ; Unknown
+MGMT_DEVICE_TYPE_LM75           equ     03h     ; LM75
+MGMT_DEVICE_TYPE_LM78           equ     04h     ; LM78
+MGMT_DEVICE_TYPE_LM79           equ     05h     ; LM79
+MGMT_DEVICE_TYPE_LM80           equ     06h     ; LM80
+MGMT_DEVICE_TYPE_LM81           equ     07h     ; LM81
+MGMT_DEVICE_TYPE_ADM9240        equ     08h     ; ADM9240
+MGMT_DEVICE_TYPE_DS1780         equ     09h     ; DS1780
+MGMT_DEVICE_TYPE_MAXIM1617      equ     0Ah     ; MAXIM1617
+MGMT_DEVICE_TYPE_GL518SM        equ     0Bh     ; GL518SM
+MGMT_DEVICE_TYPE_W83781D        equ     0Ch     ; W83781D
+MGMT_DEVICE_TYPE_HT82H791       equ     0Dh     ; HT82H791
+
+;----------------------------------------------------------------------------
+; Management Device Address Type equates (an enumerated BYTE value)
+; Equate Name                               Value   Meaning
+MGMT_DEVICE_ADDRESS_TYPE_OTHER      equ     01h     ; Other
+MGMT_DEVICE_ADDRESS_TYPE_UNKNOWN    equ     02h     ; Unknown
+MGMT_DEVICE_ADDRESS_TYPE_IO_PORT    equ     03h     ; IO Port
+MGMT_DEVICE_ADDRESS_TYPE_MEMORY     equ     04h     ; Memory Mapped
+MGMT_DEVICE_ADDRESS_TYPE_SMBUS      equ     05h     ; SMBUS
+
+;----------------------------------------------------------------------------
+;    Structure Type 37: Equates used in MEMORY CHANNEL Structure
+;----------------------------------------------------------------------------
+; Memory Channel Type equates (an enumerated BYTE value)
+; Equate Name                               Value   Meaning
+MEMORY_CHANNEL_TYPE_OTHER           equ     01h     ; Other
+MEMORY_CHANNEL_TYPE_UNKNOWN         equ     02h     ; Unknown
+MEMORY_CHANNEL_TYPE_RAMBUS          equ     03h     ; RamBus
+MEMORY_CHANNEL_TYPE_SYNCLINK        equ     04h     ; SyncLink
+
+;----------------------------------------------------------------------------
+;    Structure Type 38: Equates used in IPMI DEVICE INFORMATION Structure
+;----------------------------------------------------------------------------
+; Memory Channel Type equates (an enumerated BYTE value)
+; Equate Name                               Value   Meaning
+IPMI_DEVICE_INTERFACE_TYPE_UNKNOWN  equ     00h     ; Unknown
+IPMI_DEVICE_INTERFACE_TYPE_KCS      equ     01h     ; KCS: Keyboard Controller Style
+IPMI_DEVICE_INTERFACE_TYPE_SMIC     equ     02h     ; SMIC: Server Management Interface Chip
+IPMI_DEVICE_INTERFACE_TYPE_BT       equ     03h     ; BT: Block Transfer
+
+;----------------------------------------------------------------------------
+;    Structure Type 38: No equates used in SYSTEM POWER SUPPLY Structure
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+; SMBIOS BIOS related error codes
+SMBIOS_ERROR_CODE_START             equ     08300h
+ERRSMBIOS_NOT_ENOUGH_SPACE_IN_F000  equ     (SMBIOS_ERROR_CODE_START + 1)
+
+;----------------------------------------------------------------------------
+;End of Inclusion guard
+endif    ;_SMB_EQU_
+;----------------------------------------------------------------------------
+
+;****************************************************************************
+;****************************************************************************
+;**                                                                        **
+;**           (C)Copyright 1985-2017, American Megatrends, Inc.            **
+;**                                                                        **
+;**                          All Rights Reserved.                          **
+;**                                                                        **
+;**           5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093            **
+;**                                                                        **
+;**                          Phone: (770)-246-8600                         **
+;**                                                                        **
+;****************************************************************************
+;****************************************************************************

@@ -1,0 +1,41 @@
+TOKEN
+	Name  = "ConsoleRedirectionLib_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling ConsoleRedirectionLib support in the project"
+	TokenType = Boolean
+	Master = Yes
+	Token = "CONSOLE_REDIRECTION_SUPPORT" "=" "1"
+	Token = "GENERIC_USB_CABLE_SUPPORT" "!=" "1"
+End
+
+PATH
+	Name  = "ConsoleRedirectionLib_DIR"
+	Path  = "AMIDebugRxPkg\Debugger\ConsoleRedirectionLib"
+End
+
+INFComponent
+	Name  = "ConsoleRedirectionLib"
+	File  = "ConsoleRedirectionLib.inf"
+	Package  = "Debugger"
+	Arch  = "common"
+	Path  = "ConsoleRedirectionLib_DIR"
+End
+
+LibraryMapping
+    Class = "NULL"
+    Instance = "Debugger.ConsoleRedirectionLib"
+    Override = "AmiModulePkg.StatusCodeDxe"
+End
+
+LibraryMapping
+	Class  = "ConsoleRedirectionLib"
+	Instance  = "Debugger.ConsoleRedirectionLib"
+	ModuleTypes  = "DXE_CORE DXE_DRIVER DXE_RUNTIME_DRIVER UEFI_APPLICATION UEFI_DRIVER"
+End
+
+ELINK
+	Name  = "InitAmiDbgConsoleSerialIo,"
+	Parent  = "DxeStatusCodeInitialize"
+	InvokeOrder = AfterParent
+	Token = "CONSOLE_REDIRECTION_SUPPORT" "=" "1"
+End

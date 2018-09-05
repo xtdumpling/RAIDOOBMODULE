@@ -1,0 +1,135 @@
+X11DPT-B release note.
+--------------------------------------------------------------------------------------------------------------------------------
+ CPU Microcode                              | Option ROM/uEFi driver                            | Intel RC/LT-SX/ME
+--------------------------------------------------------------------------------------------------------------------------------
+ CPUID FAMILY                               | Aspeed VBIOS                         : 1.03.01    | RC Package : 142.R08
+ 50652 Skylake-EP B0             : 80000037 | Intel RAID SATA Legacy               : 5.2.0.1029 | SPS        : 4.0.03.235
+ 50654 Skylake-EP H0             : 02000029 | Intel RSTe sSATA RAID Legacy         : 5.2.0.1029 | BIOS ACM   : 20170718 (1.3.3)
+                                            | Intel Boot Agent Giga LAN            : 1.5.84     | SINIT ACM  : 20170615 (1.3.2)
+                                            | Intel iSCSI Option ROM               : 3.1.13     |
+                                            | Intel Giga UEFI x64 PCI-E LAN driver : 7.5.11     |
+                                            | Intel RSTe SATA UEFI                 : 5.2.0.1029 |
+                                            | Intel RSTe sSATA UEFI                : 5.2.0.1029 |
+                                            | Intel VMD UEFI driver                : 5.2.0.1029 |
+ -------------------------------------------------------------------------------------------------------------------------------
+ BIOS feature             |  Support
+ -------------------------------------------------------------------------------------------------------------------------------
+ OOB Flash BIOS           |     Y
+ OOB Update Setting       |     Y
+ OOB Change SMBIOS        |     Y
+ InBand Flash BIOS        |     Y
+ InBand Update Setting    |     Y
+ InBand Change SMBIOS     |     Y
+ InBand SMI E6h supported |     Y
+ -------------------------------------------------------------------------------------------------------------------------------
+ SW ECO Caused By         |  Status
+ -------------------------------------------------------------------------------------------------------------------------------
+ BIOS/IPMI Customization  |     N
+ HW Vendor Updates        |     Y
+ BIOS/IPMI Workaround     |     N
+ BIOS/IPMI Vendor Updates |     Y
+ BIOS/IPMI Enhancements   |     Y
+ BIOS/IPMI Bug fixes      |     Y
+ -------------------------------------------------------------------------------------------------------------------------------
+ BIOS          : X11DPTB7.701      Release Date  : 07/01/2017
+ BIOS Revision : 1.0a              BIOS Engineer : Stephen Chen
+ SVN Revision  : 1770
+ BIOS Checksum : 92B946D8h
+ BIOS Change:
+
+1. [Enhancements] Update 5.12_PurleyCrb_0ACFD079_BETA for RC 139.R09 PV MR4.
+   Description: RC 139.R09 fixed below issues.
+                5385840: Memory configs with NVDIMMs installed are showing SBE and MBE when stressed
+                5385787: [NVDIMM] JedecNvDimm Security issue
+   Validation:  1. Use PCI.exe to check Bus<0x00>/Device<0x08>/Function<0x02>/Reg<0x90> for RC version.
+                   // [31:20] = Major revision number
+                   // [19:12] = Minor revision number
+                   // [11:0] = Release Candidate number / Reserved
+                   // For example 137.R08 is 0x13952009
+		2. Validate standard CPU, memory, and PCIe functions with Skylake-EP CPU.
+		3. Running memory stress testing and margin testing.
+
+2. [Enhancements] Update SPS_E5_04.00.03.216.0 PV MR4.
+   Description: Intel released PV MR4 version for Purley Platforms.
+   Validation:  1. Enter Setup menu to check the SPS revision is 4.0.3.216 and current state is operational.
+                2. Check SPS functions like Node management.
+		3. Test BIOS upgrade/downgrade funciton to make sure SPS did not enter recovery mode after flash.
+
+3. [Enhancements] Update CPU microcode SRV_P_203 for Skylake-EP H0 stepping CPUs.
+   Description: Update Skylake-EP H0 stepping CPU microcode M9750654_02000022 for below issues.
+                b300981/s5353951: Unexpected RTID Error May Occur in System With External Node Controller (xNC).
+                b312570/s5354093: When in Fixed Frequency Mode, Certain Workloads May Experience Up to a 40% Performance Degradation.
+                b312594/s5354026: When EET Override is Set, CPU Frequency May Still React to Turbo Frequency Changes, Even When Idle.
+                b312598/s5354128: PCH Temperature Data Written To PCS 87 May Not Reflect The Correct Updated Value With Read After A Write.
+                b312609/s5354155: Near TDP Testing of 85W CPU SKUs May Not Reach Full TDP Rating.
+                b312685/s5354232: ECC Errors Due To Voltage And Timing
+   Validation:  Check Skylake-EP H0 stepping CPU microcode in setup menu.
+
+4. [Enhancements] Update CPU microcode SRV_D_199 for Skylake-EP B0 stepping CPUs.
+   Description: Update Skylake-EP B0 stepping CPU microcode M9750652_80000037.
+   Validation:  Check Skylake-EP B0 stepping CPU microcode in setup menu.
+
+5. [Enhancements] Update SATA RAID OPROM/EFI driver to RSTe PreOS v5.2.0.1029 (RSTe package 5.2.0.1215).
+   Description: Update SATA RAID OPROM/EFI driver to RSTe PreOS v5.2.0.1029
+   Validation: For legacy,
+               1. Connected two or more drive on the SATA controller.
+               2. Change item "Configure SATA as" to RAID, "SATA RAID Option ROM/UEFI Driver" to legacy.
+               3. Check SATA RAID option ROM version is 5.2.0.1029 during POST.
+               For uEFI,
+               1. Change item "Configure SATA as" to RAID, "SATA RAID Option ROM/UEFI Driver" to EFI.
+               2. Boot to Shell.
+               3. Run command drivers to check if the SATA RAID uEFi driver, VMD uEFi Driver version is 5.2.0.1029.
+
+6. [Enhancements] Update Intel Giga/10G LAN uEFI driver from Intel Network Connections LAN Software 22.4 PV
+   Description: Update Giga uEFI driver 5.9.2.0, legacy option ROM 1.5.84.
+   Validation: 1. Check Legacy PXE Oprom version during POST or boot menu with AOC-MPG-I2/I4.
+               2. Set onboard LAN OPROM control to EFI and check LAN uEFI driver version under advanced menu with AOC-MPG-I2/I4.
+
+7. [Enhancements] Modify Me version strings, remove the "Manufacturer ID" string.
+   Description: Modify ME version in BIOS setup.
+   Validation: Enter BIOS setup and check the ME version sting as format 4.0.x.xxx.
+
+8. [Fixes] Fix POST hang up when set MMCFG Base to 3G.
+   Description: POST hang up when set MMCFG Base to 3G.
+   Validation : 1. Check if POST ok when set MMCFG Base to 3G.
+                2. Check if POST OK and EarlyGraphic function work for all MMCFG
+                   Base settings and UP/DP platform.
+
+9. [Enhancements] Fixed AMIBCP default password function can not work.
+   Description: Fixed AMIBCP default password function can not work.
+   Validation : 1. Run HashTool.exe with a desired password input.
+                2. Fill hashed codes into Default Administrator Password or Default User Password via AMIBCP program.
+                3. Make sure system can enter Setup after enter desired password.
+
+10.[Enhancements] Correct WDT setup item behavior.
+   Description: Correct WDT setup item behavior.
+   Validation : 1. Change the setup question, Watch Dog Function, to enable.
+                2. boot into uEFI shell.
+                3. change the setup question, Watch Dog Function, to disable via SceEfix64.efi
+                4. reboot
+                5. boot into shell.
+                6. wait for 5 min, and the MB SHOULD NOT reboot itself.
+
+11.[Enhancements] Modify Admin/user password rule, user password will be deleted after deleting admin password.
+   Description: Modify Admin/User password rule.
+   Validation: 1. Set admin and user password then save reboot.
+              2. Enter setup, delete admin password.
+              3. User password should be deleted.
+
+12.[Fixes] Report IPMI device _CRS as 0xCA2, 0xCA3
+   Description: Report IPMI device _CRS as 0xCA2, 0xCA3
+   Validation : 1. Boot to OS.
+                2. Check ACPI DSDT table, Device(SPMI) report _CRS 
+                    IDTP=0xCA2, 
+                    ICDP=0xCA3.
+
+ -------------------------------------------------------------------------------------------------------------------------------
+ BIOS          : X11DPTB7.425      Release Date  : 04/25/2017
+ BIOS Revision : 1.0               BIOS Engineer : Stephen Chen
+ SVN Revision  : 1340
+ BIOS Checksum : A4CAD955h
+ BIOS Change:
+
+ 1. First release.
+
+ -------------------------------------------------------------------------------------------------------------------------------

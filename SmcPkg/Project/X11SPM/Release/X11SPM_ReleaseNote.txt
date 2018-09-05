@@ -1,0 +1,76 @@
+X11SPM-T(P)F release note.
+-------------------------------------------------------------------------------------------------------------
+ CPU Microcode                    | Option ROM/EFI driver                  | Intel RC/TXT/ME
+-------------------------------------------------------------------------------------------------------------
+ CPUID FAMILY                     | Aspeed VBIOS            : 1.03.01      | RC Version : 140.R010
+ 50652 SkyLake B-0     : 80000037 | Intel SATA RAID Legacy  : 5.2.0.1029   | SPS        : 4.0.03.219
+ 50654 Skylake H-0     : 02000026 | Intel SATA RAID UEFI    : 5.2.0.1029   | BIOS  ACM  : 20170615 (1.3.2)
+                                  |                                        | SINIT ACM  : 20170615 (1.3.2)
+-------------------------------------------------------------------------------------------------------------
+ BIOS feature            |  Support
+-------------------------------------------------------------------------------------------------------------
+OOB Flash BIOS           |     Y
+OOB Update Setting       |     Y
+OOB Change SMBIOS        |     Y
+InBand Flash BIOS        |     Y
+InBand Update Setting    |     Y
+InBand Change SMBIOS     |     Y
+InBand SMI E7h supported |     N
+--------------------------------------------------------------------------------------------
+ SW ECO Caused By         |  Status
+--------------------------------------------------------------------------------
+BIOS/IPMI Customization  |     N
+HW Vendor Updates        |     Y
+BIOS/IPMI Workaround     |     N
+BIOS/IPMI Vendor Updates |     Y
+BIOS/IPMI Enhancements   |     Y
+BIOS/IPMI Bug fixes      |     Y
+-------------------------------------------------------------------------------------------------------------
+BIOS          : X11SPM7.720                 Release Date  : 07/20/2017
+BIOS Revision : 1.0a                        BIOS Engineer : Isaac Hsu
+IPMI Revision : 1.23                        SVN Revision  : 1849
+BIOS Checksum : BA7AA926h
+BIOS Change:
+
+1. [Enhancements] Update 5.12_PurleyCrb_0ACFD080_BETA for RC 140.R10 PV MR5.
+   Description: Update RC 140.R10 PV MR5 for below issues.
+                5385886: Memory configs with NVDIMMs installed are showing SBE and MBE when stressed
+                5385863: Windows 2016 CATERRs when trying to boot in non-NUMA mode with 128GB DIMMs
+   Validation:  a) Use PCI.exe to check Bus<0x00>/Device<0x08>/Function<0x02>/Reg<0x90> for RC version.
+                   // [31:20] = Major revision number
+                   // [19:12] = Minor revision number
+                   // [11:0] = Release Candidate number / Reserved
+                   // For example 140.R10 is 0x14052010
+                b) Validate standard CPU, memory, and PCIe functions with Skylake-EP CPU.
+                c) Running memory stress testing and margin testing.
+
+2. [Enhancements] Update SPS_E5_04.00.03.219.0 PV MR.
+   Description: Intel released PV MR version for Purley Platforms.
+   Validation:  a) Enter Setup menu to check the SPS revision is 4.0.3.219 and current state is operational.
+                b) Check SPS functions like Node management.
+                c) Test BIOS upgrade/downgrade funciton to make sure SPS did not enter recovery mode after flash.
+
+3. [Enhancements] Update CPU microcode SRV_P_205 for Skylake-EP H0 stepping CPUs.
+   Description: Update Skylake-EP H0 stepping CPU microcode M9750654_02000026.
+                s5354154: A 3-Strike Timeout May Be Seen When Running Certain Intel AVX-512 Workloads.
+                s5354078/b312632: When Overclocking, Changing AVX Offset Values May Also Change the Fuse-Set AVX2 and AVX3 Values.
+                b312681: Processor Turbo May Still Function When Disabled Via BIOS Menu.
+   Validation:  Check Skylake-EP H0 stepping CPU microcode in setup menu.
+
+4. [Enhancements] Update BIOS ACM 1.3.2 PW, SINIT ACM 1.3.2 PW.
+   Description: Update BIOS & SINIT ACM 1.3.2
+   Validation:  Please verify Intel TXT function.
+
+5. [Features] Remove out support Ctrl home for recovery 
+   Description: Because system will automatically enter in recovery mode if the rom image checksum is invalid. So don't need this.
+   Validation: a) Put SUPER.ROM in USB pen drive and plug it into SUT.
+               b) Press Ctrl+home hot key and should not enter in recovery mode.
+
+-------------------------------------------------------------------------------------------------------------
+BIOS          : X11SPM7.622                 Release Date  : 06/22/2017
+BIOS Revision : 1.0                         BIOS Engineer : Isaac Hsu
+IPMI Revision : 1.23                        SVN Revision  : 1723
+BIOS Checksum : 6F8FA5AAh
+BIOS Change:
+
+1. First release.

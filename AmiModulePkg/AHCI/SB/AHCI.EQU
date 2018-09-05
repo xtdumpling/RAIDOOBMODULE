@@ -1,0 +1,547 @@
+           TITLE   AHCI.EQU - Equates and structures
+
+;****************************************************************************
+;****************************************************************************
+;**                                                                        **
+;**             (C)Copyright 1985-2014, American Megatrends, Inc.          **
+;**                                                                        **
+;**                          All Rights Reserved.                          **
+;**                                                                        **
+;**                 5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093   **
+;**                                                                        **
+;**                          Phone (770)-246-8600                          **
+;**                                                                        **
+;****************************************************************************
+;****************************************************************************
+
+;****************************************************************************
+;
+;************************************************************************;
+;*                                                                      *;
+;*      Intel(r) Restricted Secret                                      *;
+;*                                                                      *;
+;*      Support for and Booting from SATA devices in AHCI mode          *;
+;*                                                                      *;
+;*      Enterprise Software Technology                                  *;
+;*                                                                      *;
+;*      Copyright (c) 2003-2005 Intel Corporation                       *;
+;*                                                                      *;
+;*      Version iSrc03x                                                 *;
+;*                                                                      *;
+;*  This information is provided in connection with	Intel products.     *;
+;*  No license, express or implied, by estoppel or otherwise, to        *;
+;*  any intellectual property rights is granted by this information     *;
+;*  or by the sale of Intel products. Except as provided in Intel's     *;
+;*  Terms and Conditions of Sale for such products, Intel assumes       *;
+;*  no liability whatsoever, and Intel disclaims any express or         *;
+;*  implied warranty, relating to sale and/or use of Intel products     *;
+;*  including liability or warranties relating to fitness for a         *;
+;*  particular purpose, merchantability, or infringement of any         *;
+;*  patent, copyright or other intellectual property right. Intel       *;
+;*  products are not intended for use in medical, life saving, or       *;
+;*  life sustaining applications.                                       *;
+;*  Intel retains the right to make changes to specifications and       *;
+;*  product descriptions at any time, without notice and may choose     *;
+;*  to develop product based on these designs.                          *;
+;*                                                                      *;
+;*  *Third-party brands and names are the property of their             *;
+;*  respective owners.                                                  *;
+;*                                                                      *;
+;************************************************************************;
+;*                                                                      *;
+;* REFERENCES                                                           *;
+;*                                                                      *;
+;* Revision     Title                                                   *;
+;* ==================================================================== *;
+;* 1.0      Serial ATA Advanced Host Controller Interface (AHCI)        *;
+;*                                                                      *;
+;************************************************************************;
+;
+;;;;;;;;;;;; Specification related equates and structures ;;;;;;;;;;;;;;;;
+;-------------------------------------------------------------------------
+; Maximum #of ports supported by each SATA controller
+;
+MAX_PORT_NUM        equ 20h ; Max #of SATA Ports per SATA Controller
+;
+;-------------------------------------------------------------------------
+; SATA Controller Information Table
+;   1. Contains the AHCI related data for the device
+;   2. Built during POST
+;   3. Each device has its own table
+;
+INFO_CONTROLLER_STRUC   struc
+  wBusDevFunc       dw  ?   ; Bus#, Dev#, Func#
+  dHbaBaseAddr      dd  ?   ; HBA Base Address
+  bIrq              db  ?   ; IRQ used
+  dHbaCap           dd  ?   ; HBA Capabilities (dCAP field)
+  dBitPortImp       dd  ?   ; Bit-mapped info of port implemented (dPI field)
+INFO_CONTROLLER_STRUC   ends
+;
+;-------------------------------------------------------------------------
+; Generic Host Control registers
+;
+GENERAL_HOST_OFFSET equ 0000h   ; Offset of start of Generic Host Control Registers from AHCI Base
+;
+GENERAL_HOST_STRUC  struc
+    dCAP    dd  ?   ; HBA Capabilities (see below for details)
+    dGHC    dd  ?   ; Global HBA Control (see below for details)
+    dIS     dd  ?   ; Interrupt Status Register (see below for details)
+    dPI     dd  ?   ; Ports Implemented (see below for details)
+    dVS     dd  ?   ; AHCI Version (see below for details)
+GENERAL_HOST_STRUC  ends
+;
+; Details of dCAP field
+;
+dCAP_NP_MASK    equ   1Fh shl 0 ; Bit4-0   = max #of ports (0-based) supported
+dCAP_NCS_MASK   equ   1Fh shl 8 ; Bit12-8  = #of command slots (0-based) supported
+dCAP_PSC        equ   1 shl 13  ; Bit-13   = Partial State Capable
+dCAP_SSC        equ   1 shl 14  ; Bit-14   = Slumber State Capable
+dCAP_PMD        equ   1 shl 15  ; Bit-15   = PIO Multiple DRQ Block
+dCAP_SPM        equ   1 shl 17  ; Bit-17   = Supports Port Multiplier
+dCAP_SAM        equ   1 shl 18  ; Bit-18   = Supports AHCI Mode only
+dCAP_SNZO       equ   1 shl 19  ; Bit-19   = Supports Non-Zero DMA offsets
+dCAP_ISS_MASK   equ   0Fh shl 20; Bit23-20 = Interface Speed Support
+ISS_1P5_GBPS    equ   0001b     ; 1.5 Gbps
+ISS_1P5_3_GBPS  equ   0010b     ; 1.5 Gbps and 3 Gbps
+dCAP_SCLO       equ   1 shl 24  ; Bit-24   = Supports Command List Override
+dCAP_SAL        equ   1 shl 25  ; Bit-25   = Supports Activity LED
+dCAP_SALP       equ   1 shl 26  ; Bit-26   = Supports Aggressive Link Power Management
+dCAP_SSS        equ   1 shl 27  ; Bit-27   = Supports Staggered Spin-Up
+dCAP_SIS        equ   1 shl 28  ; Bit-28   = Supports Interlock Switch
+dCAP_SNCQ       equ   1 shl 30  ; Bit-30   = Supports Native Command Queuing
+dCAP_S64A       equ   1 shl 31  ; Bit-31   = Supports 64-bit Addressing
+;
+; Details of dGHC field
+;
+dGHC_HR     equ   1 shl 0   ; Bit-0    = HBA Reset
+dGHC_IE     equ   1 shl 1   ; Bit-1    = Interrupt Enable
+dGHC_AE     equ   1 shl 31  ; Bit-31   = AHCI Enable
+;
+; Details of dIS field
+; A particular bit, if set to 1, indicates that the corresponding port has an
+; interrupt pending. Only ports, that are implemented, have a corresponding
+; valid bit; all other bits are reserved.
+;
+; Details of dPI field
+; A particular bit, if set to 1, indicates that the corresponding port is
+; available for use. If set to 0, the corresponding port is not available.
+; The maximum number of bits that are set to 1, shall not exceed the value
+; of (dCap_NP_MASK + 1). At least one bit must be set to 1.
+;
+; Details of dVS field
+;
+dVS_MINOR  equ  0FFFFh shl 0    ; Bit15-0  = Minor Version
+dVS_MAJOR  equ  0FFFFh shl 16   ; Bit31-16 = Major Version
+;
+;-------------------------------------------------------------------------
+; Port registers
+;
+PORT_REGISTER_START         equ 100h    ; Port registers start at offset 100h from AHCI base
+PORT_REGISTER_SET_SIZE      equ 80h     ; Each port registers set is 128bytes
+PORT_REGISTER_SET_SIZE_N    equ 07h     ; #of bits to be shifted left
+;
+; Thus Port-N registers set starts at following offset from AHCI base
+;    PORT_REGISTER_START + (N * 80h)
+;    i.e.  PORT_REGISTER_START + (N << 07h)
+;
+PORT_REG_STRUC	struc
+    dPCLB       dd  ?   ; Port Command List Base Address (lower 32bit)
+    dPCLBU      dd  ?   ; Port Command List Base Address (upper 32bit)
+    dPFB        dd  ?   ; Port FIS Base Address (lower 32bit)
+    dPFBU       dd  ?   ; Port FIS Base Address (upper 32bit)
+    dPIS        dd  ?   ; Port Interrupt Status (see below for details)
+    dPIE        dd  ?   ; Port Interrupt Enable (see below for details)
+    dPCMD       dd  ?   ; Port Command (see below for details)
+    dReserved   dd  ?   ; Reserved
+    dPTFD       dd  ?   ; Port Task File Data (see below for details)
+    dPSIG       dd  ?   ; Port Signature (see below for details)
+    dPSSTS      dd  ?   ; Port Serial ATA Status (see below for details)
+    dPSCTL      dd  ?   ; Port Serial ATA Control (see below for details)
+    dPSERR      dd  ?   ; Port Serial ATA Error (see below for details)
+    dPSACT      dd  ?   ; Port Serial ATA Active
+    dPCI        dd  ?   ; Port Command Issue
+PORT_REG_STRUC	ends
+;
+; Details of dPIS field
+;
+dPIS_DHRS   equ 1 shl 0 ; Bit-0  = Device to Host Register FIS Interrupt
+dPIS_PSS    equ 1 shl 1 ; Bit-1  = PIO Setup FIS Interrupt
+dPIS_DSS    equ 1 shl 2 ; Bit-2  = DMA Setup FIS Interrupt
+dPIS_SDBS   equ 1 shl 3 ; Bit-3  = Set Device Bits Interrupt
+dPIS_UFS    equ 1 shl 4 ; Bit-4  = Unknown FIS Interrupt
+dPIS_DPS    equ 1 shl 5 ; Bit-5  = Descriptor Processed
+dPIS_PCS    equ 1 shl 6 ; Bit-6  = Port Connect Change Status
+dPIS_DIS    equ 1 shl 7 ; Bit-7  = Device Interlock Status
+                        ; Bit21-8..Reserved
+dPIS_PRCS   equ 1 shl 22; Bit-22 = PhyRdy Change Status
+dPIS_IPMS   equ 1 shl 23; Bit-23 = Incorrect Port Multiplier Status
+dPIS_OFS    equ 1 shl 24; Bit-24 = Overflow Status
+dPIS_INFS   equ 1 shl 26; Bit-26 = Interface Non-Fatal Error Status
+dPIS_IFS    equ 1 shl 27; Bit-27 = Interface Fatal Error Status
+dPIS_HBDS   equ 1 shl 28; Bit-28 = Host Bus Data Error Status
+dPIS_HBFS   equ 1 shl 29; Bit-29 = Host Bus Fatal Error Status
+dPIS_TFES   equ 1 shl 30; Bit-30 = Task File Error Status
+dPIS_CPDS   equ 1 shl 31; Bit-31 = Cold Port Detect Status
+;
+; Details of dPIE field
+;
+dPIE_DHRE   equ 1 shl 0 ; Bit-0  = Device to Host Register FIS Interrupt Enable
+dPIE_PSE    equ 1 shl 1 ; Bit-1  = PIO Setup FIS Interrupt Enable
+dPIE_DSE    equ 1 shl 2 ; Bit-2  = DMA Setup FIS Interrupt Enable
+dPIE_SDBE   equ 1 shl 3 ; Bit-3  = Set Device Bits Interrupt Enable
+dPIE_UFE    equ 1 shl 4 ; Bit-4  = Unknown FIS Interrupt Enable
+dPIE_DPE    equ 1 shl 5 ; Bit-5  = Descriptor Processed Interrupt Enable
+dPIE_PCE    equ 1 shl 6 ; Bit-6  = Port Connect Change Interrupt Enable
+dPIE_DIE    equ 1 shl 7 ; Bit-7  = Device Interlock Interrupt Enable
+                        ; Bit21-8..Reserved
+dPIE_PRCE   equ 1 shl 22; Bit-22 = PhyRdy Change Interrupt Enable
+dPIE_IPME   equ 1 shl 23; Bit-23 = Incorrect Port Multiplier Interrupt Enable
+dPIE_OFE    equ 1 shl 24; Bit-24 = Overflow Interrupt Enable
+dPIE_INFE   equ 1 shl 26; Bit-26 = Interface Non-Fatal Error Interrupt Enable
+dPIE_IFE    equ 1 shl 27; Bit-27 = Interface Fatal Error Interrupt Enable
+dPIE_HBDE   equ 1 shl 28; Bit-28 = Host Bus Data Error Interrupt Enable
+dPIE_HBFE   equ 1 shl 29; Bit-29 = Host Bus Fatal Error Interrupt Enable
+dPIE_TFEE   equ 1 shl 30; Bit-30 = Task File Error Interrupt Enable
+dPIE_CPDE   equ 1 shl 31; Bit-31 = Cold Port Detect Interrupt Enable
+;
+; Details of dPCMD field
+;
+dPCMD_ST                equ 1 shl 0     ; Bit-0   = Start process command list
+PxCMD_ST0_AND_MASK      equ 0FFFFFFFEh  ; AND Mask to set PxCMD.ST = 0
+PxCMD_ST0_OR_MASK       equ 000000000h  ; OR  Mask to set PxCMD.ST = 0
+dPCMD_SUD               equ 1 shl 1     ; Bit-1   = Spin-Up Device
+dPCMD_POD               equ 1 shl 2     ; Bit-2   = Power On Device
+dPCMD_CLO               equ 1 shl 3     ; Bit-3   = Command List Override
+dPCMD_FRE               equ 1 shl 4     ; Bit-4   = FIS Receive Enable
+                                        ; Bit7-5....Reserved
+dPCMD_CCS_MASK          equ 1Fh shl 8   ; Bit12-8 = Current Command Slot
+dPCMD_ISS               equ 1 shl 13    ; Bit-13  = Interlock Switch State
+dPCMD_FR                equ 1 shl 14    ; Bit-14  = FIS Receive Running
+dPCMD_CR                equ 1 shl 15    ; Bit-15  = Command List Running
+dPCMD_CPS               equ 1 shl 16    ; Bit-16  = Cold Presence State
+dPCMD_PMA               equ 1 shl 17    ; Bit-17  = Port Multiplier Attached
+dPCMD_HPCP              equ 1 shl 18    ; Bit-18  = Hot Plug Capable Port
+dPCMD_ISP               equ 1 shl 19    ; Bit-19  = Interlock Switch Attached to Port
+dPCMD_CPD               equ 1 shl 20    ; Bit-20  = Cold Presence Detect
+                                        ; Bit23-21..Reserved
+dPCMD_ATAPI             equ 1 shl 24    ; Bit-24  = Device is ATAPI
+dPCMD_DLAE              equ 1 shl 25    ; Bit-25  = Drive LED on ATAPI Enable
+dPCMD_ALPE              equ 1 shl 26    ; Bit-26  = Aggressive Link Power Management Enable
+dPCMD_ASP               equ 1 shl 27    ; Bit-27  = Aggressive Slumber/Partial
+dPCMD_ICC_MASK          equ 0Fh shl 28  ; Bit31-28= Interface Communication Control
+dPCMD_ICC_MASK_ALIGN    equ 28          ; #of bits to be shifted for Interface Communication Control alignment
+ICC_NOP_IDLE            equ 00h         ; HBA ready to accept new interface control command
+ICC_ACTIVE              equ 01h         ; Active
+ICC_PARTIAL             equ 02h         ; Partial
+ICC_SLUMBER             equ 06h         ; Slumber State
+;
+; Details of dPTFD field
+;
+dPTFD_STS_MASK  equ 0FFh shl 0  ; Bit7-0 = Copy of Task File Status Register
+dPTFD_STS_ERR   equ 1 shl 0     ; Bit-0  = Error
+                                ; Bit2-1...Not applicable
+dPTFD_STS_DRQ   equ 1 shl 3     ; Bit-3  = Data Xfer Requested
+                                ; Bit5-4...Not applicable
+dPTFD_STS_DRDY  equ 1 shl 6     ; Bit-6  = Device is ready
+dPTFD_STS_BSY   equ 1 shl 7     ; Bit-7  = Interface is busy
+dPTFD_ERR_MASK  equ 0FFh shl 8  ; Bit15-8= Copy of Task File Error Register
+;
+; Details of dPSIG field
+; Contains the signature received from the device on first D2H register FIS. It
+; is updated once after a reset sequence.
+; Bit7-0   = Sector Count Register
+; Bit15-8  = LBA Low Register
+; Bit23-16 = LBA Mid Register
+; Bit31-24 = LBA High Register
+;
+; Details of dPSSTS field
+;
+dPSSTS_DET_MASK                 equ 0Fh shl 0   ; Bit3-0  = Device Detection
+dPSSTS_DET_DEVICE_MASK          equ 01h         ; Bit-0 = 1, Device Detected
+DET_NO_DEVICE_AND_NO_PHY_COMM   equ 00h         ; No device detected and no Phy communication
+DET_DEVICE_BUT_NO_PHY_COMM      equ 01h         ; Device detected but no Phy communication
+DET_DEVICE_AND_PHY_COMM         equ 03h         ; Device detected and Phy communication
+DET_PHY_OFF_LINE                equ 04h         ; Phy in offline mode
+
+dPSSTS_SPD_MASK             equ 0Fh shl 4   ; Bit7-4  = Current Interface Speed
+SPD_NO_DEVICE_OR_NO_COMM    equ 00h         ; No device present or no communication
+SPD_GEN_1_COMM              equ 01h         ; Generation 1 communication rate
+SPD_GEN_2_COMM              equ 02h         ; Generation 2 communication rate
+
+dPSSTS_IPM_MASK             equ 0Fh shl 8   ; Bit11-8 = Current Interface State
+IPM_NO_DEVICE_OR_NO_COMM    equ 00h         ; No device present or no communication
+IPM_ACTIVE                  equ 03h         ; Interface in Active state(v1.07)
+IPM_PARTIAL                 equ 02h         ; Interface in Partial power management state
+IPM_SLUMBER                 equ 01h         ; Interface in Slumber power management state(v1.07)
+;
+; Details of dPSCTL field
+;
+dPSCTL_DET_MASK         equ 0Fh shl 0   ; Bit3-0  = Device Detection Initialization
+DET_NO_DET_AND_NO_INIT  equ 00h         ; No detection or initialization requested
+DET_COMM_INIT           equ 01h         ; Perform Interface communication initialization
+DET_DISABLE_SATA        equ 04h         ; Disable SATA interface and put Phy in offline mode
+
+dPSCTL_SPD_MASK         equ 0Fh shl 4 ; Bit7-4  = Speed Allowed
+SPD_NO_RESTRICTION      equ 00h       ; No speed negotiation restriction
+SPD_LIMIT_TO_GEN1       equ 01h       ; Limit speed negotiation to Gen 1 rate
+SPD_LIMIT_TO_GEN2       equ 02h       ; Limit speed negotiation to a rate
+                                      ; not greater than Gen 2 rate
+
+dPSCTL_IPM_MASK                 equ 0Fh shl 8   ; Bit11-8 = Interface Power Management Transition Allowed
+dPSCTL_IPM_MASK_ALIGN           equ 8           ; #of bits to be shifted for Interface Power Management Transition alignment
+IPM_NO_RESTRICTION              equ 00h         ; No interface restriction
+IPM_PARTIAL_DISABLED            equ 01h         ; Transition to Partial state disabled
+IPM_SLUMBER_DISABLED            equ 02h         ; Transition to Slumber state disabled
+IPM_PARTIAL_SLUMBER_DISABLED    equ 03h         ; Transition to both Partial and Slumber states disabled
+
+dPSCTL_SPM_MASK                 equ 0Fh shl 12  ; Bit15-12 = The Select Power Management
+dPSCTL_SPM_MASK_ALIGN           equ 12          ; #of bits to be shifted for Select Power Management alignment
+SPM_NO_TRANSITION               equ 00h         ; No power management state transition
+SPM_PARTIAL_INITIATED           equ 01h         ; Transition to Partial state initiated
+SPM_SLUMBER_INITIATED           equ 02h         ; Transition to Slumber state initiated
+SPM_ACTIVE_INITIATED            equ 04h         ; Transition to the active power management states initiated
+
+dPSCTL_PMP_MASK         equ    0Fh shl 16   ; Bit19-16 = The Port Multiplier field
+dPSCTL_PMP_MASK_ALIGN   equ    16           ; #of bits to be shifted for Port Multiplier alignment
+PMP_CONTROL_PORT        equ    0Fh          ; Control port # of Port Multiplier 
+;
+; Details of dPSERR field
+;
+dPSERR_ERR_MASK equ 0FFFFh shl 0    ; Bit15-0= Error
+dPSERR_ERR_I    equ 1 shl 0         ; Bit-0  = Recovered Data Integrity Error
+dPSERR_ERR_M    equ 1 shl 1         ; Bit-1  = Recovered Communications Error
+                                    ; Bit7-2.......Reserved
+dPSERR_ERR_T    equ 1 shl 8     ; Bit-8  = Transient Data Integrity Error
+dPSERR_ERR_C    equ 1 shl 9     ; Bit-9  = Persistent Communication or Data Integrity Error
+dPSERR_ERR_P    equ 1 shl 10    ; Bit-10 = Protocol Error
+dPSERR_ERR_E    equ 1 shl 11    ; Bit-11 = Master or Target Abort
+                                ; Bit15-12.....Reserved
+
+dPSERR_DIAG_MASK    equ 0FFFFh shl 16   ; Bit31-16 = Diagnostics
+dPSERR_DIAG_N       equ 1 shl 16        ; Bit-16 = PhyRdy Change
+dPSERR_DIAG_I       equ 1 shl 17        ; Bit-17 = Phy Internal Error
+dPSERR_DIAG_W       equ 1 shl 18        ; Bit-18 = Comm Wake
+dPSERR_DIAG_B       equ 1 shl 19        ; Bit-19 = 10B to 8B Decode Error
+dPSERR_DIAG_D       equ 1 shl 20        ; Bit-20 = Disparity Error
+dPSERR_DIAG_C       equ 1 shl 21        ; Bit-21 = CRC Error
+dPSERR_DIAG_H       equ 1 shl 22        ; Bit-22 = Handshake Error
+dPSERR_DIAG_S       equ 1 shl 23        ; Bit-23 = Link Sequence Error
+dPSERR_DIAG_T       equ 1 shl 24        ; Bit-24 = Transport State Transition Error
+dPSERR_DIAG_F       equ 1 shl 25        ; Bit-25 = Unknown FIS Type
+dPSERR_DIAG_X       equ 1 shl 26        ; Bit-26 = Exchanged
+                                        ; Bit31-27.....Reserved
+;
+;-------------------------------------------------------------------------
+;
+; Command List Structure
+;
+COMMAND_LIST_STRUC  struc
+  dDW0          dd  ?   ; Description Information (details below)
+  dPRDBC        dd  ?   ; Physical Region Descriptor Byte Count
+  dCTBA         dd  ?   ; Command Table Base Address (lower 32bit)
+  dCTBAU        dd  ?   ; Command Table Base Address (upper 32bit)
+  dReserved1    dd  ?   ; Reserved dword
+  dReserved2    dd  ?   ; Reserved dword
+  dReserved3    dd  ?   ; Reserved dword
+  dReserved4    dd  ?   ; Reserved dword
+COMMAND_LIST_STRUC  ends
+;
+; Details of dDW0 field
+;
+dDW0_CFL_MASK   equ 1Fh shl 0       ; Bit4-0  = Command FIS Length (1-based) in #of DWords
+dDW0_ATAPI      equ 1 shl 5         ; Bit-5   = ATAPI
+dDW0_WRITE      equ 1 shl 6         ; Bit-6   = Direction of data transfer
+                                    ; 0 = Device Read (data from device to host)
+                                    ; 1 = Device Write (data from host to device)
+dDW0_PREFETCHABLE   equ 1 shl 7     ; Bit-7   = Prefetchable
+dDW0_RESET          equ 1 shl 8     ; Bit-8   = Device Reset
+dDW0_BIST           equ 1 shl 9     ; Bit-9   = BIST
+dDW0_CLEAR_BSY      equ 1 shl 10    ; Bit-10  = Clear Busy after xmitting FIS and receiving R_OK
+                                    ; Bit-11....Reserved
+dDW0_PMP_MASK       equ 0Fh shl 12  ; Bit15-12= Port multiplier number to be used
+
+dDW0_PRDTL_N      equ 16            ; Bit-16  = Start bit of PRDTL
+dDW0_PRDTL_MASK   equ 0FFFFh shl 16 ;Bit31-16= Physical Region Descriptor Table Length
+                                    ; in #of entries, each entry is 4 DWords
+;-------------------------------------------------------------------------
+; Command Table
+;
+COMMAND_TABLE_STRUC struc
+  aCFIS     db  40h dup (?) ; Area for command FIS
+  aACMD     db  10h dup (?) ; Area for ATAPI command
+  aReserved db  30h dup (?) ; Reserbed area
+  aPRDT     db  ?           ; Start of Physical Region Descriptor Tables
+COMMAND_TABLE_STRUC ends
+;
+;-------------------------------------------------------------------------
+; PRDT: Physical Region Descriptor Table
+;
+PRDT_STRUC  struc
+  dDBA      dd  ?   ; Data Base Address (lower 32bit)
+  dDBAU     dd  ?   ; Data Base Address (upper 32bit)
+  dReserved dd  ?   ; Reserved
+  dDW3      dd  ?   ; Description Information (details below)
+PRDT_STRUC  ends
+;
+; Details of dDW3 field
+;
+dDW3_DBC_MASK   equ 3FFFFFh shl 0   ; Bit21-0  = Data Byte Count (0-based)
+                                    ; Bit30-22...Reserved
+dDW3_INTERRUPT  equ 1 shl 31        ; Bit-31   = Generate interrupt when data is xferred
+;
+;-------------------------------------------------------------------------
+; FIS: Frame Information Structure
+;
+; FIS Types and size in #of dwords
+H2D_REGISTER_FIS_TYPE           equ 27h
+H2D_REGISTER_FIS_LENGTH_DWORD   equ 05h
+
+D2H_REGISTER_FIS_TYPE           equ 34h
+D2H_REGISTER_FIS_LENGTH_DWORD   equ 05h
+  
+DMA_SETUP_FIS_TYPE              equ 41h
+DMA_SETUP_FIS_LENGTH_DWORD      equ 07h
+
+BIST_ACTIVATE_FIS_TYPE          equ 58h
+BIST_ACTIVATE_FIS_LENGTH_DWORD  equ 03h
+
+PIO_SETUP_FIS_TYPE              equ 5Fh
+PIO_SETUP_FIS_LENGTH_DWORD      equ 05h
+
+SET_DEVICE_BITS_FIS_TYPE            equ 0A1h
+SET_DEVICE_BITS_FIS_LENGTH_DWORD    equ 02h
+
+ACMD_FIELD_LENGTH_DWORD     equ 03h     ;(V1.07+)
+;
+H2D_REGISTER_FIS_STRUC  struc
+  bFisType                  db  ?   ; FIS Type
+  bXferReason               db  ?   ; Cause of transfer
+    COMMAND_REGISTER_UPDATE equ 80h ; Bit-7 = 1, xfer is due to an update of command register
+                                    ; Bit6-0=....Reserved
+  bCommand                  db  ?   ; Command
+  bFeatures                 db  ?   ; Features
+  bSectorNumber             db  ?   ; Sector Number
+  bCylinderLow              db  ?   ; Cylinder Low
+  bCylinderHigh             db  ?   ; Cylinder High
+  bDeviceHead               db  ?   ; Device Head
+  bSectorNumberExp          db  ?   ; Sector Number Exp
+  bCylinderLowExp           db  ?   ; Cylinder Low Exp
+  bCylinderHighExp          db  ?   ; Cylinder High Exp
+  bFeaturesExp              db  ?   ; Features Exp
+  bSectorCount              db  ?   ; Sector Count
+  bSectorCountExp           db  ?   ; Sector Count Exp
+  bReserved1                db  ?   ; Reserved
+  bControl                  db  ?   ; Control
+  bReserved2                db  ?   ; Reserved
+  bReserved3                db  ?   ; Reserved
+  bReserved4                db  ?   ; Reserved
+  bReserved5                db  ?   ; Reserved
+H2D_REGISTER_FIS_STRUC  ends
+
+D2H_REGISTER_FIS_STRUC  struc
+  bFisType              db  ?   ; FIS Type
+  bDeviceInterruptLine  db  ?   ; Interrupt line of device
+    INTERRUPT_BIT       equ 40h ; Bit-6 = it reflects interrupt bit line of the device
+  bStatus               db  ?   ; Status
+  bError                db  ?   ; Error
+  bSectorNumber         db  ?   ; Sector Number
+  bCylinderLow          db  ?   ; Cylinder Low
+  bCylinderHigh         db  ?   ; Cylinder High
+  bDeviceHead           db  ?   ; Device Head
+  bSectorNumberExp      db  ?   ; Sector Number Exp
+  bCylinderLowExp       db  ?   ; Cylinder Low Exp
+  bCylinderHighExp      db  ?   ; Cylinder High Exp
+  bReserved1            db  ?   ; Features Exp
+  bSectorCount          db  ?   ; Sector Count
+  bSectorCountExp       db  ?   ; Sector Count Exp
+  bReserved2            db  ?   ; Reserved
+  bReserved3            db  ?   ; Control
+  bReserved4            db  ?   ; Reserved
+  bReserved5            db  ?   ; Reserved
+  bReserved6            db  ?   ; Reserved
+  bReserved7            db  ?   ; Reserved
+D2H_REGISTER_FIS_STRUC  ends
+;
+DMA_SETUP_FIS_STRUC struc
+  bFisType                  db  ?   ; FIS Type
+  bXferDirnAndInt           db  ?   ; Xfer direction and interrupt
+    XFER_D2H                equ 20h ; Bit-5 = 1, D2H xfer
+    XFER_H2D                equ 00h ; 0, H2D xfer
+    INTERRUPT_PENDING       equ 40h ; Bit-6 = interrupt pending
+  bReserved1                db  ?   ; Reserved
+  bReserved2                db  ?   ; Reserved
+  dDmaBufferIdentifierLow   dd  ?   ; DMA Buffer Identifier Low
+  dDmaBufferIdentifierHigh  dd  ?   ; DMA Buffer Identifier High
+  dReserved3                dd  ?   ; Reserved
+  dDmaBufferOffset          dd  ?   ; DMA Buffer offset
+  dDmaXferCount             dd  ?   ; DMA Transfer Count in bytes
+  dReserved4                dd  ?   ; Reserved
+DMA_SETUP_FIS_STRUC ends
+;
+BIST_ACTIVATE_FIS_STRUC struc
+  bFisType      db  ?   ; FIS Type
+  bReserved1    db  ?   ; Reserved
+  bPattern      db  ?   ; Pattern Definition
+  bReserved2    db  ?   ; Reserved
+  dData1        dd  ?   ; Data1
+  dData2        dd  ?   ; Data2
+BIST_ACTIVATE_FIS_STRUC	ends
+;
+PIO_SETUP_FIS_STRUC	struc
+  bFisType          db  ?   ; FIS Type
+  bXferDirnAndInt   db  ?   ; Xfer direction and interrupt
+                            ; (bit defintions same as DMA_SETUP_FIS)
+  bStatus           db  ?   ; Status
+  bError            db  ?   ; Error
+  bSectorNumber     db  ?   ; Sector Number
+  bCylinderLow      db  ?   ; Cylinder Low
+  bCylinderHigh     db  ?   ; Cylinder High
+  bDeviceHead       db  ?   ; Device Head
+  bSectorNumberExp  db  ?   ; Sector Number Exp
+  bCylinderLowExp   db  ?   ; Cylinder Low Exp
+  bCylinderHighExp  db  ?   ; Cylinder High Exp
+  bReserved1        db  ?   ; Reserved
+  bSectorCount      db  ?   ; Sector Count
+  bSectorCountExp   db  ?   ; Sector Count Exp
+  bReserved2        db  ?   ; Reserved
+  bE_Status         db  ?   ; Status
+  wXferCount        dw  ?   ; Xfer count in bytes
+  wReserved         dw  ?   ; Reserved
+PIO_SETUP_FIS_STRUC ends
+;
+SET_DEVICE_BITS_FIS_STRUC   struc
+  bFisType      db  ?   ; FIS Type
+  bFlags        db  ?   ; Information flags
+  bStatus       db  ?   ; Status
+  bError        db  ?   ; Error
+  dReserved     dd  ?   ; Reserved
+SET_DEVICE_BITS_FIS_STRUC   ends
+;
+; Receive FIS structure
+FIS_RECEIVE_STRUC   struc
+  aDSFIS        DMA_SETUP_FIS_STRUC {?}         ; DMA Setup FIS
+  bReserved1    db  04h dup (?)                 ; Reserved
+  aPSFIS        PIO_SETUP_FIS_STRUC {?}         ; PIO Setup FIS
+  bReserved2    db  0Ch dup (?)                 ; Reserved
+  aRFIS         D2H_REGISTER_FIS_STRUC  {?}     ; D2H Register FIS
+  bReserved3    db  04h dup (?)                 ; Reserved
+  aSDBFIS       SET_DEVICE_BITS_FIS_STRUC {?}   ; Set Device Bits FIS
+  aUFIS         db  40h dup (?)                 ; Unknown FIS
+  bReserved4    db  60h dup (?)                 ; Reserved
+FIS_RECEIVE_STRUC   ends
+;
+;-------------------------------------------------------------------------
+;****************************************************************************
+;****************************************************************************
+;**                                                                        **
+;**             (C)Copyright 1985-2014, American Megatrends, Inc.          **
+;**                                                                        **
+;**                          All Rights Reserved.                          **
+;**                                                                        **
+;**                 5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093      **
+;**                                                                        **
+;**                          Phone (770)-246-8600                          **
+;**                                                                        **
+;****************************************************************************
+;****************************************************************************
+

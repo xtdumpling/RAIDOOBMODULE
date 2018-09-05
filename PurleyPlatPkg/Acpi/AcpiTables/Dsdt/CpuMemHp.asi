@@ -1,0 +1,1059 @@
+/*++
+  This file contains 'Framework Code' and is licensed as such
+  under the terms of your license agreement with Intel or your
+  vendor.  This file may not be modified, except as allowed by
+  additional terms of your license agreement.
+--*/
+/*++
+
+  Copyright (c) 2001 - 2016, Intel Corporation.  All rights reserved.
+
+  This software and associated documentation (if any) is furnished under 
+  a license and may only be used or copied in accordance with the terms 
+  of the license.  Except as permitted by such license, no part of this 
+  software or documentation may be reproduced, stored in a retrieval 
+  system, or transmitted in any form or by any means without the express 
+  written consent of Intel Corporation.
+
+  Module Name:
+
+    CpuMemHp.asi
+
+  Abstract:
+
+    Contains root level name space objects for the platform
+
+--*/
+#include "MaxSocket.h"
+
+#define HECI_CMD_CPUHOTPLUG    1
+#define HECI_CMD_CPUHOTREMOVE  2
+
+#define  SIZE_LAPIC_STRUC   8
+#define  LAPIC_TYPE         0
+
+#define  SIZE_X2LAPIC_STRUC   16
+#define  X2LAPIC_TYPE         9
+
+#define  MAK_STR(x)   #x
+#define  MAX_CORES_PER_SOCKET     28
+//max num of thread per socket = 2 * MAX_CORES
+#define  MAX_THREADS_PER_SOCKET   56
+  
+//
+// This macro creates method that calculates
+// number of active threads for its socket
+//
+#define CPU_THREADS_NUM(socket)                                             \
+  Method(THNU, 0) {                                                         \
+    Store(0, Local0)                                                        \
+    Store(P##socket##BM, Local1)                                            \
+    While (Local1) {                                                        \
+      Add(Local0, And(Local1, 1), Local0)                                   \
+      ShiftRight(Local1, 1, Local1)                                         \
+    }                                                                       \
+    return (Or(ShiftLeft(socket, 8), Local0))                               \
+  }
+
+//set DevName ProcId field and IO to CP##thread and ProcId field as '%' 
+//to make dynamic search easier, IOAddress field wiil
+//be updated in PatchDsdtTable in BIOS boot
+#define  CPU_THREAD_DEV(socket, thread)                                         \
+  Device(CP##thread) { \
+    Name(_HID, "ACPI0007")                                                  \
+    Name(_UID, MAK_STR(SCK##socket-CP##thread))                             \
+    Method(_PXM) { \
+      if (LEqual (CLOD, 0)) { \
+        Return(0x0##socket) \
+      } else { \
+        Store(DerefOf(Index(\_SB.APTB, 0x##thread)), Local0) \
+        Store(CNBS, Local1) \
+        Subtract(Local1, 1, Local1) \
+        ShiftRight(Local0, Local1, Local0) \
+        And(Local0, 1, Local0) \
+        Store(0x##socket, Local1) \
+        Multiply(Local1, 2, Local1) \
+        if(LEqual(Local0, 1)) { \
+          Add(Local1, 1, Local1) \
+        } \
+        Return(Local1) \
+      } \
+    } \
+    Method(_STA) {                                                          \
+      if(LEqual(\_SB.CSTA(0x0##socket, 0x##thread), 0x00)) {                \
+        Return(0x00)                                                        \
+      } else {                                                              \
+        If (LGreaterEqual (\_SB.OSYS, 12)) {                                \
+          Return(0x0F)                                                      \
+        } Else {                                                            \
+          Return(0x0B)                                                      \
+        }                                                                   \
+      }                                                                     \
+    }                                                                       \
+    Method(_MAT) { \
+      if(SKOV) { \
+        Return(\_SB.X2AP(0x0##socket, 0x##thread)) \
+      } else { \
+        Return(\_SB.LAPC(0x0##socket, 0x##thread)) \
+      } \
+    } \
+  }
+
+//set procName ProcId field and IO to CP##thread and ProcId field as '%' 
+//to make dynamic search easier, IOAddress field wiil
+//be updated in PatchDsdtTable in BIOS boot
+#define  CPU_THREAD(socket, thread)                                         \
+  Processor(CP##thread, 0x25, 0x##socket##thread, 6) { \
+    Name(_HID, "ACPI0007")                                                  \
+    Name(_UID, MAK_STR(SCK##socket-CP##thread))                             \
+    Method(_PXM) {                                                          \
+      if (LEqual (CLOD, 0)) {                                               \
+        Return(0x0##socket)                                                 \
+      } else {                                                              \
+        Store(DerefOf(Index(\_SB.APTB, 0x##thread)), Local0)                \
+        Store(CNBS, Local1)                                                 \
+        Subtract(Local1, 1, Local1)                                         \
+        ShiftRight(Local0, Local1, Local0)                                  \
+        And(Local0, 1, Local0)                                              \
+        Store(0x##socket, Local1)                                           \
+        Multiply(Local1, 2, Local1)                                         \
+        if(LEqual(Local0, 1)) {                                             \
+          Add(Local1, 1, Local1)                                            \
+        }                                                                   \
+        Return(Local1)                                                      \
+      }                                                                     \
+    }                                                                       \
+    Method(_STA) {                                                          \
+      if(LEqual(\_SB.CSTA(0x0##socket, 0x##thread), 0x00)) {                \
+        Return(0x00)                                                        \
+      } else {                                                              \
+        If (LGreaterEqual (\_SB.OSYS, 12)) {                                \
+          Return(0x0F)                                                      \
+        } Else {                                                            \
+          Return(0x0B)                                                      \
+        }                                                                   \
+      }                                                                     \
+    }                                                                       \
+    Method(_MAT) {                                                          \
+      if(SKOV) { \
+        Return(\_SB.X2AP(0x0##socket, 0x##thread)) \
+      } else { \
+      Return(\_SB.LAPC(0x0##socket, 0x##thread)) \
+      } \
+    } \
+  }
+
+#define  CPU_MEMORY(socket, branch)  \
+  Device(M00##branch) {   \
+    Name(_HID, EISAID("PNP0C80"))  \
+    Name(_UID, MAK_STR(MEM0##socket-##branch))  \
+    Name(_EJD, MAK_STR(\\_SB.SCK##socket))     \
+    Name(_PXM, 0x0##socket)                    \
+    Method(_STA){                              \
+      Store(MAK_STR(MEM0##socket-##branch), ME##socket##branch) \
+      Return(\_SB.MSTA(\_SB.TMID(0x0##socket, 0x0##branch)))  \
+    } \
+    Method(_CRS) { \
+      Return(\_SB.MCRS(\_SB.TMID(0x0##socket, 0x0##branch)))  \
+    } \
+  }
+
+#define  CPU_SOCKET(socket)                                                 \
+  Device(\_SB.SCK##socket) {                                                \
+    Name (_HID, "ACPI0004")                                                 \
+    Name (_UID, MAK_STR(CPUSCK##socket))                                    \
+    Name (LSTA, 0xff)                                                       \
+    Method(_STA) {                                                          \
+      Store(MAK_STR(CPUSCK##socket), CUU##socket)                           \
+      Store(\_SB.PSTA(0x0##socket), Local0)                                 \
+      And(Local0, 0x03, Local1)                                             \
+      If (LAnd(LNotEqual(LSTA, 0xff), LNotEqual(Local1, LSTA))) {           \
+        If (LEqual(Local1, 0x03)) {                                         \
+          /*\_SB.PC00.HEC2.HPNF(HECI_CMD_CPUHOTPLUG, socket, THNU) TODO: Obsolete with _PUR?*/\
+        } Else {                                                            \
+          /*\_SB.PC00.HEC2.HPNF(HECI_CMD_CPUHOTREMOVE, socket, THNU) TODO: Obsolete with _PUR?*/\
+        }                                                                   \
+      }                                                                     \
+      Store(Local1, LSTA)                                                   \
+      return(Local0)                                                        \
+    }                                                                       \
+                                                                          \
+    CPU_THREADS_NUM(socket)   \
+    CPU_THREAD (socket, 00)   \
+    CPU_THREAD (socket, 01)   \
+    CPU_THREAD (socket, 02)   \
+    CPU_THREAD (socket, 03)   \
+    CPU_THREAD (socket, 04)   \
+    CPU_THREAD (socket, 05)   \
+    CPU_THREAD (socket, 06)   \
+    CPU_THREAD (socket, 07)   \
+    CPU_THREAD (socket, 08)   \
+    CPU_THREAD (socket, 09)   \
+    CPU_THREAD (socket, 0A)   \
+    CPU_THREAD (socket, 0B)   \
+    CPU_THREAD (socket, 0C)   \
+    CPU_THREAD (socket, 0D)   \
+    CPU_THREAD (socket, 0E)   \
+    CPU_THREAD (socket, 0F)   \
+    CPU_THREAD (socket, 10)   \
+    CPU_THREAD (socket, 11)   \
+    CPU_THREAD (socket, 12)   \
+    CPU_THREAD (socket, 13)   \
+    CPU_THREAD (socket, 14)   \
+    CPU_THREAD (socket, 15)   \
+    CPU_THREAD (socket, 16)   \
+    CPU_THREAD (socket, 17)   \
+    CPU_THREAD (socket, 18)   \
+    CPU_THREAD (socket, 19)   \
+    CPU_THREAD (socket, 1A)   \
+    CPU_THREAD (socket, 1B)   \
+    CPU_THREAD (socket, 1C)   \
+    CPU_THREAD (socket, 1D)   \
+    CPU_THREAD (socket, 1E)   \
+    CPU_THREAD (socket, 1F)   \
+    CPU_THREAD (socket, 20)   \
+    CPU_THREAD (socket, 21)   \
+    CPU_THREAD (socket, 22)   \
+    CPU_THREAD (socket, 23)   \
+    CPU_THREAD (socket, 24)   \
+    CPU_THREAD (socket, 25)   \
+    CPU_THREAD (socket, 26)   \
+    CPU_THREAD (socket, 27)   \
+    CPU_THREAD (socket, 28)   \
+    CPU_THREAD (socket, 29)   \
+    CPU_THREAD (socket, 2A)   \
+    CPU_THREAD (socket, 2B)   \
+    CPU_THREAD (socket, 2C)   \
+    CPU_THREAD (socket, 2D)   \
+    CPU_THREAD (socket, 2E)   \
+    CPU_THREAD (socket, 2F)   \
+    CPU_THREAD (socket, 30)   \
+    CPU_THREAD (socket, 31)   \
+    CPU_THREAD (socket, 32)   \
+    CPU_THREAD (socket, 33)   \
+    CPU_THREAD (socket, 34)   \
+    CPU_THREAD (socket, 35)   \
+    CPU_THREAD (socket, 36)   \
+    CPU_THREAD (socket, 37)   \
+  }
+
+//
+// SKX-TODO - getting compile time error with MinFixed and MaxFixed (so using the defaults for now)
+//
+#define  CPU_SOCKET_DEV(socket)                                                 \
+  Device(\_SB.SCK##socket) {                                                \
+    Name (_HID, "ACPI0004")                                                 \
+    Name (_UID, MAK_STR(CPUSCK##socket))                                    \
+    Name (LSTA, 0xff)                                                       \
+    Method(_STA) {                                                          \
+      Store(MAK_STR(CPUSCK##socket), CUU##socket)                           \
+      Store(\_SB.PSTA(0x0##socket), Local0)                                 \
+      And(Local0, 0x03, Local1)                                             \
+      If (LAnd(LNotEqual(LSTA, 0xff), LNotEqual(Local1, LSTA))) {           \
+        If (LEqual(Local1, 0x03)) {                                         \
+          /*\_SB.PC00.HEC2.HPNF(HECI_CMD_CPUHOTPLUG, socket, THNU) TODO: Obsolete with _PUR?*/\
+        } Else {                                                            \
+          /*\_SB.PC00.HEC2.HPNF(HECI_CMD_CPUHOTREMOVE, socket, THNU) TODO: Obsolete with _PUR?*/\
+        }                                                                   \
+      }                                                                     \
+      Store(Local1, LSTA)                                                   \
+      return(Local0)                                                        \
+    }                                                                       \
+                                                                          \
+    CPU_THREADS_NUM(socket)   \
+    CPU_THREAD_DEV (socket, 00)   \
+    CPU_THREAD_DEV (socket, 01)   \
+    CPU_THREAD_DEV (socket, 02)   \
+    CPU_THREAD_DEV (socket, 03)   \
+    CPU_THREAD_DEV (socket, 04)   \
+    CPU_THREAD_DEV (socket, 05)   \
+    CPU_THREAD_DEV (socket, 06)   \
+    CPU_THREAD_DEV (socket, 07)   \
+    CPU_THREAD_DEV (socket, 08)   \
+    CPU_THREAD_DEV (socket, 09)   \
+    CPU_THREAD_DEV (socket, 0A)   \
+    CPU_THREAD_DEV (socket, 0B)   \
+    CPU_THREAD_DEV (socket, 0C)   \
+    CPU_THREAD_DEV (socket, 0D)   \
+    CPU_THREAD_DEV (socket, 0E)   \
+    CPU_THREAD_DEV (socket, 0F)   \
+    CPU_THREAD_DEV (socket, 10)   \
+    CPU_THREAD_DEV (socket, 11)   \
+    CPU_THREAD_DEV (socket, 12)   \
+    CPU_THREAD_DEV (socket, 13)   \
+    CPU_THREAD_DEV (socket, 14)   \
+    CPU_THREAD_DEV (socket, 15)   \
+    CPU_THREAD_DEV (socket, 16)   \
+    CPU_THREAD_DEV (socket, 17)   \
+    CPU_THREAD_DEV (socket, 18)   \
+    CPU_THREAD_DEV (socket, 19)   \
+    CPU_THREAD_DEV (socket, 1A)   \
+    CPU_THREAD_DEV (socket, 1B)   \
+    CPU_THREAD_DEV (socket, 1C)   \
+    CPU_THREAD_DEV (socket, 1D)   \
+    CPU_THREAD_DEV (socket, 1E)   \
+    CPU_THREAD_DEV (socket, 1F)   \
+    CPU_THREAD_DEV (socket, 20)   \
+    CPU_THREAD_DEV (socket, 21)   \
+    CPU_THREAD_DEV (socket, 22)   \
+    CPU_THREAD_DEV (socket, 23)   \
+    CPU_THREAD_DEV (socket, 24)   \
+    CPU_THREAD_DEV (socket, 25)   \
+    CPU_THREAD_DEV (socket, 26)   \
+    CPU_THREAD_DEV (socket, 27)   \
+    CPU_THREAD_DEV (socket, 28)   \
+    CPU_THREAD_DEV (socket, 29)   \
+    CPU_THREAD_DEV (socket, 2A)   \
+    CPU_THREAD_DEV (socket, 2B)   \
+    CPU_THREAD_DEV (socket, 2C)   \
+    CPU_THREAD_DEV (socket, 2D)   \
+    CPU_THREAD_DEV (socket, 2E)   \
+    CPU_THREAD_DEV (socket, 2F)   \
+    CPU_THREAD_DEV (socket, 30)   \
+    CPU_THREAD_DEV (socket, 31)   \
+    CPU_THREAD_DEV (socket, 32)   \
+    CPU_THREAD_DEV (socket, 33)   \
+    CPU_THREAD_DEV (socket, 34)   \
+    CPU_THREAD_DEV (socket, 35)   \
+    CPU_THREAD_DEV (socket, 36)   \
+    CPU_THREAD_DEV (socket, 37)   \
+  }
+
+#define  MEM_RESOURCE    \
+  QwordMemory(ResourceConsumer, \
+      , \
+      , \
+      , \
+      Cacheable, \
+      ReadWrite, \
+      0x0000FFFFF, \
+      0x000000000, \
+      0x000000000, \
+      0,           \
+      0x000000000  \
+  )
+                                                                   
+
+  Scope(\_SB) {
+
+    //----------------------------------------------------------------
+    //  Method PSTA()
+    //      Return package state
+    //
+    //  Inputs: Arg0 = Core number for which to return the _STA code.
+    //----------------------------------------------------------------
+    Method(PSTA, 1){        // Socket Status
+      ShiftRight(PRBM, Arg0, Local6)
+      And(Local6, 0x1, Local6)
+      if(LEqual(Local6, 0x0)) {
+        Return(0x00)
+      } else {
+        Return(0x0F)
+      }
+    } // End Method PSTA
+
+    //----------------------------------------------------------------
+    //  Method TMID()
+    //      Convert the socket and branch index to memory node index
+    //
+    //  Inputs: Arg0 = socket index
+    //          Arg1 = branch index   
+    //  Output: Memory node index (0-7)
+    //----------------------------------------------------------------
+    Method(TMID, 2) {
+      Multiply (Arg0, 2, Local0)
+      Add (Local0, Arg1, Local1)
+      Return (Local1)
+    }
+
+    //----------------------------------------------------------------
+    // SKX 28C SKU APICID: 14 + 14 + 14 + 14
+    //----------------------------------------------------------------
+    Name (APTB, Buffer (0x38) {
+          0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09,
+          0x0A, 0x0B, 0x0C, 0x0D,
+          0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19,
+          0x1A, 0x1B, 0x1C, 0x1D,
+          0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29,
+          0x2A, 0x2B, 0x2C, 0x2D,
+          0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39,
+          0x3A, 0x3B, 0x3C, 0x3D         
+    })
+
+        //----------------------------------------------------------------
+    //  Method TPID()
+    //      Convert the socket and thread index to the actual APIC ID
+    //
+    //  Inputs: Arg0 = socket index
+    //          Arg1 = thread index
+    //----------------------------------------------------------------
+    Method (TPID, 2, NotSerialized) {
+      Store (0x00, Local0)
+      If (LEqual (Arg0, 0x00))
+      {
+        Store (P0ID, Local0)
+      }
+
+      If (LEqual (Arg0, 0x01))
+      {
+        Store (P1ID, Local0)
+      }
+
+      If (LEqual (Arg0, 0x02))
+      {
+        Store (P2ID, Local0)
+      }
+
+      If (LEqual (Arg0, 0x03))
+      {
+        Store (P3ID, Local0)
+      }
+
+      Add (Local0, DerefOf(Index(APTB, Arg1)), Local0)
+
+      Return (Local0)
+    }
+
+    //----------------------------------------------------------------     
+    //  Method MSTA()
+    //     Memory board Status
+    //
+    //  Inputs: Arg0 = Memory board for which to return the _STA code.
+    //----------------------------------------------------------------
+    Method(MSTA, 1) {
+      // Check memory board Flag is 0 then disabled else enabled
+      ShiftRight(MEBM, Arg0, Local6)
+      And(Local6, 0x1, Local6)
+      if(LEqual(Local6, 0x0)) {
+        Return(0x00)
+      } else {
+        Return(0x0F)
+      }
+    } // End Method MSTA
+
+
+    //----------------------------------------------------------------
+    //  Method CSTA()
+    //      Get current processor state
+    //  Inputs: Arg0 = Socket Number where core belongs
+    //          Arg1 = Thread number for which to return the _STA code 
+    //                 (Bit0 - Core Id, BIT1- Thread Id)
+    //----------------------------------------------------------------
+    Method(CSTA, 2){        // Core Status
+      Store(0, Local0)
+      Store(0, Local2)    //for Core#
+
+      //Get ApicId per thread Index from APTB
+      Add (Local2, DerefOf(Index(APTB, Arg1)), Local2)
+
+      if (LEqual(Local2, 0xFF)) {
+        Return(0x00)
+      }
+
+      if (LEqual(Arg0, 0x0)) {
+        ShiftRight(P0BM, Local2, Local0)
+      }
+      if (LEqual(Arg0, 0x1)) {
+        ShiftRight(P1BM, Local2, Local0)
+      }
+      if (LEqual(Arg0, 0x2)) {
+        ShiftRight(P2BM, Local2, Local0)
+      }
+      if (LEqual(Arg0, 0x3)) {
+        ShiftRight(P3BM, Local2, Local0)
+      }
+      And(Local0, 0x1, Local0)
+      if(LEqual(Local0, 0x0)) {
+        Return(0x00)
+      } else {
+        Return(0x01)
+      }
+    } // End Method CSTA
+
+    //----------------------------------------------------------------
+    //  Method LAPC()
+    //    Return the _MAT APIC data structure
+    //
+    //  Inputs: Arg0 = Socket ID
+    //  Inputs: Arg1 = Thread ID
+    //          PRID = socket * MAX_CORE + (thread & 0x1) * MAX_SOCKET*MAX_CORE*MAX_THREAD +(thread >> 1)
+    //----------------------------------------------------------------+
+    Method(LAPC, 2,Serialized) {
+
+      Name(APIC, Buffer(SIZE_LAPIC_STRUC) {} ) // initialize a buffer with CRST size
+
+      CreateByteField (APIC, 0x00,  TYPE) // Type
+      CreateByteField (APIC, 0x01,  LLEN) // Length
+      CreateByteField (APIC, 0x02,  PRID) // ACPI Processor ID
+      CreateByteField (APIC, 0x03,  APID) // APIC ID
+      CreateDwordField(APIC, 0x04,  FLAG) // Flags
+
+      Store(LAPIC_TYPE, TYPE)
+      Store(SIZE_LAPIC_STRUC, LLEN)
+
+      // Update APIC ID
+      Store (\_SB.TPID(Arg0, Arg1), APID)
+
+      // Update Flag
+      if(LEqual(\_SB.CSTA(Arg0, Arg1), 0x00)) {
+        Store(0x00, FLAG)
+        Store(0xFF, PRID)
+        Store(0xFF, APID)
+      } else {
+        //ProcId = socket# * MAX_THREADS_PER_SOCKET + thread#
+        Store(MAX_THREADS_PER_SOCKET, local1)
+        Multiply(Arg0, local1, local1)
+        Add(local1, Arg1, local1)
+        Store(local1, PRID)
+
+        //set Enable flag
+        Store(0x01, FLAG)
+      }
+
+      // calculate PROCID based on APICID using same algorithm in AcpiPlatformHook.c
+
+      Return(APIC)
+    }
+
+    Method(X2AP, 2,Serialized) {
+        
+      Name(APIC, Buffer(SIZE_X2LAPIC_STRUC) {} ) // initialize a buffer with CRST siz
+
+      CreateByteField (APIC, 0x00,  TYPE) // Type
+      CreateByteField (APIC, 0x01,  LLEN) // Length
+      CreateWordField (APIC, 0x02,  RSVD) // Reserved 2 bytes
+      CreateDwordField(APIC, 0x04,  APID) // APIC ID
+      CreateDwordField(APIC, 0x08,  FLAG) // Flags
+// remove this to avoid "not used" remark from compiler.
+//      CreateDwordField(APIC, 0x0C,  PUID) // ACPI Processor UID
+
+      Store(X2LAPIC_TYPE, TYPE)
+      Store(SIZE_X2LAPIC_STRUC, LLEN)
+      Store(0, RSVD)
+
+      // Update APIC ID
+      Store (\_SB.TPID(Arg0, Arg1), APID)
+        
+      // Update Flag
+      if(LEqual(\_SB.CSTA(Arg0, Arg1), 0x00)) {
+        Store(0x00, FLAG)
+        Store(0xFFFFFFFF, APID)
+      } else {
+        //ProcId = socket# * MAX_THREADS_PER_SOCKET + thread#
+        Store(MAX_THREADS_PER_SOCKET, local1)
+        Multiply(Arg0, local1, local1)
+        Add(local1, Arg1, local1)
+        Store(local1, PRID)
+
+        //set Enable flag
+        Store(0x01, FLAG)
+
+      }
+
+      Return(APIC)
+
+    }
+
+    Method (MFIL, 4) {
+        
+      Multiply(Arg1, 46, Local0)
+        
+      Store(0x00,                Index(Arg0, Add(Local0, 14)))
+      Store(0x00,                Index(Arg0, Add(Local0, 15)))
+      Store(ShiftLeft (Arg2, 4), Index(Arg0, Add(Local0, 16)))          
+      Store(ShiftRight(Arg2, 4), Index(Arg0, Add(Local0, 17)))          
+      Store(ShiftRight(Arg2,12), Index(Arg0, Add(Local0, 18)))
+      Store(ShiftRight(Arg2,20), Index(Arg0, Add(Local0, 19)))
+      Store(ShiftRight(Arg2,28), Index(Arg0, Add(Local0, 20)))
+      Store(0x00,                Index(Arg0, Add(Local0, 21)))
+          
+      // Update the _LEN field  (SIZE)
+      Store(0x00,                Index(Arg0, Add(Local0, 38)))
+      Store(0x00,                Index(Arg0, Add(Local0, 39)))
+      Store(ShiftLeft (Arg3, 4), Index(Arg0, Add(Local0, 40)))
+      Store(ShiftRight(Arg3, 4), Index(Arg0, Add(Local0, 41)))
+      Store(ShiftRight(Arg3,12), Index(Arg0, Add(Local0, 42)))
+      Store(ShiftRight(Arg3,20), Index(Arg0, Add(Local0, 43)))
+      Store(ShiftRight(Arg3,28), Index(Arg0, Add(Local0, 44)))
+      Store(0x00,                Index(Arg0, Add(Local0, 45)))
+          
+      // Update the _MAX field  (END)
+      Add (Arg2, Arg3, Local1)
+      If (LNotEqual(Arg3, Zero)) {
+        Decrement(Local1)
+      }
+      Store(0xFF,                  Index(Arg0, Add(Local0, 22)))
+      Store(0xFF,                  Index(Arg0, Add(Local0, 23)))
+      Store(Add (ShiftLeft (Local1, 4), 0x0F), Index(Arg0, Add(Local0, 24)))          
+      Store(ShiftRight(Local1, 4), Index(Arg0, Add(Local0, 25)))
+      Store(ShiftRight(Local1,12), Index(Arg0, Add(Local0, 26)))
+      Store(ShiftRight(Local1,20), Index(Arg0, Add(Local0, 27)))
+      Store(ShiftRight(Local1,28), Index(Arg0, Add(Local0, 28)))
+      Store(0x00,                  Index(Arg0, Add(Local0, 29)))
+    }
+      
+    Method (MCRS, 1,Serialized) {
+
+      //
+      // Shared resource template 
+      //
+      Name(MRNR, ResourceTemplate(){
+        // Chunk #00
+        MEM_RESOURCE
+        // Chunk #01
+        MEM_RESOURCE                    
+        // Chunk #02
+        MEM_RESOURCE
+        // Chunk #03
+        MEM_RESOURCE                    
+        // Chunk #04
+        MEM_RESOURCE
+        // Chunk #05
+        MEM_RESOURCE                    
+        // Chunk #06
+        MEM_RESOURCE
+        // Chunk #07
+        MEM_RESOURCE
+        // Chunk #08
+        MEM_RESOURCE
+        // Chunk #09
+        MEM_RESOURCE                    
+        // Chunk #0A
+        MEM_RESOURCE
+        // Chunk #0B
+        MEM_RESOURCE                    
+        // Chunk #0C
+        MEM_RESOURCE
+        // Chunk #0D
+        MEM_RESOURCE                    
+        // Chunk #0E
+        MEM_RESOURCE
+        // Chunk #0F
+        MEM_RESOURCE
+        // Chunk #10
+        MEM_RESOURCE
+        // Chunk #11
+        MEM_RESOURCE                    
+        // Chunk #12
+        MEM_RESOURCE
+        // Chunk #13
+        MEM_RESOURCE                    
+        // Chunk #14
+        MEM_RESOURCE
+        // Chunk #15
+        MEM_RESOURCE                    
+        // Chunk #16
+        MEM_RESOURCE
+        // Chunk #17
+        MEM_RESOURCE
+        // Chunk #18
+        MEM_RESOURCE
+        // Chunk #19
+        MEM_RESOURCE                    
+        // Chunk #1A
+        MEM_RESOURCE
+        // Chunk #1B
+        MEM_RESOURCE                    
+        // Chunk #1C
+        MEM_RESOURCE
+        // Chunk #1D
+        MEM_RESOURCE                    
+        // Chunk #1E
+        MEM_RESOURCE
+        // Chunk #1F
+        MEM_RESOURCE
+        // Chunk #20
+        MEM_RESOURCE
+        // Chunk #21
+        MEM_RESOURCE                    
+        // Chunk #22
+        MEM_RESOURCE
+        // Chunk #23
+        MEM_RESOURCE                    
+        // Chunk #24
+        MEM_RESOURCE
+        // Chunk #25
+        MEM_RESOURCE                    
+        // Chunk #26
+        MEM_RESOURCE
+        // Chunk #27
+        MEM_RESOURCE
+        // Chunk #28
+        MEM_RESOURCE
+        // Chunk #29
+        MEM_RESOURCE                    
+        // Chunk #2A
+        MEM_RESOURCE
+        // Chunk #2B
+        MEM_RESOURCE                    
+        // Chunk #2C
+        MEM_RESOURCE
+        // Chunk #2D
+        MEM_RESOURCE                    
+        // Chunk #2E
+        MEM_RESOURCE
+        // Chunk #2F
+        MEM_RESOURCE
+        // Chunk #30
+        MEM_RESOURCE
+        // Chunk #31
+        MEM_RESOURCE                    
+        // Chunk #32
+        MEM_RESOURCE
+        // Chunk #33
+        MEM_RESOURCE                    
+        // Chunk #34
+        MEM_RESOURCE
+        // Chunk #35
+        MEM_RESOURCE                    
+        // Chunk #36
+        MEM_RESOURCE
+        // Chunk #37
+        MEM_RESOURCE
+        // Chunk #38
+        MEM_RESOURCE
+        // Chunk #39
+        MEM_RESOURCE                    
+        // Chunk #3A
+        MEM_RESOURCE
+        // Chunk #3B
+        MEM_RESOURCE                    
+        // Chunk #3C
+        MEM_RESOURCE
+        // Chunk #3D
+        MEM_RESOURCE                    
+        // Chunk #3E
+        MEM_RESOURCE
+        // Chunk #3F
+        MEM_RESOURCE
+        // Chunk #40
+        MEM_RESOURCE
+        // Chunk #41
+        MEM_RESOURCE                    
+        // Chunk #42
+        MEM_RESOURCE
+        // Chunk #43
+        MEM_RESOURCE                    
+        // Chunk #44
+        MEM_RESOURCE
+        // Chunk #45
+        MEM_RESOURCE                    
+        // Chunk #46
+        MEM_RESOURCE
+        // Chunk #47
+        MEM_RESOURCE
+        // Chunk #48
+        MEM_RESOURCE
+        // Chunk #49
+        MEM_RESOURCE                    
+        // Chunk #4A
+        MEM_RESOURCE
+        // Chunk #4B
+        MEM_RESOURCE                    
+        // Chunk #4C
+        MEM_RESOURCE
+        // Chunk #4D
+        MEM_RESOURCE                    
+        // Chunk #4E
+        MEM_RESOURCE
+        // Chunk #4F
+        MEM_RESOURCE
+        // Chunk #50
+        MEM_RESOURCE
+        // Chunk #51
+        MEM_RESOURCE                    
+        // Chunk #52
+        MEM_RESOURCE
+        // Chunk #53
+        MEM_RESOURCE                    
+        // Chunk #54
+        MEM_RESOURCE
+        // Chunk #55
+        MEM_RESOURCE                    
+        // Chunk #56
+        MEM_RESOURCE
+        // Chunk #57
+        MEM_RESOURCE
+        // Chunk #58
+        MEM_RESOURCE
+        // Chunk #59
+        MEM_RESOURCE                    
+        // Chunk #5A
+        MEM_RESOURCE
+        // Chunk #5B
+        MEM_RESOURCE                    
+        // Chunk #5C
+        MEM_RESOURCE
+        // Chunk #5D
+        MEM_RESOURCE                    
+        // Chunk #5E
+        MEM_RESOURCE
+        // Chunk #5F
+        MEM_RESOURCE
+        // Chunk #60
+        MEM_RESOURCE
+        // Chunk #61
+        MEM_RESOURCE                    
+        // Chunk #62
+        MEM_RESOURCE
+        // Chunk #63
+        MEM_RESOURCE                    
+        // Chunk #64
+        MEM_RESOURCE
+        // Chunk #65
+        MEM_RESOURCE                    
+        // Chunk #66
+        MEM_RESOURCE
+        // Chunk #67
+        MEM_RESOURCE
+        // Chunk #68
+        MEM_RESOURCE
+        // Chunk #69
+        MEM_RESOURCE                    
+        // Chunk #6A
+        MEM_RESOURCE
+        // Chunk #6B
+        MEM_RESOURCE                    
+        // Chunk #6C
+        MEM_RESOURCE
+        // Chunk #6D
+        MEM_RESOURCE                    
+        // Chunk #6E
+        MEM_RESOURCE
+        // Chunk #6F
+        MEM_RESOURCE
+        // Chunk #70
+        MEM_RESOURCE
+        // Chunk #71
+        MEM_RESOURCE                    
+        // Chunk #72
+        MEM_RESOURCE
+        // Chunk #73
+        MEM_RESOURCE                    
+        // Chunk #74
+        MEM_RESOURCE
+        // Chunk #75
+        MEM_RESOURCE                    
+        // Chunk #76
+        MEM_RESOURCE
+        // Chunk #77
+        MEM_RESOURCE
+        // Chunk #78
+        MEM_RESOURCE
+        // Chunk #79
+        MEM_RESOURCE                    
+        // Chunk #7A
+        MEM_RESOURCE
+        // Chunk #7B
+        MEM_RESOURCE                    
+        // Chunk #7C
+        MEM_RESOURCE
+        // Chunk #7D
+        MEM_RESOURCE                    
+        // Chunk #7E
+        MEM_RESOURCE
+        // Chunk #7F
+        MEM_RESOURCE
+      }) // MRN
+
+      // Change the Base from 256M alinged to 1M aligned
+      Store(MBAS(Arg0), Local0)
+      ShiftLeft (Local0, 8, Local0)		// (Local0) = base 1M aligned.	
+      Store(MSIZ(Arg0), Local1)		// (Local1) = Size of current Riser.
+      ShiftLeft (Local1, 8, Local1)		// (Local1) = Size of current Riser - 1M aligned.
+      Add(Local0, Local1, Local2)		// (Local2) = limit.
+      ShiftRight (CFMM, 20, Local4)		// (Local4) = MMCFG - 1M aligned. 
+                     
+      If (LEqual(Local0, Zero)) {		// if this is the first riser.
+        // Do not report memory below 16MB
+        Subtract(Local1, 16, Local1)	// (Local1) = Size-16MB
+        Add     (Local0, 16, Local0)	// (Local0) = Base = 16MB
+      }
+                     
+      if(LAnd(LLess(Local0, Local4), LGreater(Local2, Local4))) {
+        // Fill the first and second entry for the first range below 4G
+        Subtract(Local4, Local0, Local3)  //Size below 4G. (Local3)= MMCFG - 16MB.
+        Subtract(Local1, Local3, Local1)  //Size ablove 4G
+        Subtract(Local3, TSSZ, Local3)    //Size below 4G. (Local3) -= Sizeof(TSEG).   
+
+        MFIL (MRNR, 0, Local0, Local3)
+        Store   (0x1000, Local0)    
+        Store   (1, Local3)    
+      } else {
+        Store   (0, Local3)    
+      }
+
+      while (LLess(Local3, 128)) {  // Fill all 128 MEM_RESOURCE entries. While Local3 < 128.
+      //When this Loop first enters, Local3 is either 0 or 1.
+        if(LGreater(Local0, 0x1000)) { //First check is if Local0 (Base) is greater than 4GB. This is always true for HotPlug situations.
+          if (LGreaterEqual (Local1, 0x01000)) { //For Hotplug, Local1 is the incoming riser size.
+            if (LGreater (Local1, 0x20000)){ // MEM_RESOURCE entry size of of 128gb. if any entry is less than 128gb uses multiple entries of 4gb.
+              Store   (0x20000, Local2) 
+            } else {
+              Store   (0x01000, Local2)
+            }
+          } else {
+            Store   (Local1, Local2)    
+          }
+        } else {
+            if (LGreater(Local1, 0x0800)) {
+                Store   (0x0800, Local2)    
+            } else {
+                Store   (Local1, Local2)    
+            }
+        }
+        if (LEqual(Local2,0)) {
+          Store   (0, Local0)    
+        }
+        MFIL (MRNR, Local3, Local0, Local2)
+        Increment(Local3)   // Adjust the index
+        Subtract (Local1, Local2, Local1)  //Size
+        Add      (Local0, Local2, Local0)  //Base
+      } 
+
+      return (MRNR)
+    }
+
+    // Function to convert a 8 byte buffer into an integer 
+    // ToInteger() is not supported by Windows 2003     
+    Method (TINT, 1) {
+      if (LEqual(ObjectType(Arg0),3)) {  // Only convert it for Buffer type
+        Store(0, Local1)
+        Store(DerefOf(Index(Arg0, 7)), Local0)
+        ShiftLeft (Local0, 56, Local0)
+        Add (Local1, Local0, Local1)
+        Store(DerefOf(Index(Arg0, 6)), Local0)
+        ShiftLeft (Local0, 48, Local0)
+        Add (Local1, Local0, Local1)
+        Store(DerefOf(Index(Arg0, 5)), Local0)
+        ShiftLeft (Local0, 40, Local0)
+        Add (Local1, Local0, Local1)
+        Store(DerefOf(Index(Arg0, 4)), Local0)
+        ShiftLeft (Local0, 32, Local0)
+        Add (Local1, Local0, Local1)
+        Store(DerefOf(Index(Arg0, 3)), Local0)
+        ShiftLeft (Local0, 24, Local0)
+        Add (Local1, Local0, Local1)
+        Store(DerefOf(Index(Arg0, 2)), Local0)
+        ShiftLeft (Local0, 16, Local0)
+        Add (Local1, Local0, Local1)
+        Store(DerefOf(Index(Arg0, 1)), Local0)
+        ShiftLeft (Local0,  8, Local0)
+        Add (Local1, Local0, Local1)
+        Store(DerefOf(Index(Arg0, 0)), Local0)
+        Add (Local1, Local0, Local1)
+        return (Local1)
+      } else {
+        return (Arg0)
+      }
+    }
+
+    //----------------------------------------------------------------------------------------
+    // Method MBAS()
+    //  Inputs: Arg0 = Memory Device number for which to return the base address (RangeStart).
+    //----------------------------------------------------------------------------------------
+    Method(MBAS, 1){
+      // Local0:  RangeStart
+      Store(0x0,Local0)
+      if(LEqual(Arg0,0x0)){
+        Store(M0BS,Local0)
+      }
+      if(LEqual(Arg0,0x1)){
+        Store(M1BS,Local0)
+      }
+      if(LEqual(Arg0,0x2)){
+        Store(M2BS,Local0)
+      }
+      if(LEqual(Arg0,0x3)){
+        Store(M3BS,Local0)
+      }
+      if(LEqual(Arg0,0x4)){
+        Store(M4BS,Local0)
+      }
+      if(LEqual(Arg0,0x5)){
+        Store(M5BS,Local0)
+      }
+      if(LEqual(Arg0,0x6)){
+        Store(M6BS,Local0)
+      }
+      if(LEqual(Arg0,0x7)){
+        Store(M7BS,Local0)
+      }
+      Return (TINT(Local0))
+    } // End Method MBAS
+
+    //-----------------------------------------------------------------------------
+    // Method MLIM()
+    //  Inputs: Arg0 = Memory Device number for which to return the limit address.
+    //----------------------------------------------------------------------------
+    Method(MLIM, 1){
+      // Local0:  RangeEnd
+      Store(0x0,Local0)
+      if(LEqual(Arg0,0x0)){
+        Store(M0RN,Local0)
+      }
+      if(LEqual(Arg0,0x1)){
+        Store(M1RN,Local0)
+      }
+      if(LEqual(Arg0,0x2)){
+        Store(M2RN,Local0)
+      }
+      if(LEqual(Arg0,0x3)){
+        Store(M3RN,Local0)
+      }
+      if(LEqual(Arg0,0x4)){
+        Store(M4RN,Local0)
+      }
+      if(LEqual(Arg0,0x5)){
+        Store(M5RN,Local0)
+      }
+      if(LEqual(Arg0,0x6)){
+        Store(M6RN,Local0)
+      }
+      if(LEqual(Arg0,0x7)){
+        Store(M7RN,Local0)
+      }
+      Return(TINT(Local0))
+    } // End Method MLIM
+
+    //-----------------------------------------------------------------------------
+    // Method MSIZ()
+    //  Inputs: Arg0 = Memory Device number for which to return the limit address.
+    //------------------------------------------------------------------------------
+    Method(MSIZ, 1){
+      // Local0:  RangeSize
+      Store (MLIM(Arg0),  Local0)
+      Return(Local0)
+    }
+   
+    CPU_SOCKET(0)
+
+#if MAX_SOCKET > 1
+    CPU_SOCKET(1)
+#endif
+
+#if MAX_SOCKET > 2
+    CPU_SOCKET(2)
+#endif    
+
+#if MAX_SOCKET > 3
+    CPU_SOCKET(3)
+#endif
+
+#if MAX_SOCKET > 4
+    CPU_SOCKET_DEV(4)
+#endif
+
+#if MAX_SOCKET > 5
+    CPU_SOCKET_DEV(5)
+#endif
+
+#if MAX_SOCKET > 6
+    CPU_SOCKET_DEV(6)
+#endif
+
+#if MAX_SOCKET > 7
+    CPU_SOCKET_DEV(7)
+#endif    
+  }
+

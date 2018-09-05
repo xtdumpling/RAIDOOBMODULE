@@ -1,0 +1,66 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+
+## @file DxeConsoleOutConsplitter.inf
+#  Produces the Protocol for the Displaying data to all the ConOut devices  
+##
+
+
+[Defines]
+  INF_VERSION           = 0x00010005
+  VERSION_STRING        = 1.0
+  BASE_NAME             = DxeConsoleOutConsplitter
+  MODULE_TYPE           = DXE_DRIVER
+  FILE_GUID             = 9B06DA8E-EF7F-4a5c-9D58-0160BC1F2109
+  ENTRY_POINT           = DxeConsoleOutConsplitterEntry
+
+[Sources]
+  DxeConsoleOutConsplitter.c
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  PrintLib
+  BaseLib
+  UefiLib
+  AmiDxeLib
+  
+[Protocols]
+  gAmiDxeTextOutProtocolGuid
+  gAmiDxeConsplitterTextOutProtocolGuid            
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  AmiModulePkg/EarlyConsoleOut/AmiEarlyConsoleOutPkg.dec 
+
+[Depex]
+  TRUE
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+  

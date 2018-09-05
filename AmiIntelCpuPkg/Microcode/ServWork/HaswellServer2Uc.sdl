@@ -1,0 +1,56 @@
+TOKEN
+    Name  = "SERVWORK_306FX"
+    Value = "0"
+    Help  = "Intel(R) Haswell-EP Server"
+    TokenType = Boolean
+    Master = Yes
+End
+
+TOKEN
+    Name  = "SERVWORK_MEF306F0"
+    Value  = "1"
+    Help  = "Intel(R) Haswell-EP Processor A-0 Stepping"
+    TokenType = Boolean
+    Token = "NON_PRODUCTION_MICROCODE" "=" "1"
+End
+
+TOKEN
+    Name  = "SERVWORK_MEF306F1"
+    Value  = "1"
+    Help  = "Intel(R) Haswell-EP Processor B-0 Stepping"
+    TokenType = Boolean
+    Token = "NON_PRODUCTION_MICROCODE" "=" "1"
+End
+
+TOKEN
+    Name  = "SERVWORK_M6F306F2"
+    Value  = "1"
+    Help  = "Intel(R) Haswell-EP Processor C-0, C-1, M-1 Stepping"
+    TokenType = Boolean
+End
+
+ELINK
+    Name  = "$(MICROCODE_SERVWORK_DIR)/MEF306F0_FFFF0017.mcb"
+    Parent  = "MICROCODE_FILES"
+    Help  = "Intel(R) Haswell-EP Processor A-0 Stepping"
+    Token = "SERVWORK_MEF306F0" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(MICROCODE_SERVWORK_DIR)/MEF306F1_00000014.mcb"
+    Parent  = "MICROCODE_FILES"
+    Help  = "Intel(R) Haswell-EP Processor B-0 Stepping"
+    Token = "SERVWORK_MEF306F1" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(MICROCODE_SERVWORK_DIR)/M6F306F2_0000003A.mcb"
+    Parent  = "MICROCODE_FILES"
+    Help  = "Intel(R) Haswell-EP Processor C-0, C-1, M-1 Stepping"
+    Token = "SERVWORK_M6F306F2" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+

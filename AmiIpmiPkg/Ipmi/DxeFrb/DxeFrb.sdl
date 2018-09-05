@@ -1,0 +1,116 @@
+TOKEN
+    Name  = "DxeFrb_SUPPORT"
+    Value  = "1"
+    Help  = "Switch for Enabling DxeFrb support in the project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    Master = Yes
+End
+
+PATH
+    Name  = "DxeFrb_DIR"
+    Path  = "AmiIpmiPkg/Ipmi/DxeFrb"
+    Help  = "Path to DxeFrb sub module in project."
+End
+
+INFComponent
+    Name  = "DxeFrb"
+    File  = "DxeFrb.inf"
+    Package  = "AmiIpmiPkg"
+    ModuleTypes  = "DXE_DRIVER"
+    Help  = "Includes DxeFrb.inf to Project."
+End
+
+FFS_FILE
+    Name  = "DxeFrb"
+    FD_AREA  = "FV_MAIN"
+    INFComponent  = "AmiIpmiPkg.DxeFrb"
+    Apriori_Index  = "6"
+    Help  = "Includes DxeFrb driver in FV_MAIN and dispatches based on a priori index."
+End
+
+ELINK
+    Name  = "$(DxeFrb_DIR)/DxeFrb.sd"
+    Parent  = "SERVER_MGMT_SETUP_DEFINITIONS"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include DxeFrb.sd in ServerMgmtSetup definitions files list."
+End
+
+ELINK
+    Name  = "$(DxeFrb_DIR)/DxeFrb.uni"
+    Parent  = "ServerMgmtSetupStringFiles"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include DxeFrb.uni in ServerMgmtSetup string files list."
+End
+
+# Elinks added for adding guids/protocol used in DxeFrb to TSE
+ELINK
+    Name  = "AmiModulePkg/AmiModulePkg.dec"
+    Parent  = "ADDITIONAL_AMITSE_Packages"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include AmiModulePkg.dec in Additional AMITSE packages list."
+End
+
+ELINK
+    Name  = "MdePkg/MdePkg.dec"
+    Parent  = "ADDITIONAL_AMITSE_Packages"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include MdePkg.dec in Additional AMITSE packages list."
+End
+
+ELINK
+    Name  = "$(DxeFrb_DIR)/DxeFrb.c"
+    Parent  = "TSE_SOURCE_FILES"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include DxeFrb.c in TSE source files list."
+End
+
+ELINK
+    Name  = "$(DxeFrb_DIR)/DxeFrb.h"
+    Parent  = "TSE_SOURCE_FILES"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include DxeFrb.h in TSE source files list."
+End
+
+ELINK
+    Name  = "gEfiHobListGuid"
+    Parent  = "ADDITIONAL_AMITSE_Guids"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include Efi Hob list Guid in AMITSE Guids list."
+End
+
+ELINK
+    Name  = "gOpromStartEndProtocolGuid"
+    Parent  = "ADDITIONAL_AMITSE_Protocols"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include Oprom Start End Protocol Guid in AMITSE Protocols list."
+End
+
+ELINK
+    Name  = "gAmiLegacyBootProtocolGuid"
+    Parent  = "ADDITIONAL_AMITSE_Protocols"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include Ami Legacy Boot Protocol Guid in AMITSE Protocols list."
+End
+
+ELINK
+    Name  = "gEfiSmFrbProtocolGuid"
+    Parent  = "ADDITIONAL_AMITSE_Protocols"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include Efi Sm Frb Protocol Guid in AMITSE Protocols list."
+End
+
+ELINK
+    Name  = "gEfiServerMgmtSetupVariableGuid"
+    Parent  = "ADDITIONAL_AMITSE_Guids"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include Efi ServerMgmtSetup Variable Guid in AMITSE Guids list."
+End
+
+ELINK
+    Name  = "DisableEnableOsWdtTimer,"
+    Parent  = "AfterEfiBootLaunchHook,"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include function after boot launch in order to Enable/Disable OS WDT."
+End

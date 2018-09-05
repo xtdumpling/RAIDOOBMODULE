@@ -1,0 +1,55 @@
+#/*++
+# This file contains a 'Sample Driver' and is licensed as such
+# under the terms of your license agreement with Intel or your
+# vendor.  This file may be modified by the user, subject to
+# the additional terms of the license agreement
+#--*/
+#/*++
+#
+#  Copyright (c) 2014 - 2016 Intel Corporation. All rights reserved
+#  This software and associated documentation (if any) is furnished
+#  under a license and may only be used or copied in accordance
+#  with the terms of the license. Except as permitted by such
+#  license, no part of this software or documentation may be
+#  reproduced, stored in a retrieval system, or transmitted in any
+#  form or by any means without the express written consent of
+#  Intel Corporation.
+#
+#  Module Name:
+#
+#    IeHeciCoreLib.inf
+#
+#  Abstract:
+#
+#    Component description file for PEI/DXE Heci Core Lib
+#
+#--*/
+
+[defines]
+  INF_VERSION              = 0x00010005
+  BASE_NAME                = IeHeciCoreLib
+  FILE_GUID                = e409c9cd-fb3e-43cb-8be2-419995e1a571
+  MODULE_TYPE              = BASE
+  VERSION_STRING           = 1.0
+  PI_SPECIFICATION_VERSION = 0x0001000A
+  LIBRARY_CLASS            = IeHeciCoreLib
+
+[sources.common]
+  IeHeciCore.c
+
+[LibraryClasses]
+  DebugLib
+  MmPciLib
+  TimerLib
+
+[Packages]
+  MdePkg/MdePkg.dec
+  PurleySktPkg/Ie/IePkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+  CpRcPkg/CpRcPkg.dec
+
+[Pcd.common]
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+

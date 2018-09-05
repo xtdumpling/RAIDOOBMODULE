@@ -1,0 +1,132 @@
+TOKEN
+	Name  = "AMI_DEBUGGER_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling Debugger support in the project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+	Token = "AMIDEBUG_RX_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "USB_3_DEBUG_SUPPORT"
+	Value  = "0"
+	Help  = "Main token switch to enable the USB 3.0 Debug Port interface\installation into the project.Do Not Change this SDL Token."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "Usb3Statuscode_Support"
+	Value  = "0"
+	Help  = "Main switch to enable Usb3Statuscode support in Project, this need be disabled with USB 3 Debugger"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Token = "USB_3_DEBUG_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "USB_3_DEBUG_DEBUGPORT_INIT_WAIT"
+	Value  = "4"
+	Help  = "Token switch to set the wait time (in Seconds) for the Host to recognize the USB 3.0 Debug Cable."
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "USB_3_DEBUG_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "USB_DEBUG_TRANSPORT"
+	Value  = "0"
+	Help  = "Main token switch to enable the USB Debug Port interface\installation into the project.Do Not Change this SDL Token."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "USB_3_DEBUG_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "CONSOLE_REDIRECTION_SUPPORT"
+	Value  = "1"
+	Help  = "Main token switch to enable Console Redirection support."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "Build_Debugger"
+	Value  = "1"
+	Help  = "Switch for building Debugger Package"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "PLATFORM_NAME"
+	Value  = "Debugger"
+	TokenType = Expression
+	TargetDSC = Yes
+	Token = "Build_Debugger" "=" "1"
+End
+
+TOKEN
+	Name  = "REDIRECTION_ONLY_MODE"
+	Value  = "0"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Range  = "0-1"
+End
+
+TOKEN
+	Name  = "DEBUG_IDT_PRESERVATION_WITH_CPU_ARCH_PROTOCOL"
+	Value  = "1"
+	Help  = " Token to enable the Debugger related IDT preservation based on CpuArchProtocol, can be valid only if Debugger is enabled"
+	TokenType = Integer
+	TargetH = Yes
+	Token = "REDIRECTION_ONLY_MODE" "!=" "1"
+End
+
+TOKEN
+	Name  = "GENERIC_USB_CABLE_SUPPORT"
+	Value  = "0"
+	Help  = "Main token switch to enable the Generic USB cable support."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SMM_DEBUG_SUPPORT"
+	Value  = "0"
+	Help  = "Do not Change this token.Main token switch to enable the SMM Debugging support."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "GENERIC_USB_CABLE_SUPPORT" "=" "1"
+End
+
+PATH
+	Name  = "DEBUGGER_DIR"
+	Path  = "AMIDebugRxPkg\Debugger"
+End
+
+MODULE
+	Help  = "Includes Debugger.mak to Project"
+	File  = "Debugger.mak"
+End
+
+PcdMapping
+	Name  = "PcdDebugPropertyMask"
+	GuidSpace  = "gEfiMdePkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0x3F"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End

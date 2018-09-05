@@ -1,0 +1,397 @@
+/*++
+  This file contains an 'Intel Peripheral Driver' and is
+  licensed for Intel CPUs and chipsets under the terms of your
+  license agreement with Intel or your vendor.  This file may
+  be modified by the user, subject to additional terms of the
+  license agreement
+--*/
+/*++
+
+Copyright 1996 - 2015, Intel Corporation.
+
+This source code and any documentation accompanying it ("Material") is furnished
+under license and may only be used or copied in accordance with the terms of that
+license.  No license, express or implied, by estoppel or otherwise, to any
+intellectual property rights is granted to you by disclosure or delivery of these
+Materials.  The Materials are subject to change without notice and should not be
+construed as a commitment by Intel Corporation to market, license, sell or support
+any product or technology.  Unless otherwise provided for in the license under which
+this Material is provided, the Material is provided AS IS, with no warranties of
+any kind, express or implied, including without limitation the implied warranties
+of fitness, merchantability, or non-infringement.  Except as expressly permitted by
+the license for the Material, neither Intel Corporation nor its suppliers assumes
+any responsibility for any errors or inaccuracies that may appear herein.  Except
+as expressly permitted by the license for the Material, no part of the Material
+may be reproduced, stored in a retrieval system, transmitted in any form, or
+distributed by any means without the express written consent of Intel Corporation.
+
+  Module Name:
+
+    GV3Proc.asi
+
+  Abstract:
+
+    Contains the common _PDC, _PCT, _PSS, NPSS, SPSS, objects for processors
+
+NOTES:-
+  This Processor Power Management BIOS Source Code is furnished under license
+  and may only be used or copied in accordance with the terms of the license.
+  The information in this document is furnished for informational use only, is
+  subject to change without notice, and should not be construed as a commitment
+  by Intel Corporation. Intel Corporation assumes no responsibility or liability
+  for any errors or inaccuracies that may appear in this document or any
+  software that may be provided in association with this document.
+
+  Except as permitted by such license, no part of this document may be
+  reproduced, stored in a retrieval system, or transmitted in any form or by
+  any means without the express written consent of Intel Corporation.
+
+  WARNING: You are authorized and licensed to install and use this BIOS code
+  ONLY on an IST PC. This utility may damage any system that does not
+  meet these requirements.
+
+  An IST PC is a computer which
+  (1) Is capable of seamlessly and automatically transitioning among
+      multiple performance states (potentially operating at different
+      efficiency ratings) based upon power source changes, end user
+      preference, processor performance demand, and thermal conditions; and
+  (2) Includes an Intel Pentium II processors, Intel Pentium III
+      processor, Mobile Intel Pentium III Processor-M, Mobile Intel Pentium 4
+      Processor-M, Intel Pentium M Processor, or any other future Intel
+      processors that incorporates the capability to transition between
+      different performance states by altering some, or any combination of,
+      the following processor attributes: core voltage, core frequency, bus
+      frequency, number of processor cores available, or any other attribute
+      that changes the efficiency (instructions/unit time-power) at which the
+      processor operates.
+
+--*/
+
+    //
+    // _PDC Flag Bit definitions:
+    //     [00] = If set, OSPM is capable of direct access to Performance State MSR's
+    //     [01] = If set, OSPM supports the C1 "I/O then Halt" FFh sequence for
+    //            multi-processor configuation
+    //     [02] = If set, OSPM is capable of direct access to On Demand throttling MSR's
+    //     [03] = If set, OSPM is capable of independent C1, P state and T state support
+    //            for each processor for multi-processor configuations. This bit does not
+    //            indicate support for asymmetrical _CST, _PSS, or _TSS objects for
+    //            individual processors in the system.
+    //     [04] = If set, OSPM is capable of independent C2 and C3 state support for each
+    //            processor for multi-processor configuations. This bit does not
+    //            indicate support for asymmetrical _CST objects for individual
+    //            processors in the system.
+    //     [05] = If set, OSPM is capable of native P state software coordination using
+    //            BIOS supplied _PSD information for multi-processor configuations.
+    //     [06] = If set, OSPM is capable of native C state software coordination using
+    //            BIOS supplied _CSD information for multi-processor configuations.
+    //     [07] = If set, OSPM is capable of native ACPI throttling software coordination
+    //            using BIOS supplied _TSD information for multi-processor configuations.
+    //     [08] = If set, OSPM is capable of performing native C state instructions (beyond
+    //            halt) for the C1 handler in multi-processor configuations.
+    //     [09] = If set, OSPM is capable of performing native C state instructions for
+    //            the C2/C3 handlers in multi-processor configuations.
+    //     [10] = Reserved
+    //     [11] = OSPM is capable of hardware coordination of P states.
+    //  [31:12] = Reserved
+    //
+    //
+
+    External (P0ID, FieldUnitObj)
+    External (P1ID, FieldUnitObj)
+    External (P2ID, FieldUnitObj)
+    External (P3ID, FieldUnitObj)
+    External (P0BM, FieldUnitObj)
+    External (P1BM, FieldUnitObj)
+    External (P2BM, FieldUnitObj)
+    External (P3BM, FieldUnitObj)
+    External (IVTA, FieldUnitObj)
+
+    OperationRegion (DBG0, SystemIO, 0x80, 2)
+    Field (DBG0, ByteAcc,NoLock,Preserve) {
+      IO80, 8,
+      IO81, 8
+    }
+
+    //
+    // CPUx _PDC Flags.
+    //
+    Name(TYPE, 0x80000000)
+    Name(NCPU, 0x80000000)
+    Name(DOMN, 0x80000000)
+
+    Method(_PPC, 0)
+    {
+#if SPS_SUPPORT
+      Or(PETE, 0x80, PETE) // Confirm P-states support on this system
+      Return(DeRefOf(Index(\PSLM, SCKN))) // P-state limit for this socket
+#else
+      Return(0)
+#endif
+    }
+
+    Name (PSDC, Package()  //SW_ALL (0xFC)
+    {
+        //                              DOMN            NCPU
+        Package(){0x00000005, 0x00000000, 8, 0x000000FC, 0x24}
+    })
+
+    Name (PSDD, Package()  //SW_ANY (0xFD)
+    {
+        Package(){0x00000005, 0x00000000, 8, 0x000000FD, 0x24}
+    })
+
+    Name (PSDE, Package()  //HW_ALL (0xFE)
+    {
+        Package(){0x00000005, 0x00000000, 8, 0x000000FE, 0x24}
+    })
+
+    Method(_PSD,0) {
+
+      //
+      // IF _PCD[5,11]=11, or 01, _PSD reports HW_ALL (0xFE)
+      //
+      If (LAnd(LEqual(And(TYPE, 0x820), 0x820), LEqual(HWAL, 0))) {
+          Return(PSDE)
+      }
+      //
+      // IF _PCD[5,11]=10, SETUP selects "SW_ANY", _PSD reports SW_ANY (0xFD)
+      //
+      If (LAnd(LEqual(And(TYPE, 0x820), 0x20), LEqual(HWAL, 2))) {
+          Return(PSDD)
+      }
+      //
+      // By default let _PSD report SW_ALL (0xFC) - conservative.
+      //
+      Return(PSDC)
+    } // End of _PSD
+
+    Method(_PDC,1 ,Serialized) {
+        //
+        // Store result of PDC.
+        //
+// remove this to avoid "not used" remark from compiler.
+//        CreateDWordField(Arg0,8,CAPA)         // Point to 3rd DWORD.
+
+        CreateDwordField (Arg0, 0, REVS)
+        CreateDwordField (Arg0, 4, SIZE)
+
+        //
+        // Local0 = Number of bytes for Arg0
+        //
+        Store (SizeOf (Arg0), Local0)
+
+        //
+        // Local1 = Number of Capabilities bytes in Arg0
+        //
+        Store (Subtract (Local0, 8), Local1)
+
+        //
+        // TEMP = Temporary field holding Capability DWORDs
+        //
+        CreateField (Arg0, 64, Multiply (Local1, 8), TEMP)
+
+        //
+        // Create the Status (STS0) buffer with the first DWORD = 0
+        // This is required as per ACPI 3.0 Spec which says the
+        // first DWORD is used to return errors defined by _OSC.
+        //
+        Name (STS0, Buffer () {0x00, 0x00, 0x00, 0x00})
+
+        //
+        // Concatenate the _PDC capabilities bytes to the STS0 Buffer
+        // and store them in a local variable for calling OSC
+        //
+        Concatenate (STS0, TEMP, Local2)
+
+        _OSC (ToUUID("4077A616-290C-47BE-9EBD-D87058713953"), REVS, SIZE, Local2)
+
+    }
+
+    Method(_OSC, 4,Serialized)
+    {
+        //
+        // Store result of PDC.
+        //
+        CreateDWordField(Arg3,4,CAPA)         // Point to 3rd DWORD.
+        Store(CAPA, TYPE)                     // Store It in PDCx.
+
+        // Point to Status DWORD in the Arg3 buffer (STATUS)
+        CreateDWordField(Arg3, 0, STS0)
+
+        // Point to Caps DWORDs of the Arg3 buffer (CAPABILITIES)
+        CreateDwordField(Arg3, 4, CAP0)
+
+        //
+        // _OSC needs to validate the UUID and Revision.
+        //
+        // IF Unrecognized UUID
+        //  Return Unrecognized UUID _OSC Failure
+        // IF Unsupported Revision
+        //  Return Unsupported Revision _OSC Failure
+        //
+        //    STS0[0] = Reserved
+        //    STS0[1] = _OSC Failure
+        //    STS0[2] = Unrecognized UUID
+        //    STS0[3] = Unsupported Revision
+        //    STS0[4] = Capabilities masked
+        //
+        // Note:  The comparison method used is necessary due to
+        // limitations of certain OSes which cannot perform direct
+        // buffer comparisons.
+        //
+        // Create a set of "Input" UUID fields.
+        //
+        CreateDwordField(Arg0, 0x0, IID0)
+        CreateDwordField(Arg0, 0x4, IID1)
+        CreateDwordField(Arg0, 0x8, IID2)
+        CreateDwordField(Arg0, 0xC, IID3)
+        //
+        // Create a set of "Expected" UUID fields.
+        //
+        Name(UID0, ToUUID("4077A616-290C-47BE-9EBD-D87058713953"))
+        CreateDwordField(UID0, 0x0, EID0)
+        CreateDwordField(UID0, 0x4, EID1)
+        CreateDwordField(UID0, 0x8, EID2)
+        CreateDwordField(UID0, 0xC, EID3)
+        //
+        // Verify the input UUID matches the expected UUID.
+        //
+        If(LNot(LAnd(LAnd(LEqual(IID0, EID0),LEqual(IID1, EID1)),LAnd(LEqual(IID2, EID2),LEqual(IID3, EID3)))))
+        {
+            //
+            // Return Unrecognized UUID _OSC Failure
+            //
+            Store (0x6, Index (STS0, 0))
+            Return (Arg3)
+        }
+
+        If(LNot(LEqual(Arg1,1)))
+        {
+            //
+            // Return Unsupported Revision _OSC Failure
+            //
+            Store (0xA, Index (STS0, 0))
+            Return (Arg3)
+        }
+
+        //
+        // Verify if OS is simply querying what functions are supported
+        //
+        // Bit 0 = Query Support Flag.
+        //
+        If(And(STS0,0x01))
+        {
+            //
+            // Mask off the bits supported and return.
+            //
+            And(CAP0, 0xBFF, CAP0)
+            Return (Arg3)
+        }
+
+        //
+        //Check OSC for _CPC
+        //
+        If(And(CAP0,0x40))//check bit 6 is supported for CPPC 2
+        {
+          If(LEqual(HWEN,0))//disabled in setup so make it __CPC clear
+          {
+            And(CAP0,0x1F,CAP0) //CAP0 clear _CPC
+            Or(STS0,0x10,STS0)  //indicate Capabilty bit is cleared.,
+            Return (Arg3)
+          }
+          If(LEqual(HWEN,2))//OOB mode in setup so make it __CPC clear
+          {
+            And(CAP0,0x1F,CAP0) //CAP0 clear _CPC
+            Or(STS0,0x10,STS0)  //indicate Capabilty bit is cleared.
+            Return (Arg3)
+          }
+        }
+
+        And(CAP0, 0xBFF, CAP0)
+        Store(CAP0, TYPE)               // Store It in PDCx.
+        Return (Arg3)
+    }
+
+    //
+    //    00:  Generic Regiser Descriptor
+    // 01-02:  Length
+    //    03:  Address space ID, _ASI, System IO
+    //    04:  Regiser Bit width
+    //    05:  Regiser Bit offset
+    //    06:  Reseveed
+    // 06-14:  _ADR  64bit
+    // 15-16:  End Tag
+    //
+
+    //
+    // Native - Processor Performance Control
+    //
+    Name(NPCT, Package ()
+    {
+        ResourceTemplate(){Register(FFixedHW, 0, 0, 0)}, // control
+        ResourceTemplate(){Register(FFixedHW, 0, 0, 0)}  // status
+    })
+
+    Name(SPCT, Package () {
+      //
+      // ResourceTemplate for Emulated IO control port 0880h
+      //
+      Buffer() {0x82, 0x0c, 0x00, 0x01, 0x10, 0x00, 0x00, 0x80, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79, 0x00 },
+      //
+      // ResourceTemplate for Emulated IO control port 0882h
+      //
+      Buffer() {0x82, 0x0c, 0x00, 0x01, 0x10, 0x00, 0x00, 0x82, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79, 0x00 }
+    })  // End of NPCT (Native PPC)
+
+    //
+    // Processor Performance Control
+    //
+    Method(_PCT,0) {
+       Return(NPCT)
+    }
+
+    Name(ZPSS, Package() {
+      Package(){0, 0, 0, 0, 0, 0}
+    })
+
+    //
+    // Native - Performance States Supported
+    // Put package NPSS first and then SPSS, and then _PSS method, do not change the order
+    // Platform will update the package by searching the first NPSS/SPSS
+    //
+    Name(NPSS,Package() {
+      Package(){0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000},  // P0
+      Package(){0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000},  // P1
+      Package(){0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000},  // P2
+      Package(){0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000},  // P3
+      Package(){0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000},  // P4
+      Package(){0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000},  // P5
+      Package(){0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000},  // P6
+      Package(){0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000},  // P7
+      Package(){0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000},  // P8
+      Package(){0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000},  // P9
+      Package(){0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000},  // P10
+      Package(){0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000},  // P11
+      Package(){0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000},  // P12
+      Package(){0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000},  // P13
+      Package(){0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000},  // P14
+      Package(){0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000},  // P15
+    })
+
+    //
+    // Performance States Supported
+    //
+    Method(_PSS,0)
+    {
+      If (PSEN)
+      {
+        If(LEqual(HWEN,2)){ //PSS if HWPM-disbaled and P-state is enabled
+          Return(ZPSS)    // P-states are not available, so return package with 1 element of value 0
+        }
+
+        Return(NPSS)  // Return native P-states table
+      }
+      Return(ZPSS)    // P-states are not available, so return package with 1 element of value 0
+    }
+

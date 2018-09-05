@@ -1,0 +1,384 @@
+//***************************************************************************
+//***************************************************************************
+//**                                                                       **
+//**       (C)Copyright 1993-2016 Supermicro Computer, Inc.                **
+//**                                                                       **
+//***************************************************************************
+//***************************************************************************
+//  File History
+//
+//  Rev. 1.04
+//    Bug Fix: Draft template.
+//    Reason:
+//    Auditor:  Kasber Chen
+//    Date:     Dec/16/2016
+//
+//  Rev. 1.03   Modify "Active Video" string to "VGA Priority" and set default to onboard. Also hide this item in IntelRCSetup.vfr.
+//    Bug Fix:
+//    Reason:
+//    Auditor:  Jimmy Chiu (Refer Grantley SVN_717)
+//    Date:     Sep/02/2016
+//
+//  Rev. 1.02
+//    Bug Fix:  Sync SMBIOS type 0/2 data to BIOS setup.
+//    Reason:   
+//    Auditor:  Matthew You
+//    Date:     May/19/2016
+//  
+//  Rev. 1.01
+//    Bug Fix:  N/A
+//    Reason:   Add Password Check setup item in setup menu security page.
+//    Auditor:  Jimmy Chiu (Refer Grantley)
+//    Date:     Mar/23/16
+//
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
+
+/** @file
+ *   Defines a formset, containing all the traditional forms from Aptio 4.x
+ */
+
+#include <Setup.h>
+#include <Guid/SetupVariable.h> //SMCPKG_SUPPORT
+#include <SocketConfiguration.h> //SMCPKG_SUPPORT
+#include <SetupStrDefs.h>
+#define MAIN_FORM_SET
+#define ADVANCED_FORM_SET
+#define CHIPSET_FORM_SET
+#define SECURITY_FORM_SET
+#define BOOT_FORM_SET
+#define EXIT_FORM_SET
+#define FORM_SET_TYPEDEF
+#include <SetupDefinitions.h>
+#undef FORM_SET_TYPEDEF
+#undef EXIT_FORM_SET
+#undef BOOT_FORM_SET
+#undef SECURITY_FORM_SET
+#undef CHIPSET_FORM_SET
+#undef ADVANCED_FORM_SET
+#undef MAIN_FORM_SET
+
+formset guid  = SETUP_FORM_SET_GUID,
+    title     = STRING_TOKEN(STR_SETUP),
+    help      = STRING_TOKEN(STR_SETUP_HELP),
+    class     = SETUP_FORM_SET_CLASS,
+    subclass  = 0,
+
+    SETUP_DATA_VARSTORE
+    LANGUAGE_VARSTORE
+    LANGUAGE_CODES_VARSTORE
+    SYSTEM_ACCESS_VARSTORE
+    AMI_CALLBACK_VARSTORE
+    AMITSESETUP_VARSTORE
+    BOOT_MANAGER_VARSTORE
+    TIMEOUT_VARSTORE
+    BOOT_ORDER_VARSTORE
+    NEW_BOOT_OPTION_VARSTORE
+    DEL_BOOT_OPTION_VARSTORE
+    LEGACY_DEV_INFO_VARSTORE
+    LEGACY_GROUP_INFO_VARSTORE
+    LEGACY_DEV_ORDER_VARSTORE
+    BOOT_NOW_COUNT_VARSTORE
+    EFI_SHELL_VARSTORE
+    varstore SYSTEM_CONFIGURATION, key = AUTO_ID(SYSTEM_CONFIGURATION_KEY), name  = IntelSetup, guid  = SYSTEM_CONFIGURATION_GUID; //SMCPKG_SUPPORT
+    varstore SOCKET_PROCESSORCORE_CONFIGURATION, name  = SocketProcessorCoreConfig, guid  = SOCKET_PROCESSORCORE_CONFIG_GUID; //SMCPKG_SUPPORT
+    varstore SOCKET_COMMONRC_CONFIGURATION, name  = SocketCommonRcConfig, guid  = SOCKET_COMMONRC_CONFIG_GUID; //SMCPKG_SUPPORT
+    defaultstore AmiMfgDefault, prompt = STRING_TOKEN(STR_EMPTY), attribute = 0x01;
+    
+	#define MAIN_FORM_SET
+	#define ADVANCED_FORM_SET
+	#define CHIPSET_FORM_SET
+	#define SECURITY_FORM_SET
+	#define BOOT_FORM_SET
+	#define EXIT_FORM_SET
+    #define FORM_SET_VARSTORE
+    #include <SetupDefinitions.h>
+    #undef FORM_SET_VARSTORE
+	#undef EXIT_FORM_SET
+	#undef BOOT_FORM_SET
+	#undef SECURITY_FORM_SET
+	#undef CHIPSET_FORM_SET
+	#undef ADVANCED_FORM_SET
+	#undef MAIN_FORM_SET
+
+#define TOP_LEVEL_FORM_SET
+    form formid = AUTO_ID(SETUP_MAIN),
+        title = STRING_TOKEN(STR_SETUP);
+        
+        goto MAIN_MAIN, 
+            prompt = STRING_TOKEN(STR_MAIN),
+            help = STRING_TOKEN(STR_EMPTY);
+
+    // suppressif statements are added to hide the goto statements
+    // in the case that the AMITSE_HIDE_ROOT_PAGE token is disabled
+    #if defined(SHOW_ADVANCED_FORMSET)&&(SHOW_ADVANCED_FORMSET==0)
+        suppressif TRUE;
+    #endif
+        goto ADVANCED_MAIN, 
+            prompt = STRING_TOKEN(STR_ADVANCED),
+            help = STRING_TOKEN(STR_EMPTY);
+    #if defined(SHOW_ADVANCED_FORMSET)&&(SHOW_ADVANCED_FORMSET==0)
+        endif;
+    #endif
+
+    // suppressif statements are added to hide the goto statements
+    // in the case that the AMITSE_HIDE_ROOT_PAGE token is disabled
+    #if defined(SHOW_CHIPSET_FORMSET)&&(SHOW_CHIPSET_FORMSET==0)
+        suppressif TRUE;
+    #endif
+        goto CHIPSET_MAIN, 
+            prompt = STRING_TOKEN(STR_CHIPSET),
+            help = STRING_TOKEN(STR_EMPTY);
+    #if defined(SHOW_CHIPSET_FORMSET)&&(SHOW_CHIPSET_FORMSET==0)
+        endif;
+    #endif
+
+    // suppressif statements are added to hide the goto statements
+    // in the case that the AMITSE_HIDE_ROOT_PAGE token is disabled
+    #if defined(SHOW_SECURITY_FORMSET)&&(SHOW_SECURITY_FORMSET==0)
+        suppressif TRUE;
+    #endif
+        goto SECURITY_MAIN, 
+            prompt = STRING_TOKEN(STR_SECURITY),
+            help = STRING_TOKEN(STR_EMPTY);
+    #if defined(SHOW_SECURITY_FORMSET)&&(SHOW_SECURITY_FORMSET==0)
+        endif;
+    #endif
+
+
+    #if defined(SHOW_BOOT_FORMSET)&&(SHOW_BOOT_FORMSET==0)
+        suppressif TRUE;
+    #endif
+        goto BOOT_MAIN, 
+            prompt = STRING_TOKEN(STR_BOOT),
+            help = STRING_TOKEN(STR_EMPTY);
+
+    #if defined(SHOW_BOOT_FORMSET)&&(SHOW_BOOT_FORMSET==0)
+        endif;
+    #endif
+
+        #define FORM_SET_GOTO
+        #include <SetupDefinitions.h>
+        #undef FORM_SET_GOTO
+
+        goto EXIT_MAIN, 
+            prompt = STRING_TOKEN(STR_EXIT),
+            help = STRING_TOKEN(STR_EMPTY);
+
+    endform;
+    
+    #define FORM_SET_FORM
+    #include <SetupDefinitions.h>
+    #undef FORM_SET_FORM
+
+#undef TOP_LEVEL_FORM_SET
+
+    
+#define MAIN_FORM_SET
+    form formid = AUTO_ID(MAIN_MAIN),
+        title = STRING_TOKEN(STR_MAIN);
+
+        #define FORM_SET_ITEM
+        #include <SetupDefinitions.h>
+        #undef FORM_SET_ITEM
+        #define FORM_SET_GOTO
+        #include <SetupDefinitions.h>
+        #undef FORM_SET_GOTO
+
+//SMCPKG_SUPPORT - Start
+        suppressif TRUE;
+        SEPARATOR
+          SUBTITLE (STRING_TOKEN (STR_D4_ADMIN_PSWD_NAME))
+          SUBTITLE (STRING_TOKEN (STR_D4_ADMIN_PSWD))
+          SUBTITLE (STRING_TOKEN (STR_D4_USER_PSWD_NAME))
+          SUBTITLE (STRING_TOKEN (STR_D4_USER_PSWD))
+        endif;
+//SMCPKG_SUPPORT - End
+
+        SEPARATOR
+        date 
+            name    = Date,
+            prompt  = STRING_TOKEN(STR_DATE),
+            help    = STRING_TOKEN(STR_DATE_HELP),
+            flags   = STORAGE_TIME,
+            default = 2014/1/1,
+        enddate;
+
+        time 
+            name    = Time, 
+            prompt  = STRING_TOKEN(STR_TIME), 
+            help    = STRING_TOKEN(STR_TIME_HELP), 
+            flags   = STORAGE_TIME,
+            default = 0:0:0, 
+        endtime;
+// Supermicro +
+        SEPARATOR
+
+        SUBTITLE(STRING_TOKEN(STR_SMC_BOARD_NAME))
+        INVENTORY(STRING_TOKEN(STR_SMC_BIOS_VERSION_NAME),STRING_TOKEN(STR_SMC_BIOS_VERSION_VALUE))
+        INVENTORY(STRING_TOKEN(STR_SMC_BIOS_DATE_NAME),STRING_TOKEN(STR_SMC_BIOS_DATE_VALUE))
+        INVENTORY(STRING_TOKEN(STR_SMC_CPLD_VERSION_NAME),STRING_TOKEN(STR_SMC_CPLD_VERSION_VALUE))
+        SEPARATOR
+	SUBTITLE(STRING_TOKEN(STR_MEMORY_INFORMATION))
+
+	text
+	    help   = STRING_TOKEN(STR_MEMORY_SIZE_HELP),
+	    text   = STRING_TOKEN(STR_MEMORY_SIZE_NAME),
+	    text   = STRING_TOKEN(STR_MEMORY_SIZE_VALUE),
+	    flags  = 0,
+	    key    = 0;
+//SGI+
+  	text
+	    help   = STRING_TOKEN(STR_MEMORY_SPEED_HELP),
+	    text   = STRING_TOKEN(STR_MEMORY_SPEED_NAME),
+	    text   = STRING_TOKEN(STR_MEMORY_SPEED_VALUE),
+	    flags  = 0,
+	    key    = 0;
+//SGI-	    
+// Supermicro -
+
+    endform;
+    #define FORM_SET_FORM
+    #include <SetupDefinitions.h>
+    #undef FORM_SET_FORM
+
+#undef MAIN_FORM_SET
+
+#define ADVANCED_FORM_SET
+    form formid = AUTO_ID(ADVANCED_MAIN),
+        title = STRING_TOKEN(STR_ADVANCED);
+
+        #define FORM_SET_ITEM
+        #include <SetupDefinitions.h>
+        #undef FORM_SET_ITEM
+        #define FORM_SET_GOTO
+        #include <SetupDefinitions.h>
+        #undef FORM_SET_GOTO
+
+    endform;
+
+    #define FORM_SET_FORM
+    #include <SetupDefinitions.h>
+    #undef FORM_SET_FORM
+#undef ADVANCED_FORM_SET
+
+#define CHIPSET_FORM_SET
+    form formid = AUTO_ID(CHIPSET_MAIN),
+        title = STRING_TOKEN(STR_CHIPSET);
+
+        #define FORM_SET_ITEM
+        #include <SetupDefinitions.h>
+        #undef FORM_SET_ITEM
+        #define FORM_SET_GOTO
+        #include <SetupDefinitions.h>
+        #undef FORM_SET_GOTO
+    endform;
+    
+    #define FORM_SET_FORM
+    #include <SetupDefinitions.h>
+    #undef FORM_SET_FORM
+#undef CHIPSET_FORM_SET
+
+#define SECURITY_FORM_SET
+    form formid = AUTO_ID(SECURITY_MAIN),
+        title = STRING_TOKEN(STR_SECURITY);
+
+        #define FORM_SET_ITEM
+        #include <SetupDefinitions.h>
+        #undef FORM_SET_ITEM
+        #define FORM_SET_GOTO
+        #include <SetupDefinitions.h>
+        #undef FORM_SET_GOTO
+    endform;
+    #define FORM_SET_FORM
+    #include <SetupDefinitions.h>
+    #undef FORM_SET_FORM
+#undef SECURITY_FORM_SET
+
+#define BOOT_FORM_SET
+    form formid = AUTO_ID(BOOT_MAIN),
+        title = STRING_TOKEN(STR_BOOT);
+
+        SUBTITLE(STRING_TOKEN(STR_BOOT_CFG))
+	suppressif SMC_SETUP_STYLE;	//SMCPKG_SUPPORT S
+        numeric varid = TIMEOUT.Value,
+            prompt = STRING_TOKEN(STR_BOOT_TIMEOUT),
+            help = STRING_TOKEN(STR_BOOT_TIMEOUT_HELP),
+            flags = 0,
+#if defined(SUPPORT_ZERO_BOOT_TIMEOUT)&&(SUPPORT_ZERO_BOOT_TIMEOUT==1)
+            minimum = 0x0,
+#else
+            minimum = 0x1,
+#endif
+            maximum = 0xffff,
+            step = 1,
+            default = DEFAULT_BOOT_TIMEOUT,
+            default = DEFAULT_BOOT_TIMEOUT, defaultstore = AmiMfgDefault,
+        endnumeric;
+
+        oneof varid = SETUP_DATA.Numlock,
+            prompt = STRING_TOKEN(STR_CSM_BOOTUP_NUMLOCK),
+            help = STRING_TOKEN(STR_CSM_BOOTUP_NUMLOCK_HELP),
+            flags = RESET_REQUIRED,
+            option text = STRING_TOKEN(STR_CSM_BOOTUP_NUMLOCK_ON), value = 1, flags = 0;
+            option text = STRING_TOKEN(STR_CSM_BOOTUP_NUMLOCK_OFF), value = 0, flags = 0;
+            default = 1,
+            default = 1, defaultstore = AmiMfgDefault,
+        endoneof;
+	endif;	//SMCPKG_SUPPORT E
+        #define FORM_SET_ITEM
+        #include <SetupDefinitions.h>
+        #undef FORM_SET_ITEM
+
+        #define FORM_SET_GOTO
+        #include <SetupDefinitions.h>
+        #undef FORM_SET_GOTO
+    endform;
+
+    #define FORM_SET_FORM
+    #include <SetupDefinitions.h>
+    #undef FORM_SET_FORM
+#undef BOOT_FORM_SET
+
+#define EXIT_FORM_SET
+    form formid = AUTO_ID(EXIT_MAIN),
+        title = STRING_TOKEN(STR_EXIT);
+
+        #define FORM_SET_ITEM
+        #include <SetupDefinitions.h>
+        #undef FORM_SET_ITEM
+        #define FORM_SET_GOTO
+        #include <SetupDefinitions.h>
+        #undef FORM_SET_GOTO
+    endform;
+
+    #define FORM_SET_FORM
+    #include <SetupDefinitions.h>
+    #undef FORM_SET_FORM
+#undef EXIT_FORM_SET
+
+endformset;
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************

@@ -1,0 +1,96 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+#**********************************************************************
+# $Header:  $
+#
+# $Revision:  $
+#
+# $Date:  $
+#**********************************************************************
+#<AMI_FHDR_START>
+#
+# Name:  CRBDxe.inf
+#
+# Description:  INF description file for CRBDxe driver
+#
+#<AMI_FHDR_END>
+#**********************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = CRBDxe
+  FILE_GUID                      = 16271FCA-55D9-4a33-93FC-5A3EB128DEB6
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = CRBDXE_Init
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+#
+
+[Sources]
+  CRBDXE.c
+  UpdateSmbiosTable.c
+  UpdateSmbiosTable.h
+
+[Packages]
+  MdePkg/MdePkg.dec 
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec 
+  AmiModulePkg/AmiModulePkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  AmiCRBPkg/AmiCRBPkg.dec
+
+[LibraryClasses]  
+  UefiDriverEntryPoint
+  AmiDxeLib
+  PciExpressLib
+  AmiCspLib
+  UefiLib
+  MemoryAllocationLib
+  AmiPcieSegBusLib
+
+[Guids]
+  gEfiSetupVariableGuid
+  gEfiPchRcVariableGuid
+  gEfiSocketIioVariableGuid
+
+[Protocols]
+  gAmiCmosAccessDxeProtocolGuid
+  gEfiIioSystemProtocolGuid
+  gEfiSmbiosProtocolGuid
+  
+[Depex]
+  TRUE
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**         5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

@@ -1,0 +1,147 @@
+// This AMI Setup Script Processor (SSP) file contains setup items that
+// are related to the CMOS Manager.
+//*************************************************************************
+//*************************************************************************
+//**                                                                     **
+//**        (C)Copyright 1985-2012, American Megatrends, Inc.            **
+//**                                                                     **
+//**                       All Rights Reserved.                          **
+//**                                                                     **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+//**                                                                     **
+//**                       Phone: (770)-246-8600                         **
+//**                                                                     **
+//*************************************************************************
+//*************************************************************************
+// $Header: $
+//
+// $Revision: $
+//
+// $Date: $
+//**********************************************************************
+
+
+//---------------------------------------------------------------------------
+// Format:
+//---------------------------------------------------------------------------
+//
+//  NvramField (<Identifier>)
+//      OptionBits = <Integer>
+//      [Default = <Integer>]
+//      [Managed = NO]
+//      [CheckSum = NO]
+//      [Location = <CMOS Address>, <Clobber Mask>]
+//  EndNvramField
+//
+//---------------------------------------------------------------------------
+// Notes:
+//---------------------------------------------------------------------------
+//
+//  <Identifier> is the name of the constant value that will be generated.
+//
+//  <Integer>    is a byte-size value specified in valid assembler format.
+//               (I.e., 0AFh, 8 and 255 are a valid byte values.) The value
+//               may be specified using an AMI SDL token (with the 
+//               MKF_ prefix) defined in Token.equ.
+//
+//  []           indicates optional fields. The minimal requirement is to
+//               declare a name and number of bits.
+//
+//  OptionBits:  specifies the number of bits (1-8) within the location.
+//               If a <Clobber Mask> value is specified, OptionBits must
+//               agree with its value. (Up to eight CMOS tokens can be 
+//               defined using a single CMOS location.)
+//
+//  Default:     specifies the default value that will be written to the bits
+//               on the first boot and when CMOS corruption is detected.
+//               The value will be zero if no Default is specified.
+//
+//  Managed:     is assumed to be YES. Managed = NO is essentially a 
+//               "declare-only" directive. If Managed = NO, then the default
+//               value is not written on the first boot, the location is not
+//               included in the checksum and no recovery action is taken for
+//               this location when CMOS incoherency is detected.
+//
+//  CheckSum:    is assumed to be YES. If Checksum = NO, the location will
+//               not be included in the checksum. "NO" is recommended for
+//               locations to be written in the SEC phase.
+//
+//  Location:    specifies bits within a specific location to be allocated.
+//
+//               The recommended approach is to let CMOS Manager auto-assign
+//               the location.
+//
+//               <CMOS Address>
+//                   This value is an <Integer> that defines a specific 
+//                   location in the logical CMOS memory map.
+//
+//               <Clobber Mask>
+//                   This value is an <Integer> bit mask that defines the 
+//                   specific bits in the byte associated with the CMOS token
+//                   identifier. The <Clobber Mask> must agree the OptionBits 
+//                   value. (Up to eight CMOS tokens can be defined using a 
+//                   single CMOS location.)
+
+
+//----------------------------------------------------------------------------
+// CMOS Checksum Location
+//----------------------------------------------------------------------------
+// The CMOS checksum location spans 2 bytes. 
+
+NvramField (CMOS_CHECKSUM_HIGH)
+	OptionBits  = 8
+    Default     = 00h
+	Checksum    = NO
+    Location    = 040h, 0FFh
+EndNvramField
+
+NvramField (CMOS_CHECKSUM_LOW)
+	OptionBits  = 8
+    Default     = 00h
+	Checksum    = NO
+    Location    = 041h, 0FFh
+EndNvramField
+
+
+//----------------------------------------------------------------------------
+// Reserve 32-Bit CMOS API Pointer
+//----------------------------------------------------------------------------
+
+NvramField (CMOS_API_BYTE3)
+	OptionBits  = 8
+    Managed     = NO
+    Location    = 042h, 0FFh
+EndNvramField
+
+NvramField (CMOS_API_BYTE2)
+	OptionBits  = 8
+    Managed     = NO
+    Location    = 043h, 0FFh
+EndNvramField
+
+NvramField (CMOS_API_BYTE1)
+	OptionBits  = 8
+    Managed     = NO
+    Location    = 044h, 0FFh
+EndNvramField
+
+NvramField (CMOS_API_BYTE0)
+	OptionBits  = 8
+    Managed     = NO
+    Location    = 045h, 0FFh
+EndNvramField
+
+
+//*************************************************************************
+//*************************************************************************
+//**                                                                     **
+//**        (C)Copyright 1985-2012, American Megatrends, Inc.            **
+//**                                                                     **
+//**                       All Rights Reserved.                          **
+//**                                                                     **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+//**                                                                     **
+//**                       Phone: (770)-246-8600                         **
+//**                                                                     **
+//*************************************************************************
+//*************************************************************************

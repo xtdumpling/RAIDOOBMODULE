@@ -1,0 +1,55 @@
+TOKEN
+	Name  = "Library_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling Library support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+INFComponent
+	Name  = "AmtLibPei"
+	File  = "AmtLibPei\AmtLibPei.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "BASE"
+End
+
+INFComponent
+	Name  = "AmtWrapperLib"
+	File  = "AmtWrapperLib\AmtWrapperLib.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "BASE"
+End
+
+INFComponent
+	Name  = "PeiAmtLib"
+	File  = "PeiAmtLib/PeiAmtLib.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "BASE"
+End
+
+INFComponent
+	Name  = "DxeMbpDataLib"
+	File  = "DxeMbpDataLib/DxeMbpDataLib.inf"
+	Package  = "PurleySktPkg"
+End
+
+LibraryMapping
+	Class  = "AmtLibPei"
+	Instance  = "PurleySktPkg.AmtLibPei"
+End
+
+LibraryMapping
+	Class  = "AmtWrapperLib"
+	Instance  = "PurleySktPkg.AmtWrapperLib"
+End
+
+LibraryMapping
+	Class  = "PeiAmtLib"
+	Instance  = "PurleySktPkg.PeiAmtLib"
+End
+
+LibraryMapping
+	Class  = "DxeMbpDataLib"
+	Instance  = "PurleySktPkg.DxeMbpDataLib"
+    Arch  = "X64"
+End

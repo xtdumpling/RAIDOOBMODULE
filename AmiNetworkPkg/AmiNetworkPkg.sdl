@@ -1,0 +1,35 @@
+TOKEN
+	Name  = "AmiNetworkPkg_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable Intel Gigabit Lan network chip support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+End
+
+PATH
+	Name  = "AmiNetworkPkg_DIR"
+End
+
+TOKEN
+	Name  = "AmiNetworkPostManagerLib_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable AmiNetworkPostManagerLib support from AmiNetworkPkg"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "AmiNetworkPostManagerLib"
+	File  = "Library/AmiNetworkPostManagerLib/AmiNetworkPostManagerLib.inf"
+	Package  = "AmiNetworkPkg"
+	Token = "AmiNetworkPostManagerLib_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "AmiNetworkPostManagerLib"
+	Instance  = "AmiNetworkPkg.AmiNetworkPostManagerLib"
+	ModuleTypes  = "UEFI_DRIVER"
+	Token = "AmiNetworkPostManagerLib_SUPPORT" "=" "1"
+End

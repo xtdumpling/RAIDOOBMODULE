@@ -1,0 +1,78 @@
+TOKEN
+    Name  = "AMI_TCG_NVFLAG_SAMPLE_SUPPORT"
+    Value  = "1"
+    Help  = "Sample module to provide interface to manipulate TPM NV BIOS FLAGS"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes
+    TargetMAK = Yes
+    Master = Yes
+End
+
+
+TOKEN
+    Name  = "NV_DATA_SIZE"
+    Value  = "10"
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "USE_BIOSNVRAM_ONLY"
+    Value  = "1"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name   = "NO_PPI_PROVISION_DEFAULT"
+    Value  = "001h"
+    Help   = "default for TPM NoPpiProvision flag"
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name   = "NO_PPI_CLEAR_DEFAULT"
+    Value  = "001h"
+    Help   = "default for TPM NoPpiclear flag"
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name   = "NO_PPI_MAINTENANCE_DEFAULT"
+    Value  = "000h"
+    Help   = "default for Ppi maintenance flag"
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name   = "PPI_REQUIRED_FOR_CHANGE_PCR_DEFAULT"
+    Value  = "001h"
+    Help   = "default for TPM Ppi required for Change pcr flag"
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+PATH
+    Name  = "AMI_TCG_NVFLAG_SAMPLE_DIR"
+End
+
+
+INFComponent
+    Name  = "AmiTcgNvflagSample"
+    File  = "AmiTcgNvflagSample.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_DRIVER"
+End
+

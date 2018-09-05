@@ -1,0 +1,23 @@
+TOKEN
+	Name  = "AmtBootOptions_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling AmtBootOptions support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "ActiveManagement_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable ActiveManagement support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "ActiveManagement"
+	File  = "Dxe\ActiveManagement.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "ActiveManagement_SUPPORT" "=" "1"
+End
+

@@ -1,0 +1,58 @@
+TOKEN
+    Name  = "OpalSecurity_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable OpalSecurity support in Project"
+    TokenType = Boolean
+    TargetH = Yes
+    Master = Yes
+    Token = "AHCI_SUPPORT" "|" "$(IdeBusSrc_SUPPORT)"
+End
+
+TOKEN
+    Name  = "TPer_LOCK_ON_RESET"
+    Value  = "0"
+    Help  = "Issue eDrive Lock On Reset"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+PATH
+    Name  = "OpalSecurity_DIR"
+End
+
+ELINK
+    Name  = "OpalSecuritySrcList"
+    Help  = "Source file List of OpalSecurity Module"
+    InvokeOrder = ReplaceParent
+    
+End
+
+ELINK
+    Name  = "../$(OpalSecurity_DIR)/IDEOpalSec.c"
+    Parent  = "OpalSecuritySrcList"
+    InvokeOrder = AfterParent
+    Token = "IdeBusSrc_SUPPORT" "=" "1"
+End
+
+ELINK
+    Name  = "../$(OpalSecurity_DIR)/AHCIOpalSec.c"
+    Parent  = "OpalSecuritySrcList"
+    InvokeOrder = AfterParent
+    Token = "AHCI_SUPPORT" "=" "1"
+End
+
+OUTPUTREGISTER
+    Name  = "OPALSECINF"
+    Path  = "Build"
+    File  = "OpalSecurity.inf"
+    Template  = "OpalSecurity.txt"
+End
+
+INFComponent
+    Name  = "OpalSecurity"
+    File  = "../../Build/OpalSecurity.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_DRIVER"
+    Token = "OpalSecurity_SUPPORT" "=" "1"
+End
+

@@ -1,0 +1,1135 @@
+//****************************************************************************
+//****************************************************************************
+//**                                                                        **
+//**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+//**                                                                        **
+//****************************************************************************
+//****************************************************************************
+//
+//  File History
+//
+//  Rev. 1.04
+//    Bug Fix : 1. [Fixes] Fixed the system cannot enter to TXT Environment when
+//              using TPM 1.2 on production platform.
+//              2. [Fixes] Fixed TPM 2.0 BIOS-Based Provisioning table doesn't 
+//              set PW flag to PS LCP Data for production platform.
+//    Reason  : Bug Fixed.
+//    Auditor : Joe Jhang
+//    Date    : Jul/20/2017
+//
+//  Rev. 1.03
+//    Bug Fix : Hidden "SHA-1 PCR Bank" and grayed out "SHA256 PCR Bank" in BIOS 
+//              setup menu for Intel Boot Guard feature requires a minimum of 
+//              SHA256.
+//    Reason  : PB #80237 TPM 2.0 device will be shown "NO Security Device Found"
+//              if disabling "SHA256 PCR Bank", enabling "SHA-1 PCR Bank" and 
+//              enabling "TXT Support" in BIOS Setup menu.
+//    Auditor : Joe Jhang
+//    Date    : Jun/12/2017
+//
+//  Rev. 1.02
+//    Bug Fix:  TXT option for TPM 1.2 device.
+//    Reason:   
+//    Auditor:  Max Mu
+//    Date:     May/19/2017
+//
+//  Rev. 1.01
+//    Bug Fix:  Draft template.
+//    Reason:   
+//    Auditor:  Kasber Chen
+//    Date:     Dec/16/2016
+//
+//  Rev. 1.00
+//    Bug Fix:  Fixed TPM can't be provisioned.
+//    Reason:   Default disable setup item "PH Randomization" (Refer Grantley)
+//    Auditor:  Jimmy Chiu
+//    Date:     Aug/22/2016
+//
+//****************************************************************************
+//****************************************************************************
+
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2010, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**     5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093            **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
+
+//**********************************************************************
+// $Header: /Alaska/SOURCE/Modules/TcgNext/Common/TcgSetup/TcgSetup.sd 1     10/08/13 12:05p Fredericko $
+//
+// $Revision: 1 $
+//
+// $Date: 10/08/13 12:05p $
+//**********************************************************************
+// Revision History
+// ----------------
+// $Log: /Alaska/SOURCE/Modules/TcgNext/Common/TcgSetup/TcgSetup.sd $
+// 
+// 1     10/08/13 12:05p Fredericko
+// Initial Check-In for Tpm-Next module
+// 
+// 2     10/03/13 2:45p Fredericko
+// 
+// 1     7/10/13 5:57p Fredericko
+// [TAG]  		EIP120969
+// [Category]  	New Feature
+// [Description]  	TCG (TPM20)
+// 
+// 6     9/28/11 6:33p Fredericko
+// [TAG]  		EIPEIP000000
+// [Category]  	Improvement
+// [Description]  	Provide a way to destroy TPM support without modifying
+// SDL token
+// [Files]  		TcgSetup.sd
+// 
+// 5     9/07/11 9:31p Fredericko
+// 
+// 4     8/29/11 6:52p Fredericko
+// [TAG]  		EIP00000
+// [Category]  	Improvement
+// [Description]  	Tcg Setup Improvement for Tpm status reporting
+// [Files]  		TcgSetup.sd
+// 
+// 3     8/23/11 1:38a Fredericko
+// [TAG]  		EIP48182
+// [Category]  	Improvement
+// [Description]  	Changes to adopted setup customization.
+// [Files]  		TcgSetup.sd
+// 
+// 19    5/19/10 6:24p Fredericko
+// Updated AMI copyright header
+// 
+// 18    4/10/10 9:42p Fredericko
+// setup display operations on TPM operations
+// 
+// 17    3/19/10 5:26p Fredericko
+// modified for legacy IO interface support
+// 
+// 16    11/09/09 12:08p Fredericko
+// Checked in changes for UEFI 2.1. Also backward compatible with UEFI
+// 2.0. Please note that tools update might be required. Should build fine
+// with Tools Version 28.
+// 
+// 15    4/30/09 6:26p Fredericko
+// Updated Header Date
+// 
+// 14    4/30/09 5:46p Fredericko
+// AMI company Header Address changed
+// 
+// 13    12/17/08 8:44p Rameshraju
+// Tpmenableold variable moved out from the Setup structure. EIP 17549
+// 
+// 12    8/12/08 12:14p Fasihm
+// Added the Manufacturing flag to all the setup questions.
+// 
+// 11    6/25/08 6:23p Fredericko
+// TXT related setup questions and information added.
+// 
+// 10    1/04/08 3:51p Fredericko
+// Remove #define in Setup variables since it can cause Setup Size
+// problems in relation to the compiler
+// 
+// 9     10/08/07 9:21a Fredericko
+// 
+// 7     8/09/07 11:01a Pats
+// Modified to support password authentication, and to reset system if TPM
+// State is changed.
+// 
+// 6     6/08/07 6:39p Fredericko
+// New TPm feature to allow disabling/Enabling TPM support. Status display
+// changes.
+// 
+// 5     5/24/07 11:32a Fredericko
+// Improve Aesthetic value of TPM module in setup
+// 
+// 4     5/22/07 7:21p Fredericko
+// 
+// 3     5/22/07 4:00p Fredericko
+// TPM setup display status feature added
+// 
+// 2     3/12/07 11:46a Fredericko
+// Feature: Grayout Setup operation if TCG is disabled in setup.
+// 
+// 1     10/06/06 5:15p Andriyn
+//
+//**********************************************************************
+//<AMI_FHDR_START>
+//
+// Name:	TCG.sd
+//
+// Description:	TCG Form Template
+//
+//<AMI_FHDR_END>
+//**********************************************************************
+
+#ifdef SETUP_DATA_DEFINITION
+/***********************************************************/
+/* Put NVRAM data definitions here.
+/* For example: UINT8 Data1;
+/* These definitions will be converted by the build process
+/* to a definitions of SETUP_DATA fields.
+/***********************************************************/
+	UINT8 TpmEnable;
+	UINT8 TpmOperation;
+	UINT8 TpmEnaDisable;
+	UINT8 TpmActDeact;
+	UINT8 TpmOwnedUnowned;
+	UINT8 TpmSupport;
+    UINT8 TcgSupportEnabled;
+
+    UINT8 TcmSupportEnabled;
+	UINT8 TpmHrdW;
+    UINT8 TpmAuthenticate;
+	UINT8 SuppressTcg;
+    UINT8 TpmError;
+    UINT8 Tpm20Device;
+
+    UINT8 Tcg2SpecVersion;
+    UINT8 PlatformHierarchy;
+    UINT8 StorageHierarchy;
+    UINT8 EndorsementHierarchy;
+    UINT8 InterfaceSel;
+    UINT8 DeviceType;
+    UINT8 PhRandomization;
+    UINT8 Sha1Supported;
+    UINT8 Sha256Supported;
+    UINT8 Sha384Supported;
+    UINT8 Sha512Supported;
+    UINT8 SM3Supported;
+    UINT8 Sha1;
+    UINT8 Sha256;
+    UINT8 Sha384;
+    UINT8 Sha512;
+    UINT8 SM3;
+    UINT8 ForceTpmEnable;
+    UINT8 PpiSpecVersion;
+#if (defined(SMCPKG_SUPPORT) && (SMCPKG_SUPPORT == 1))
+#if (defined(SMC_TPM_PROVISION_SUPPORT) && (SMC_TPM_PROVISION_SUPPORT == 1))
+    UINT8 SmcBiosBasedTpmProvisionSupport;
+#endif //#if (defined(SMC_TPM_PROVISION_SUPPORT) && (SMC_TPM_PROVISION_SUPPORT == 1))
+#endif //#if (defined(SMCPKG_SUPPORT) && (SMCPKG_SUPPORT == 1))
+#endif
+
+#if defined(VFRCOMPILE) && !defined(CONTROLS_ARE_DEFINED)
+#define CONTROL_DEFINITION
+#endif
+#ifdef CONTROL_DEFINITION
+
+#define TCG_ONEOF_TPMSUPPORT\
+			oneof varid = SETUP_DATA.TpmSupport,\
+				prompt = STRING_TOKEN(STR_TPM_SUPPORT_PROMPT ),\
+				help = STRING_TOKEN(STR_TPMSUPPORT_HELP),\
+				option text = STRING_TOKEN(STR_TPM_DISABLE), value = 0, flags = RESET_REQUIRED;\
+				option text = STRING_TOKEN(STR_TPM_ENABLE),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;\
+			endoneof;
+
+
+#define TCG_ONEOF_TCMSUPPORT\
+			oneof varid = SETUP_DATA.TpmSupport,\
+				prompt = STRING_TOKEN(STR_TCM_SUPPORT_PROMPT ),\
+				help = STRING_TOKEN(STR_TPMSUPPORT_HELP),\
+				option text = STRING_TOKEN(STR_TPM_DISABLE), value = 0, flags = RESET_REQUIRED;\
+				option text = STRING_TOKEN(STR_TPM_ENABLE),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;\
+			endoneof;
+
+#define TCG_ONEOF_TPMAUTHENTICATE\
+			oneof varid  = SETUP_DATA.TpmAuthenticate,\
+				prompt = STRING_TOKEN(STR_TPM_PASS_PROMPT),\
+				help = STRING_TOKEN(STR_TPM_PASS_HELP),\
+				option text = STRING_TOKEN(STR_TPM_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;\
+				option text = STRING_TOKEN(STR_TPM_ENABLE),  value = 1, flags = RESET_REQUIRED;\
+			endoneof;
+
+#define TCG_ONEOF_TPMENABLE\
+            oneof varid = SETUP_DATA.TpmEnable,\
+				prompt = STRING_TOKEN(STR_TPM_PROMPT),\
+				help = STRING_TOKEN(STR_TPM_HELP),\
+				option text = STRING_TOKEN(STR_TPM_DISABLED), value = 0, flags = RESET_REQUIRED;\
+				option text = STRING_TOKEN(STR_TPM_ENABLED),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;\
+			endoneof;
+
+#define TCG_ONEOF_FORCE_TPM_ENABLE\
+            oneof varid = SETUP_DATA.ForceTpmEnable,\
+				prompt = STRING_TOKEN(STR_TPM_FORCE_ENABLE),\
+				help = STRING_TOKEN(STR_TPM_HELP),\
+				option text = STRING_TOKEN(STR_TPM_DISABLED), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;\
+				option text = STRING_TOKEN(STR_TPM_ENABLED),  value = 1, flags = RESET_REQUIRED;\
+			endoneof;
+
+#define TCG_ONEOF_TCMENABLE\
+			oneof varid = SETUP_DATA.TpmEnable,\
+				prompt = STRING_TOKEN(STR_TCM_PROMPT),\
+				help = STRING_TOKEN(STR_TPM_HELP),\
+				option text = STRING_TOKEN(STR_TPM_DISABLED), value = 0, flags = RESET_REQUIRED;\
+				option text = STRING_TOKEN(STR_TPM_ENABLED),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;\
+			endoneof;
+
+#define TCG_ONEOF_TPMOPERATION\
+			oneof varid  = SETUP_DATA.TpmOperation,\
+				prompt = STRING_TOKEN(STR_TPMOP_PROMPT),\
+				help = STRING_TOKEN(STR_TPMOP_HELP),\
+				option text = STRING_TOKEN(STR_TPM_NONE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;\
+				option text = STRING_TOKEN(STR_TPM_CLEAR), value = TCPA_PPIOP_CLEAR, flags = RESET_REQUIRED;\
+			endoneof;
+			
+#define TCG2_ONEOF_TPMOPERATION\
+            oneof varid  = SETUP_DATA.TpmOperation,\
+                prompt = STRING_TOKEN(STR_TPM20_PROMPT),\
+                help = STRING_TOKEN(STR_TPMOP_HELP),\
+                option text = STRING_TOKEN(STR_TPM_NONE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;\
+                option text = STRING_TOKEN(STR_TPM_CLEAR), value = 1, flags = RESET_REQUIRED;\
+            endoneof;	
+
+
+#define TCG_ONEOF_TCMOPERATION\
+			oneof varid  = SETUP_DATA.TpmOperation,\
+				prompt = STRING_TOKEN(STR_TPMOP_PROMPT),\
+				help = STRING_TOKEN(STR_TPMOP_HELP),\
+				option text = STRING_TOKEN(STR_TPM_NONE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;\
+				option text = STRING_TOKEN(STR_TCM_CLEAR), value = TCPA_PPIOP_CLEAR, flags = RESET_REQUIRED;\
+			endoneof;
+
+#define TCG_ONEOF_PROTOCOL_VERSION\
+			oneof varid  = SETUP_DATA.Tcg2SpecVersion,\
+				prompt = STRING_TOKEN(STR_TCG2_SPEC_VERSION),\
+				help = STRING_TOKEN(STR_TCG2_SPEC_VERSION_HELP),\
+				option text = STRING_TOKEN(STR_PROTOCOL_VER_1_0), value = 1, flags = RESET_REQUIRED;\
+				option text = STRING_TOKEN(STR_PROTOCOL_VER_1_1), value = 2, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;\
+			endoneof;
+
+#define TCG_ONEOF_TPMENADISABLE\
+			oneof varid  = SETUP_DATA.TpmEnaDisable,\
+				prompt = STRING_TOKEN(STR_ENABLED_PROMPT),\
+				help = STRING_TOKEN(STR_ONOFFSTATE_HELP),\
+				option text = STRING_TOKEN(STR_TPMDISABLED), value = 1, flags = DEFAULT | MANUFACTURING;\
+				option text = STRING_TOKEN(STR_TPMENABLED),  value = 0, flags = 0;\
+			endoneof;
+
+#define TCG_ONEOF_TCMENADISABLE\
+			oneof varid  = SETUP_DATA.TpmEnaDisable,\
+				prompt = STRING_TOKEN(STR_TCM_ENABLED_PROMPT),\
+				help = STRING_TOKEN(STR_ONOFFSTATE_HELP),\
+				option text = STRING_TOKEN(STR_TPMDISABLED), value = 1, flags = DEFAULT | MANUFACTURING;\
+				option text = STRING_TOKEN(STR_TPMENABLED),  value = 0, flags = 0;\
+			endoneof;
+
+#define TCG_ONEOF_TPMACTDEACT\
+			oneof varid  = SETUP_DATA.TpmActDeact,\
+				prompt = STRING_TOKEN(STR_ACTIVATE_PROMPT),\
+				help = STRING_TOKEN(STR_ONOFFSTATE_HELP),\
+				option text = STRING_TOKEN(STR_TPMDEACTIVATED), value = 1, flags = DEFAULT | MANUFACTURING;\
+				option text = STRING_TOKEN(STR_TPMACTIVATED), 	value = 0, flags = 0;\
+			endoneof;
+
+#define TCG_ONEOF_TCMACTDEACT\
+			oneof varid  = SETUP_DATA.TpmActDeact,\
+				prompt = STRING_TOKEN(STR_TCM_ACTIVATE_PROMPT),\
+				help = STRING_TOKEN(STR_ONOFFSTATE_HELP),\
+				option text = STRING_TOKEN(STR_TPMDEACTIVATED), value = 1, flags = DEFAULT |MANUFACTURING;\
+				option text = STRING_TOKEN(STR_TPMACTIVATED), 	value = 0, flags = 0;\
+			endoneof;
+
+#define TCG_ONEOF_TPMOWNEDUNOWNED\
+			oneof varid  = SETUP_DATA.TpmOwnedUnowned,\
+				prompt 	= STRING_TOKEN(STR_OWNED_OR_UNOWNED_PROMPT),\
+				help 	= STRING_TOKEN(STR_OWNED_OR_UNOWNED_HELP),\
+				option text = STRING_TOKEN(STR_OWNED), 	  value = 1, flags = 0;\
+				option text = STRING_TOKEN(STR_UNOWNED),  value = 0, flags = DEFAULT | MANUFACTURING;\
+			endoneof;
+			
+#define TCG_ONEOF_TCMOWNEDUNOWNED\
+			oneof varid  = SETUP_DATA.TpmOwnedUnowned,\
+				prompt 	= STRING_TOKEN(STR_TCM_OWNED_OR_UNOWNED_PROMPT),\
+				help 	= STRING_TOKEN(STR_OWNED_OR_UNOWNED_HELP),\
+				option text = STRING_TOKEN(STR_OWNED), 	  value = 1, flags = 0;\
+				option text = STRING_TOKEN(STR_UNOWNED),  value = 0, flags = DEFAULT |MANUFACTURING;\
+			endoneof;
+			
+#define TCG_CBX_PLATHIERARCHY\
+            oneof varid = SETUP_DATA.PlatformHierarchy,\
+                prompt       = STRING_TOKEN (STR_TPM_20_PH),\
+                help         = STRING_TOKEN (STR_TPM_20_PH_HELP),\
+                option text = STRING_TOKEN(STR_TPMDISABLED), value = 0, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_TPMENABLED),  value = 1, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;\
+            endoneof;
+                       
+#define TCG_CBX_STORAGEHIERARCHY\
+            oneof varid = SETUP_DATA.StorageHierarchy,\
+                prompt       = STRING_TOKEN (STR_TPM_20_SH),\
+                help         = STRING_TOKEN (STR_TPM_20_SH_HELP),\
+                option text = STRING_TOKEN(STR_TPMDISABLED), value = 0, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_TPMENABLED),  value = 1, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;\
+            endoneof;
+            
+            
+#define TCG_CBX_ENDORSEMENTHIERARCHY\
+           oneof varid = SETUP_DATA.EndorsementHierarchy,\
+                prompt       = STRING_TOKEN (STR_TPM_20_EH),\
+                help         = STRING_TOKEN (STR_TPM_20_EH_HELP),\
+                option text = STRING_TOKEN(STR_TPMDISABLED), value = 0, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_TPMENABLED),  value = 1, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;\
+            endoneof;
+            
+            
+#define TCG_INTERFACE_SELC\
+           oneof varid = SETUP_DATA.InterfaceSel,\
+                prompt       = STRING_TOKEN (STR_TPM_20_INTERFACE),\
+                help         = STRING_TOKEN (STR_TPM_20_INTERFACE_HELP),\
+                option text  = STRING_TOKEN(STR_CRB), value = 0, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;\
+                option text  = STRING_TOKEN(STR_TIS), value = 1, flags = RESET_REQUIRED;\
+            endoneof;
+//SMCPKG_SUPPORT S
+#define TCG_PH_RANDOMIZATION\
+           oneof varid = SETUP_DATA.PhRandomization,\
+                prompt       = STRING_TOKEN (STR_TPM_20_PH_RANDOMIZATION),\
+                help         = STRING_TOKEN (STR_TPM_20_PH_RANDOMIZATION_HELP),\
+                option text  = STRING_TOKEN(STR_TPMDISABLED), value = 0, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;\
+                option text  = STRING_TOKEN(STR_TPMENABLED), value = 1, flags = RESET_REQUIRED;\
+            endoneof;
+//SMCPKG_SUPPORT E
+#define TCG_LOCKOUT_RESET\
+           oneof varid = SETUP_DATA.Tpm2LockOutReset,\
+                prompt       = STRING_TOKEN (STR_TPM_20_LOCKOUT_RESET),\
+                help         = STRING_TOKEN (STR_TPM_20_LOCKOUT_RESET_HELP),\
+                option text  = STRING_TOKEN(STR_TPMDISABLED), value = 0, flags = RESET_REQUIRED;\
+                option text  = STRING_TOKEN(STR_TPMENABLED), value = 1, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;\
+            endoneof;
+
+#define TCG_DEVICE_TYPE\
+           oneof varid = SETUP_DATA.DeviceType,\
+                prompt       = STRING_TOKEN (STR_DEVICE_TYPE_PROMPT),\
+                help         = STRING_TOKEN (STR_TPM_DEVICE_TYPE_HELP),\
+                option text  = STRING_TOKEN(STR_TPM_12), value = 0, flags = RESET_REQUIRED;\
+                option text  = STRING_TOKEN(STR_TPM_20), value = 1, flags = RESET_REQUIRED;\
+                option text  = STRING_TOKEN(STR_TPM_AUTO), value = 2, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;\
+            endoneof;
+            
+#define TCG_PCRSHA1BANK\
+        oneof varid = SETUP_DATA.Sha1,\
+            prompt       = STRING_TOKEN (STR_TPM_SHA1_PCRBANK_ENABLE),\
+            help         = STRING_TOKEN (STR_TPM_SHA1_PCRBANK_ENABLE_HELP),\
+            default      = DEFAULT_SHA1_BANK_ENABLE,\
+            option text  = STRING_TOKEN(STR_TPMDISABLED), value = 0, flags = RESET_REQUIRED;\
+            option text  = STRING_TOKEN(STR_TPMENABLED), value = 1, flags = MANUFACTURING | RESET_REQUIRED;\
+        endoneof;
+        
+#define TCG_PCRSHA256BANK\
+        oneof varid = SETUP_DATA.Sha256,\
+            prompt       = STRING_TOKEN (STR_TPM_SHA256_PCRBANK_ENABLE),\
+            help         = STRING_TOKEN (STR_TPM_SHA256_PCRBANK_ENABLE_HELP),\
+            default      = DEFAULT_SHA256_BANK_ENABLE,\
+            option text  = STRING_TOKEN(STR_TPMDISABLED), value = 0, flags = RESET_REQUIRED;\
+            option text  = STRING_TOKEN(STR_TPMENABLED), value = 2, flags = MANUFACTURING | RESET_REQUIRED;\
+        endoneof;
+        
+        
+#define TCG_PCRSHA384BANK\
+        oneof varid = SETUP_DATA.Sha384,\
+            prompt       = STRING_TOKEN (STR_TPM_SHA384_PCRBANK_ENABLE),\
+            help         = STRING_TOKEN (STR_TPM_SHA384_PCRBANK_ENABLE_HELP),\
+            default      = DEFAULT_SHA384_BANK_ENABLE,\
+            option text  = STRING_TOKEN(STR_TPMDISABLED), value = 0, flags = RESET_REQUIRED;\
+            option text  = STRING_TOKEN(STR_TPMENABLED), value = 4, flags = MANUFACTURING | RESET_REQUIRED;\
+        endoneof;
+        
+#define TCG_PCRSHA512BANK\
+        oneof varid = SETUP_DATA.Sha512,\
+            prompt       = STRING_TOKEN (STR_TPM_SHA512_PCRBANK_ENABLE),\
+            help         = STRING_TOKEN (STR_TPM_SHA512_PCRBANK_ENABLE_HELP),\
+            default      = DEFAULT_SHA512_BANK_ENABLE,\
+            option text  = STRING_TOKEN(STR_TPMDISABLED), value = 0, flags = RESET_REQUIRED;\
+            option text  = STRING_TOKEN(STR_TPMENABLED), value = 8, flags = MANUFACTURING | RESET_REQUIRED;\
+        endoneof;
+                
+#define TCG_PCRSM3BANK\
+        oneof varid = SETUP_DATA.SM3,\
+            prompt       = STRING_TOKEN (STR_TPM_SM3_PCRBANK_ENABLE),\
+            help         = STRING_TOKEN (STR_TPM_SM3_PCRBANK_ENABLE_HELP),\
+            default      = DEFAULT_SM3_BANK_ENABLE,\
+            option text  = STRING_TOKEN(STR_TPMDISABLED), value = 0, flags = RESET_REQUIRED;\
+            option text  = STRING_TOKEN(STR_TPMENABLED),  value = 1, flags = MANUFACTURING | RESET_REQUIRED;\
+        endoneof;
+        
+#define TCG2_PPI_SPEC_VERSION\
+        oneof varid = SETUP_DATA.PpiSpecVersion,\
+            prompt       = STRING_TOKEN (STR_PPI_SPEC_VERSION),\
+            help         = STRING_TOKEN (STR_PPI_SPEC_VERSION_HELP),\
+            option text  = STRING_TOKEN(STR_PPI_SPEC_VERSION_1_2), value = 0, flags = RESET_REQUIRED;\
+            option text  = STRING_TOKEN(STR_PPI_SPEC_VERSION_1_3), value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;\
+        endoneof;
+#endif 
+#if (defined(SMCPKG_SUPPORT) && (SMCPKG_SUPPORT == 1))
+#if (defined(SMC_TPM_PROVISION_SUPPORT) && (SMC_TPM_PROVISION_SUPPORT == 1))
+#if (defined(OFFICIAL_RELEASE) && (OFFICIAL_RELEASE == 1))
+#define SMC_BIOS_BASED_TPM_PROVISION_SUPPORT\
+                        oneof varid = SETUP_DATA.SmcBiosBasedTpmProvisionSupport,\
+                                prompt = STRING_TOKEN(STR_SMC_BIOS_BASED_TPM_PROVISION_SUPPORT_PROMPT),\
+                                help = STRING_TOKEN(STR_SMC_BIOS_BASED_TPM_PROVISION_SUPPORT_HELP),\
+                                option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;\
+                                option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;\
+                        endoneof;
+#else
+#define SMC_BIOS_BASED_TPM_PROVISION_SUPPORT\
+                        oneof varid = SETUP_DATA.SmcBiosBasedTpmProvisionSupport,\
+                                prompt = STRING_TOKEN(STR_SMC_BIOS_BASED_TPM_PROVISION_SUPPORT_PROMPT),\
+                                help = STRING_TOKEN(STR_SMC_BIOS_BASED_TPM_PROVISION_SUPPORT_TEST_HELP),\
+                                option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;\
+                                option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;\
+                        endoneof;
+#endif //#if (defined(OFFICIAL_RELEASE) && (OFFICIAL_RELEASE == 1))
+#endif //#if (defined(SMC_TPM_PROVISION_SUPPORT) && (SMC_TPM_PROVISION_SUPPORT == 1))
+#endif //#if (defined(SMCPKG_SUPPORT) && (SMCPKG_SUPPORT == 1))
+
+//#ifdef CONTROL_DEFINITION
+
+#ifdef CONTROLS_WITH_DEFAULTS
+	TCG_ONEOF_TPMSUPPORT
+	TCG_ONEOF_TPMAUTHENTICATE
+	TCG_ONEOF_TPMENABLE
+	TCG_ONEOF_TPMOPERATION
+	TCG_ONEOF_TPMENADISABLE
+	TCG_ONEOF_TPMACTDEACT
+	TCG_ONEOF_TPMOWNEDUNOWNED
+	TCG_CBX_PLATHIERARCHY
+	TCG_CBX_STORAGEHIERARCHY
+	TCG_CBX_ENDORSEMENTHIERARCHY
+	TCG2_ONEOF_TPMOPERATION
+	TCG_ONEOF_PROTOCOL_VERSION
+	TCG_INTERFACE_SELC
+	TCG_DEVICE_TYPE
+	TCG_PH_RANDOMIZATION
+	TCG_PCRSHA1BANK
+	TCG_PCRSHA256BANK
+	TCG_PCRSHA384BANK
+	TCG_PCRSHA512BANK
+	TCG_PCRSM3BANK
+	TCG_ONEOF_FORCE_TPM_ENABLE
+	TCG2_PPI_SPEC_VERSION
+#if (defined(SMCPKG_SUPPORT) && (SMCPKG_SUPPORT == 1))
+#if (defined(SMC_TPM_PROVISION_SUPPORT) && (SMC_TPM_PROVISION_SUPPORT == 1))
+        SMC_BIOS_BASED_TPM_PROVISION_SUPPORT
+#endif //#if (defined(SMC_TPM_PROVISION_SUPPORT) && (SMC_TPM_PROVISION_SUPPORT == 1))
+#endif //#if (defined(SMCPKG_SUPPORT) && (SMCPKG_SUPPORT == 1))
+#endif //#ifdef CONTROLS_WITH_DEFAULTS
+
+#ifdef FORM_SET_TYPEDEF
+    #include <AmiTcg/TcgSetupBoard.h>
+    #include <Token.h>
+#endif // FORM_SET_TYPEDEF
+
+#ifdef ADVANCED_FORM_SET
+    #ifndef SUPPRESS_GRAYOUT_ENDIF //old Core
+    #define SUPPRESS_GRAYOUT_ENDIF endif;
+    #endif
+
+	#ifdef FORM_SET_ITEM
+	// Define controls to be added to the main page of the formset
+	#endif
+
+	#ifdef FORM_SET_GOTO
+	// Define goto commands for the forms defined in this file
+    suppressif ideqval SETUP_DATA.SuppressTcg == 1;
+        suppressif ideqval SETUP_DATA.Tpm20Device == 1 OR 
+                   ideqval SETUP_DATA.TpmHrdW == 1;
+		goto TCG_FORM_ID, 
+			prompt = STRING_TOKEN(STR_TCG_FORM),
+			help = STRING_TOKEN(STR_TCG_FORM_HELP);
+        endif;
+        suppressif ideqval SETUP_DATA.Tpm20Device == 0 OR
+                   ideqval SETUP_DATA.TpmHrdW == 1;
+        goto TCG20_FORM_ID, 
+			prompt = STRING_TOKEN(STR_TCG_FORM),
+			help = STRING_TOKEN(STR_TCG_FORM_HELP);
+        endif;
+        suppressif ideqval SETUP_DATA.TpmHrdW == 0;
+        goto NO_TCG_FORM_ID, 
+            prompt = STRING_TOKEN(STR_TCG_FORM),
+            help = STRING_TOKEN(STR_TCG_FORM_HELP);
+        endif;
+    endif;
+	#endif
+
+#ifdef FORM_SET_FORM
+        #ifndef NO_TCG_FORM
+        #define NO_TCG_FORM
+        form formid = AUTO_ID(NO_TCG_FORM_ID),
+        title = STRING_TOKEN(STR_TCG_FORM);
+        
+        SUBTITLE(STRING_TOKEN(STR_TPM_CONFIGURATION))
+        
+        TCG_ONEOF_TPMSUPPORT
+        
+        // Text: No Device Found Page item.
+        text 
+        help   = STRING_TOKEN(STR_EMPTY),
+        text   = STRING_TOKEN(STR_TPMHARDWARE),
+        text   = STRING_TOKEN(STR_EMPTY),
+        flags  = 0,
+        key    = 0; 
+        
+        endform; 
+        #endif
+
+		#ifndef TCG_FORM_TCG
+		#define TCG_FORM_TCG
+
+		// Define forms
+		form formid = AUTO_ID(TCG_FORM_ID),
+		title = STRING_TOKEN(STR_TCG_FORM);
+		
+		
+		SUBTITLE(STRING_TOKEN(STR_TPM_CONFIGURATION))
+
+#if TPM_PASSWORD_AUTHENTICATION
+
+        suppressif ideqval SETUP_DATA.TcgSupportEnabled == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER AND
+                ideqval SETUP_DATA.TpmAuthenticate == 1;
+				
+				TCG_ONEOF_TPMSUPPORT
+				
+		SUPPRESS_GRAYOUT_ENDIF  // suppress-grayout
+
+		suppressif ideqval AMITSESETUP.AdminPassword == 0 OR 
+               ideqval SETUP_DATA.TcgSupportEnabled == 0 OR
+			   ideqval SETUP_DATA.TpmSupport == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+			
+			TCG_ONEOF_TPMAUTHENTICATE
+			
+		SUPPRESS_GRAYOUT_ENDIF  // suppress-grayout
+
+		suppressif ideqval SETUP_DATA.TcgSupportEnabled == 0 OR
+			   ideqval SETUP_DATA.TpmSupport == 0;
+		grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER AND
+                ideqval SETUP_DATA.TpmAuthenticate == 1;
+            
+			TCG_ONEOF_TPMENABLE
+			
+	    SUPPRESS_GRAYOUT_ENDIF
+	
+		suppressif ideqval SETUP_DATA.TcgSupportEnabled == 0 OR
+			   ideqval SETUP_DATA.TpmSupport == 0;
+		grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER AND
+                ideqval SETUP_DATA.TpmAuthenticate == 1 OR
+                ideqval SETUP_DATA.TpmActDeact == 1 OR
+                ideqval SETUP_DATA.TpmEnable == 0;  
+			
+			TCG_ONEOF_TPMOPERATION
+			
+	    SUPPRESS_GRAYOUT_ENDIF
+
+        suppressif ideqval SETUP_DATA.TcmSupportEnabled == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER AND
+                ideqval SETUP_DATA.TpmAuthenticate == 1;
+			
+			TCG_ONEOF_TCMSUPPORT
+			
+		SUPPRESS_GRAYOUT_ENDIF  // suppress-grayout
+
+		suppressif ideqval AMITSESETUP.AdminPassword == 0 OR 
+               ideqval SETUP_DATA.TcmSupportEnabled == 0 OR
+			   ideqval SETUP_DATA.TpmSupport == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+			
+				TCG_ONEOF_TPMAUTHENTICATE
+				
+		SUPPRESS_GRAYOUT_ENDIF  // suppress-grayout
+
+		suppressif ideqval SETUP_DATA.TcmSupportEnabled == 0 OR
+			   ideqval SETUP_DATA.TpmSupport == 0;
+		grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER AND
+                ideqval SETUP_DATA.TpmAuthenticate == 1;
+				
+				TCG_ONEOF_TCMENABLE
+				
+	    SUPPRESS_GRAYOUT_ENDIF
+	
+		suppressif ideqval SETUP_DATA.TcmSupportEnabled == 0 OR
+			   ideqval SETUP_DATA.TpmSupport == 0;
+		grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER AND
+                ideqval SETUP_DATA.TpmAuthenticate == 1 OR
+                ideqval SETUP_DATA.TpmActDeact == 1 OR
+                ideqval SETUP_DATA.TpmEnable == 0;  
+			
+			TCG_ONEOF_TPMOPERATION
+			
+	    SUPPRESS_GRAYOUT_ENDIF
+	    
+#if CHOOSE_TPM_STACK_QUESTION == 1
+        suppressif ideqval SETUP_DATA.TpmSupport == 0;  
+            TCG_DEVICE_TYPE
+        endif;       
+#endif 
+
+#if DISPLAY_TPM_SETUP_ERROR == 1
+        suppressif ideqval SETUP_DATA.TpmError == 0;
+            text 
+            help   = STRING_TOKEN(STR_EMPTY),
+            text   = STRING_TOKEN(STR_TPM_SETUP_ERROR),
+            text   = STRING_TOKEN(STR_EMPTY),
+            flags  = 0,
+            key    = 0; 
+        endif;
+#endif
+
+#else
+
+		suppressif ideqval SETUP_DATA.TcgSupportEnabled == 0;
+		grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+			
+			TCG_ONEOF_TPMSUPPORT
+			
+		SUPPRESS_GRAYOUT_ENDIF
+
+		suppressif ideqval SETUP_DATA.TcgSupportEnabled == 0 OR
+			   ideqval SETUP_DATA.TpmSupport == 0;
+		grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+            
+			TCG_ONEOF_TPMENABLE
+			
+	    SUPPRESS_GRAYOUT_ENDIF
+	    
+#if EXPOSE_FORCE_TPM_ENABLE == 1
+	           
+       suppressif ideqval SETUP_DATA.TcgSupportEnabled == 0;
+             grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+            
+          TCG_ONEOF_FORCE_TPM_ENABLE
+            
+        SUPPRESS_GRAYOUT_ENDIF
+#endif
+
+		suppressif ideqval SETUP_DATA.TcgSupportEnabled == 0 OR
+			   ideqval SETUP_DATA.TpmSupport == 0;
+		grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER OR
+                ideqval SETUP_DATA.TpmActDeact == 1  OR
+                ideqval SETUP_DATA.TpmEnable == 0;  
+			
+			TCG_ONEOF_TPMOPERATION
+			
+	    SUPPRESS_GRAYOUT_ENDIF
+
+
+        suppressif ideqval SETUP_DATA.TcmSupportEnabled == 0;
+		grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+			
+			TCG_ONEOF_TCMSUPPORT
+			
+		SUPPRESS_GRAYOUT_ENDIF
+
+		suppressif ideqval SETUP_DATA.TcmSupportEnabled == 0 OR
+			   ideqval SETUP_DATA.TpmSupport == 0;
+		grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+            
+			TCG_ONEOF_TCMENABLE
+			
+	    SUPPRESS_GRAYOUT_ENDIF
+
+		suppressif ideqval SETUP_DATA.TcmSupportEnabled == 0 OR
+			   ideqval SETUP_DATA.TpmSupport == 0;
+		grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER OR
+                ideqval SETUP_DATA.TpmActDeact == 1  OR
+                ideqval SETUP_DATA.TpmEnable == 0;  
+			
+			TCG_ONEOF_TPMOPERATION
+			
+	    SUPPRESS_GRAYOUT_ENDIF
+	    
+#if CHOOSE_TPM_STACK_QUESTION == 1
+        suppressif ideqval SETUP_DATA.TpmSupport == 0 OR
+                   ideqval SETUP_DATA.TcmSupportEnabled == 1;  
+            TCG_DEVICE_TYPE
+        endif;       
+#endif 
+
+#endif
+	
+	SEPARATOR
+	SEPARATOR
+
+	SUBTITLE(STRING_TOKEN(STR_TPM_STATUS_INFO))
+		    
+        suppressif ideqval SETUP_DATA.TcgSupportEnabled == 0 OR
+              ideqval SETUP_DATA.TpmSupport == 0;
+        grayoutif ideqval SETUP_DATA.TpmEnable == 0 OR  
+                ideqval SETUP_DATA.TpmEnable == 1;  
+        text
+            help   = STRING_TOKEN(STR_TPM_NONE),
+            text   = STRING_TOKEN(STR_ENABLED_PROMPT),
+            text   = STRING_TOKEN(STR_ENABLED_PROMPT_VALUE),
+            flags  = 0,
+            key    = 0;
+        SUPPRESS_GRAYOUT_ENDIF 
+
+
+		suppressif ideqval SETUP_DATA.TcgSupportEnabled == 0 OR
+			   ideqval SETUP_DATA.TpmSupport == 0;
+		grayoutif ideqval SETUP_DATA.TpmEnable == 0 OR  
+				 ideqval SETUP_DATA.TpmEnable == 1;  
+				 
+        text
+            help   = STRING_TOKEN(STR_TPM_NONE),
+            text   = STRING_TOKEN(STR_ACTIVATE_PROMPT),
+            text   = STRING_TOKEN(STR_ACTIVATED_PROMPT_VALUE),
+            flags  = 0,
+            key    = 0;
+				 
+	    SUPPRESS_GRAYOUT_ENDIF
+
+		suppressif ideqval SETUP_DATA.TcgSupportEnabled == 0 OR
+			   ideqval SETUP_DATA.TpmSupport == 0;
+		grayoutif ideqval SETUP_DATA.TpmEnable == 0 OR  
+				ideqval SETUP_DATA.TpmEnable == 1; 
+				
+		text
+            help   = STRING_TOKEN(STR_TPM_NONE),
+            text   = STRING_TOKEN(STR_OWNED_OR_UNOWNED_PROMPT),
+            text   = STRING_TOKEN(STR_OWNED_PROMPT_VALUE),
+            flags  = 0,
+            key    = 0;
+			
+	    SUPPRESS_GRAYOUT_ENDIF
+
+
+        suppressif ideqval SETUP_DATA.TcmSupportEnabled == 0 OR
+               ideqval SETUP_DATA.TpmSupport == 0;
+		grayoutif ideqval SETUP_DATA.TpmEnable == 0 OR  
+				 ideqval SETUP_DATA.TpmEnable == 1;  
+			
+		text
+            help   = STRING_TOKEN(STR_TPM_NONE),
+            text   = STRING_TOKEN(STR_TCM_ENABLED_PROMPT),
+            text   = STRING_TOKEN(STR_ENABLED_PROMPT_VALUE),
+            flags  = 0,
+            key    = 0;
+			
+	    SUPPRESS_GRAYOUT_ENDIF
+
+
+		suppressif ideqval SETUP_DATA.TcmSupportEnabled == 0 OR
+               ideqval SETUP_DATA.TpmSupport == 0;
+		grayoutif ideqval SETUP_DATA.TpmEnable == 0 OR  
+				 ideqval SETUP_DATA.TpmEnable == 1;  
+			
+        text
+            help   = STRING_TOKEN(STR_TPM_NONE),
+            text   = STRING_TOKEN(STR_TCM_ACTIVATE_PROMPT),
+            text   = STRING_TOKEN(STR_ACTIVATED_PROMPT_VALUE),
+            flags  = 0,
+            key    = 0;
+			
+	    SUPPRESS_GRAYOUT_ENDIF
+
+		suppressif ideqval SETUP_DATA.TcmSupportEnabled == 0 OR
+               ideqval SETUP_DATA.TpmSupport == 0;
+		grayoutif ideqval SETUP_DATA.TpmEnable == 0 OR  
+				ideqval SETUP_DATA.TpmEnable == 1; 
+			
+		 text
+            help   = STRING_TOKEN(STR_TPM_NONE),
+            text   = STRING_TOKEN(STR_TCM_OWNED_OR_UNOWNED_PROMPT),
+            text   = STRING_TOKEN(STR_OWNED_PROMPT_VALUE),
+            flags  = 0,
+            key    = 0;
+			
+	    SUPPRESS_GRAYOUT_ENDIF
+#if (defined(SMCPKG_SUPPORT) && (SMCPKG_SUPPORT == 1))
+#if (defined(SMC_TPM_PROVISION_SUPPORT) && (SMC_TPM_PROVISION_SUPPORT == 1))
+        SMC_BIOS_BASED_TPM_PROVISION_SUPPORT
+#endif //#if (defined(SMC_TPM_PROVISION_SUPPORT) && (SMC_TPM_PROVISION_SUPPORT == 1))
+#endif //#if (defined(SMCPKG_SUPPORT) && (SMCPKG_SUPPORT == 1))
+        #if SMCPKG_SUPPORT 
+        oneof varid     = SOCKET_PROCESSORCORE_CONFIGURATION.ProcessorLtsxEnable,
+            prompt      = STRING_TOKEN(STR_LTSX),
+            help        = STRING_TOKEN(STR_LTSX_HELP),
+            option text = STRING_TOKEN(STR_DISABLE),  value = 0, flags = RESET_REQUIRED | MANUFACTURING  | DEFAULT;
+            option text = STRING_TOKEN(STR_ENABLE),   value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        #endif //SMCPKG_SUPPORT
+	endform; 
+	#endif // #ifndef TCG_FORM_TCG
+
+#ifdef FORM_SET_FORM
+
+		#ifndef TCG20_FORM_TCG
+		#define TCG20_FORM_TCG
+
+		// Define forms
+		form formid = AUTO_ID(TCG20_FORM_ID),
+		title = STRING_TOKEN(STR_TCG_FORM);
+
+        SEPARATOR
+        SUBTITLE(STRING_TOKEN(STR_TPM_20_DEVICE))
+        SUBTITLE(STRING_TOKEN(STR_TPM_MANUFACTURER))
+        SUBTITLE(STRING_TOKEN(STR_TPM_FW_VERSION))
+        
+#if TPM_PASSWORD_AUTHENTICATION
+        SEPARATOR
+        suppressif ideqval AMITSESETUP.AdminPassword == 0 OR 
+        ideqval SETUP_DATA.TcgSupportEnabled == 0 OR
+        ideqval SETUP_DATA.TpmSupport == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+            
+            TCG_ONEOF_TPMAUTHENTICATE
+            
+        SUPPRESS_GRAYOUT_ENDIF  // suppress-grayout
+        
+        suppressif ideqval SETUP_DATA.TcgSupportEnabled == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER AND
+                ideqval SETUP_DATA.TpmAuthenticate == 1;
+                
+            TCG_ONEOF_TPMSUPPORT
+                
+        SUPPRESS_GRAYOUT_ENDIF  // suppress-grayout
+        
+        suppressif ideqval SETUP_DATA.TpmSupport == 0;  
+        text
+            help   = STRING_TOKEN(STR_TPM_ACTIVE_PCR_BANKS_HELP),
+            text   = STRING_TOKEN(STR_TPM_ACTIVE_PCR_BANKS),
+            text   = STRING_TOKEN(STR_TPM_ACTIVE_PCR_BANKS_VALUE),
+            flags  = 0,
+            key    = 0;
+
+        endif;  // suppress-grayout
+        
+        suppressif ideqval SETUP_DATA.TpmSupport == 0;  
+        text
+            help   = STRING_TOKEN(STR_TPM_SUPPORTED_PCR_BANKS_HELP),
+            text   = STRING_TOKEN(STR_TPM_SUPPORTED_PCR_BANKS),
+            text   = STRING_TOKEN(STR_TPM_SUPPORTED_PCR_BANKS_VALUE),
+            flags  = 0,
+            key    = 0;
+
+        endif;  // suppress-grayout
+        
+        SEPARATOR
+        
+        grayoutif ideqval SETUP_DATA.Tcg2SpecVersion == 1;
+        
+        suppressif ideqval SETUP_DATA.TpmSupport == 0 OR
+            ideqval SETUP_DATA.Sha1Supported == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER AND
+                ideqval SETUP_DATA.TpmAuthenticate == 1;
+            TCG_PCRSHA1BANK
+        SUPPRESS_GRAYOUT_ENDIF  // suppress-grayout
+        
+         suppressif ideqval SETUP_DATA.TpmSupport == 0 OR
+            ideqval SETUP_DATA.Sha256Supported == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER AND
+            ideqval SETUP_DATA.TpmAuthenticate == 1;
+            TCG_PCRSHA256BANK
+
+        SUPPRESS_GRAYOUT_ENDIF  // suppress-grayout
+        
+        suppressif ideqval SETUP_DATA.TpmSupport == 0 OR
+            ideqval SETUP_DATA.Sha384Supported == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER AND
+            ideqval SETUP_DATA.TpmAuthenticate == 1;
+            TCG_PCRSHA384BANK
+
+        SUPPRESS_GRAYOUT_ENDIF  // suppress-grayout
+        
+        suppressif ideqval SETUP_DATA.TpmSupport == 0 OR
+            ideqval SETUP_DATA.Sha512Supported == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER AND
+            ideqval SETUP_DATA.TpmAuthenticate == 1;
+            TCG_PCRSHA512BANK
+
+        SUPPRESS_GRAYOUT_ENDIF  // suppress-grayout
+        
+        suppressif ideqval SETUP_DATA.TpmSupport == 0 OR
+            ideqval SETUP_DATA.SM3Supported == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER AND
+            ideqval SETUP_DATA.TpmAuthenticate == 1;
+            TCG_PCRSM3BANK
+
+        SUPPRESS_GRAYOUT_ENDIF  // suppress-grayout
+        endif;  // End "grayoutif ideqval SETUP_DATA.Tcg2SpecVersion == 1;"
+
+        SEPARATOR
+        
+        suppressif ideqval SETUP_DATA.TpmSupport == 0;  
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER AND
+            ideqval SETUP_DATA.TpmAuthenticate == 1;
+        TCG2_ONEOF_TPMOPERATION
+        TCG_CBX_PLATHIERARCHY
+        TCG_CBX_STORAGEHIERARCHY
+        TCG_CBX_ENDORSEMENTHIERARCHY
+    suppressif SMC_SETUP_STYLE;  //SMCPKG_SUPPORT S
+        TCG_ONEOF_PROTOCOL_VERSION
+        TCG2_PPI_SPEC_VERSION
+    endif;      //SMCPKG_SUPPORT E
+        SUPPRESS_GRAYOUT_ENDIF  // suppress-grayout
+               
+#if (defined(ALLOWINTERFACESELECT) && (ALLOWINTERFACESELECT != 0))            
+        suppressif ideqval SETUP_DATA.TpmSupport == 0;  
+         grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER AND
+            ideqval SETUP_DATA.TpmAuthenticate == 1;
+            TCG_INTERFACE_SELC
+        endif;
+#endif 
+
+#if (defined(TPM2_DISABLE_PLATFORM_HIERARCHY_RANDOMIZATION) && (TPM2_DISABLE_PLATFORM_HIERARCHY_RANDOMIZATION == 1))    
+            TCG_PH_RANDOMIZATION
+#endif          
+        
+#if CHOOSE_TPM_STACK_QUESTION == 1
+        suppressif ideqval SETUP_DATA.TpmSupport == 0;  
+            TCG_DEVICE_TYPE
+        endif;       
+#endif     
+        
+#else
+        SEPARATOR
+        TCG_ONEOF_TPMSUPPORT   
+           
+        suppressif ideqval SETUP_DATA.TpmSupport == 0;  
+        text
+            help   = STRING_TOKEN(STR_TPM_ACTIVE_PCR_BANKS_HELP),
+            text   = STRING_TOKEN(STR_TPM_ACTIVE_PCR_BANKS),
+            text   = STRING_TOKEN(STR_TPM_ACTIVE_PCR_BANKS_VALUE),
+            flags  = 0,
+            key    = 0;
+        endif;  
+        
+        suppressif ideqval SETUP_DATA.TpmSupport == 0;  
+        text
+            help   = STRING_TOKEN(STR_TPM_SUPPORTED_PCR_BANKS_HELP),
+            text   = STRING_TOKEN(STR_TPM_SUPPORTED_PCR_BANKS),
+            text   = STRING_TOKEN(STR_TPM_SUPPORTED_PCR_BANKS_VALUE),
+            flags  = 0,
+            key    = 0;
+        endif;
+        
+        SEPARATOR
+        grayoutif ideqval SETUP_DATA.Tcg2SpecVersion == 1;
+        
+        suppressif ideqval SETUP_DATA.TpmSupport == 0 OR
+            ideqval SETUP_DATA.Sha1Supported == 0;
+#if (defined(SMCPKG_SUPPORT) && (SMCPKG_SUPPORT == 1))
+#if (defined(INTEL_BOOT_GUARD_SUPPORT) && (INTEL_BOOT_GUARD_SUPPORT == 1))
+        suppressif TRUE;
+#endif  //#if (defined(INTEL_BOOT_GUARD_SUPPORT) && (INTEL_BOOT_GUARD_SUPPORT == 1))
+#endif  //#if (defined(SMCPKG_SUPPORT) && (SMCPKG_SUPPORT == 1))
+            TCG_PCRSHA1BANK
+#if (defined(SMCPKG_SUPPORT) && (SMCPKG_SUPPORT == 1))
+#if (defined(INTEL_BOOT_GUARD_SUPPORT) && (INTEL_BOOT_GUARD_SUPPORT == 1))
+        endif;
+#endif  //#if (defined(INTEL_BOOT_GUARD_SUPPORT) && (INTEL_BOOT_GUARD_SUPPORT == 1))
+#endif  //#if (defined(SMCPKG_SUPPORT) && (SMCPKG_SUPPORT == 1))
+        endif;
+        
+         suppressif ideqval SETUP_DATA.TpmSupport == 0 OR
+            ideqval SETUP_DATA.Sha256Supported == 0;
+#if (defined(SMCPKG_SUPPORT) && (SMCPKG_SUPPORT == 1))
+#if (defined(INTEL_BOOT_GUARD_SUPPORT) && (INTEL_BOOT_GUARD_SUPPORT == 1))
+         grayoutif TRUE;
+#endif  //#if (defined(INTEL_BOOT_GUARD_SUPPORT) && (INTEL_BOOT_GUARD_SUPPORT == 1))
+#endif  //#if (defined(SMCPKG_SUPPORT) && (SMCPKG_SUPPORT == 1))
+            TCG_PCRSHA256BANK
+#if (defined(SMCPKG_SUPPORT) && (SMCPKG_SUPPORT == 1))
+#if (defined(INTEL_BOOT_GUARD_SUPPORT) && (INTEL_BOOT_GUARD_SUPPORT == 1))
+         endif;
+#endif  //#if (defined(INTEL_BOOT_GUARD_SUPPORT) && (INTEL_BOOT_GUARD_SUPPORT == 1))
+#endif  //#if (defined(SMCPKG_SUPPORT) && (SMCPKG_SUPPORT == 1))
+        endif;
+        
+        suppressif ideqval SETUP_DATA.TpmSupport == 0 OR
+            ideqval SETUP_DATA.Sha384Supported == 0;
+            TCG_PCRSHA384BANK
+        endif;
+        
+        suppressif ideqval SETUP_DATA.TpmSupport == 0 OR
+            ideqval SETUP_DATA.Sha512Supported == 0;
+            TCG_PCRSHA512BANK
+        endif;
+        
+        suppressif ideqval SETUP_DATA.TpmSupport == 0 OR
+            ideqval SETUP_DATA.SM3Supported == 0;
+            TCG_PCRSM3BANK
+        endif;
+        endif;  // End "grayoutif ideqval SETUP_DATA.Tcg2SpecVersion == 1;"
+
+        SEPARATOR
+        
+        suppressif ideqval SETUP_DATA.TpmSupport == 0;  
+
+ 		TCG2_ONEOF_TPMOPERATION
+		TCG_CBX_PLATHIERARCHY
+		TCG_CBX_STORAGEHIERARCHY
+		TCG_CBX_ENDORSEMENTHIERARCHY
+        suppressif SMC_SETUP_STYLE;  //SMCPKG_SUPPORT S
+		TCG_ONEOF_PROTOCOL_VERSION
+		TCG2_PPI_SPEC_VERSION
+	endif;     //SMCPKG_SUPPORT E
+		endif;
+               
+#if (defined(ALLOWINTERFACESELECT) && (ALLOWINTERFACESELECT != 0))            
+        suppressif SMC_SETUP_STYLE;  //SMCPKG_SUPPORT S
+        suppressif ideqval SETUP_DATA.TpmSupport == 0;  
+            TCG_INTERFACE_SELC
+        endif;
+        endif;  //SMCPKG_SUPPORT E
+#endif
+#endif  //TPM_PASSWORD_AUTHENTICATION
+
+#if (defined(ALLOWINTERFACESELECT) && (ALLOWINTERFACESELECT == 0))    
+        suppressif SMC_SETUP_STYLE;  //SMCPKG_SUPPORT S
+        suppressif ideqval SETUP_DATA.TpmSupport == 0;  
+        grayoutif TRUE;  
+            TCG_INTERFACE_SELC
+        endif;
+        endif;
+        endif;  //SMCPKG_SUPPORT E
+#endif    
+
+#if (defined(TPM2_DISABLE_PLATFORM_HIERARCHY_RANDOMIZATION) && (TPM2_DISABLE_PLATFORM_HIERARCHY_RANDOMIZATION == 1))    
+            TCG_PH_RANDOMIZATION
+#endif          
+        
+#if CHOOSE_TPM_STACK_QUESTION == 1
+        suppressif ideqval SETUP_DATA.TpmSupport == 0;  
+            TCG_DEVICE_TYPE
+        endif;       
+#endif
+#if (defined(SMCPKG_SUPPORT) && (SMCPKG_SUPPORT == 1))
+#if (defined(SMC_TPM_PROVISION_SUPPORT) && (SMC_TPM_PROVISION_SUPPORT == 1))
+        SMC_BIOS_BASED_TPM_PROVISION_SUPPORT
+#endif //#if (defined(SMC_TPM_PROVISION_SUPPORT) && (SMC_TPM_PROVISION_SUPPORT == 1))
+#endif //#if (defined(SMCPKG_SUPPORT) && (SMCPKG_SUPPORT == 1))
+//SMCPKG_SUPPORT S
+        oneof varid     = SOCKET_PROCESSORCORE_CONFIGURATION.ProcessorLtsxEnable,
+            prompt      = STRING_TOKEN(STR_LTSX),
+            help        = STRING_TOKEN(STR_LTSX_HELP),
+            option text = STRING_TOKEN(STR_DISABLE),  value = 0, flags = RESET_REQUIRED | MANUFACTURING  | DEFAULT;
+            option text = STRING_TOKEN(STR_ENABLE),   value = 1, flags = RESET_REQUIRED;
+        endoneof;
+//SMCPKG_SUPPORT E
+        endform;
+        #endif
+#endif  //end TCG20_FORM
+
+  #endif
+#endif  // ADVANCED_FORM_SET
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2010, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**     5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093            **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************

@@ -1,0 +1,332 @@
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
+
+/** @file OptionRomPolicy.vfr
+    Option ROM Dispatch Policy Setup Page 
+**/
+
+#include <Token.h>
+#include <PciSetup.h>
+#include <OptionRomPolicyStrDefs.h>
+#include <Setup.h>
+
+formset guid = ROM_FORM_SET_GUID,
+    title = STRING_TOKEN(STR_ROM_FORM),
+    help = STRING_TOKEN(STR_EMPTY),
+    class = ROM_FORM_SET_CLASS, subclass = 0,
+
+//----------------------------------------------------------
+//Include GLOBAL ROM VARIABLE DEFINITION COMMON for all devices
+    varstore ROM_SETUP_DATA,
+        varid = 0xFFF0, 
+        name  = ROM_CMN,
+        guid  = ROM_FORM_SET_GUID;
+
+    varstore SETUP_DATA,
+        varid = 0xFFF1, 
+        name  = Setup,
+        guid  = SETUP_GUID;
+
+    varstore CSM_SETUP_DATA,
+        varid = 0xFFF2, 
+        name  = CSM_CMN,
+        guid  = ROM_FORM_SET_GUID;
+
+//----------------------------------------------------------
+
+/////////////////////////////////////////////////////////////////////////////
+///Main Option ROM policy form:
+/////////////////////////////////////////////////////////////////////////////
+    form
+        formid = ROM_MAIN_FORM_ID,
+        title = STRING_TOKEN(STR_ROM_FORM);
+		
+        //in case if CSM is NOT present in project have a hidden setup control
+        //here, to initalize with defaults SETUP_DATA variable group policy fields 
+        //CsmSupport; PxeOpRom; MassStorageOpRom; VideoOpRom; OldOpRom;
+#if ((defined CSM_SUPPORT) && (CSM_SUPPORT==1))    
+#else
+    suppressif  TRUE;
+//---------------------------------------------------------
+
+        checkbox varid  = SETUP_DATA.CsmSupport,
+            questionid  = ROM_CSM_ENABLE_QID2,
+            prompt      = STRING_TOKEN(STR_EMPTY),
+            help        = STRING_TOKEN(STR_EMPTY),
+            flags       = RESET_REQUIRED,
+            default     = 0, 
+        endcheckbox;
+
+        checkbox varid  = SETUP_DATA.PxeOpRom,
+            questionid  = ROM_NETWORK_POLICY_QID2,
+            prompt      = STRING_TOKEN(STR_EMPTY),
+            help        = STRING_TOKEN(STR_EMPTY),
+            flags       = RESET_REQUIRED,
+            default     = 1, 
+        endcheckbox;
+
+        checkbox varid  = SETUP_DATA.MassStorageOpRom,
+            questionid  = ROM_STORAGE_POLICY_QID2,
+            prompt      = STRING_TOKEN(STR_EMPTY),
+            help        = STRING_TOKEN(STR_EMPTY),
+            flags       = RESET_REQUIRED,
+            default     = 1, 
+        endcheckbox;
+
+        checkbox varid  = SETUP_DATA.VideoOpRom,
+            questionid  = ROM_DISPLAY_POLICY_QID2,
+            prompt      = STRING_TOKEN(STR_EMPTY),
+            help        = STRING_TOKEN(STR_EMPTY),
+            flags       = RESET_REQUIRED,
+            default     = 1, 
+        endcheckbox;
+
+        checkbox varid  = SETUP_DATA.OldOpRom,
+            questionid  = ROM_OTHER_POLICY_QID2,
+            prompt      = STRING_TOKEN(STR_EMPTY),
+            help        = STRING_TOKEN(STR_EMPTY),
+            flags       = RESET_REQUIRED,
+            default     = 1, 
+        endcheckbox;
+//---------------------------------------------------------
+    endif; //suppres if
+#endif //  ((defined CSM_SUPPORT) && (CSM_SUPPORT==1))        
+
+        //Display Driver Version here.
+        SUBTITLE(STRING_TOKEN(STR_ROM_PCI_DRIVER_VER))
+        //SUBTITLE(STRING_TOKEN(STR_ROM_FORM))
+        checkbox varid  = ROM_CMN.ResetPolicy,
+            questionid  = ROM_RESET_POLICY_QID,
+            prompt      = STRING_TOKEN(STR_ROM_RESET_POLICY_PROMPT),
+            help        = STRING_TOKEN(STR_ROM_RESET_POLICY_HELP),
+            flags       = RESET_REQUIRED,
+            default     = DEFAULT_RESET_POLICY_VALUE, 
+        endcheckbox;
+
+        checkbox varid  = ROM_CMN.SupressVga,
+            questionid  = ROM_VGA_SUPRESS_QID,
+            prompt      = STRING_TOKEN(STR_ROM_VGA_SUPRESS_PROMPT),
+            help        = STRING_TOKEN(STR_ROM_VGA_SUPRESS_HELP),
+            flags       = RESET_REQUIRED, 
+            default     = DEFAULT_SUPRESS_VGA_VALUE, 
+        endcheckbox;
+        SEPARATOR
+        
+#if (DEVICE_CLASS_POLICY_OVERRIDE)
+#if (POLICY_OVERRIDE_MODE == 1)  
+        SUBTITLE(STRING_TOKEN(STR_ROM_DEFAULT_POLICY_PROMPT1))
+    //Network Class Devices with CSM enabled...
+    suppressif  ideqval SETUP_DATA.CsmSupport==0;
+        oneof varid = SETUP_DATA.PxeOpRom,
+            questionid  = ROM_NETWORK_POLICY_QID,
+            prompt  = STRING_TOKEN(STR_ROM_NETWORK_CLASS),
+            help    = STRING_TOKEN(STR_ROM_NETWORK_CLASS_HELP),
+            default = DEFAULT_NETWORK_OPROM_POLICY_VALUE,
+            option text = STRING_TOKEN(STR_DISABLE_STR),    value = 0, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_UEFI_STR),       value = 1, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_LEGACY_STR),     value = 2, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_CUSTOM_STR),    value = 3, flags = RESET_REQUIRED | MANUFACTURING ;
+        endoneof;
+    endif; //supress
+    
+    //Network Class Devices with CSM disabled...
+    suppressif  ideqval SETUP_DATA.CsmSupport==1;
+        oneof varid = SETUP_DATA.PxeOpRom,
+            questionid  = ROM_NETWORK_POLICY_QID1,
+            prompt  = STRING_TOKEN(STR_ROM_NETWORK_CLASS),
+            help    = STRING_TOKEN(STR_ROM_NETWORK_CLASS_HELP),
+            default = DEFAULT_NETWORK_OPROM_POLICY_VALUE,
+            option text = STRING_TOKEN(STR_DISABLE_STR),    value = 0, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_UEFI_STR),       value = 1, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_CUSTOM_STR),    value = 3, flags = RESET_REQUIRED | MANUFACTURING;
+        endoneof;
+    endif; //supress
+
+    //Mass Storage Class Devices with CSM enabled...
+    suppressif  ideqval SETUP_DATA.CsmSupport==0;
+        oneof varid = SETUP_DATA.MassStorageOpRom,
+            questionid  = ROM_STORAGE_POLICY_QID,
+            prompt  = STRING_TOKEN(STR_ROM_STORAGE_CLASS),
+            help    = STRING_TOKEN(STR_ROM_STORAGE_CLASS_HELP),
+            default = DEFAULT_STORAGE_OPROM_POLICY_VALUE,
+            option text = STRING_TOKEN(STR_DISABLE_STR),    value = 0, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_UEFI_STR),       value = 1, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_LEGACY_STR),     value = 2, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_CUSTOM_STR),    value = 3, flags = RESET_REQUIRED | MANUFACTURING ;
+        endoneof;
+        
+    endif; //supress
+    
+    //Mass Storage Class Devices with CSM disabled...
+    suppressif  ideqval SETUP_DATA.CsmSupport==1;
+        oneof varid = SETUP_DATA.MassStorageOpRom,
+            questionid  = ROM_STORAGE_POLICY_QID1,
+            prompt  = STRING_TOKEN(STR_ROM_STORAGE_CLASS),
+            help    = STRING_TOKEN(STR_ROM_STORAGE_CLASS_HELP),
+            default = DEFAULT_STORAGE_OPROM_POLICY_VALUE,
+            option text = STRING_TOKEN(STR_DISABLE_STR),    value = 0, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_UEFI_STR),       value = 1, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_CUSTOM_STR),    value = 3, flags = RESET_REQUIRED | MANUFACTURING;
+        endoneof;
+    endif; //supress
+    
+    
+    //Display Class Devices with CSM enabled...
+    suppressif  ideqval SETUP_DATA.CsmSupport==0;
+        oneof varid = SETUP_DATA.VideoOpRom,
+            questionid  = ROM_DISPLAY_POLICY_QID,
+            prompt  = STRING_TOKEN(STR_ROM_DISPLAY_CLASS),
+            help    = STRING_TOKEN(STR_ROM_DISPLAY_CLASS_HELP),
+            default = DEFAULT_DISPLAY_OPROM_POLICY_VALUE,
+            option text = STRING_TOKEN(STR_DISABLE_STR),    value = 0, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_UEFI_STR),       value = 1, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_LEGACY_STR),     value = 2, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_CUSTOM_STR),    value = 3, flags = RESET_REQUIRED | MANUFACTURING ;
+        endoneof;
+        
+    endif; //supress
+    
+    //Display Class Devices with CSM disabled...
+    suppressif  ideqval SETUP_DATA.CsmSupport==1;
+        oneof varid = SETUP_DATA.VideoOpRom,
+            questionid  = ROM_DISPLAY_POLICY_QID1,
+            prompt  = STRING_TOKEN(STR_ROM_DISPLAY_CLASS),
+            help    = STRING_TOKEN(STR_ROM_DISPLAY_CLASS_HELP),
+            default = DEFAULT_DISPLAY_OPROM_POLICY_VALUE,
+            option text = STRING_TOKEN(STR_DISABLE_STR),    value = 0, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_UEFI_STR),       value = 1, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_CUSTOM_STR),    value = 3, flags = RESET_REQUIRED | MANUFACTURING;
+        endoneof;
+    endif; //supress
+    
+    //All Other Class Devices with CSM enabled...
+    suppressif  ideqval SETUP_DATA.CsmSupport==0;
+        oneof varid = SETUP_DATA.OldOpRom,
+            questionid  = ROM_OTHER_POLICY_QID,
+            prompt  = STRING_TOKEN(STR_ROM_OTHER_CLASS),
+            help    = STRING_TOKEN(STR_ROM_OTHER_CLASS_HELP),
+            default = DEFAULT_OTHER_OPROM_POLICY_VALUE,
+            option text = STRING_TOKEN(STR_DISABLE_STR),    value = 0, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_UEFI_STR),       value = 1, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_LEGACY_STR),     value = 2, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_CUSTOM_STR),     value = 3, flags = RESET_REQUIRED;
+        endoneof;
+        
+    endif; //supress
+    
+    //All Other Class Devices with CSM disabled...
+    suppressif  ideqval SETUP_DATA.CsmSupport==1;
+        oneof varid = SETUP_DATA.OldOpRom,
+            questionid  = ROM_OTHER_POLICY_QID1,
+            prompt  = STRING_TOKEN(STR_ROM_OTHER_CLASS),
+            help    = STRING_TOKEN(STR_ROM_OTHER_CLASS_HELP),
+            default = DEFAULT_OTHER_OPROM_POLICY_VALUE,
+            option text = STRING_TOKEN(STR_DISABLE_STR),    value = 0, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_UEFI_STR),       value = 1, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_CUSTOM_STR),     value = 3, flags = RESET_REQUIRED | MANUFACTURING;
+        endoneof;
+    endif; //supress
+    
+#endif // (POLICY_OVERRIDE_MODE == 1) 
+
+#else  //DEVICE_CLASS_POLICY_OVERRIDE      
+        SUBTITLE(STRING_TOKEN(STR_ROM_DEFAULT_POLICY_PROMPT1))
+
+    suppressif  ideqval SETUP_DATA.CsmSupport==1;
+    //suppressif  ideqval CSM_SETUP_DATA.CsmPresent==1;
+        SUBTITLE(STRING_TOKEN(STR_ROM_DEFAULT_POLICY_PROMPT3))
+    endif;
+        
+    suppressif  ideqval SETUP_DATA.CsmSupport==0;
+    //suppressif  ideqval CSM_SETUP_DATA.CsmPresent==0;
+        SUBTITLE(STRING_TOKEN(STR_ROM_DEFAULT_POLICY_PROMPT2))
+        
+        suppressif  ideqval SETUP_DATA.PxeOpRom == 1;
+        SUBTITLE(STRING_TOKEN(STR_ROM_NETWORK_POLICY_LEGACY))
+        endif;
+        
+        suppressif  ideqval SETUP_DATA.PxeOpRom == 2;
+        SUBTITLE(STRING_TOKEN(STR_ROM_NETWORK_POLICY_UEFI))
+        endif;
+
+
+        suppressif  ideqval SETUP_DATA.MassStorageOpRom == 1;
+        SUBTITLE(STRING_TOKEN(STR_ROM_STORAGE_POLICY_LEGACY))
+        endif;
+
+        suppressif  ideqval SETUP_DATA.MassStorageOpRom == 2;
+        SUBTITLE(STRING_TOKEN(STR_ROM_STORAGE_POLICY_UEFI))
+        endif;
+
+        suppressif  ideqval SETUP_DATA.VideoOpRom == 1;
+        SUBTITLE(STRING_TOKEN(STR_ROM_DISPLAY_POLICY_LEGACY))
+        endif;
+
+        suppressif  ideqval SETUP_DATA.VideoOpRom == 2;
+        SUBTITLE(STRING_TOKEN(STR_ROM_DISPLAY_POLICY_UEFI))
+        endif;
+
+        suppressif  ideqval SETUP_DATA.OldOpRom == 1;
+        SUBTITLE(STRING_TOKEN(STR_ROM_OTHER_POLICY_LEGACY))
+        endif;
+
+        suppressif  ideqval SETUP_DATA.OldOpRom == 2;
+        SUBTITLE(STRING_TOKEN(STR_ROM_OTHER_POLICY_UEFI))
+        endif;
+    endif;
+        SEPARATOR
+    
+#endif //else DEVICE_CLASS_POLICY_OVERRIDE
+        
+        SUBTITLE(STRING_TOKEN(STR_ROM_LIST_SUBTITLE))
+#if DEVICE_CLASS_POLICY_OVERRIDE && POLICY_OVERRIDE_MODE==1
+        SUBTITLE(STRING_TOKEN(STR_ROM_LIST_SUBTITLE1))
+#endif 
+        //checkbox varid  = ROM_CMN.PolicyOption[0].Option,
+        //    questionid  = 1,
+        //    prompt      = STRING_TOKEN(STR_PCI_CLAS_01_STR),
+        //    help        = STRING_TOKEN(STR_ROM_VGA_SUPRESS_HELP),
+        //    flags       = RESET_REQUIRED, 
+        //endcheckbox;
+
+        label ROM_LIST_LABEL_START;
+        // dynamic content here
+        //We will stick here PCI Devices with Option ROMs 
+        ///.....
+        label ROM_LIST_LABEL_END;
+        
+		SEPARATOR
+        
+        SUBTITLE(STRING_TOKEN(STR_ROM_WARNING1))
+        SUBTITLE(STRING_TOKEN(STR_ROM_WARNING2))
+        SUBTITLE(STRING_TOKEN(STR_ROM_WARNING3))
+
+    endform;
+
+endformset;
+
+
+//*************************************************************************
+//*************************************************************************
+//**                                                                     **
+//**        (C)Copyright 1985-2016, American Megatrends, Inc.            **
+//**                                                                     **
+//**                       All Rights Reserved.                          **
+//**                                                                     **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+//**                                                                     **
+//**                       Phone: (770)-246-8600                         **
+//**                                                                     **
+//*************************************************************************
+//*************************************************************************

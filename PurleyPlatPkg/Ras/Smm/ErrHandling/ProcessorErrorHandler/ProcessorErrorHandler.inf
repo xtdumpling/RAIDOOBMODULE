@@ -1,0 +1,151 @@
+#****************************************************************************
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.00
+#      Bug Fixed:  Support SMC Memory map-out function.
+#      Reason:     
+#      Auditor:    Ivern Yeh
+#      Date:       Jul/7/2016
+#
+#/** @file
+#  Component description file for the CPU Core Error Handler.
+#
+#  Copyright (c) 2009 - 2016, Intel Corporation.
+#  All rights reserved. This software and associated documentation
+#  (if any) is furnished under a license and may only be used or
+#  copied in accordance with the terms of the license.  Except as
+#  permitted by such license, no part of this software or
+#  documentation may be reproduced, stored in a retrieval system, or
+#  transmitted in any form or by any means without the express
+#  written consent of Intel Corporation.
+#
+#**/
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = ProcessorErrorHandler
+  FILE_GUID                      = 2DE648CB-3102-43ca-A02E-42E38EA5E789
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  VERSION_STRING                 = 1.0
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  ENTRY_POINT                    = InitializeProcessorErrHandler 
+
+[Sources]
+  ProcessorErrorHandler.c
+  ProcessorErrorHandler.h
+  MemoryErrorHandler.c
+  MemoryErrorHandler.h
+  McaHandler.c
+  McaHandler.h
+  FnvErrorHandler.c
+  FnvErrorHandler.h
+  IoMcaHandler.c
+  IoMcaHandler.h
+  # APTIOV_SERVER_OVERRIDE_RC_START : Changes done to support LastBoot Error Handling and handling core/uncore errors.
+  IohErrorHandler.c
+  IohErrorHandler.h
+  # APTIOV_SERVER_OVERRIDE_RC_END : Changes done to support LastBoot Error Handling and handling core/uncore errors.
+
+[Packages]
+  # APTIOV_SERVER_OVERRIDE_RC_START : Use UefiCpuPkg
+  #PurleySktPkg/Override/UefiCpuPkg/UefiCpuPkg.dec 
+  # APTIOV_SERVER_OVERRIDE_RC_END : Use UefiCpuPkg
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+  IA32FamilyCpuPkg/IA32FamilyCpuPkg.dec
+  # APTIOV_SERVER_OVERRIDE_RC_START
+  #BpCommonPkg/BpCommonPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  # APTIOV_SERVER_OVERRIDE_RC_END
+  UefiCpuPkg/UefiCpuPkg.dec 
+  CpPlatPkg/CpPlatPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  SmcPkg/SmcPkg.dec			#SMCPKG_SUPPORT++
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  BaseMemoryLib
+  IoLib
+  BaseLib
+  PciLib
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  SmmServicesTableLib
+  PciExpressLib
+  EmcaLib
+  ProcMemErrReporting
+  EmcaPlatformHooksLib
+  SmmCpuPlatformHookLib
+  SmmMemLib
+  SynchronizationLib
+  LocalApicLib
+  PcdLib
+  ResetSystemLib
+  PrintLib
+  SerialPortLib
+  MpSyncDataLib
+  DebugLib
+  TimerLib
+  ProcMemInitLib
+  WheaSiliconHooksLib
+  # APTIOV_SERVER_OVERRIDE_RC_START
+  HobLib #  Added support for Last Boot Error Logging
+  RtErrorLogBoardLib # Added support for SEL/Gpnv Error logging using Runtime ErrorLog module
+  OemRasLib   
+  AmiErrReportingLib #OEM Hooks Support
+  # APTIOV_SERVER_OVERRIDE_RC_END
+  SmcLib		#SMCPKG_SUPPORT+
+[Protocols]
+  gEfiSmmBase2ProtocolGuid
+  gEfiErrorHandlingProtocolGuid
+  gEfiPlatformRasPolicyProtocolGuid
+  gEfiPlatformErrorHandlingProtocolGuid
+  gEfiSmmCpuServiceProtocolGuid
+  gEfiMemRasProtocolGuid
+  gEfiCrystalRidgeSmmGuid  
+  gEfiCpuCsrAccessGuid
+  gEfiQuiesceProtocolGuid
+  gEfiSmmVariableProtocolGuid
+  gEdkiiVariableLockProtocolGuid                ## CONSUMES
+  
+[Guids]
+  gErrRecordNotifyMceGuid
+  gErrRecordProcGenErrGuid
+  gErrRecordPlatformMemErrGuid
+  gErrRecordNotifyCmcGuid
+  gEfiPprVariableGuid
+  # APTIOV_SERVER_OVERRIDE_RC_START : Added support for Last Boot Error Logging
+  gEfiMemoryMapGuid 
+  # APTIOV_SERVER_OVERRIDE_RC_END : Added support for Last Boot Error Logging
+  gSmcMemMapOutGuid #SMCPKG_SUPPORT
+[FixedPcd]
+  gEfiCpuTokenSpaceGuid.PcdCpuMaxLogicalProcessorNumber
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[Depex]
+  gEfiSmmBase2ProtocolGuid AND
+  gEfiErrorHandlingProtocolGuid AND
+  gEfiPlatformRasPolicyProtocolGuid AND
+  gEfiPlatformErrorHandlingProtocolGuid AND
+  gEfiMemRasProtocolGuid AND 
+  gEfiCpuCsrAccessGuid AND 
+  gEfiSmmCpuServiceProtocolGuid
+
+[BuildOptions]
+  # Append new linker alignment option (= is Append, == is Replace)
+  MSFT:*_*_*_DLINK_FLAGS = /ALIGN:128
+  GCC:*_*_*_DLINK_FLAGS = -z common-page-size=0x80
+
+[PCD]
+  gEfiMdeModulePkgTokenSpaceGuid.PcdRealTimeClockUpdateTimeout
+  gUefiCpuPkgTokenSpaceGuid.PcdCpuLocalApicBaseAddress

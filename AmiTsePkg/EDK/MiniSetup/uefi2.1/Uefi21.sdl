@@ -1,0 +1,79 @@
+TOKEN
+	Name  = "UEFI_HII_2_1_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable UEFI 2.1 sources support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+	
+End
+
+TOKEN
+	Name  = "UEFI_SOURCES_SUPPORT"
+	Value  = "1"
+	Help  = "Don't Edit."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "UEFI_2_1_SUPPORT"
+	Value  = "1"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TSE_SUPPORT_VFRCOMPILE_1_88"
+	Value  = "0"
+	Help  = "Turn on to support vfrcompiler version 1.88 and later"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TianoHII_SUPPORT"
+	Value  = "1"
+	Help  = "Switch to enable Tiano defined HII support in Project. Turn on for form support with class,subclass. If Core changes to use just Form Guid This can be turned off"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SETUP_FORM_BROWSER_SUPPORT"
+	Value  = "1"
+	Help  = "1 => Installs form browser protocol should turn on SETUP_RUNTIME_IFR_PROCESSING. 0 => Does not install form browser protocol."
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "SETUP_RUNTIME_IFR_PROCESSING" "=" "1"
+End
+
+PATH
+	Name  = "UEFISRC_DIR"
+End
+
+ELINK
+	Name  = "Uefi21"
+	Parent  = "Uefi21Bin"
+	InvokeOrder = ReplaceParent
+End
+
+INFComponent
+	Name  = "Uefi21"
+	File  = "Uefi21.inf"
+	Package  = "AmiTsePkg"
+End
+
+LibraryMapping
+	Class  = "Uefi21"
+	Instance  = "AmiTsePkg.Uefi21"
+#	Arch  = "X64"
+End
+
+

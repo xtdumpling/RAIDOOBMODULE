@@ -1,0 +1,119 @@
+TOKEN
+    Name  = "SmcReportStatusConout_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable ReportStatusConOut support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    Master = Yes
+End
+
+INFComponent
+    Name  = "SmcPeiProgressErrorCodeLib"
+    File  = "SmcProgressErrorCodeLib.inf"
+    Package  = "SmcPkg"
+    ModuleTypes  = "PEIM"
+End
+
+INFComponent
+    Name  = "SmcDxeProgressErrorCodeLib"
+    File  = "SmcProgressErrorCodeLib.inf"
+    Package  = "SmcPkg"
+    ModuleTypes  = "DXE_DRIVER"
+End
+
+LibraryMapping
+    Class  = "SmcPeiProgressErrorCodeLib"
+    Instance  = "SmcPkg.SmcPeiProgressErrorCodeLib"
+    ModuleTypes  = "PEIM"
+End
+
+LibraryMapping
+    Class  = "SmcDxeProgressErrorCodeLib"
+    Instance  = "SmcPkg.SmcDxeProgressErrorCodeLib"
+    ModuleTypes  = "DXE_DRIVER"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "SmcPkg.SmcPeiProgressErrorCodeLib"
+    ModuleTypes  = "PEIM"
+    Override  = "SmcPkg.SmcPeiReportStatusConOut"
+End
+
+INFComponent
+    Name  = "SmcPeiReportStatusConOut"
+    File  = "SmcPeiReportStatusConOut.inf"
+    Package  = "SmcPkg"
+    ModuleTypes  = "PEIM"
+End
+
+FFS_FILE
+	Name  = "PeiConsoleOutConsplitter"
+	FD_AREA  = "FV_BB"
+	INFComponent  = "AmiModulePkg.PeiConsoleOutConsplitter"
+	Apriori_Index  = "1"
+End
+
+FFS_FILE
+	Name  = "SmcPeiReportStatusConOut"
+	FD_AREA  = "FV_BB"
+	INFComponent  = "SmcPkg.SmcPeiReportStatusConOut"
+	Apriori_Index  = "1"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "SmcPkg.SmcDxeProgressErrorCodeLib"
+    ModuleTypes  = "PEIM"
+    Override  = "SmcPkg.SmcDxeReportStatusConOut"
+End
+
+INFComponent
+    Name  = "SmcDxeReportStatusConOut"
+    File  = "SmcDxeReportStatusConOut.inf"
+    Package  = "SmcPkg"
+    ModuleTypes  = "DXE_DRIVER"
+End
+
+#
+#Integrate EarlyConsole
+#
+
+TOKEN
+    Name  = "SerialConsole_SUPPORT"
+    Value  = "0"
+    Help  = "Main switch to enable Serial Console device for the early display and status report in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes        
+End
+
+TOKEN
+    Name  = "PeiVideoInit"
+    Value  = "0"
+    Help  = "Main Switch for Enabling Pei Video Init Code in the Project"
+    TokenType = Boolean
+End
+
+TOKEN
+    Name  = "VideoCtrlReset"
+    Value  = "0"
+    Help  = "Main Switch for Enabling to VideoCtrlReset module that would disable/reset the Video device programming done in the PEI phase"
+    TokenType = Boolean
+End
+
+TOKEN
+    Name  = "VideoConsole_SUPPORT"
+    Value  = "0"
+    Help  = "Main switch to enable VideoConsole support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+End
+
+TOKEN
+    Name  = "ReportStatusConout_SUPPORT"
+    Value  = "0"
+    Help  = "Main switch to enable ReportStatusConOut support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+End

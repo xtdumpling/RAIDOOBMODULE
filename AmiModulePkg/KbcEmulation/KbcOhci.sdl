@@ -1,0 +1,46 @@
+TOKEN
+    Name  = "KbcOhci_SUPPORT"
+    Value  = "1"
+    Help  = "Switch for Enabling KbcOhci support in the project"
+    TokenType = Boolean
+    Master = Yes
+    Token = "OHCI_EMUL_SUPPORT" "=" "1"
+End
+
+PATH
+    Name  = "KbcOhci_DIR"
+    Path  = "AmiModulePkg"
+End
+
+ELINK
+    Name  = "$(KBCOHCI_DIR)\KbcOhci$(ARCH).lib"
+    Parent  = "KBCEMULLIB"
+    Priority  = 20
+    InvokeOrder = AfterParent
+End
+
+INFComponent
+    Name  = "KbcOhci"
+    File  = "KbcOhci.inf"
+    Package  = "AmiModulePkg"
+End
+
+INFComponent
+    Name  = "KbcOhciDxe"
+    File  = "KbcOhciDxe.inf"
+    Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiModulePkg.KbcOhciDxe"
+    ModuleTypes  = "DXE_DRIVER"
+    Override  = "AmiModulePkg.KbcEmulDxe"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiModulePkg.KbcOhci"
+    ModuleTypes  = "DXE_SMM_DRIVER"
+    Override  = "AmiModulePkg.KbcEmul"
+End

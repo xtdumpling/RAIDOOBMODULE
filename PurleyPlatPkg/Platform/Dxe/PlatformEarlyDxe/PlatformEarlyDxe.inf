@@ -1,0 +1,72 @@
+## @file
+#
+#  Copyright (c) 2009 - 2016, Intel Corporation. All rights reserved.<BR>
+#
+#  This program and the accompanying materials
+#  are licensed and made available under the terms and conditions of the BSD License
+#  which accompanies this distribution. The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.php
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = PlatformEarlyDxe
+  FILE_GUID                      = 7F8D35BD-0CE3-4654-B5D3-73FC4B38AABF
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = PlatformEarlyDxeEntry
+
+[Sources]
+  PlatformEarlyDxe.c
+  PlatformEarlyDxe.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+
+[LibraryClasses]
+  IoLib
+  PcdLib
+  HobLib
+  UefiLib
+  BaseMemoryLib
+  UefiDriverEntryPoint
+  S3BootScriptLib
+  UsraLib
+  SetupLib
+
+[Guids]
+  gEfiPlatformTxtDeviceMemoryGuid
+  gEfiDprRegsProgrammedGuid
+  gEfiSetupVariableGuid
+  gEfiEndOfDxeEventGroupGuid
+
+[Protocols]
+  gEfiMpServiceProtocolGuid
+  gUsraProtocolGuid
+  
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+# APTIOV_SERVER_OVERRIDE_RC_START : Restore SPI region for BIOSGuard.
+  gEfiCpRcPkgTokenSpaceGuid.PcdUsraSupportS3
+# APTIOV_SERVER_OVERRIDE_RC_END : Restore SPI region for BIOSGuard.
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[Depex]
+# APTIOV_SERVER_OVERRIDE_RC_START
+gEfiIioUdsProtocolGuid #  TRUE
+# APTIOV_SERVER_OVERRIDE_RC_END
+  # Do not add dependency here. The following protocol is assumed to be aways installed prior to this driver
+  # gUsraProtocolGuid 

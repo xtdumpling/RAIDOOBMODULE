@@ -1,0 +1,147 @@
+##****************************************************************************
+##****************************************************************************
+##**                                                                        **
+##**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+##**                                                                        **
+##****************************************************************************
+##****************************************************************************
+#
+#  File History
+#
+#  Rev. 1.06
+#    Bug Fix : N/A
+#    Reason  : Isolate IPMI support for no IPMI module platform InBand. 
+#    Auditor : Durant Lin
+#    Date    : Feb/07/2018
+#
+#  Rev. 1.05
+#    Bug Fix : Increase Full smbios version.
+#    Reason  : SUM required.
+#    Auditor : Kasber Chen
+#    Date    : Aug/10/2017
+#
+#  Rev. 1.04
+#    Bug Fix : N/A.
+#    Reason  : Defended SMCI OOB in-band SW SMI 0xE6 with SMM communication 
+#              mail box mechanism.
+#    Auditor : Joe Jhang
+#    Date    : Jun/06/2017
+#
+#  Rev. 1.03
+#    Bug Fix:  Fix building failure when disabling SmcOOB_SUPPORT.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Oct/13/2016
+#
+#    Rev.  1.02
+#     Bug Fix: Add sum load default function.
+#     Reason:	
+#     Auditor:	Hartmann Hsieh
+#     Date:  	Oct/11/2016
+#
+#  Rev. 1.01
+#    Bug Fix:  Extend FileSize in InBand header.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Jul/22/2016
+#
+#  Rev. 1.00
+#    Bug Fix:  Initial revision.
+#    Reason:   
+#    Auditor:  Kasber Chen
+#    Date:     May/25/2016
+#
+#****************************************************************************
+
+TOKEN
+    Name          = "SmcInBand_SUPPORT"
+    Value         = "1"
+    TokenType     = Boolean
+    TargetEQU     = Yes
+    TargetMAK     = Yes
+    TargetH       = Yes
+    Master        = Yes
+End
+
+PATH
+    Name          = "SmcInBand_DIR"
+End
+
+INFComponent
+    Name          = "SmcInBandDxe"
+    File          = "SmcInBandDxeBin.inf"
+    Package       = "SmcPkg"
+    ModuleTypes   = "DXE_DRIVER"
+    Token         = "SMC_OOB_SOURCES" "=" "0"
+End
+
+INFComponent
+    Name          = "SmcInBandDxe"
+    File          = "SmcInBandDxeDbg.inf"
+    Package       = "SmcPkg"
+    ModuleTypes   = "DXE_DRIVER"
+    Token         = "SMC_OOB_SOURCES" "=" "1"
+End
+
+INFComponent
+    Name          = "SmcInBandDxe"
+    File          = "SmcInBandDxe.inf"
+    Package       = "SmcPkg"
+    ModuleTypes   = "DXE_DRIVER"
+    Token         = "SMC_OOB_SOURCES" "=" "2"
+End
+
+FFS_FILE
+    Name          = "SmcInBandDxe"
+    FD_AREA       = "FV_MAIN"
+    INFComponent  = "SmcPkg.SmcInBandDxe"
+End
+
+INFComponent
+    Name          = "SmcInBandSmm"
+    File          = "SmcInBandSmmBin.inf"
+    Package       = "SmcPkg"
+    ModuleTypes   = "DXE_SMM_DRIVER"
+    Token         = "SMC_OOB_SOURCES" "=" "0"
+End
+
+INFComponent
+    Name          = "SmcInBandSmm"
+    File          = "SmcInBandSmmDbg.inf"
+    Package       = "SmcPkg"
+    ModuleTypes   = "DXE_SMM_DRIVER"
+    Token         = "SMC_OOB_SOURCES" "=" "1"
+End
+
+INFComponent
+    Name          = "SmcInBandSmm"
+    File          = "SmcInBandSmm.inf"
+    Package       = "SmcPkg"
+    ModuleTypes   = "DXE_SMM_DRIVER"
+    Token         = "SMC_OOB_SOURCES" "=" "2"
+End
+
+FFS_FILE
+    Name          = "SmcInBandSmm"
+    FD_AREA       = "FV_MAIN"
+    INFComponent  = "SmcPkg.SmcInBandSmm"
+End
+
+TOKEN
+    Name  = "SMM_COMMUNICATION_BUFFER_SIZE"
+    Value  = "0x40000"
+    Help  = "Size of the EfiRuntimeServicesData buffer allocated by firmware and used by OS applications for SMM communication"
+    TokenType = Integer
+    TargetH = Yes
+    Range  = "0 - 0FFFFFFFFh"
+End
+
+PcdMapping
+	Name  = "AmiPcdSmmCommunicationBufferSize"
+	GuidSpace  = "gAmiModulePkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "$(SMM_COMMUNICATION_BUFFER_SIZE)"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End

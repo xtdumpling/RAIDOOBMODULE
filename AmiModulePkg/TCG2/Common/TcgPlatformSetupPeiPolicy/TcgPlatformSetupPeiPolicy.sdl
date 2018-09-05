@@ -1,0 +1,32 @@
+TOKEN
+    Name  = "TcgPlatformSetupPeiPolicy_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable TcgPlatformSetupPeiPolicy support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    Master = Yes
+End
+
+PATH
+    Name  = "TcgPlatformSetupPeiPolicy_DIR"
+End
+
+ELINK
+	Name  = "AdditionalTcgSetupPeiPolicyPackages"
+	InvokeOrder = ReplaceParent
+End
+ELINK
+	Name  = "AdditionalTcgSetupPeiPolicyDepex"
+	Help  = "postpone initailing TPM during PEI phase."
+	InvokeOrder = ReplaceParent
+End
+
+INFComponent
+    Name  = "TcgPlatformSetupPeiPolicy"
+    File  = "TcgPlatformSetupPeiPolicy.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "PEIM"
+    PreProcess=Yes
+End
+

@@ -1,0 +1,84 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+## @file SmmSmbiosElog.inf
+#    INF description file for SmmSmbiosElog
+##
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SmmSmbiosElog
+  FILE_GUID                      = 8E61FD6B-7A8B-404f-B83F-AA90A47CABDF
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  VERSION_STRING                 = 1.0
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  ENTRY_POINT                    = InitializeSmmSmbiosElog
+
+[Sources]
+  ../SmbiosElogCommonAccess/SmbiosElog.c
+  SmmSmbiosElogInitFuncs.c
+  ../SmbiosElogCommonAccess/SmbiosElog.h
+  ../SmbiosElogCommonAccess/SmbiosElogFlashFuncs.c
+  ../SmbiosElogCommonAccess/SmbiosElogFlashFuncs.h
+  ../SmbiosElogCommonAccess/SmbiosElogRedirFuncs.c
+ 
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiGpnvErrorLoggingPkg/AmiGpnvErrorLoggingPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint 
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  MemoryAllocationLib
+  DebugLib
+  SmmServicesTableLib
+  AmiDxeLib
+  TimerLib
+
+[Protocols]
+  gAmiSmbiosElogSupportGuid         #PRODUCES
+  gAmiSmbiosProtocolGuid
+  gFlashSmmProtocolGuid             #CONSUMES
+  gEfiRedirElogProtocolGuid
+  gAmiSmmDummyProtocolRedirGuid
+  gEfiSmmRscHandlerProtocolGuid
+
+[Guids]
+  gEfiDataHubStatusCodeRecordGuid
+
+[Pcd]
+  gEfiMdeModulePkgTokenSpaceGuid.PcdRealTimeClockUpdateTimeout         ## CONSUMES
+
+[Depex]
+  gFlashSmmProtocolGuid AND
+  gAmiSmbiosElogSupportGuid AND
+  gEfiSmmRscHandlerProtocolGuid
+  
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**         5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093     **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

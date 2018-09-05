@@ -1,0 +1,137 @@
+#***************************************************************************
+#**                                                                       **
+#**       (C)Copyright 1993-2016 Supermicro Computer, Inc.                **
+#**                                                                       **
+#**                                                                       **
+#***************************************************************************
+#***************************************************************************
+#
+#  File History
+#
+#  Rev. 1.00
+#    Bug Fix:  Add a function that limit the primary VGA's resources under
+#              4G.(Refer to Grantley)
+#    Reason:   To prevent form Display have no output when enabled Above 4G
+#              and set VGA Priority to offboard.
+#    Auditor:  Isaac Hsu
+#    Date:     Dec/14/2016
+#
+#***************************************************************************
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2013, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+## @file
+#   This driver installs CSM Protocols and functions
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = CsmDxe
+  FILE_GUID                      = A062CF1F-8473-4aa3-8793-600BC4FFE9A8
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = CsmEntryPoint
+
+[Sources]
+  Csm.c
+  Csm.h
+  CsmBsp.c
+  CsmSimpleIn.c
+  thunk.c
+  CsmOpROM.c
+  CsmLib.c
+  CsmHwInfo.c
+  PciInterrupts.c
+
+[Packages]
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  PurleyPlatPkg/PlatPkg.dec #Supermicro
+
+[Protocols]
+  gEfiLegacyBiosProtocolGuid
+  gEfiLegacyBiosPlatformProtocolGuid
+  gEfiSimpleTextInProtocolGuid
+  gEfiSimpleTextInputExProtocolGuid
+  gAmiEfiKeycodeProtocolGuid
+  gEfiLegacyRegion2ProtocolGuid
+  gEfiPciIoProtocolGuid
+  gEfiLegacyBiosExtProtocolGuid
+  gBdsAllDriversConnectedProtocolGuid
+  gEfiMpServiceProtocolGuid
+  gEfiTimerArchProtocolGuid
+  gEfiPciRootBridgeIoProtocolGuid
+  gEfiSimpleTextOutProtocolGuid
+  gEfiSioProtocolGuid
+  gEfiBlockIoProtocolGuid
+  gEfiSerialIoProtocolGuid
+  gEfiSimplePointerProtocolGuid
+  gEfiFirmwareVolume2ProtocolGuid
+  gAint13ProtocolGuid
+  gEfiDiskInfoProtocolGuid
+  gEfiLegacy8259ProtocolGuid
+  gEfiLegacyInterruptProtocolGuid
+  gEfiLoadedImageProtocolGuid
+  gAmiOemCsm16BinaryGuid
+  gAmiExtPciBusProtocolGuid
+  gAmiLegacyBootProtocolGuid
+  gAmiPciIrqProgramGuid
+  gEfiUsbProtocolGuid
+  gAmiCsmStartedProtocolGuid
+  gOpromStartEndProtocolGuid
+  gEfiDevicePathProtocolGuid
+  gAmiBoardInfo2ProtocolGuid
+  gAmiCsmVideoPolicyProtocolGuid
+  gAmiOpromPolicyProtocolGuid
+  gAmiCsmOpromPolicyProtocolGuid
+  gEfiConsoleControlProtocolGuid
+  gEfiGraphicsOutputProtocolGuid
+
+[Guids]
+  gWinCeGuid
+  gAmiCsmThunkDriverGuid
+  gEfiSetupVariableGuid #Supermicro
+  
+[LibraryClasses]
+  UefiDriverEntryPoint
+  PcdLib 
+  AmiDxeLib
+  AmiCspLib
+  AmiSdlLib
+
+[Depex]
+  gEfiLegacyRegion2ProtocolGuid AND
+  gEfiLegacy8259ProtocolGuid AND
+  gEfiLegacyInterruptProtocolGuid AND
+  gEfiCpuArchProtocolGuid AND
+  gAmiBoardInfo2ProtocolGuid
+  
+ [Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+  gEfiMdePkgTokenSpaceGuid.PcdDebugPropertyMask
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2013, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

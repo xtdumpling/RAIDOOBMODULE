@@ -1,0 +1,69 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                 **
+#**        (C)Copyright 1985-2017, American Megatrends, Inc.        **
+#**                                                                 **
+#**                       All Rights Reserved.                      **
+#**                                                                 **
+#** 5555 Oakbrook Parkway, Suite 200, Norcross,GA 30093             **
+#**                                                                 **
+#**                       Phone: (770)-246-8600                     **
+#**                                                                 **
+#**********************************************************************
+#**********************************************************************
+
+## @file
+#   This driver installs Crypto PPI
+##
+
+[Defines]
+  INF_VERSION                  = 0x00010005
+  BASE_NAME                    = CryptoPPI
+  FILE_GUID                    = 67451698-1825-4AC5-999D-F350CC7D5D72
+  MODULE_TYPE                  = PEIM
+  VERSION_STRING               = 1.0
+  PI_SPECIFICATION_VERSION     = 0x0001000A
+  ENTRY_POINT                  = CryptoPei_Init
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32
+#
+
+[Sources]
+  CryptoPei.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiCryptoPkg/AmiCryptoPkg.dec
+  
+[LibraryClasses]
+  PeimEntryPoint
+  PeiServicesLib
+  AmiPeiLib
+  PeiCryptLib
+  DebugLib
+
+[Ppis]
+ gAmiDigitalSignaturePPIGuid
+  
+[Guids]
+gPRKeyGuid
+gPKeyFileRsa2048Guid
+gPKeyFileSha256Guid
+gPKeyFileX509Guid
+gEfiCertSha256Guid
+gEfiCertRsa2048Guid
+gEfiCertPkcs7Guid
+gEfiCertX509Guid
+gEfiHashAlgorithmSha1Guid
+gEfiHashAlgorithmSha256Guid
+gEfiHashAlgorithmSha384Guid
+gEfiHashAlgorithmSha512Guid
+     
+[Depex]
+ gEfiPeiMemoryDiscoveredPpiGuid AND
+ gEfiPeiDecompressPpiGuid
+	

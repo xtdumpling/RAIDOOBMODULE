@@ -1,0 +1,126 @@
+## @file
+#  This module provides OpenSSL SSL/TLS Library implementation.
+#
+#  Copyright (c) 2016, Intel Corporation. All rights reserved.<BR>
+#  This program and the accompanying materials
+#  are licensed and made available under the terms and conditions of the BSD License
+#  which accompanies this distribution.  The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.php
+#
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = OpensslTlsLib
+  MODULE_UNI_FILE                = OpensslTlsLib.uni
+  FILE_GUID                      = 8F636E6A-394C-428A-A3A5-CE2AAAA7D55B
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = OpensslTlsLib
+  DEFINE OPENSSL_PATH            = openssl
+  DEFINE OPENSSL_FLAGS           = -DOPENSSL_NO_SSL3 -DOPENSSL_NO_SSL3_METHOD -DOPENSSL_SYSNAME_UWIN -DOPENSSL_SYS_UEFI -DL_ENDIAN -D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE -DOPENSSL_NO_CAMELLIA -DOPENSSL_NO_SEED -DOPENSSL_NO_RC5 -DOPENSSL_NO_MDC2 -DOPENSSL_NO_CMS -DOPENSSL_NO_JPAKE -DOPENSSL_NO_CAPIENG -DOPENSSL_NO_ERR -DOPENSSL_NO_KRB5 -DOPENSSL_NO_DYNAMIC_ENGINE -DGETPID_IS_MEANINGLESS -DOPENSSL_NO_POSIX_IO -DOPENSSL_NO_DGRAM -DOPENSSL_NO_ASM#AptioV porting
+  DEFINE OPENSSL_EXFLAGS         = -DOPENSSL_SMALL_FOOTPRINT -DOPENSSL_NO_SHA0 -DOPENSSL_NO_LHASH -DOPENSSL_NO_HW -DOPENSSL_NO_OCSP -DOPENSSL_NO_LOCKING -DOPENSSL_NO_DEPRECATED -DOPENSSL_NO_RIPEMD -DOPENSSL_NO_RC2 -DOPENSSL_NO_IDEA -DOPENSSL_NO_BF -DOPENSSL_NO_CAST -DOPENSSL_NO_WHIRLPOOL -DOPENSSL_NO_DSA -DOPENSSL_NO_EC -DOPENSSL_NO_ECDH -DOPENSSL_NO_ECDSA -DOPENSSL_NO_SRP -DOPENSSL_NO_ENGINE -DOPENSSL_NO_RMD160 -DOPENSSL_NO_SCRYPT -DOPENSSL_NO_SCTP -DOPENSSL_NO_CHACHA -DOPENSSL_NO_CT -DOPENSSL_NO_BLAKE2 -DOPENSSL_NO_CRYPTO_MDEBUG_BACKTRACE
+
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF ARM AARCH64
+#
+
+[Sources]
+  e_os.h
+  ssl/s2_meth.c
+  ssl/s2_srvr.c
+  ssl/s2_clnt.c
+  ssl/s2_lib.c
+  ssl/s2_enc.c
+  ssl/s2_pkt.c
+  ssl/s3_meth.c
+  ssl/s3_srvr.c
+  ssl/s3_clnt.c
+  ssl/s3_lib.c
+  ssl/s3_enc.c
+  ssl/s3_pkt.c
+  ssl/s3_both.c
+  ssl/s3_cbc.c
+  ssl/s23_meth.c
+  ssl/s23_srvr.c
+  ssl/s23_clnt.c
+  ssl/s23_lib.c
+  ssl/s23_pkt.c
+  ssl/t1_meth.c
+  ssl/t1_srvr.c
+  ssl/t1_clnt.c
+  ssl/t1_lib.c
+  ssl/t1_enc.c
+  ssl/t1_ext.c
+  ssl/d1_meth.c
+  ssl/d1_srvr.c
+  ssl/d1_clnt.c
+  ssl/d1_lib.c
+  ssl/d1_pkt.c
+  ssl/d1_both.c
+  ssl/d1_srtp.c
+  ssl/ssl_lib.c
+  ssl/ssl_err2.c
+  ssl/ssl_cert.c
+  ssl/ssl_sess.c
+  ssl/ssl_ciph.c
+  ssl/ssl_stat.c
+  ssl/ssl_rsa.c
+  ssl/ssl_asn1.c
+  ssl/ssl_txt.c
+  ssl/ssl_algs.c
+  #
+  # Disable SSL command configuration interfaces.
+  #
+  # ssl/ssl_conf.c
+  ssl/bio_ssl.c
+  ssl/ssl_err.c
+  ssl/kssl.c
+  ssl/t1_reneg.c
+  ssl/tls_srp.c
+  ssl/t1_trce.c
+  ssl/ssl_utst.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  CryptoPkg/CryptoPkg.dec
+
+[LibraryClasses]
+  DebugLib
+  OpensslLib
+
+[BuildOptions]
+  #
+  # Disables the following Visual Studio compiler warnings brought by openssl source, so we do not break the build with /WX option:
+  # C4244: conversion from type1 to type2, possible loss of data
+  # C4702: unreachable code
+  # C4706: assignment within conditional expression
+  # C4133: incompatible types - from type1 to type2
+  # C4245: conversion from type1 to type2, signed/unsigned mismatch
+  # C4267: conversion from size_t to type, possible loss of data
+  # C4305: truncation from type1 to type2 of smaller size
+  # C4306: conversion from type1 to type2 of greater size
+  # C4702: Potentially uninitialized local variable name used
+  #
+# AMI PORTING BEGIN  - Remove flags to enable debugging
+   MSFT:DEBUG_VS2003_IA32_CC_FLAGS        == /nologo /c /WX /Gs32768 /Gy /D UNICODE /GL /FIAutoGen.h /EHs-c- /GR- /GF /GX- /Zi /Gm -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) $(OPENSSL_EXFLAGS) /w -DTHIRTY_TWO_BIT
+   MSFT:RELEASE_VS2003_IA32_CC_FLAGS      == /nologo /c /WX /Gs32768 /Gy /D UNICODE  /GL /FIAutoGen.h /EHs-c- /GR- /GF /GX- -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) $(OPENSSL_EXFLAGS) /w  -DTHIRTY_TWO_BIT
+   MSFT:DEBUG_VS2003xASL_IA32_CC_FLAGS    == /nologo /c /WX /Gs32768 /Gy /D UNICODE  /GL /FIAutoGen.h /EHs-c- /GR- /GF /GX- /Zi /Gm -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) $(OPENSSL_EXFLAGS) /w -DTHIRTY_TWO_BIT
+   MSFT:RELEASE_VS2003xASL_IA32_CC_FLAGS  == /nologo /c /WX /Gs32768 /Gy /D UNICODE  /GL /FIAutoGen.h /EHs-c- /GR- /GF /GX- -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) $(OPENSSL_EXFLAGS) /w -DTHIRTY_TWO_BIT
+   MSFT:DEBUG_DDK3790_IA32_CC_FLAGS       == /nologo /c /WX /Gy /Gs32768 /D UNICODE  /GL /FIAutoGen.h /EHs-c- /GR- /GF /Zi /Gm -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) $(OPENSSL_EXFLAGS) /w -DTHIRTY_TWO_BIT
+   MSFT:RELEASE_DDK3790_IA32_CC_FLAGS     == /nologo /c /WX /Gy /Gs32768 /D UNICODE  /GL /FIAutoGen.h /EHs-c- /GR- /GF -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) $(OPENSSL_EXFLAGS) /w -DTHIRTY_TWO_BIT
+   MSFT:DEBUG_DDK3790xASL_IA32_CC_FLAGS   == /nologo /c /WX /Gy /Gs32768 /D UNICODE  /GL /FIAutoGen.h /EHs-c- /GR- /GF /Zi /Gm -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) $(OPENSSL_EXFLAGS) /w -DTHIRTY_TWO_BIT
+   MSFT:RELEASE_DDK3790xASL_IA32_CC_FLAGS == /nologo /c /WX /Gy /Gs32768 /D UNICODE  /GL /FIAutoGen.h /EHs-c- /GR- /GF -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) $(OPENSSL_EXFLAGS) /w -DTHIRTY_TWO_BIT
+   MSFT:DEBUG_*_IA32_CC_FLAGS             == /nologo /c /WX /GS- /Gs32768 /D UNICODE  /GL /FIAutoGen.h /EHs-c- /GR- /GF /Gy /Zi /Gm -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) $(OPENSSL_EXFLAGS) /w -DTHIRTY_TWO_BIT
+   MSFT:RELEASE_*_IA32_CC_FLAGS           == /nologo /c /WX /GS- /Gs32768 /D UNICODE  /GL /FIAutoGen.h /EHs-c- /GR- /GF -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) $(OPENSSL_EXFLAGS) /w -DTHIRTY_TWO_BIT
+   MSFT:NOOPT_*_IA32_CC_FLAGS             == /nologo /c /WX /GS- /Gs32768 /D UNICODE  /FIAutoGen.h /EHs-c- /GR- /GF /Gy /Zi /Gm -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) $(OPENSSL_EXFLAGS) /w -DTHIRTY_TWO_BIT
+   MSFT:DEBUG_*_X64_CC_FLAGS              == /nologo /c /WX /GS- /X /Gs32768 /D UNICODE  /GL /Gy /FIAutoGen.h /EHs-c- /GR- /GF /Zi /Gm -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) $(OPENSSL_EXFLAGS) /w -DSIXTY_FOUR_BIT
+   MSFT:RELEASE_*_X64_CC_FLAGS            == /nologo /c /WX /GS- /X /Gs32768 /D UNICODE  /GL /Gy /FIAutoGen.h /EHs-c- /GR- /GF -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) $(OPENSSL_EXFLAGS) /w -DSIXTY_FOUR_BIT
+   MSFT:NOOPT_*_X64_CC_FLAGS              == /nologo /c /WX /GS- /X /Gs32768 /D UNICODE /Gy /FIAutoGen.h /EHs-c- /GR- /GF /Zi /Gm -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) $(OPENSSL_EXFLAGS) /w -DSIXTY_FOUR_BIT
+   MSFT:DEBUG_*_IPF_CC_FLAGS              == /nologo /c /WX /GS- /X /EHs-c- /GR- /Gy  /GL /FIAutoGen.h /QIPF_fr32 /Zi -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) $(OPENSSL_EXFLAGS) /w -DSIXTY_FOUR_BIT
+   MSFT:RELEASE_*_IPF_CC_FLAGS            == /nologo /c /WX /GS- /X /EHs-c- /GR- /Gy  /GL /FIAutoGen.h /QIPF_fr32 -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) $(OPENSSL_EXFLAGS) /w -DSIXTY_FOUR_BIT
+   MSFT:NOOPT_*_IPF_CC_FLAGS              == /nologo /c /WX /GS- /X /EHs-c- /GR- /Gy  /FIAutoGen.h /QIPF_fr32 /Zi -U_WIN32 -U_WIN64 -U_MSC_VER $(OPENSSL_FLAGS) $(OPENSSL_EXFLAGS) /w -DSIXTY_FOUR_BIT
+# AMI PORTING END  - Remove flags to enable debugging

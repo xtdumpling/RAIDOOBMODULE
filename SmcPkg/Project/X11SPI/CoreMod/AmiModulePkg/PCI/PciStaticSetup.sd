@@ -1,0 +1,1230 @@
+//****************************************************************************
+//**                                                                        **
+//**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+//**                                                                        **
+//****************************************************************************
+//  File History
+//
+//  Rev. 1.07
+//    Bug Fix:  Draft template v0.1.
+//    Reason:   
+//    Auditor:  Jimmy Chiu
+//    Date:     Jan/17/2017
+//
+//  Rev. 1.06
+//    Bug Fix:  Add Legacy NVMe driver control item and default disable.
+//    Reason:   
+//    Auditor:  Jimmy Chiu (Refer Grantley - Kasber Chen)
+//    Date:     Jan/12/2017
+//
+//  Rev. 1.05
+//    Bug Fix:  Unhide SERR/PERR items.
+//    Reason:   
+//    Auditor:  Kasber Chen
+//    Date:     Dec/27/2016
+//
+//  Rev. 1.04
+//    Bug Fix:  Draft template.
+//    Reason:   
+//    Auditor:  Kasber Chen
+//    Date:     Dec/16/2016
+//
+//  Rev. 1.03
+//    Bug Fix:  Add setup item "Onboard LAN Device" to enable/disable onboard LAN device.
+//    Reason:   For onboard 10Gbe, set TOKEN "" to 1 and add code in project's PEI/DXE function "GetProjectPciEBifurcate"
+//    Auditor:  Jimmy Chiu
+//    Date:     Sep/08/2016
+//
+//  Rev. 1.02
+//    Bug Fix:  Modify "Active Video" string to "VGA Priority" and set default to onboard. Also hide this item in IntelRCSetup.vfr.
+//    Reason:
+//    Auditor:  Jimmy Chiu (Refer Grantley SVN_717)
+//    Date:     Sep/02/2016
+//
+//  Rev. 1.01
+//    Bug Fix:  Set Above 4G to default disable.
+//    Reason:   
+//    Auditor:  Kasber Chen
+//    Date:     Aug/02/2016
+//
+//  Rev. 1.00
+//    Bug Fix:  Add OPROM control items
+//    Reason:   
+//    Auditor:  Kasber Chen
+//    Date:     Jun/21/2016
+//
+//****************************************************************************
+//****************************************************************************
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2011, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
+
+//**********************************************************************
+// $Header: /Alaska/BIN/Core/Modules/PciBus/PciBus.sd 17    1/20/11 3:13p Yakovlevs $
+//
+// $Revision: 17 $
+//
+// $Date: 1/20/11 3:13p $
+//**********************************************************************
+
+// 
+//**********************************************************************
+//<AMI_FHDR_START>
+//
+// Name:	PCIBus.sd
+//
+// Description:	PCI/PCIExpress/PCIX settings
+//
+//<AMI_FHDR_END>
+//**********************************************************************
+#include <Token.h>
+#ifdef SETUP_DATA_DEFINITION
+/***********************************************************/
+/* Put NVRAM data definitions here.
+/* For example: UINT8 Data1;
+/* These definitions will be converted by the build process
+/* to a definitions of SETUP_DATA fields.
+/***********************************************************/
+//    UINT8   OpRomPost;              //[Legacy] \ EFI Compatible     
+
+//#if ABOVE_4G_PCI_DECODE
+    UINT8   Above4gDecode;          //[Disable]\ Enable 
+//#endif
+    UINT8   SriovSupport;           //[Disable]\ Enable 
+
+	//General PCI Settings: [] - default
+	UINT8   PciLatency;				//[32]\ 64 \ 96 \ 128 \ 160 \ 192 \ 224 \ 248
+    UINT8   VgaPallete;             //[Disable]\ Enable 
+    UINT8   PerrEnable;             //[Disable]\ Enable 
+    UINT8   SerrEnable;             //[Disable]\ Enable 
+
+//#if PCI_X_SUPPORT
+	UINT8 PciXLatency;				// 32 \[64]\ 96 \ 128 \ 160 \ 192 \ 224 \ 248
+//#endif
+
+//#if PCI_EXPRESS_SUPPORT
+	//PCI Express Device Settings: [] - default
+	UINT8	RelaxedOrdering; 		//[Disable]\ Enable 
+	UINT8	ExtTagField; 			//[Disable]\ Enable 
+	UINT8	NoSnoop;				// Disable \[Enable]
+	UINT8	MaxPayload;				//[Auto]\ 128 \ 256 \ 512 \ 1024 \ 2048 \ 4096 (in bytes)
+	UINT8   MaxReadRequest;			//[Auto]\ 128 \ 256 \ 512 \ 1024 \ 2048 \ 4096 (in bytes)
+	//PCI Express Link settings: [] - default
+	UINT8   AspmMode; 				//[Disable]\ Auto \ Force L0
+	UINT8   ExtendedSynch;			//[Disable]\ Enable 
+    UINT8   LnkTrRetry;             //[Disable]\ 2 \ 3 \ 5
+    UINT16  LnkTrTimeout;           //[1...1000] (Microseconds uS)
+    UINT8   LnkDisable;             //[Keep ON == 0] / Disable ==1
+    UINT8   S3PciExpressScripts;    //[Disable]\ Enable
+    UINT8   DontResetVcMapping;     //[Disable]\ Enable
+
+//#if PCI_EXPRESS_GEN2_SUPPORT
+    //Gen2 Device Settings
+    UINT8   ComplTimeOut;           //[Disable]\ Default \ SHORT \ LONG
+    UINT8   AriFwd;                 //[Disable]\ Enable
+    UINT8   AtomOpReq;              //[Disable]\ Enable
+    UINT8   AtomOpEgressBlk;        //[Disable]\ Enable
+    UINT8   IDOReq;                 //[Disable]\ Enable
+    UINT8   IDOCompl;               //[Disable]\ Enable
+    UINT8   LtrReport;              //[Disable]\ Enable
+    UINT8   E2ETlpPrBlk;            //[Disable]\ Enable
+
+    //Gen2 Link Settings
+    UINT8   LnkSpeed;               //[Auto]\ Force to 8.0 GT/s \Force to 5.0 GT/s \Force to 2.5 GT/s
+    UINT8   DeEmphasis;             //[-3.5 dB]\ -6.0 dB
+    UINT8   ClockPm;                 //[Disable]\ Enable
+    UINT8   ComplSos;               //[Disable]\ Enable
+    UINT8   HwAutoWidth;            //[Enable]\ Disable   LNK_CNT_REG #1
+    UINT8   HwAutoSpeed;            //[Enable]\ Disable
+//#endif        
+
+//#endif
+
+//Hotplug stuff.
+//#if HOTPLUG_SUPPORT
+    UINT8   HotPlugEnable;          // Disable \[Enable]
+    UINT8   BusPadd;                // Disable \[1]\ 2 \ 3 \ 4 \ 5
+    //Following field stored in units of KB
+    UINT8   IoPadd;                 // Disable \[ 4K]\ 8K \ 16K \ 32K  
+    //Following fields stored in units of MB
+    UINT8   Mmio32Padd;             // Disable \  1M \ 4M \  8M \[16M]\ 32M \ 64M \128M  
+    UINT8   Mmio32PfPadd;           // Disable \  1M \ 4M \  8M \[16M]\ 32M \ 64M \128M  
+    //for 512 and 1G 1 byte storege is not enough...
+    UINT16  Mmio64Padd;             //[Disable]\  1M \ 4M \  8M \ 16M \ 32M \ 64M \ 128M \ 256M \ 512M \ 1G
+    UINT16  Mmio64PfPadd;           //[Disable]\  1M \ 4M \  8M \ 16M \ 32M \ 64M \ 128M \ 256M \ 512M \ 1G
+//#endif
+
+#ifdef SMCPKG_SUPPORT
+#if ONBOARD_LAN_DISABLE_BY_SETUP_ITEM
+    UINT8   SmcOnboardLan;
+#endif
+    UINT8   NvmeFWSource;
+#endif
+
+#endif //SETUP_DATA_DEFINITION
+
+#if defined(VFRCOMPILE) && !defined(CONTROLS_ARE_DEFINED)
+#define CONTROL_DEFINITION
+#endif
+
+#ifdef CONTROL_DEFINITION
+
+
+#if ( ABOVE_4G_PCI_DECODE )
+#define PCIBUS_ONEOF_ABOVE4GDECODE\
+		oneof varid  = SETUP_DATA.Above4gDecode,\
+			prompt = STRING_TOKEN(STR_PCI_4G_PROMPT),\
+			help = STRING_TOKEN(STR_PCI_4G_HELP),\
+			option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+			option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;\
+            default = ABOVE_4G_PCI_DECODE_DEFAULT_VALUE,\
+            default = ABOVE_4G_PCI_DECODE_DEFAULT_VALUE, defaultstore = AmiMfgDefault,\
+		endoneof;
+#else
+#define PCIBUS_ONEOF_ABOVE4GDECODE
+#endif // #if ABOVE_4G_PCI_DECODE
+
+#if ( SRIOV_SUPPORT )
+#define PCIBUS_ONEOF_SRIOV\
+		oneof varid  = SETUP_DATA.SriovSupport,\
+			prompt = STRING_TOKEN(STR_PCI_SRIOV_PROMPT),\
+			help = STRING_TOKEN(STR_PCI_SRIOV_HELP),\
+			option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+			option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;\
+			default     = SRIOV_SUPPORT_DEFAULT_VALUE,\
+			default     = SRIOV_SUPPORT_DEFAULT_VALUE, defaultstore = AmiMfgDefault,\
+		endoneof;
+#else
+#define PCIBUS_ONEOF_SRIOV
+#endif //PCIBUS_ONEOF_SRIOV
+
+#define PCIBUS_ONEOF_VC\
+        oneof varid  = SETUP_DATA.DontResetVcMapping,\
+            prompt = STRING_TOKEN(STR_PCI_VC_PROMPT),\
+            help = STRING_TOKEN(STR_PCI_VC_HELP),\
+            option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;\
+        endoneof;
+
+
+#define PCIBUS_ONEOF_PCILATENCY\
+		oneof varid  = SETUP_DATA.PciLatency,\
+			prompt = STRING_TOKEN(STR_PCI_LATENCY_PROMPT),\
+			help = STRING_TOKEN(STR_PCI_LATENCY_HELP),\
+			option text = STRING_TOKEN(STR_PCI_32),  value = 32, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+			option text = STRING_TOKEN(STR_PCI_64),  value = 64, flags = RESET_REQUIRED;\
+			option text = STRING_TOKEN(STR_PCI_96),  value = 96, flags = RESET_REQUIRED;\
+			option text = STRING_TOKEN(STR_PCI_128), value = 128, flags = RESET_REQUIRED;\
+			option text = STRING_TOKEN(STR_PCI_160), value = 160, flags = RESET_REQUIRED;\
+			option text = STRING_TOKEN(STR_PCI_192), value = 192, flags = RESET_REQUIRED;\
+			option text = STRING_TOKEN(STR_PCI_224), value = 224, flags = RESET_REQUIRED;\
+			option text = STRING_TOKEN(STR_PCI_248), value = 248, flags = RESET_REQUIRED;\
+		endoneof;
+
+#define PCIBUS_ONEOF_VGAPALLETE\
+		oneof varid  = SETUP_DATA.VgaPallete,\
+			prompt = STRING_TOKEN(STR_PCI_VGASNOOP_PROMPT),\
+			help = STRING_TOKEN(STR_PCI_VGASNOOP_HELP),\
+			option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+			option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;\
+		endoneof;
+
+#define PCIBUS_ONEOF_PERRENABLE\
+		oneof varid  = SETUP_DATA.PerrEnable,\
+			prompt = STRING_TOKEN(STR_PCI_PERR_PROMPT),\
+			help = STRING_TOKEN(STR_PCI_PERR_HELP),\
+			option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+			option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;\
+		endoneof;
+
+#define PCIBUS_ONEOF_SERRENABLE\
+		oneof varid  = SETUP_DATA.SerrEnable,\
+			prompt = STRING_TOKEN(STR_PCI_SERR_PROMPT),\
+			help = STRING_TOKEN(STR_PCI_SERR_HELP),\
+			option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+			option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;\
+		endoneof;
+
+#define PCIBUS_ONEOF_PCIXLATENCY\
+				oneof varid  = SETUP_DATA.PciXLatency,\
+					prompt = STRING_TOKEN(STR_PCIX_LATENCY_PROMPT),\
+					help = STRING_TOKEN(STR_PCI_LATENCY_HELP),\
+					option text = STRING_TOKEN(STR_PCI_32),  value = 32, flags = RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_PCI_64),  value = 64, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_PCI_96),  value = 96, flags = RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_PCI_128), value = 128, flags = RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_PCI_160), value = 160, flags = RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_PCI_192), value = 192, flags = RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_PCI_224), value = 224, flags = RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_PCI_248), value = 248, flags = RESET_REQUIRED;\
+				endoneof;
+
+#if PCI_EXPRESS_SUPPORT
+
+#define PCIBUS_ONEOF_RELAXEDORDERING\
+				oneof varid  = SETUP_DATA.RelaxedOrdering,\
+					prompt = STRING_TOKEN(STR_PCIE_RELAXEDORDERING_PROMPT),\
+					help = STRING_TOKEN(STR_PCIE_RELAXEDORDERING_HELP),\
+					option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+				endoneof;
+
+#define PCIBUS_ONEOF_EXTTAGFIELD\
+				oneof varid  = SETUP_DATA.ExtTagField,\
+					prompt = STRING_TOKEN(STR_PCIE_EXTTAGFLD_PROMPT),\
+					help = STRING_TOKEN(STR_PCIE_EXTTAGFLD_HELP),\
+					option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;\
+				endoneof;
+
+#define PCIBUS_ONEOF_NOSNOOP\
+				oneof varid  = SETUP_DATA.NoSnoop,\
+					prompt = STRING_TOKEN(STR_PCIE_NOSNOOP_PROMPT),\
+					help = STRING_TOKEN(STR_PCIE_NOSNOOP_HELP),\
+					option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+				endoneof;
+
+#define PCIBUS_ONEOF_MAXPAYLOAD\
+				oneof varid  = SETUP_DATA.MaxPayload,\
+					prompt = STRING_TOKEN(STR_PCIE_MAXPAYLOAD_PROMPT),\
+					help = STRING_TOKEN(STR_PCIE_MAXPAYLOAD_HELP),\
+					option text = STRING_TOKEN(STR_AUTO), value = 55, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_MP128),  value = 0, flags = RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_MP256),  value = 1, flags = RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_MP512),  value = 2, flags = RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_MP1024),  value = 3, flags = RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_MP2048),  value = 4, flags = RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_MP4096),  value = 5, flags = RESET_REQUIRED;\
+				endoneof;
+
+#define PCIBUS_ONEOF_MAXREADREQUEST\
+				oneof varid  = SETUP_DATA.MaxReadRequest,\
+					prompt = STRING_TOKEN(STR_PCIE_MAXREADREQUEST_PROMPT),\
+					help = STRING_TOKEN(STR_PCIE_MAXREADREQUEST_HELP),\
+					option text = STRING_TOKEN(STR_AUTO), value = 55, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_MP128),  value = 0, flags = RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_MP256),  value = 1, flags = RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_MP512),  value = 2, flags = RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_MP1024),  value = 3, flags = RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_MP2048),  value = 4, flags = RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_MP4096),  value = 5, flags = RESET_REQUIRED;\
+				endoneof;
+
+#define PCIBUS_ONEOF_ASPMMODE\
+				oneof varid  = SETUP_DATA.AspmMode,\
+					prompt = STRING_TOKEN(STR_PCIE_ASPM_PROMPT),\
+					help = STRING_TOKEN(STR_PCIE_ASPM_HELP),\
+					option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_AUTO), value = 55, flags = RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_FORCE_L0),  value = 1, flags = RESET_REQUIRED;\
+				endoneof;
+
+#define PCIBUS_ONEOF_EXTENDEDSYNCH\
+				oneof varid  = SETUP_DATA.ExtendedSynch,\
+					prompt = STRING_TOKEN(STR_PCIE_EXTD_SYNCH_PROMPT),\
+					help = STRING_TOKEN(STR_PCIE_EXTD_SYNCH_HELP),\
+					option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;\
+				endoneof;
+
+#define PCIBUS_ONEOF_LNKTRRETRY\
+				oneof varid  = SETUP_DATA.LnkTrRetry,\
+					prompt = STRING_TOKEN(STR_LNK_TR_RETRY_PROMPT),\
+					help = STRING_TOKEN(STR_LNK_TR_RETRY_HELP),\
+					option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_2),  value = 2, flags = RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_3),  value = 3, flags = RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_5),  value = 5, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+				endoneof;
+
+#define PCIBUS_NUM_LNKTRTIMEOUT\
+                numeric varid = SETUP_DATA.LnkTrTimeout,\
+					prompt = STRING_TOKEN(STR_LNK_TR_TIMEOUT_PROMPT),\
+					help = STRING_TOKEN(STR_LNK_TR_TIMEOUT_HELP),\
+                    flags     = RESET_REQUIRED,\
+                    minimum   = 10,\
+                    maximum   = 10000,\
+                    step      = 10,\
+                    default   = 1000,\
+                    default   = 1000, defaultstore = AmiMfgDefault,\
+                endnumeric;
+
+#define PCIBUS_ONEOF_LNKDISABLE\
+				oneof varid  = SETUP_DATA.LnkDisable,\
+					prompt = STRING_TOKEN(STR_LNK_UNPOPULATED_PROMPT),\
+					help = STRING_TOKEN(STR_LNK_UNPOPULATED_HELP),\
+					option text = STRING_TOKEN(STR_KEEP_ON), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_DISABLE),  value = 1, flags = RESET_REQUIRED;\
+				endoneof;
+
+#define PCIBUS_ONEOF_S3PCIEXPRESSSCRIPTS\
+				oneof varid  = SETUP_DATA.S3PciExpressScripts,\
+					prompt = STRING_TOKEN(STR_DEV_S3_PCIE_SCRIPTS_PROMPT),\
+					help = STRING_TOKEN(STR_DEV_S3_PCIE_SCRIPTS_HELP),\
+					option text = STRING_TOKEN(STR_ENABLED), value = 0xFF, flags = RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_DISABLED), value = 0x00, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+				endoneof;
+
+
+#if PCI_EXPRESS_GEN2_SUPPORT
+#define PCIBUS_ONEOF_COMPLTIMEOUT\
+				oneof varid  = SETUP_DATA.ComplTimeOut,\
+					prompt = STRING_TOKEN(STR_DEV_COMPL_TIMEOUT_PROMPT),\
+					help = STRING_TOKEN(STR_DEV_COMPL_TIMEOUT_HELP),\
+					option text = STRING_TOKEN(STR_DEFAULT), value = 0xFF, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_SHORT),   value = 0x55, flags = RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_LONG),    value = 0xAA, flags = RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_DISABLED),value = 0x00, flags = RESET_REQUIRED;\
+				endoneof;
+
+#define PCIBUS_ONEOF_ARIFWD\
+				oneof varid  = SETUP_DATA.AriFwd,\
+					prompt = STRING_TOKEN(STR_DEV_ARI_PROMPT),\
+					help = STRING_TOKEN(STR_DEV_ARI_HELP),\
+					option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;\
+				endoneof;
+
+#define PCIBUS_ONEOF_ATOMOPREQ\
+				oneof varid  = SETUP_DATA.AtomOpReq,\
+					prompt = STRING_TOKEN(STR_DEV_AOP_REQ_PROMPT),\
+					help = STRING_TOKEN(STR_DEV_AOP_REQ_HELP),\
+					option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;\
+				endoneof;
+
+#define PCIBUS_ONEOF_ATOMOPEGRESSBLK\
+				oneof varid  = SETUP_DATA.AtomOpEgressBlk,\
+					prompt = STRING_TOKEN(STR_DEV_AOP_EGRESS_BLK_PROMPT),\
+					help = STRING_TOKEN(STR_DEV_AOP_EGRESS_BLK_HELP),\
+					option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;\
+				endoneof;
+
+#define PCIBUS_ONEOF_IDOREQ\
+				oneof varid  = SETUP_DATA.IDOReq,\
+					prompt = STRING_TOKEN(STR_DEV_IDO_REQ_PROMPT),\
+					help = STRING_TOKEN(STR_DEV_IDO_REQ_HELP),\
+					option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;\
+				endoneof;
+
+#define PCIBUS_ONEOF_IDOCOMPL\
+				oneof varid  = SETUP_DATA.IDOCompl,\
+					prompt = STRING_TOKEN(STR_DEV_IDO_COMPL_PROMPT),\
+					help = STRING_TOKEN(STR_DEV_IDO_COMPL_HELP),\
+					option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;\
+				endoneof;
+
+#define PCIBUS_ONEOF_LTRREPORT\
+				oneof varid  = SETUP_DATA.LtrReport,\
+					prompt = STRING_TOKEN(STR_DEV_LTR_REPORT_PROMPT),\
+					help = STRING_TOKEN(STR_DEV_LTR_REPORT_HELP),\
+					option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;\
+				endoneof;
+
+#define PCIBUS_ONEOF_E2ETLPPRBLK\
+				oneof varid  = SETUP_DATA.E2ETlpPrBlk,\
+					prompt = STRING_TOKEN(STR_DEV_E2E_TLP_BLK_PROMPT),\
+					help = STRING_TOKEN(STR_DEV_E2E_TLP_BLK_HELP),\
+					option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;\
+				endoneof;
+
+
+#define PCIBUS_ONEOF_LNKSPEED\
+				oneof varid  = SETUP_DATA.LnkSpeed,\
+					prompt = STRING_TOKEN(STR_LNK_SPEED_PROMPT),\
+					help = STRING_TOKEN(STR_LNK_SPEED_HELP),\
+					option text = STRING_TOKEN(STR_AUTO), value = 55, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_2_5G),  value = 1, flags = RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_5_0G),  value = 2, flags = RESET_REQUIRED;\
+                			option text = STRING_TOKEN(STR_8_0G),  value = 3, flags = RESET_REQUIRED;\
+				endoneof;
+
+#define PCIBUS_ONEOF_CLOCKPM\
+				oneof varid  = SETUP_DATA.ClockPm,\
+					prompt = STRING_TOKEN(STR_LNK_CLOCK_PM_PROMPT),\
+					help = STRING_TOKEN(STR_LNK_CLOCK_PM_HELP),\
+					option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;\
+				endoneof;
+
+#define PCIBUS_ONEOF_COMPLSOS\
+				oneof varid  = SETUP_DATA.ComplSos,\
+					prompt = STRING_TOKEN(STR_LNK_COMPL_SOS_PROMPT),\
+					help = STRING_TOKEN(STR_LNK_COMPL_SOS_HELP),\
+					option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;\
+				endoneof;
+
+#define PCIBUS_ONEOF_HWAUTOWIDTH\
+				oneof varid  = SETUP_DATA.HwAutoWidth,\
+					prompt = STRING_TOKEN(STR_LNK_HW_AUTO_WIDTH_PROMPT),\
+					help = STRING_TOKEN(STR_LNK_HW_AUTO_WIDTH_HELP),\
+					option text = STRING_TOKEN(STR_ENABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_DISABLED),  value = 1, flags = RESET_REQUIRED;\
+				endoneof;
+
+#define PCIBUS_ONEOF_HWAUTOSPEED\
+				oneof varid  = SETUP_DATA.HwAutoSpeed,\
+					prompt = STRING_TOKEN(STR_LNK_HW_AUTO_SPEED_PROMPT),\
+					help = STRING_TOKEN(STR_LNK_HW_AUTO_SPEED_HELP),\
+					option text = STRING_TOKEN(STR_ENABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+					option text = STRING_TOKEN(STR_DISABLED),  value = 1, flags = RESET_REQUIRED;\
+				endoneof;
+#else
+
+#define PCIBUS_ONEOF_COMPLTIMEOUT
+#define PCIBUS_ONEOF_ARIFWD
+#define PCIBUS_ONEOF_ATOMOPREQ
+#define PCIBUS_ONEOF_ATOMOPEGRESSBLK
+#define PCIBUS_ONEOF_IDOREQ
+#define PCIBUS_ONEOF_IDOCOMPL
+#define PCIBUS_ONEOF_LTRREPORT
+#define PCIBUS_ONEOF_E2ETLPPRBLK
+#define PCIBUS_ONEOF_LNKSPEED
+#define PCIBUS_ONEOF_CLOCKPM
+#define PCIBUS_ONEOF_COMPLSOS
+#define PCIBUS_ONEOF_HWAUTOWIDTH
+#define PCIBUS_ONEOF_HWAUTOSPEED
+
+#endif//PCI_EXPRESS_GEN2_SUPPORT
+
+#else
+#define PCIBUS_ONEOF_RELAXEDORDERING
+#define PCIBUS_ONEOF_EXTTAGFIELD
+#define PCIBUS_ONEOF_NOSNOOP
+#define PCIBUS_ONEOF_MAXPAYLOAD
+#define PCIBUS_ONEOF_MAXREADREQUEST
+#define PCIBUS_ONEOF_ASPMMODE
+#define PCIBUS_ONEOF_EXTENDEDSYNCH
+#define PCIBUS_ONEOF_LNKTRRETRY
+#define PCIBUS_NUM_LNKTRTIMEOUT
+#define PCIBUS_ONEOF_LNKDISABLE
+#define PCIBUS_ONEOF_S3PCIEXPRESSSCRIPTS
+
+#endif // #if PCI_EXPRESS_SUPPORT
+
+#if (HOTPLUG_SUPPORT)
+#define PCIBUS_ONEOF_HOTPLUGENABLE\
+    		oneof varid  = SETUP_DATA.HotPlugEnable,\
+        		prompt = STRING_TOKEN(STR_HOTPLUG_ENABLE_PROMPT),\
+                help = STRING_TOKEN(STR_HOTPLUG_ENABLE_HELP),\
+                option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+            endoneof;
+
+#define PCIBUS_ONEOF_BUSPADD\
+		    oneof varid  = SETUP_DATA.BusPadd,\
+                prompt = STRING_TOKEN(STR_BUS_PADD_PROMPT),\
+                help = STRING_TOKEN(STR_BUS_PADD_HELP),\
+                option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_1),  value = 1, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_2),  value = 2, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_3),  value = 3, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_4),  value = 4, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_5),  value = 5, flags = RESET_REQUIRED;\
+            endoneof;
+
+#define PCIBUS_ONEOF_IOPADD\
+		    oneof varid  = SETUP_DATA.IoPadd,\
+                prompt = STRING_TOKEN(STR_IO_PADD_PROMPT),\
+                help = STRING_TOKEN(STR_IO_PADD_HELP),\
+                option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_4K),  value = 4, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_8K),  value = 8, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_16K), value = 16, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_32K), value = 32, flags = RESET_REQUIRED;\
+            endoneof;
+
+#define PCIBUS_ONEOF_MMIO32PADD\
+		    oneof varid  = SETUP_DATA.Mmio32Padd,\
+                prompt = STRING_TOKEN(STR_MMIO32_PADD_PROMPT),\
+                help = STRING_TOKEN(STR_MMIO32_PADD_HELP),\
+                option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_1M),  value = 1, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_2M),  value = 2, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_4M),  value = 4, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_8M),  value = 8, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_16M), value = 16, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_32M), value = 32, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_64M), value = 64, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_128M),value = 128, flags = RESET_REQUIRED;\
+            endoneof;
+
+#define PCIBUS_ONEOF_MMIO32PFPADD\
+		    oneof varid  = SETUP_DATA.Mmio32PfPadd,\
+                prompt = STRING_TOKEN(STR_MMIO32PF_PADD_PROMPT),\
+                help = STRING_TOKEN(STR_MMIO32PF_PADD_HELP),\
+                option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_1M),  value = 1, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_2M),  value = 2, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_4M),  value = 4, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_8M),  value = 8, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_16M), value = 16, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_32M), value = 32, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_64M), value = 64, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_128M),value = 128, flags = RESET_REQUIRED;\
+            endoneof;
+
+//
+//#define PCIBUS_ONEOF_MMIO64PADD\
+//		    oneof varid  = SETUP_DATA.Mmio64Padd,\
+//                prompt = STRING_TOKEN(STR_MMIO64_PADD_PROMPT),\
+//                help = STRING_TOKEN(STR_MMIO64_PADD_HELP),\
+//                option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+//                option text = STRING_TOKEN(STR_1M),  value = 1, flags = RESET_REQUIRED;\
+//                option text = STRING_TOKEN(STR_2M),  value = 2, flags = RESET_REQUIRED;\
+//                option text = STRING_TOKEN(STR_4M),  value = 4, flags = RESET_REQUIRED;\
+//                option text = STRING_TOKEN(STR_8M),  value = 8, flags = RESET_REQUIRED;\
+//                option text = STRING_TOKEN(STR_16M), value = 16, flags = RESET_REQUIRED;\
+//                option text = STRING_TOKEN(STR_32M), value = 32, flags = RESET_REQUIRED;\
+//                option text = STRING_TOKEN(STR_64M), value = 64, flags = RESET_REQUIRED;\
+//                option text = STRING_TOKEN(STR_128M),value = 128, flags = RESET_REQUIRED;\
+//                option text = STRING_TOKEN(STR_256M), value = 256, flags = RESET_REQUIRED;\
+//                option text = STRING_TOKEN(STR_512M), value = 512, flags = RESET_REQUIRED;\
+//                option text = STRING_TOKEN(STR_1G), value = 1024, flags = RESET_REQUIRED;\
+//            endoneof;
+//
+
+#define PCIBUS_ONEOF_MMIO64PFPADD\
+		    oneof varid  = SETUP_DATA.Mmio64PfPadd,\
+                prompt = STRING_TOKEN(STR_MMIO64PF_PADD_PROMPT),\
+                help = STRING_TOKEN(STR_MMIO64PF_PADD_HELP),\
+                option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_1M),  value = 1, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_2M),  value = 2, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_4M),  value = 4, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_8M),  value = 8, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_16M), value = 16, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_32M), value = 32, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_64M), value = 64, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_128M), value = 128, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_256M), value = 256, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_512M), value = 512, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_1G), value = 1024, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_2G), value = 2048, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_4G), value = 4096, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_8G), value = 8192, flags = RESET_REQUIRED;\
+            endoneof;
+//                option text = STRING_TOKEN(STR_16G), value = 16384, flags = RESET_REQUIRED;\
+//                option text = STRING_TOKEN(STR_32G), value = 32768, flags = RESET_REQUIRED;\
+//                option text = STRING_TOKEN(STR_64G), value = 65536, flags = RESET_REQUIRED;\
+//                option text = STRING_TOKEN(STR_128G), value = 131072, flags = RESET_REQUIRED;\
+//                option text = STRING_TOKEN(STR_256G), value = 262144, flags = RESET_REQUIRED;\
+//                option text = STRING_TOKEN(STR_256G), value = 524288, flags = RESET_REQUIRED;\
+
+#else
+#define PCIBUS_ONEOF_HOTPLUGENABLE
+#define PCIBUS_ONEOF_BUSPADD
+#define PCIBUS_ONEOF_IOPADD
+#define PCIBUS_ONEOF_MMIO32PADD
+#define PCIBUS_ONEOF_MMIO32PFPADD
+//#define PCIBUS_ONEOF_MMIO64PADD
+#define PCIBUS_ONEOF_MMIO64PFPADD
+#endif
+
+#ifdef SMCPKG_SUPPORT
+#if ONBOARD_LAN_DISABLE_BY_SETUP_ITEM
+#define SMC_ONBOARD_LAN_DEVICE\
+		oneof varid  = SETUP_DATA.SmcOnboardLan,\
+			prompt = STRING_TOKEN(STR_ONBOARD_LAN_PROMPT),\
+			help = STRING_TOKEN(STR_ONBOARD_LAN_HELP),\
+			option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+			option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+		endoneof;
+#endif
+#endif
+
+#endif //#ifdef CONTROL_DEFINITION
+
+#ifdef CONTROLS_WITH_DEFAULTS
+	// PCIBUS_FORM_PCI
+//	PCIBUS_ONEOF_OPROMPOST
+	PCIBUS_ONEOF_ABOVE4GDECODE
+	PCIBUS_ONEOF_SRIOV
+    PCIBUS_ONEOF_VC
+	PCIBUS_ONEOF_PCILATENCY
+	PCIBUS_ONEOF_VGAPALLETE
+	PCIBUS_ONEOF_PERRENABLE
+	PCIBUS_ONEOF_SERRENABLE
+	PCIBUS_ONEOF_PCIXLATENCY
+
+	//PCIBUS_FORM_PCI_EXPRESS
+	PCIBUS_ONEOF_RELAXEDORDERING
+	PCIBUS_ONEOF_EXTTAGFIELD
+	PCIBUS_ONEOF_NOSNOOP
+	PCIBUS_ONEOF_MAXPAYLOAD
+	PCIBUS_ONEOF_MAXREADREQUEST
+	PCIBUS_ONEOF_ASPMMODE
+	PCIBUS_ONEOF_EXTENDEDSYNCH
+    PCIBUS_ONEOF_LNKTRRETRY
+    PCIBUS_NUM_LNKTRTIMEOUT
+    PCIBUS_ONEOF_LNKDISABLE
+    PCIBUS_ONEOF_S3PCIEXPRESSSCRIPTS
+
+#if PCI_EXPRESS_GEN2_SUPPORT
+	PCIBUS_ONEOF_COMPLTIMEOUT
+	PCIBUS_ONEOF_ARIFWD
+	PCIBUS_ONEOF_ATOMOPREQ
+	PCIBUS_ONEOF_ATOMOPEGRESSBLK
+	PCIBUS_ONEOF_IDOREQ
+	PCIBUS_ONEOF_IDOCOMPL
+	PCIBUS_ONEOF_LTRREPORT
+	PCIBUS_ONEOF_E2ETLPPRBLK
+	PCIBUS_ONEOF_LNKSPEED
+	PCIBUS_ONEOF_CLOCKPM
+	PCIBUS_ONEOF_COMPLSOS
+	PCIBUS_ONEOF_HWAUTOWIDTH
+	PCIBUS_ONEOF_HWAUTOSPEED
+#endif
+
+	// PCIBUS_FORM_PCIHP
+	PCIBUS_ONEOF_HOTPLUGENABLE
+	PCIBUS_ONEOF_BUSPADD
+	PCIBUS_ONEOF_IOPADD
+	PCIBUS_ONEOF_MMIO32PADD
+	PCIBUS_ONEOF_MMIO32PFPADD
+//	PCIBUS_ONEOF_MMIO64PADD
+	PCIBUS_ONEOF_MMIO64PFPADD
+
+#endif //#ifdef CONTROLS_WITH_DEFAULTS
+
+
+#ifdef ADVANCED_FORM_SET
+
+    #ifndef SUPPRESS_GRAYOUT_ENDIF //old Core
+    #define SUPPRESS_GRAYOUT_ENDIF endif;
+    #endif
+
+	#ifdef FORM_SET_ITEM
+	// Define controls to be added to the main page of the formset
+	#endif
+
+	#ifdef FORM_SET_GOTO
+	// Define goto commands for the forms defined in this file
+		goto PCI_FORM_ID, 
+			prompt = STRING_TOKEN(STR_PCI_FORM),
+			help = STRING_TOKEN(STR_PCI_FORM_HELP);
+	#endif
+
+
+#ifdef FORM_SET_FORM
+//
+// Define forms
+//
+
+//////////////////////////////////////////////////////////////
+//============================================================
+//Main PCI Form START
+//------------------------------------------------------------
+#ifndef PCIBUS_FORM_PCI
+#define PCIBUS_FORM_PCI
+//------------------------------------------------------------
+
+	form formid = AUTO_ID(PCI_FORM_ID),
+		title = STRING_TOKEN(STR_PCI_FORM);
+
+    //Display PCI Bus Driver Version. 
+	text
+	help   = STRING_TOKEN(STR_PCI_FORM_HELP),
+	text   = STRING_TOKEN(STR_PCI_DRIVER_VER_PROMPT),
+	text   = STRING_TOKEN(STR_PCI_DRIVER_VER),
+	flags  = 0,
+	key    = 0;
+
+	SEPARATOR
+
+	SUBTITLE(STRING_TOKEN(STR_PCI_SETTINGS))
+
+//	UINT8 PciLatency;				//[32]\ 64 \ 96 \ 128 \ 160 \ 192 \ 224 \ 248
+    suppressif SETUP_SHOW_PCI_LATENCY==0;
+	grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+		PCIBUS_ONEOF_PCILATENCY
+	endif;
+    endif;
+
+//	UINT8 PciXLatency;				// 32 \[64]\ 96 \ 128 \ 160 \ 192 \ 224 \ 248
+    suppressif SETUP_SHOW_PCIX_LATENCY==0;
+	grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+		PCIBUS_ONEOF_PCIXLATENCY
+	endif;
+    endif;
+
+//  UINT8   VgaPallete;             //[Disable]\ Enable 
+    suppressif SETUP_SHOW_VGA_PALLETE_SNOOP==0;
+	grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+		PCIBUS_ONEOF_VGAPALLETE
+	endif;
+    endif;
+
+//  UINT8   PerrEnable              //[Disable]\ Enable 
+    suppressif SETUP_SHOW_PERR==0;
+	grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+		PCIBUS_ONEOF_PERRENABLE
+	endif;
+    endif;
+
+//  UINT8   SerrEnable              //[Disable]\ Enable 
+    suppressif SETUP_SHOW_SERR==0;
+	grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+		PCIBUS_ONEOF_SERRENABLE
+	endif;
+    endif;
+
+#if ABOVE_4G_PCI_DECODE == 1
+   //Display PCI 64 bit Handling Subtitle 
+//  UINT8   Above4gDecode           //[Disable]\ Enable 
+    suppressif SETUP_SHOW_ABOVE_4G_DECODE == 0;
+	grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+        PCIBUS_ONEOF_ABOVE4GDECODE
+	endif;			
+	endif;
+#endif
+
+#if SRIOV_SUPPORT == 1
+//  UINT8   SriovSupport           //[Disable]\ Enable 
+    suppressif SETUP_SHOW_SRIOV_SUPPORT == 0;
+	grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+        PCIBUS_ONEOF_SRIOV
+	endif;			
+	endif;
+#endif
+
+#if SMCPKG_SUPPORT      //SMCPKG_SUPPORT S
+        oneof varid = SOCKET_COMMONRC_CONFIGURATION.MmiohBase,
+            prompt  = STRING_TOKEN(STR_CSI_MMIOH_BASE),
+            help    = STRING_TOKEN(STR_CSI_MMIOH_BASE_HELP),
+            option text = STRING_TOKEN(STR_56T),     value = 0,  flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+            option text = STRING_TOKEN(STR_40T),     value = 1,  flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_24T),     value = 2,  flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_16T),     value = 3,  flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_4T),      value = 4,  flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_1T),      value = 5,  flags = RESET_REQUIRED;
+        endoneof;
+
+        oneof varid = SOCKET_COMMONRC_CONFIGURATION.MmiohSize,
+            prompt  = STRING_TOKEN(STR_CSI_MMIOH_SIZE),
+            help    = STRING_TOKEN(STR_CSI_MMIOH_SIZE_HELP),
+            option text = STRING_TOKEN(STR_1G),      value = 0,  flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_4G),      value = 1,  flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_16G),     value = 2,  flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_64G),     value = 3,  flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_256G),    value = 4,  flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+            option text = STRING_TOKEN(STR_1024G),   value = 5,  flags = RESET_REQUIRED;
+        endoneof;
+
+        oneof varid = SYSTEM_CONFIGURATION.SerrPerrEn,
+            prompt      = STRING_TOKEN(STR_SERR_PERR_EN_PROMPT),
+            help        = STRING_TOKEN(STR_SERR_PERR_EN_HELP),
+            option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;      
+        endoneof;
+
+        PCIBUS_ONEOF_MAXREADREQUEST
+
+        oneof varid = SOCKET_COMMONRC_CONFIGURATION.MmcfgBase,
+            prompt  = STRING_TOKEN(STR_CSI_MMCFG_BASE),
+            help    = STRING_TOKEN(STR_CSI_MMCFG_BASE_HELP),
+            option text = STRING_TOKEN(STR_1G),      value = 0,  flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_1_5G),    value = 1,  flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_1_75G),   value = 2,  flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_2G),      value = 3,  flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+            option text = STRING_TOKEN(STR_2_25G),   value = 4,  flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_3G),      value = 5,  flags = RESET_REQUIRED;
+        endoneof;
+    
+        oneof varid = SETUP_DATA.NvmeFWSource,\
+            prompt  = STRING_TOKEN(STR_NVME_FW_SOURCE),\
+            help    = STRING_TOKEN(STR_NVME_FW_SOURCE_HELP),\
+            option text = STRING_TOKEN(STR_DEVICE_FW),   value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_AMI_FW),  value = 1, flags = RESET_REQUIRED;\
+        endoneof;
+#endif; //SMCPKG_SUPPORT E
+        //
+        // Video Support
+        //
+        oneof varid     = SYSTEM_CONFIGURATION.VideoSelect,
+            prompt      = STRING_TOKEN(STR_VIDEO_SELECT_PROMPT),
+            help        = STRING_TOKEN(STR_VIDEO_SELECT_HELP),
+            //option text = STRING_TOKEN(STR_AUTO),               value = 0, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_VIDEO_SELECT_ONBOARD), value = 1, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+            option text = STRING_TOKEN(STR_VIDEO_SELECT_PCIE),    value = 2, flags = RESET_REQUIRED;
+        endoneof;
+
+#if SMCPKG_SUPPORT
+	PCIBUS_SLOT1_OPROM_CONTROL
+        PCIBUS_SLOT2_OPROM_CONTROL
+        PCIBUS_SLOT3_OPROM_CONTROL
+        PCIBUS_SLOT4_OPROM_CONTROL
+        SUBTITLE(STRING_TOKEN(STR_RSC_RR1U_E16))
+        PCIBUS_SLOT5_OPROM_CONTROL
+        PCIBUS_SLOT6_OPROM_CONTROL
+
+#if ONBOARD_LAN_DISABLE_BY_SETUP_ITEM
+    SMC_ONBOARD_LAN_DEVICE
+    suppressif ideqval SETUP_DATA.SmcOnboardLan == 0;
+#endif
+    PCIBUS_ONBOARD_LAN1_OPROM_SEL
+    suppressif ideqval SETUP_DATA.SmcLanOpRom[0] > 1;
+    PCIBUS_ONBOARD_LAN2_OPROM_SEL
+    endif;
+#if ONBOARD_LAN_DISABLE_BY_SETUP_ITEM
+    endif;
+#endif
+
+	PCIBUS_ONBOARD_VIDEO_OPROM_SEL
+
+	suppressif SMC_SETUP_STYLE == 0;	//SMCPKG_SUPPORT S
+	goto STACK_FORM_ID, 
+		prompt = STRING_TOKEN(STR_STACK_FORM),
+		help = STRING_TOKEN(STR_STACK_FORM_HELP);
+	endif;	//SMCPKG_SUPPORT E
+#endif
+
+//  UINT8   SriovSupport           //[Disable]\ Enable 
+    suppressif SETUP_SHOW_RESET_VC_MAPPING==0;
+    grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+        PCIBUS_ONEOF_VC
+    endif;          
+    endif;          
+    
+
+#if (PCI_EXPRESS_SUPPORT)
+
+	SEPARATOR
+	suppressif SETUP_SHOW_PCIE_FORM==0;
+	grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+	goto PCI_PCIE1_FORM_ID, 
+		prompt = STRING_TOKEN(STR_PCI_PCIE1_FORM),
+		help = STRING_TOKEN(STR_PCI_PCIE1_FORM_HELP);
+    endif;
+    endif;
+
+#if (PCI_EXPRESS_GEN2_SUPPORT)
+	SEPARATOR
+	suppressif SETUP_SHOW_PCIE2_FORM == 0;
+	grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+	goto PCI_PCIE2_FORM_ID, 
+		prompt = STRING_TOKEN(STR_PCI_PCIE2_FORM),
+		help = STRING_TOKEN(STR_PCI_PCIE2_FORM_HELP);
+    endif;
+    endif;
+#endif
+
+#endif
+
+#if (HOTPLUG_SUPPORT)
+
+	SEPARATOR
+    suppressif SETUP_SHOW_HOTPLUG_FORM == 0; 
+    grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+    goto PCI_HP_FORM_ID, 
+        prompt = STRING_TOKEN(STR_PCI_HP_FORM),
+        help = STRING_TOKEN(STR_PCI_HP_FORM_HELP);
+    endif;
+    endif;
+
+#endif
+
+endform;  // PCI_FORM_ID
+//------------------------------------------------------------
+#endif //PCIBUS_FORM_PCI
+//------------------------------------------------------------
+
+//------------------------------------------------------------
+//Main PCI Form END
+//============================================================
+
+//============================================================
+//PCI Express Form START
+//------------------------------------------------------------
+#if PCI_EXPRESS_SUPPORT
+
+#ifndef PCIBUS_FORM_PCI_EXPRESS
+#define PCIBUS_FORM_PCI_EXPRESS
+
+    // Define PCIe Settings Form
+	form formid = AUTO_ID(PCI_PCIE1_FORM_ID),
+		title = STRING_TOKEN(STR_PCI_PCIE1_FORM);
+
+//PCI Express Device Settings: [] - default
+			SUBTITLE(STRING_TOKEN(STR_PCIE_DEVICE))
+
+//	UINT8	RelaxedOrdering; 		//[Disable]\ Enable
+			grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+				PCIBUS_ONEOF_RELAXEDORDERING
+			endif;			
+//	UINT8	ExtTagField; 			//[Disable]\ Enable
+			grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+				PCIBUS_ONEOF_EXTTAGFIELD
+			endif;			
+
+//	UINT8	NoSnoop;				// Disable \[Enable]
+			grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+				PCIBUS_ONEOF_NOSNOOP
+			endif;			
+
+
+//	UINT8	MaxPayload				//[Auto]\ 128 \ 256 \ 512 \ 1024 \ 2048 \ 4096 (in bytes)
+			grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+				PCIBUS_ONEOF_MAXPAYLOAD
+			endif;			
+
+			
+//	UINT8   MaxReadRequest			//[Auto]\ 128 \ 256 \ 512 \ 1024 \ 2048 \ 4096 (in bytes)
+			grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+				PCIBUS_ONEOF_MAXREADREQUEST
+			endif;			
+
+//PCI Express Link settings: [] - default
+			SEPARATOR
+			SUBTITLE(STRING_TOKEN(STR_PCIE_LINK))
+//	UINT8 AspmMode; 				//[Disabled]\ Auto \ Force L0
+			grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+				PCIBUS_ONEOF_ASPMMODE
+			endif;			
+
+			SUBTITLE(STRING_TOKEN(STR_PCIE_LINK_WARN3))
+			SUBTITLE(STRING_TOKEN(STR_PCIE_LINK_WARN4))
+
+
+//	UINT8 ExtendedSynch				//[Disable]\ Enable
+
+			grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+				PCIBUS_ONEOF_EXTENDEDSYNCH
+			endif;			
+
+			SEPARATOR
+//  UINT8   LnkTrRetry;             //[Disable]\ 2 \ 3 \ 5
+			grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+				PCIBUS_ONEOF_LNKTRRETRY
+			endif;			
+
+//  UINT8   LnkTrTimeout;             //[10...1000] uS 
+			grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+                PCIBUS_NUM_LNKTRTIMEOUT
+			endif;			
+
+//  UINT8   EmptyLnkDisable             //[Enable]\ Disable
+			grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+				PCIBUS_ONEOF_LNKDISABLE
+			endif;			
+//  UINT8   S3PciExpressScripts;           //[Disable]\ Enable
+            suppressif SETUP_SHOW_PCEX_S3_SCRIPT==0;
+			grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+				PCIBUS_ONEOF_S3PCIEXPRESSSCRIPTS
+			endif;
+            endif;
+
+    endform; //PCI_PCIE2_FORM_ID
+#endif //PCIBUS_FORM_PCI_EXPRESS
+//------------------------------------------------------------
+//PCI Express Form END
+//============================================================
+
+
+#if PCI_EXPRESS_GEN2_SUPPORT == 1
+//============================================================
+//PCI Express Gen II Form START
+//------------------------------------------------------------
+
+#ifndef PCIBUS_FORM_PCI_EXPRESS2
+#define PCIBUS_FORM_PCI_EXPRESS2
+
+	form formid = AUTO_ID(PCI_PCIE2_FORM_ID),
+		title = STRING_TOKEN(STR_PCI_PCIE2_FORM);
+
+			SUBTITLE(STRING_TOKEN(STR_PCIE2_DEVICE))
+//  UINT8   ComplTimeOut;           //[Disable]\ Auto \ Default
+			grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+				PCIBUS_ONEOF_COMPLTIMEOUT
+			endif;			
+
+//  UINT8   AriFwd;                 //[Disable]\ Enable
+			grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+				PCIBUS_ONEOF_ARIFWD
+			endif;			
+
+//  UINT8   AtomOpReq;              //[Disable]\ Enable
+			grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+				PCIBUS_ONEOF_ATOMOPREQ
+			endif;			
+
+//  UINT8   AtomOpEgressBlk;        //[Disable]\ Enable
+			grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+				PCIBUS_ONEOF_ATOMOPEGRESSBLK
+			endif;			
+
+//  UINT8   IDOReq;                 //[Disable]\ Enable
+			grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+				PCIBUS_ONEOF_IDOREQ
+			endif;			
+
+//  UINT8   IDOCompl;               //[Disable]\ Enable
+			grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+				PCIBUS_ONEOF_IDOCOMPL
+			endif;			
+
+//    UINT8   LtrReport;              //[Disable]\ Enable
+			grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+				PCIBUS_ONEOF_LTRREPORT
+			endif;			
+
+
+//    UINT8   E2ETlpPrBlk;            //[Disable]\ Enable
+			grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+				PCIBUS_ONEOF_E2ETLPPRBLK
+			endif;			
+//============================================================
+
+			SEPARATOR
+			SUBTITLE(STRING_TOKEN(STR_PCIE2_LINK))
+//Gen2 Link Settings
+//  UINT8   LnkSpeed;               //[Auto]\ Force to 2.5 GHz 
+			grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+				PCIBUS_ONEOF_LNKSPEED
+			endif;			
+
+
+//  UINT8   ComplSos;               //[Disable]\ Enable
+			grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+				PCIBUS_ONEOF_CLOCKPM
+			endif;			
+
+
+//  UINT8   ComplSos;               //[Disable]\ Enable
+			grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+				PCIBUS_ONEOF_COMPLSOS
+			endif;			
+
+//  UINT8   HwAutoWidth;            //[Enable]\ Disable
+			grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+				PCIBUS_ONEOF_HWAUTOWIDTH
+			endif;			
+
+//  UINT8   HwAutoSpeed;            //[Enable]\ Disable
+			grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+				PCIBUS_ONEOF_HWAUTOSPEED
+			endif;			
+    endform; //PCIBUS_FORM_PCI_EXPRESS2
+
+#endif//PCIBUS_FORM_PCI_EXPRESS2
+
+#endif//PCI_EXPRESS_GEN2_SUPPORT
+
+#endif//PCI_EXPRESS_SUPPORT
+//PCI Express Form END
+//-----------------------------------------------------------
+
+//-----------------------------------------------------------
+//Hotplug Form
+#if HOTPLUG_SUPPORT == 1
+    // Define HOTPLUG form
+
+#ifndef PCIBUS_FORM_PCIHP
+#define PCIBUS_FORM_PCIHP
+
+	form formid = AUTO_ID(PCI_HP_FORM_ID),
+		title = STRING_TOKEN(STR_PCI_HP_FORM);
+
+		SEPARATOR
+        SUBTITLE(STRING_TOKEN(STR_PCI_HP_FORM))
+		SEPARATOR
+        
+		grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+			PCIBUS_ONEOF_HOTPLUGENABLE
+        endif;
+
+		SEPARATOR
+
+#if PCI_FIXED_BUS_ASSIGNMENT == 0
+        suppressif ideqval SETUP_DATA.HotPlugEnable == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+			PCIBUS_ONEOF_BUSPADD
+        SUPPRESS_GRAYOUT_ENDIF
+#endif
+
+        //UINT8   IoPadd;                 // Disable \[ 4K]\ 8K \ 16K \ 32K  
+        suppressif ideqval SETUP_DATA.HotPlugEnable == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+			PCIBUS_ONEOF_IOPADD
+        SUPPRESS_GRAYOUT_ENDIF
+        
+        //Following fields stored in units of MB
+        //UINT8   Mmio32Padd;             // Disable \  1M \ 2M \4M \  8M \[16M]\ 32M \ 64M \128M  
+        suppressif ideqval SETUP_DATA.HotPlugEnable == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+			PCIBUS_ONEOF_MMIO32PADD
+        SUPPRESS_GRAYOUT_ENDIF
+
+        //UINT8   Mmio32PfPadd;           // Disable \  1M \ 4M \  8M \[16M]\ 32M \ 64M \128M  
+        suppressif ideqval SETUP_DATA.HotPlugEnable == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+			PCIBUS_ONEOF_MMIO32PFPADD
+        SUPPRESS_GRAYOUT_ENDIF
+
+
+//-----------------------------------------------------------
+#if ABOVE_4G_PCI_DECODE == 1
+
+        //for 512 and 1G 1 byte storege is not enough...
+        //UINT16  Mmio64Padd;             //[Disable]\  1M \ 4M \  8M \ 16M \ 32M \ 64M \ 128M \ 256M \ 512M \ 1G
+//       suppressif ideqval SETUP_DATA.HotPlugEnable == 0 OR 
+//                   ideqval SETUP_DATA.Above4gDecode == 0;
+//        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+//			PCIBUS_ONEOF_MMIO64PADD
+//        SUPPRESS_GRAYOUT_ENDIF
+
+        //UINT16  Mmio64PfPadd;           //[Disable]\  1M \ 4M \  8M \ 16M \ 32M \ 64M \ 128M \ 256M \ 512M \ 1G
+        suppressif ideqval SETUP_DATA.HotPlugEnable == 0 OR 
+                   ideqval SETUP_DATA.Above4gDecode == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+			PCIBUS_ONEOF_MMIO64PFPADD
+	
+        SEPARATOR
+	SUBTITLE(STRING_TOKEN(STR_PCI_HOTPLUG_WARNING))
+			
+        SUPPRESS_GRAYOUT_ENDIF
+
+#endif //ABOVE_4G_PCI_DECODE
+
+    endform; //PCI_HP_FORM_ID
+#endif // #ifndef PCIBUS_FORM_PCIHP
+
+#endif //HOTPLUG_SUPPORT
+//-----------------------------------------------------------
+
+//-----------------------------------------------------------
+#endif  // FORM_SET_FORM
+
+//-----------------------------------------------------------
+#endif  // ADVANCED_FORM_SET
+
+//*************************************************************************
+//*************************************************************************
+//**                                                                     **
+//**        (C)Copyright 1985-2011, American Megatrends, Inc.            **
+//**                                                                     **
+//**                       All Rights Reserved.                          **
+//**                                                                     **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+//**                                                                     **
+//**                       Phone: (770)-246-8600                         **
+//**                                                                     **
+//*************************************************************************
+//*************************************************************************

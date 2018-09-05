@@ -1,0 +1,43 @@
+#//*************************************************************************
+#//*************************************************************************
+#//**                                                                     **
+#//**        (C)Copyright 1985-2016, American Megatrends, Inc.            **
+#//**                                                                     **
+#//**                       All Rights Reserved.                          **
+#//**                                                                     **
+#//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#//**                                                                     **
+#//**                       Phone: (770)-246-8600                         **
+#//**                                                                     **
+#//*************************************************************************
+#//*************************************************************************
+
+[Defines]
+  INF_VERSION  	=  0x00010005
+  VERSION_STRING  =  1.0
+  BASE_NAME 		= RsaIScsiSupport
+  FILE_GUID 		= 754AAF56-099B-440D-8DCD-626F4E2C52f4
+  MODULE_TYPE  	= BASE
+  LIBRARY_CLASS 	= RsaIScsiSupportLib
+
+[Sources]
+  RsaIScsiSupport.c
+  RsaIScsiSupport.h
+  RsaBMCCommunication.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  CryptoPkg/CryptoPkg.dec
+  AmiNetworkPkg/AmiNetworkPkg.dec    		# AMI PORTING.
+  AmiTsePkg/AmiTsePkg.dec    			# AMI PORTING.
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec   # AMI PORTING.
+  AmiIpmiPkg/AmiIpmiPkg.dec
+
+[LibraryClasses]
+ UefiRuntimeServicesTableLib
+ AmiDxeLib
+ UefiLib
+ 
+ [Protocols]
+ gEfiDxeIpmiUsbTransportProtocolGuid

@@ -1,0 +1,51 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2015 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.00
+#    Bug Fix:  Initialize revision
+#    Reason:
+#    Auditor:  Kasber Chen
+#    Date:     Feb/11/2015
+#
+#****************************************************************************
+#****************************************************************************
+
+[Defines]
+  INF_VERSION = 0x00010005
+  BASE_NAME = SmcOemActivation
+  FILE_GUID = b1cd7448-319c-41aa-821d-3e606bf6f90d
+  MODULE_TYPE = DXE_DRIVER
+  VERSION_STRING = 1.0
+  ENTRY_POINT = SmcOemActivationEntry
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  SmcPkg/SmcPkg.dec
+
+[LibraryClasses]
+  AmiDxeLib
+  AmiCspLib
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  SmcRomHoleLib
+
+[Sources]
+  SmcOemActivation.h
+  SmcOemActivation.c
+
+[Protocols]
+  gEfiAcpiTableProtocolGuid
+  gEfiFirmwareVolume2ProtocolGuid
+  
+[Pcd]
+
+[Depex]
+  TRUE

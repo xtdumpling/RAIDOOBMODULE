@@ -1,0 +1,64 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2011, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+## @file
+#   This driver installs RecoveryModulePpi
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = Recovery
+  FILE_GUID                      = dacf705c-71df-497d-aabe-10186b2e1dde
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = RecoveryEntry
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF EBC
+#
+
+[Sources]
+  Recovery.c
+  UpdateCapsule.c
+
+[Packages]
+  AmiModulePkg/AmiModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  SmcPkg/SmcPkg.dec             #SMCPKG_SUPPORT
+  
+[LibraryClasses]
+  PeimEntryPoint
+  PeiServicesLib
+  HobLib
+  AmiPeiLib
+  ReportStatusCodeLib
+  
+[Guids]
+  gAmiRecoveryImageHobGuid
+  gSerialCapsuleGuid
+  gBlockDeviceCapsuleGuid
+  gOemCapsuleGuid
+  
+[Ppis]
+  gEfiPeiRecoveryModulePpiGuid          ## PRODUCES
+  gEfiPeiDeviceRecoveryModulePpiGuid    ## CONSUMES
+  
+[Depex]
+  ( gEfiPeiBootInRecoveryModePpiGuid OR gFlashUpdBootModePpiGuid ) AND gEfiPeiMemoryDiscoveredPpiGuid AND gEfiPeiDecompressPpiGuid

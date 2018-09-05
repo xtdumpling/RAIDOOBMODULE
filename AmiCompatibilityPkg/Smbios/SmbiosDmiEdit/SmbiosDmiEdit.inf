@@ -1,0 +1,75 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+## @file
+#   
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SmbiosDmiEdit
+  FILE_GUID                      = E2A74738-8934-48f5-8412-99E948C8DC1B
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = SmbiosDmiEditSupportInstall
+
+[Sources]  
+  SmbiosDmiEdit.c
+  SmbiosDmiEdit.h
+  SmbiosDmiEditFunc.c
+  SmbiosNvramFunc.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+
+[LibraryClasses]
+  AmiDxeLib
+  UefiDriverEntryPoint
+  SmbiosDmiEditBoardLib
+  AmiBufferValidationLib
+
+[Guids]
+  gAmiSmbiosNvramGuid
+  
+[Protocols]
+  gEfiDriverBindingProtocolGuid
+  gEfiSmmSwDispatch2ProtocolGuid
+  gEfiSmmBase2ProtocolGuid
+  gAmiSmbiosProtocolGuid
+  gAmiSmbiosFlashDataProtocolGuid
+  gEfiSmiFlashProtocolGuid
+  gFlashSmmProtocolGuid
+
+[Depex]
+  gEfiSmiFlashProtocolGuid AND
+  gAmiSmbiosProtocolGuid AND
+  gEfiSmmBase2ProtocolGuid
+
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************

@@ -1,0 +1,31 @@
+TOKEN
+    Name  = "PeiIpmiCmosClear_SUPPORT"
+    Value  = "1"
+    Help  = "Switch for Enabling PeiIpmiCmosClear support in the project"
+    TokenType = Boolean
+    TargetH = Yes
+    Master = Yes
+End
+
+INFComponent
+    Name  = "PeiIpmiCmosClear"
+    File  = "PeiIpmiCmosClear.inf"
+    Package  = "AmiIpmiPkg"
+    Token = "PeiIpmiCmosClear_SUPPORT" "=" "1"
+    Help  = "Includes PeiIpmiCmosClear.inf to Project."
+End
+
+ELINK
+    Name  = "IsIpmiCmosClear,"
+    Parent  = "IsResetConfigMode"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include function after IsResetConfigMode() Nvram function in order to reset based on Ipmi Cmos clear."
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiIpmiPkg.PeiIpmiCmosClear"
+    Override  = "AmiModulePkg.NVRAMPei"
+    Help  = "Library mapping for PeiIpmiCmosClear under NVRAMPei.inf in Platform.dsc."
+End
+

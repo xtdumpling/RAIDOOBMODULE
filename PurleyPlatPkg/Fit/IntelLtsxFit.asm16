@@ -1,0 +1,183 @@
+;**********************************************************************
+;**********************************************************************
+;**                                                                  **
+;**        (C)Copyright 1985-2011, American Megatrends, Inc.         **
+;**                                                                  **
+;**                       All Rights Reserved.                       **
+;**                                                                  **
+;**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+;**                                                                  **
+;**                       Phone: (770)-246-8600                      **
+;**                                                                  **
+;**********************************************************************
+;**********************************************************************
+
+;**********************************************************************
+; $Header: /Alaska/SOURCE/Modules/Intel LT-SX/FIT/IntelLtsxFit.asm 4     
+;
+; $Revision: 4 $
+;
+; $Date: 8/02/11 3:56p $
+;**********************************************************************
+; Revision History
+; ----------------
+;
+; 
+;**********************************************************************
+;<AMI_FHDR_START>
+;
+; Name: IntelLtsxFit.asm
+;
+; Description:	
+;
+;<AMI_FHDR_END>
+;**********************************************************************
+include Token.equ
+
+;**********************************************************************
+;* FIT Related Definitions
+;**********************************************************************
+
+FIT_BB_SIZE        EQU     (MKF_FV_BB_BLOCKS*MKF_FLASH_BLOCK_SIZE)/16
+FIT_BB_SIZE_UPPER  EQU     (FIT_BB_SIZE AND 0FF0000h) SHR 16
+
+FIT_SIGNATURE      EQU     02020205F5449465Fh
+AMI_TYPE_7_SIG     EQU     0ABCDEFFEDCBA0123h
+AMI_LAST_ENTRY_SIG EQU     0ABCDEF0123456789h
+
+IO_TYPE_VERSION    EQU     0000h
+
+STD_FIT_ENTRY   STRUCT
+    ADDRESS     QWORD   0000000000000000h
+    LOWER_SIZE  WORD    0000h
+    UPPER_SIZE  BYTE    00h
+    RESERVED    BYTE    00h
+    VERSION     WORD    0000h
+    CV_TYPE     BYTE    00h
+    CHECKSUM    BYTE    00h
+STD_FIT_ENTRY   ENDS
+
+CMOS_FIT_ENTRY   STRUCT
+    INDEX_ADDRESS  WORD    MKF_LTSX_CMOS_INDEX_REG_ADDRESS
+    DATA_ADDRESS   WORD    MKF_LTSX_CMOS_DATA_REG_ADDRESS
+    ACCESS_WIDTH   BYTE    MKF_LTSX_CMOS_ACCESS_WIDTH
+    BIT_POSITION   BYTE    00h
+    INDEX          WORD    0000h
+    UPPER_SIZE     WORD    0000h
+    LOWER_SIZE     BYTE    00h
+    RESERVED       BYTE    00h
+    VERSION        WORD    IO_TYPE_VERSION
+    CV_TYPE        BYTE    00h
+    CHECKSUM       BYTE    00h
+CMOS_FIT_ENTRY   ENDS
+
+;**********************************************************************
+;* FIT Entries
+;**********************************************************************
+FIT_TABLE       SEGMENT
+        ; Mandatory type 0 entry.  DO NOT CHANGE THIS.
+        FitHeader       STD_FIT_ENTRY  <FIT_SIGNATURE, \
+                                        0000h, \
+                                        00h, \
+                                        00h, \
+                                        0100h, \
+                                        00h, \
+                                        00h>
+        ; Microcode type 1 entries.  These are filled out by the FIT utility.
+        ; DO NOT CHANGE THIS directly.  Please modify the appropriate
+        ; SDL tokens instead.
+	MicroCode       STD_FIT_ENTRY  MKF_FIT_NUM_MICROCODE_PATCHES DUP ( \
+                                       <0FFFFFFFFh, \
+                                        0000h, \
+                                        00h, \
+                                        00h, \
+                                        0100h, \
+                                        7fh, \
+                                        00h>)
+
+        ; Mandatory type 2 entry.
+        ; DO NOT CHANGE THIS.
+        Type2           STD_FIT_ENTRY  <MKF_FV_ACM_BASE, \
+                                        0000h, \
+                                        00h, \
+                                        00h, \
+                                        0100h, \
+                                        02h, \
+                                        00h>
+        ; Placeholder type 7 entry for FIT type 7 and 8 entries.  DO NOT
+        ; CHANGE THIS.
+        Type7_0         STD_FIT_ENTRY  <AMI_TYPE_7_SIG, \
+                                        0000h, \
+                                        00h, \
+                                        00h, \
+                                        0100h, \
+                                        07h, \
+                                        00h>
+        ; Bootblock type 7 entry.  This can be modified according to policy
+        ; and or OEM needs.  Additional entries can be inserted as desired.
+        Type7_1         STD_FIT_ENTRY  <MKF_FV_BB_BASE, \
+                                        FIT_BB_SIZE AND 0FFFFh, \
+                                        FIT_BB_SIZE_UPPER, \
+                                        00h, \
+                                        0100h, \
+                                        07h, \
+                                        00h>
+IF MKF_FIT_SIGNED_POLICY_SUPPORT ne 0
+        ; BIOS Policy Record (Type 9).
+        Type9           STD_FIT_ENTRY <00h, \
+                                       00h, \
+                                       00h, \
+                                       00h, \
+                                       0100h, \
+                                       09h, \
+                                       00h>                                       
+ENDIF
+        ; TXT Support type 10 entry.
+        Type10          CMOS_FIT_ENTRY < , , , \
+                                         MKF_LTSX_TXT_CMOS_BIT_POSITION, \
+                                         MKF_LTSX_TXT_CMOS_ADDRESS, \
+                                         0000h, \
+                                         00h, \
+                                         00h, \
+                                         , \
+                                         0Ah, \
+                                         00h>
+IF MKF_INTEL_BOOT_GUARD_SUPPORT ne 0                                         
+                                         
+	Type11         STD_FIT_ENTRY  <00h, \
+                                        0241h, \
+                                        00h, \
+                                        00h, \
+                                        01h, \
+                                        0Bh, \
+                                        00h>              
+
+	Type12         STD_FIT_ENTRY  <00h, \
+                                        02DFh, \
+                                        00h, \
+                                        00h, \
+                                        01h, \
+                                        0ch, \
+                                        00h>      
+ENDIF                                            
+        ; Special signature for telling FIT utility we have reached the last
+        ; entry.  Do not place any FIT entries after this!
+        LastEntry       DQ             AMI_LAST_ENTRY_SIG
+
+        
+FIT_TABLE       ENDS
+
+END
+;**********************************************************************
+;**********************************************************************
+;**                                                                  **
+;**        (C)Copyright 1985-2011, American Megatrends, Inc.         **
+;**                                                                  **
+;**                       All Rights Reserved.                       **
+;**                                                                  **
+;**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+;**                                                                  **
+;**                       Phone: (770)-246-8600                      **
+;**                                                                  **
+;**********************************************************************
+;**********************************************************************

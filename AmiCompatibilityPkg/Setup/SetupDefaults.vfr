@@ -1,0 +1,101 @@
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
+
+/** @file
+ *   Defines a formset, containing only the CONTROLS_WITH_DEFAULTS sections.
+ */
+#include <Setup.h>
+#include <SetupDefaultsStrDefs.h>
+
+#define SETUP_FROM_SET_DEFAULTS_GUID { 0x73463adf, 0x807e, 0x4485, 0xbf, 0x7d, 0xf9, 0x1e, 0xdf, 0x7a, 0x7f, 0x4e }
+
+#define MAIN_FORM_SET
+#define ADVANCED_FORM_SET
+#define CHIPSET_FORM_SET
+#define SECURITY_FORM_SET
+#define BOOT_FORM_SET
+#define EXIT_FORM_SET
+#define FORM_SET_TYPEDEF
+#include <SetupDefinitions.h>
+#undef FORM_SET_TYPEDEF
+#undef EXIT_FORM_SET
+#undef BOOT_FORM_SET
+#undef SECURITY_FORM_SET
+#undef CHIPSET_FORM_SET
+#undef ADVANCED_FORM_SET
+#undef MAIN_FORM_SET
+
+formset guid  = SETUP_FROM_SET_DEFAULTS_GUID,
+    title     = STRING_TOKEN(STR_SETUP),
+    help      = STRING_TOKEN(STR_SETUP_HELP),
+    class     = SETUP_FORM_SET_CLASS,
+    subclass  = 0,
+    
+    SETUP_DATA_VARSTORE
+    LANGUAGE_VARSTORE
+    LANGUAGE_CODES_VARSTORE
+    SYSTEM_ACCESS_VARSTORE
+    AMI_CALLBACK_VARSTORE
+    AMITSESETUP_VARSTORE
+    BOOT_MANAGER_VARSTORE
+    TIMEOUT_VARSTORE
+    BOOT_ORDER_VARSTORE
+    NEW_BOOT_OPTION_VARSTORE
+    DEL_BOOT_OPTION_VARSTORE
+    LEGACY_DEV_INFO_VARSTORE
+    LEGACY_GROUP_INFO_VARSTORE
+    LEGACY_DEV_ORDER_VARSTORE
+    BOOT_NOW_COUNT_VARSTORE
+    EFI_SHELL_VARSTORE
+    defaultstore AmiMfgDefault, prompt = STRING_TOKEN(STR_EMPTY), attribute = 0x01;
+
+    #define MAIN_FORM_SET
+    #define ADVANCED_FORM_SET
+    #define CHIPSET_FORM_SET
+    #define SECURITY_FORM_SET
+    #define BOOT_FORM_SET
+    #define EXIT_FORM_SET
+    #define FORM_SET_VARSTORE
+    #include <SetupDefinitions.h>
+    #undef FORM_SET_VARSTORE
+    #undef EXIT_FORM_SET
+    #undef BOOT_FORM_SET
+    #undef SECURITY_FORM_SET
+    #undef CHIPSET_FORM_SET
+    #undef ADVANCED_FORM_SET
+    #undef MAIN_FORM_SET
+
+    form formid = AUTO_ID(SETUP_MAIN),
+        title = STRING_TOKEN(STR_SETUP);
+
+    #define CONTROLS_WITH_DEFAULTS
+    #include <SetupDefinitions.h>
+    #undef CONTROLS_WITH_DEFAULTS
+    endform;
+    
+endformset;
+
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************

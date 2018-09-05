@@ -1,0 +1,69 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+[Defines]
+INF_VERSION          = 0x00010005
+BASE_NAME            = BootGuardDxe
+FILE_GUID            = 1DB43EC9-DF5F-4cf5-AAF0-0E85DB4E149A
+MODULE_TYPE          = DXE_DRIVER
+VERSION_STRING       = 1.0
+ENTRY_POINT          = BootGuardDxeEntryPoint
+
+[Sources]
+  BootGuardDxe.c
+  BootGuardDxe.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec  
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+
+[LibraryClasses]
+  IoLib
+  BaseLib
+  BaseMemoryLib
+  DxeServicesTableLib
+  DebugLib
+  UefiBootServicesTableLib
+  DevicePathLib
+  MemoryAllocationLib
+  UefiDriverEntryPoint
+  UefiRuntimeServicesTableLib
+  UefiLib
+  HobLib
+
+[Pcd]
+
+[Guids]
+  gEfiHobListGuid
+
+[Protocols]
+
+[Depex]
+  TRUE
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

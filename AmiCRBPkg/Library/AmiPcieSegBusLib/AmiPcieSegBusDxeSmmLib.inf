@@ -1,0 +1,59 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+
+#
+# @file AmiPcieSegBusDxeSmmLib.inf
+#
+# INF description file for DXE SMM PCIe Segment Bus library.
+#
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = AmiPcieSegBusDxeSmmLib
+  FILE_GUID                      = 6992EB47-86D0-4140-89CA-BECCD1CD242F
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = AmiPcieSegBusLib | DXE_DRIVER DXE_RUNTIME_DRIVER SMM_CORE DXE_SMM_DRIVER UEFI_DRIVER
+  CONSTRUCTOR                    = AmiUpdatePcieSegBusDxeSmmConstructor
+
+[Sources]
+  AmiPcieSegBusDxeSmm.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  PurleySktPkg/SocketPkg.dec
+  AmiCRBPkg/AmiCRBPkg.dec
+
+[LibraryClasses]
+  HobLib
+  
+[Pcd]
+  gAmiCRBPkgTokenSpaceGuid.PcdPcieSegBusTablePtr
+  
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

@@ -1,0 +1,53 @@
+TOKEN
+	Name  = "SioLibraryInstances_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable SioLibraryInstances support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "AmiIoDecodeLib_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable AmiIoDecodeLib support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "AmiSioDxeLib"
+	File  = "AmiSioDxeLib/AmiSioDxeLib.inf"
+	Package  = "AmiModulePkg"
+End
+
+INFComponent
+	Name  = "AmiSioPeiLib"
+	File  = "AmiSioPeiLib/AmiSioPeiLib.inf"
+	Package  = "AmiModulePkg"
+End
+
+INFComponent
+	Name  = "AmiIoDecodeLib"
+	File  = "AmiIoDecodeLib\AmiIoDecodeLib.inf"
+	Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+	Class  = "AmiSioDxeLib"
+	Instance  = "AmiModulePkg.AmiSioDxeLib"
+	ModuleTypes  = "DXE_DRIVER UEFI_DRIVER DXE_CORE DXE_SMM_DRIVER"
+End
+
+LibraryMapping
+	Class  = "AmiSioPeiLib"
+	Instance  = "AmiModulePkg.AmiSioPeiLib"
+	ModuleTypes  = "PEIM PEI_CORE SEC"
+End
+
+LibraryMapping
+	Class  = "AmiIoDecodeLib"
+	Instance  = "AmiModulePkg.AmiIoDecodeLib"
+	Token = "SB_AMI_IO_DECODE_LIB_SUPPORT" "=" "0"
+End
+

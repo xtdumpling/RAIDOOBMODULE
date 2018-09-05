@@ -1,0 +1,77 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+## @file SerialRecovery.inf
+#   This driver installs RecoveryModulePpi
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SerialRecovery
+  FILE_GUID                      = 12f75401-5415-4ff3-a981-a39bee9f369e
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = SerialRecoveryPeimEntry
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF EBC
+#
+
+[Sources]
+  SerialRecovery.c
+  SerialRecovery.h
+
+[Packages]
+  AmiModulePkg/AmiModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  
+[LibraryClasses]
+  PeimEntryPoint
+  AmiPeiLib
+  SerialPortLib
+  
+[Pcd]
+  gAmiModulePkgTokenSpaceGuid.PcdRecoveryImageSize
+  gEfiMdeModulePkgTokenSpaceGuid.PcdSerialRegisterBase
+  
+[Ppis]
+  gEfiPeiDeviceRecoveryModulePpiGuid    ## PRODUCES
+  gEfiPeiStallPpiGuid
+  gSerialRecoveryDevicePpiGuid          ## PRODUCES
+  
+[Guids]
+  gSerialCapsuleGuid
+  
+[Depex]
+  gEfiPeiBootInRecoveryModePpiGuid AND gEfiPeiMemoryDiscoveredPpiGuid AND gEfiPeiDecompressPpiGuid
+  
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

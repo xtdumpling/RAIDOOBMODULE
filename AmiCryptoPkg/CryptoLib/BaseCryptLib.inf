@@ -1,0 +1,39 @@
+## @file
+#  Cryptographic Library Instance for DXE_DRIVER.
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = BaseCryptLib
+  FILE_GUID                      = AA9E97DB-5F98-4043-A393-77995B7E0CED
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = BaseCryptLib|DXE_SMM_DRIVER DXE_DRIVER DXE_CORE UEFI_APPLICATION UEFI_DRIVER
+
+[Sources]
+BaseCryptLib.c
+
+[LibraryClasses]
+AmiCryptLib
+
+[Packages]
+ MdePkg/MdePkg.dec
+ AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+ AmiCryptoPkg/AmiCryptoPkg.dec
+
+[BuildOptions.X64]
+MSFT:*_*_X64_CC_FLAGS     = /GL- /Od -DLTM_FAST
+GCC:*_*_X64_CC_FLAGS      = -DLTM_FAST
+
+[BuildOptions.IA32]
+MSFT:*_*_IA32_CC_FLAGS    = /GL- /Od
+
+#for build error, temporary use "_MSC_VER"
+#[BuildOptions.ARM]
+#DEBUG_ARMGCC_ARM_CC_FLAGS     = -DDEBUG_TRACE=1 -D_MSC_VER
+#RELEASE_ARMGCC_ARM_CC_FLAGS   = -D_MSC_VER
+
+[BuildOptions.AARCH64]
+DEBUG_GCC_AARCH64_CC_FLAGS   = -DDEBUG_TRACE=1 -D_MSC_VER -D LTM_FAST
+RELEASE_GCC_AARCH64_CC_FLAGS = -D_MSC_VER -D LTM_FAST

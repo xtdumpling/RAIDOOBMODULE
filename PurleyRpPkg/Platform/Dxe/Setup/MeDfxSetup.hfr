@@ -1,0 +1,116 @@
+//
+// This file contains an 'Intel Peripheral Driver' and is
+// licensed for Intel CPUs and chipsets under the terms of your
+// license agreement with Intel or your vendor.  This file may
+// be modified by the user, subject to additional terms of the
+// license agreement
+//
+// /*++
+// Copyright (c) 2016 Intel Corporation. All rights reserved.
+// This software and associated documentation (if any) is furnished
+// under a license and may only be used or copied in accordance
+// with the terms of the license. Except as permitted by such
+// license, no part of this software or documentation may be
+// reproduced, stored in a retrieval system, or transmitted in any
+// form or by any means without the express written consent of
+// Intel Corporation.
+// --*/
+
+#if ME_TESTMENU_FLAG
+
+#include "Configuration.h"
+#include "SetupMisc.h"
+#include "Library/MeTypeDefs.h"
+#include <Config/MeConfig.h>
+
+suppressif NOT ideqval ME_RC_CONFIGURATION.MeType == METYPE_DFX;
+
+//**********************************************************************
+//                 ME DFX Debug Configuration Form
+//**********************************************************************
+  form formid = VFR_FORMID_DFX_FWDEBUG,
+    title = STRING_TOKEN(STR_DFX_FWDEBUG_FORM_TITLE);
+
+    goto VFR_FORMID_DFX_FWDEBUG_GEN,
+      prompt = STRING_TOKEN(STR_DFX_FWDEBUG_GEN_FORM),
+      help   = STRING_TOKEN(STR_DFX_FWDEBUG_GEN_FORM_HELP);
+
+  endform; // VFR_FORMID_DFX_FWDEBUG
+
+//**********************************************************************
+//                 ME DFX General Debug Configuration Form
+//**********************************************************************
+  form formid = VFR_FORMID_DFX_FWDEBUG_GEN,
+    title = STRING_TOKEN(STR_DFX_FWDEBUG_GEN_FORM_TITLE);
+
+    oneof varid   = ME_RC_CONFIGURATION.HsioMessagingEnabled,
+      prompt   = STRING_TOKEN(STR_ME_HSIO_ENABLE_PROMPT),
+      help     = STRING_TOKEN(STR_ME_HSIO_ENABLE_HELP),
+      option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = 0;
+      option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = 0 | DEFAULT | MANUFACTURING;
+    endoneof;
+
+    checkbox varid = ME_RC_CONFIGURATION.MeDidEnabled,
+      prompt       = STRING_TOKEN(STR_ME_DID_ENABLE_PROMPT),
+      help         = STRING_TOKEN(STR_ME_DID_ENABLE_HELP),
+      // Flags behavior for checkbox is overloaded so that it equals
+      // a DEFAULT value.  CHECKBOX_DEFAULT = ON, 0 = off
+      flags        = CHECKBOX_DEFAULT | CHECKBOX_DEFAULT_MFG | RESET_REQUIRED,
+      key          = 0,
+    endcheckbox;
+  
+    grayoutif ideqval ME_RC_CONFIGURATION.MeDidEnabled == 0;
+      oneof varid   = ME_RC_CONFIGURATION.MeDidInitStat,
+        prompt      = STRING_TOKEN(STR_ME_DID_INIT_STAT_PROMPT),
+        help        = STRING_TOKEN(STR_ME_DID_INIT_STAT_HELP),
+        option text = STRING_TOKEN(STR_ME_DID_INIT_STAT_AUTO), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ME_DID_INIT_STAT_0), value = 1, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ME_DID_INIT_STAT_1), value = 2, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ME_DID_INIT_STAT_2), value = 3, flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    oneof varid   = ME_RC_CONFIGURATION.MeHeci1Enabled,
+      prompt      = STRING_TOKEN(STR_ME_HECI1ENABLE_PROMPT),
+      help        = STRING_TOKEN(STR_ME_HECI1ENABLE_HELP),
+      option text = STRING_TOKEN(STR_DISABLED), value = ME_DEVICE_DISABLED, flags = 0;
+      option text = STRING_TOKEN(STR_ENABLED),  value = ME_DEVICE_ENABLED, flags = 0;
+      option text = STRING_TOKEN(STR_AUTO),     value = ME_DEVICE_AUTO, flags = 0 | DEFAULT | MANUFACTURING | RESET_REQUIRED;
+    endoneof;
+  
+    oneof varid   = ME_RC_CONFIGURATION.MeHeci2Enabled,
+      prompt      = STRING_TOKEN(STR_ME_HECI2ENABLE_PROMPT),
+      help        = STRING_TOKEN(STR_ME_HECI2ENABLE_HELP),
+      option text = STRING_TOKEN(STR_DISABLED), value = ME_DEVICE_DISABLED, flags = 0;
+      option text = STRING_TOKEN(STR_ENABLED),  value = ME_DEVICE_ENABLED, flags = 0;
+      option text = STRING_TOKEN(STR_AUTO),     value = ME_DEVICE_AUTO, flags = 0 | DEFAULT | MANUFACTURING | RESET_REQUIRED;
+    endoneof;
+  
+    oneof varid   = ME_RC_CONFIGURATION.MeHeci3Enabled,
+      prompt      = STRING_TOKEN(STR_ME_HECI3ENABLE_PROMPT),
+      help        = STRING_TOKEN(STR_ME_HECI3ENABLE_HELP),
+      option text = STRING_TOKEN(STR_DISABLED), value = ME_DEVICE_DISABLED, flags = 0;
+      option text = STRING_TOKEN(STR_ENABLED),  value = ME_DEVICE_ENABLED, flags = 0;
+      option text = STRING_TOKEN(STR_AUTO),     value = ME_DEVICE_AUTO, flags = 0 | DEFAULT | MANUFACTURING | RESET_REQUIRED;
+    endoneof;
+  
+    oneof varid   = ME_RC_CONFIGURATION.MeIderEnabled,
+      prompt      = STRING_TOKEN(STR_ME_IDERENABLE_PROMPT),
+      help        = STRING_TOKEN(STR_ME_IDERENABLE_HELP),
+      option text = STRING_TOKEN(STR_DISABLED), value = ME_DEVICE_DISABLED, flags = 0;
+      option text = STRING_TOKEN(STR_ENABLED),  value = ME_DEVICE_ENABLED, flags = 0;
+      option text = STRING_TOKEN(STR_AUTO),     value = ME_DEVICE_AUTO, flags = 0 | DEFAULT | MANUFACTURING | RESET_REQUIRED;
+    endoneof;
+  
+    oneof varid   = ME_RC_CONFIGURATION.MeKtEnabled,
+      prompt      = STRING_TOKEN(STR_ME_KTENABLE_PROMPT),
+      help        = STRING_TOKEN(STR_ME_KTENABLE_HELP),
+      option text = STRING_TOKEN(STR_DISABLED), value = ME_DEVICE_DISABLED, flags = 0;
+      option text = STRING_TOKEN(STR_ENABLED),  value = ME_DEVICE_ENABLED, flags = 0;
+      option text = STRING_TOKEN(STR_AUTO),     value = ME_DEVICE_AUTO, flags = 0 | DEFAULT | MANUFACTURING | RESET_REQUIRED;
+    endoneof;
+    
+  endform; // VFR_FORMID_DFX_FWDEBUG_GEN
+
+endif; // Suppress if MeType != DFX
+#endif // ME_TESTMENU_FLAG

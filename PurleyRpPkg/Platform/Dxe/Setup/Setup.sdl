@@ -1,0 +1,136 @@
+TOKEN
+	Name  = "Setup_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling Setup support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "Platform_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable Platform support in Project"
+	TokenType = Boolean
+End
+
+# EIP250562: PCH / IIO Resource reservation for Hot-Plug
+TOKEN
+	Name = "MAX_EXTRA_BUS_RESERVED"
+	Value = "7"
+	Help = "The Max number of extra Bus Reserved for bridges behind this Root Bridge "
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name = "MAX_PCIE_MEM_RESERVED"
+	Value = "1200"
+	Help = "The Max number of reserved memory range for this Root Bridge."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name = "MAX_PCIE_PF_MEM_RESERVED"
+	Value = "1200"
+	Help = "The Max number of prefetchable memory range for this Root Bridge."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name = "MAX_PCIE_64_PF_MEM_RESERVED"
+	Value = "1200"
+	Help = "The Max number of 64 bit prefetchable memory range for this Root Bridge."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name = "MAX_PCIE_IO_RESERVED"
+	Value = "20"
+	Help = "The Max number of IO range for this Root Bridge."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+    Name  = "MAX_EXTRA_BUS_RESERVED"
+    Value  = "$(TBT_MAX_EXTRA_BUS_RESERVED)"
+    Help  = "The Max number of extra Bus Reserved for bridges behind this Root Bridge "
+    TokenType = Integer
+    TargetH = Yes
+    Token = "Thunderbolt_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "MAX_PCIE_MEM_RESERVED"
+    Value  = "$(TBT_MAX_PCIE_MEM_RESERVED)"
+    Help  = "The Max number of reserved memory range for this Root Bridge."
+    TokenType = Integer
+    TargetH = Yes
+    Token = "Thunderbolt_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "MAX_PCIE_PF_MEM_RESERVED"
+    Value  = "$(TBT_MAX_PCIE_PF_MEM_RESERVED)"
+    Help  = "The Max number of prefetchable memory range for this Root Bridge."
+    TokenType = Integer
+    TargetH = Yes
+    Token = "Thunderbolt_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "MAX_PCIE_IO_RESERVED"
+    Value  = "$(TBT_MAX_PCIE_IO_RESERVED)"
+    Help  = "The Max number of IO range for this Root Bridge."
+    TokenType = Integer
+    TargetH = Yes
+    Token = "Thunderbolt_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "Platform"
+	File  = "DxePlatform.inf"
+	Package  = "PurleyRpPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "Platform_SUPPORT" "=" "1"
+End
+
+OUTPUTREGISTER
+	Name = "PlatformSetupXAmiStrings"
+	File = "PlatformSetupXAmiStrings.uni"
+	Path = "Build"
+	Template = "PlatformSetup.txt"
+End
+
+ELINK
+	Name  = "PLATFORM_SETUP_MAPPING_LANGUAGE_FILES"
+	Help  = "This is a list of UNI files added by OEM to include the mapping language strings."
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "MeSpsSetupXAmi.uni"
+	Parent = "PLATFORM_SETUP_MAPPING_LANGUAGE_FILES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "PchSetupStringsXAmi.uni"
+	Parent = "PLATFORM_SETUP_MAPPING_LANGUAGE_FILES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "SetupStringsXAmi.uni"
+	Parent = "PLATFORM_SETUP_MAPPING_LANGUAGE_FILES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "SystemEventLogStringsXAmi.uni"
+	Parent = "PLATFORM_SETUP_MAPPING_LANGUAGE_FILES"
+	InvokeOrder = AfterParent
+End

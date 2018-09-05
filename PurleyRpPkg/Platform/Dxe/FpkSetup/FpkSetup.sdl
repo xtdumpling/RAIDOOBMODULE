@@ -1,0 +1,23 @@
+TOKEN
+    Name  = "FpkSetup_SUPPORT"
+    Value  = "1"
+    Help  = "Switch for Enabling FpkSetup support in the project"
+    TokenType = Boolean
+    Master = Yes
+End
+
+TOKEN
+    Name  = "FpkSetup_DXE"
+    Value  = "1"
+    Help  = "Switch for Enabling DXE FpkSetup support in the project."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+INFComponent
+    Name  = "FpkSetup_DXE"
+    File  = "Dxe\FpkSetup.inf"
+    Package  = "PurleyRpPkg"
+    ModuleTypes  = "DXE_DRIVER"
+    Token = "FpkSetup_DXE" "=" "1"
+End

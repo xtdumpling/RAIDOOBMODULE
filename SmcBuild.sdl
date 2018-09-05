@@ -1,0 +1,117 @@
+TOKEN
+	Name  = "X11SPI_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch SuperM Board Support"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH =Yes
+End               
+
+TOKEN
+	Name  = "XHCI_PEI_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable XhciPei support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "DEBUG_MODE" "=" "1"
+End
+
+TOKEN
+	Name  = "********** For CRB board build **********"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "SMCPKG_SUPPORT"
+	Value  = "1"
+	Help  = "The file is for common settings."
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+       Name  = "AST2500_SUPPORT"
+       Value  = "0"
+       Help  = "Main switch to enable AST2500 support in Project"
+       TokenType = Boolean
+       TargetEQU = Yes
+       TargetH = Yes
+       Token = "SMCPKG_SUPPORT" "=" "0"
+End
+
+LibraryMapping
+       Class  = "NULL"
+       Instance  = "AmiModulePkg.Pilot4DxeInit"
+       Override  = "AmiModulePkg.SmmGenericSio"
+       Token = "SMCPKG_SUPPORT" "=" "0"
+End
+
+LibraryMapping
+    Class  = "PciLib"
+    Instance  = "MdePkg.BasePciLibCf8"
+    Override  = "AmiModulePkg.Pilot4PeiInit"
+    Token = "SMCPKG_SUPPORT" "=" "0"
+End
+
+TOKEN
+	Name  = "**************************************"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "DEBUG_MODE"
+	Value  = "1"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "INTEL_BOOT_GUARD_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable Intel Boot Guard in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SMC_ROM_HOLE_SIZE"
+	Value  = "0x10000"
+	Help  = "Size of the SMC ROM HOLE."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Range  = "From: 1 - 10"
+End
+
+TOKEN
+	Name  = "SmcRomHole_SUPPORT"
+	Value  = "0"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+    Name  = "PLATFORM_NAME"
+    Value  = "SmcOOB"
+    TokenType = Expression
+    TargetMAK = Yes
+    TargetDSC = Yes
+End
+
+TOKEN
+	Name  = "ACTIVE_PLATFORM"
+	Value  = "fast_build/fastbuild.dsc"
+	Help  = "Name of the description (.dsc) file for the active platform.\Must be the same as the name specified in the PLATFORM_DSC or <Arch-Type>_PLATFORM_DSC SDL output directive."
+	TokenType = Expression
+	TargetMAK = Yes
+End

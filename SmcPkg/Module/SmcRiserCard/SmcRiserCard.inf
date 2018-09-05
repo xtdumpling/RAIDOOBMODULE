@@ -1,0 +1,89 @@
+[Defines]
+  INF_VERSION = 0x00010005
+  VERSION_STRING = 1.0
+  BASE_NAME = SmcRiserCard
+  MODULE_TYPE = DXE_DRIVER
+  FILE_GUID = 4e3fb9f3-940b-468b-bb94-9f6549011174
+  ENTRY_POINT = SmcRiserCardInit
+  PI_SPECIFICATION_VERSION = 0x0001000A
+
+[Sources]
+  SmcRiserCard.c
+  SmcRiserCard.h
+  SmcRiserCardDB.h
+  SmcRiserCardSmbios.c
+  SmcRiserCardSmbios.h
+  SmcRiserCardSetup.c
+  SmcRiserCardSetupIntelRc.c
+  SmcRiserCardCommon.c
+  SmcRiserCardCommon.h
+
+[LibraryClasses]
+  AmiDxeLib
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  PcdLib
+  SmcLib
+
+[Guids]
+
+[Protocols]
+  gAmiSmbiosProtocolGuid
+  gEfiSmbusHcProtocolGuid
+  gEfiPciIoProtocolGuid
+  gAmiExtPciBusProtocolGuid
+  gEfiDxeIpmiTransportProtocolGuid
+  gSetupModifyProtocolGuid
+
+[Packages]
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  AmiCryptoPkg/AmiCryptoPkg.dec
+  AmiIpmiPkg/AmiIpmiPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  SmcPkg/SmcPkg.dec
+
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+  gSmcPkgTokenSpaceGuid.PcdSmcOBLan1BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBLan2BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBLan3BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBLan4BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcMultiFuncLanChip1
+  gSmcPkgTokenSpaceGuid.PcdSmcMultiFuncLanChip2
+  gSmcPkgTokenSpaceGuid.PcdSmcOBSASBDF
+  gSmcPkgTokenSpaceGuid.PcdSmcRiserID
+  gSmcPkgTokenSpaceGuid.PcdSmcSXB1Index
+  gSmcPkgTokenSpaceGuid.PcdSmcSXB2Index
+  gSmcPkgTokenSpaceGuid.PcdSmcSXB3Index
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe1BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe2BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe3BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe4BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe5BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe6BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe7BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe8BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe9BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe10BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe11BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBNVMe12BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT1BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT2BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT3BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT4BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT5BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT6BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT7BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT8BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT9BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT10BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcSLOT11BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcAOCLocation
+
+[Depex]
+  TRUE

@@ -1,0 +1,789 @@
+#Flag=0x30081 SDL bits 0,20,22
+
+PCIDEVICE
+	Title  = "PciHost (Virtual)"
+	Attribute  = "0x2"
+	Dev_type  = "HostBridge"
+	Dev  = 00h
+	SleepNum  = 03h
+	ASLfile  = "'AmiModulePkg/ACPI/ASLLIB.ASL;Before Pci Tree','AmiModulePkg/ACPI/AMLUPD.ASL;Before Pci Tree'"
+	ASLdeviceName  = "HST0"
+	Token = "PCI_FIXED_BUS_ASSIGNMENT" "=" "1"
+	DeviceType = OnBoard
+	PCIBusSize = 64bit
+	ROMMain = No
+	Virtual = Yes
+	PCIExpress = Yes
+	Enforce = Yes
+End
+
+PCIDEVICE
+	Title  = "PciHost (Virtual)"
+	Attribute  = "0x2"
+	Dev_type  = "HostBridge"
+	Dev  = 00h
+	SleepNum  = 03h
+	ASLfile  = "'AmiModulePkg/ACPI/ASLLIB.ASL;Before Pci Tree','AmiModulePkg/ACPI/AMLUPD.ASL;Before Pci Tree'"
+	ASLdeviceName  = "HST0"
+	Token = "PCI_FIXED_BUS_ASSIGNMENT" "=" "0"
+	DeviceType = OnBoard
+	PCIBusSize = 64bit
+	ROMMain = No
+	Virtual = Yes
+	PCIExpress = Yes
+End
+
+TOKEN
+	Name  = "AmiPciBus_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable PciBus support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "AmiPciBusDxe_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable AMI PCI Bus DXE Driver in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "AmiPciRootBridgeDxe_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable AMI PCI Root Bridge DXE Driver in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "AmiSmmPciRootBridgeIo_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable SmmPciRbIo support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Token = "SMM_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "PCI_BUS_MAJOR_VER"
+	Value  = "0xA5"
+	Help  = "PCI BUS Module Major Version Number.\ DO NOT CHANGE THIS VALUE"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "PCI_BUS_MINOR_VER"
+	Value  = "01"
+	Help  = "PCI BUS Module Minor Version Number.\ DO NOT CHANGE THIS VALUE"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "PCI_BUS_REVISION"
+	Value  = "12"
+	Help  = "PCI BUS Module Major Version Number.\ DO NOT CHANGE THIS VALUE"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "PCI_BUS_VER_COMBINED"
+	Value  = "$(PCI_BUS_MAJOR_VER)*100+ $(PCI_BUS_MINOR_VER)*10+$(PCI_BUS_REVISION)"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "HOTPLUG_SUPPORT"
+	Value  = "0"
+	Help  = "Enables / Disables Pci Bus Driver Native PCI Hotplug support"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "HOTPLUG_APPLY_PADDING_ANYWAY"
+	Value  = "0"
+	Help  = "If Enabled force PCI Bus Driver apply padding even if system runs in OUT_OF_RESOURCE Condition/Disabled Pci Bus Driver will disable padding if out of resource condition happends."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PCI_EXPRESS_SUPPORT"
+	Value  = "1"
+	Help  = "Enables / Disables Pci Bus Driver Native PCI Express support"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PCI_EXPRESS_GEN2_SUPPORT"
+	Value  = "1"
+	Help  = "Enables / Disables Pci Bus Driver Native PCI Express Gen2 support"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "PCI_EXPRESS_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "PCI_EXPRESS_GEN2_SUPPORT"
+	Value  = "0"
+	Help  = "Enables / Disables Pci Bus Driver Native PCI Express Gen2 support"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+	Lock = Yes
+	Token = "PCI_EXPRESS_SUPPORT" "=" "0"
+End
+
+TOKEN
+	Name  = "PCI_EXPRESS_GEN3_SUPPORT"
+	Value  = "1"
+	Help  = "Enables / Disables Pci Bus Driver Native PCI Express Gen3 support"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "PCI_EXPRESS_SUPPORT" "=" "1"
+	Token = "PCI_EXPRESS_GEN2_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "PCI_EXPRESS_GEN3_SUPPORT"
+	Value  = "0"
+	Help  = "Enables / Disables Pci Bus Driver Native PCI Express Gen3 support"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+	Lock = Yes
+	Token = "PCI_EXPRESS_GEN2_SUPPORT" "=" "0"
+End
+
+TOKEN
+	Name  = "PCIE_LINK_TRAINING_POLLING_COUNT"
+	Value  = "500"
+	Help  = "This values specifies the number of timeout counts BIOS should wait at maximum for link training to complete"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PCI_FIXED_BUS_ASSIGNMENT"
+	Value  = "0"
+	Help  = "Forces PCI Bus driver try to assign buses \according to the settings in Veb PCI Wizard"
+	TokenType = Boolean
+	TargetH = Yes
+	Range  = "On/Off"
+End
+
+TOKEN
+	Name  = "PCI_DECODE_FULL_BUS_RANGES"
+	Value  = "0"
+	Help  = "Forces PCI Bus driver to decode(use) ALL range for the Subordinate Bus Number down to the next bridge in the PCI Hierarchi"
+	TokenType = Boolean
+	TargetH = Yes
+	Range  = "On/Off"
+	Token = "PCI_FIXED_BUS_ASSIGNMENT" "=" "1"
+End
+
+TOKEN
+	Name  = "PCI_UNCORE_RESERVED_BUSES_PER_ROOT"
+	Value  = "0"
+	Help  = "Subtracts Specified Number from Totoal decoded bus range for UNCORE Bus"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "On/Off"
+	Token = "PCI_FIXED_BUS_ASSIGNMENT" "=" "1"
+	Token = "PCI_DECODE_FULL_BUS_RANGES" "=" "1"
+End
+
+TOKEN
+	Name  = "PCI_DEV_REVERSE_SCAN_ORDER"
+	Value  = "0"
+	Help  = "Forces PCI Bus driver to scan PCI devices on the bus in opposite order.\If set to ON scan from Dev 31 down to 0.\If Set to OFF scan from Dev 0 up to 31."
+	TokenType = Boolean
+	TargetH = Yes
+	Range  = "On/Off"
+	Token = "PCI_FIXED_BUS_ASSIGNMENT" "=" "0"
+End
+
+TOKEN
+	Name  = "SRIOV_SUPPORT"
+	Value  = "1"
+	Help  = "Enables Single Root IO Virtualization (SRIOV) Support."
+	TokenType = Boolean
+	TargetH = Yes
+	Range  = "On/Off"
+	Token = "PCI_EXPRESS_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "PCI_4K_RESOURCE_ALIGNMENT"
+	Value  = "1"
+	Help  = "Forces PCI Bus driver to allocate at least 4K \resource buffer for each resource request lesser \than 4K."
+	TokenType = Boolean
+	TargetH = Yes
+	Range  = "On/Off"
+End
+
+TOKEN
+	Name  = "PCI_DEVICE_IO_RESOURCE_THRESHOLD"
+	Value  = "0xFFFF"
+	Help  = "Forces PCI Bus driver to disable Device if it's IO resource request exceeds this value"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "Up to 64K"
+End
+
+TOKEN
+	Name  = "PCI_DEVICE_32BIT_RESOURCE_THRESHOLD"
+	Value  = "0xFFFFFFFF"
+	Help  = "Forces PCI Bus driver to disable Device if it's 32bit resource request exceeds this value"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "Up to 4G"
+End
+
+TOKEN
+	Name  = "TRACE_PCI"
+	Value  = "-1"
+	Help  = "Defines PCI Bus Driver messages visibiliry level."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "Default == -1 (TRACE_ALWAYS)"
+	Token = "DEBUG_MODE" "=" "1"
+End
+
+TOKEN
+	Name  = "PCI_DEVICE_64BIT_RESOURCE_THRESHOLD"
+	Value  = "0xFFFFFFFFF"
+	Help  = "Forces PCI Bus driver to disable Device if it's 64bit resource request exceeds this value"
+	TokenType = Expression
+	TargetH = Yes
+	Range  = "Up to 64G"
+End
+
+TOKEN
+	Name  = "PCI_CARD_BUS_BRG_MMIO_PADDING_LEN"
+	Value  = "0x2000000"
+	Help  = "Default value for PCI Card Bus Memory Window Length."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "it is a 32 bit value, must be a POWER OF TWO"
+End
+
+TOKEN
+	Name  = "PCI_CARD_BUS_BRG_MMIO_PADDING_ALN"
+	Value  = "0x1FFFFFF"
+	Help  = "Default value for PCI Card Bus Memory Window Alignment."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "it is a 32 bit value, must be a POWER OF TWO -1"
+End
+
+TOKEN
+	Name  = "PCI_CARD_BUS_BRG_IO_PADDING_LEN"
+	Value  = "0x1000"
+	Help  = "Default value for PCI Card Bus IO Window Length."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "it is a 16 bit value, must be a POWER OF TWO"
+End
+
+TOKEN
+	Name  = "PCI_CARD_BUS_BRG_IO_PADDING_ALN"
+	Value  = "0xFFF"
+	Help  = "Default value for PCI Card Bus IO Window Alignment."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "it is a 16 bit value, must be a POWER OF TWO -1"
+End
+
+TOKEN
+	Name  = "ABOVE_4G_PCI_DECODE"
+	Value  = "1"
+	Help  = "Tells if Chipset supports decoding of PCI\resources in Above 4G Address Space.\Sets EFI_PCI_HOST_BRIDGE_MEM64_DECODE in Allocation Attributes."
+	TokenType = Boolean
+	TargetH = Yes
+	Range  = "ON or OFF"
+End
+
+TOKEN
+	Name  = "ABOVE_4G_PCI_DECODE_DEFAULT_VALUE"
+	Value  = "0"
+	Help  = "Sets Above 4G Address Space Decode Default option for BIOS Setup."
+	TokenType = Boolean
+	TargetH = Yes
+	Range  = "ON or OFF default is OFF"
+End
+
+TOKEN
+	Name  = "SETUP_SHOW_ABOVE_4G_DECODE"
+	Value  = "1"
+	Help  = "Sets visibility of the Above 4G Address Space Decode Setup Item."
+	TokenType = Boolean
+	TargetH = Yes
+	Range  = "ON or OFF default is ON"
+End
+
+TOKEN
+    Name  = "SRIOV_SUPPORT_DEFAULT_VALUE"
+    Value  = "0"
+    Help  = "Sets SRIOV Support Setup Item Default option for BIOS Setup."
+    TokenType = Boolean
+    TargetH = Yes
+    Range  = "ON or OFF default is OFF"
+End
+
+TOKEN
+    Name  = "RT8111_ON_BOARD_BAD_ROM_BAR"
+    Value  = "0"
+    Help  = "Includes RT8111 Expansion ROM BAR into Bad PCI Devices List, for defective On-Board Chip with embedded Option ROM."
+    TokenType = Boolean
+    TargetH = Yes
+    Range  = "ON or OFF default is OFF"
+End
+
+TOKEN
+	Name  = "SETUP_SHOW_SRIOV_SUPPORT"
+	Value  = "1"
+	Help  = "Sets visibility of the SRIOV Support Setup Item."
+	TokenType = Boolean
+	TargetH = Yes
+	Range  = "ON or OFF default is ON"
+End
+
+TOKEN
+	Name  = "SETUP_SHOW_HOTPLUG_SUPPORT"
+	Value  = "1"
+	Help  = "Sets visibility of the Hot-Plug Support Setup Item."
+	TokenType = Boolean
+	TargetH = Yes
+	Range  = "ON or OFF default is ON"
+End
+
+TOKEN
+	Name  = "SETUP_SHOW_PCEX_S3_SCRIPT"
+	Value  = "0"
+	Help  = "Sets visibility of the PCI Express Boot Script Support Setup Item."
+	TokenType = Boolean
+	TargetH = Yes
+	Range  = "ON or OFF default is OFF"
+End
+
+TOKEN
+	Name  = "SETUP_SHOW_RESET_VC_MAPPING"
+	Value  = "0"
+	Help  = "Sets visibility of the Don't Reset VC Mapping Setup Item."
+	TokenType = Boolean
+	TargetH = Yes
+	Range  = "ON or OFF default is OFF"
+End
+
+TOKEN
+    Name  = "SETUP_SHOW_PCIE_FORM"
+    Value  = "1"
+    Help  = "Sets visibility of the PCI Express Setup Form."
+    TokenType = Boolean
+    TargetH = Yes
+    Range  = "ON or OFF default is ON"
+End
+
+TOKEN
+    Name  = "SETUP_SHOW_PCIE2_FORM"
+    Value  = "1"
+    Help  = "Sets visibility of the PCI Express GEN 2 Setup Form."
+    TokenType = Boolean
+    TargetH = Yes
+    Range  = "ON or OFF default is ON"
+End
+
+TOKEN
+    Name  = "SETUP_SHOW_HOTPLUG_FORM"
+    Value  = "1"
+    Help  = "Sets visibility of the Hot Plug Setup Form."
+    TokenType = Boolean
+    TargetH = Yes
+    Range  = "ON or OFF default is ON"
+End
+
+TOKEN
+	Name  = "PCI_MMIO_RES_TOP_ALLIGN"
+	Value  = "0"
+	Help  = "Tells what resource allocation rule to use.\ OFF - Biggest resource alligned to the bottom of the window,\ ON - to the TOP."
+	TokenType = Boolean
+	TargetH = Yes
+	Range  = "ON or OFF. Default is OFF!"
+End
+
+TOKEN
+	Name  = "PCI_AMI_COMBINE_MEM_PMEM32"
+	Value  = "0"
+	Help  = "Tells to map 32 bit sized PF MMIO BARs trough NON PF MMIO Bridge registers."
+	TokenType = Boolean
+	TargetH = Yes
+	Range  = "ON or OFF. Default is OFF!"
+End
+
+TOKEN
+	Name  = "PCI_AMI_COMBINE_MEM64_PMEM"
+	Value  = "0"
+	Help  = "Tells to consider all 64bit MMIO BARs as 64bit PF MMIO BARs.\This will allow allocating 64bit capable resources in Above4G space."
+	TokenType = Boolean
+	TargetH = Yes
+	Range  = "ON or OFF. Default is OFF!"
+End
+
+TOKEN
+	Name  = "PCI_IO32_SUPPORT"
+	Value  = "0"
+	Help  = "Tells that System Architecture supports 32 bit IO access on the PCI Bus.\This option may be useful for ARM Systems.\x86 system architecture supports only 16 bit IO access."
+	TokenType = Boolean
+	TargetH = Yes
+	Range  = "ON or OFF. Default is OFF!"
+End
+
+TOKEN
+	Name  = "PCI_T_RST"
+	Value  = "1000"
+	Help  = "Defines duration of SEC_BUS_RESET signal assertion in nS"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PCI_T_RST_RECOVERY"
+	Value  = "100000"
+	Help  = "Defines duration of RESET_RECOVERY after SEC_BUS_RESETsignal DE-assertion in nS"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PCI_BUS_DEBUG_MESSAGES"
+	Value  = "0"
+	Help  = "A switch to enable PciBus Driver Debug messages over Serial Port."
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "DEBUG_CODE" "=" "1"
+End
+
+TOKEN
+	Name  = "PCI_BUS_SKIP_BRG_RECURSIVELY"
+	Value  = "0"
+	Help  = "A switch to Disable enumeration for all Bridge children if bridge set to be skipped from enumeration."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PCI_SETUP_USE_APTIO_4_STYLE"
+	Value  = "0"
+	Help  = "Main switch to enable Aptio 4.x Static Setup Screen Instead of Auto generated Setup in Aptio V."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PCI_SETUP_SHOW_NOT_FOUND_ONBOARD_DEVICES"
+	Value  = "0"
+	Help  = "Switch to enable Onboard PCI Devices shown in Dynamic setup even if disabled or hidden by CSP code."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PCI_SETUP_SHOW_SLOTS_FIRST"
+	Value  = "1"
+	Help  = "Switch to determine in what order PCI Devices with Setup pages\ will be dispalyed on PCI Device Main Screen.\If set to ON first will go Slots, than OnBord devices..."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PCI_SETUP_SORT_ONBOARD"
+	Value  = "2"
+	Help  = "Tells how to sort On Board devices shown on Main PCI Setup Screen:\ 0 = Don't Sort;\ 1 = By PCI Address;\ 2 = By Base Class Code;\ 3... = Don't Use - Reserved."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PCI_BUS_IGNORE_OPTION_ROM"
+	Value  = "0"
+	Help  = "A switch to have PciBus Driver skip Option ROM handling.\it will just ignore it."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PCI_BUS_USE_PCI_PCIIO_FOR_OPTION_ROM"
+	Value  = "0"
+	Help  = "A switch to have PciBus Driver use PCI Io Protocol instance to copy\PCI Option ROM from Card to Memory Buffer.\If set to 'OFF' MemCpy32 assembly function used (significantly faster)."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PCIE_CRS_SUPPORT"
+	Value  = "0"
+	Help  = "A switch to have PciBus Driver Support Configuration Request Retry Status."
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "PCI_EXPRESS_GEN2_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "PCI_RB_COMBINE_MEM_PMEM_RESET"
+	Value  = "0"
+	Help  = "A switch to have PciBus Driver Reset Received from the\Host Bridge Driver EFI_PCI_HOST_BRIDGE_COMBINE_MEM_PMEM Allocation Attribute."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "LAUNCH_COMMON_INIT_ROUTINE_FIRST"
+	Value  = "0"
+	Help  = "A switch to have PciBus Driver control an order of PCI Porting Hooks."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "DONT_UPDATE_RB_RES_ASL"
+	Value  = "0"
+	Help  = "A switch to not update RB_RES.ASL place holders on ready to boot event."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "DONT_UPDATE_PEBS_IN_AML"
+	Value  = "0"
+	Help  = "A switch to not update PEBS place holders for PCI Express Base Address on ready to boot event."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PEBS"
+	Value  = "$(PCIEX_BASE_ADDRESS)"
+	Help  = "Pci Express Base Aliase to use in PCIeAccess.ASL"
+	TokenType = Integer
+	TargetASL = Yes
+	Token = "PCI_EXPRESS_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "PELN"
+	Value  = "$(PCIEX_LENGTH)"
+	TokenType = Integer
+	TargetASL = Yes
+	Token = "PCI_EXPRESS_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "AMI_MAX_NUMBER_OF_PCI_SEGMENTS"
+	Value  = "1"
+	Help  = "Defines number of PCI Segments supported"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PCI_WRITE_VID_DID"
+	Value  = "1"
+	Help  = "A switch to initiate Write transaction of VID DID register to recapture buses per PCI Express Base Specification, 2.2.6.2."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+PATH
+	Name  = "PCIBUS_DIR"
+End
+
+MODULE
+	Help  = "Includes PciBus.mak to Project"
+	File  = "PciBus.mak"
+End
+
+ELINK
+	Name  = "{ {0xACA9F304, 0x21E2, 0x4852, { 0x98, 0x75, 0x7F, 0xF4, 0x88, 0x1D, 0x67, 0xA5 }}, 0, NULL},"
+	Parent  = "AMITSE_HIDDEN_PAGE_LIST"
+	Help  = "Provide GUIDs of dynmaic formset to suppress. Terminate entry with comma"
+	Token = "PCI_SETUP_USE_APTIO_4_STYLE" "=" "0"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(PCIBUS_DIR)/PciDynamicSetup.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	Token = "PCI_SETUP_USE_APTIO_4_STYLE" "=" "0"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(PCIBUS_DIR)/PciDynamicSetup.uni"
+	Parent  = "SetupStringFiles"
+	Token = "PCI_SETUP_USE_APTIO_4_STYLE" "=" "0"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "AMI_ANY_DEV_HOOK_PCI_DEVICE_GET_SETUP_CONFIG"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "AMI_ANY_DEV_HOOK_PCI_DEVICE_SKIP"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "AMI_ANY_DEV_HOOK_PCI_DEVICE_PROGRAM"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "AMI_ANY_DEV_HOOK_PCI_DEVICE_GET_OPT_ROM"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "AMI_ANY_DEV_HOOK_PCI_DEVICE_ATTRIBUTES"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "AMI_ANY_DEV_HOOK_PCI_DEVICE_QUERY_PHASE"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "AMI_ANY_DEV_HOOK_PCI_READY_TO_BOOT"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "AMI_ANY_DEV_HOOK_PCIE_INIT_LINK"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "AMI_ANY_DEV_HOOK_PCIE_DEVICE_SET_ASPM"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "AMI_ANY_DEV_HOOK_PCIE_DEVICE_SET_LNK_SPEED"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "AMI_ANY_DEV_HOOK_HP_DEVICE_UPDATE_PADDING"
+	InvokeOrder = ReplaceParent
+End
+
+OUTPUTREGISTER
+	Name  = "APTIO_V_PCIINIT"
+	Path  = "Build"
+	File  = "PCIDXEINIT.h"
+End
+
+OUTPUTREGISTER
+	Name  = "APTIO_V_PCI_SETUP_VAR"
+	Path  = "Build"
+	File  = "PCISETUPVAR.H"
+	Token = "PCI_SETUP_USE_APTIO_4_STYLE" "=" "0"
+End
+
+INFComponent
+	Name  = "PciBus"
+	File  = "PciBus.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "UEFI_DRIVER"
+	Token = "AmiPciBusDxe_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "PciRootBridge"
+	File  = "PciRootBridge.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "AmiPciRootBridgeDxe_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "SmmPciRbIo"
+	File  = "SmmPciRbIo.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+    Token = "SMM_SUPPORT" "=" "1"
+    Token = "AmiPciRootBridgeDxe_SUPPORT" "=" "1"
+	Token = "AmiSmmPciRootBridgeIo_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "PciDynamicSetup"
+	File  = "PciDynamicSetup.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "PCI_SETUP_USE_APTIO_4_STYLE" "=" "0"
+End
+
+INFComponent
+	Name  = "PciDxeInit"
+	File  = "PciDxeInit.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "DXE_DRIVER"
+End
+
+PcdMapping
+	Name  = "AmiPcdMaxSegmentSupported"
+	GuidSpace  = "gAmiModulePkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	DataType  = "Uint32"
+	Value  = "$(AMI_MAX_NUMBER_OF_PCI_SEGMENTS)"
+	Offset  = 00h
+	Length  = 04h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "AmiPcdPcieBaseAddressBuffer"
+	GuidSpace  = "gAmiModulePkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	DataType  = "Pointer"
+	Value  = "{0x0,0x0,0x0,0xE0,0x0,0x0,0x0,0x0}"
+	Offset  = 00h
+	Length  = 08h
+	Help  = "Value must be byte sequence of AMI_MAX_NUMBER_OF_PCI_SEGMENTS UINT64 bit values in array./Length must be (sizeof(UINT64)*$(AMI_MAX_NUMBER_OF_PCI_SEGMENTS))"
+	TargetDSC = Yes
+End
+

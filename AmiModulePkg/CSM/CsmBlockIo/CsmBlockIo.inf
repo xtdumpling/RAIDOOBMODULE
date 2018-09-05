@@ -1,0 +1,56 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = CsmBlockIo
+  FILE_GUID                      = 25ACF158-DD61-4e64-9A49-55851E9A26C7
+  MODULE_TYPE                    = UEFI_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = CsmBlockIoEntryPoint
+
+[Sources]
+  CsmBlockIo.c
+  CsmBlockIo.h
+  CsmEdd.h
+  CsmInt13.c
+  CsmBlockIoComponentName.c
+
+[Packages]
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+
+[Protocols]
+  gEfiLegacyBiosProtocolGuid
+  gEfiLegacyRegion2ProtocolGuid
+  gEfiPciIoProtocolGuid
+  gEfiLegacyBiosExtProtocolGuid
+  gEfiBlockIoProtocolGuid
+  gEfiDriverBindingProtocolGuid
+  gEfiIdeControllerInitProtocolGuid
+  gEfiLegacy8259ProtocolGuid
+  gEfiComponentNameProtocolGuid
+  gEfiDevicePathProtocolGuid
+
+[Guids]
+  gAmiCsmThunkDriverGuid
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  AmiDxeLib
+
+[Depex]
+  gEfiLegacyBiosProtocolGuid

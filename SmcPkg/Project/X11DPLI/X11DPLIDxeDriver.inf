@@ -1,0 +1,72 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.00
+#       Bug fixed:   Initialize revision
+#       Reason:      Clone from Sample folder.
+#       Auditor:     YuLin Yang
+#       Date:        Nov/21/2016
+#
+#****************************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = X11DPLIDxeDriver
+  FILE_GUID                      = 2dcbe49a-1e5b-486e-bc23-48156b8282c9
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = X11DPLIDxeDriverInit
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+#  
+
+[Sources]  
+  X11DPLIDxeDriver.c
+  X11DPLIDxeDriver.h	
+  HideSetupItem.c
+  HideSetupItem.h
+
+[Packages]
+  MdePkg/MdePkg.dec   
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec 
+  AmiModulePkg/AmiModulePkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec  
+  SmcPkg/SmcPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  AmiDxeLib
+  AmiCspLib
+  PcdLib
+  SmcLib
+  
+[Pcd]  
+  gSmcPkgTokenSpaceGuid.PcdSmcOBLan1BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBLan2BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBLan3BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBLan4BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcMultiFuncLanChip1
+
+[Guids]
+  gProjectOwnProtocolGuid  
+  
+[Protocols]  
+  #gEfiSmbusHcProtocolGuid
+  gSetupModifyProtocolGuid
+  
+[Depex]
+  TRUE
+  
+#**********************************************************************

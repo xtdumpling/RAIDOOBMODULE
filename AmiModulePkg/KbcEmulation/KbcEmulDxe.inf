@@ -1,0 +1,65 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+## @file KbcEmulDxe.inf
+#  Provides functions to enable and install the Trap handle protocol for port 60/64.
+##
+[Defines]
+  INF_VERSION                    = 0x00010005
+  VERSION_STRING                 = 1.0
+  BASE_NAME                      = KbcEmulDxe
+  MODULE_TYPE                    = DXE_DRIVER
+  FILE_GUID                      = 81A4F912-E72F-44ed-8931-16A9FE9650E0
+  ENTRY_POINT                    = EmulationDxeEntryPoint
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+
+[Sources]
+  KbcEmulDxe.c
+  KbcEmulDxeLib.c
+  KbcEmulDxe.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+
+[LibraryClasses]
+  AmiDxeLib
+  UefiDriverEntryPoint
+
+[Protocols]
+  gEfiCpuIo2ProtocolGuid
+  gNonSmmEmul6064TrapProtocolGuid
+  gEfiDevicePathProtocolGuid
+  gEfiLoadedImageProtocolGuid
+
+[Depex]
+  gEfiPciRootBridgeIoProtocolGuid AND
+  gEfiCpuIo2ProtocolGuid
+
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+
+

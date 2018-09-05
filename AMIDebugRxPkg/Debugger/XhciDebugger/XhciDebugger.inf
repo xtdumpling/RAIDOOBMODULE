@@ -1,0 +1,56 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = XhciDebugger
+  FILE_GUID                      = 30CC8A21-0476-4c80-B5C5-B26947E1891D
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = DbgXhciInitialize
+  
+[Sources]
+  XhciDebugger.c		
+
+[LibraryClasses]
+  PeimEntryPoint
+  PeiServicesLib
+  HobLib
+  AmiPeiLib
+  BaseMemoryLib
+  DebugAgentLib
+#  PeiDebugXportLib
+
+[Ppis]
+  gPeiUsbIoPpiGuid
+  gPeiUsbHostControllerPpiGuid
+
+[Guids]
+
+
+[Packages]
+  AmiModulePkg/AmiModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  AMIDebugRxPkg/AMIDebugRxPkg.dec
+
+[Depex]
+  gEfiPeiMemoryDiscoveredPpiGuid AND
+  gEfiPeiCpuIoPpiInstalledGuid AND
+  gEfiPciCfg2PpiGuid
+
+

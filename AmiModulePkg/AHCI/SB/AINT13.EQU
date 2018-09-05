@@ -1,0 +1,641 @@
+
+        TITLE	aint13.equ - Equates and structures for AHCI INT13
+
+;****************************************************************************
+;****************************************************************************
+;**                                                                        **
+;**             (C)Copyright 1985-2014, American Megatrends, Inc.          **
+;**                                                                        **
+;**                          All Rights Reserved.                          **
+;**                                                                        **
+;**                 5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093      **
+;**                                                                        **
+;**                          Phone (770)-246-8600                          **
+;**                                                                        **
+;****************************************************************************
+;****************************************************************************
+
+
+;****************************************************************************
+;
+;************************************************************************;
+;*                                                                      *;
+;*      Intel(r) Restricted Secret                                      *;
+;*                                                                      *;
+;*      Support for and Booting from SATA devices in AHCI mode          *;
+;*                                                                      *;
+;*      Enterprise Software Technology                                  *;
+;*                                                                      *;
+;*      Copyright (c) 2003-2005 Intel Corporation                       *;
+;*                                                                      *;
+;*      Version iSrc03x                                                 *;
+;*                                                                      *;
+;*  This information is provided in connection with	Intel products.     *;
+;*  No license, express or implied, by estoppel or otherwise, to        *;
+;*  any intellectual property rights is granted by this information     *;
+;*  or by the sale of Intel products. Except as provided in Intel's     *;
+;*  Terms and Conditions of Sale for such products, Intel assumes       *;
+;*  no liability whatsoever, and Intel disclaims any express or         *;
+;*  implied warranty, relating to sale and/or use of Intel products     *;
+;*  including liability or warranties relating to fitness for a         *;
+;*  particular purpose, merchantability, or infringement of any         *;
+;*  patent, copyright or other intellectual property right. Intel       *;
+;*  products are not intended for use in medical, life saving, or       *;
+;*  life sustaining applications.                                       *;
+;*  Intel retains the right to make changes to specifications and       *;
+;*  product descriptions at any time, without notice and may choose     *;
+;*  to develop product based on these designs.                          *;
+;*                                                                      *;
+;*  *Third-party brands and names are the property of their             *;
+;*  respective owners.                                                  *;
+;*                                                                      *;
+;************************************************************************;
+;*                                                                      *;
+;* REFERENCES	                                                        *;
+;*                                                                      *;
+;* Revision Title                                                       *;
+;* ==================================================================== *;
+;* 1.0      Serial ATA Advanced Host Controller Interface (AHCI)        *;
+;*                                                                      *;
+;************************************************************************;
+;
+;-------------------------------------------------------------------------
+;       IMPLEMENTATION RELATED EQUATES AND STRUCTURES
+;-------------------------------------------------------------------------
+; SATA Device Information Table
+;   1. Contains the AHCI related data for the device
+;   2. Built during POST
+;   3. Each device has its own table
+DEV_INFO_STRUC  STRUC
+  bDetectType       db  ?   ;Detected Device Type (Details Below)
+  bInstalledType    db  ?   ;Device Installed Type (See Below)
+  wStatus           dw  ?   ;Bit-mapped device Init Status (Details Below)
+  bInt13Num         db  ?   ;Device# for INT13 (8xh)
+  bPMNum            db  ?   ;Port Multiplier Port #
+  bPortNum          db  ?   ;SATA Port# (0-Based) where device is present
+  wBusDevFunc       dw  ?   ;Bus#, Dev#, Func# of Controller
+  bControllerNo     db  ?   ;Ahci Controller number
+  dHbaBase          dd  ?   ;HBA Base Address of Generic Host Control Registers
+  dHbaCap           dd  ?   ;HBA Capabilities
+  dPortBase         dd  ?   ;Base Address of SATA port where device is present
+  bSelector         db  ?   ;Device selector value
+  bIrq              db  ?   ;IRQ used by this device
+  bInfoFlag         db  ?   ;Information Flag (details below)
+  bSectorSizeN      db  ?   ;N value of Sector size 2^N
+                            ;For 512bytes sector, N = 9
+  wSmartInfo        dw  ?   ;SMART info (details below)
+  qTotalSectors     dq  ?   ;Total #of sectors in device (1-based)
+  wXferCount        dw  ?   ;Device transfer count. Used for ATAPI packer size
+  bBlockInfo        db  ?
+  b32BitInfo        db  ?
+  bUDMAInfo         db  ?
+  bPIOInfo          db  ?
+DEV_INFO_STRUC	ENDS
+
+; Details of bDetectType
+DETECT_NO           EQU 00h ;Not detected
+DETECT_ATA          EQU 01h ;device detected is ATA
+DETECT_ATAPI_CD     EQU 02h ;device detected is ATAPI CDROM
+DETECT_ATAPI_ARMD   EQU 03h ;device detected is ATAPI ARMD
+
+; Details of bInstalledType
+INSTALLED_NO        EQU 00h ;Not installed
+INSTALLED_HDD       EQU 01h ;device installed as ATA HDD
+INSTALLED_CDROM     EQU 02h ;device installed as ATAPI CDROM
+INSTALLED_ARMD_FDD  EQU 03h ;device installed as ATAPI ARMD FDD
+INSTALLED_ARMD_HDD  EQU 04h ;device installed as ATAPI ARMD HDD
+
+; Details of wStatus
+ST_SUCCESS              EQU 0001h   ;Bit 0 = 1, successful (device is installed in this case)
+ST_ID_DEV_ERR           EQU 0002h   ;Bit 1 = 1, Identify Device Failed
+ST_DEV_GEOMETRY_ERR     EQU 0004h   ;Bit 2 = 1, Invalid Device Geometry
+ST_INIT_DEV_PARAM_ERR   EQU 0008h   ;Bit 3 = 1, Init device parameter failed
+ST_RECALI_ERR           EQU 0010h   ;Bit 4 = 1, Recalibrate failed
+ST_SMART_ERR            EQU 0020h   ;Bit 5 = 1, SMART failed
+ST_VERIFY_ERR           EQU 0040h   ;Bit 6 = 1, Verify failed
+ST_FREEZE_LOCK_ERR      EQU 0080h   ;Bit 7 = 1, Security Freeze Lock failed
+ST_PORT_RESET_ERR       EQU 0100h   ;Bit 8 = 1, Port Reset failed
+ST_SMART_EVENT          EQU 0200h   ;Bit 9 = 1, SMART Event was found
+ST_RAID_SUPPORT_ERR     EQU 0400h   ;Bit 10 = 1, Device will be supported by RIAD OROM, not AHCI OROM (ex. HDD)
+                                    ;Bit 14-11,  Reserved for future use
+ST_NOT_SUPPORT_ERR      EQU 8000h   ;Bit 15 = 1, Device not supported
+
+; Details of bInfoFlag, a bit-mapped field
+INFO_REMOVABLE  EQU 01h ;Bit 0 = 1, Device supports removable media
+INFO_LBA_48     EQU 02h ;Bit 1 = 1, 48bit LBA enabled
+INFO_IRQ        EQU 04h ;Bit 2 = 1, Device uses IRQ
+                        ;0, Device uses DRQ
+                        ;Bit 6-2,   Reserved
+INFO_ATAPI      EQU 80h ;Bit 7 = 1, ATAPI Device
+                        ;0, ATA Device
+
+; Details wSmartInfo
+AHCI_SMART_SUPPORT          EQU 1 shl 0 ;Bit 0 = 0/1, SMART (Not Supported/Supported)
+AHCI_SMART_ENABLE           EQU 1 shl 1 ;Bit 1 = 0/1, SMART (Disabled/Enabled)
+AHCI_SMART_EN               EQU 1 shl 1 ;Bit 1 = 0/1, SMART (Disabled/Enabled)
+AHCI_SMART_STATUS           EQU 1 shl 2 ;Bit 2 = 0/1, Device Status Good/Bad
+AHCI_SMART_COMMAND_STATUS   EQU 1 shl 7 ;Bit 7 = 0/1, SMART Execution Successful/Error
+                                        ;Bit 15-8,    Reserved
+
+; Details qTotalSectors
+; This contains the total #of sectors (1-based) in the device.
+
+;-------------------------------------------------------------------------
+; Table containing the pointers to different tables
+;   1. Initialized during POST
+DEV_PTR_STRUC   struc
+  bInt13Num         db  ?   ; INT13 Drive# for this Port
+  bPMnum            db  ?   ; Port Multipier port #
+  bPortNum          db  ?   ; Port# (0-based) on Controller
+  dParamTablePtr    dd  ?   ; Ptr to device parameter table
+  dInfoTablePtr     dd  ?   ; Ptr to device info table
+DEV_PTR_STRUC       ends
+
+;-------------------------------------------------------------------------
+                        ;(amiahcix-)>
+;;;;; INIT_DEV_FUNC_STRUC: Used in INIT_DEVICE_TABLE while initializing device.
+;;;;INIT_DEV_FUNC_STRUC struc
+;;;;  wFunction dw  ?   ; Routine to be executed
+;;;;  wStatus   dw  ?   ; Bit-mapped status if error
+;;;;  bAttrib   db  ?   ; Attribute (details below)
+;;;;INIT_DEV_FUNC_STRUC ends
+;;;;
+;;;;; Details of bAttribute field
+;;;;ATTRIB_ERROR        equ 01h ;Bit-0 = 0/1, Non-Fatal/Fatal Error
+;;;;;                   ;Bit7-1.....Reserved for future use
+                        ;<(amiahcix-)
+;-------------------------------------------------------------------------
+; Device parameter table: Same to hdparam.equ
+DEV_PARAM_STRUC struc
+  wMAXCYL       dw  ?   ; maximum no. of cylinders..INT13 interface. (logical)
+  bMAXHN        db  ?   ; maximum no. of heads..INT13 interface. (logical)
+  bLBASIG       db  ?   ; LBA signature
+  bLBASPT       db  ?   ; #of sectors per track drive is configured for. (physical)
+  wWPCYL        dw  ?   ; start write precomp cyl no.
+  bReserved     db  ?   ; reserved
+  bCBYTE        db  ?   ; bit 3 for more than 8 heads
+  wLBACYL       dw  ?   ; #of cylinders drive is configured for. (physical)
+  bLBAHD        db  ?   ; #of heads drive is configured for. (physical)
+  wLANDZ        dw  ?   ; Landing zone
+  bMAXSN        db  ?   ; no. of sectors per track..INT13 interface. (logical)
+  bLBACHK       db  ?   ; checksum..LBA
+DEV_PARAM_STRUC ends
+
+; Details of bSignature field:  A signature Axh indicates that the table is translated.
+DPTBL_SIG_MASK      equ 0F0h
+lba_signature       equ 0A0h    ;A0h signature indicating LBA translation
+
+;-------------------------------------------------------------------------
+; Return codes from INT13
+R_SUCCESS                   EQU 00h     ;No error (i.e. Successful)
+R_INVALID                   EQU 01h     ;Invalid function request
+R_MARK_NOT_FOUND            EQU 02h     ;Address mark not found
+R_WRITE_PROTECT_ERR         EQU 03h     ;Write protect error
+R_SECTOR_NOT_FOUND          EQU 04h     ;Sector not found
+R_RESET_FAIL                EQU 05h     ;Reset failed
+R_MEDIA_CHANGED             EQU 06h     ;Media changed
+R_DRV_PARAM_ACT_FAIL        EQU 07h     ;Drive parameter activity failed
+R_DMA_OVERRUN               EQU 08h     ;DMA overrun on operation
+R_DATA_BOUNDARY_ERR         EQU 09h     ;Data boundary error
+R_BAD_SECTOR                EQU 0Ah     ;Bad sector flag detected
+R_BAD_CYL                   EQU 0Bh     ;Bad cylinder detected
+R_INVALID_NUM_OF_SECTOR     EQU 0Dh     ;Invalid #of sectors on format
+R_CTRL_DATA_ADDR_MARK       EQU 0Eh     ;Control data address mark detected
+R_DMA_ARBIT_LEVEL           EQU 0Fh     ;DMA arbitration level out of range
+R_UNCORRECTABLE_ERR         EQU 10h     ;Uncorrectable ECC/CRC error
+R_CORRECTED_DATA_ERR        EQU 11h     ;ECC corrected data error
+R_GENERAL_CTRLER_FAIL       EQU 20h     ;General controller failure
+R_SEEK_FAIL                 EQU 40h     ;Seek operation failed
+R_TIME_OUT                  EQU 80h     ;Time out
+R_DRV_NOT_READY             EQU 0AAh    ;Drive not ready
+R_UNDEFINED_ERR             EQU 0BBh    ;Undefined error occurred
+R_WRITE_FAULT               EQU 0CCh    ;Write fault on selected drive
+R_STATUS_ERR                EQU 0E0h    ;Error Register = 0
+R_SENSE_FAIL                EQU 0FFh    ;Sense Operation failed
+
+;----------------------------------------------------------------------------
+; Timeout for different operations
+SEC_TIMES       EQU 00h ;Count for 1sec using refresh signal
+MAX_TIMES       EQU 05h ;Max time out in seconds
+
+;----------------------------------------------------------------------------
+IDENTIFY_BUFFER_LENGTH  EQU 200h    ;512 bytes for Identify device command
+SECTOR_LENGTH           EQU 200h    ;512 bytes sector size
+SECTOR_LENGTH_N         EQU 9       ;2^n bytes sector size
+SELECTOR_NON_LBA        EQU 0A0h    ;Master without LBA
+SELECTOR_LBA            EQU 0E0h    ;Master with LBA
+MAX_STND_XFER_SECTOR    EQU 080h    ;#of sectors that can be xferred in stnd INT13 func
+MAX_EXTD_XFER_SECTOR    EQU 07Fh    ;#of sectors that can be xferred in extd INT13 func
+BLOCK_SIZE              EQU 800h    ;#of bytes of each transefer from CDROM
+BLOCK_SIZE_N            EQU 00Bh    ;N, block size 2^N
+
+;-------------------------------------------------------------------------
+; Different data area relevant to Hard Disk in BIOS DATA SEGMENT (0040h)
+;WINCH_STATUS       EQU 74h ;40:74h = DB..Last operation status
+;WINCH_NUMBER       EQU 75h ;40:75h = DB..#of HDD installed by BIOS
+;WINCH_STAT_REG     EQU 8Ch ;40:8Ch = DB..Content of status register
+;WINCH_ERROR_REG    EQU 8Dh ;40:8Dh = DB..Content of error register
+;WINCH_INT_FLAG     EQU 8Eh ;40:8Eh = DB..Used for interrupt occurrence
+
+;-------------------------------------------------------------------------
+; ATA/ATAPI commands
+DEVICE_DIAG_CMD         EQU 090h    ;Execute device diagnostics command
+IDENTIFY_DEVICE_COMMAND EQU 0ECh
+ATAPI_IDENTIFY_DEV_CMD  EQU 0A1h    ;ATAPI identify device command
+ATAPI_SIGNATURE         EQU 0EB14h  ;ATAPI Signature
+MULTIPLIER_SIGNATURE    EQU 9669h   ;Port Multiplier Signature
+ATA_SIGNATURE           EQU 0000h   ;ATA Signature
+IDLE_IMMEDIATE          EQU 0E2h    ;IDLE IMMEDIATE Non-data
+
+READ_DMA_CMD            EQU 0C8h    ;Read DMA command
+READ_DMA_EXT_CMD        EQU 025h    ;Read DMA Ext command
+READ_MULTIPLE_CMD       EQU 0C4h    ;Read Multiple command
+READ_MULTIPLE_EXT_CMD   EQU 029h    ;Read Multiple Ext command
+READ_SECTORS_CMD        EQU 020h    ;Read Sector(s) command
+READ_EXT_CMD            EQU 024h    ;Read Sector(s) Ext command
+
+WRITE_DMA_CMD           EQU 0CAh    ;Write DMA command
+WRITE_DMA_EXT_CMD       EQU 035h    ;Write DMA Ext command
+WRITE_MULTIPLE_CMD      EQU 0C5h    ;Write Multiple command
+WRITE_MULTIPLE_EXT_CMD  EQU 039h    ;Write Multiple Ext command
+WRITE_SECTORS_CMD       EQU 030h    ;Write Sector(s) command
+WRITE_EXT_CMD           EQU 034h    ;Write Sector(s) Ext command
+
+READ_VERIFY_CMD         EQU 040h    ;Verify Sector(s) command
+EXTD_READ_VERIFY_CMD    EQU 042h    ;Verify Sector(s) Ext command
+
+SET_MULTIPLE_CMD        EQU 0C6h    ;Set multiple mode command
+
+ATAPI_RESET_COMMAND     EQU 008h    ;ATAPI reset command
+
+SMART_COMMAND                       EQU 0B0h	;SMART Enable Operations command
+SMART_READ_DATA                     EQU 0D0h
+SMART_ATTRIBUTE_AUTOSAVE            EQU 0D2h
+SMART_SAVE_ATTRIBUTE_VALUES         EQU 0D3h
+SMART_EXECUTE_OFFLINE_IMMEDIATE     EQU 0D4h
+SMART_READ_LOG                      EQU 0D5h
+SMART_WRITE_LOG                     EQU 0D6h
+;SMART_ENABLE                       EQU 0D8h
+SMART_DISABLE                       EQU 0D9h
+SMART_RETURN_STATUS                 EQU 0DAh
+;AHCI_HDS -->
+SECURITY_SET_CMD                    equ 0F1h
+SECURITY_UNLOCK_CMD                 equ 0F2h
+SECURITY_DISABLE_CMD                equ 0F6h
+;AHCI_HDS <--
+
+SECURITY_FREEZE_LOCK                EQU 0F5h
+
+ATAPI_SOFT_PACKET_CMD               EQU 0A0h    ;ATAPI command packet value
+;      Available Packet commands
+ATAPI_READ_10_CMD           EQU 028h    ;ATAPI read command packet value
+ATAPI_REQUEST_SENSE_CMD     EQU 03h     ;ATAPI Request sense
+ATAPI_NOP_CMD               EQU 00h     ;ATAPI Request sense
+;      Size of "Request Sense Packet" buffer
+ATAPI_REQ_SENSE_DATA_SIZE   EQU 18      ;ATAPI controller request sense data
+
+;-------------------------------------------------------------------------
+; Input packet structure used in Extended INT13 functions
+DISK_ADDRESS_PACKET_STRUC   struc
+    bSize           db  ?   ; Packet size in bytes
+    bReserved1      db  ?   ; Reserved (set to 0)
+    bBlockCount     db  ?   ; #of blocks to be transferred
+    bReserved2      db  ?   ; Reserved (set to 0)
+    dPtrXferBuffer  dd  ?   ; Segment:Offset of transfer buffer
+    qLBA            dq  ?   ; Selected LBA
+DISK_ADDRESS_PACKET_STRUC   ends
+
+DISK_ADDRESS_PACKET_SIZE    equ	size DISK_ADDRESS_PACKET_STRUC
+
+; Details of bSize
+; It contains size of the packet in bytes including this field. The size is
+; 16bytes. If size is less than 16bytes, the function should return error
+; with AH = 01h, and CF = 1. If packet size is greater than 16bytes, the
+; function ignores the additional information and executes.
+;
+; Details of bXferCount
+; On input, it contains #of sectors to be transferred. On output, it returns
+; #of sectors actually transferred. If the input value is 0, the function
+; returns successful without any data being transferred.
+;
+; Details dPtrXferBuffer
+; It contains address of the data xfer buffer in segment:offset format.
+;
+; Details qStartLba
+; It contains the absolute LBA of the device. The value can be from 0 to
+; (total #of sectors - 1).
+;-------------------------------------------------------------------------
+; Result Buffer in INT13 Function 48h
+;ExtI13DriveInfo    STRUC
+;  wBufferSize      DW  ?           ;Input buffer size in bytes
+;  wInfoFlags       DW  ?           ;Information flags
+;  dNumCyls         DD  ?           ;#of cylinders (1-based)
+;  dNumHeads        DD  ?           ;#of heads (1-based)
+;  dNumSecs         DD  ?           ;#of sectors per track (1-based)
+;  qTotalSecs       DQ  ?           ;#of sectors on disk (1-based)
+;  wSectorSize      DW  ?           ;Sector size in bytes
+;  pExtTable        DD  ?           ;Ptr to extd parameter table
+;  wDevPathID       DW  ?           ;Key for Device Path Extension
+;  bDevPathLength   DB  ?           ;Device path info length (including key) in bytes
+;  bReserved        DB  ?           ;Reserved (set to 00h)
+;  wReserved        DW  ?           ;Reserved (set to 0000h)
+;  dHostBus         DD  ?           ;Host Bus Type in ASCII
+;  aInterfaceType   DB  8 DUP (?)   ;Interface Type in ASCII
+;  aInterfacePath   DB  8 DUP (?)   ;Interface Path
+;  aDevPath         DB  8 DUP (?)   ;Device Path
+;  bReserved1       DB  ?           ;Reserved (set to 00h)
+;  bDevPathChksum   DB  ?           ;Checksum of device path info including wKey field
+;ExtI13DriveInfo    ENDS
+
+; Details of wSize field
+;  It contains the maximum size of the supplied buffer in bytes.
+;    If buffer size <  1E, function does not return dPtrDpte field.
+;    If buffer size >= 1E, it should be set to 1E on exit.
+;    If 1A <= buffer size <= 1D, it should be set to 1A on exit.
+;    If buffer size <  1A, function returns error.
+; Details of wInfoFlag field
+;  Bit-0 = 1, DMA boundary errors handled transparently
+;  Bit-1 = 1, Device geometry (in dCylinder, dHead, dSpt fields) is valid
+;  Bit-2 = 1, Removable Media (Bit6-4 are NOT valid if this Bit-2 = 0)
+;  Bit-3 = 1, Device supports write with verify on
+;  Bit-4 = 1, Device supports media change notification
+;  Bit-5 = 1, Media can be locked
+;  Bit-6 = 1, Device geometry is set to maximum and no media is present when
+;      this Bit-6 is set to 1
+;  Bit-7 = 1, INT13 Function 50h supported
+;  Bit15-8....Reserved
+; Details of dCylinder field
+;  It contains physical #of cylinders (1-based). INT13 Function 08h returns
+;  logical #of cylinders.
+; Details of dHead field
+;  It contains physical #of heads (1-based). INT13 Function 08h returns
+;  logical #of heads.
+; Details of dSpt field
+;  It contains physical #of sectors/track (1-based). INT13 Function 08h returns
+;  logical #of sectors/track.
+; Details of qTotalSector field
+;  It contains the total #of sectors (1-based) in the device. If total #of
+;  sectors > 15482880 (decimal), then bit-1 of wInfoFlag should be set to 0
+;  indicating device geometry is not valid.
+; Details dPtrDpte field
+;  This field is present only when INT13 Function 41h returns a 1 in bit-2 of
+;  output CX.
+; Details of wKey field
+;  It contains BEDDh signature indicating presence of device path information.
+; Details of bDevicePathInfoLength
+;  It contains the length of device path information. The length includes the
+;  wKey field.
+; Details of bHostBusType field
+;  It contains ASCII string identifying Host Bus.
+;   'PCI '  PCI Local Bus           50 43 49 20
+;   'ISA '  Legacy 16bit fixed bus  49 53 41 20
+;   'PCIX'  PCI-X Bus               50 43 49 58
+;   'XPRS'  PCI Express             58 50 52 53
+; Details of bInterfaceType field
+;  It contains ASCII string identifying Interface
+;   'ATA     '  Device using ATA command    41 54 41 20 20 20 20 20
+;   'ATAPI   '  Device using ATAPI commands 41 54 41 50 49 20 20 20
+;   'USB     '  USB Mass Storage device     55 53 42 20 20 20 20 20
+;   'SATA    '  Serial ATA                  53 41 54 41 20 20 20 20
+; Details of qInterfacePath field (offset 30h to 37h)
+;  The content depends on Host Bus Type (bHostBusType field)
+;  Host Bus     Offset  Type    Content
+;  ISA          30h     Word    16bit base address
+;               32h     Word    Should be 0000h
+;               34h     Dword   Should be 00000000h
+;  PCI          30h     Byte    PCI Bus Number
+;               31h     Byte    PCI Slot Number
+;               32h     Byte    PCI Function Number
+;               33h     Byte    Channel Number (FF if not used)
+;               34h     Dword   Should be 00000000h
+; Details of bDevicePath field (offset 38h to 47h)
+;  The content depends on Interface Type (bInterfaceType field)
+;  Interface    Offset  Type    Content
+;  SATA         38h     Byte    SATA Port# (0-based)
+;               39h-57h 15byte  Set to 0
+; Details of bChecksum field (offset 49h)
+;  It contains the checksum of device path information including wKey field.
+;  The byte addition of all bytes in device path information including the
+;  checksum (offset 1Eh-49h) is 00.
+;-------------------------------------------------------------------------
+; Extra Functions that are called using interface similar to INT13
+API_DEV_RESET_FUNC      equ 00h ; Reset Device
+API_PORT_RESET_FUNC     equ 01h ; Reset Port
+API_DEVICE_ID_FUNC      equ 02h ; Identify device data
+API_ATAPI_READ_FUNC     equ 03h ; Read ATAPI device
+API_SMART_ENABLE_FUNC   equ 04h ; Enable SMART feature
+API_SMART_PROMPT_FUNC   equ 05h ; Prop SMART events for errors
+API_FREEZE_LOCK_FUNC    equ 06h
+API_SMART_DISABLE_FUNC  equ 07h ;Disable SMART feature  ;(EIP9252+)
+                                ;(EIP9321+)>>> Add SMART Function
+API_RETURN_SMART_STATUS_FUNC        equ 08h ;Return SMART status
+API_SMART_READ_DATA_FUNC            equ 09h ;Read SMART Data
+API_SMART_SHORT_SELFTEST_FUNC       equ 0Ah ;SMART Execute Off-Line Immediate
+API_SMART_EXTENDED_SELFTEST_FUNC    equ 0Bh ;SMART Execute Off-Line Immediate
+                                            ;<<<(EIP9321+)
+
+;-------------------------------------------------------------------------
+; Runtime Attribute: bit-mapped information
+A_EBDA_USED     equ 01h ; Bit-0 = 1, Use EBDA memory for CLCTFIS area
+                        ; Bit-1...Reserved for internal use
+                        ; Bit7-2..Reserved for future use
+
+;-------------------------------------------------------------------------
+;	Equates and structures of Virtual DMA Services (VDS)
+;-------------------------------------------------------------------------
+; DDS (DMA Descriptor structure): Used to Lock/Unlock DMA region. The fields
+;   namely, dRegionSize, dRegionOffset, wRegionSegment need to be
+;   initialized with proper values before calling Lock function. The Lock
+;   function fills wBufferId and dRegionPhysicalAddress fields. The same
+;   DDS, as returned by Lock function, needs to be used while calling
+;   UnLock function.
+DDS_STRUC   struc
+  dRegionSize               dd  ?   ; Region Size in bytes (filled by caller)
+  dRegionOffset             dd  ?   ; Region Offset (filled by caller)
+  wRegionSegment            dw  ?   ; Region Segment (filled by caller)
+  wBufferId                 dw  ?   ; Buffer ID (filled by VDS function)
+  dRegionPhysicalAddress    dd  ?   ; Physical address of region (filled by VDS function)
+DDS_STRUC   ends
+
+; EDDS (Extended DMA Descriptor structure): EDDS contains EDDS Header followed
+;   by one or more EDDS entry. The maximum #of entries that EDDS can
+;   accommodate is limited by the space available for EDDS. In this
+;   implementation, space for maximum 16 entries are available in EDDS.
+MAX_NO_OF_EDDS_ENTRY	equ	16	; Max #of entries EDDS can accommodate
+
+EDDS_HEADER_STRUC   struc
+  dRegionSize           dd  ?   ; Region Size in bytes (filled by caller)
+  dRegionOffset         dd  ?   ; Region Offset (filled by caller)
+  wRegionSegment        dw  ?   ; Region Segment (filled by caller)
+  wReserved             dw  ?   ; Reserved (filled by caller)
+  wNoOfAvailableEntry   dw  ?   ; #of entries available in EDDS (filled by caller)
+  wNoOfUsedEntry        dw  ?   ; #of entries used in EDDS (filled by VDS function)
+EDDS_HEADER_STRUC   ends
+
+EDDS_ENTRY_STRUC    struc
+  dRegionPhysicalAddress    dd  ?   ; Physical address of region (filled by VDS function)
+  dRegionSize               dd  ?   ; Region size in bytes (filled by VDS function)
+EDDS_ENTRY_STRUC    ends
+
+;-------------------------------------------------------------------------
+; EQUATES FOR COMMAND LIST, COMMAND TABLE, FIS, DDS, EDDS
+; CLCTFIS area is in EBDA, both DDS and EDDS are in EBDA.
+;-------------------------------------------------------------------------
+SIZE_CMD_LIST       equ 1024                            ; 1kbytes for command list
+SIZE_FIS            equ 0256                            ; 256bytes for FIS
+SIZE_CMD_TABLE      equ 0384                            ; 384bytes for command table
+;
+SIZE_DDS            equ size DDS_STRUC                  ; 16bytes for DDS
+SIZE_EDDS           equ size EDDS_HEADER_STRUC + \
+        (MAX_NO_OF_EDDS_ENTRY * (size EDDS_ENTRY_STRUC)); 272bytes for EDDS
+
+SIZE_ALIGN_BUFFER   equ BLOCK_SIZE+2                    ;(v1.07)
+
+SIZE_CLCTFIS_AREA_K equ 4                               ; CLCTFIS area in unit of 1k in system memory/EBDA
+SIZE_CLCTFIS_AREA_B equ SIZE_CLCTFIS_AREA_K*1024        ; CLCTFIS area in bytes in system memory/EBDA
+
+; Equates for start offset of different areas
+; Command List  at offset 0000h, FIS at offset 0400h, Command Table at
+; offset 0500h.
+START_CMD_LIST      equ 0000h                           ; Command List must be 1kbyte aligned
+START_FIS           equ START_CMD_LIST+SIZE_CMD_LIST    ; FIS must be 256byte aligned
+START_CMD_TABLE     equ START_FIS+SIZE_FIS              ; Command table must be 128byte aligned
+START_DDS           equ START_CMD_TABLE+SIZE_CMD_TABLE  ; Start of DDS
+START_EDDS          equ START_DDS+SIZE_DDS              ; Start of EDDS
+START_ALIGN_BUFFER  equ START_EDDS+SIZE_EDDS            ; Start of DMA Alignment Buffer
+START_LOCAL_BUFFER  equ START_ALIGN_BUFFER+SIZE_ALIGN_BUFFER    ; Start of Local Buffer(v1.07)
+
+;-------------------------------------------------------------------------
+;       INT13 FUNCTION TABLE STRUCTURE
+;-------------------------------------------------------------------------
+AI13_FUNC_STRUC struc
+  bFuncNum      db  ?   ; Function#
+  wFuncProc     dw  ?   ; Offset of Execution routine
+AI13_FUNC_STRUC ends
+
+;-------------------------------------------------------------------------
+;       EQUATES OF DIFFERENT PARAMETERS IN STACK
+;-------------------------------------------------------------------------
+;
+; Stack equates for PUSH GS/PUSH FS/PUSH ES/PUSH DS/PUSHAD
+; after allocating N bytes in stack
+;
+; GS, FS, ES, DS positions in stack PUSH    GS
+;   PUSH    FS
+;   PUSH    ES
+;   PUSH    DS
+;   PUSHAD
+;   sub     sp, SIZE_AHCI_INT13_MISC_STACK
+;
+TASKF_STRUC     STRUC
+  CmdListBase           dd  ?   ;32bit Command List base address
+  CmdTableBase          dd  ?   ;32bit Command Table base address
+  FisRecBase            dd  ?   ;32bit FIS Receive base address
+  HbaBase               dd  ?   ;32bit HBA Base address
+  CmdListPtr            dd  ?   ;Ptr (Seg:Off) to Command List
+  CmdTablePtr           dd  ?   ;Ptr (Seg:Off) to Command Table
+  FisRecPtr             dd  ?   ;Ptr (Seg:Off) to FIS Receive
+  DdsPtr                dd  ?   ;Ptr (Seg:off) to DDS
+  EddsPtr               dd  ?   ;Ptr (Seg:off) to EDDS
+  DevInfoTablePtr       dd  ?   ;Ptr (Seg:off) to Device Info Table
+  PortNum               db  ?   ;Port# (0-based) on Controller
+  bControllerNo         db  ?
+  Selector              db  ?   ;Device Selector
+  InfoFlag              db  ?   ;Device Info Flag
+  RequestedSectorCount  db  ?   ;#of sector(s) access requested
+  AccessedSectorCount   db  ?   ;#of sector(s) actually accessed
+  CmdSlotMask           db  ?   ;Bit-mask of slot(s) used in command list
+  CmdSlotNum            db  ?   ;Slot# (0-based) used in command list
+  Attribute             db  ?   ;Bit-mapped attribute of misc information
+  Port21                db  ?   ;Content of Port21
+  PortA1                db  ?   ;Content of PortA1
+  ReservedDD1           dd  ?   ;Reserved
+  ReservedDD2           dd  ?   ;Reserved
+  ModUserBufferOfs      dw  ?   ;Offset of modified user buffer
+  ModUserBufferSeg      dw  ?   ;Segment of modified user buffer
+  ModUserBufferSize     dw  ?   ;Size in Dwords (1-based) of modified user buffer
+  OrgUserBufferOfs      dw  ?   ;Original segment of user buffer, to overcome unaligned user buffer
+  OrgUserBufferSeg      dw  ?   ;Original Offset of user buffer, to overcome unaligned user buffer
+  AlignBufferOfs        dw  ?   ;Offset to Alignment buffer, to be used for temp DMA alignment buffer
+  AlignBufferSeg        dw  ?   ;Segment to Alignment buffer, to be used for temp DMA alignment buffer
+TASKF_STRUC     ENDS
+
+PUSHAD_STRUC    STRUC
+
+  StackFS       dw  ?
+  StackDS       dw  ?
+  StackES       dw  ?
+  StackGS       dw  ?
+
+  StackEDI      dd  ?
+  StackESI      dd  ?
+  StackEBP      dd  ?
+  StackESP      dd  ?
+  StackEBX      dd  ?
+  StackEDX      dd  ?
+  StackECX      dd  ?
+  StackEAX      dd  ?
+
+PUSHAD_STRUC    ENDS
+
+;SIZE_AHCI_INT13_MISC_STACK equ AI13_STACK_BUFFER_STRUC.StackEDI    ; EDI is the last in PUSHAD
+
+
+S_AHCI_STACK    struc
+TaskFile    TASKF_STRUC     <>
+Stack       PUSHAD_STRUC    <>
+S_AHCI_STACK    ends
+
+                    ;(amiahcix+)>
+;----------------------------------------------------------------------------
+; AHCI error equates
+;----------------------------------------------------------------------------
+
+; 000h-03Fh : CIDs for CORE compnents.
+; Used for stBIOSError.wErrorCode[15:8]
+CID_AHCI        EQU 004h
+
+;---------------------------------------;
+; AHCI_x_ERR
+;---------------------------------------;
+EQU_AHCI_ERR    macro COUNT
+    AHCI_&COUNT&_ERR    EQU (CID_AHCI SHL 8) + COUNT
+endm
+
+AHCI_ACCESS    STRUCT
+    Index       dw  ?
+    Data        dw  ?
+    BaseAddress dd  ?
+AHCI_ACCESS    ENDS
+
+; builds 64 AHCI_x_ERR:
+
+; AHCI_0_ERR    EQU     (CID_AHCI SHL 8) + 0
+; AHCI_1_ERR    EQU     (CID_AHCI SHL 8) + 1
+; AHCI_2_ERR    EQU     (CID_AHCI SHL 8) + 2
+; AHCI_3_ERR    EQU     (CID_AHCI SHL 8) + 3
+;   .
+;   .
+ATA_COUNT = 0           ; starts from AHCI_0_err
+REPEAT 64               ; Max 64 AHCI errors
+        EQU_AHCI_ERR    %ATA_COUNT
+    ATA_COUNT = ATA_COUNT+1
+ENDM
+;---------------------------------------;
+                        ;<(amiahcix+)
+
+
+;-------------------------------------------------------------------------
+;****************************************************************************
+;****************************************************************************
+;**                                                                        **
+;**             (C)Copyright 1985-2014, American Megatrends, Inc.          **
+;**                                                                        **
+;**                          All Rights Reserved.                          **
+;**                                                                        **
+;**                 5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093      **
+;**                                                                        **
+;**                          Phone (770)-246-8600                          **
+;**                                                                        **
+;****************************************************************************
+;****************************************************************************

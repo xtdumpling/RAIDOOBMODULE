@@ -1,0 +1,51 @@
+TOKEN
+	Name  = "EnableLsiDecoding_SUPPORT"
+	Value  = "1"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+	Help  = "Main switch to enable EnableLsiIoDecoding support in Project"
+End
+
+TOKEN
+	Name      = "OEM_SKIP_SIBLING_OPROM_ID"
+	Value     = "{0x16A114E4}"
+	TokenType = Expression
+	TargetH   = Yes
+End
+
+#MODULE
+#	Help  = "Includes EnableLsiDecoding.mak to Project"
+#	File  = "EnableLsiDecoding.mak"
+#End
+
+#Path
+#	Name = "EnableLsiDecoding_DIR"
+#End
+
+ELINK
+	Name = "EnableLsiDecoding,"
+	Parent = "CSM_ENABLE_OEM_PCI_SIBLINGS_FUNCTIONS"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name = "SiblingOpromSkip,"
+	Parent = "CSM_CHECK_OEM_PCI_SIBLINGS_FUNCTIONS"
+	InvokeOrder = AfterParent
+End
+
+INFComponent
+	Name  = "EnableLsiDecoding"
+	File  = "EnableLsiDecoding.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "DXE_DRIVER"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "AmiModulePkg.EnableLsiDecoding"
+	Override  = "AmiModulePkg.CsmDxe"
+End
+

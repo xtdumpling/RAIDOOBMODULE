@@ -1,0 +1,1398 @@
+//***************************************************************************
+//**       (C)Copyright 1993-2017 Supermicro Computer, Inc.                **
+//***************************************************************************
+//
+//  File History
+//
+//  Rev. 1.00
+//    Bug Fix:  Draft template v0.1.
+//    Reason:   
+//    Auditor:  Jimmy Chiu
+//    Date:     Jan/20/2017
+//
+//**********************************************************************
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
+// 
+//**********************************************************************
+//<AMI_FHDR_START>
+//
+// Name:  <.SD>
+//
+// Description: SIO Form and Setup screen common definition.As below
+//
+//              FDC_ONEOF_PRSID    -> FDC possible resource option
+//              FDC_ONEOF_MODE     -> FDC mode setting
+//
+//              LPT_ONEOF_EPP_PRSID-> LPT EPP MODE possible resource
+//              LPT_ONEOF_ECP_PRSID-> LPT ECP MODE possible resource
+//
+//				COMA_CHECKBOX_DEVEN
+//				COMA_TEXT_CURRENT
+//              COMA_ONEOF_PRSID   -> COMA possible resource
+//				COMB_CHECKBOX_DEVEN
+//				COMB_TEXT_CURRENT
+//              COMB_ONEOF_PRSID   -> COMB possible resource
+//				COMC_CHECKBOX_DEVEN
+//				COMC_TEXT_CURRENT
+//              COMC_ONEOF_PRSID   -> COMC possible resource
+//				COMD_CHECKBOX_DEVEN
+//				COMD_TEXT_CURRENT
+//              COMD_ONEOF_PRSID   -> COMD possible resource
+//				COME_CHECKBOX_DEVEN
+//				COME_TEXT_CURRENT
+//              COME_ONEOF_PRSID   -> COME possible resource
+//				COMF_CHECKBOX_DEVEN
+//				COMF_TEXT_CURRENT
+//              COMF_ONEOF_PRSID   -> COMF possible resource
+//
+//				COMA2_CHECKBOX_DEVEN
+//				COMA2_TEXT_CURRENT
+//              COMA2_ONEOF_PRSID   -> COMA2 possible resource
+//				COMB2_CHECKBOX_DEVEN
+//				COMB2_TEXT_CURRENT
+//              COMB2_ONEOF_PRSID   -> COMB2 possible resource
+//				COMC2_CHECKBOX_DEVEN
+//				COMC2_TEXT_CURRENT
+//              COMC2_ONEOF_PRSID   -> COMC2 possible resource
+//				COMD2_CHECKBOX_DEVEN
+//				COMD2_TEXT_CURRENT
+//              COMD2_ONEOF_PRSID   -> COMD2 possible resource
+//				COME2_CHECKBOX_DEVEN
+//				COME2_TEXT_CURRENT
+//              COME2_ONEOF_PRSID   -> COME2 possible resource
+//				COMF2_CHECKBOX_DEVEN
+//				COMF2_TEXT_CURRENT
+//              COMF2_ONEOF_PRSID   -> COMF2 possible resource
+//
+//              IRDA_ONEOF_PRSID   -> IR possible resource
+//              CIR_ONEOF_PRSID    -> CIR possible resource
+//
+//              First Super I/O           Secondary Super I/O
+//              HWM1_TEXT_TEMP1           HWM2_TEXT_TEMP1
+//              HWM1_TEXT_TEMP2           HWM2_TEXT_TEMP2
+//              HWM1_TEXT_TEMP3           HWM2_TEXT_TEMP3
+//              HWM1_TEXT_TEMP4           HWM2_TEXT_TEMP4
+//              HWM1_TEXT_TEMP5           HWM2_TEXT_TEMP5
+//              HWM1_TEXT_TEMP6           HWM2_TEXT_TEMP6
+//              HWM1_TEXT_TEMP7           HWM2_TEXT_TEMP7
+//              HWM1_TEXT_TEMP8           HWM2_TEXT_TEMP8
+//              HWM1_TEXT_TEMP9           HWM2_TEXT_TEMP9
+//              HWM1_TEXT_TEMP10          HWM2_TEXT_TEMP10
+//
+//              HWM1_TEXT_FAN1_SPEED      HWM2_TEXT_FAN1_SPEED 
+//              HWM1_TEXT_FAN2_SPEED      HWM2_TEXT_FAN2_SPEED
+//              HWM1_TEXT_FAN3_SPEED      HWM2_TEXT_FAN3_SPEED
+//              HWM1_TEXT_FAN4_SPEED      HWM2_TEXT_FAN4_SPEED
+//              HWM1_TEXT_FAN5_SPEED      HWM2_TEXT_FAN5_SPEED
+//              HWM1_TEXT_FAN6_SPEED      HWM2_TEXT_FAN6_SPEED
+//              HWM1_TEXT_FAN7_SPEED      HWM2_TEXT_FAN7_SPEED
+//              HWM1_TEXT_FAN8_SPEED      HWM2_TEXT_FAN8_SPEED
+//              HWM1_TEXT_FAN9_SPEED      HWM2_TEXT_FAN9_SPEED
+//              HWM1_TEXT_FAN10_SPEED     HWM2_TEXT_FAN10_SPEED
+//
+//              HWM1_TEXT_VIN1            HWM2_TEXT_VIN1
+//              HWM1_TEXT_VIN2            HWM2_TEXT_VIN2
+//              HWM1_TEXT_VIN3            HWM2_TEXT_VIN3
+//              HWM1_TEXT_VIN4            HWM2_TEXT_VIN4
+//              HWM1_TEXT_VIN5            HWM2_TEXT_VIN5
+//              HWM1_TEXT_VIN6            HWM2_TEXT_VIN6
+//              HWM1_TEXT_VIN7            HWM2_TEXT_VIN7
+//              HWM1_TEXT_VIN8            HWM2_TEXT_VIN8
+//              HWM1_TEXT_VIN9            HWM2_TEXT_VIN9
+//              HWM1_TEXT_VIN10           HWM2_TEXT_VIN10
+//
+//              HWM1_TEXT_VCC3V           HWM2_TEXT_VCC3V
+//              HWM1_TEXT_VSB3V           HWM2_TEXT_VSB3V
+//              HWM1_TEXT_VSB5V           HWM2_TEXT_VSB5V
+//              HWM1_TEXT_VBAT            HWM2_TEXT_VBAT
+//Note: All the definition is same as ACPI definition.
+//<AMI_FHDR_END>
+//*************************************************************************
+
+#if defined(VFRCOMPILE) && !defined(CONTROLS_ARE_DEFINED)
+#define CONTROL_DEFINITION
+#endif
+
+#ifdef CONTROL_DEFINITION
+//-------------------------------------------------------------------------
+//Define floppy items
+//-------------------------------------------------------------------------
+#define FDC_CHECKBOX_DEVEN \
+    checkbox varid    = FDC_NV_DATA.DevEnable,\
+        prompt    = STRING_TOKEN(STR_FLOPPY_PROMPT),\
+        help    = STRING_TOKEN(STR_FLOPPY_PROMPT_HELP),\
+        flags    = RESET_REQUIRED,\
+        default = 1, default = 1, defaultstore = AmiMfgDefault,\
+    endcheckbox;
+
+#define FDC_TEXT_CURRENT \
+        text\
+        help   = STRING_TOKEN(STR_FLOPPY_PROMPT_HELP),\
+        text   = STRING_TOKEN(STR_CURRENT_CONFIG),\
+        text   = STRING_TOKEN(STR_FLOPPY_CONFIG_VALUE),\
+        flags  = 0,\
+        key    = 0;
+
+#define FDC_ONEOF_PRSID \
+        oneof varid     = FDC_NV_DATA.DevPrsId,\
+            prompt      = STRING_TOKEN(STR_CHANGE_CONFIG),\
+            help        = STRING_TOKEN(STR_SETTINGS_HELP),\
+            option text = STRING_TOKEN(STR_AUTO), value = 0, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_FLOPPY_IO3F0_IRQ6_DMA2), value = 1, flags = RESET_REQUIRED;\
+            default = 0, default = 0, defaultstore = AmiMfgDefault,\
+        endoneof;
+        
+#define FDC_ONEOF_MODE \
+        oneof varid     = FDC_NV_DATA.DevMode,\
+            prompt      = STRING_TOKEN(STR_SELECT_MODE),\
+            help        = STRING_TOKEN(STR_FLOPPY_MODE_HELP),\
+            option text = STRING_TOKEN(STR_FLOPPY_RW_MODE), value = 0, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_FLOPPY_WP_MODE), value = 1, flags = RESET_REQUIRED;\
+            default = 0, default = 0, defaultstore = AmiMfgDefault,\
+        endoneof;
+
+//-------------------------------------------------------------------------
+//Define parallel items
+//-------------------------------------------------------------------------
+#define LPT_CHECKBOX_DEVEN \
+    checkbox varid    = LPT_NV_DATA.DevEnable,\
+        prompt    = STRING_TOKEN(STR_PARALLEL_PROMPT),\
+        help    = STRING_TOKEN(STR_PARALLEL_PROMPT_HELP),\
+        flags    = RESET_REQUIRED,\
+        default = 1, default = 1, defaultstore = AmiMfgDefault,\
+    endcheckbox;
+
+#define LPT_TEXT_CURRENT \
+        text\
+        help   = STRING_TOKEN(STR_PARALLEL_PROMPT_HELP),\
+        text   = STRING_TOKEN(STR_CURRENT_CONFIG),\
+        text   = STRING_TOKEN(STR_PARALLEL_CONFIG_VALUE),\
+        flags  = 0,\
+        key    = 0;
+
+#define LPT_ONEOF_EPP_PRSID_FULL \
+        oneof varid     = LPT_NV_DATA.DevPrsId,\
+            prompt      = STRING_TOKEN(STR_CHANGE_CONFIG),\
+            help        = STRING_TOKEN(STR_SETTINGS_HELP),\
+            option text = STRING_TOKEN(STR_AUTO), value = 0, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_PARALLEL_IO378_IRQ5), value = 1, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_PARALLEL_IO378_IRQX), value = 2, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_PARALLEL_IO278_IRQX), value = 3, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_PARALLEL_IO3BC_IRQX), value = 4, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_PARALLEL_IO378), value = 5, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_PARALLEL_IO278), value = 6, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_PARALLEL_IO3BC), value = 7, flags = RESET_REQUIRED;\
+            default = 0, default = 0, defaultstore = AmiMfgDefault,\
+        endoneof;        
+        
+#define LPT_ONEOF_ECP_PRSID_FULL \
+        oneof varid     = LPT_NV_DATA.DevPrsId,\
+            prompt      = STRING_TOKEN(STR_CHANGE_CONFIG),\
+            help        = STRING_TOKEN(STR_SETTINGS_HELP),\
+            option text = STRING_TOKEN(STR_AUTO), value = 0, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_PARALLELE_IO378_778_IRQ5_DMA3), value = 1, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_PARALLELE_IO378_778_IRQX_DMAX), value = 2, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_PARALLELE_IO278_678_IRQX_DMAX), value = 3, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_PARALLELE_IO3BC_7BC_IRQX_DMAX), value = 4, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_PARALLELE_IO378_778_DMAX), value = 5, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_PARALLELE_IO278_678_DMAX), value = 6, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_PARALLELE_IO3BC_7BC_DMAX), value = 7, flags = RESET_REQUIRED;\
+            default = 0, default = 0, defaultstore = AmiMfgDefault,\
+        endoneof;
+
+#define LPT_ONEOF_EPP_PRSID_WITH_IRQ \
+        oneof varid     = LPT_NV_DATA.DevPrsId,\
+            prompt      = STRING_TOKEN(STR_CHANGE_CONFIG),\
+            help        = STRING_TOKEN(STR_SETTINGS_HELP),\
+            option text = STRING_TOKEN(STR_AUTO), value = 0, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_PARALLEL_IO378_IRQ5), value = 1, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_PARALLEL_IO378_IRQX), value = 2, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_PARALLEL_IO278_IRQX), value = 3, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_PARALLEL_IO3BC_IRQX), value = 4, flags = RESET_REQUIRED;\
+            default = 0, default = 0, defaultstore = AmiMfgDefault,\
+        endoneof;        
+        
+#define LPT_ONEOF_ECP_PRSID_WITH_IRQ \
+        oneof varid     = LPT_NV_DATA.DevPrsId,\
+            prompt      = STRING_TOKEN(STR_CHANGE_CONFIG),\
+            help        = STRING_TOKEN(STR_SETTINGS_HELP),\
+            option text = STRING_TOKEN(STR_AUTO), value = 0, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_PARALLELE_IO378_IRQ5_DMA3), value = 1, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_PARALLELE_IO378_IRQX_DMAX), value = 2, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_PARALLELE_IO278_IRQX_DMAX), value = 3, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_PARALLELE_IO3BC_IRQX_DMAX), value = 4, flags = RESET_REQUIRED;\
+            default = 0, default = 0, defaultstore = AmiMfgDefault,\
+        endoneof;
+
+#define LPT_ONEOF_EPP_PRSID_NO_IRQ \
+        oneof varid     = LPT_NV_DATA.DevPrsId,\
+            prompt      = STRING_TOKEN(STR_CHANGE_CONFIG),\
+            help        = STRING_TOKEN(STR_SETTINGS_HELP),\
+            option text = STRING_TOKEN(STR_AUTO), value = 0, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_PARALLEL_IO378_D), value = 1, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_PARALLEL_IO378), value = 2, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_PARALLEL_IO278), value = 3, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_PARALLEL_IO3BC), value = 4, flags = RESET_REQUIRED;\
+            default = 0, default = 0, defaultstore = AmiMfgDefault,\
+        endoneof;
+        
+#define LPT_ONEOF_ECP_PRSID_NO_IRQ \
+        oneof varid     = LPT_NV_DATA.DevPrsId,\
+            prompt      = STRING_TOKEN(STR_CHANGE_CONFIG),\
+            help        = STRING_TOKEN(STR_SETTINGS_HELP),\
+            option text = STRING_TOKEN(STR_AUTO), value = 0, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_PARALLELE_IO378_DMA3), value = 1, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_PARALLELE_IO378_DMAX), value = 2, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_PARALLELE_IO278_DMAX), value = 3, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_PARALLELE_IO3BC_DMAX), value = 4, flags = RESET_REQUIRED;\
+            default = 0, default = 0, defaultstore = AmiMfgDefault,\
+        endoneof;
+
+//-------------------------------------------------------------------------
+//Define first com port items
+//-------------------------------------------------------------------------
+//Define COMA port 
+#if (SMCPKG_SUPPORT == 0) || (SMC_SETUP_STYLE == 0) 
+#define COMA_CHECKBOX_DEVEN \
+    checkbox varid    = COMA_NV_DATA.DevEnable,\
+        prompt    = STRING_TOKEN(STR_SERIAL_PROMPT),\
+        help    = STRING_TOKEN(STR_SERIAL_PROMPT_HELP),\
+        flags    = RESET_REQUIRED, \
+        default = 1, default = 1, defaultstore = AmiMfgDefault,\
+    endcheckbox;
+#else
+//X11SPG+  Disable COMA
+#define COMA_CHECKBOX_DEVEN \
+    checkbox varid    = COMA_NV_DATA.DevEnable,\
+        prompt    = STRING_TOKEN(STR_SERIAL_PORT_1_PROMPT),\
+        help    = STRING_TOKEN(STR_SERIAL_PROMPT_HELP),\
+        flags    = RESET_REQUIRED, \
+        default = 0, default = 0, defaultstore = AmiMfgDefault,\
+    endcheckbox;
+#endif
+//X11SPG-
+#define COMA_TEXT_CURRENT \
+        text\
+        help   = STRING_TOKEN(STR_SERIAL1_FORM_HELP),\
+        text   = STRING_TOKEN(STR_CURRENT_CONFIG),\
+        text   = STRING_TOKEN(STR_SERIAL1_CONFIG_VALUE),\
+        flags  = 0,\
+        key    = 0;
+
+#define COMA_ONEOF_PRSID \
+        oneof varid     = COMA_NV_DATA.DevPrsId,\
+            prompt      = STRING_TOKEN(STR_CHANGE_CONFIG),\
+            help        = STRING_TOKEN(STR_SETTINGS_HELP),\
+            option text = STRING_TOKEN(STR_AUTO), value = 0, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO3F8_IRQ4), value = 1, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO3F8_IRQX), value = 2, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2F8_IRQX), value = 3, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO3E8_IRQX), value = 4, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2E8_IRQX), value = 5, flags = RESET_REQUIRED;\
+            default = 0, default = 0, defaultstore = AmiMfgDefault,\
+        endoneof;        
+
+//Define COMB port 
+#if (SMCPKG_SUPPORT == 0) || (SMC_SETUP_STYLE == 0)
+#define COMB_CHECKBOX_DEVEN \
+    checkbox varid    = COMB_NV_DATA.DevEnable,\
+        prompt    = STRING_TOKEN(STR_SERIAL_PROMPT),\
+        help    = STRING_TOKEN(STR_SERIAL_PROMPT_HELP),\
+        flags    = RESET_REQUIRED, \
+        default = 1, default = 1, defaultstore = AmiMfgDefault,\
+    endcheckbox;
+#else
+#define COMB_CHECKBOX_DEVEN \
+    checkbox varid    = COMB_NV_DATA.DevEnable,\
+        prompt    = STRING_TOKEN(STR_SERIAL_PORT_2_PROMPT),\
+        help    = STRING_TOKEN(STR_SERIAL_PROMPT_HELP),\
+        flags    = RESET_REQUIRED, \
+        default = 1, default = 1, defaultstore = AmiMfgDefault,\
+    endcheckbox;
+#endif
+
+#define COMB_TEXT_CURRENT \
+        text\
+        help   = STRING_TOKEN(STR_SERIAL2_FORM_HELP),\
+        text   = STRING_TOKEN(STR_CURRENT_CONFIG),\
+        text   = STRING_TOKEN(STR_SERIAL2_CONFIG_VALUE),\
+        flags  = 0,\
+        key    = 0;
+//X11SPG+  COMB ,3F8
+#define COMB_ONEOF_PRSID \
+        oneof varid     = COMB_NV_DATA.DevPrsId,\
+            prompt      = STRING_TOKEN(STR_CHANGE_CONFIG),\
+            help        = STRING_TOKEN(STR_SETTINGS_HELP),\
+            option text = STRING_TOKEN(STR_AUTO), value = 0, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2F8_IRQ3), value = 1, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO3F8_IRQX), value = 2, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2F8_IRQX), value = 3, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO3E8_IRQX), value = 4, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2E8_IRQX), value = 5, flags = RESET_REQUIRED;\
+            default = 2, default = 2, defaultstore = AmiMfgDefault,\
+        endoneof;        
+//X11SPG- 
+
+//Define COMC port 
+#define COMC_CHECKBOX_DEVEN \
+    checkbox varid    = COMC_NV_DATA.DevEnable,\
+        prompt    = STRING_TOKEN(STR_SERIAL_PROMPT),\
+        help    = STRING_TOKEN(STR_SERIAL_PROMPT_HELP),\
+        flags    = RESET_REQUIRED, \
+        default = 1, default = 1, defaultstore = AmiMfgDefault,\
+    endcheckbox;
+
+#define COMC_TEXT_CURRENT \
+        text\
+        help   = STRING_TOKEN(STR_SERIAL3_FORM_HELP),\
+        text   = STRING_TOKEN(STR_CURRENT_CONFIG),\
+        text   = STRING_TOKEN(STR_SERIAL3_CONFIG_VALUE),\
+        flags  = 0,\
+        key    = 0;
+
+#define COMC_ONEOF_PRSID \
+        oneof varid     = COMC_NV_DATA.DevPrsId,\
+            prompt      = STRING_TOKEN(STR_CHANGE_CONFIG),\
+            help        = STRING_TOKEN(STR_SETTINGS_HELP),\
+            option text = STRING_TOKEN(STR_AUTO), value = 0, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO3E8_IRQ7), value = 1, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO3F8_IRQX), value = 2, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2F8_IRQX), value = 3, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO3E8_IRQX), value = 4, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2E8_IRQX), value = 5, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2F0_IRQX), value = 6, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2E0_IRQX), value = 7, flags = RESET_REQUIRED;\
+            default = 0, default = 0, defaultstore = AmiMfgDefault,\
+        endoneof;        
+
+//Define COMD port 
+#define COMD_CHECKBOX_DEVEN \
+    checkbox varid    = COMD_NV_DATA.DevEnable,\
+        prompt    = STRING_TOKEN(STR_SERIAL_PROMPT),\
+        help    = STRING_TOKEN(STR_SERIAL_PROMPT_HELP),\
+        flags    = RESET_REQUIRED, \
+        default = 1, default = 1, defaultstore = AmiMfgDefault,\
+    endcheckbox;
+
+#define COMD_TEXT_CURRENT \
+        text\
+        help   = STRING_TOKEN(STR_SERIAL4_FORM_HELP),\
+        text   = STRING_TOKEN(STR_CURRENT_CONFIG),\
+        text   = STRING_TOKEN(STR_SERIAL4_CONFIG_VALUE),\
+        flags  = 0,\
+        key    = 0;
+
+#define COMD_ONEOF_PRSID \
+        oneof varid     = COMD_NV_DATA.DevPrsId,\
+            prompt      = STRING_TOKEN(STR_CHANGE_CONFIG),\
+            help        = STRING_TOKEN(STR_SETTINGS_HELP),\
+            option text = STRING_TOKEN(STR_AUTO), value = 0, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2E8_IRQ7), value = 1, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO3F8_IRQX), value = 2, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2F8_IRQX), value = 3, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO3E8_IRQX), value = 4, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2E8_IRQX), value = 5, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2F0_IRQX), value = 6, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2E0_IRQX), value = 7, flags = RESET_REQUIRED;\
+            default = 0, default = 0, defaultstore = AmiMfgDefault,\
+        endoneof;        
+
+//Define COME port 
+#define COME_CHECKBOX_DEVEN \
+    checkbox varid    = COME_NV_DATA.DevEnable,\
+        prompt    = STRING_TOKEN(STR_SERIAL_PROMPT),\
+        help    = STRING_TOKEN(STR_SERIAL_PROMPT_HELP),\
+        flags    = RESET_REQUIRED, \
+        default = 1, default = 1, defaultstore = AmiMfgDefault,\
+    endcheckbox;
+
+#define COME_TEXT_CURRENT \
+        text\
+        help   = STRING_TOKEN(STR_SERIAL5_FORM_HELP),\
+        text   = STRING_TOKEN(STR_CURRENT_CONFIG),\
+        text   = STRING_TOKEN(STR_SERIAL5_CONFIG_VALUE),\
+        flags  = 0,\
+        key    = 0;
+
+#define COME_ONEOF_PRSID \
+        oneof varid     = COME_NV_DATA.DevPrsId,\
+            prompt      = STRING_TOKEN(STR_CHANGE_CONFIG),\
+            help        = STRING_TOKEN(STR_SETTINGS_HELP),\
+            option text = STRING_TOKEN(STR_AUTO), value = 0, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2F0_IRQ10), value = 1, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO3F8_IRQX), value = 2, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2F8_IRQX), value = 3, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO3E8_IRQX), value = 4, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2E8_IRQX), value = 5, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2F0_IRQX), value = 6, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2E0_IRQX), value = 7, flags = RESET_REQUIRED;\
+            default = 0, default = 0, defaultstore = AmiMfgDefault,\
+        endoneof;        
+
+//Define COMF port 
+#define COMF_CHECKBOX_DEVEN \
+    checkbox varid    = COMF_NV_DATA.DevEnable,\
+        prompt    = STRING_TOKEN(STR_SERIAL_PROMPT),\
+        help    = STRING_TOKEN(STR_SERIAL_PROMPT_HELP),\
+        flags    = RESET_REQUIRED, \
+        default = 1, default = 1, defaultstore = AmiMfgDefault,\
+    endcheckbox;
+
+#define COMF_TEXT_CURRENT \
+        text\
+        help   = STRING_TOKEN(STR_SERIAL6_FORM_HELP),\
+        text   = STRING_TOKEN(STR_CURRENT_CONFIG),\
+        text   = STRING_TOKEN(STR_SERIAL6_CONFIG_VALUE),\
+        flags  = 0,\
+        key    = 0;
+
+#define COMF_ONEOF_PRSID \
+        oneof varid     = COMF_NV_DATA.DevPrsId,\
+            prompt      = STRING_TOKEN(STR_CHANGE_CONFIG),\
+            help        = STRING_TOKEN(STR_SETTINGS_HELP),\
+            option text = STRING_TOKEN(STR_AUTO), value = 0, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2E0_IRQ10), value = 1, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO3F8_IRQX), value = 2, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2F8_IRQX), value = 3, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO3E8_IRQX), value = 4, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2E8_IRQX), value = 5, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2F0_IRQX), value = 6, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2E0_IRQX), value = 7, flags = RESET_REQUIRED;\
+            default = 0, default = 0, defaultstore = AmiMfgDefault,\
+        endoneof;        
+
+//-------------------------------------------------------------------------
+//Define secondary com port items
+//-------------------------------------------------------------------------
+//Define COMA2 port
+#define COMA2_CHECKBOX_DEVEN \
+    checkbox varid    = COMA2_NV_DATA.DevEnable,\
+        prompt    = STRING_TOKEN(STR_SERIAL_PROMPT),\
+        help    = STRING_TOKEN(STR_SERIAL_PROMPT_HELP),\
+        flags    = RESET_REQUIRED, \
+        default = 1, default = 1, defaultstore = AmiMfgDefault,\
+    endcheckbox;
+
+#define COMA2_TEXT_CURRENT \
+        text\
+        help   = STRING_TOKEN(STR_SERIAL0_FORM_HELP),\
+        text   = STRING_TOKEN(STR_CURRENT_CONFIG),\
+        text   = STRING_TOKEN(STR_SERIAL0_2_CONFIG_VALUE),\
+        flags  = 0,\
+        key    = 0;
+
+#define COMA2_ONEOF_PRSID \
+        oneof varid     = COMA2_NV_DATA.DevPrsId,\
+            prompt      = STRING_TOKEN(STR_CHANGE_CONFIG),\
+            help        = STRING_TOKEN(STR_SETTINGS_HELP),\
+            option text = STRING_TOKEN(STR_AUTO), value = 0, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO3F8_IRQ4), value = 1, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO3F8_IRQX), value = 2, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2F8_IRQX), value = 3, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO3E8_IRQX), value = 4, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2E8_IRQX), value = 5, flags = RESET_REQUIRED;\
+            default = 0, default = 0, defaultstore = AmiMfgDefault,\
+        endoneof;        
+
+//Define COMB2 port 
+#define COMB2_CHECKBOX_DEVEN \
+    checkbox varid    = COMB2_NV_DATA.DevEnable,\
+        prompt    = STRING_TOKEN(STR_SERIAL_PROMPT),\
+        help    = STRING_TOKEN(STR_SERIAL_PROMPT_HELP),\
+        flags    = RESET_REQUIRED, \
+        default = 1, default = 1, defaultstore = AmiMfgDefault,\
+    endcheckbox;
+
+#define COMB2_TEXT_CURRENT \
+        text\
+        help   = STRING_TOKEN(STR_SERIAL1_FORM_HELP),\
+        text   = STRING_TOKEN(STR_CURRENT_CONFIG),\
+        text   = STRING_TOKEN(STR_SERIAL1_2_CONFIG_VALUE),\
+        flags  = 0,\
+        key    = 0;
+
+#define COMB2_ONEOF_PRSID \
+        oneof varid     = COMB2_NV_DATA.DevPrsId,\
+            prompt      = STRING_TOKEN(STR_CHANGE_CONFIG),\
+            help        = STRING_TOKEN(STR_SETTINGS_HELP),\
+            option text = STRING_TOKEN(STR_AUTO), value = 0, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2F8_IRQ3), value = 1, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO3F8_IRQX), value = 2, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2F8_IRQX), value = 3, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO3E8_IRQX), value = 4, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2E8_IRQX), value = 5, flags = RESET_REQUIRED;\
+            default = 0, default = 0, defaultstore = AmiMfgDefault,\
+        endoneof;        
+
+//Define COMC2 port 
+#define COMC2_CHECKBOX_DEVEN \
+    checkbox varid    = COMC2_NV_DATA.DevEnable,\
+        prompt    = STRING_TOKEN(STR_SERIAL_PROMPT),\
+        help    = STRING_TOKEN(STR_SERIAL_PROMPT_HELP),\
+        flags    =  RESET_REQUIRED, \
+        default = 1, default = 1, defaultstore = AmiMfgDefault,\
+    endcheckbox;
+
+#define COMC2_TEXT_CURRENT \
+        text\
+        help   = STRING_TOKEN(STR_SERIAL2_FORM_HELP),\
+        text   = STRING_TOKEN(STR_CURRENT_CONFIG),\
+        text   = STRING_TOKEN(STR_SERIAL2_2_CONFIG_VALUE),\
+        flags  = 0,\
+        key    = 0;
+
+#define COMC2_ONEOF_PRSID \
+        oneof varid     = COMC2_NV_DATA.DevPrsId,\
+            prompt      = STRING_TOKEN(STR_CHANGE_CONFIG),\
+            help        = STRING_TOKEN(STR_SETTINGS_HELP),\
+            option text = STRING_TOKEN(STR_AUTO), value = 0, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO3E8_IRQ7), value = 1, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO3F8_IRQX), value = 2, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2F8_IRQX), value = 3, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO3E8_IRQX), value = 4, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2E8_IRQX), value = 5, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2F0_IRQX), value = 6, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2E0_IRQX), value = 7, flags = RESET_REQUIRED;\
+            default = 0, default = 0, defaultstore = AmiMfgDefault,\
+        endoneof;        
+
+//Define COMD2 port 
+#define COMD2_CHECKBOX_DEVEN \
+    checkbox varid    = COMD2_NV_DATA.DevEnable,\
+        prompt    = STRING_TOKEN(STR_SERIAL_PROMPT),\
+        help    = STRING_TOKEN(STR_SERIAL_PROMPT_HELP),\
+        flags    =  RESET_REQUIRED, \
+        default = 1, default = 1, defaultstore = AmiMfgDefault,\
+    endcheckbox;
+
+#define COMD2_TEXT_CURRENT \
+        text\
+        help   = STRING_TOKEN(STR_SERIAL3_FORM_HELP),\
+        text   = STRING_TOKEN(STR_CURRENT_CONFIG),\
+        text   = STRING_TOKEN(STR_SERIAL3_2_CONFIG_VALUE),\
+        flags  = 0,\
+        key    = 0;
+
+#define COMD2_ONEOF_PRSID \
+        oneof varid     = COMD2_NV_DATA.DevPrsId,\
+            prompt      = STRING_TOKEN(STR_CHANGE_CONFIG),\
+            help        = STRING_TOKEN(STR_SETTINGS_HELP),\
+            option text = STRING_TOKEN(STR_AUTO), value = 0, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2E8_IRQ7), value = 1, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO3F8_IRQX), value = 2, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2F8_IRQX), value = 3, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO3E8_IRQX), value = 4, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2E8_IRQX), value = 5, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2F0_IRQX), value = 6, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2E0_IRQX), value = 7, flags = RESET_REQUIRED;\
+            default = 0, default = 0, defaultstore = AmiMfgDefault,\
+        endoneof;        
+
+//Define COME2 port 
+#define COME2_CHECKBOX_DEVEN \
+    checkbox varid    = COME2_NV_DATA.DevEnable,\
+        prompt    = STRING_TOKEN(STR_SERIAL_PROMPT),\
+        help    = STRING_TOKEN(STR_SERIAL_PROMPT_HELP),\
+        flags    = RESET_REQUIRED, \
+        default = 1, default = 1, defaultstore = AmiMfgDefault,\
+    endcheckbox;
+
+#define COME2_TEXT_CURRENT \
+        text\
+        help   = STRING_TOKEN(STR_SERIAL4_FORM_HELP),\
+        text   = STRING_TOKEN(STR_CURRENT_CONFIG),\
+        text   = STRING_TOKEN(STR_SERIAL4_2_CONFIG_VALUE),\
+        flags  = 0,\
+        key    = 0;
+
+#define COME2_ONEOF_PRSID \
+        oneof varid     = COME2_NV_DATA.DevPrsId,\
+            prompt      = STRING_TOKEN(STR_CHANGE_CONFIG),\
+            help        = STRING_TOKEN(STR_SETTINGS_HELP),\
+            option text = STRING_TOKEN(STR_AUTO), value = 0, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2F0_IRQ10), value = 1, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO3F8_IRQX), value = 2, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2F8_IRQX), value = 3, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO3E8_IRQX), value = 4, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2E8_IRQX), value = 5, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2F0_IRQX), value = 6, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2E0_IRQX), value = 7, flags = RESET_REQUIRED;\
+            default = 0, default = 0, defaultstore = AmiMfgDefault,\
+        endoneof;        
+
+//Define COMF2 port 
+#define COMF2_CHECKBOX_DEVEN \
+    checkbox varid    = COMF2_NV_DATA.DevEnable,\
+        prompt    = STRING_TOKEN(STR_SERIAL_PROMPT),\
+        help    = STRING_TOKEN(STR_SERIAL_PROMPT_HELP),\
+        flags    = RESET_REQUIRED, \
+        default = 1, default = 1, defaultstore = AmiMfgDefault,\
+    endcheckbox;
+
+#define COMF2_TEXT_CURRENT \
+        text\
+        help   = STRING_TOKEN(STR_SERIAL5_FORM_HELP),\
+        text   = STRING_TOKEN(STR_CURRENT_CONFIG),\
+        text   = STRING_TOKEN(STR_SERIAL5_2_CONFIG_VALUE),\
+        flags  = 0,\
+        key    = 0;
+
+#define COMF2_ONEOF_PRSID \
+        oneof varid     = COMF2_NV_DATA.DevPrsId,\
+            prompt      = STRING_TOKEN(STR_CHANGE_CONFIG),\
+            help        = STRING_TOKEN(STR_SETTINGS_HELP),\
+            option text = STRING_TOKEN(STR_AUTO), value = 0, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2E0_IRQ10), value = 1, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO3F8_IRQX), value = 2, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2F8_IRQX), value = 3, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO3E8_IRQX), value = 4, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2E8_IRQX), value = 5, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2F0_IRQX), value = 6, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_SERIAL_IO2E0_IRQX), value = 7, flags = RESET_REQUIRED;\
+            default = 0, default = 0, defaultstore = AmiMfgDefault,\
+        endoneof;        
+
+//-------------------------------------------------------------------------
+//Define IR items
+//-------------------------------------------------------------------------
+#define IRDA_ONEOF_PRSID \
+        oneof varid     = IRDA_NV_DATA.DevPrsId,\
+            prompt      = STRING_TOKEN(STR_SELECT_MODE),\
+            help        = STRING_TOKEN(STR_PARALLEL_MODE_HELP),\
+            option text = STRING_TOKEN(STR_AUTO), value = 0, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_IRDA_SETTINGS0), value = 1, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_IRDA_SETTINGS1), value = 2, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_IRDA_SETTINGS2), value = 3, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_IRDA_SETTINGS3), value = 4, flags = RESET_REQUIRED;\
+            default = 0, default = 0, defaultstore = AmiMfgDefault,\
+        endoneof;
+
+//-------------------------------------------------------------------------
+//Define CIR items
+//-------------------------------------------------------------------------
+#define CIR_ONEOF_PRSID \
+        oneof varid     = CIR_NV_DATA.DevPrsId,\
+            prompt      = STRING_TOKEN(STR_CHANGE_CONFIG),\
+            help        = STRING_TOKEN(STR_SETTINGS_HELP),\
+            option text = STRING_TOKEN(STR_AUTO), value = 0, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_CIR_SETTINGS0), value = 1, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_CIR_SETTINGS1), value = 2, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_CIR_SETTINGS2), value = 3, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_CIR_SETTINGS3), value = 4, flags = RESET_REQUIRED;\
+            default = 0, default = 0, defaultstore = AmiMfgDefault,\
+        endoneof;
+
+
+//-------------------------------------------------------------------------
+//First Hardware monitor define.
+//-------------------------------------------------------------------------
+  //
+  // System Temperature1
+#define HWM1_TEXT_TEMP1 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_SYSTEM_TEMP1),\
+  text   = STRING_TOKEN(STR_HWM1_SYSTEM_TEMP1_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // System Temperature2
+#define HWM1_TEXT_TEMP2 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_SYSTEM_TEMP2),\
+  text   = STRING_TOKEN(STR_HWM1_SYSTEM_TEMP2_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // System Temperature3
+#define HWM1_TEXT_TEMP3 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_SYSTEM_TEMP3),\
+  text   = STRING_TOKEN(STR_HWM1_SYSTEM_TEMP3_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // System Temperature4
+#define HWM1_TEXT_TEMP4 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_SYSTEM_TEMP4),\
+  text   = STRING_TOKEN(STR_HWM1_SYSTEM_TEMP4_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // System Temperature5
+#define HWM1_TEXT_TEMP5 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_SYSTEM_TEMP5),\
+  text   = STRING_TOKEN(STR_HWM1_SYSTEM_TEMP5_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // System Temperature6
+#define HWM1_TEXT_TEMP6 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_SYSTEM_TEMP6),\
+  text   = STRING_TOKEN(STR_HWM1_SYSTEM_TEMP6_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // System Temperature7
+#define HWM1_TEXT_TEMP7 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_SYSTEM_TEMP7),\
+  text   = STRING_TOKEN(STR_HWM1_SYSTEM_TEMP7_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // System Temperature8
+#define HWM1_TEXT_TEMP8 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_SYSTEM_TEMP8),\
+  text   = STRING_TOKEN(STR_HWM1_SYSTEM_TEMP8_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // System Temperature9
+#define HWM1_TEXT_TEMP9 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_SYSTEM_TEMP9),\
+  text   = STRING_TOKEN(STR_HWM1_SYSTEM_TEMP9_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // System Temperature10
+#define HWM1_TEXT_TEMP10 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_SYSTEM_TEMP10),\
+  text   = STRING_TOKEN(STR_HWM1_SYSTEM_TEMP10_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // System FAN1 Speed
+#define HWM1_TEXT_FAN1_SPEED \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_FAN1_SPEED),\
+  text   = STRING_TOKEN(STR_HWM1_FAN1_SPEED_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // System FAN2 Speed
+#define HWM1_TEXT_FAN2_SPEED \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_FAN2_SPEED),\
+  text   = STRING_TOKEN(STR_HWM1_FAN2_SPEED_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // System FAN3 Speed
+#define HWM1_TEXT_FAN3_SPEED \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_FAN3_SPEED),\
+  text   = STRING_TOKEN(STR_HWM1_FAN3_SPEED_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // System FAN4 Speed
+#define HWM1_TEXT_FAN4_SPEED \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_FAN4_SPEED),\
+  text   = STRING_TOKEN(STR_HWM1_FAN4_SPEED_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // System FAN5 Speed
+#define HWM1_TEXT_FAN5_SPEED \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_FAN5_SPEED),\
+  text   = STRING_TOKEN(STR_HWM1_FAN5_SPEED_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // System FAN6 Speed
+#define HWM1_TEXT_FAN6_SPEED \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_FAN6_SPEED),\
+  text   = STRING_TOKEN(STR_HWM1_FAN6_SPEED_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // System FAN7 Speed
+#define HWM1_TEXT_FAN7_SPEED \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_FAN7_SPEED),\
+  text   = STRING_TOKEN(STR_HWM1_FAN7_SPEED_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // System FAN8 Speed
+#define HWM1_TEXT_FAN8_SPEED \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_FAN8_SPEED),\
+  text   = STRING_TOKEN(STR_HWM1_FAN8_SPEED_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // System FAN9 Speed
+#define HWM1_TEXT_FAN9_SPEED \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_FAN9_SPEED),\
+  text   = STRING_TOKEN(STR_HWM1_FAN9_SPEED_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // System FAN10 Speed
+#define HWM1_TEXT_FAN10_SPEED \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_FAN10_SPEED),\
+  text   = STRING_TOKEN(STR_HWM1_FAN10_SPEED_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // Vin1
+#define HWM1_TEXT_VIN1 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_VIN1),\
+  text   = STRING_TOKEN(STR_HWM1_VIN1_VALUE),\
+  flags  = 0,\
+  key    = 0;	
+
+  //
+  // Vin2
+#define HWM1_TEXT_VIN2 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_VIN2),\
+  text   = STRING_TOKEN(STR_HWM1_VIN2_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // Vin3
+#define HWM1_TEXT_VIN3 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_VIN3),\
+  text   = STRING_TOKEN(STR_HWM1_VIN3_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // Vin4
+#define HWM1_TEXT_VIN4 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_VIN4),\
+  text   = STRING_TOKEN(STR_HWM1_VIN4_VALUE),\
+  flags  = 0,\
+  key    = 0;	
+
+  //
+  // Vin5
+#define HWM1_TEXT_VIN5 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_VIN5),\
+  text   = STRING_TOKEN(STR_HWM1_VIN5_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // Vin6
+#define HWM1_TEXT_VIN6 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_VIN6),\
+  text   = STRING_TOKEN(STR_HWM1_VIN6_VALUE),\
+  flags  = 0,\
+  key    = 0;  
+  
+  //
+  // Vin7
+#define HWM1_TEXT_VIN7 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_VIN7),\
+  text   = STRING_TOKEN(STR_HWM1_VIN7_VALUE),\
+  flags  = 0,\
+  key    = 0;  
+  
+  //
+  // Vin8
+#define HWM1_TEXT_VIN8 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_VIN8),\
+  text   = STRING_TOKEN(STR_HWM1_VIN8_VALUE),\
+  flags  = 0,\
+  key    = 0;  
+  
+  //
+  // Vin9
+#define HWM1_TEXT_VIN9 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_VIN9),\
+  text   = STRING_TOKEN(STR_HWM1_VIN9_VALUE),\
+  flags  = 0,\
+  key    = 0;  
+  
+  //
+  // Vin10
+#define HWM1_TEXT_VIN10 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_VIN10),\
+  text   = STRING_TOKEN(STR_HWM1_VIN10_VALUE),\
+  flags  = 0,\
+  key    = 0;  
+  
+  //
+  // VCC3V
+#define HWM1_TEXT_VCC3V \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_VCC3V),\
+  text   = STRING_TOKEN(STR_HWM1_VCC3V_VALUE),\
+  flags  = 0,\
+  key    = 0;	
+
+  //
+  // VSB3V
+#define HWM1_TEXT_VSB3V \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_VSB3V),\
+  text   = STRING_TOKEN(STR_HWM1_VSB3V_VALUE),\
+  flags  = 0,\
+  key    = 0;	
+
+  //
+  // VSB5V
+#define HWM1_TEXT_VSB5V \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_VSB5V),\
+  text   = STRING_TOKEN(STR_HWM1_VSB5V_VALUE),\
+  flags  = 0,\
+  key    = 0;	
+
+  //
+  // VBAT
+#define HWM1_TEXT_VBAT \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_VBAT),\
+  text   = STRING_TOKEN(STR_HWM1_VBAT_VALUE),\
+  flags  = 0,\
+  key    = 0;	
+
+//-------------------------------------------------------------------------
+//Secondary Hardware monitor define
+//-------------------------------------------------------------------------
+  //
+  // System Temperature1
+#define HWM2_TEXT_TEMP1 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_SYSTEM_TEMP1),\
+  text   = STRING_TOKEN(STR_HWM2_SYSTEM_TEMP1_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // System Temperature2
+#define HWM2_TEXT_TEMP2 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_SYSTEM_TEMP2),\
+  text   = STRING_TOKEN(STR_HWM2_SYSTEM_TEMP2_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // System Temperature3
+#define HWM2_TEXT_TEMP3 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_SYSTEM_TEMP3),\
+  text   = STRING_TOKEN(STR_HWM2_SYSTEM_TEMP3_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // System Temperature4
+#define HWM2_TEXT_TEMP4 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_SYSTEM_TEMP4),\
+  text   = STRING_TOKEN(STR_HWM2_SYSTEM_TEMP4_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // System Temperature5
+#define HWM2_TEXT_TEMP5 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_SYSTEM_TEMP5),\
+  text   = STRING_TOKEN(STR_HWM2_SYSTEM_TEMP5_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // System Temperature6
+#define HWM2_TEXT_TEMP6 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_SYSTEM_TEMP6),\
+  text   = STRING_TOKEN(STR_HWM2_SYSTEM_TEMP6_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // System Temperature7
+#define HWM2_TEXT_TEMP7 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_SYSTEM_TEMP7),\
+  text   = STRING_TOKEN(STR_HWM2_SYSTEM_TEMP7_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // System Temperature8
+#define HWM2_TEXT_TEMP8 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_SYSTEM_TEMP8),\
+  text   = STRING_TOKEN(STR_HWM2_SYSTEM_TEMP8_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // System Temperature9
+#define HWM2_TEXT_TEMP9 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_SYSTEM_TEMP9),\
+  text   = STRING_TOKEN(STR_HWM2_SYSTEM_TEMP9_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // System Temperature10
+#define HWM2_TEXT_TEMP10 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_SYSTEM_TEMP10),\
+  text   = STRING_TOKEN(STR_HWM2_SYSTEM_TEMP10_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // System FAN1 Speed
+#define HWM2_TEXT_FAN1_SPEED \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_FAN1_SPEED),\
+  text   = STRING_TOKEN(STR_HWM2_FAN1_SPEED_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // System FAN2 Speed
+#define HWM2_TEXT_FAN2_SPEED \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_FAN2_SPEED),\
+  text   = STRING_TOKEN(STR_HWM2_FAN2_SPEED_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // System FAN3 Speed
+#define HWM2_TEXT_FAN3_SPEED \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_FAN3_SPEED),\
+  text   = STRING_TOKEN(STR_HWM2_FAN3_SPEED_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // System FAN4 Speed
+#define HWM2_TEXT_FAN4_SPEED \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_FAN4_SPEED),\
+  text   = STRING_TOKEN(STR_HWM2_FAN4_SPEED_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // System FAN5 Speed
+#define HWM2_TEXT_FAN5_SPEED \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_FAN5_SPEED),\
+  text   = STRING_TOKEN(STR_HWM2_FAN5_SPEED_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // System FAN6 Speed
+#define HWM2_TEXT_FAN6_SPEED \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_FAN6_SPEED),\
+  text   = STRING_TOKEN(STR_HWM2_FAN6_SPEED_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // System FAN7 Speed
+#define HWM2_TEXT_FAN7_SPEED \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_FAN7_SPEED),\
+  text   = STRING_TOKEN(STR_HWM2_FAN7_SPEED_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // System FAN8 Speed
+#define HWM2_TEXT_FAN8_SPEED \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_FAN8_SPEED),\
+  text   = STRING_TOKEN(STR_HWM2_FAN8_SPEED_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // System FAN9 Speed
+#define HWM2_TEXT_FAN9_SPEED \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_FAN9_SPEED),\
+  text   = STRING_TOKEN(STR_HWM2_FAN9_SPEED_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // System FAN10 Speed
+#define HWM2_TEXT_FAN10_SPEED \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_FAN10_SPEED),\
+  text   = STRING_TOKEN(STR_HWM2_FAN10_SPEED_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // Vin1
+#define HWM2_TEXT_VIN1 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_VIN1),\
+  text   = STRING_TOKEN(STR_HWM2_VIN1_VALUE),\
+  flags  = 0,\
+  key    = 0;	
+
+  //
+  // Vin2
+#define HWM2_TEXT_VIN2 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_VIN2),\
+  text   = STRING_TOKEN(STR_HWM2_VIN2_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // Vin3
+#define HWM2_TEXT_VIN3 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_VIN3),\
+  text   = STRING_TOKEN(STR_HWM2_VIN3_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // Vin4
+#define HWM2_TEXT_VIN4 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_VIN4),\
+  text   = STRING_TOKEN(STR_HWM2_VIN4_VALUE),\
+  flags  = 0,\
+  key    = 0;	
+
+  //
+  // Vin5
+#define HWM2_TEXT_VIN5 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_VIN5),\
+  text   = STRING_TOKEN(STR_HWM2_VIN5_VALUE),\
+  flags  = 0,\
+  key    = 0;
+
+  //
+  // Vin6
+#define HWM2_TEXT_VIN6 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_VIN6),\
+  text   = STRING_TOKEN(STR_HWM2_VIN6_VALUE),\
+  flags  = 0,\
+  key    = 0;  
+  
+  //
+  // Vin7
+#define HWM2_TEXT_VIN7 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_VIN7),\
+  text   = STRING_TOKEN(STR_HWM2_VIN7_VALUE),\
+  flags  = 0,\
+  key    = 0;  
+  
+  //
+  // Vin8
+#define HWM2_TEXT_VIN8 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_VIN8),\
+  text   = STRING_TOKEN(STR_HWM2_VIN8_VALUE),\
+  flags  = 0,\
+  key    = 0;  
+  
+  //
+  // Vin9
+#define HWM2_TEXT_VIN9 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_VIN9),\
+  text   = STRING_TOKEN(STR_HWM2_VIN9_VALUE),\
+  flags  = 0,\
+  key    = 0;  
+  
+  //
+  // Vin10
+#define HWM2_TEXT_VIN10 \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_VIN10),\
+  text   = STRING_TOKEN(STR_HWM2_VIN10_VALUE),\
+  flags  = 0,\
+  key    = 0;  
+  
+  //
+  // VCC3V
+#define HWM2_TEXT_VCC3V \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_VCC3V),\
+  text   = STRING_TOKEN(STR_HWM2_VCC3V_VALUE),\
+  flags  = 0,\
+  key    = 0;	
+
+  //
+  // VSB3V
+#define HWM2_TEXT_VSB3V \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_VSB3V),\
+  text   = STRING_TOKEN(STR_HWM2_VSB3V_VALUE),\
+  flags  = 0,\
+  key    = 0;	
+
+  //
+  // VSB5V
+#define HWM2_TEXT_VSB5V \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_V5VSB),\
+  text   = STRING_TOKEN(STR_HWM2_V5VSB_VALUE),\
+  flags  = 0,\
+  key    = 0;	
+
+  //
+  // VBAT
+#define HWM2_TEXT_VBAT \
+  text\
+  help   = STRING_TOKEN(STR_EMPTY),\
+  text   = STRING_TOKEN(STR_HWM1_VBAT),\
+  text   = STRING_TOKEN(STR_HWM2_VBAT_VALUE),\
+  flags  = 0,\
+  key    = 0;	
+
+#endif //#ifdef CONTROL_DEFINITION
+
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************

@@ -1,0 +1,119 @@
+//***************************************************************************
+//**       (C)Copyright 1993-2016 Supermicro Computer, Inc.                **
+//***************************************************************************
+//
+//  File History
+//
+//  Rev. 1.00
+//    Bug Fix:  Init.
+//    Reason:   
+//    Auditor:  Leon Xu
+//    Date:     19-Feb-2016
+//
+//****************************************************************************
+
+#ifdef SETUP_DATA_DEFINITION
+	UINT8	SmcCPLDWDT;
+	UINT16	SmcCPLDWDTSec;
+//	UINT8	SmcCPLDADR;
+	UINT8	SmcCPLDWDTNMIRESET;
+	UINT8	ThrottleOnPowerFail;
+#endif
+
+#ifdef CONTROL_DEFINITION
+
+#if ( WDT_DEFAULT_SETTING == 1 )
+#define SMC_CPLDWDT \
+	oneof varid = SETUP_DATA.SmcCPLDWDT,\
+		prompt = STRING_TOKEN(STR_SMC_CPLDWDT),\
+		help = STRING_TOKEN(STR_SMC_CPLDWDT_HELP),\
+		option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_SMC_CPLDWDT_POWERON), value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_SMC_CPLDWDT_POST), value = 2, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_SMC_CPLDWDT_OS), value = 3, flags = RESET_REQUIRED;\
+	endoneof;
+#else
+#if ( WDT_DEFAULT_SETTING == 2 )
+#define SMC_CPLDWDT \
+	oneof varid = SETUP_DATA.SmcCPLDWDT,\
+		prompt = STRING_TOKEN(STR_SMC_CPLDWDT),\
+		help = STRING_TOKEN(STR_SMC_CPLDWDT_HELP),\
+		option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_SMC_CPLDWDT_POWERON), value = 1, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_SMC_CPLDWDT_POST), value = 2, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_SMC_CPLDWDT_OS), value = 3, flags = RESET_REQUIRED;\
+	endoneof;
+#else
+#if ( WDT_DEFAULT_SETTING == 3 )
+#define SMC_CPLDWDT \
+	oneof varid = SETUP_DATA.SmcCPLDWDT,\
+		prompt = STRING_TOKEN(STR_SMC_CPLDWDT),\
+		help = STRING_TOKEN(STR_SMC_CPLDWDT_HELP),\
+		option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_SMC_CPLDWDT_POWERON), value = 1, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_SMC_CPLDWDT_POST), value = 2, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_SMC_CPLDWDT_OS), value = 3, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+	endoneof;
+#else
+#if ( WDT_DEFAULT_SETTING == 0 )
+#define SMC_CPLDWDT \
+	oneof varid = SETUP_DATA.SmcCPLDWDT,\
+		prompt = STRING_TOKEN(STR_SMC_CPLDWDT),\
+		help = STRING_TOKEN(STR_SMC_CPLDWDT_HELP),\
+		option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_SMC_CPLDWDT_POWERON), value = 1, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_SMC_CPLDWDT_POST), value = 2, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_SMC_CPLDWDT_OS), value = 3, flags = RESET_REQUIRED;\
+	endoneof;
+#endif
+#endif
+#endif
+#endif
+
+#define SMC_CPLDWDT_SECOND \
+	suppressif ideqval SETUP_DATA.SmcCPLDWDT == 0;\
+	numeric varid   = SETUP_DATA.SmcCPLDWDTSec,\
+                prompt  = STRING_TOKEN(STR_SMC_CPLDWDT_SECOND),\
+                help    = STRING_TOKEN(STR_SMC_CPLDWDT_SECOND_HELP),\
+                flags   = 0 | RESET_REQUIRED,\
+                minimum = 1,\
+                maximum = 2048,\
+                step    = 1,\
+		default = WDT_TIMER_DEFAULT_SETTING, \
+        endnumeric;\
+        endif;
+
+/*
+#define SMC_CPLD_ADR \
+	oneof varid = SETUP_DATA.SmcCPLDADR,\
+		prompt = STRING_TOKEN(STR_SMC_CPLD_ADR),\
+		help = STRING_TOKEN(STR_SMC_CPLD_ADR_HELP),\
+		option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+	endoneof;
+*/
+
+#define SMC_CPLD_WDT_NMI_RESET \
+	oneof varid = SETUP_DATA.SmcCPLDWDTNMIRESET,\
+		prompt = STRING_TOKEN(STR_SMC_CPLD_WDT_NMI_RESET),\
+		help = STRING_TOKEN(STR_SMC_CPLD_WDT_NMI_RESET_HELP),\
+		option text = STRING_TOKEN(STR_WDT_RESET_STRING), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_WDT_NMI_STRING), value = 1, flags = RESET_REQUIRED;\
+	endoneof;
+
+#define SMC_TROTTLEONPOWERFAIL \
+        oneof varid     = SETUP_DATA.ThrottleOnPowerFail, \
+		prompt        = STRING_TOKEN (STR_THROTTLE_ON_POWERFAIL), \
+		help        = STRING_TOKEN (STR_THROTTLE_ON_POWERFAIL_HELP), \
+		option text = STRING_TOKEN (STR_DISABLED),  value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+		option text = STRING_TOKEN (STR_ENABLED),   value = 1, flags = RESET_REQUIRED;\
+	endoneof;
+#endif
+
+#ifdef CONTROLS_WITH_DEFAULTS
+	SMC_CPLDWDT
+	SMC_CPLDWDT_SECOND
+//	SMC_CPLD_ADR
+	SMC_CPLD_WDT_NMI_RESET
+	SMC_TROTTLEONPOWERFAIL
+#endif

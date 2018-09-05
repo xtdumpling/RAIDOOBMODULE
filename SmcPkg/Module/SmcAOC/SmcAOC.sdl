@@ -1,0 +1,101 @@
+#****************************************************************************
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#   Rev. 1.01
+#     Reason:   Support two CPLD on a BPN.
+#     Auditro:	Kasber Chen
+#     Date:     Aug/21/2017
+#
+#   Rev. 1.00
+#     Reason:   Initialize revision.
+#     Auditro:	Kasber Chen
+#     Date:     10/03/2016      
+#
+#**************************************************************************//
+TOKEN
+	Name  = "SmcAOC_SUPPORT"
+	Value  = "1"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+End
+
+PATH
+	Name  = "SmcAOC_DIR"
+End
+
+TOKEN
+        Name  = "BPN_CPLD_Address"
+        Value  = "{0x66, 0x6E}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "CPLD_Max_Port"
+        Value  = "32"
+        Help = "Max support port number in a CPLD"
+        TokenType = Integer
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "AOC_Max_Port"
+        Value  = "4"
+        Help = "Max port number in a AOC NVMe card"
+        TokenType = Integer
+        TargetH = Yes
+End
+
+TOKEN
+	Name  = "SLOT_INFO_Tbl"
+	Value  = "{{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}"
+	Help = "{MUX address, MUX channel, Slot BDF, Slot bifurcation}"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+        Name  = "AOC_SLG3_2E4R"
+        Value  = "{{0xff, 0xff}}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "AOC_SLG3_4E4R"
+        Value  = "{{0xff, 0xff}}"
+        TokenType = Expression
+        TargetH = Yes
+End
+
+FFS_FILE
+	Name  = "SmcAOC"
+	FD_AREA  = "FV_MAIN"
+	INFComponent  = "SmcPkg.SmcAOC"
+End
+
+FFS_FILE
+	Name  = "SmcAOCPei"
+	FD_AREA  = "FV_BB"
+	INFComponent  = "SmcPkg.SmcAOCPei"
+End
+
+INFComponent
+	Name  = "SmcAOC"
+	File  = "SmcAOC.inf"
+	Package  = "SmcPkg"
+	ModuleTypes  = "DXE_DRIVER"
+End
+
+INFComponent
+	Name  = "SmcAOCPei"
+	File  = "SmcAOCPei.inf"
+	Package  = "SmcPkg"
+	ModuleTypes  = "PEIM"
+End

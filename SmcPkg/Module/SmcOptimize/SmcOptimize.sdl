@@ -1,0 +1,96 @@
+##****************************************************************************
+##****************************************************************************
+##**                                                                        **
+##**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+##**                                                                        **
+##****************************************************************************
+##****************************************************************************
+#
+#  File History
+#
+#  Rev. 1.00
+#       Bug fixed:   Initialize revision
+#       Reason:      Clone from Sample folder.
+#       Auditor:     Leon Xu
+#       Date:        20-Jul-2017
+#
+#*****************************************************************************
+
+TOKEN
+	Name  = "SmcOptimize_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable BOARD1 support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+End
+
+PATH
+	Name  = "SMC_OPTIMIZE_DIR"
+End
+
+MODULE
+	File  = "SmcOptimize.mak"
+End
+
+TOKEN
+	Name  = "SMC_OPTIMIZE_CPU2006"
+	Value  = "0"
+	Help  = "0 - Disable; 0xF1 - For CPU 2006 test"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SMC_OPTIMIZE_SPECPOWER"
+	Value  = "0"
+	Help  = "0 - Disable; 0xF0 - For Spec Power test"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+ELINK
+	Name  = "$(SMC_OPTIMIZE_DIR)\SmcOptimize.uni"
+	Parent  = "SetupStringFiles"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name = "$(SMC_OPTIMIZE_DIR)\SmcOptimize.sd"
+	Parent = "SETUP_DEFINITIONS"
+	InvokeOrder = AfterParent
+End
+
+FFS_FILE
+	Name  = "SmcOptimizePei"
+	FD_AREA  = "FV_BB"
+	INFComponent  = "SmcPkg.SmcOptimizePei"
+	Apriori_Index  = "1"
+End
+
+FFS_FILE
+	Name  = "SmcOptimizeDxe"
+	FD_AREA  = "FV_MAIN"
+	INFComponent  = "SmcPkg.SmcOptimizeDxe"
+	Apriori_Index  = "3"
+End
+
+INFComponent
+	Name  = "SmcOptimizePei"
+	File  = "SmcOptimizePei.inf"
+	Package  = "SmcPkg"
+	ModuleTypes = "PEIM"
+End
+
+INFComponent
+	Name  = "SmcOptimizeDxe"
+	File  = "SmcOptimizeDxe.inf"
+	Package  = "SmcPkg"
+	ModuleTypes  = "DXE_DRIVER"
+End

@@ -1,0 +1,36 @@
+TOKEN
+    Name  = "RESTORE_FBO_VARIABLES"
+    Value = "1"
+    Help  = "Enable Restore Fixed Boot Order module related variables"
+    TokenType = Boolean
+    TargetH = Yes
+    Master = Yes
+End
+
+PATH
+    Name  = "FBO_SMIFLASH_ELINK_DIR"
+End
+
+ELINK
+    Name   = "PreserveFboVariables,"
+    Parent = "SMIFlashPreUpdateList"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name   = "RestoreFboVariables,"
+    Parent = "SMIFlashEndUpdateList"
+    InvokeOrder = AfterParent
+End
+
+INFComponent
+    Name = "FboSmiFlashLink"
+    File = "FboSmiFlashLink.inf"
+    Package = "AmiModulePkg"
+End
+ 
+LibraryMapping
+    Class = "NULL"
+    Instance = "AmiModulePkg.FboSmiFlashLink"
+    Override = "AmiModulePkg.SMIFlash"
+End

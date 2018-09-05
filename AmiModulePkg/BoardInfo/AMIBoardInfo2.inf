@@ -1,0 +1,48 @@
+#
+# 
+#
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = AmiBoardInfo2
+  FILE_GUID                      = 9F3A0016-AE55-4288-829D-D55FD3AAC347
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = AmiBoardEntryPoint
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+#  
+
+[Sources]  
+   AmiBoardInfo2.c	
+
+[Packages]
+  MdePkg/MdePkg.dec   
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec 
+  AmiModulePkg/AmiModulePkg.dec
+  
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+#  DebugLib
+  AmiSdlLib
+  AmiDxeLib
+  
+[Protocols]
+  gEfiFirmwareVolume2ProtocolGuid
+  gAmiBoardInfo2ProtocolGuid
+  gAmiBoardSioInitProtocolGuid
+  gAmiBoardPciInitProtocolGuid
+  
+[Guids] 
+  gAmiBoardInfoFileGuid
+  gAmiBoardInfoSectionGuid
+  gAmiAslDsdtFileGuid
+  
+[Depex]
+  TRUE
+  

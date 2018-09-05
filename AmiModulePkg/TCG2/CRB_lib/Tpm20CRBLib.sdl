@@ -1,0 +1,188 @@
+TOKEN
+    Name  = "TPM20CRB_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable TCG support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+    Master = Yes
+End
+
+PATH
+    Name  = "TPM20_CRBLIB"
+    Help  = "Tcg Directory"
+End
+
+TOKEN
+    Name  = "PRE_BUILT_INTEL_HCILIBRARY"
+    Value  = "0"
+    Help  = "Some projects like AptioV Shkbay might require the use of the prebuilt INTEL HCI library. NB: Intel FTPM only"
+    TokenType = Boolean
+    TargetH = Yes
+    Token = "PttHciLib_SUPPORT" "!=" "1"
+End
+
+TOKEN
+    Name  = "PRE_BUILT_NULL_HCILIBRARY"
+    Value  = "1"
+    Help  = ""
+    TokenType = Boolean
+    TargetH = Yes
+    Token = "PRE_BUILT_INTEL_HCILIBRARY" "!=" "1"
+End
+
+TOKEN
+    Name  = "SET_TPM_IDLE"
+    Value  = "1"
+    Help  = "allows the setting of command response buffer in IDLE mode after receiving response buffer from the TPM"
+    TokenType = Boolean
+    TargetH = Yes
+    TargetMAK = Yes
+    TargetEQU = Yes
+End
+
+
+TOKEN
+    Name  = "CRB_DELAY_TIMEOUT"
+    Value  = "50"
+    Help  = "Stall timeout between TPM register access on the TPM"
+    TokenType = Integer
+    TargetH = Yes
+    TargetMAK = Yes
+    TargetEQU = Yes
+End
+
+TOKEN
+    Name  = "CRB_COUNT_TIMEOUT"
+    Value  = "$(CRB_DELAY_TIMEOUT)"
+    Help  = "Determines Timout lengths"
+    TokenType = Integer
+    TargetH = Yes
+    TargetMAK = Yes
+    TargetEQU = Yes
+End
+
+TOKEN
+    Name  = "TPM20_CRBBASE"
+    Value  = "0FED70000h"
+    Help  = "Start of Mem I/O region dedicated for TPM access"
+    TokenType = Expression
+    TargetEQU = Yes
+    TargetMAK = Yes
+End
+
+TOKEN
+    Name  = "TPM20_CRBBASE"
+    Value  = "0x0FED70000"
+    Help  = "Start of Mem I/O region dedicated for TPM access"
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "GET_TPM20BASE_FUNCTION"
+    Value  = "getTpm20BaseFunc"
+    Help  = "Elink to get base address of TPM20"
+    TokenType = Expression
+    TargetH = Yes
+End
+
+ELINK
+    Name  = "AMI_FTPM_LIB"
+    InvokeOrder = ReplaceParent
+    OutDSC = Yes
+End
+INFComponent
+    Name        = "CrbLibDxe"
+    File        = "Tpm20CRBLibDxe.inf"
+    Package     = "AmiModulePkg"
+    Path        = "TPM20_CRBLIB"
+    PreProcess  = Yes
+End
+
+INFComponent
+    Name        = "CrbLibPei"
+    File        = "Tpm20CRBLibPei.inf"
+    Package     = "AmiModulePkg"
+    Path        = "TPM20_CRBLIB"
+    PreProcess  = Yes
+End
+
+LibraryMapping
+    Class       = "BaseCrbLibPei"
+    Instance    = "AmiModulePkg.CrbLibPei"
+End
+
+LibraryMapping
+    Class       = "BaseCrbLibDxe"
+    Instance    = "AmiModulePkg.CrbLibDxe"
+End
+
+#LibraryMapping
+#   Class  = "PttHciDeviceLib"
+#   Instance  = "AmiModulePkg.PttHciDeviceLib"
+#   Token = "DEBUG_MODE" "=" "0"
+#   Token = "PRE_BUILT_INTEL_HCILIBRARY" "=" "1"
+#End
+
+#INFComponent
+##  File  = "PttHciDeviceLib.inf"
+#   Package  = "AmiModulePkg"
+#   Token = "DEBUG_MODE" "=" "0"
+#   Token = "PRE_BUILT_INTEL_HCILIBRARY" "=" "1"
+#End
+
+LibraryMapping
+    Class  = "PttHciDeviceLib"
+    Instance  = "AmiModulePkg.PttHciDeviceLibdbg"
+    Token = "PRE_BUILT_INTEL_HCILIBRARY" "=" "1"
+End
+
+INFComponent
+    Name  = "PttHciDeviceLibdbg"
+    File  = "PttHciDeviceLibdbg.inf"
+    Package  = "AmiModulePkg"
+    Token = "PRE_BUILT_INTEL_HCILIBRARY" "=" "1"
+End
+
+LibraryMapping
+    Class   = "PttHciDeviceLib"
+    Instance    = "AmiModulePkg.PttHciDeviceLibNull"
+    Token = "PRE_BUILT_NULL_HCILIBRARY" "=" "1"
+End
+
+INFComponent
+    Name        = "PttHciDeviceLibNull"
+    File        = "PttHciLibNull.inf"
+    Package             = "AmiModulePkg"
+    Token = "PRE_BUILT_NULL_HCILIBRARY" "=" "1"
+End
+
+
+INFComponent
+    Name  = "PspfTpmLibNull"
+    File  = "PspfTpmLibNull.inf"
+    Package  = "AmiModulePkg"
+    Token = "FTpmPlatformProfile" "!=" "1"
+End
+
+LibraryMapping
+    Class  = "PspfTpmLib"
+    Instance  = "AmiModulePkg.PspfTpmLibNull"
+    Token = "FTpmPlatformProfile" "!=" "1"
+End
+ELINK
+    Name  = "PspfTpmLib"
+    Parent  = "AMI_FTPM_LIB"
+    InvokeOrder = AfterParent
+    OutDSC = Yes
+End
+
+ELINK
+    Name  = "PttHciDeviceLib"
+    Parent  = "AMI_FTPM_LIB"
+    InvokeOrder = AfterParent
+    OutDSC = Yes
+End

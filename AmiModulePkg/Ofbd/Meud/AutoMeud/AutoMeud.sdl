@@ -1,0 +1,420 @@
+TOKEN
+	Name  = "AUTO_MEUD_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable ME Firmware Update support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+	Token = "MEUD_SUPPORT" "=" "1"
+	Token = "SecureMod_SUPPORT" "=" "1"
+	Token = "X64_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "AUTO_ME_UPDATE_POLICY"
+	Value  = "2"
+	Help  = "Switch for Auto ME Update Policy Control.\0 - via HMRFPO MEI with built-in ME FW.\1 - via ME FW Update API with built-in ME FW.\2 - ME FW Capsule Update"
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "BIOS_ME_FILE"
+	Value  = "$(AUTO_MEUD_DIR)\ME_1_5M.bin"
+	Help  = "Use BIOS+ME Full Binary when AUTO_ME_UPDATE_POLICY = 0\Use ME FW Binary when AUTO_ME_UPDATE_POLICY = 1\Use ME FW Binary when AUTO_ME_UPDATE_POLICY = 2"
+	TokenType = Expression
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "MEUD_NONBIOS_LENGTH"
+	Value  = "0x1000000 - $(FLASH_SIZE)"
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "AUTO_ME_UPDATE_POLICY" "=" "0"
+End
+
+TOKEN
+	Name  = " "
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "====== ME FW CAPSULE Configuration ======"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "FV_MEFW_CAPSULE_SIZE"
+	Value  = "0x100000"
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "AUTO_ME_UPDATE_POLICY" "=" "2"
+End
+
+TOKEN
+	Name  = "FWCAPSULE_MAX_PAYLOAD_SIZE"
+	Value  = "$(FLASH_SIZE)+$(FV_MEFW_CAPSULE_SIZE)"
+	TokenType = Integer
+	TargetH = Yes
+	Token = "AUTO_ME_UPDATE_POLICY" "=" "2"
+End
+
+TOKEN
+	Name  = "FWCAPSULE_IMAGE_SIZE"
+	Value  = "$(FLASH_SIZE)+$(FWCAPSULE_MAX_HDR_SIZE)+$(FV_MEFW_CAPSULE_SIZE)"
+	TokenType = Integer
+	TargetH = Yes
+	Token = "AUTO_ME_UPDATE_POLICY" "=" "2"
+End
+
+TOKEN
+	Name  = "UNSIGNED_MEFW_CAPSULE"
+	Value  = "$(BUILD_DIR)$(PATH_SLASH)$(PLATFORM_NAME)$(PATH_SLASH)$(TARGET)_$(TOOL_CHAIN_TAG)$(PATH_SLASH)FV$(PATH_SLASH)FV_MEFW_CAPSULE.Fv"
+	Help  = "File name of the BIOS image to be signed."
+	TokenType = Expression
+	TargetMAK = Yes
+	Token = "AUTO_ME_UPDATE_POLICY" "=" "2"
+End
+
+TOKEN
+	Name  = "BIOS_MEFW_CAPSULE_FILE"
+	Value  = "BIOSMEFW.CAP"
+	Help  = "File name of the BIOS + ME FW image to be signed."
+	TokenType = Expression
+	TargetMAK = Yes
+	Token = "AUTO_ME_UPDATE_POLICY" "=" "2"
+End
+
+TOKEN
+	Name  = "MEFW_CAPSULE_FILE"
+	Value  = "MEFWSIGN.CAP"
+	Help  = "File name of the ME FW image to be signed."
+	TokenType = Expression
+	TargetMAK = Yes
+	Token = "AUTO_ME_UPDATE_POLICY" "=" "2"
+End
+
+TOKEN
+	Name  = " "
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "====== ME ISH FW CAPSULE Configuration ======"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "ISH_FW_UPDATE_SUPPORT"
+	Value  = "0"
+	Help  = "Switch for ME ISH FW/Data Update Support.\OFF - unsupported.\ON - Supported."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "AUTO_ME_UPDATE_POLICY" "=" "2"
+End
+
+TOKEN
+	Name  = "FV_ISH_FW_CAPSULE_SIZE"
+	Value  = "0x40000"
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "ISH_FW_UPDATE_SUPPORT" "=" "1"
+	Token = "AUTO_ME_UPDATE_POLICY" "=" "2"
+End
+
+TOKEN
+	Name  = "ME_ISH_FIRMEARE_FILE"
+	Value  = "$(ROM_IMAGE_DIR)\ISHC\ISHC.bin"
+	Help  = "Use ISH Firmware Binary when AUTO_ME_UPDATE_POLICY = 2"
+	TokenType = Expression
+	TargetMAK = Yes
+	Token = "ISH_FW_UPDATE_SUPPORT" "=" "1"
+	Token = "AUTO_ME_UPDATE_POLICY" "=" "2"
+End
+
+TOKEN
+	Name  = "ME_PDT_DATA_FILE"
+	Value  = "$(ROM_IMAGE_DIR)\PDT\INTC_pdt_SKL_NS_BOM1_SENSORS.bin"
+	Help  = "Use PDT Data Binary when AUTO_ME_UPDATE_POLICY = 2"
+	TokenType = Expression
+	TargetMAK = Yes
+	Token = "ISH_FW_UPDATE_SUPPORT" "=" "1"
+	Token = "AUTO_ME_UPDATE_POLICY" "=" "2"
+End
+
+TOKEN
+	Name  = "ISH_FW_CAPSULE_FILE"
+	Value  = "ISHFWSGN.CAP"
+	Help  = "File name of the ME FW image to be signed."
+	TokenType = Expression
+	TargetMAK = Yes
+	Token = "ISH_FW_UPDATE_SUPPORT" "=" "1"
+	Token = "AUTO_ME_UPDATE_POLICY" "=" "2"
+End
+
+TOKEN
+	Name  = " "
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "====== ME Version Configuration ======"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "ME_FW_IMAGE_VERSION"
+	Value  = "{0, 0, 0, 0}"
+	Help  = "Major, Minor, Hotfix and Build Versions of the ME FW image file.\(Set Major version to 0 to disable FW version check.)"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+PATH
+	Name  = "AUTO_MEUD_DIR"
+End
+
+MODULE
+	Help  = "Includes AutoMeud.mak to Project"
+	File  = "AutoMeud.mak"
+End
+
+ELINK
+	Name  = "AutoMeudBeforeReflashHook,"
+	Parent  = "OemBeforeFlashUpdateList"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "AutoMeudAfterReflashHook,"
+	Parent  = "OemAfterFlashUpdateList"
+	Priority  = -100
+	InvokeOrder = AfterParent
+End
+
+INFComponent
+	Name  = "AutoMeud"
+	File  = "AutoMeud.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "DXE_DRIVER"
+End
+
+INFComponent
+	Name  = "AutoMeudLib"
+	File  = "AutoMeudLib.inf"
+	Package  = "AmiModulePkg"
+End
+
+INFComponent
+	Name  = "MeFwVersion"
+	File  = "MeFwVersion/MeFwVersion.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "USER_DEFINED"
+End
+
+INFComponent
+	Name  = "MeFwFid"
+	File  = "../../../../Build/MeFwFid.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "USER_DEFINED"
+	Token = "AUTO_ME_UPDATE_POLICY" "=" "2"
+End
+
+INFComponent
+	Name  = "MeFwLayout"
+	File  = "MeFwLayout/MeFwLayout.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "USER_DEFINED"
+	Token = "AUTO_ME_UPDATE_POLICY" "=" "2"
+End
+
+INFComponent
+	Name  = "MeFwCapsulePei"
+	File  = "MeFwCapsulePei/MeFwCapsulePei.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "PEIM"
+	Token = "AUTO_ME_UPDATE_POLICY" "=" "2"
+End
+
+INFComponent
+	Name  = "BiosMeFwLayout"
+	File  = "MeFwLayout/BiosMeFwLayout.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "USER_DEFINED"
+	Token = "AUTO_ME_UPDATE_POLICY" "=" "2"
+End
+
+INFComponent
+	Name  = "IshFwFid"
+	File  = "../../../../Build/IshFwFid.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "USER_DEFINED"
+	Token = "ISH_FW_UPDATE_SUPPORT" "=" "1"
+	Token = "AUTO_ME_UPDATE_POLICY" "=" "2"
+End
+
+INFComponent
+	Name  = "IshFwVersion"
+	File  = "MeFwVersion/IshFwVersion.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "USER_DEFINED"
+	Token = "ISH_FW_UPDATE_SUPPORT" "=" "1"
+	Token = "AUTO_ME_UPDATE_POLICY" "=" "2"
+End
+
+INFComponent
+	Name  = "IshFwLayout"
+	File  = "MeFwLayout/IshFwLayout.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "USER_DEFINED"
+	Token = "ISH_FW_UPDATE_SUPPORT" "=" "1"
+	Token = "AUTO_ME_UPDATE_POLICY" "=" "2"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "AmiModulePkg.AutoMeudLib"
+	Override  = "AmiModulePkg.Reflash"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "AmiModulePkg.AutoMeudLib"
+	Override  = "AmiModulePkg.AutoMeud"
+End
+
+FFS_FILE
+	Name  = "AutoMeud"
+	FD_AREA  = "FV_MAIN"
+	INFComponent  = "AmiModulePkg.AutoMeud"
+End
+
+FFS_FILE
+	Name  = "MeRegionFdfFileStatement"
+	FD_AREA  = "FV_DATA"
+	FILE_Stmt  = "AmiModulePkg/Ofbd/Meud/AutoMeud/MeRegionFdfFileStatement.txt"
+	Token = "AUTO_ME_UPDATE_POLICY" "=" "1"
+End
+
+FFS_FILE
+	Name  = "MeFwVersion"
+	FD_AREA  = "FV_DATA"
+	INFComponent  = "AmiModulePkg.MeFwVersion"
+	Rule_Override  = "SubtypeGuidUncompressed"
+	Token = "AUTO_ME_UPDATE_POLICY" "!=" "2"
+End
+
+FFS_FILE
+	Name  = "MeFwFid"
+	FD_AREA  = "FV_MEFW_CAPSULE"
+	INFComponent  = "AmiModulePkg.MeFwFid"
+	Rule_Override  = "SubtypeGuidUncompressedNoChecksum"
+	Token = "AUTO_ME_UPDATE_POLICY" "=" "2"
+End
+
+FFS_FILE
+	Name  = "MeFwVersion"
+	FD_AREA  = "FV_MEFW_CAPSULE"
+	INFComponent  = "AmiModulePkg.MeFwVersion"
+	Rule_Override  = "SubtypeGuidUncompressed"
+	Token = "AUTO_ME_UPDATE_POLICY" "=" "2"
+End
+
+FFS_FILE
+	Name  = "MeRegionFdfFileStatement"
+	FD_AREA  = "FV_MEFW_CAPSULE"
+	FILE_Stmt  = "AmiModulePkg/Ofbd/Meud/AutoMeud/MeRegionFdfFileStatement.txt"
+	Token = "AUTO_ME_UPDATE_POLICY" "=" "2"
+End
+
+FFS_FILE
+	Name  = "MeFwLayout"
+	FD_AREA  = "FV_MEFW_CAPSULE"
+	INFComponent  = "AmiModulePkg.MeFwLayout"
+	Rule_Override  = "SubtypeGuidUncompressed"
+	Token = "AUTO_ME_UPDATE_POLICY" "=" "2"
+End
+
+FFS_FILE
+	Name  = "MeFwCapsulePei"
+	FD_AREA  = "FV_BB"
+	INFComponent  = "MeFwCapsulePei"
+	Apriori_Index  = "10"
+	Token = "AUTO_ME_UPDATE_POLICY" "=" "2"
+End
+
+FFS_FILE
+	Name  = "BiosMeFwLayout"
+	FD_AREA  = "FV_MEFW_CAPSULE"
+	INFComponent  = "AmiModulePkg.BiosMeFwLayout"
+	Rule_Override  = "SubtypeGuidUncompressed"
+	Token = "AUTO_ME_UPDATE_POLICY" "=" "2"
+End
+
+FFS_FILE
+	Name  = "IshFwFid"
+	FD_AREA  = "FV_ISH_FW_CAPSULE"
+	INFComponent  = "AmiModulePkg.IshFwFid"
+	Rule_Override  = "SubtypeGuidUncompressedNoChecksum"
+	Token = "ISH_FW_UPDATE_SUPPORT" "=" "1"
+	Token = "AUTO_ME_UPDATE_POLICY" "=" "2"
+End
+
+FFS_FILE
+	Name  = "IshFwVersion"
+	FD_AREA  = "FV_ISH_FW_CAPSULE"
+	INFComponent  = "AmiModulePkg.IshFwVersion"
+	Rule_Override  = "SubtypeGuidUncompressedNoChecksum"
+	Token = "ISH_FW_UPDATE_SUPPORT" "=" "1"
+	Token = "AUTO_ME_UPDATE_POLICY" "=" "2"
+End
+
+FFS_FILE
+	Name  = "IshFwLayout"
+	FD_AREA  = "FV_ISH_FW_CAPSULE"
+	INFComponent  = "AmiModulePkg.IshFwLayout"
+	Rule_Override  = "SubtypeGuidUncompressed"
+	Token = "ISH_FW_UPDATE_SUPPORT" "=" "1"
+	Token = "AUTO_ME_UPDATE_POLICY" "=" "2"
+End
+
+FFS_FILE
+	Name  = "IshFwFdfFileStatement"
+	FD_AREA  = "FV_ISH_FW_CAPSULE"
+	FILE_Stmt  = "Build/IshFwFdfFileStatement.txt"
+	Token = "ISH_FW_UPDATE_SUPPORT" "=" "1"
+	Token = "AUTO_ME_UPDATE_POLICY" "=" "2"
+End
+
+FD_AREA
+	Name  = "FV_MEFW_CAPSULE"
+	TYPE  = "StandAlone"
+	FD_INFO  = "AMIROM"
+	Offset  = "0"
+	Size  = "$(FV_MEFW_CAPSULE_SIZE)"
+	Attributes  = "0xffff"
+	Alignment  = "16"
+	Guid  = "9F8B1DEF-B62B-45F3-8282-BFD7EA19801B"
+	Token = "AUTO_ME_UPDATE_POLICY" "=" "2"
+End
+
+FD_AREA
+	Name  = "FV_ISH_FW_CAPSULE"
+	TYPE  = "StandAlone"
+	FD_INFO  = "AMIROM"
+	Offset  = "0"
+	Size  = "$(FV_ISH_FW_CAPSULE_SIZE)"
+	Attributes  = "0xffff"
+	Alignment  = "16"
+	Guid  = "9F8B1DEF-B62B-45F3-8282-BFD7EA19801B"
+	Token = "ISH_FW_UPDATE_SUPPORT" "=" "1"
+	Token = "AUTO_ME_UPDATE_POLICY" "=" "2"
+End
+

@@ -1,0 +1,52 @@
+## @file
+#  SIO Setup Driver library implementation
+#
+##
+#
+#  This flag specifies whether HII resource section is generated into PE image.
+#
+## CONSUMES
+
+[Defines]
+  INF_VERSION = 0x00010005
+  VERSION_STRING = 1.0
+  BASE_NAME = SioDynamicSetup
+  MODULE_TYPE = DXE_DRIVER
+  FILE_GUID = 1830A6DD-E03D-4bc0-B115-94D91950FE4A
+  ENTRY_POINT = SioDynamicSetupEntryPoint
+  UEFI_HII_RESOURCE_SECTION = TRUE
+
+[Sources]
+  SioDynamicSetup.c
+  SioDynamicSetupPrivate.h
+  SioDynamicSetup.uni
+  SioDynamicSetup.vfr
+
+[LibraryClasses]
+  AmiDxeLib
+  UefiDriverEntryPoint
+  HiiLib
+  BaseLib
+  AmiHiiUpdateLib
+  AmiSdlLib
+  AmiSioDxeLib
+
+[Protocols]
+  gAmiBoardInfo2ProtocolGuid  
+  gEfiAmiSioProtocolGuid
+  gAmiBoardSioInitProtocolGuid
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+
+[Depex]
+  gAmiBoardInfo2ProtocolGuid AND
+  gEfiHiiDatabaseProtocolGuid
+
+[BuildOptions]
+*_*_*_BUILD_FLAGS=-s
+
+

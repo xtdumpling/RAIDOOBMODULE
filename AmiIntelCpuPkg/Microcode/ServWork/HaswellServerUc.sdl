@@ -1,0 +1,40 @@
+TOKEN
+    Name  = "SERVWORK_306CX"
+    Value = "0"
+    Help  = "Intel(R) Haswell"
+    TokenType = Boolean
+    Master = Yes
+End
+
+TOKEN
+    Name  = "SERVWORK_M32306C1"
+    Value  = "1"
+    Help  = "Intel(R) Haswell Processor A-0 Stepping"
+    TokenType = Boolean
+    Token = "NON_PRODUCTION_MICROCODE" "=" "1"
+End
+
+TOKEN
+    Name  = "SERVWORK_M32306C3"
+    Value  = "1"
+    Help  = "Intel(R) Haswell Processor C-0 Stepping"
+    TokenType = Boolean
+End
+
+ELINK
+    Name  = "$(MICROCODE_SERVWORK_DIR)/M32306C1_FFFF000D.mcb"
+    Parent  = "MICROCODE_FILES"
+    Help  = "Intel(R) Haswell Processor A-0 Stepping"
+    Token = "SERVWORK_M32306C1" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(MICROCODE_SERVWORK_DIR)/M32306C3_00000022.mcb"
+    Parent  = "MICROCODE_FILES"
+    Help  = "Intel(R) Haswell Processor C-0 Stepping"
+    Token = "SERVWORK_M32306C3" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+

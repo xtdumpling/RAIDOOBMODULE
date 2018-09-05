@@ -1,0 +1,45 @@
+#****************************************************************************
+#****************************************************************************
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#  
+#  Rev. 1.00
+#    Bug Fix:  Add SmcBMCSMI module.
+#    Reason:
+#    Auditor:  Hartmann Hsieh
+#    Date:     Jul/13/2016
+#
+#****************************************************************************
+
+TOKEN
+	Name  = "SmcBmcSMI_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable SmcBmcSMI support in Project"
+	TokenType = Boolean
+	TargetMAK = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "SMI_BMC_PIN"
+	Value  = "$(SMC_GPP_C) + 22"
+	Help  = "The Number of GPIO pin which should be routed to cause SMI. \0xFF: no such Pin."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+PATH
+	Name  = "SmcBmcSMI_DIR"
+End
+
+INFComponent
+    Name  = "SmcBMCSMI"
+    File  = "SmcBMCSMI.inf"
+    Package  = "SmcPkg"
+    ModuleTypes = "DXE_SMM_DRIVER"
+End
+

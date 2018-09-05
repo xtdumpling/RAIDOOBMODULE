@@ -1,0 +1,102 @@
+## @file
+#  CrystalRidge Protocol
+#
+#  Copyright (c) 2009 - 2016, Intel Corporation. All rights reserved.<BR>
+#
+#  This program and the accompanying materials
+#  are licensed and made available under the terms and conditions of the BSD License
+#  which accompanies this distribution. The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.php
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+#
+##
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = CrystalRidge
+  FILE_GUID                      = C4EB3614-4986-42b9-8C0D-9FE118278908
+  MODULE_TYPE                    = DXE_RUNTIME_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = CrystalRidgeStart
+
+[Sources]
+  CrystalRidge.c
+  CrystalRidge.h
+  RdRand.c
+  RdRand.h
+  Nfit.c
+  Nfit.h
+  Pcat.c
+  Pcat.h
+  PlatformCfgData.c
+  AsmRdRand.asm | MSFT
+  AsmRdRand.nasm | GCC
+  # APTIOV_SERVER_OVERRIDE_RC_START : Add missing file
+  PlatformCfgData.h
+  # APTIOV_SERVER_OVERRIDE_RC_END : Add missing file
+  XlateFunctions/XlateFunctions.c
+  XlateFunctions/XlateFunctions.h
+  XlateFunctions/LineMultiplierTables.c
+
+[Packages]
+  PurleySktPkg/SocketPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  UefiCpuPkg/UefiCpuPkg.dec
+  IA32FamilyCpuPkg/IA32FamilyCpuPkg.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  DxeServicesTableLib
+  UefiRuntimeServicesTableLib
+  DebugLib
+  HobLib
+  IoLib
+  BaseLib
+  TimerLib
+  PlatformHooksLib
+  LocalApicLib
+  PcdLib
+  OemCrystalRidgeLib
+
+[Protocols]
+  gEfiCrystalRidgeGuid
+  gEfiCrystalRidgeSmmGuid
+  gEfiSmmBase2ProtocolGuid
+  gEfiMpServiceProtocolGuid
+  gEfiCpuCsrAccessGuid
+  gEfiSmbiosProtocolGuid
+  gEfiSmmSwDispatch2ProtocolGuid
+  gEfiNgnAcpiSmmInterfaceProtocolGuid
+  gAcpiPcatProtocolGuid
+  gNfitBindingProtocolGuid
+
+[Guids]
+  gEfiMemoryMapGuid
+  gEfiVolatileMemModeVariableGuid
+  gEfiNGNCfgOutGuid
+  gEfiNGNCfgCurGuid
+  gEfiPrevBootNGNDimmCfgVariableGuid
+
+[Pcd]
+  gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemId
+  gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemTableId
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[Depex]
+  gEfiSmmBase2ProtocolGuid AND
+  gEfiMpServiceProtocolGuid AND
+  gEfiCpuCsrAccessGuid
+# APTIOV_SERVER_OVERRIDE_RC_START : To resolve optimization build error
+[BuildOptions]
+  MSFT:*_*_*_CC_FLAGS     = /O1ib2
+# APTIOV_SERVER_OVERRIDE_RC_END : To resolve optimization build error
+

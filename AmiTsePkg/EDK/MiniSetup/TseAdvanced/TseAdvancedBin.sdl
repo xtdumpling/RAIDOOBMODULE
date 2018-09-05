@@ -1,0 +1,90 @@
+TOKEN
+	Name  = "TSE_ADVANCED_BIN_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable Ezport Style in TSE"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+End
+
+PATH
+	Name  = "TSE_ADVANCED_DIR"
+End
+
+ELINK
+	Name  = "$(TSE_ADVANCED_DIR)/TseAdvanced$(ARCH).lib"
+	Parent  = "MINISETUPLIB"
+	Priority  = 50
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(BUILD_DIR)/FixedTseLiteLocal.lib"
+	Parent  = "MINISETUPLIB"
+	Priority  = 40
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(TSE_ADVANCED_DIR)\AdvancedImages/TseAdvancedImages$(ARCH).lib"
+	Parent  = "MINISETUPLIB"
+	Priority  = 60
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(TSE_ADVANCED_DIR)/AddDelBootDrvOpts.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(TSE_ADVANCED_DIR)/AddDelBootDrvOpts.uni"
+	Parent  = "SetupStringFiles"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "TseAdvancedBin"
+	Parent  = "ADDITIONAL_AMITSE_LibraryClasses"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "TseAdvancedImagesBin"
+	Parent  = "ADDITIONAL_AMITSE_LibraryClasses"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(TSE_ADVANCED_DIR)/Mouse.c"
+	Parent  = "TSE_SOURCE_FILES"
+	InvokeOrder = AfterParent
+End
+
+INFComponent
+	Name  = "TseAdvancedBin"
+	File  = "TseAdvancedBin.inf"
+	Package  = "AmiTsePkg"
+End
+
+INFComponent
+	Name  = "TseAdvancedImagesBin"
+	File  = "AdvancedImages/AdvancedImagesBin.inf"
+	Package  = "AmiTsePkg"
+End
+
+
+LibraryMapping
+	Class  = "TseAdvancedBin"
+	Instance  = "AmiTsePkg.TseAdvancedBin"
+#	Arch  = "X64"
+End
+
+LibraryMapping
+	Class  = "TseAdvancedImagesBin"
+	Instance  = "AmiTsePkg.TseAdvancedImagesBin"
+#	Arch  = "X64"
+End

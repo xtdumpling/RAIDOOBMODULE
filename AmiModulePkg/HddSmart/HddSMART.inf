@@ -1,0 +1,71 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+
+## @file HddSMART.inf
+#    
+##
+
+[Defines]
+  INF_VERSION                   = 0x00010005
+  VERSION_STRING                = 1.0
+  BASE_NAME                     = HddSmart
+  MODULE_TYPE                   = DXE_DRIVER
+  FILE_GUID                     = D57C852E-809F-45cf-A377-D77BC0CB78EE
+  ENTRY_POINT                   = HddSmartEntryPoint
+  UEFI_HII_RESOURCE_SECTION     = TRUE
+  PI_SPECIFICATION_VERSION      = 0x0001000A
+
+[Sources]
+  HddSMART.h
+  HddSMART.c
+  HddSMART.uni
+
+[LibraryClasses]
+  AmiDxeLib
+  UefiDriverEntryPoint
+  HiiLib
+
+[Packages]
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  MdePkg/MdePkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  AmiTsePkg/AmiTsePkg.dec
+  AmiIpmiPkg/AmiIpmiPkg.dec # Supermicro
+
+[Protocols]
+  gAmiHddSmartInitProtocolGuid
+  gAmiHddSmartProtocolGuid
+  gAmiPostManagerProtocolGuid
+  gBdsAllDriversConnectedProtocolGuid
+
+[Depex]
+  TRUE
+
+[BuildOptions]
+  *_*_*_BUILD_FLAGS   = -s
+  
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+

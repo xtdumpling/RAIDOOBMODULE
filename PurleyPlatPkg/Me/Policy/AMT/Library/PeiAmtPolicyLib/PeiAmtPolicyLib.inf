@@ -1,0 +1,55 @@
+## @file
+# Component description file for the PeiAmtPolicyLib libbrary.
+#
+# @copyright
+# Copyright (c) 2014 - 2016 Intel Corporation. All rights reserved
+# This software and associated documentation (if any) is furnished
+# under a license and may only be used or copied in accordance
+# with the terms of the license. Except as permitted by the
+# license, no part of this software or documentation may be
+# reproduced, stored in a retrieval system, or transmitted in any
+# form or by any means without the express written consent of
+# Intel Corporation.
+# This file contains an 'Intel Peripheral Driver' and is uniquely
+# identified as "Intel Reference Module" and is licensed for Intel
+# CPUs and chipsets under the terms of your license agreement with
+# Intel or your vendor. This file may be modified by the user, subject
+# to additional terms of the license agreement.
+# 
+# @par Specification Reference:
+#
+##
+
+
+[Defines]
+INF_VERSION = 0x00010017
+BASE_NAME = PeiAmtPolicyLib
+FILE_GUID = AD4755D4-46DA-EDB3-FE44-4EA3AE69E412
+VERSION_STRING = 1.0
+MODULE_TYPE = PEIM
+LIBRARY_CLASS = PeiAmtPolicyLib
+
+
+[LibraryClasses]
+DebugLib
+IoLib
+PeiServicesLib
+BaseMemoryLib
+MemoryAllocationLib
+
+
+[Packages]
+MdePkg/MdePkg.dec
+#SkylakeSiPkg/SiPkg.dec           SERVER_BIOS_FLAG
+PurleySktPkg/Me/MePkg.dec       # SERVER_BIOS_FLAG
+PurleyPlatPkg/PlatPkg.dec       # SERVER_BIOS_FLAG
+
+
+[Sources]
+PeiAmtPolicyLib.c
+PeiAmtPolicyLibrary.h
+AmtPrintPolicy.c
+
+
+[Ppis]
+gAmtPolicyPpiGuid ## PRODUCES

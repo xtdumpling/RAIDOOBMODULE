@@ -1,0 +1,43 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = CmosManagerPeiLib
+  FILE_GUID                      = B64E9DE2-C665-40ed-B30B-8FA53B72344E  
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = CmosManagerLib | PEIM
+
+[Sources]
+  CmosManagerPeiLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  
+[Ppis]
+
+[Guids]
+
+[LibraryClasses]
+  PeiServicesTablePointerLib
+  BaseLib
+  DebugLib
+
+[Depex]
+  gAmiCmosAccessPpiGuid
+  

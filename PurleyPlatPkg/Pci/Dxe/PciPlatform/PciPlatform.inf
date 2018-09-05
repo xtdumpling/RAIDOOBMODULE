@@ -1,0 +1,105 @@
+#
+# This file contains an 'Intel Peripheral Driver' and is
+# licensed for Intel CPUs and chipsets under the terms of your
+# license agreement with Intel or your vendor.  This file may
+# be modified by the user, subject to additional terms of the
+# license agreement
+#
+#/*++
+#
+# Copyright (c) 2006 - 2016, Intel Corporation. All rights reserved
+# This software and associated documentation (if any) is furnished
+# under a license and may only be used or copied in accordance
+# with the terms of the license. Except as permitted by such
+# license, no part of this software or documentation may be
+# reproduced, stored in a retrieval system, or transmitted in any
+# form or by any means without the express written consent of
+# Intel Corporation.
+#
+#  Module Name:
+#
+#    PciPlatform.inf
+#
+#
+#--*/
+
+
+[Defines]
+  INF_VERSION                   = 0x00010005
+  BASE_NAME       		= PciPlatform
+  FILE_GUID       		= E2441B64-7EF4-41fe-B3A3-8CAA7F8D3017
+  MODULE_TYPE                  = DXE_DRIVER
+  VERSION_STRING                = 1.0
+  ENTRY_POINT                   = PciPlatformDriverEntry
+
+[Sources]
+  PciPlatform.c
+  PciPlatform.h
+  PciPlatformHooks.c
+  PciPlatformHooks.h
+  PciIovPlatformPolicy.c
+  PciIovPlatformPolicy.h
+  PciSupportLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+  CpPlatPkg/CpPlatPkg.dec
+  MdeModulePkg/MdeModulePkg.dec  
+  CpRcPkg/CpRcPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  IoLib
+  BaseMemoryLib
+  DebugLib
+  UefiRuntimeServicesTableLib
+  UefiBootServicesTableLib
+  HobLib
+  PlatformHooksLib
+  S3PciLib
+  SetupLib
+  PcdLib
+  PlatformOpromPolicyLib
+  MmPciLib
+
+[Protocols]
+  gEfiPciCallbackProtocolGuid
+  gEfiCpuIoProtocolGuid
+  gEfiFirmwareVolume2ProtocolGuid
+  gEfiPciIoProtocolGuid
+  gEfiPciPlatformProtocolGuid
+  gEfiIioUdsProtocolGuid
+  gEfiPciRootBridgeIoProtocolGuid
+  gEfiPciIovPlatformProtocolGuid
+  gEfiDxeSystemBoardProtocolGuid
+  gEfiIioSystemProtocolGuid
+  gEfiPciHostBridgeResourceAllocationProtocolGuid
+
+[Guids]
+  gEfiPlatformInfoGuid
+  gEfiSetupVariableGuid
+  gEfiSocketIioVariableGuid
+  gEfiPchRcVariableGuid
+
+[Pcd]
+  gPlatformTokenSpaceGuid.PcdOemSkuPcieSlotOpromBitMap
+  gPlatformTokenSpaceGuid.PcdMaxOptionRomNumber
+  gEfiMdeModulePkgTokenSpaceGuid.PcdSrIovSystemPageSize
+  gEfiMdeModulePkgTokenSpaceGuid.PcdSrIovSupport
+  gEfiMdeModulePkgTokenSpaceGuid.PcdAriSupport
+  gEfiMdeModulePkgTokenSpaceGuid.PcdMrIovSupport
+  
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxNestedLevel
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[Depex]
+  gEfiDxeSystemBoardProtocolGuid
+

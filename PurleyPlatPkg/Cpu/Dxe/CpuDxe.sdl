@@ -1,0 +1,38 @@
+TOKEN
+	Name  = "Dxe_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling Dxe support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "GetCpuInfo_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable GetCpuInfo support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "PlatformCpuPolicy_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable PlatformCpuPolicy support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "GetCpuInfo"
+	File  = "GetCpuInfo\GetCpuInfo.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "GetCpuInfo_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "PlatformCpuPolicy"
+	File  = "PlatformCpuPolicy\PlatformCpuPolicy.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "PlatformCpuPolicy_SUPPORT" "=" "1"
+End
+

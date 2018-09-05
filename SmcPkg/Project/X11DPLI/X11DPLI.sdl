@@ -1,0 +1,1781 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.00
+#       Bug fixed:   Initialize revision
+#       Reason:      Clone from Sample folder.
+#       Auditor:     YuLin Yang
+#       Date:        Nov/21/2016
+#
+#****************************************************************************
+
+TOKEN
+	Name  = "X11DPLI_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable BOARD1 support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "Sample_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable BOARD1 support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "PROJECT_TAG"
+	Value  = "10968"
+	TokenType = Expression
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "OFFICIAL_RELEASE"
+	Value  = "1"
+	Help  = "Switch token for official BIOS release. Please copy to your own project board to enable/disable it."
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "BUILD_16MB"
+	Value  = "0"
+	Help  = "Switch token for 16MB BIOS build."
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "BIOS_SIZE"
+	Value  = "0x2000000"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Token = "BUILD_16MB" "=" "0"
+End
+
+TOKEN
+	Name  = "BIOS_SIZE"
+	Value  = "0x1000000"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Token = "BUILD_16MB" "=" "1"
+End
+
+TOKEN
+	Name  = "BIOS_VERSION"
+	Value  = "1.0"
+	Help  = "Identifies the major release of the System BIOS."
+	TokenType = Expression
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PROJECT_MAJOR_VERSION"
+	Value  = "0x01"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PROJECT_MINOR_VERSION"
+	Value  = "0x00"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+  	Name      = "PROJECT_BOARD_NAME"
+  	Value     = "X11DPL-i"
+  	Help      = "Specifies the Project Board Name"
+  	TokenType = Expression
+  	TargetEQU = Yes
+  	TargetMAK = Yes
+  	TargetH   = Yes
+End
+
+TOKEN
+	Name  = "CRB1_SSID"
+	Value  = "0x096815D9"
+	Help  = "This an example, Bit00-15: Vendor ID/Bit16-31:Device ID."
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SMC_SSID"
+	Value  = "$(CRB1_SSID)"
+	Help  = "This an example, Bit00-15: Vendor ID/Bit16-31:Device ID."
+	TokenType = Integer
+	TargetH = Yes
+	TargetMAK = Yes
+End
+
+PATH
+	Name  = "X11DPLI_PROJECT_DIR"
+End
+
+TOKEN
+	Name  = "********** Debug Settings **********"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "DEBUG_MODE"
+	Value  = "0"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FAULT_TOLERANT_NVRAM_UPDATE"
+	Value  = "0"
+	Help  = "Enables/disables fault tolerant NVRAM garbage collection.\If FAULT_TOLERANT_NVRAM_UPDATE is 1, the NVRAM driver uses redundant flash area of size NVRAM_SIZE to perform a failsafe garbage collection. \No data will be lost in case of a power failure.\If FAULT_TOLERANT_NVRAM_UPDATE is 0, the values of some or all NVRAM variables may be lost in case of a power failure during the garbage collection."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+        Token = "DEBUG_MODE" "=" "1"	
+        Token = "BIOS_SIZE" "=" "0x1000000"
+End
+
+TOKEN
+	Name  = "SameDebug_SUPPORT"
+	Value  = "1"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+        Token = "DEBUG_MODE" "=" "1"
+End
+
+TOKEN
+    Name  = "SERVER_IPMI_DEBUG_MESSAGE_SUPPORT"
+    Value  = "0"
+    Help  = "Enables/Disables Debug message support from AMI IPMI PKG. Default is disabled. This token is provided to track flow of the modules when IPMI module is not working as expected. "
+    TokenType = Boolean
+    TargetH = Yes
+    Token = "DEBUG_MODE" "=" "1"
+End
+
+TOKEN
+    Name  = "PCI_BUS_DEBUG_MESSAGES"
+    Value  = "0"
+    Help  = "A switch to enable PciBus Driver Debug messages over Serial Port."
+    TokenType = Boolean
+    TargetH = Yes
+    Token = "DEBUG_CODE" "=" "1"
+End
+
+TOKEN
+    Name  = "USB_DEBUG_MESSAGES"
+    Value  = "0"
+    Help  = "A switch to enable PciBus Driver Debug messages over Serial Port."
+    TokenType = Boolean
+    TargetH = Yes
+    Token = "DEBUG_CODE" "=" "1"
+End
+
+TOKEN
+	Name  = "SameDebug_SUPPORT"
+	Value  = "1"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "SMC_ACPI_DEBUG_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name      = "SMC_ACPI_DEBUG_SUPPORT"
+	Value     = "0"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Help      = "Main switch to enable Smc Acpi Debug support in Project"
+End
+
+TOKEN
+	Name  = "FAULT_TOLERANT_NVRAM_UPDATE"
+	Value  = "0"
+	Help  = "Enables/disables fault tolerant NVRAM garbage collection.\If FAULT_TOLERANT_NVRAM_UPDATE is 1, the NVRAM driver uses redundant flash area of size NVRAM_SIZE to perform a failsafe garbage collection. \No data will be lost in case of a power failure.\If FAULT_TOLERANT_NVRAM_UPDATE is 0, the values of some or all NVRAM variables may be lost in case of a power failure during the garbage collection."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "DEBUG_MODE" "=" "1"	
+End
+
+TOKEN
+	Name  = "IntelGigabitLan_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable Intel Gigabit Lan network chip support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "DEBUG_MODE" "=" "1"	
+End
+
+TOKEN
+	Name  = "ShellBinPkg_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable ShellBinPkg support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Token = "BIOS_SIZE" "=" "0x1000000"
+	Token = "DEBUG_MODE" "=" "1"
+End
+
+TOKEN
+	Name = "PORT61H_EMULATION"
+	Value = "0"
+	Help = "0 - Disable Port 61h emulation, 1 - Enable Port 61h emulation"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "B2_WORKAROUND_SUPPORT"
+	Value  = "1"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "********** SMBIOS Settings **********"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "NUMBER_OF_ONBOARD_DEVICES"
+	Value  = "3"
+	Help  = "Number of Onboard Devices Present in the System."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "ONBOARD_DEVICE_EXT_COUNT"
+	Value  = "$(NUMBER_OF_ONBOARD_DEVICES)"
+	Help  = "Number of Onboard Devices"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SYSTEM_SLOT_INFO"
+	Value  = "1"
+	Help  = "ON  -> System Slot Information structure will be present\OFF -> System Slot Information structure will not be present"
+	TokenType = Boolean
+	TargetEQU = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "NUMBER_OF_SYSTEM_SLOTS"
+	Value  = "7"
+	Help  = "Identifies the number of system slots available on the platform."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "NUMBER_OF_EXT_PORT_CONNECTORS"
+	Value  = "4"
+	Help  = "Number of External Port Connectors in the Sytem."
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "0 - 20"
+End
+
+TOKEN
+	Name  = "CPU1_DIMM_NUM"
+	Value  = "{1, 1, 0}"
+	Help = "{P1_DIMMA_D, P1_DIMMB_E, P1_DIMMC_F}"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "CPU2_DIMM_NUM"
+	Value  = "{1, 1, 0}"
+	Help = "{P2_DIMMA_D, P2_DIMMB_E, P2_DIMMC_F}"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "********** Other Settings **********"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "********** GPIO Settings **********"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "SMC_EXT_NMI_GPIO"
+	Value  = "$(SMC_GPP_D)+0x0003"
+	Help  = "The Number of GPIO pin which should be routed to cause NMI.. \0xFF: no such Pin."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SLOT6_GPIO_Tbl"
+	Value  = "{$(SMC_GPP_G)+4, $(SMC_GPP_G)+5}"
+	Help = "Riser card GPIO define in the token."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "********** USB OC Settings **********"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "USB2_OC_PIN"
+	Value  = "{8, 8, 0, 0, 1, 1, 8, 3, 3, 2, 8, 8, 8, 8, 8, 8}"
+	Help = "0: OC_PIN_1, 1: OC_PIN_2, 2: OC_PIN_3, ~~ 8: OC_PIN_SKIP"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "USB3_OC_PIN"
+	Value  = "{8, 8, 3, 3, 8, 2, 8, 8, 8, 8}"
+	Help = "0: OC_PIN_1, 1: OC_PIN_2, 2: OC_PIN_3, ~~ 8: OC_PIN_SKIP"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "********** HSIO signal Settings **********"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "USB2PP1_123456"
+	Value  = "{0xCA, 0, 0x08, 0x4100, 0x0000C500, ~0x00007F00},{0xCA, 0, 0x08, 0x4200, 0x0000C500, ~0x00007F00},{0xCA, 0, 0x08, 0x4300, 0x0000C500, ~0x00007F00},{0xCA, 0, 0x08, 0x4400, 0x0000C500, ~0x00007F00},{0xCA, 0, 0x08, 0x4500, 0x0000C500, ~0x00007F00},{0xCA, 0, 0x08, 0x4600, 0x0000C500, ~0x00007F00}"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "USB2PP1_789ABCD"
+	Value  = "{0xCA, 0, 0x08, 0x4700, 0x0000C500, ~0x00007F00},{0xCA, 0, 0x08, 0x4800, 0x0000C500, ~0x00007F00},{0xCA, 0, 0x08, 0x4900, 0x0000C500, ~0x00007F00},{0xCA, 0, 0x08, 0x4A00, 0x0000C700, ~0x00007F00},{0xCA, 0, 0x08, 0x4B00, 0x0000C500, ~0x00007F00},{0xCA, 0, 0x08, 0x4C00, 0x0000C500, ~0x00007F00},{0xCA, 0, 0x08, 0x4D00, 0x0000C500, ~0x00007F00}"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "USB2PP2_123456"
+	Value  = "{0xCA, 0, 0x08, 0x4126, 0x00800000, ~0x01800000},{0xCA, 0, 0x08, 0x4226, 0x00800000, ~0x01800000},{0xCA, 0, 0x08, 0x4326, 0x00800000, ~0x01800000},{0xCA, 0, 0x08, 0x4426, 0x00800000, ~0x01800000},{0xCA, 0, 0x08, 0x4526, 0x00800000, ~0x01800000},{0xCA, 0, 0x08, 0x4626, 0x00800000, ~0x01800000}"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "USB2PP2_789ABCD"
+	Value  = "{0xCA, 0, 0x08, 0x4726, 0x00800000, ~0x01800000},{0xCA, 0, 0x08, 0x4826, 0x00800000, ~0x01800000},{0xCA, 0, 0x08, 0x4926, 0x00800000, ~0x01800000},{0xCA, 0, 0x08, 0x4A26, 0x00800000, ~0x01800000},{0xCA, 0, 0x08, 0x4B26, 0x00800000, ~0x01800000},{0xCA, 0, 0x08, 0x4C26, 0x00800000, ~0x01800000},{0xCA, 0, 0x08, 0x4D26, 0x00800000, ~0x01800000}"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "sSATA_12"
+	Value  = "{0xA9, 12, 0x02, 0x0550, 0x083F3F3F, 0}, {0xA9, 13, 0x02, 0x0750, 0x083F3F3F, 0}"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "SATA_12345678"
+	Value  = "{0xA9, 18, 0x02, 0x01150, 0x083F3F3F, 0}, {0xA9, 19, 0x02, 0x01350, 0x083F3F3F, 0}, {0xA9, 20, 0x02, 0x01550, 0x083F3F3F, 0}, {0xA9, 21, 0x02, 0x01750, 0x083F3F3F, 0}, {0xA9, 22, 0x02, 0x01950, 0x083F3F3F, 0}, {0xA9, 23, 0x02, 0x01B50, 0x083F3F3F, 0}, {0xA9, 24, 0x02, 0x01D50, 0x083F3F3F, 0}, {0xA9, 25, 0x02, 0x01F50, 0x083F3F3F, 0}"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "SB_OEM_PTSS_TABLE_LIST"
+	Value  = "$(USB2PP1_123456),$(USB2PP1_789ABCD),$(USB2PP2_123456),$(USB2PP2_789ABCD),$(sSATA_12),$(SATA_12345678),"
+	Help  = "Format:{PordId, LanNum, PhyMode, Offset, Value, BitMask}, PordId: ignored, LanNum: HSIO Lan#(Start from 0), PhyMode: 0:PCIEDMI/1:USB3/2:SATA/8:USB2, For USB2 set LanNum to 0."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "  ====== IOBP Setting Adjust ======  "
+	TokenType = Integer
+End
+
+TOKEN
+	Name  = "********** Aspeed VGA Settings **********"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "Root_Port_Fun"
+	Value  = "5"
+	Help  = "Aspeed chip root port function of ICH/PCH"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0 - 7"
+End
+
+TOKEN
+	Name  = "Root_Port_DID"
+	Value  = "0xA195"
+	Help  = "Aspeed chip root port function of ICH/PCH"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0 - 0xFFFF"
+End
+
+TOKEN
+	Name  = "AST2500_CONFIG_INDEX"
+	Value  = "0x4E"
+	Help  = "SIO index port."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "AST2500_CONFIG_DATA"
+	Value  = "0x4F"
+	Help  = "SIO data port."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+SIODEVICE
+	Name  = "AST2500"
+	Parent  = "LpcBridge"
+	IndexPort  = 04eh
+	DataPort  = 04fh
+	StdSioType  = "Yes"
+	DevSelReg  = 07h
+	ActivateReg  = 030h
+	ActivateVal  = 01h
+	DeActivateVal  = 00h
+	BaseHiReg1  = 060h
+	BaseLoReg1  = 061h
+	BaseHiReg2  = 062h
+	BaseLoReg2  = 063h
+	Irq1Reg  = 070h
+	Irq2Reg  = 072h
+	Dma1Reg  = 074h
+	Dma2Reg  = 075h
+	GblRegFlag  = "0x3fe000000000"
+	LocalRegFlag  = "0xffffffff0000000000000000000000000033000f000000000001000000000000"
+	EnterConfig  = "Script,'Index;Write;A5h','Index;Write;A5h'"
+	ExitConfig  = "Script,'Index;Write;AAh'"
+	SMBIOSStr  = "Test String"
+	GPEbit  = 01dh
+	SleepNum  = 03h
+	ASLfile  = "'AmiModulePkg\IO\AST2500\AST2500Dev.asl','AmiModulePkg\IO\AST2500\AST2500Evt.asl'"
+	ASLdeviceName  = "SIO1"
+	#ASL_PTS  = "Method;SIO_PTS(Arg0)"
+	#ASL_WAK  = "Method;SIO_WAK(Arg0)"
+	WakeEnabled = Yes
+End
+
+TOKEN
+	Name  = "********** Riser Settings **********"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "********** Lan Settings **********"
+	TokenType = Expression
+End
+
+TOKEN
+	Name = "ONBOARD_LAN_DISABLE_BY_SETUP_ITEM"
+	Value  = "1"
+	Help  = "Question to disable Platform Hierarchy randomization to facilitate TXT testing during development"
+	TokenType = Boolean
+	TargetH   = Yes
+End
+
+TOKEN
+	Name  = "SMC_LAN_DISABLE_GPIO"
+	Value  = "GPIO_SKL_H_GPP_B11"
+	Help  = "The GPIO pin which should be routed to cause NMI.. \0xFF: no such Pin."
+	TokenType = Expression
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+#BDF is a 32bits (Fun: bit 0~2, Dev: bit3~7, Bus: bit8~15, Seg: bit16~31).
+#Segment rule is 
+#bit 0~3 is for IOU number, DMI=0, IOU0=1, IOU1=2, IOU3=2. Bit 
+#4~7 is for CPU number, CPU1=1, CPU2=2.
+
+#P0PE1A = 0x00110000, P0PE1B = 0x00110008, P0PE1C = 0x00110010, P0PE1D = 0x00110018
+#P0PE2A = 0x00120000, P0PE2B = 0x00120008, P0PE2C = 0x00120010, P0PE2D = 0x00120018
+#P0PE3A = 0x00130000, P0PE3B = 0x00130008, P0PE3C = 0x00130010, P0PE3D = 0x00130018
+#P1PE0A = 0x00200000,
+#P1PE1A = 0x00210000, P1PE1B = 0x00210008, P1PE1C = 0x00210010, P1PE1D = 0x00210018
+#P1PE2A = 0x00220000, P1PE2B = 0x00220008, P1PE2C = 0x00220010, P1PE2D = 0x00220018
+#P1PE3A = 0x00230000, P1PE3B = 0x00230008, P1PE3C = 0x00230010, P1PE3D = 0x00230018
+
+PcdMapping
+	Name  = "PcdSmcOBLan1BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x00130000" #P0PE3A
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcOBLan2BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x00130000" #P0PE3A
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdSmcMultiFuncLanChip1"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Help  = "for LAN1 and LAN2."
+	Value  = "0x02"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+#CPU0 #3B - Slot1
+PcdMapping
+	Name  = "PcdSmcSLOT1BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x00130008" #P0PE3B
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+#CPU0 #3C - Slot2
+PcdMapping
+	Name  = "PcdSmcSLOT2BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x00130010" #P0PE3C
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+#CPU1 #3 - Slot3
+PcdMapping
+	Name  = "PcdSmcSLOT3BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x00230000" #P1PE3A
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+#CPU0 #1C - Slot4
+PcdMapping
+	Name  = "PcdSmcSLOT4BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x00110010" #P0PE1C
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+#CPU0 #2 - Slot5
+PcdMapping
+	Name  = "PcdSmcSLOT5BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x00120000" #P0PE2A
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+#CPU0 #1A - Slot6
+PcdMapping
+	Name  = "PcdSmcSLOT6BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x00110000" #P0PE1A
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+#PCH M.2 PCIe port 9 (8-11)
+PcdMapping
+	Name  = "PcdSmcSLOT7BDF"
+	GuidSpace  = "gSmcPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "0x000000E8"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+TOKEN
+	Name      = "SMC_ONBOARD_LAN_DID1"
+	Value     = "0xffff"
+	Help      = "Smc Onboard Lan Option Rom Agent Did"
+	TokenType = Integer
+	TargetH   = Yes
+	Range     = "2 byte length"
+End
+
+TOKEN
+	Name      = "SMC_ONBOARD_LAN_DID2"
+	Value     = "0xffff"
+	Help      = "Smc Onboard Lan Option Rom Agent Did"
+	TokenType = Integer
+	TargetH   = Yes
+	Range     = "2 byte length"
+End
+
+#For MB1.02 Addr. 0xE2
+#CPU0 #3B - Slot1 P0PE3B x4(in x8) - E2 00
+#CPU0 #3C - Slot2 P0PE3C x8        - E2 02
+#CPU1 #3  - Slot3 P1PE3A x16       - E2 04
+#CPU0 #1C - Slot4 P0PE1C x8        - E2 08
+#CPU0 #2  - Slot5 P0PE2A x16       - E2 10
+#CPU0 #1A - Slot6 P0PE1A x8        - E2 20
+TOKEN
+    Name  = "SLOT_INFO_Tbl"
+    Value  = "{{0xE2, 0x00, P0PE3B, x4}, {0xE2, 0x02, P0PE3C, x8}, {0xE2, 0x04, P1PE3A, x16}, {0xE2, 0x08, P0PE1C, x8}, {0xE2, 0x10, P0PE2A, x16}, {0xE2, 0x20, P0PE1A, x8}}" #Slot 1~6
+    Help = "{MUX address, MUX channel, Slot BDF, Slot bifurcation}"
+    TokenType = Expression
+    TargetH = Yes
+End
+
+TOKEN
+	Name  = "********** Disabled items from CRB **********"
+	TokenType = Expression
+End
+
+PCIDEVICE
+	Title  = "EVA PCIe Uplink"
+	Parent  = "PCI Express Port 2A on PC02"
+	Attribute  = "0x0"
+	Dev_type  = "Pci2PciBridge"
+	Dev  = 00h
+	Fun  = 00h
+	ASLdeviceName  = "EPCU"
+	ASLfile  = "'PurleyPlatPkg\Acpi\AcpiTables\Dsdt\AMI_EPCU.asl'"
+	IntA =  LNKA; 16
+	IntB =  LNKB; 17
+	IntC =  LNKC; 18
+	IntD =  LNKD; 19
+	Token = "NB_IOxAPIC_SUPPORT" "=" "0"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+	Disable = Yes
+End
+
+PCIDEVICE
+	Title  = "EVA PCIe Uplink"
+	Parent  = "PCI Express Port 2A on PC02"
+	Attribute  = "0x0"
+	Dev_type  = "Pci2PciBridge"
+	Dev  = 00h
+	Fun  = 00h
+	ASLdeviceName  = "EPCU"
+	ASLfile  = "'PurleyPlatPkg\Acpi\AcpiTables\Dsdt\AMI_EPCU.asl'"
+	IntA =  LNKA; 40
+	IntB =  LNKB; 44
+	IntC =  LNKC; 45
+	IntD =  LNKD; 46
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+	Disable = Yes
+End
+
+PCIDEVICE
+	Title  = "Virtual Switch Port 0"
+	Parent  = "EVA PCIe Uplink"
+	Attribute  = "0x0"
+	Dev_type  = "Pci2PciBridge"
+	Dev  = 00h
+	Fun  = 00h
+	ASLdeviceName  = "VSP0"
+	ASLfile  = "'PurleyPlatPkg\Acpi\AcpiTables\Dsdt\AMI_EPCU.asl'"
+	IntA =  LNKA; 16
+	IntB =  LNKB; 17
+	IntC =  LNKC; 18
+	IntD =  LNKD; 19
+	Token = "NB_IOxAPIC_SUPPORT" "=" "0"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+	Disable = Yes
+End
+
+PCIDEVICE
+	Title  = "EVA CPM0"
+	Parent  = "Virtual Switch Port 0"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Fun  = 00h
+	SleepNum  = 01h
+	ASLdeviceName  = "CPM0"
+	Token = "NB_IOxAPIC_SUPPORT" "=" "0"
+	IntA = 	LNKA; 16
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	Disable = Yes
+End
+
+PCIDEVICE
+	Title  = "Virtual Switch Port 1"
+	Parent  = "EVA PCIe Uplink"
+	Attribute  = "0x0"
+	Dev_type  = "Pci2PciBridge"
+	Dev  = 01h
+	Fun  = 00h
+	ASLdeviceName  = "VSP1"
+	ASLfile  = "'PurleyPlatPkg\Acpi\AcpiTables\Dsdt\AMI_EPCU.asl'"
+	IntA =  LNKA; 16
+	IntB =  LNKB; 17
+	IntC =  LNKC; 18
+	IntD =  LNKD; 19
+	Token = "NB_IOxAPIC_SUPPORT" "=" "0"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+	Disable = Yes
+End
+
+PCIDEVICE
+	Title  = "EVA CPM1"
+	Parent  = "Virtual Switch Port 1"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Fun  = 00h
+	SleepNum  = 01h
+	ASLdeviceName  = "CPM1"
+	Token = "NB_IOxAPIC_SUPPORT" "=" "0"
+	IntA = 	LNKA; 16
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	Disable = Yes
+End
+
+PCIDEVICE
+	Title  = "Virtual Switch Port 2"
+	Parent  = "EVA PCIe Uplink"
+	Attribute  = "0x0"
+	Dev_type  = "Pci2PciBridge"
+	Dev  = 02h
+	Fun  = 00h
+	ASLdeviceName  = "VSP2"
+	ASLfile  = "'PurleyPlatPkg\Acpi\AcpiTables\Dsdt\AMI_EPCU.asl'"
+	IntA =  LNKA; 16
+	IntB =  LNKB; 17
+	IntC =  LNKC; 18
+	IntD =  LNKD; 19
+	Token = "NB_IOxAPIC_SUPPORT" "=" "0"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+	Disable = Yes
+End
+
+PCIDEVICE
+	Title  = "EVA CPM2"
+	Parent  = "Virtual Switch Port 2"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Fun  = 00h
+	SleepNum  = 01h
+	ASLdeviceName  = "CPM2"
+	Token = "NB_IOxAPIC_SUPPORT" "=" "0"
+	IntA = 	LNKA; 16
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	Disable = Yes
+End
+
+PCIDEVICE
+	Title  = "Virtual Switch Port 3"
+	Parent  = "EVA PCIe Uplink"
+	Attribute  = "0x0"
+	Dev_type  = "Pci2PciBridge"
+	Dev  = 03h
+	Fun  = 00h
+	ASLdeviceName  = "VSP3"
+	ASLfile  = "'PurleyPlatPkg\Acpi\AcpiTables\Dsdt\AMI_EPCU.asl'"
+	IntA =  LNKA; 16
+	IntB =  LNKB; 17
+	IntC =  LNKC; 18
+	IntD =  LNKD; 19
+	Token = "NB_IOxAPIC_SUPPORT" "=" "0"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+	Disable = Yes
+End
+
+PCIDEVICE
+	Title  = "Virtual Switch Port 0"
+	Parent  = "EVA PCIe Uplink"
+	Attribute  = "0x0"
+	Dev_type  = "Pci2PciBridge"
+	Dev  = 00h
+	Fun  = 00h
+	ASLdeviceName  = "VSP0"
+	ASLfile  = "'PurleyPlatPkg\Acpi\AcpiTables\Dsdt\AMI_EPCU.asl'"
+	IntA =  LNKA; 40
+	IntB =  LNKB; 44
+	IntC =  LNKC; 45
+	IntD =  LNKD; 46
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+	Disable = Yes
+End
+
+PCIDEVICE
+	Title  = "EVA CPM0"
+	Parent  = "Virtual Switch Port 0"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Fun  = 00h
+	SleepNum  = 01h
+	ASLdeviceName  = "CPM0"
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	IntA =  LNKA; 40
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	Disable = Yes
+End
+
+PCIDEVICE
+	Title  = "Virtual Switch Port 1"
+	Parent  = "EVA PCIe Uplink"
+	Attribute  = "0x0"
+	Dev_type  = "Pci2PciBridge"
+	Dev  = 01h
+	Fun  = 00h
+	ASLdeviceName  = "VSP1"
+	ASLfile  = "'PurleyPlatPkg\Acpi\AcpiTables\Dsdt\AMI_EPCU.asl'"
+	IntA =  LNKA; 40
+	IntB =  LNKB; 44
+	IntC =  LNKC; 45
+	IntD =  LNKD; 46
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+	Disable = Yes
+End
+
+PCIDEVICE
+	Title  = "EVA CPM1"
+	Parent  = "Virtual Switch Port 1"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Fun  = 00h
+	SleepNum  = 01h
+	ASLdeviceName  = "CPM1"
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	IntA =  LNKA; 41
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	Disable = Yes
+End
+
+PCIDEVICE
+	Title  = "Virtual Switch Port 2"
+	Parent  = "EVA PCIe Uplink"
+	Attribute  = "0x0"
+	Dev_type  = "Pci2PciBridge"
+	Dev  = 02h
+	Fun  = 00h
+	ASLdeviceName  = "VSP2"
+	ASLfile  = "'PurleyPlatPkg\Acpi\AcpiTables\Dsdt\AMI_EPCU.asl'"
+	IntA =  LNKA; 40
+	IntB =  LNKB; 44
+	IntC =  LNKC; 45
+	IntD =  LNKD; 46
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+	Disable = Yes
+End
+
+PCIDEVICE
+	Title  = "EVA CPM2"
+	Parent  = "Virtual Switch Port 2"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Fun  = 00h
+	SleepNum  = 01h
+	ASLdeviceName  = "CPM2"
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	IntA =  LNKA; 45
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	Disable = Yes
+End
+
+PCIDEVICE
+	Title  = "Virtual Switch Port 3"
+	Parent  = "EVA PCIe Uplink"
+	Attribute  = "0x0"
+	Dev_type  = "Pci2PciBridge"
+	Dev  = 03h
+	Fun  = 00h
+	ASLdeviceName  = "VSP3"
+	ASLfile  = "'PurleyPlatPkg\Acpi\AcpiTables\Dsdt\AMI_EPCU.asl'"
+	IntA =  LNKA; 40
+	IntB =  LNKB; 44
+	IntC =  LNKC; 45
+	IntD =  LNKD; 46
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+	Disable = Yes
+End
+
+PCIDEVICE
+	Title  = "EVA Fort Park 0"
+	Parent  = "Virtual Switch Port 3"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Fun  = 00h
+	SleepNum  = 00h
+	ASLdeviceName  = "FPK0"  
+	IntA =  LNKA; 16
+	IntB =  LNKB; 16
+	IntC =  LNKC; 16
+	IntD =  LNKD; 16
+	Token = "NB_IOxAPIC_SUPPORT" "=" "0"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+	Disable = Yes
+End
+
+PCIDEVICE
+	Title  = "EVA Fort Park 0"
+	Parent  = "Virtual Switch Port 3"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Fun  = 00h
+	SleepNum  = 00h
+	ASLdeviceName  = "FPK0"
+	IntA =  LNKA; 46
+	IntB =  LNKB; 46
+	IntC =  LNKC; 46
+	IntD =  LNKD; 46
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+	Disable = Yes
+End
+
+PCIDEVICE
+	Title  = "EVA Fort Park 1"
+	Parent  = "Virtual Switch Port 3"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Fun  = 01h
+	SleepNum  = 00h
+	ASLdeviceName  = "FPK1"
+	IntA =  LNKA; 17
+	IntB =  LNKB; 17
+	IntC =  LNKC; 17
+	IntD =  LNKD; 17
+	Token = "NB_IOxAPIC_SUPPORT" "=" "0"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+	Disable = Yes
+End
+
+PCIDEVICE
+	Title  = "EVA Fort Park 1"
+	Parent  = "Virtual Switch Port 3"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Fun  = 01h
+	SleepNum  = 00h
+	ASLdeviceName  = "FPK1"
+	IntA =  LNKA; 46
+	IntB =  LNKB; 46
+	IntC =  LNKC; 46
+	IntD =  LNKD; 46
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+	Disable = Yes
+End
+
+PCIDEVICE
+	Title  = "EVA Fort Park 2"
+	Parent  = "Virtual Switch Port 3"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Fun  = 02h
+	SleepNum  = 00h
+	ASLdeviceName  = "FPK2"
+	IntA =  LNKA; 18
+	IntB =  LNKB; 18
+	IntC =  LNKC; 18
+	IntD =  LNKD; 18
+	Token = "NB_IOxAPIC_SUPPORT" "=" "0"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+	Disable = Yes
+End
+
+PCIDEVICE
+	Title  = "EVA Fort Park 2"
+	Parent  = "Virtual Switch Port 3"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Fun  = 02h
+	SleepNum  = 00h
+	ASLdeviceName  = "FPK2"
+	IntA =  LNKA; 46
+	IntB =  LNKB; 46
+	IntC =  LNKC; 46
+	IntD =  LNKD; 46
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+	Disable = Yes
+End
+
+PCIDEVICE
+	Title  = "EVA Fort Park 3"
+	Parent  = "Virtual Switch Port 3"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Fun  = 03h
+	SleepNum  = 00h
+	ASLdeviceName  = "FPK3"
+	IntA =  LNKA; 19
+	IntB =  LNKB; 19
+	IntC =  LNKC; 19
+	IntD =  LNKD; 19
+	Token = "NB_IOxAPIC_SUPPORT" "=" "0"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+	Disable = Yes
+End
+
+PCIDEVICE
+	Title  = "EVA Fort Park 3"
+	Parent  = "Virtual Switch Port 3"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Fun  = 03h
+	SleepNum  = 00h
+	ASLdeviceName  = "FPK3"
+	IntA =  LNKA; 46
+	IntB =  LNKB; 46
+	IntC =  LNKC; 46
+	IntD =  LNKD; 46
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+	Disable = Yes
+End
+
+PCIDEVICE
+    Title  = "GbE Controller on PCH"
+    Parent  = "Socket 0 Root bridge (Stack 0)"
+    Attribute  = "0x0"
+    Dev_type  = "PciDevice"
+    Dev  = 01fh
+    Fun  = 06h
+    SleepNum  = 00h
+    ASLdeviceName  = "GBE1"
+    IntA =  LNKA; 16
+    DeviceType = OnBoard
+    PCIBusSize = 32bit
+    ROMMain = No
+    Token = "BIOS_SIZE" "=" "0x1000000"
+    Token = "DEBUG_MODE" "=" "1"
+End
+
+PCIDEVICE
+    Title  = "GbE Controller on PCH(EFI)"
+    Parent  = "Socket 0 Root bridge (Stack 0)"
+    Attribute  = "0x0"
+    Dev_type  = "Container"
+    Dev  = 01fh
+    Fun  = 06h
+    SleepNum  = 00h
+    DeviceType = OnBoard
+    PCIBusSize = 32bit
+    ROMMain = No
+    Token = "BIOS_SIZE" "=" "0x1000000"
+    Token = "DEBUG_MODE" "=" "1"
+End
+
+PCIDEVICE
+    Title  = "Wolf River HFI on PC04"
+    Parent  = "PCI Express Port 4 on PC04"
+    Attribute  = "0x0"
+    Dev_type  = "PciDevice"
+    Dev  = 00h
+    Fun  = 00h
+    SleepNum  = 00h
+    ASLdeviceName  = "WF04"
+    IntA =      LNKA; 56
+    IntB =      LNKB; 60
+    IntC =      LNKC; 61
+    IntD =      LNKD; 62
+    Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+    DeviceType = OnBoard
+    PCIBusSize = 32bit
+    ROMMain = No
+    Token = "BIOS_SIZE" "=" "0x1000000"
+    Token = "DEBUG_MODE" "=" "1"
+End
+
+TOKEN
+	Name  = "********** DSM define **********"
+	TokenType = Expression
+End
+
+#CPU0 #1A - Slot6 "PCI Express Port 1A on PC01"
+ELINK
+	Name  = "PCI_SLOT_DSM(0x06, CPU SLOT 6, \_SB.PC01.BR1A),"
+	Parent  = "DsmAsl"
+	Help  = "eLink for creating platform device names with DSM method. Specify Slot number, name and current device scope"
+	InvokeOrder = AfterParent
+End
+
+#CPU0 #1C - Slot4 "PCI Express Port 1C on PC01"
+ELINK
+	Name  = "PCI_SLOT_DSM(0x04, CPU SLOT 4, \_SB.PC01.BR1C),"
+	Parent  = "DsmAsl"
+	Help  = "eLink for creating platform device names with DSM method. Specify Slot number, name and current device scope"
+	InvokeOrder = AfterParent
+End
+
+#CPU0 #2  - Slot5 "PCI Express Port 2A on PC02"
+ELINK
+	Name  = "PCI_SLOT_DSM(0x05, CPU SLOT 5, \_SB.PC02.BR2A),"
+	Parent  = "DsmAsl"
+	Help  = "eLink for creating platform device names with DSM method. Specify Slot number, name and current device scope"
+	InvokeOrder = AfterParent
+End
+
+#CPU0 #3B - Slot1 "PCI Express Port 3B on PC03"
+ELINK
+	Name  = "PCI_SLOT_DSM(0x01, CPU SLOT 1, \_SB.PC03.BR3B),"
+	Parent  = "DsmAsl"
+	Help  = "eLink for creating platform device names with DSM method. Specify Slot number, name and current device scope"
+	InvokeOrder = AfterParent
+End
+
+#CPU0 #3C - Slot2 "PCI Express Port 3C on PC03"
+ELINK
+	Name  = "PCI_SLOT_DSM(0x02, CPU SLOT 2, \_SB.PC03.BR3C),"
+	Parent  = "DsmAsl"
+	Help  = "eLink for creating platform device names with DSM method. Specify Slot number, name and current device scope"
+	InvokeOrder = AfterParent
+End
+
+#CPU1 #3  - Slot3 "PCI Express Port 3A on PC09"
+ELINK
+	Name  = "PCI_SLOT_DSM(0x03, CPU SLOT 3, \_SB.PC09.QR3A),"
+	Parent  = "DsmAsl"
+	Help  = "eLink for creating platform device names with DSM method. Specify Slot number, name and current device scope"
+	InvokeOrder = AfterParent
+End
+
+TOKEN
+	Name  = "********** Override setup **********"
+	TokenType = Expression
+End
+
+ELINK
+	Name  = "$(X11DPLI_PROJECT_DIR)\OverrideSetup.uni"
+	Parent  = "SetupStringFiles"
+	InvokeOrder = AfterParent
+End
+
+TOKEN
+	Name  = "********** SuperM Board Driver **********"
+	TokenType = Expression
+End
+
+FFS_FILE
+	Name  = "X11DPLIPeiDriver"
+	FD_AREA  = "FV_BB"
+	INFComponent  = "SmcPkg.X11DPLIPeiDriver"
+	Apriori_Index  = "1"
+End
+
+FFS_FILE
+	Name  = "X11DPLIDxeDriver"
+	FD_AREA  = "FV_MAIN"
+	INFComponent  = "SmcPkg.X11DPLIDxeDriver"
+	Apriori_Index  = "3"
+End
+
+INFComponent
+	Name  = "X11DPLIDxeDriver"
+	File  = "X11DPLIDxeDriver.inf"
+	Package  = "SmcPkg"
+	ModuleTypes = "DXE_DRIVER"
+End
+
+INFComponent
+	Name  = "X11DPLIPeiDriver"
+	File  = "X11DPLIPeiDriver.inf"
+	Package  = "SmcPkg"
+	ModuleTypes  = "PEIM"
+End
+
+INFComponent
+	Name  = "X11DPLISmmDriver"
+	File  = "X11DPLISmmDriver.inf"
+	Package  = "SmcPkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+End
+
+TOKEN
+    Name  = "GBE_NVM_BIN"
+    Value  = "LBG_B1_KX_88E1512_2x1G_P01_NCSI_v3.14_8000069C.bin"
+    Help  = "GBE NVM Binary "
+    TokenType = Expression
+    TargetMAK = Yes
+    Disable = Yes
+End
+
+PCIDEVICE
+    Title  = "On Board Video"
+    Parent  = "Video Bridge"
+    Attribute  = "0x0"
+    Dev_type  = "PciDevice"
+    Dev  = 00h
+    Fun  = 00h
+    SleepNum  = 01h
+    ROMFile  = "SmcPkg\Binary\ASTVBIOS.ROM"
+    IntA =  LNKB; 17
+    IntB =  LNKC; 18
+    IntC =  LNKD; 19
+    IntD =  LNKA; 16
+    DeviceType = OnBoard
+    PCIBusSize = 32bit
+    OptionROM = Yes
+    ROMMain = No
+    PCIExpress = Yes
+    LegacyRom = Yes
+    FFSFileName  = "ROM Storage"
+    ROMSectionGuid  = "577dc59e-5260-4783-bf52-7301ec9d6be5"
+End
+
+PCIDEVICE
+	Title  = "UEFI Video"
+	Parent  = "Video Bridge"
+	Attribute  = "0x0"
+	Dev_type  = "Container"
+	Dev  = 00h
+	Fun  = 00h
+	SleepNum  = 01h
+	ROMFile  = "SmcPkg\Binary\ASPEEDGraphicsDxe.efi"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	OptionROM = Yes
+	ROMMain = No
+	Virtual = Yes
+	UefiRom = Yes
+	FFSFileName  = "ROM Storage"
+	ROMSectionGuid  = "27858c44-bc60-405a-ab17-30255f853c58"
+End
+
+##Remove GBE ROM file to avoid POST show GBE PXE fail message.
+PCIDEVICE
+    Title  = "GbE Controller on PCH"
+    Parent  = "Socket 0 Root bridge (Stack 0)"
+    Attribute  = "0x0"
+    Dev_type  = "PciDevice"
+    Dev  = 01fh
+    Fun  = 06h
+    SleepNum  = 00h
+    ASLdeviceName  = "GBE1"
+    IntA = 	LNKA; 16
+    DeviceType = OnBoard
+    PCIBusSize = 32bit
+    ROMMain = No
+End
+
+#CPU0 #1A - Slot6
+PCIDEVICE
+	Title  = "CPU SLOT 6"
+	Parent  = "PCI Express Port 1A on PC01"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 06h
+	SleepNum  = 04h
+	IntA = 	LNKA; 32
+	IntB = 	LNKB; 36
+	IntC = 	LNKC; 37
+	IntD = 	LNKD; 38
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+#CPU0 #1C - Slot4
+PCIDEVICE
+	Title  = "CPU Slot 4"
+	Parent  = "PCI Express Port 1C on PC01"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 04h
+	SleepNum  = 04h
+	IntA = 	LNKA; 34
+	IntB = 	LNKB; 37
+	IntC = 	LNKC; 38
+	IntD = 	LNKD; 36
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+#CPU0 #2 - Slot5
+PCIDEVICE
+	Title  = "CPU Slot 5"
+	Parent  = "PCI Express Port 2A on PC02"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 05h
+	SleepNum  = 04h
+	IntA = 	LNKA; 40
+	IntB = 	LNKB; 44
+	IntC = 	LNKC; 45
+	IntD = 	LNKD; 46
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+#CPU0 #3A UpLink
+PCIDEVICE
+	Title  = "EVA PCIe Uplink"
+	Parent  = "PCI Express Port 3A on PC03"
+	Attribute  = "0x0"
+	Dev_type  = "Pci2PciBridge"
+    Dev  = 00h
+    Fun  = 00h
+    ASLdeviceName  = "EPCU"
+    ASLfile  = "'PurleyPlatPkg\Acpi\AcpiTables\Dsdt\AMI_EPCU.asl'"
+	IntA = 	LNKA; 48
+	IntB = 	LNKB; 52
+	IntC = 	LNKC; 53
+	IntD = 	LNKD; 54
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+    Title  = "Virtual Switch Port 0"
+    Parent  = "EVA PCIe Uplink"
+    Attribute  = "0x0"
+    Dev_type  = "Pci2PciBridge"
+    Dev  = 00h
+    Fun  = 00h
+    ASLdeviceName  = "VSP0"
+    ASLfile  = "'PurleyPlatPkg\Acpi\AcpiTables\Dsdt\AMI_EPCU.asl'"
+    IntA =  LNKA; 48
+    IntB =  LNKB; 52
+    IntC =  LNKC; 53
+    IntD =  LNKD; 54
+    Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+    DeviceType = OnBoard
+    PCIBusSize = 32bit
+    ROMMain = No
+    PCIExpress = Yes
+End
+
+PCIDEVICE
+    Title  = "EVA CPM0"
+    Parent  = "Virtual Switch Port 0"
+    Attribute  = "0x0"
+    Dev_type  = "PciDevice"
+    Dev  = 00h
+    Fun  = 00h
+    SleepNum  = 01h
+    ASLdeviceName  = "CPM0"
+    Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+    IntA =  LNKA; 48
+    DeviceType = OnBoard
+    PCIBusSize = 32bit
+    ROMMain = No
+End
+
+PCIDEVICE
+    Title  = "Virtual Switch Port 1"
+    Parent  = "EVA PCIe Uplink"
+    Attribute  = "0x0"
+    Dev_type  = "Pci2PciBridge"
+    Dev  = 01h
+    Fun  = 00h
+    ASLdeviceName  = "VSP1"
+    ASLfile  = "'PurleyPlatPkg\Acpi\AcpiTables\Dsdt\AMI_EPCU.asl'"
+    IntA =  LNKA; 48
+    IntB =  LNKB; 52
+    IntC =  LNKC; 53
+    IntD =  LNKD; 54
+    Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+    DeviceType = OnBoard
+    PCIBusSize = 32bit
+    ROMMain = No
+    PCIExpress = Yes
+End
+
+PCIDEVICE
+    Title  = "EVA CPM1"
+    Parent  = "Virtual Switch Port 1"
+    Attribute  = "0x0"
+    Dev_type  = "PciDevice"
+    Dev  = 00h
+    Fun  = 00h
+    SleepNum  = 01h
+    ASLdeviceName  = "CPM1"
+    Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+    IntA =  LNKA; 52
+    DeviceType = OnBoard
+    PCIBusSize = 32bit
+    ROMMain = No
+End
+
+PCIDEVICE
+    Title  = "Virtual Switch Port 2"
+    Parent  = "EVA PCIe Uplink"
+    Attribute  = "0x0"
+    Dev_type  = "Pci2PciBridge"
+    Dev  = 02h
+    Fun  = 00h
+    ASLdeviceName  = "VSP2"
+    ASLfile  = "'PurleyPlatPkg\Acpi\AcpiTables\Dsdt\AMI_EPCU.asl'"
+	IntA = 	LNKA; 48
+	IntB = 	LNKB; 52
+	IntC = 	LNKC; 53
+	IntD = 	LNKD; 54
+    Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+    DeviceType = OnBoard
+    PCIBusSize = 32bit
+    ROMMain = No
+    PCIExpress = Yes
+End
+
+PCIDEVICE
+    Title  = "EVA CPM2"
+    Parent  = "Virtual Switch Port 2"
+    Attribute  = "0x0"
+    Dev_type  = "PciDevice"
+    Dev  = 00h
+    Fun  = 00h
+    SleepNum  = 01h
+    ASLdeviceName  = "CPM2"
+    Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+    IntA =  LNKA; 53
+    DeviceType = OnBoard
+    PCIBusSize = 32bit
+    ROMMain = No
+End
+
+PCIDEVICE
+    Title  = "Virtual Switch Port 3"
+    Parent  = "EVA PCIe Uplink"
+    Attribute  = "0x0"
+    Dev_type  = "Pci2PciBridge"
+    Dev  = 03h
+    Fun  = 00h
+    ASLdeviceName  = "VSP3"
+    ASLfile  = "'PurleyPlatPkg\Acpi\AcpiTables\Dsdt\AMI_EPCU.asl'"
+	IntA = 	LNKA; 48
+	IntB = 	LNKB; 52
+	IntC = 	LNKC; 53
+	IntD = 	LNKD; 54
+    Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+    DeviceType = OnBoard
+    PCIBusSize = 32bit
+    ROMMain = No
+    PCIExpress = Yes
+End
+
+PCIDEVICE
+    Title  = "EVA Fort Park 0"
+    Parent  = "Virtual Switch Port 3"
+    Attribute  = "0x0"
+    Dev_type  = "PciDevice"
+    Dev  = 00h
+    Fun  = 00h
+    SleepNum  = 00h
+    ASLdeviceName  = "FPK0"
+    IntA =  LNKA; 54
+    IntB =  LNKB; 54
+    IntC =  LNKC; 54
+    IntD =  LNKD; 54
+    Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+    DeviceType = OnBoard
+    PCIBusSize = 32bit
+    ROMMain = No
+    PCIExpress = Yes
+End
+
+PCIDEVICE
+    Title  = "EVA Fort Park 1"
+    Parent  = "Virtual Switch Port 3"
+    Attribute  = "0x0"
+    Dev_type  = "PciDevice"
+    Dev  = 00h
+    Fun  = 01h
+    SleepNum  = 00h
+    ASLdeviceName  = "FPK1"
+    IntA =  LNKA; 54
+    IntB =  LNKB; 54
+    IntC =  LNKC; 54
+    IntD =  LNKD; 54
+    Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+    DeviceType = OnBoard
+    PCIBusSize = 32bit
+    ROMMain = No
+    PCIExpress = Yes
+End
+
+PCIDEVICE
+    Title  = "EVA Fort Park 2"
+    Parent  = "Virtual Switch Port 3"
+    Attribute  = "0x0"
+    Dev_type  = "PciDevice"
+    Dev  = 00h
+    Fun  = 02h
+    SleepNum  = 00h
+    ASLdeviceName  = "FPK2"
+    IntA =  LNKA; 54
+    IntB =  LNKB; 54
+    IntC =  LNKC; 54
+    IntD =  LNKD; 54
+    Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+    DeviceType = OnBoard
+    PCIBusSize = 32bit
+    ROMMain = No
+    PCIExpress = Yes
+End
+
+PCIDEVICE
+    Title  = "EVA Fort Park 3"
+    Parent  = "Virtual Switch Port 3"
+    Attribute  = "0x0"
+    Dev_type  = "PciDevice"
+    Dev  = 00h
+    Fun  = 03h
+    SleepNum  = 00h
+    ASLdeviceName  = "FPK3"
+    IntA =  LNKA; 54
+    IntB =  LNKB; 54
+    IntC =  LNKC; 54
+    IntD =  LNKD; 54
+    Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+    DeviceType = OnBoard
+    PCIBusSize = 32bit
+    ROMMain = No
+    PCIExpress = Yes
+End
+
+#CPU0 #3B - Slot1
+PCIDEVICE
+	Title  = "CPU Slot 1"
+	Parent  = "PCI Express Port 3B on PC03"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 01h
+	SleepNum  = 04h
+	IntA = 	LNKA; 49
+	IntB = 	LNKB; 54
+	IntC = 	LNKC; 52
+	IntD = 	LNKD; 53
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+#CPU0 #3C - Slot2
+PCIDEVICE
+	Title  = "CPU Slot 2"
+	Parent  = "PCI Express Port 3C on PC03"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 02h
+	SleepNum  = 04h
+	IntA = 	LNKA; 50
+	IntB = 	LNKB; 53
+	IntC = 	LNKC; 54
+	IntD = 	LNKD; 52
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+#CPU1 #3 - Slot3
+PCIDEVICE
+	Title  = "CPU Slot 3"
+	Parent  = "PCI Express Port 3A on PC09"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 03h
+	SleepNum  = 04h
+	IntA = 	LNKA; 96
+	IntB = 	LNKB; 100
+	IntC = 	LNKC; 101
+	IntD = 	LNKD; 102
+	Token = "NB_IOxAPIC_SUPPORT" "=" "1"
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+TOKEN
+	Name  = "********** Onboard M.2 Settings **********"
+	TokenType = Expression
+End
+
+PCIDEVICE
+	Title  = "PCH M2 SLOT"
+	Parent  = "PCIE PCH Root Port #9"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 00h
+	Slot  = 07h
+	SleepNum  = 04h
+	IntA = 	LNKA; 16
+	IntB = 	LNKB; 17
+	IntC = 	LNKC; 18
+	IntD = 	LNKD; 19
+	DeviceType = Slot
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End

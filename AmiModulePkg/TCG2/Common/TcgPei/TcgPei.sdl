@@ -1,0 +1,46 @@
+TOKEN
+    Name  = "TcgPeiSupport"
+    Value  = "1"
+    Help  = "Enable or Diasble TcgPeiSupport"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes
+    TargetMAK = Yes
+    Master = Yes
+    Token = "TCG2Support" "=" "1"
+End
+
+PATH
+    Name  = "TCGPEI_DIR"
+End
+
+
+#ELINK
+#   Name  = "$(BUILD_DIR)\tcgPei.ffs"
+#   Parent  = "$(BUILD_DIR)\TcgPlatformSetupPeiPolicy.ffs"
+#   InvokeOrder = AfterParent
+#End
+
+
+INFComponent
+    Name  = "TcgPei"
+    File  = "TcgPei.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "PEIM"
+End
+
+
+#INFComponent
+#    Name  = "TcgPeiAfterMem"
+#    File  = "../../Common/TcgPeiAfterMem/TcgPeiAfterMem.inf"
+#    Package  = "AmiModulePkg"
+#    ModuleTypes  = "PEIM"
+#End
+
+INFComponent
+    Name  = "TrEEPei"
+    File  = "TrEEPei.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "PEIM"
+End
+

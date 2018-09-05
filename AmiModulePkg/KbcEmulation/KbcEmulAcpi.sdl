@@ -1,0 +1,47 @@
+TOKEN
+    Name  = "KbcEmulAcpi_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable KbcEmulAcpi support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    Master = Yes
+    Token = "EMULATION_ACPI_ENABLE_DISPATCH" "=" "1"
+End
+
+PATH
+    Name  = "KBCEMULACPI_DIR"
+    Path  = "AmiModulePkg"
+End
+
+OUTPUTREGISTER
+    Name  = "KBCEMULACPIINF"
+    Path  = "Build"
+    File  = "KbcEmulAcpi.inf"
+    Template  = "KbcEmulAcpiInf.txt"
+    Token = "EMULATION_ACPI_ENABLE_DISPATCH" "=" "1"
+End
+
+ELINK
+    Name  = "$(KBCEMULACPI_DIR)\KbcEmulAcpi.lib"
+    Parent  = "KBCEMULLIB"
+    Priority  = 10
+    InvokeOrder = AfterParent
+End
+
+INFComponent
+    Name  = "KbcEmulAcpiLib"
+    File  = "../../Build/KbcEmulAcpi.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_SMM_DRIVER"
+    Token = "SMM_SUPPORT" "=" "1"
+    Token = "EMULATION_ACPI_ENABLE_DISPATCH" "=" "1"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiModulePkg.KbcEmulAcpiLib"
+    ModuleTypes  = "DXE_SMM_DRIVER"
+    Override  = "AmiModulePkg.KbcEmul"
+    Token = "EMULATION_ACPI_ENABLE_DISPATCH" "=" "1"
+End

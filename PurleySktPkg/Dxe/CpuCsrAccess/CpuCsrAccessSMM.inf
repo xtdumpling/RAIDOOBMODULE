@@ -1,0 +1,72 @@
+## @file
+#  CpuCsrAccess Protocol
+#
+#  Copyright (c) 2009 - 2016, Intel Corporation. All rights reserved.<BR>
+#
+#  This program and the accompanying materials
+#  are licensed and made available under the terms and conditions of the BSD License
+#  which accompanies this distribution. The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.php
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = CpuCsrAccessSMM
+  FILE_GUID                      = 870E0F5A-1981-45f6-AE26-0391425CC46F
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  VERSION_STRING                 = 1.0
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  ENTRY_POINT                    = CpuCsrAccessStart
+
+[Sources]
+  CpuCsrAccess.c
+  #TODO: Fix this, relitive paths are spacificly restricted from .inf files.
+  # APTIOV_SERVER_OVERRIDE_RC_START
+  #../../../CpRcPkg/Library/BaseMemoryCoreLib/Core/Common/CpuAccess.c 
+  $(CpuCsrAccessCpRcPkg_Ref)/Library/BaseMemoryCoreLib/Core/Common/CpuAccess.c
+  CpuCsrAccess.h  # Add missing files
+  # APTIOV_SERVER_OVERRIDE_RC_END
+  #../../Library/ProcMemInit/Core/Common/CpuAccess.c
+  ../../Library/ProcMemInit/Chip/Common/CpuPciAccess.c
+  ../../Library/ProcMemInit/Chip/Common/CpuPciAccessCommon.c
+  ../../Library/ProcMemInit/Chip/Common/PciAccess.c
+  ../../Library/ProcMemInit/Chip/Common/MailBox.c
+  ../../Library/ProcMemInit/Chip/Mem/MemPciAccess.c
+
+[Packages]
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  PurleySktPkg/SocketPkg.dec
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  IA32FamilyCpuPkg/IA32FamilyCpuPkg.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  DebugLib
+  HobLib
+  IoLib
+  BaseLib
+  UsraLib
+  TimerLib
+
+[Protocols]
+  gEfiIioUdsProtocolGuid
+  gEfiCpuCsrAccessGuid
+  gEfiSmmBase2ProtocolGuid
+  gUsraProtocolGuid
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[Guids]
+
+[Depex]
+  gEfiSmmBase2ProtocolGuid AND
+  gEfiIioUdsProtocolGuid

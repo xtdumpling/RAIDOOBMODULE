@@ -1,0 +1,60 @@
+TOKEN
+    Name  = "PeiIpmiInitialize_SUPPORT"
+    Value  = "1"
+    Help  = "Switch for Enabling PeiIpmiInitialize support in the project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    Master = Yes
+End
+
+INFComponent
+    Name  = "PeiIpmiBmcInitialize"
+    File  = "PeiIpmiBmcInitialize.inf"
+    Package  = "AmiIpmiPkg"
+    ModuleTypes  = "PEIM"
+    Help  = "Includes PeiIpmiBmcInitialize.inf to Project."
+End
+
+FFS_FILE
+    Name  = "PeiIpmiBmcInitialize"
+    FD_AREA  = "FV_BB"
+    INFComponent  = "AmiIpmiPkg.PeiIpmiBmcInitialize"
+    Apriori_Index  = "3"
+    Help  = "Includes PeiIpmiBmcInitialize driver in FV_BB and dispatches based on a priori index."
+End
+
+ELINK
+    Name  = "INIT_LPC_BMC_HOOK"
+    InvokeOrder = ReplaceParent
+    Help  = "Elink to provide hooks in order to initialize LPC to decode BMC addresses."
+End
+
+ELINK
+    Name  = "InitLpcBmc,"
+    Parent  = "INIT_LPC_BMC_HOOK"
+    InvokeOrder = AfterParent
+    Help  = "Elink to provide default hook for LPC initialization."
+End
+
+ELINK
+    Name  = "BMC_INIT_DELAY_HOOK"
+    InvokeOrder = ReplaceParent
+    Token = "BMC_INIT_DELAY" "=" "1"
+    Help  = "Elink to provide hooks to give delay for BMC initialization."
+End
+
+ELINK
+    Name  = "BmcInitDelay,"
+    Parent  = "BMC_INIT_DELAY_HOOK"
+    InvokeOrder = AfterParent
+    Token = "BMC_INIT_DELAY" "=" "1"
+    Help  = "Elink to provide default hook which gives waiting time for BMC initialization."
+End
+
+ELINK
+    Name  = "IPMI_OEM_PEI_INIT_HOOK"
+    InvokeOrder = ReplaceParent
+    Token = "IPMI_DEFAULT_HOOK_SUPPORT" "=" "0"
+    Help  = "Elink to provide hooks for OEM PEI initialization when Default hook support is disabled."
+End

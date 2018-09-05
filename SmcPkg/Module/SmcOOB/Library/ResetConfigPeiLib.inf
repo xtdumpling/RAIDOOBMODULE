@@ -1,0 +1,41 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#    Rev.  1.00
+#     Bug Fix: Add sum load default function.
+#     Reason:	
+#     Auditor:	Hartmann Hsieh
+#     Date:  	Oct/11/2016
+#
+#*****************************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = ResetConfigPeiLib
+  FILE_GUID                      = 7b2fa7a6-271d-4b34-beb2-ba52af8564e3
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = ResetConfigPeiLib
+
+[Packages]
+  MdePkg/MdePkg.dec   
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec 
+  AmiModulePkg/AmiModulePkg.dec
+  SmcPkg/SmcPkg.dec
+
+[LibraryClasses]
+  SmcLib
+
+[Sources]
+  ResetConfigPeiLib.c
+
+[Guids]
+  gEfiSmcInBandLoadDefaultGuid
+
+[Pcd]

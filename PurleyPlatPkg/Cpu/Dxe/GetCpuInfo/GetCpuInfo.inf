@@ -1,0 +1,61 @@
+## @file
+#  GetCpuInfo driver
+#
+#  Copyright (c) 2008 - 2016, Intel Corporation. All rights reserved.<BR>
+#  This program and the accompanying materials
+#  are licensed and made available under the terms and conditions of the BSD License
+#  which accompanies this distribution.  The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.php
+#
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = GetCpuInfo
+  FILE_GUID                      = EE0BFF80-2B33-4005-8EF1-3F9B23C25136
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = GetCpuInfoInit
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF EBC
+#
+
+[Sources]
+  VfrStrings.uni
+  Vfr.vfr
+  GetCpuInfo.c
+  GetCpuInfo.h
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  MemoryAllocationLib
+  HiiLib
+  HobLib
+  TimerLib
+
+[Protocols]
+  gEfiMpServiceProtocolGuid             # PROTOCOL ALWAYS_PRODUCED
+
+[Guids]
+  gEfiIfrTianoGuid
+  gEfiPlatformInfoGuid
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SocketPkg.dec
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[Depex]
+  gEfiMpServiceProtocolGuid

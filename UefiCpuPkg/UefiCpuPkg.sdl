@@ -1,0 +1,96 @@
+TOKEN
+	Name  = "UefiCpuPkg_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling UefiCpuPkg support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+PATH
+	Name  = "UEFI_CPU_PKG_DIR"
+	Path  = "UefiCpuPkg"
+End
+
+INFComponent
+	Name  = "BaseUefiCpuLib"
+	File  = "Library/BaseUefiCpuLib/BaseUefiCpuLib.inf"
+	Package  = "UefiCpuPkg"
+End
+
+INFComponent
+	Name  = "BaseXApicX2ApicLib"
+	File  = "Library/BaseXApicX2ApicLib/BaseXApicX2ApicLib.inf"
+	Package  = "UefiCpuPkg"
+End
+
+INFComponent
+	Name  = "DxeCpuExceptionHandlerLib"
+	File  = "Library/CpuExceptionHandlerLib/DxeCpuExceptionHandlerLib.inf"
+	Package  = "UefiCpuPkg"
+End
+
+INFComponent
+	Name  = "SecPeiCpuExceptionHandlerLib"
+	File  = "Library/CpuExceptionHandlerLib/SecPeiCpuExceptionHandlerLib.inf"
+	Package  = "UefiCpuPkg"
+End
+
+INFComponent
+	Name  = "SmmCpuExceptionHandlerLib"
+	File  = "Library/CpuExceptionHandlerLib/SmmCpuExceptionHandlerLib.inf"
+	Package  = "UefiCpuPkg"
+End
+
+INFComponent
+	Name  = "MtrrLib"
+	File  = "Library/MtrrLib/MtrrLib.inf"
+	Package  = "UefiCpuPkg"
+End
+
+INFComponent
+	Name  = "SmmCpuFeaturesLib"
+	File  = "Library/SmmCpuFeaturesLib/SmmCpuFeaturesLib.inf"
+	Package  = "UefiCpuPkg"
+End
+
+LibraryMapping
+	Class  = "UefiCpuLib"
+	Instance  = "UefiCpuPkg.BaseUefiCpuLib"
+End
+
+LibraryMapping
+	Class  = "LocalApicLib"
+	Instance  = "UefiCpuPkg.BaseXApicX2ApicLib"
+End
+
+LibraryMapping
+	Class  = "CpuExceptionHandlerLib"
+	Instance  = "UefiCpuPkg.DxeCpuExceptionHandlerLib"
+	Arch  = "IA32 X64"
+	ModuleTypes  = "DXE_CORE DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER"
+End
+
+LibraryMapping
+	Class  = "CpuExceptionHandlerLib"
+	Instance  = "UefiCpuPkg.SecPeiCpuExceptionHandlerLib"
+	Arch  = "IA32 X64"
+	ModuleTypes  = "PEI_CORE PEIM SEC"
+End
+
+LibraryMapping
+	Class  = "CpuExceptionHandlerLib"
+	Instance  = "UefiCpuPkg.SmmCpuExceptionHandlerLib"
+	Arch  = "IA32 X64"
+	ModuleTypes  = "DXE_SMM_DRIVER SMM_CORE"
+End
+
+LibraryMapping
+	Class  = "MtrrLib"
+	Instance  = "UefiCpuPkg.MtrrLib"
+End
+
+LibraryMapping
+	Class  = "SmmCpuFeaturesLib"
+	Instance  = "UefiCpuPkg.SmmCpuFeaturesLib"
+End
+

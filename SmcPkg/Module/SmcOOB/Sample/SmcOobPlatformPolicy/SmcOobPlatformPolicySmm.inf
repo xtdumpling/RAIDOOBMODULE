@@ -1,0 +1,79 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#
+#  Rev. 1.04
+#    Bug Fix:  Add a SMM Oob Library interface. 
+#    Reason:
+#    Auditor:  Durant Lin
+#    Date:     Feb/12/2018
+#
+#  Rev. 1.03
+#    Bug Fix:  Add a interface to hook updatevariable before.
+#    Reason:
+#    Auditor:  Durant Lin
+#    Date:     Jan/17/2018
+#
+#  Rev. 1.02
+#    Bug Fix : N/A
+#    Reason  : Isolate PciLib from OOB to OobLibraryProtocol, since different
+#              platform will cause hang up issue.
+#    Auditor : Durant Lin
+#    Date    : Jun/02/2018
+#
+#  Rev. 1.01
+#    Bug Fix : N/A
+#    Reason  : Implement a SmcOobProtocol Interface for InBand and OutBand to
+#                access Build time OobLibrary not OBJ OobLobrary. 
+#    Auditor : Durant Lin
+#    Date    : Dec/27/2017
+#
+#  Rev. 1.00
+#    Bug fixed: Initial SMC_OOB_PLATFORM_POLICY for SMC OOB module binary release.
+#    Reason   : 
+#    Auditor  : Jason Hsu
+#    Date     : Jun/09/07
+#
+#*****************************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005  
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  BASE_NAME                      = SmcOobPlatformPolicySmm
+  FILE_GUID                      = 081CCA80-AE21-AFC8-1AC8-3091A8F1CBC5
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = SmcOobPlatformPolicySmmEntry
+
+[Sources]
+  SmcOobPlatformPolicySmm.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  SmcPkg/SmcPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  SmcPkg/Module/SmcOOB/SmcOOB.dec
+  
+[LibraryClasses]
+  UefiDriverEntryPoint
+  AmiDxeLib
+  AmiCspLib    
+  SmcRomHoleSmmLib
+  OobLibrary
+
+[Protocols]
+  gEfiSmmBase2ProtocolGuid
+  gSmcSmmRomHoleProtocolGuid
+  gSmcSmmOobLibraryProtocolGuid
+
+[Pcd]
+
+[Depex]
+  gEfiSmmBase2ProtocolGuid
+

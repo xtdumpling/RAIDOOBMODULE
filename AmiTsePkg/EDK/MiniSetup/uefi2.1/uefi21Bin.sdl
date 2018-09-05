@@ -1,0 +1,68 @@
+TOKEN
+	Name  = "UEFI_2_1_BIN_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable UEFI 2.1 binary support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "UEFI_2_1_SUPPORT"
+	Value  = "1"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SETUP_SUPPORT_PLATFORM_LANG_VAR"
+	Value  = "1"
+	Help  = "Set to enable PlatformLang and PlatformLangCode Vars."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TSE_ONEOF_OPTIONS_CONDITION_SUPPORT"
+	Value  = "1"
+	Help  = "The lib provides support for oneof option expression evaluation"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+PATH
+	Name  = "UEFISRC_DIR"
+End
+
+ELINK
+	Name  = "Uefi21Bin"
+	Parent  = "ADDITIONAL_AMITSE_LibraryClasses"
+	InvokeOrder = AfterParent
+End
+
+INFComponent
+    Name  = "Uefi21Bin"
+    File  = "Uefi21Bin.inf"
+   	Package  = "AmiTsePkg"
+End
+
+LibraryMapping
+	Class  = "Uefi21Bin"
+	Instance  = "AmiTsePkg.Uefi21Bin"
+#	Arch  = "IA32"
+End
+
+ELINK
+	Name  = "gEfiHiiConfigRoutingProtocolGuid"
+	Parent  = "ADDITIONAL_AMITSE_Protocols"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "gEfiFormBrowser2ProtocolGuid"
+	Parent  = "ADDITIONAL_AMITSE_Protocols"
+	InvokeOrder = AfterParent
+End

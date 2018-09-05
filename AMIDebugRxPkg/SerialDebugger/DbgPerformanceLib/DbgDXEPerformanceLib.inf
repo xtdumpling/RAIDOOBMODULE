@@ -1,0 +1,37 @@
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = DbgDXEPerformanceLib
+  FILE_GUID                      = 38B878C8-5EF2-4c5a-BA3F-7683A2C8D1E8
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 0.1
+  LIBRARY_CLASS                  = DbgPerformanceLib|DXE_CORE DXE_DRIVER DXE_RUNTIME_DRIVER DXE_SAL_DRIVER DXE_SMM_DRIVER UEFI_APPLICATION UEFI_DRIVER SMM_CORE
+
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+
+[Binaries.Ia32]
+  BIN | DbgDXEPerformanceLibx86.lib
+  
+[Binaries.X64]
+  BIN | DbgDXEPerformanceLibx64.lib
+
+  
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  AMIDebugRxPkg/SerialDebugger/SerialDebugger.dec
+
+[LibraryClasses]
+  AmiDxeLib
+  BaseLib
+  UefiBootServicesTableLib
+  PerformanceLib
+  DxeServicesLib
+  TimerLib
+  
+[Guids]
+  gPerformanceProtocolGuid                ## CONSUMES

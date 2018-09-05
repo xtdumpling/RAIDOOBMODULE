@@ -1,0 +1,419 @@
+TOKEN
+        Name  = "INTEL_BOOT_GUARD_SUPPORT"
+        Value = "1"
+        Help  = "Main switch to enable Intel Boot Guard in Project"
+        TokenType = Boolean
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+        Master = Yes
+End
+
+TOKEN
+        Name  = "BOOT_GUARD_ACM"
+        Value = "1"
+        Help  = "MUST use the correct ACM binary for the matching CPUs, else platform will not behave as expected. SKL Pre-ES and ES ACM set the token to 0.QS PV ACM set the token to 1.QS PC ACM set the token to 2"
+        TokenType = Integer
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+        Token = "INTEL_BOOT_GUARD_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "BOOT_GUARD_ACMSVN" #Need to fill this value after ACM is released
+        Value = "0" 
+        TokenType = Integer
+        TargetMAK = Yes
+        TargetH = Yes
+        Lock = Yes
+        Token = "BOOT_GUARD_ACM" "=" "0"
+        Token = "INTEL_BOOT_GUARD_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "BOOT_GUARD_ACMSVN"
+        Value = "2"
+        TokenType = Integer
+        TargetMAK = Yes
+        TargetH = Yes
+        Lock = Yes
+        Token = "BOOT_GUARD_ACM" "=" "1"
+        Token = "INTEL_BOOT_GUARD_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "BOOT_GUARD_ACMSVN"
+        Value = "0"
+        TokenType = Integer
+        TargetMAK = Yes
+        TargetH = Yes
+        Lock = Yes
+        Token = "BOOT_GUARD_ACM" "=" "2"
+        Token = "INTEL_BOOT_GUARD_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "BOOT_GUARD_BPMSVN"
+        Value = "0"
+        TokenType = Integer
+        TargetMAK = Yes
+        TargetH = Yes
+        Lock = Yes
+        Token = "INTEL_BOOT_GUARD_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "BOOT_GUARD_KMSVN"
+        Value = "0"
+        TokenType = Integer
+        TargetMAK = Yes
+        TargetH = Yes
+        Lock = Yes
+        Token = "INTEL_BOOT_GUARD_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "BOOT_GUARD_BPM_PEM_KEY_FILENAME"
+        Value  = "$(BOOTGUARD_DIR)\BpmPEM.key"
+        TokenType = File
+        TargetMAK = Yes
+        Token = "INTEL_BOOT_GUARD_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "BOOT_GUARD_BPM_MODULUS_KEY_FILENAME"
+        Value  = "$(BOOTGUARD_DIR)\BpmModulus.key"
+        TokenType = File
+        TargetMAK = Yes
+        Token = "INTEL_BOOT_GUARD_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "BOOT_GUARD_KM_PEM_KEY_FILENAME"
+        Value  = "$(BOOTGUARD_DIR)\KmPEM.key"
+        TokenType = File
+        TargetMAK = Yes
+        Token = "INTEL_BOOT_GUARD_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "BOOT_GUARD_KM_MODULUS_KEY_FILENAME"
+        Value  = "$(BOOTGUARD_DIR)\KmModulus.key"
+        TokenType = File
+        TargetMAK = Yes
+        Token = "INTEL_BOOT_GUARD_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "BOOT_GUARD_PBULIC_KEY_EXPONENT"
+        Help  = "The token for the KeyGen.exe"
+        Value  = "0x10001"
+        TokenType = Integer
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+        Token = "INTEL_BOOT_GUARD_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "BPM_IBB_MCHBAR"
+        Help  = "BpmKmGen.exe only support the decimal value"
+        Value  = "0" #As per INTEL comments, it is assigned to zero.
+        TokenType = Integer
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+        Token = "INTEL_BOOT_GUARD_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "BPM_IBB_VARIOUS_FLAGS"
+        Help  = "The Various Flags for IBB Element. Please input decimal value. If want to enable AuthorityMeasure, please input 4 (BIT2), input 2 (BIT1) for Startup from Locality 0."
+        Value  = "6"
+        TokenType = Integer
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes       
+        Token = "INTEL_BOOT_GUARD_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "BPM_VTD_BAR"
+        Help  = "BpmKmGen.exe only support the decimal value"
+        Value  = "0" #Need to fill this value after discussing with INTEL
+        TokenType = Integer
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+        Token = "INTEL_BOOT_GUARD_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "BPM_IBB_SEGMENT_BASE"
+        Help  = "BpmKmGen.exe only support the decimal value"
+        Value  = "$(FV_BB_BASE) + 0"
+        TokenType = Integer
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+        Token = "INTEL_BOOT_GUARD_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "BPM_IBB_SEGMENT_SIZE"
+        Help  = "BpmKmGen.exe only support the decimal value"
+        Value  = "$(FV_BB_SIZE) + 0"
+        TokenType = Integer
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+        Token = "INTEL_BOOT_GUARD_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "BPM_PBET"
+        Help  = "BpmKmGen.exe only support the decimal value"
+        Value  = "15"
+        TokenType = Integer
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+        Token = "INTEL_BOOT_GUARD_SUPPORT" "=" "1"
+End
+
+
+TOKEN
+        Name  = "KM_KEY_MANIFEST_ID"
+        Help  = "BpmKmGen.exe only support the decimal value, and this field must match the Key Manifest ID of Secure boot of FITC."
+        Value  = "1"
+        TokenType = Integer
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+        Token = "INTEL_BOOT_GUARD_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name = "BPM_MIN_CPU_LLC_SIZE"
+        Value = "4 * 1024 * 1024"
+        Help = "Assign the Min LLC size to 2MB,3MB,or 4MB"
+        TokenType = Integer
+        TargetMAK = Yes
+        TargetH = Yes
+        Token = "INTEL_BOOT_GUARD_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name = "BPM_MIN_CPU_LLC_SIZE"
+        Value = "6 * 1024 * 1024"#changing this to 6MB as AMISDL error comes while increasing FV_BB size to 4 MB
+        Help = "Assign the Min LLC size to 4MB"
+        TokenType = Integer
+        TargetMAK = Yes
+        TargetH = Yes
+        Token = "INTEL_BOOT_GUARD_SUPPORT" "=" "1"        
+End
+
+TOKEN
+        Name = "BPM_NEM_DATA_STACK_SIZE"
+        Value = "( $(BPM_MIN_CPU_LLC_SIZE) - (512 *1024) - $(FV_BB_SIZE) ) / 4096"
+        Help = "Size of Hashed IBB <= LLC -  0.5MB - sizeof (Boot Guard ACM) -  sizeof (DataStack) - sizeof (FIT) - sizeof (BPM)"
+        TokenType = Integer
+        TargetMAK = Yes
+        TargetH = Yes
+        Token = "INTEL_BOOT_GUARD_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "BIOS_STARTING_ADDRESS"
+        Help  = "Support the decimal value"
+        Value  = "0xFFFFFFFF - $(FLASH_SIZE) + 1"
+        TokenType = Integer
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "BOOT_GUARD_TPM_CHAIN_OF_TRUST"
+        Value  = "1"
+        Help  = "Main switch to enable TPM Boot Guard Chain of Trust in Project"
+        TokenType = Boolean
+        TargetMAK = Yes
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "INTEL_BOOT_GUARD_CHAIN_OF_TRUST_SUPPORT"
+        Value = "1"
+        Help  = "Main switch to enable Intel Boot Guard Chain of Trust in Project"
+        TokenType = Boolean
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+        Token = "INTEL_BOOT_GUARD_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "INTEL_BOOT_GUARD_CHAIN_OF_TRUST_RECOVERY_SUPPORT"
+        Value = "1"
+        Help  = "If enable, when Boot Guard verify FV_MAIN fail it entry recovery mode. If disable, Boot Guard will stop and show the fail on the screen."
+        TokenType = Boolean
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+        Token = "INTEL_BOOT_GUARD_SUPPORT" "=" "1"
+        Token = "INTEL_BOOT_GUARD_CHAIN_OF_TRUST_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "BOOT_GUARD_SIGNING_SERVER_TIMEOUT"
+        Value  = "0"
+        Help  = "Wait Signing Server's response. The unit of timeout is the second"
+        TokenType = Integer
+        TargetMAK = Yes
+End
+TOKEN
+        Name  = "====== Boot Guard Signing Interlock Support ======"
+        TokenType = Expression
+End
+
+TOKEN
+        Name  = "BOOT_GUARD_SIGNING_INTERLOCK_SUPPORT"
+        Value = "0"
+        Help  = "The feature is for OEM to change the sign tool for lock the private key. If enable this feature, please input BPMPublic.key, KmPublic.key, the sign tool name, the sign tool path and the comment for sign tool signing KM and BPM."
+        TokenType = Boolean
+        TargetMAK = Yes
+        TargetH = Yes
+        TargetEQU = Yes
+        Lock = Yes
+        Token = "INTEL_BOOT_GUARD_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "SIGN_TOOL_NAME_PATH"
+        Value  = "$(BOOTGUARD_DIR)\CryptoCon.exe"
+        Help  = "Please input the path and the name of sign tool which you want to use. ex: (PurleyPlatPkg/BootGuard/CryptoCon.exe)"
+        TokenType = Expression
+        TargetMAK = Yes
+        Token = "INTEL_BOOT_GUARD_SUPPORT" "=" "1"
+        Token = "BOOT_GUARD_SIGNING_INTERLOCK_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "SIGN_TOOL_INPUT_BPM_COMMENT"
+        Value  = " -s -k $(BOOT_GUARD_BPM_PEM_KEY_FILENAME) -f "
+        Help  = "Please input the BPM comment of sign tool use. If the comment is: PurleyPlatPkg\BootGuard\CryptoCon.exe -s -k PurleyPlatPkg\BootGuard\BpmPrivate.key -f sign.file -o output.file. Please input: -s -k PurleyPlatPkg\BootGuard\BpmPrivate.key -f "
+        TokenType = Expression
+        TargetMAK = Yes
+        Token = "INTEL_BOOT_GUARD_SUPPORT" "=" "1"
+        Token = "BOOT_GUARD_SIGNING_INTERLOCK_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "SIGN_TOOL_INPUT_SEPARATE"
+        Value  = "*"
+        Help  = "Please don't change this token. This symbol is separate BPM and KM comment."
+        TokenType = Expression
+        TargetMAK = Yes
+        Lock = Yes
+        Token = "INTEL_BOOT_GUARD_SUPPORT" "=" "1"
+        Token = "BOOT_GUARD_SIGNING_INTERLOCK_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "SIGN_TOOL_INPUT_KM_COMMENT"
+        Value  = " -s -k $(BOOT_GUARD_KM_PEM_KEY_FILENAME) -f "
+        Help  = "Please input the KM comment of sign tool use. If the comment is: PurleyPlatPkg\BootGuard\CryptoCon.exe -s -k PurleyPlatPkg\BootGuard\KmPrivate.key -f sign.file -o output.file. Please input: -s -k PurleyPlatPkg\BootGuard\KmPrivate.key -f "
+        TokenType = Expression
+        TargetMAK = Yes
+        Token = "INTEL_BOOT_GUARD_SUPPORT" "=" "1"
+        Token = "BOOT_GUARD_SIGNING_INTERLOCK_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "BootGuardSignInterLockTokens"
+        Value  = "$(SIGN_TOOL_NAME_PATH) $(SIGN_TOOL_INPUT_BPM_COMMENT) $(SIGN_TOOL_INPUT_SEPARATE) $(SIGN_TOOL_INPUT_KM_COMMENT)"
+        Help  = "Support the decimal value"
+        TokenType = Expression
+        TargetMAK = Yes
+        Lock = Yes
+        Token = "INTEL_BOOT_GUARD_SUPPORT" "=" "1"
+        Token = "BOOT_GUARD_SIGNING_INTERLOCK_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = " "
+    TokenType = Integer
+End
+
+FFS_FILE
+        Name = "ReserveBpmTable"
+        FD_AREA = "FV_BB"
+        FILE_Stmt = "PurleyPlatPkg/BootGuard/BpmTableFdfFileStatement.txt"
+        Rule_Override  = "UncompressedNoChecksum"        
+End
+
+FFS_FILE
+        Name = "ReserveKmTable"
+        FD_AREA = "FV_BB"
+        FILE_Stmt = "PurleyPlatPkg/BootGuard/KmTableFdfFileStatement.txt"
+        Rule_Override  = "UncompressedNoChecksum"
+End
+
+TOKEN
+        Name  = "BootGuardTokens"
+        Value  = "$(BPM_IBB_MCHBAR) $(BPM_VTD_BAR) $(BPM_IBB_SEGMENT_BASE) $(BPM_IBB_SEGMENT_SIZE) $(BPM_PBET) $(BIOS_STARTING_ADDRESS) $(KM_KEY_MANIFEST_ID) $(BOOT_GUARD_ACMSVN) $(BPM_NEM_DATA_STACK_SIZE) $(BOOT_GUARD_BPMSVN) $(BOOT_GUARD_KMSVN) $(BPM_IBB_VARIOUS_FLAGS) $(BOOT_GUARD_SIGNING_SERVER_TIMEOUT) $(FIT_ACM_GUID) $(FIT_MICROCODE_GUID) $(FIT_TABLE_GUID)"
+        Help  = "Support the decimal value"
+        TokenType = Expression
+        TargetMAK = Yes
+End
+
+TOKEN
+        Name  = "FitFirstEndPatchBIOSRomPath"
+        Value = "$(BUILD_DIR)$(PATH_SLASH)$(PLATFORM_NAME)$(PATH_SLASH)$(TARGET)_$(TOOL_CHAIN_TAG)$(PATH_SLASH)FV$(PATH_SLASH)AMIROM.fd"
+        Help  = "Patch BIOS ROM Path"
+        TokenType = Expression
+        TargetMAK = Yes
+End
+
+TOKEN
+        Name  = "DXE_SEGMENT_BASE"
+        Help  = "BpmKmGen.exe only support the decimal value"
+        Value  = "$(FV_MAIN_BASE) + 0"
+        TokenType = Integer
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+        Token = "INTEL_BOOT_GUARD_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "DXE_SEGMENT_SIZE"
+        Help  = "BpmKmGen.exe only support the decimal value"
+        Value  = "$(FV_MAIN_BLOCKS) * $(FLASH_BLOCK_SIZE)"
+        TokenType = Integer
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+        Token = "INTEL_BOOT_GUARD_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "MICROCODE_FFS_ALIGNMENT"
+        Value  = "Align = 128"
+        Help  = "Defines alignment of the Microcode FFS file\Must have 'Align = X' format.\X must be one of: 8, 16, 128, 512"
+        TokenType = Expression
+        TargetFDF = Yes
+        Range  = "'Align = X', X is one of:8, 16, 128, 512"
+        Token = "INTEL_BOOT_GUARD_SUPPORT" "=" "1"
+End
+
+PATH
+        Name  = "BOOTGUARD_DIR"
+End
+
+MODULE
+        Help  = "Includes BootGuard.mak to Project"
+        File  = "BootGuard.mak"
+End

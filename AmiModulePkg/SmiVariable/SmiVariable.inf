@@ -1,0 +1,28 @@
+
+
+[Defines]
+    INF_VERSION = 0x00010005
+    VERSION_STRING = 1.0
+    PI_SPECIFICATION_VERSION = 0x0001000A
+    BASE_NAME = SmiVariable
+    MODULE_TYPE = DXE_SMM_DRIVER
+    FILE_GUID = BE216BA8-38C4-4535-A6CA-5DCA5B43ADDF
+    ENTRY_POINT = SmiVariableEntryPoint
+
+[Sources]
+    SmiVariable.c
+    SmiVariable.h
+
+[Packages]
+    MdePkg/MdePkg.dec
+    AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+    AmiModulePkg/AmiModulePkg.dec
+
+[LibraryClasses]
+    AmiDxeLib
+    UefiDriverEntryPoint
+    AmiBufferValidationLib
+
+[Depex.common.DXE_SMM_DRIVER]
+    gEfiSmmBase2ProtocolGuid AND 
+    gEfiSmmSwDispatch2ProtocolGuid

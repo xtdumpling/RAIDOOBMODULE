@@ -1,0 +1,69 @@
+TOKEN
+    Name  = "VideoConsole_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable VideoConsole support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    Master = Yes
+End
+
+INFComponent
+    Name  = "PeiVideoTextOutLib"
+    File  = "VideoTextOutLib.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "PEIM"
+End
+
+INFComponent
+    Name  = "DxeVideoTextOutLib"
+    File  = "VideoTextOutLib.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_DRIVER"
+End
+
+LibraryMapping
+    Class  = "PeiVideoTextOutLib"
+    Instance  = "AmiModulePkg.PeiVideoTextOutLib"
+    ModuleTypes  = "PEIM"
+End
+
+LibraryMapping
+    Class  = "DxeVideoTextOutLib"
+    Instance  = "AmiModulePkg.DxeVideoTextOutLib"
+    ModuleTypes  = "DXE_DRIVER"
+End
+
+INFComponent
+    Name  = "PeiVideoTextOut"
+    File  = "PeiVideoTextOut.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "PEIM"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiModulePkg.PeiVideoTextOutLib"
+    ModuleTypes  = "PEIM"
+    Override  = "AmiModulePkg.PeiVideoTextOut"
+End
+
+FFS_FILE
+    Name  = "PeiVideoTextOut"
+    FD_AREA  = "FV_BB"
+    INFComponent  = "AmiModulePkg.PeiVideoTextOut"
+    Apriori_Index  = "3"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiModulePkg.DxeVideoTextOutLib"
+    ModuleTypes  = "DXE_DRIVER"
+    Override  = "AmiModulePkg.DxeVideoTextOut"
+End
+
+INFComponent
+    Name  = "DxeVideoTextOut"
+    File  = "DxeVideoTextOut.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_DRIVER"
+End

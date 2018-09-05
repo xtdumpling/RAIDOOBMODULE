@@ -1,0 +1,43 @@
+TOKEN
+    Name  = "AMI_TCG_PLATFORM_DXE_SUPPORT"
+    Value  = "1"
+    Help  = "Disable AmiTcgPlatformDxe"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    Master = Yes
+End
+
+PATH
+    Name  = "AMI_TCG_PLATFORM_DXE_DIR"
+End
+
+PcdMapping
+    Name  = "PcdPostStatusCheck"
+    GuidSpace  = "gAmiTcgPkgTokenSpaceGuid"
+    PcdType  = "PcdsDynamicDefault"
+    DataType  = "BOOLEAN"
+    Value  = "TRUE"
+    Offset  = 00h
+    Length  = 01h
+    TargetDSC = Yes
+End
+
+
+INFComponent
+    Name  = "AmiTcgPlatformDxe"
+    File  = "AmiTcgPlatformDxe.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_DRIVER"
+End
+
+INFComponent
+    Name  = "AmiTcgLibDxe"
+    File  = "AmiTcgLibDxe.inf"
+    Package = "AmiModulePkg"
+End
+
+LibraryMapping
+    Class  = "AmiTcgLibDxe"
+    Instance  = "AmiModulePkg.AmiTcgLibDxe"
+End

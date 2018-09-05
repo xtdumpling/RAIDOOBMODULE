@@ -1,0 +1,72 @@
+## @file
+#  FPGA BS loader PEIM
+#
+#  Copyright (c) 2016, Intel Corporation. All rights reserved.<BR>
+#
+#  This program and the accompanying materials
+#  are licensed and made available under the terms and conditions of the BSD License
+#  which accompanies this distribution. The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.php
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = FpgaLoaderPeim
+  FILE_GUID                      = 6FE38843-6500-42C2-A535-7769DEA56AA4
+  MODULE_TYPE                    = PEIM
+  ENTRY_POINT                    = PeimFpgaLoaderInit
+
+[Sources]
+  FpgaLoader.c
+# APTIOV_SERVER_OVERRIDE_RC_START :  Missing file added
+  FpgaLoader.h
+# APTIOV_SERVER_OVERRIDE_RC_END :  Missing file added
+
+[Packages]
+  MdePkg/MdePkg.dec
+  PurleySktPkg/SocketPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+
+[LibraryClasses]
+  PeiServicesLib
+  PeimEntryPoint
+  DebugLib
+  HobLib
+  BaseLib
+  FpgaFvDataLib
+  FpgaConfigurationLib
+  FpgaPlatformHooksLib
+  PcdLib
+
+[Pcd]
+  gSocketPkgFpgaGuid.PcdSktFpgaActive
+  gPlatformTokenSpaceGuid.PcdSyshostMemoryAddress
+
+[Guids]
+  gFpgaSocketHobGuid
+
+[Ppis]
+  gEfiPeiReadOnlyVariable2PpiGuid
+  gEfiPeiMpServicesPpiGuid
+  gEfiPeiCpuIoPpiInstalledGuid
+  gFpgaInitPpiGuid
+  gPchResetPpiGuid
+  gMrcHooksServicesPpiGuid	## CONSUMES
+  gMrcHooksChipServicesPpiGuid	## CONSUMES
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[Depex]
+  gEfiPeiCpuIoPpiInstalledGuid    AND                 # so we can talk to the CPU registers
+  gEfiPeiMemoryDiscoveredPpiGuid  AND                 # need to be after memory is available so we can handle large binaries.
+  gEfiPeiMpServicesPpiGuid        AND                 # needed to program each core in each socket
+  gEfiPeiReadOnlyVariable2PpiGuid AND                 # get setup configuration
+  gFpgaInitPpiGuid                                    # get fpga init settings

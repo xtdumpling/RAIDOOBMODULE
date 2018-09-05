@@ -1,0 +1,63 @@
+
+
+#
+# This file contains code for South Bridge initialization in the PEI stage.
+#
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SBPEI
+  FILE_GUID                      = C1FBD624-27EA-40d1-AA48-94C3DC5C7E0D
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = SBPEI_Init
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+#  
+
+[Sources]  
+  ../../Chipset/SB/SBPEI.c
+#  ../../Chipset/SB/SBSmbusPei.c
+#  SBPEIBoard.c
+#  GetSetupData.c
+
+[Packages]
+  MdePkg/MdePkg.dec   
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec 
+  AmiModulePkg/AmiModulePkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  AmiCRBPkg/AmiCRBPkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  
+[LibraryClasses]
+  PeimEntryPoint
+  AmiCspLib
+  HobLib
+  PcdLib
+  DebugLib
+  BaseLib
+
+[Ppis]
+#  gAmiPeiSBCustomPpiGuid        
+#  gAmiPeiPciTableInitPpiGuid   
+  gEfiPeiMemoryDiscoveredPpiGuid 
+  gEfiPeiMasterBootModePpiGuid
+#  gAmiPeiSBInitPolicyGuid
+
+[Depex]
+  gEfiPeiCpuIoPpiInstalledGuid AND
+  gEfiPciCfg2PpiGuid AND
+  gEfiPeiReadOnlyVariable2PpiGuid
+
+ [Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+ 

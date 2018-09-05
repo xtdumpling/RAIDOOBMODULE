@@ -1,0 +1,75 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = ConSplitter
+  FILE_GUID                      = 628a497d-2bf6-4264-8741-069dbd3399d6
+  MODULE_TYPE                    = UEFI_DRIVER
+  VERSION_STRING                 = 0.1
+  ENTRY_POINT                    = CSEntryPoint
+
+[Sources]
+  ConSplit.h
+  ConSplit.c
+  In.c
+  Out.c
+
+[Packages]
+  AmiModulePkg/AmiModulePkg.dec
+  MdePkg/MdePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+
+[LibraryClasses]
+  UefiBootServicesTableLib
+  MemoryAllocationLib
+  BaseMemoryLib
+  UefiLib
+  UefiDriverEntryPoint
+  DebugLib
+  AmiDxeLib
+  PcdLib
+
+[Pcd]
+  gAmiModulePkgTokenSpaceGuid.PcdDefaultCursorState
+
+[Protocols]
+  gEfiSimplePointerProtocolGuid                 ## CONSUMES AND PRODUCES
+  gEfiSimpleTextInProtocolGuid                  ## CONSUMES AND PRODUCES
+  gEfiSimpleTextInputExProtocolGuid             ## CONSUMES AND PRODUCES
+  gEfiSimpleTextOutProtocolGuid                 ## CONSUMES AND PRODUCES
+  gAmiEfiKeycodeProtocolGuid                    ## CONSUMES AND PRODUCES
+  gEfiAbsolutePointerProtocolGuid               ## CONSUMES AND PRODUCES
+  gAmiMultiLangSupportProtocolGuid              ## CONSUMES
+  gEfiHiiDatabaseProtocolGuid                   ## CONSUMES
+  gEfiLoadedImageProtocolGuid                   ## CONSUMES
+  gEfiGraphicsOutputProtocolGuid                ## CONSUMES
+  gEfiConsoleControlProtocolGuid                ## PRODUCES
+  
+[Guids]
+  gEfiHiiKeyBoardLayoutGuid                     ## CONSUMES
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

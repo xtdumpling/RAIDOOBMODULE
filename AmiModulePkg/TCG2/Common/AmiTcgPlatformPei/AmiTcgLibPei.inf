@@ -1,0 +1,61 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+## @file
+#   This driver creates the TCG library
+##
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+
+
+[Defines]
+INF_VERSION = 0x00010005
+VERSION_STRING = 1.0
+BASE_NAME = AmiTcgLibPei
+MODULE_TYPE = BASE
+LIBRARY_CLASS = AmiTcgLibPei
+FILE_GUID = DD518D39-593A-4e41-B1FC-CC642384C5D9
+
+[Sources]
+AmiTcgPlatformPeiLib.c
+
+[Ppis]
+gPeiTcgPpiGuid
+gPeiTpmPpiGuid
+gEfiPeiReadOnlyVariable2PpiGuid
+gTcgPeiPolicyGuid
+
+[Guids]
+gSkipTpmStartupGuid
+
+[LibraryClasses]
+BaseTisLib12x32
+AmiPeiLib
+TpmReportStatusCodeWrapperLibPei
+
+[Packages]
+AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+MdePkg/MdePkg.dec
+AmiModulePkg/AmiModulePkg.dec
+AmiTcgPkg/AmiTcgPkg.dec
+

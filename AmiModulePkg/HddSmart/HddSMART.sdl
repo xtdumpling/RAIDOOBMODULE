@@ -1,0 +1,95 @@
+TOKEN
+    Name  = "HddSmart_Support"
+    Value  = "1"
+    Help  = "Main switch to enable HddSMART support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes
+    Master = Yes
+    Token = "AHCI_SUPPORT" "|" "$(IdeBusSrc_SUPPORT)"
+End
+
+TOKEN
+    Name  = "ENABLE_SMART"
+    Value  = "1"
+    Help  = "1 :  Enable SMART \ 0 : Disable SMART"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "SMART_DIAGNOSTICS_SUPPORT"
+    Value  = "0"
+    Help  = "Installs SMARTInterface protocol for running SMART diagnostics."
+    TokenType = Boolean
+    TargetH = Yes
+    Token = "ENABLE_SMART" "=" "1"
+End
+
+TOKEN
+    Name  = "WAIT_FOR_ERROR_KEY"
+    Value  = "EFI_SCAN_F1"
+    Help  = "After post error message, wait for the key"
+    TokenType = Expression
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "DEFAULT_SMART_SELFTEST"
+    Value  = "0"
+    Help  = "Default setup value of HDD SMART status check:\1 - Check SMART status during POST\0 - Do not Check SMART status during POST "
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "SMART_PROTOCOL_REVISION"
+    Value  = "1"
+    Help  = "SMART Protocol Revision Number"
+    TokenType = Integer
+    TargetH = Yes
+    Token = "HddSmart_Support" "=" "1"
+End
+
+PATH
+    Name  = "HDDSMART_DIR"
+End
+
+ELINK
+    Name  = "$(HDDSMART_DIR)/HddSMART.sd"
+    Parent  = "SETUP_DEFINITIONS"
+    Priority  = 31
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(HDDSMART_DIR)/HddSMART.uni"
+    Parent  = "SetupStringFiles"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "SmartErrorThresholdExceeded"
+    Parent  = "OemReportSmartFailureFunction"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "OemReportSmartFailureFunction"
+    Help  = "Only one function should be added for this ELINK "
+    InvokeOrder = ReplaceParent
+End
+
+OUTPUTREGISTER
+    Name  = "HDDSMART_ELINK_H"
+    Path  = "Build"
+    File  = "SmartfailureFunctionList.h"
+    Template  = "HddSmartTemplate.txt"
+End
+
+INFComponent
+    Name  = "HddSmart"
+    File  = "HddSMART.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_DRIVER"
+End

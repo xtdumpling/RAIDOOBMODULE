@@ -1,0 +1,31 @@
+TOKEN
+	Name  = "STDEC_SUPPORT"
+	Value  = "0"
+	Help  = "Switch for Enabling AMI Standard EC firmware support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+PATH
+	Name  = "OFBD_STDEC_DIR"
+End
+
+ELINK
+	Name  = "$(OFBD_STDEC_DIR)/StdEc.h"
+	Parent  = "OFBD_FUNC_INCLUDE_FILES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(OFBD_STDEC_DIR)/StdEc.c"
+	Parent  = "OFBD_FUNC_SOURCES_FILES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "StdECEntry,"
+	Parent  = "OFBD_INIT_FUNC_LIST"
+	Token = "STDEC_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+

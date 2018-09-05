@@ -1,0 +1,85 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+
+## @file NvmeSmm.inf
+# NvmeSmm Module supports Nvme driver in SMM
+# This driver performs Nvme SMM registration
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010015
+  VERSION_STRING                 = 1.0
+  BASE_NAME                      = NvmeSmm
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  FILE_GUID                      = E5E2C9D9-5BF5-497E-8860-94F81A09ADE0
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  ENTRY_POINT                    = NvmeSmmDriverEntryPoint
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+
+[Sources]
+  NvmeSmm.c
+  NvmeSmm.h
+  NvmeDef.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+      
+[LibraryClasses]
+  DebugLib
+  IoLib
+  PcdLib
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  BaseLib
+  SmmServicesTableLib
+  NvmeControllerLib
+  AmiBufferValidationLib
+  
+[Guids]
+  gAmiSmmNvmeCommunicationGuid
+  
+[Protocols]
+  gEfiSmmBase2ProtocolGuid
+  gEfiSmmSwDispatch2ProtocolGuid
+  gAmiSmmNvmePassThruProtocolGuid
+  gAmiSmmNvmeControllerProtocolGuid
+  
+[Depex]
+  gEfiSmmBase2ProtocolGuid AND
+  gEfiSmmSwDispatch2ProtocolGuid
+  
+[Pcd]
+ gEfiMdePkgTokenSpaceGuid.PcdDebugPrintErrorLevel
+  
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************

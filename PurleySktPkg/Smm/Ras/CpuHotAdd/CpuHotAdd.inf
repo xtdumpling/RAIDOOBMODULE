@@ -1,0 +1,118 @@
+#
+# This file contains an 'Intel Peripheral Driver' and is
+# licensed for Intel CPUs and chipsets under the terms of your
+# license agreement with Intel or your vendor.  This file may
+# be modified by the user, subject to additional terms of the
+# license agreement
+#
+## @file
+# Component description file for CPU Hot Add Module.
+#
+# CPU S3 Module that restores configuration of multi-processor environment according
+#  to data saved during normal boot phase.
+# Copyright (c) 2011 - 2016, Intel Corporation. All rights reserved.<BR>
+#
+#  This software and associated documentation (if any) is furnished
+#  under a license and may only be used or copied in accordance
+#  with the terms of the license. Except as permitted by such
+#  license, no part of this software or documentation may be
+#  reproduced, stored in a retrieval system, or transmitted in any
+#  form or by any means without the express written consent of
+#  Intel Corporation.
+#
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = CpuHotAdd
+  FILE_GUID                      = BB2F0636-B0DD-489b-ADB6-606FE3A47258
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  VERSION_STRING                 = 1.0
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  ENTRY_POINT                    = CpuHotAddEntry
+
+[Sources]
+  CpuHotAdd.h
+  CpuHotAdd.c
+  MicrocodeLoad.c
+  CpuHotAddSupport.c
+
+[Sources.X64]
+  X64/StartupVector.asm | MSFT
+  X64/StartupVector.nasm | GCC
+  X64/CpuHotAddFuncs.asm | MSFT
+  X64/CpuHotAddFuncs.nasm | GCC
+# APTIOV_SERVER_OVERRIDE_RC_START : Adding missing files
+  X64/ArchSpecificDef.h
+# APTIOV_SERVER_OVERRIDE_RC_END : Adding missing files
+
+
+[Packages]
+  MdeModulePkg/MdeModulePkg.dec
+  MdePkg/MdePkg.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+  UefiCpuPkg/UefiCpuPkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  IA32FamilyCpuPkg/IA32FamilyCpuPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+
+[LibraryClasses]
+  TimerLib
+  IoLib
+  BaseMemoryLib
+  LocalApicLib
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  UefiDriverEntryPoint
+  BaseLib
+  CpuLib
+  SynchronizationLib
+  DebugLib
+  MtrrLib
+  S3BootScriptLib
+  PeCoffLib
+  DxeServicesLib
+  CacheMaintenanceLib
+  CpuPpmLib
+  MpSyncDataLib
+
+[Guids]
+
+[Protocols]
+  gEfiLegacyBiosProtocolGuid                    # PROTOCOL ALWAYS_CONSUMED
+  gEfiCpuHotAddDataProtocolGuid
+  gEfiCpuPpmProtocolGuid
+  gEfiCpuCsrAccessGuid
+
+[FixedPcd]
+  gEfiCpuTokenSpaceGuid.PcdCpuMaxLogicalProcessorNumber
+# APTIOV_SERVER_OVERRIDE_RC_START :Flash PCD's removed
+  #gCpPlatFlashTokenSpaceGuid.PcdFlashFvAcmBase
+# APTIOV_SERVER_OVERRIDE_RC_END :Flash PCD's removed
+
+[Pcd]
+  gEfiCpuTokenSpaceGuid.PcdCpuApStackSize
+  gUefiCpuPkgTokenSpaceGuid.PcdCpuS3DataAddress
+  gEfiCpuTokenSpaceGuid.PcdCpuMicrocodePatchAddress
+  gEfiCpuTokenSpaceGuid.PcdCpuMicrocodePatchRegionSize
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[Depex]
+  #
+  # Note: the extra dependency of gEfiMpServiceProtocolGuid/gEfiVariableWriteArchProtocolGuid is to
+  # ensure that ACPI variable is set by MpDxe driver before
+  # CpuS3 module is executed.
+  #
+  gEfiLegacyBiosProtocolGuid AND
+  gEfiMpServiceProtocolGuid AND
+  gEfiVariableArchProtocolGuid AND
+  gEfiVariableWriteArchProtocolGuid AND
+  gEfiGlobalNvsAreaProtocolGuid AND
+  gEfiCpuPpmProtocolGuid AND
+  gEfiCpuCsrAccessGuid

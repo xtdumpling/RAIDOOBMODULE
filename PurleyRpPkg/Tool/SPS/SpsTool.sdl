@@ -1,0 +1,81 @@
+TOKEN
+    Name  = "SpsTool_SUPPORT"
+    Value  = "1"
+    Help  = "Switch for Enabling SpsTool support in the project"
+    TokenType = Boolean
+    Master = Yes
+    Token = "WORKSTATION_SUPPORT" "=" "0"
+End
+
+PATH
+    Name = "FTOOL_DIR"
+    Path = "PurleyRpPkg\Tool\SPS"
+End
+
+PATH
+    Name = "FITC_XML_DIR"
+    Path = "PurleyRpPkg\Tool\SPS\Config"
+End
+
+PATH
+    Name = "FITC_PTU_DIR"
+    Path = "PurleyRpPkg\Tool\SPS\PTU"
+End
+
+TOKEN
+    Name  = "FITC_FILE_NAME"
+    Value  = "LBGNC_SiEn"
+    Help  = "This token describes the input filename for SPSfitc.exe if Platform Type is Neoncity"
+    TokenType = Expression
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+    Token = "PLATFORM_TYPE" "=" "0"
+End
+
+TOKEN
+    Name  = "FITC_NM_FILE_NAME"
+    Value  = "LBGNC_Full"
+    Help  = "This token describes the input filename for Node Manager to SPSfitc.exe if Platform Type is Neoncity. Do not fill any value if Node Manager support is not Present"
+    TokenType = Expression
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+    Token = "PLATFORM_TYPE" "=" "0"
+End
+
+TOKEN
+    Name  = "FITC_FILE_NAME"
+    Value  = "LBGLR_SiEn"
+    Help  = "This token describes the input filename for SPSfitc.exe if Platform Type is Lightning Ridge"
+    TokenType = Expression
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+    Token = "PLATFORM_TYPE" "=" "1"
+End
+
+TOKEN
+    Name  = "FITC_NM_FILE_NAME"
+    Value  = "LBGLR_Full"
+    Help  = "This token describes the input filename for Node Manager to SPSfitc.exe if Platform Type is Lightning Ridge. Do not fill any value if Node Manager support is not Present"
+    TokenType = Expression
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+    Token = "PLATFORM_TYPE" "=" "1"
+End
+
+TOKEN
+    Name  = "GBE_NVM_BIN"
+    Value  = "GBE\I219_Nahum7_Purley_LM_No-LAN-Switch_Rev_0.2.bin"
+    Help  = "GBE NVM Binary "
+    TokenType = Expression
+    TargetMAK = Yes
+End
+
+ELINK
+    Name  = "$(OemCert_DIR)\Purley_SpsNMPTU_root.cer"
+    Parent = "CertList_db"
+    InvokeOrder = AfterParent
+End

@@ -1,0 +1,51 @@
+TOKEN
+	Name  = "Hsti_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling Hsti support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "HstiIbvPlatformDxe_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable HstiIbvPlatformDxe support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "HstiIhvProviderDxe_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable HstiIhvProviderDxe support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "HstiIbvPlatformDxe"
+	File  = "HstiIbvPlatformDxe\HstiIbvPlatformDxe.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "HstiIbvPlatformDxe_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "HstiLib"
+	Instance  = "MdePkg.DxeHstiLib"
+	Override  = "PurleyPlatPkg.HstiIbvPlatformDxe"
+	Token = "HstiIbvPlatformDxe_SUPPORT" "=" "1"	
+End
+
+INFComponent
+	Name  = "HstiIhvProviderDxe"
+	File  = "HstiIhvProviderDxe\HstiIhvProviderDxe.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "HstiIhvProviderDxe_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "HstiLib"
+	Instance  = "MdePkg.DxeHstiLib"
+	Override  = "PurleyPlatPkg.HstiIhvProviderDxe"
+	Token = "HstiIhvProviderDxe_SUPPORT" "=" "1"	
+End

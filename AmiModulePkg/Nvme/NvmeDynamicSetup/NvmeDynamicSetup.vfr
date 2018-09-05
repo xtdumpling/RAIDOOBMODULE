@@ -1,0 +1,68 @@
+//***********************************************************************
+//***********************************************************************
+//**                                                                   **
+//**        (C)Copyright 1985-2015, American Megatrends, Inc.          **
+//**                                                                   **
+//**                       All Rights Reserved.                        **
+//**                                                                   **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093         **
+//**                                                                   **
+//**                       Phone: (770)-246-8600                       **
+//**                                                                   **
+//***********************************************************************
+//***********************************************************************
+
+/** @file NvmeDynamicSetup.vfr
+    Nvme Setup Page. Dynamic IFR implementation.
+
+**/
+
+#include "NvmeDynamicSetup.h"
+// APTIOV_SERVER_OVERRIDE_RC_START : To Remove Duplicated NVME information displayed in Setup
+#include <Setup.h>
+// APTIOV_SERVER_OVERRIDE_RC_END : To Remove Duplicated NVME information displayed in Setup
+formset guid = NVME_FORM_SET_GUID,
+    title = STRING_TOKEN(STR_NVME_SUBTITLE_STRING),
+    help = STRING_TOKEN(STR_NVME_HELP_STRING),
+    class = NVME_FORM_SET_CLASS, subclass = 0,
+
+    form
+        formid = NVME_MAIN_FORM_ID,
+        title = STRING_TOKEN(STR_NVME_SUBTITLE_STRING);
+// APTIOV_SERVER_OVERRIDE_RC_START : To Remove Duplicated NVME information displayed in Setup
+        SUBTITLE(STRING_TOKEN(STR_NVME_CONFIG_FORM))
+        SUBTITLE(STRING_TOKEN(STR_EMPTY))
+// APTIOV_SERVER_OVERRIDE_RC_END : To Remove Duplicated NVME information displayed in Setup
+        label NVME_MAIN_FORM_LABEL_START;
+        // dynamic content here
+        ///.....
+        label NVME_MAIN_FORM_LABEL_END;
+
+    endform;
+// APTIOV_SERVER_OVERRIDE_RC_START : To Remove Duplicated NVME information displayed in Setup
+     form
+        formid = NVME_SUB_FORM_ID,
+        title = STRING_TOKEN(STR_NVME_SUBTITLE_STRING);
+        
+    label NVME_SUB_FORM_LABEL_START;
+        // dynamic content here
+        ///.....
+        label NVME_SUB_FORM_LABEL_END;
+        
+    endform;
+// APTIOV_SERVER_OVERRIDE_RC_END : To Remove Duplicated NVME information displayed in Setup
+endformset;
+
+//***********************************************************************
+//***********************************************************************
+//**                                                                   **
+//**        (C)Copyright 1985-2015, American Megatrends, Inc.          **
+//**                                                                   **
+//**                       All Rights Reserved.                        **
+//**                                                                   **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093         **
+//**                                                                   **
+//**                       Phone: (770)-246-8600                       **
+//**                                                                   **
+//***********************************************************************
+//***********************************************************************

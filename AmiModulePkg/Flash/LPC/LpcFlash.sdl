@@ -1,0 +1,105 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2009, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+
+#**********************************************************************
+# $Header: /Alaska/SOURCE/Flash_Combined_2/Core/LPC/LpcFlash.sdl 6     6/24/09 3:13a Calvinchen $
+#
+# $Revision: 6 $
+#
+# $Date: 6/24/09 3:13a $
+#**********************************************************************
+
+TOKEN
+	Name  = "LPCFlash_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable LPC Flash support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "SST_49LF160C"
+	Value  = "1"
+	Help  = "This enables support for the SST 49LF160C and 004 LPC flash parts"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SST_49LF080A"
+	Value  = "1"
+	Help  = "This enables support for the SST 49LF008 and 004 LPC flash parts"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+PATH
+	Name  = "LPCFlash_DIR"
+End
+
+ELINK
+	Name  = "mLpcFlashIdentify,"
+	Parent  = "FlashList"
+	Token = "SST_49LF080A" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "mSstLpcIdentify,"
+	Parent  = "FlashList"
+	Token = "SST_49LF160C" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+INFComponent
+    Name  = "LpcFlashLib"
+    File  = "LpcFlash.inf"
+    Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+    Class  = "LpcFlashLib"
+    Instance  = "AmiModulePkg.LpcFlashLib"
+    ModuleTypes  = "DXE_CORE DXE_DRIVER DXE_RUNTIME_DRIVER DXE_SAL_DRIVER DXE_SMM_DRIVER SMM_CORE UEFI_APPLICATION UEFI_DRIVER"
+End
+
+INFComponent
+    Name  = "LpcFlashPeiLib"
+    File  = "LpcFlashPei.inf"
+    Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+    Class  = "LpcFlashLib"
+    Instance  = "AmiModulePkg.LpcFlashPeiLib"
+    ModuleTypes  = "PEIM"
+End
+
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2009, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************

@@ -1,0 +1,76 @@
+TOKEN
+	Name  = "DbgXportLib_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable DbgXportLib support in Project"
+	TokenType = Boolean
+	Master = Yes
+	Token = "USB_DEBUG_TRANSPORT" "=" "0"
+End
+
+TOKEN
+	Name  = "DbgXportX64Lib_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable DbgXportX64Lib support in Project"
+	TokenType = Boolean
+	Token = "X64_SUPPORT" "=" "1"
+End
+
+PATH
+	Name  = "DbgXportLib_DIR"
+	Path  = "AMIDebugRxPkg\SerialDebugger\DbgXportLib"
+End
+
+INFComponent
+	Name  = "CommonDbgXportLib"
+	File  = "CommonDbgXportLib.inf"
+	Package  = "SerialDebugger"
+	Arch  = "common"
+	Path  = "DbgXportLib_DIR"
+End
+
+INFComponent
+	Name  = "DbgXportLib"
+	File  = "DbgXportLib.inf"
+	Package  = "SerialDebugger"
+	Arch  = "common"
+	Path  = "DbgXportLib_DIR"
+End
+
+INFComponent
+	Name  = "DbgXportX64Lib"
+	File  = "DbgXportX64Lib.inf"
+	Package  = "SerialDebugger"
+	Arch  = "common"
+	Path  = "DbgXportLib_DIR"
+	Token = "DbgXportX64Lib_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "CommonDbgXportLib"
+	Instance  = "SerialDebugger.CommonDbgXportLib"
+End
+
+LibraryMapping
+	Class  = "PeiDebugXportLib"
+	Instance  = "SerialDebugger.DbgXportLib"
+	Arch  = "IA32"
+End
+
+LibraryMapping
+	Class  = "PeiDebugXportLib"
+	Instance  = "SerialDebugger.DbgXportX64Lib"
+	Arch  = "X64"
+	Token = "DbgXportX64Lib_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "DxeDebugXportLib"
+	Instance  = "SerialDebugger.DbgXportLib"
+	Token = "X64_SUPPORT" "=" "0"
+End
+
+LibraryMapping
+	Class  = "DxeDebugXportLib"
+	Instance  = "SerialDebugger.DbgXportX64Lib"
+	Token = "DbgXportX64Lib_SUPPORT" "=" "1"
+End

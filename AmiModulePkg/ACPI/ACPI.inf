@@ -1,0 +1,59 @@
+
+#
+# This file contains code for North Bridge initialization in the DXE stage.
+#
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = ACPI
+  FILE_GUID                      = 16D0A23E-C09C-407d-A14A-AD058FDD0CA1
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = AcpiNewCoreEntry
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+#  HOB Guid C Name: gEfiHtBistHobGuid Hob Type: GUID_EXTENSION
+#
+
+[Sources]
+  AcpiCore.c	
+  Aml.c	
+  AmlChild.c	
+  AmlNamespace.c	
+  AcpiCore.h	
+  AmlOption.c	
+  AmlString.c	
+  AcpiSdt.c	
+  AcpiSdtPrivate.h
+  mptable.h  
+  
+[Sources.IA32, Sources.X64]
+  mptable.c	
+  
+[Packages]
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  MdePkg/MdePkg.dec
+
+  AmiModulePkg/AmiModulePkg.dec
+  
+[LibraryClasses]
+  AmiDxeLib
+  UefiDriverEntryPoint
+  AmiAcpiLib
+
+[Protocols]
+  gEfiAcpiTableProtocolGuid       ## PRODUCED
+  gEfiAcpiSdtProtocolGuid         ## PRODUCED
+    
+[Depex]
+  gEfiCpuArchProtocolGuid AND
+  gAmiBoardInfo2ProtocolGuid 
+  
+
+#[BuildOptions.X64] 
+#*_*_X64_CC_FLAGS = 
+

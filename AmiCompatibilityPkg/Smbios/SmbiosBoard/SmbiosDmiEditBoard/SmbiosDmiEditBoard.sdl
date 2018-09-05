@@ -1,0 +1,49 @@
+TOKEN
+	Name  = "SmbiosDMIEditBoard_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable AMI DMIEdit Board for SMBIOS support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Lock = Yes
+	Master = Yes
+	Token = "SmbiosDMIEdit_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "SMBIOS_CORE_SRC_STATUS"
+    Value  = "0"
+    Help  = "Smbios Core Source is disabled"
+	TokenType = Boolean
+End
+
+TOKEN
+    Name  = "SMBIOS_CORE_SRC_STATUS"
+    Value  = "1"
+    Help  = "Smbios Core Source is enabled"
+	TokenType = Boolean
+	Token = "SMBIOS_CORE_SRC_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "PROCESSOR_DMIEDIT_SUPPORT"
+	Value  = "1"
+	Help  = "ON  -> Type 4 Serial Number, Asset Tag, Part Number update via DmiEdit is supported\OFF -> Type 4 Serial Number, Asset Tag, Part Number update via DmiEdit is not supported"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+PATH
+	Name  = "SMBIOS_DMIEDIT_BOARD_DIR"
+End
+
+INFComponent
+	Name  = "SmbiosDmiEditBoardLib"
+	File  = "SmbiosDmiEditBoard.inf"
+	Package = AmiCompatibilityPkg
+End
+
+LibraryMapping
+	Class  = "SmbiosDmiEditBoardLib"
+	Instance  = "AmiCompatibilityPkg.SmbiosDmiEditBoardLib"
+End

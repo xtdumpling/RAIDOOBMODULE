@@ -1,0 +1,65 @@
+TOKEN
+	Name  = "DbgPortLib_SUPPORT"
+	Value  = "1"			
+	Help  = "Switch for Enabling DbgPortLib support in the project"
+	TokenType = Boolean
+	Master = Yes
+	Token = "USB_DEBUG_TRANSPORT" "=" "0"
+End
+
+TOKEN
+	Name  = "DbgPortX64Lib_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable DbgXportX64Lib support in Project"
+	TokenType = Boolean
+	Token = "X64_SUPPORT" "=" "1"
+End
+
+PATH
+	Name  = "DbgPortLib_DIR"
+	Path  = "AMIDebugRxPkg\SerialDebugger\DbgPortLib"
+End
+
+MODULE
+	Help  = "Includes DbgPortLib.mak to Project"
+	File  = "DbgPortLib.mak"
+End
+
+ELINK
+	Name  = "PeiDebugInitialize"
+	InvokeOrder = ReplaceParent
+End
+
+INFComponent
+	Name  = "DbgPortLib"
+	File  = "DbgPortLib.inf"
+	Package  = "SerialDebugger"
+	Arch  = "common Ia32 X64"
+	Path  = "DbgPortLib_DIR"
+End
+
+INFComponent
+	Name  = "DbgPortX64Lib"
+	File  = "DbgPortx64Lib.inf"
+	Package  = "SerialDebugger"
+	Arch  = "common Ia32 X64"
+	Path  = "DbgPortLib_DIR"
+End
+
+LibraryMapping
+	Class  = "PeiDebugPortLib"
+	Instance  = "SerialDebugger.DbgPortLib"
+End
+
+LibraryMapping
+	Class  = "DxeDebugPortLib"
+	Instance  = "SerialDebugger.DbgPortLib"
+	Token = "X64_SUPPORT" "=" "0"
+End
+
+LibraryMapping
+	Class  = "DxeDebugPortLib"
+	Instance  = "SerialDebugger.DbgPortX64Lib"
+	Token = "DbgPortX64Lib_SUPPORT" "=" "1"
+End
+

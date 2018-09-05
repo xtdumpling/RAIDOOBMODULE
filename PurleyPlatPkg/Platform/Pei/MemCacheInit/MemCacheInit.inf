@@ -1,0 +1,73 @@
+## @file
+#  MemCacheInit.inf
+#  Memory Cache init driver sets up MTRRs for all of memory.
+#
+#  Copyright (c) 2016, Intel Corporation. All rights reserved.<BR>
+#  This program and the accompanying materials
+#  are licensed and made available under the terms and conditions of the BSD License
+#  which accompanies this distribution.  The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.php
+#
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = MemCacheInit
+  FILE_GUID                      = 2C878DFE-F92E-4D00-BCED-146AFE099841
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = MemCacheInit
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+
+[Sources]
+  MemCacheInit.c
+  MemCacheInit.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  IA32FamilyCpuPkg/IA32FamilyCpuPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  UefiCpuPkg/UefiCpuPkg.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+
+[LibraryClasses]
+  BaseLib
+  BaseMemoryLib
+  DebugLib
+  HobLib
+  PeimEntryPoint
+  PeiServicesLib
+  SetupLib
+  MtrrLib
+  PlatformHooksLib
+
+[Guids]
+  gEfiPlatformInfoGuid
+  gEfiMemoryMapGuid
+
+[Ppis]
+  gEfiEndOfPeiSignalPpiGuid                     ## NOTIFY
+  gEfiPeiReadOnlyVariable2PpiGuid
+  gPeiMpServicePpiGuid
+
+[Pcd]
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[Depex]
+  gEfiPeiMemoryDiscoveredPpiGuid AND
+  gPeiMpServicePpiGuid
+

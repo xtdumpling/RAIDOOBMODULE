@@ -1,0 +1,75 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.00
+#       Bug fixed:   Initialize revision
+#       Reason:      Get base code from Grantley
+#       Auditor:     Salmon Chen
+#       Date:        Dec/01/2014
+#
+#****************************************************************************
+TOKEN
+	Name  = "SmcNVDIMM_SUPPORT"
+	Value  = "1"
+	Help  = "The file is for platform settings. EX : Grantley platform settings, BayTrail platform settings."
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+	Token = "NVDIMM_ENABLE" "=" "1"
+End
+
+PATH
+	Name  = "SMC_NVDIMM_DIR"
+End
+
+TOKEN
+	Name  = "SMC_PAUSE_CLTT"
+	Value  = "0x13"
+	Help  = "The file is for platform settings. EX : Grantley platform settings, BayTrail platform settings."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SMC_RESUME_CLTT"
+	Value  = "0x14"
+	Help  = "The file is for platform settings. EX : Grantley platform settings, BayTrail platform settings."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+ELINK
+	Name  = "$(SMC_NVDIMM_DIR)\SmcNVDIMM.ssp"
+	Parent  = "ADDON_SSP_FILES"
+	InvokeOrder = AfterParent
+End
+
+INFComponent
+	Name  = "SmcNVDIMMDxeDriver"
+	File  = "SmcNVDIMMDxeDriver.inf"
+	Package  = "SmcPkg"
+	ModuleTypes = "DXE_DRIVER"
+End
+
+INFComponent
+	Name  = "SmcNVDIMMPeiDriver"
+	File  = "SmcNVDIMMPeiDriver.inf"
+	Package  = "SmcPkg"
+	ModuleTypes  = "PEIM"
+End
+
+INFComponent
+        Name  = "SmcNVDIMMSmmDriver"
+        File  = "SmcNVDIMMSmmDriver.inf"
+        Package  = "SmcPkg"
+        ModuleTypes  = "DXE_SMM_DRIVER"
+End
+
+

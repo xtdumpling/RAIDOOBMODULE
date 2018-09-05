@@ -1,0 +1,78 @@
+TOKEN
+	Name  = "Library_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling Library support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "WheaErrorLib_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable WheaErrorLib support in Project"
+	TokenType = Boolean
+        Token = "WHEA_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "BaseSmbusLibNull"
+	File  = "BaseSmbusLibNull\BaseSmbusLibNull.inf"
+	Package  = "CpPlatPkg"
+	ModuleTypes  = "BASE"
+End
+
+
+INFComponent
+	Name  = "CompressDxeLib"
+	File  = "Compress\CompressLib.inf"
+	Package  = "CpPlatPkg"
+	ModuleTypes  = "BASE"
+End
+
+INFComponent
+	Name  = "PlatformBeepMapLib"
+	File  = "PlatformBeepMapLib\PlatformBeepMapLib.inf"
+	Package  = "CpPlatPkg"
+	ModuleTypes  = "BASE"
+End
+
+INFComponent
+	Name  = "PlatformPostCodeMapLib"
+	File  = "PlatformPostCodeMapLib\PlatformPostCodeMapLib.inf"
+	Package  = "CpPlatPkg"
+	ModuleTypes  = "BASE"
+End
+
+INFComponent
+	Name  = "WheaErrorLib"
+	File  = "WheaErrorLib/WheaErrorLib.inf"
+	Package  = "CpPlatPkg"
+	ModuleTypes  = "BASE"	
+	Token = "WheaErrorLib_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "SmbusLib"
+	Instance  = "CpPlatPkg.BaseSmbusLibNull"
+End
+
+LibraryMapping
+	Class  = "CompressDxeLib"
+	Instance  = "CpPlatPkg.CompressDxeLib"
+End
+
+LibraryMapping
+	Class  = "PlatformBeepMapLib"
+	Instance  = "CpPlatPkg.PlatformBeepMapLib"
+End
+
+LibraryMapping
+	Class  = "PlatformPostCodeMapLib"
+	Instance  = "CpPlatPkg.PlatformPostCodeMapLib"
+End
+
+LibraryMapping
+	Class  = "WheaErrorLib"
+	Instance  = "CpPlatPkg.WheaErrorLib"
+	Token = "WheaErrorLib_SUPPORT" "=" "1"	
+End

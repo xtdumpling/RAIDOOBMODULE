@@ -1,0 +1,36 @@
+TOKEN
+	Name  = CryptoUtils_SUPPORT
+	Value  = 1
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+	Help  = "Main switch to enable CryptoUtils support in Project"
+End
+
+PATH
+	Name  = "CryptoUtils_DIR"
+End
+
+TOKEN
+	Name  = "CRYPTCON"
+	Value  = "$(CryptoUtils_DIR)$(PATH_SLASH)CryptoCon"
+	TokenType = Expression
+	TargetMAK = Yes
+End
+
+TOKEN
+    Name  = "CRYPTCON"
+    Value  = "$(CryptoUtils_DIR)$(PATH_SLASH)CryptoCon -@"
+    TokenType = Expression
+    TargetMAK = Yes
+	Help = "Add switch -@ for Silent operation"
+    Token = "SILENT" "=" "1"
+End
+
+TOKEN
+	Name  = "CRYPTKEYGEN"
+	Value  = "$(CryptoUtils_DIR)$(PATH_SLASH)keygen"
+	TokenType = Expression
+	TargetMAK = Yes
+End

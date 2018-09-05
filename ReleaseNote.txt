@@ -1,0 +1,105 @@
+==================================================================
+Release Note
+==================================================================
+Date: Jun-01-2018
+1. Read SATA device configuration by Devices protocol.
+2. Modify HII export package lists method and DEBUG Message.
+-------------------------------------------------------------------------------
+Date: Apr-10-2018
+1. Update to support SmcHttpBoot feature.
+-------------------------------------------------------------------------------
+Date: Mar-5-2018
+1. Update OOB Version string.
+-------------------------------------------------------------------------------
+Date: Feb-22-2018
+1. Update build EFI method, now release and debug mode can use fastbuild.dsc to fast build OOB.
+-------------------------------------------------------------------------------
+Date: Feb-13-2018
+1. Roll back CalculateMD5 function from protocol to Library since unknow hang up problem.
+-------------------------------------------------------------------------------
+Date: Feb-12-2018
+1. Add other function in SMM and Dxe OobLibrary protocol.
+2. Change compiler method that only build SMCOOB modules to speed up compiler time.
+-------------------------------------------------------------------------------
+Date: Feb-12-2018
+1. Add other function in SMM and Dxe OobLibrary protocol.
+2. Change compiler method that only build SMCOOB modules to speed up compiler time.
+-------------------------------------------------------------------------------
+Date: Feb-09-2018
+1. Fix Inband Cannot write SMBIOS dmi into Romhole region in coffeelake.
+-------------------------------------------------------------------------------
+Date: Feb-07-2018
+1. Add an interface to call platform specific SmmRomHoleLib
+2. Isolate IPMI support for no IPMI module platform InBand. 
+-------------------------------------------------------------------------------
+Date: Feb-05-2018
+1. Adjust SmcInband SMM memory size to fix Coffeelake BIOS Cfg SMM size not enough problem.
+-------------------------------------------------------------------------------
+Date: Jan-17-2018
+1. Add a interface to hook updatevariable before.
+   (For mehlow SGX feature support, we need a new interface can handle different platform special nvram.)
+-------------------------------------------------------------------------------
+Date: Jan-04-2018
+1. Create a signal guid for OOB use after BDS connect all driver, since original guid not all platform signaled.
+
+2. Add a version control string for all OOB EFI files. "_SMCOOBV1.xx.xx_"
+-------------------------------------------------------------------------------
+Date: Jan-02-2018
+1. Isolate PciLib from OOB to OobLibraryProtocol, since different platform will cause hang up issue.
+
+2. remove unnecessary AmiCspLib to prevent hang up problem.
+
+-------------------------------------------------------------------------------
+Date: Dec-27-2017
+1. Remove OBJ efi and inf files in SmcOOB module.
+
+2. Update SmcOOB_ for OBJ use. OBJ files build from OOB Trunk SVN Rev_20.
+
+3. Update SmcRomHoleSmm.c and CopyEfi.bat
+
+4.Implement a SmcOobProtocol Interface for InBand and OutBand to
+  access Build time OobLibrary not OBJ OobLobrary. 
+
+5.Updated SUM Feature Flag specification revision to 1.6 based 
+              on SUM_FeatureSupportFlagsSpecification_V1.6_rev20170930_1.docx 
+              for SMC OOB TPM provisioning via IPMI.
+-------------------------------------------------------------------------------
+Date: Dec-27-2017
+1. Rollback code base to use AmiDxeLib to compatible with AMI module such as AMI SMBIOSEdit, 
+when use EDK to format String, it will use upper case however, AMI use stand C lib to format String.
+This will cause cannot find NVRAM variable problem. It may have other problems, so we roll back.
+Test with BakerVillie SUM ATT, find this problem.
+
+2. Delete SMCOOB_ because we use Develop and Stable SVN tag to isolate.
+-------------------------------------------------------------------------------
+Date: Dec-22-2017
+1. Update SmcPrepareDataToBmc function for new SMCBMCLIB function.
+2. Fix uncorrect memory access problem, it may cause system hang up. 
+3. Update necessary code with newest SmcLibBmc.c
+4. Fixed Uni String longer then 32.[Mehlow]
+5. Update OBJ files build from Mehlow SVN 71.
+6. Source Code can build pass from Mehlow SVN 71.
+
+-------------------------------------------------------------------------------
+Date: Nov-16-2017
+1. Update for Mehlow platform. Use EDK libraries instead of AMI libraries.
+2. Hide "IPMI" and "Secure Boot" forms for SUM.
+
+-------------------------------------------------------------------------------
+Date: Nov-09-2017
+1. Remove unused code.
+
+-------------------------------------------------------------------------------
+Date: Nov-08-2017
+1. Adjust OBJ code for update process.
+2. Sync OOB solutions from Purley's trunk.
+3. Update tag files for 03.05.0001.
+4. Update SmcOOB_ReleaseNote.txt for 03.05.0001.
+
+-------------------------------------------------------------------------------
+Date: Nov-07-2017
+1. Fix RootForm and HideFormForSum issues.
+
+-------------------------------------------------------------------------------
+Date: Nov-03-2017
+1. Initialize code base for OOB modules.

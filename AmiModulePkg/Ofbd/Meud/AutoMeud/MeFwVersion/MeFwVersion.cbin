@@ -1,0 +1,48 @@
+//*************************************************************************
+//*************************************************************************
+//**                                                                     **
+//**        (C)Copyright 1985-2014, American Megatrends, Inc.            **
+//**                                                                     **
+//**                       All Rights Reserved.                          **
+//**                                                                     **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+//**                                                                     **
+//**                       Phone: (770)-246-8600                         **
+//**                                                                     **
+//*************************************************************************
+//*************************************************************************
+
+//*****************************************************************************
+/** @file 
+    This file contains the Firmware Version Data Structure definition.  This structure
+    is filled out a build time token definitions that give information about the current 
+    ME Firmware.
+*/
+
+// Module specific Includes
+#include <Token.h>
+#include <Efi.h>
+
+typedef struct _FW_VERSION_NAME {
+  UINT32  MajorVersion : 16;
+  UINT32  MinorVersion : 16;
+  UINT32  HotfixVersion : 16;
+  UINT32  BuildVersion : 16;
+} ME_FW_UPD_VERSION;
+
+/// This data structure is completed at build time and stored in a binary file in the ROM image.
+const ME_FW_UPD_VERSION  MeFwVersion[] = ME_FW_IMAGE_VERSION;
+
+//*************************************************************************
+//*************************************************************************
+//**                                                                     **
+//**        (C)Copyright 1985-2014, American Megatrends, Inc.            **
+//**                                                                     **
+//**                       All Rights Reserved.                          **
+//**                                                                     **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+//**                                                                     **
+//**                       Phone: (770)-246-8600                         **
+//**                                                                     **
+//*************************************************************************
+//*************************************************************************

@@ -1,0 +1,60 @@
+## @file
+#  Option Rom Policy Driver implementation
+#
+## CONSUMES
+
+[Defines]
+  INF_VERSION = 0x00010005
+  VERSION_STRING = 1.0
+  BASE_NAME = OptionRomPolicy
+  MODULE_TYPE = DXE_DRIVER
+  FILE_GUID = 734E8BE9-4801-4a31-A3FA-D61CCB601CA9
+  ENTRY_POINT = OptionRomPolicyEntryPoint
+  UEFI_HII_RESOURCE_SECTION = TRUE
+
+[Sources]
+  OptionRomPolicy.c
+  OptionRomPolicyPrivate.h
+  OptionRomPolicy.uni
+  OptionRomPolicy.vfr
+
+[LibraryClasses]
+  AmiDxeLib
+  UefiDriverEntryPoint
+  HiiLib
+  AmiSdlLib
+  AmiPciBusLib
+  AmiHiiUpdateLib
+  DevicePathLib
+  
+[Protocols]
+  gAmiBoardInfo2ProtocolGuid  
+  gAmiBoardPciInitProtocolGuid
+  gEfiLegacyBiosProtocolGuid
+  gAmiBoardInfo2ProtocolGuid     
+  gEfiPciIoProtocolGuid
+  gAmiOpromPolicyProtocolGuid
+  gAmiCsmOpromPolicyProtocolGuid
+  gAmiOptionRomPolicyProtocolGuid
+  gEfiGraphicsOutputProtocolGuid
+  gEfiDevicePathProtocolGuid
+  gEfiPciIoProtocolGuid
+#APTIOV_SERVER_OVERRIDE_START
+  gAmiBdsConnectDriversProtocolGuid 
+#APTIOV_SERVER_OVERRIDE_END
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+
+[Depex]
+  gAmiBoardInfo2ProtocolGuid AND
+  gEfiPciRootBridgeIoProtocolGuid
+
+[BuildOptions]
+*_*_*_BUILD_FLAGS=-s
+
+

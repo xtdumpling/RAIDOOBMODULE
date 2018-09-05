@@ -1,0 +1,41 @@
+TOKEN
+    Name  = "IdeRecovery_SUPPORT"
+    Value  = "1"
+    TokenType = Boolean
+    TargetMAK = Yes
+    TargetH = Yes
+    Master = Yes
+End
+
+TOKEN
+    Name  = "ATAPI_RECOVERY_SUPPORT"
+    Value  = "1"
+    TokenType = Boolean
+    TargetMAK = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "ATA_RECOVERY_SUPPORT"
+    Value  = "1"
+    TokenType = Boolean
+    TargetMAK = Yes
+    TargetH = Yes
+End
+
+INFComponent
+    Name  = "IdeRecovery"
+    File  = "IdeRecovery.inf"
+    Package  = "AmiModulePkg"
+    Token = "IdeRecovery_SUPPORT" "=" "1"
+    ModuleTypes = "PEIM"
+End
+
+FFS_FILE
+    Name  = "IdeRecovery"
+    FD_AREA  = "FV_BB"
+    INFComponent  = "AmiModulePkg.IdeRecovery"
+    Rule_Override  = "Compressed"
+    Token = "IdeRecovery_SUPPORT" "=" "1"
+End
+

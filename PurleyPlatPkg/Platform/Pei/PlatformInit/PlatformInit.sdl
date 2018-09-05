@@ -1,0 +1,23 @@
+TOKEN
+	Name  = "PlatformInit_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling PlatformInit support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "PlatformEarlyInit_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable PlatformEarlyInit support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "PlatformEarlyInit"
+	File  = "PlatformEarlyInit.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "PEIM"
+	Token = "PlatformEarlyInit_SUPPORT" "=" "1"
+End
+

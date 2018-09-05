@@ -1,0 +1,494 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#  Rev. 1.04
+#    Bug Fix:  [Enhancements] Modify file name for SmcPkg, this file is refer AmiIpmiPkg\Ipmi\BmcLanConfig.c
+#    Reason:   System can't get correct IP after modify IPMI LAN configuration in BIOS setup at the first time boot up.
+#              Refer to Grantley #2539
+#    Auditor:  Van Lee
+#    Date:     Aug/17/2017
+#
+#
+#  Rev. 1.03
+#    Bug Fix:  Update BMC LAN config at saving settings of BIOS setup menu.
+#    Reason:   System can't get correct IP after modify IPMI LAN configuration in BIOS setup at the first time boot up.
+#              Refer to Grantley #2539
+#    Auditor:  Van Lee
+#    Date:     Aug/11/2017
+#
+#  Rev. 1.04
+#      Bug Fixed: Fix Clear TPM message not correct issue.
+#      Reason   : Clear TPM message position not correct, user can't read all message
+#      Auditor  : Curtis Wen
+#      Date     : May/23/2017
+#
+#  Rev. 1.03
+#      Bug Fixed: Use token to control IO port 61h emulation function.
+#      Reason   : 
+#      Auditor  : Leon Xu
+#      Date     : May/12/2017
+#
+#  Rev. 1.02
+#      Bug Fixed: Pressing Ctrl+Home to enter BIOS recovery mode.
+#      Reason   : 
+#      Auditor  : Yenhsin Cho
+#      Date     : Apr/07/2017
+#
+#  Rev. 1.01
+#       Bug Fix: Adding back "SmcPostMsgHotKey_PEI" and "SmcPostMsgHotKey_DXE".
+#       Reason : To show POST messages.
+#       Auditor: Yenhsin Cho
+#       Date   : May/27/2016
+#
+#  Rev. 1.01
+#       Bug Fix: Implement SMC_SIMPLETEXTOUT_PROTOCOL.
+#       Reason : Use the protocol instead of the previous lib.
+#       Auditor: Yenhsin Cho
+#       Date   : May/27/2016
+#
+#  Rev. 1.00 
+#       Reason:      Rewrite SmcPostMsgHotKey.
+#       Description: 
+#                    The Post Message String show in the VGA screen need EarlyVideo
+#                    If you do not have EarlyVideo, just disable token "SHOW_PROGRESS_STRING"
+#       Auditor:  Leon Xu
+#       Date:     Dec/19/2014
+#
+#****************************************************************************
+
+TOKEN
+	Name      = "SMC_POST_MSG_HOTKEY_SUPPORT"
+	Value     = "1"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH	  = Yes
+	Master    = Yes
+	Help      = "Main switch to enable SmcPostMsgHotKey support in Project"
+End
+
+TOKEN
+    Name  = "PPI_DISPLAY_OFFSET"
+    Value  = "06"
+    Help  = ""
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+	Name      = "SMC_POST_SCREEN_DEFINE_VERSION"
+	Value     = "0x0300"
+	Help      = "Supermicro Post Screen Definition Veriosn, just for SmcPostMsgHotKey module use, not for any routine use"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "WAIT_FOR_ERROR_KEY"
+	Value  = "EFI_SCAN_F1"
+	Help  = "After post error message, wait for the key"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+PATH
+	Name  = "SMC_POST_MSG_HOT_KEY_DIR"
+End
+
+TOKEN
+	Name  = "BIOS_SIGNON_MESSAGE2"
+	Value  = "$(SYSTEM_MANUFACTURER) $(PROJECT_BOARD_NAME) BIOS Date:$(TODAY) Rev:$(BIOS_VERSION)"
+	Help  = "BIOS Sign On Message"
+	TokenType = Expression
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "OFFICIAL_RELEASE" "=" "1"
+End
+
+TOKEN
+	Name  = "BIOS_SIGNON_MESSAGE2"
+	Value  = "$(SYSTEM_MANUFACTURER) $(PROJECT_BOARD_NAME) BIOS Date:$(TODAY) $(NOW) Rev:$(BIOS_VERSION)"
+	Help  = "BIOS Sign On Message"
+	TokenType = Expression
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "OFFICIAL_RELEASE" "=" "0"
+End
+
+TOKEN
+	Name  = "DEFAULT_QUIET_BOOT"
+	Value  = "1"
+	Help  = "Default value of the Quiet Boot option"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SETUP_PRINT_ENTER_SETUP_MSG"
+	Value  = "0"
+	Help  = "Set to 1 to print the Setup Enter messages in POST"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SETUP_BBS_POPUP_ENABLE"
+	Value  = "1"
+	Help  = "Enable or disable the SETUP_BBS_POPUP_ENABLE. CAUTION This works only if complete TSE sources are present."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "POPUP_MENU_ENTRY_SCAN"
+	Value  = "EFI_SCAN_F11"
+	Help  = "Set to one of the defined constants from EFI_SIMPLE_TEXT_INPUT protocol"
+	TokenType = Expression
+	TargetH = Yes
+	Token = "SETUP_BBS_POPUP_ENABLE" "!=" "0"
+End
+
+TOKEN
+	Name  = "SETUP_OEM_KEY1_ENABLE"
+	Value  = "1"
+	Help  = "Enable or disable the SETUP_OEM_KEY1"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SETUP_OEM_KEY1_SCAN"
+	Value  = "0x0000"
+	Help  = "Set to one of the defined constants from EFI_SIMPLE_TEXT_INPUT protocol"
+	TokenType = Expression
+	TargetH = Yes
+	Token = "SETUP_OEM_KEY1_ENABLE" "!=" "0"
+End
+
+TOKEN
+	Name  = "SETUP_OEM_KEY1_UNICODE"
+	Value  = "CHAR_TAB"
+	Help  = "Set to one of the defined constants from EFI_SIMPLE_TEXT_INPUT protocol or a character value like L'a'"
+	TokenType = Expression
+	TargetH = Yes
+	Token = "SETUP_OEM_KEY1_ENABLE" "!=" "0"
+End
+
+TOKEN
+	Name  = "SETUP_OEM_KEY2_ENABLE"
+	Value  = "1"
+	Help  = "Enable or disable the SETUP_OEM_KEY2"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SETUP_OEM_KEY2_SCAN"
+	Value  = "EFI_SCAN_F12"
+	Help  = "Set to one of the defined constants from EFI_SIMPLE_TEXT_INPUT protocol"
+	TokenType = Expression
+	TargetH = Yes
+	Token = "SETUP_OEM_KEY2_ENABLE" "!=" "0"
+End
+
+TOKEN
+	Name  = "SHOW_PROGRESS_STRING"
+	Value  = "0"
+	Help  = "Set to one of the defined constants from EFI_SIMPLE_TEXT_INPUT protocol"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SHOW_PROGRESS_STRING"
+	Value  = "1"
+	Help  = "Set to one of the defined constants from EFI_SIMPLE_TEXT_INPUT protocol"
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "EarlyVideo_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "SETUP_ALT_ENTRY_ENABLE"
+	Value  = "0"
+	Help  = "Enable or disable the SETUP_ALT_ENTRY"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SB_ONEOF_PORT61HSMM_DEFAULT"
+	Value  = "0"
+	Help  = "Enable or disable the SETUP_ALT_ENTRY"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "BMC_IPV6_POST_SCREEN_SUPPORT"
+	Value  = "1"
+	Help  = "Enable BMC IPv6 address(if available) show in early video along with IPv4"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+PcdMapping
+	Name  = "PcdReportStatusCodePropertyMask"
+	GuidSpace  = "gEfiMdePkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0x07"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+	Help = "Leon comment: the progress code mask bit is BIT0. We enable it for codebase default value is 0x06."
+End
+
+ELINK
+	Name        = "SmcKeyTabHook,"
+	Parent      = "OemKey1HookHook,"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name        = "SmcKeyF12Hook,"
+	Parent      = "OemKey2HookHook,"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name        = "SmcBeforeLegacyBootLaunch,"
+	Parent      = "BeforeLegacyBootLaunchHook,"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name        = "SmcBeforeEfiBootLaunch,"
+	Parent      = "BeforeEfiBootLaunchHook,"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "SmcCheckForKey,"
+	Parent  = "CheckForKeyHook,"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "DisplayQuietBootHotKeyMessages,"
+	Parent  = "DrawQuietBootLogoHook,"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name        = "SmcProcessConInAvailability,"
+	Parent      = "ProcessConInAvailability,"
+	InvokeOrder = BeforeParent
+End
+
+ELINK
+	Name  = "$(SMC_POST_MSG_HOT_KEY_DIR)\SmcPostMsgHotKey.ssp"
+	Parent  = "ADDON_SSP_FILES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "CheckPasswordJumperStatus,"
+	Parent  = "ProcessConInAvailability,"
+	InvokeOrder = AfterParent
+	Priority = 1
+End
+
+ELINK
+	Name  = "$(SMC_POST_MSG_HOT_KEY_DIR)\SmcPostMsgHotKey.c"
+	Parent  = "TSE_SOURCE_FILES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(SMC_POST_MSG_HOT_KEY_DIR)\SmcBmcLanConfig.c"
+	Parent  = "TSE_SOURCE_FILES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "UpdateBmcLanConfig,"
+	Parent  = "SavedConfigChangesHook,"
+	Help  = "Save Changed"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "AmiIpmiPkg/AmiIpmiPkg.dec"
+    Parent  = "ADDITIONAL_AMITSE_Packages"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "gEfiServerMgmtSetupVariableGuid"
+	Parent  = "ADDITIONAL_AMITSE_Guids"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+ 	Name  = "SmcLib"
+ 	Parent  = "ADDITIONAL_AMITSE_LibraryClasses"
+ 	InvokeOrder = AfterParent
+ 	Help = "For compile error about SmcLibCpuGetInformationBySmbios, SmcLibMchGetMemInfoBySmbios unsolved reference"
+End
+
+ELINK
+	Name  = "CpRcPkg/CpRcPkg.dec"
+	Parent  = "ADDITIONAL_AMITSE_Packages"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "SmcPkg/SmcPkg.dec"
+	Parent  = "ADDITIONAL_AMITSE_Packages"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress"
+    Parent  = "ADDITIONAL_AMITSE_PCDs"
+    InvokeOrder = AfterParent    
+End
+
+ELINK
+    Name  = "gSmcPkgTokenSpaceGuid.PcdSmcOBLan1BDF"
+    Parent  = "ADDITIONAL_AMITSE_PCDs"
+    InvokeOrder = AfterParent    
+End
+
+ELINK
+    Name  = "gSmcPkgTokenSpaceGuid.PcdSmcOBLan2BDF"
+    Parent  = "ADDITIONAL_AMITSE_PCDs"
+    InvokeOrder = AfterParent    
+End
+
+ELINK
+    Name  = "gSmcPkgTokenSpaceGuid.PcdSmcOBLan3BDF"
+    Parent  = "ADDITIONAL_AMITSE_PCDs"
+    InvokeOrder = AfterParent    
+End
+
+ELINK
+    Name  = "gSmcPkgTokenSpaceGuid.PcdSmcOBLan4BDF"
+    Parent  = "ADDITIONAL_AMITSE_PCDs"
+    InvokeOrder = AfterParent    
+End
+
+ELINK
+	Name = "$(SMC_POST_MSG_HOT_KEY_DIR)\SmcPostMsgHotKey.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	InvokeOrder = BeforeParent
+	#Token = "SUPER_M_SETUP_SUPPORT" "!=" "1"
+End
+
+ELINK
+	Name  = "$(SMC_POST_MSG_HOT_KEY_DIR)\SmcPostMsgHotKey.uni"
+	Parent  = "SetupStringFiles"
+	InvokeOrder = AfterParent
+	#Token = "SUPER_M_SETUP_SUPPORT" "!=" "1"
+End
+
+INFComponent
+	Name  = "SmcPostMsgHotKey_PEI"
+	File  = "SmcPostMsgHotKey_PEI.inf"
+	Package  = "SmcPkg"
+	ModuleTypes  = "PEIM"
+End
+
+FFS_FILE
+	Name  = "SmcPostMsgHotKey_PEI"
+	FD_AREA  = "FV_BB"
+	INFComponent  = "SmcPkg.SmcPostMsgHotKey_PEI"
+	Apriori_Index  = "2"
+End
+
+INFComponent
+	Name  = "SmcPostMsgHotKey_DXE"
+	File  = "SmcPostMsgHotKey_DXE.inf"
+	Package  = "SmcPkg"
+	ModuleTypes  = "DXE_RUNTIME_DRIVER"
+End
+
+FFS_FILE
+	Name  = "SmcPostMsgHotKey_DXE"
+	FD_AREA  = "FV_MAIN"
+	INFComponent  = "SmcPkg.SmcPostMsgHotKey_DXE"
+	Apriori_Index  = "1"
+End
+
+#INFComponent
+#	Name  = "SmcPostMsgHotKey_SMM"
+#	File  = "SmcPostMsgHotKey_SMM.inf"
+#	Package  = "SmcPkg"
+#	ModuleTypes  = "DXE_SMM_DRIVER"
+#End
+
+#LibraryMapping
+#	Class  = "NULL"
+#	Instance = "SmcPkg.BaseVbiosPrintLib"
+#	Override  = "SmcPkg.SmcPostMsgHotKey_DXE"
+#	Token = "EarlyVideo_SUPPORT" "=" "1"
+#End
+
+#######################   Platform depency !!! Need to modify #############################
+#LibraryMapping
+#	Class  = "NULL"
+#	Instance = "SmcPkg.BaseVbiosPrintLib"
+#	Override  = "LewisburgPkg.SiInitPreMem"
+#	Token = "EarlyVideo_SUPPORT" "=" "1"
+#End
+
+#LibraryMapping
+#	Class  = "NULL"
+#	Instance = "SmcPkg.BaseVbiosPrintLib"
+#	Override  = "MdeModulePkg.PeiMain"
+#	Token = "EarlyVideo_SUPPORT" "=" "1"
+#End
+
+#LibraryMapping
+#	Class  = "NULL"
+#	Instance = "SmcPkg.BaseVbiosPrintLib"
+#	Override  = "MdeModulePkg.DxeMain"
+#	Token = "EarlyVideo_SUPPORT" "=" "1"
+#End
+#
+#LibraryMapping
+#	Class  = "NULL"
+#	Instance = "SmcPkg.BaseEarlyVideoTseLib"
+#	Override  = "MdeModulePkg.DxeMain"
+#	Token = "EarlyVideo_SUPPORT" "=" "1"
+#End
+#
+#LibraryMapping
+#	Class  = "NULL"
+#	Instance = "SmcPkg.BaseVbiosPrintLib"
+#	Override  = "AmiIpmiPkg.DxeIpmiInitialize"
+#	Token = "EarlyVideo_SUPPORT" "=" "1"
+#End
+
+ELINK
+    Name  = "$(SMC_POST_MSG_HOT_KEY_DIR)\SMCSetup.c"
+    Parent  = "SetupCallbackFiles"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "SmcLib"
+    Parent  = "AdditionalSetupLibraryClasses"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "InitSMCStrings,"
+    Parent  = "SetupStringInit"
+    InvokeOrder = AfterParent
+End

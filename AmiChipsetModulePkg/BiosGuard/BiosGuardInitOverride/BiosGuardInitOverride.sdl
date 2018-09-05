@@ -1,0 +1,104 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+#<AMI_FHDR_START>
+#
+# Name: BiosGuardInitOverride.sdl
+#
+# Description: SDL file for BiosGuardInitOverride
+#
+#<AMI_FHDR_END>
+#**********************************************************************
+
+TOKEN
+     Name = "BIOS_GUARD_INIT_OVERRIDE_SUPPORT"
+     Value = "1"
+     TokenType = Boolean
+     TargetMAK = Yes
+     TargetH = Yes
+     Master = Yes
+     Help = "Main switch to enable BIOS_GUARD_INIT_OVERRIDE_SUPPORT support in Project"
+End
+
+
+PATH
+     Name  = "BIOS_GUARD_INIT_OVERRIDE_SUPPORT_PATH"
+End
+
+TOKEN
+     Name = "AMI_BIOS_GUARD_SFAM_OEM_1"
+     Value = "{0, 0}"
+     Help = "Format:\ 1st - Starting address(BIOS ROM address), 2st - Length. For example:{$(FV_BB_BASE) - $(BIOS_GUARD_FLASH_START_ADDRESS), $(FV_BB_SIZE)}. The token is used for the OEM SFAM region."
+     TokenType = Expression
+     TargetH = Yes
+End
+
+TOKEN
+     Name = "AMI_BIOS_GUARD_SFAM_OEM_2"
+     Value = "{0, 0}"
+     Help = "Format:\ 1st - Starting address(BIOS ROM address), 2st - Length. For example:{$(FV_BB_BASE) - $(BIOS_GUARD_FLASH_START_ADDRESS), $(FV_BB_SIZE)}. The token is used for the OEM SFAM region."
+     TokenType = Expression
+     TargetH = Yes
+End
+
+TOKEN
+     Name = "AMI_BIOS_GUARD_SFAM_OEM_3"
+     Value = "{0, 0}"
+     Help = "Format:\ 1st - Starting address(BIOS ROM address), 2st - Length. For example:{$(FV_BB_BASE) - $(BIOS_GUARD_FLASH_START_ADDRESS), $(FV_BB_SIZE)}. The token is used for the OEM SFAM region."
+     TokenType = Expression
+     TargetH = Yes
+End
+
+TOKEN
+     Name = "AMI_BIOS_GUARD_SFAM_OEM_4"
+     Value = "{0, 0}"
+     Help = "Format:\ 1st - Starting address(BIOS ROM address), 2st - Length. For example:{$(FV_BB_BASE) - $(BIOS_GUARD_FLASH_START_ADDRESS), $(FV_BB_SIZE)}. The token is used for the OEM SFAM region."
+     TokenType = Expression
+     TargetH = Yes
+End
+
+TOKEN
+     Name = "BIOS_SVN"
+     Value = "6553600"
+     Help = "This token must to be decimal because Intel's BIOSGuardPB.exe only supported decimal. You can clone the token to modify."
+     TokenType = Integer
+     TargetMAK = Yes
+     TargetH = Yes
+End
+
+INFComponent
+     Name = "BiosGuardInitOverride"
+     File = "BiosGuardInitOverride.inf"
+     Package = "AmiChipsetModulePkg"
+     Arch = "IA32"
+     ModuleTypes = "PEIM"
+End
+
+LibraryMapping
+     Class  = "BiosGuardInitLib"
+     Instance  = "AmiChipsetModulePkg.BiosGuardInitOverride"
+End
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

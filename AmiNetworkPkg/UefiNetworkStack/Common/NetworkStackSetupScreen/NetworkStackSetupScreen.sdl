@@ -1,0 +1,82 @@
+TOKEN
+	Name  = "NetworkStackSetupScreen_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling NetworkStackSetupScreen support in the project"
+	TokenType = Boolean
+	TargetMAK = Yes
+    TargetH = Yes
+	Master = Yes
+	Token = "UefiNetworkStack_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "NWSTACK_DEFAULT_VALUE"
+	Value  = "0"
+	Help  = "Token to set default value of Network stack Enabled or Disabled."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "NETWORKSTACK_IPV4_PXE_SUPPORT"
+	Value  = "0"
+	Help  = "Token to set default value of PXE_Ipv4 Support Enabled or Disabled."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "NETWORKSTACK_IPV4_HTTP_SUPPORT"
+	Value  = "0"
+	Help  = "Token to set default value of HTTP_Ipv4 Support Enabled or Disabled."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "NETWORKSTACK_IPV6_PXE_SUPPORT"
+	Value  = "0"
+	Help  = "Token to set default value of PXE_Ipv6 Support Enabled or Disabled."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "NETWORKSTACK_IPV6_HTTP_SUPPORT"
+	Value  = "0"
+	Help  = "Token to set default value of HTTP_Ipv6 Support Enabled or Disabled."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+PATH
+	Name  = "NETWORK_STACK_SETUP_SCREEN_DIR"
+End
+
+INFComponent
+	Name  = "NetworkStackSetupScreen"
+	File  = "NetworkStackSetupScreen.inf"
+	Package  = "AmiNetworkPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "NetworkStackSetupScreen_SUPPORT" "=" "1"
+	PreProcess = Yes
+End
+
+ELINK
+	Name  = "AmiNetworkPkg/AmiNetworkPkg.dec"
+	Parent  = "AdditionalSetupPackages"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name = "$(NETWORK_STACK_SETUP_SCREEN_DIR)/NetworkStackSetupScreen.sd"
+	Parent = "SETUP_DEFINITIONS"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(NETWORK_STACK_SETUP_SCREEN_DIR)/NetworkStackSetupScreen.uni"
+	Parent  = "SetupStringFiles"
+	InvokeOrder = AfterParent
+End
+

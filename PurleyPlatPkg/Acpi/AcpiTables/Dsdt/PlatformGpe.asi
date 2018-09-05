@@ -1,0 +1,412 @@
+/*++
+  This file contains 'Framework Code' and is licensed as such
+  under the terms of your license agreement with Intel or your
+  vendor.  This file may not be modified, except as allowed by
+  additional terms of your license agreement.
+--*/
+/*++
+
+  Copyright (c) 2001 - 2016, Intel Corporation.  All rights reserved.
+
+  This software and associated documentation (if any) is furnished under 
+  a license and may only be used or copied in accordance with the terms 
+  of the license.  Except as permitted by such license, no part of this 
+  software or documentation may be reproduced, stored in a retrieval 
+  system, or transmitted in any form or by any means without the express 
+  written consent of Intel Corporation.
+
+  Module Name:
+
+    PlatformGpe.asi
+
+  Abstract:
+
+    Contains root level name space objects for the platform
+
+--*/
+
+//  General Purpose Event
+#include "MaxSocket.h"
+
+Scope (\_GPE) {
+/* This below is required by WHQL but somehow SVOS breaks when we add this
+  Method (_L21, 0x0, NotSerialized) {
+    Store (0x21, IO80)
+  }
+  Method (_L22, 0x0, NotSerialized) {
+    Store (0x22, IO80)
+  }
+  Method (_L23, 0x0, NotSerialized) {
+    Store (0x23, IO80)
+  }
+  Method (_L24, 0x0, NotSerialized) {
+    Store (0x24, IO80)
+  }
+  Method (_L26, 0x0, NotSerialized) {
+    Store (0x26, IO80)
+  }
+  Method (_L27, 0x0, NotSerialized) {
+    Store (0x27, IO80)
+  }
+  Method (_L28, 0x0, NotSerialized) {
+    Store (0x28, IO80)
+  }
+  Method (_L29, 0x0, NotSerialized) {
+    Store (0x29, IO80)
+  }   
+  Method (_L2A, 0x0, NotSerialized) {
+    Store (0x2A, IO80)
+  }
+  Method (_L2B, 0x0, NotSerialized) {
+    Store (0x2B, IO80)
+  }
+  Method (_L2C, 0x0, NotSerialized) {
+    Store (0x2C, IO80)
+  }
+  Method (_L2D, 0x0, NotSerialized) {
+    Store (0x2D, IO80)
+  }
+  Method (_L2E, 0x0, NotSerialized) {
+    Store (0x2E, IO80)
+  }
+  Method (_L2F, 0x0, NotSerialized) {
+    Store (0x2F, IO80)
+  }
+  Method (_L30, 0x0, NotSerialized) {
+    Store (0x30, IO80)
+  }
+  Method (_L31, 0x0, NotSerialized) {
+    Store (0x31, IO80)
+  }
+  Method (_L32, 0x0, NotSerialized) {
+    Store (0x32, IO80)
+  }
+  Method (_L33, 0x0, NotSerialized) {
+    Store (0x33, IO80)
+  }
+  Method (_L34, 0x0, NotSerialized) {
+    Store (0x34, IO80)
+  }
+  Method (_L35, 0x0, NotSerialized) {
+    Store (0x35, IO80)
+  }
+  Method (_L36, 0x0, NotSerialized) {
+    Store (0x36, IO80)
+  }
+  Method (_L37, 0x0, NotSerialized) {
+    Store (0x37, IO80)
+  }
+  Method (_L38, 0x0, NotSerialized) {
+    Store (0x38, IO80)
+  }
+  Method (_L39, 0x0, NotSerialized) {
+    Store (0x39, IO80)
+  }
+  Method (_L3A, 0x0, NotSerialized) {
+    Store (0x3A, IO80)
+  }
+  Method (_L3B, 0x0, NotSerialized) {
+    Store (0x3B, IO80)
+  }
+  Method (_L3C, 0x0, NotSerialized) {
+    Store (0x3C, IO80)
+  }
+  Method (_L3D, 0x0, NotSerialized) {
+    Store (0x3D, IO80)
+  }
+  Method (_L3E, 0x0, NotSerialized) {
+    Store (0x3E, IO80)
+  }
+  Method (_L3F, 0x0, NotSerialized) {
+    Store (0x3F, IO80)
+  }
+*/
+
+  //
+  // ME HECI2 SCI handler
+  // Note: This SCI from HECI2 is routed to ICH9 over the DMI and it
+  // sets the DMISCI status bit in TCO block. From there it is routed
+  // to bit6 GPE0 status register.
+  //
+  OperationRegion (TCOS, SystemIO, 0x464, 2) // ICH_ACPI_BASE_ADDRESS + TCO_BASE + R_TCO1_STS
+  Field (TCOS, ByteAcc, NoLock, WriteAsZeros) {
+         Offset (0x1),
+         , 1,
+         DSCI, 1,
+  }
+
+  // Based on Socket ID to be notified, evaluate appropriate devices.
+  Method(NTFC, 2){
+    If(And(Arg0, 0x01)){
+      Notify(\_SB.SCK0, Arg1)
+    }
+
+#if MAX_SOCKET > 1
+    If(And(Arg0, 0x02)){
+      Notify(\_SB.SCK1, Arg1)
+    }
+#endif
+
+#if MAX_SOCKET > 2
+    If(And(Arg0, 0x04)){
+      Notify(\_SB.SCK2, Arg1)
+    }
+#endif
+
+#if MAX_SOCKET > 3
+    If(And(Arg0, 0x08)){
+      Notify(\_SB.SCK3, Arg1)
+    }
+#endif
+
+#if MAX_SOCKET > 4
+    If(And(Arg0, 0x10)){
+      Notify(\_SB.SCK4, Arg1)
+    }
+#endif
+
+#if MAX_SOCKET > 5
+    If(And(Arg0, 0x20)){
+      Notify(\_SB.SCK5, Arg1)
+    }
+#endif
+
+#if MAX_SOCKET > 6
+    If(And(Arg0, 0x40)){
+      Notify(\_SB.SCK6, Arg1)
+    }
+#endif
+
+#if MAX_SOCKET > 7
+    If(And(Arg0, 0x80)){
+      Notify(\_SB.SCK7, Arg1)
+    }
+#endif
+  } //End Method NTFC
+#if 0
+  Method(NTFM, 2){
+  
+    // Based on Memory Board ID to be notified, evaluate appropriate devices.
+    If(And(Arg0, 0x01)){
+      Notify(\_SB.SCK0.M000, Arg1)
+    }
+    If(And(Arg0, 0x02)){
+      Notify(\_SB.SCK0.M001, Arg1)
+    }
+#if MAX_SOCKET > 1
+    If(And(Arg0, 0x04)){
+      Notify(\_SB.SCK1.M000, Arg1)
+    }
+    If(And(Arg0, 0x08)){
+      Notify(\_SB.SCK1.M001, Arg1)
+    }
+#endif
+#if MAX_SOCKET > 2   
+    If(And(Arg0, 0x10)){
+      Notify(\_SB.SCK2.M000, Arg1)
+    }
+    If(And(Arg0, 0x20)){
+      Notify(\_SB.SCK2.M001, Arg1)
+    }
+#endif
+#if MAX_SOCKET > 3    
+    If(And(Arg0, 0x40)){
+      Notify(\_SB.SCK3.M000, Arg1)
+    }
+    If(And(Arg0, 0x80)){
+      Notify(\_SB.SCK3.M001, Arg1)
+    }
+#endif 
+
+  } // End Method NTFM
+#endif
+  Method(NTFI, 2){
+    If(And(Arg0, 0x01)){
+      Notify(\_SB.PC06, Arg1)
+      Notify(\_SB.PC07, Arg1)
+      Notify(\_SB.PC08, Arg1)
+      Notify(\_SB.PC09, Arg1)
+      Notify(\_SB.PC10, Arg1)
+      Notify(\_SB.PC11, Arg1)   
+    }
+#ifndef PC_HOOK    
+    If(And(Arg0, 0x02)){
+      Notify(\_SB.PC12, Arg1)
+      Notify(\_SB.PC13, Arg1)
+      Notify(\_SB.PC14, Arg1)
+      Notify(\_SB.PC15, Arg1)
+      Notify(\_SB.PC16, Arg1)
+      Notify(\_SB.PC17, Arg1)  
+    }
+    If(And(Arg0, 0x04)){
+      Notify(\_SB.PC18, Arg1)
+      Notify(\_SB.PC19, Arg1)
+      Notify(\_SB.PC20, Arg1)
+      Notify(\_SB.PC21, Arg1)
+      Notify(\_SB.PC22, Arg1)
+      Notify(\_SB.PC23, Arg1)   
+    }
+#endif    
+  } //End Method NTFI
+
+  // Tell OS to run thru the new status of this device (Software SCI generated from SMM for all Hot plug events)
+  Method (_L62, 0x0, NotSerialized) {
+    if(LEqual(SCI0, 3)) { // Device ejection (Invoked with _EJ0 method called)
+      //NTFM  (SCI1, 3) 
+      NTFC  (SCI2, 3)
+      Store (0, SCI0)
+    } else {              // Device check (OS can still reject online request based on resources and capability)
+      NTFC (CPHP, 0)
+      NTFI (IIOP, 0)
+      //NTFM (MEBC, 1)
+      Store (0, MEBC)
+      Store (0, CPHP)
+      Store (0, IIOP)
+    }
+    Store (0, SGPC)
+    Store (1, SGPS)
+
+    // NVDIMM Health Event Notify
+    \_SB.NVHN()
+
+    ///
+    /// Handle HWP SCI event
+    ///
+    #include "HwpLvt.asi"
+  }
+
+  // PME supported for Slots, use GPE 9 for PME
+  // Hot plug on all slots for now, change later.
+  // Slot numbers on silk screen might be different than the port number, currently use port numbers.
+  //
+  // IIO PCI_E Slot Hotplug GPE Event
+  //
+  Method (_L61, 0, NotSerialized) {
+    #include "IioPcieHotPlugGpeHandler.asl"
+  }// end of _L01 GPE Method
+
+// APTIOV_SERVER_OVERRIDE_RC_START : _L09 will not be generated by AMISDL and used statically.
+    // [BR1A]: PCI Express Port 1A on PC01
+    // [BR1B]: PCI Express Port 1B on PC01
+    // [BR1C]: PCI Express Port 1C on PC01
+    // [BR1D]: PCI Express Port 1D on PC01
+    // [BR2A]: PCI Express Port 2A on PC02
+    // [BR2B]: PCI Express Port 2B on PC02
+    // [BR2C]: PCI Express Port 2C on PC02
+    // [BR2D]: PCI Express Port 2D on PC02
+    // [BR3A]: PCI Express Port 3A on PC03
+    // [BR3B]: PCI Express Port 3B on PC03
+    // [BR3C]: PCI Express Port 3C on PC03
+    // [BR3D]: PCI Express Port 3D on PC03
+    // [MCP0]: PCI Express Port 4 on PC04
+    // [MCP1]: PCI Express Port 5 on PC05
+    // [QRP0]: PCI Express Port 0 on PC06
+    // [QR1A]: PCI Express Port 1A on PC07
+    // [QR1B]: PCI Express Port 1B on PC07
+    // [QR1C]: PCI Express Port 1C on PC07
+    // [QR1D]: PCI Express Port 1D on PC07
+    // [QR2A]: PCI Express Port 2A on PC08
+    // [QR2B]: PCI Express Port 2B on PC08
+    // [QR2C]: PCI Express Port 2C on PC08
+    // [QR2D]: PCI Express Port 2D on PC08
+    // [QR3A]: PCI Express Port 3A on PC09
+    // [QR3B]: PCI Express Port 3B on PC09
+    // [QR3C]: PCI Express Port 3C on PC09
+    // [QR3D]: PCI Express Port 3D on PC09
+    // [MCP2]: PCI Express Port 13 on PC10
+    // [MCP3]: PCI Express Port 14 on PC11
+    // [RRP0]: PCI Express Port 0 on PC12
+    // [RR1A]: PCI Express Port 1A on PC13
+    // [RR1B]: PCI Express Port 1B on PC13
+    // [RR1C]: PCI Express Port 1C on PC13
+    // [RR1D]: PCI Express Port 1D on PC13
+    // [RR2A]: PCI Express Port 2A on PC14
+    // [RR2B]: PCI Express Port 2B on PC14
+    // [RR2C]: PCI Express Port 2C on PC14
+    // [RR2D]: PCI Express Port 2D on PC14
+    // [RR3A]: PCI Express Port 3A on PC15
+    // [RR3B]: PCI Express Port 3B on PC15
+    // [RR3C]: PCI Express Port 3C on PC15
+    // [RR3D]: PCI Express Port 3D on PC15
+    // [MCP4]: PCI Express Port 4 on PC16
+    // [MCP5]: PCI Express Port 5 on PC17
+    // [SRP0]: PCI Express Port 0 on PC18
+    // [SR1A]: PCI Express Port 1A on PC19
+    // [SR1B]: PCI Express Port 1B on PC19
+    // [SR1C]: PCI Express Port 1C on PC19
+    // [SR1D]: PCI Express Port 1D on PC19
+    // [SR2A]: PCI Express Port 2A on  PC20
+    // [SR2B]: PCI Express Port 2B on PC20
+    // [SR2C]: PCI Express Port 2C on PC20
+    // [SR2D]: PCI Express Port 2D on PC20
+    // [SR3A]: PCI Express Port 3A on PC21
+    // [SR3B]: PCI Express Port 3B on PC21
+    // [SR3C]: PCI Express Port 3C on PC21
+    // [SR3D]: PCI Express Port 3D on PC21
+    // [MCP6]: PCI Express Port 4 on PC22
+    // [MCP7]: PCI Express Port 5 on PC23
+  Method (_L09, 0, NotSerialized) {
+
+    #include "GPE.asl"
+    Notify(\_SB.PC01.BR1A, 0x02)
+    Notify(\_SB.PC01.BR1B, 0x02)
+    Notify(\_SB.PC01.BR1C, 0x02)
+    Notify(\_SB.PC01.BR1D, 0x02)
+    Notify(\_SB.PC02.BR2A, 0x02)
+    Notify(\_SB.PC02.BR2B, 0x02)
+    Notify(\_SB.PC02.BR2C, 0x02)
+    Notify(\_SB.PC02.BR2D, 0x02)
+    Notify(\_SB.PC03.BR3A, 0x02)
+    Notify(\_SB.PC03.BR3B, 0x02)
+    Notify(\_SB.PC03.BR3C, 0x02)
+    Notify(\_SB.PC03.BR3D, 0x02)
+    Notify(\_SB.PC04.MCP0, 0x02)
+    Notify(\_SB.PC05.MCP1, 0x02)
+    Notify(\_SB.PC06.QRP0, 0x02)
+    Notify(\_SB.PC07.QR1A, 0x02)
+    Notify(\_SB.PC07.QR1B, 0x02)
+    Notify(\_SB.PC07.QR1C, 0x02)
+    Notify(\_SB.PC07.QR1D, 0x02)
+    Notify(\_SB.PC08.QR2A, 0x02)
+    Notify(\_SB.PC08.QR2B, 0x02)
+    Notify(\_SB.PC08.QR2C, 0x02)
+    Notify(\_SB.PC08.QR2D, 0x02)
+    Notify(\_SB.PC09.QR3A, 0x02)
+    Notify(\_SB.PC09.QR3B, 0x02)
+    Notify(\_SB.PC09.QR3C, 0x02)
+    Notify(\_SB.PC09.QR3D, 0x02)
+    Notify(\_SB.PC10.MCP2, 0x02)
+    Notify(\_SB.PC11.MCP3, 0x02)
+    Notify(\_SB.PC12.RRP0, 0x02)
+    Notify(\_SB.PC13.RR1A, 0x02)
+    Notify(\_SB.PC13.RR1B, 0x02)
+    Notify(\_SB.PC13.RR1C, 0x02)
+    Notify(\_SB.PC13.RR1D, 0x02)
+    Notify(\_SB.PC14.RR2A, 0x02)
+    Notify(\_SB.PC14.RR2B, 0x02)
+    Notify(\_SB.PC14.RR2C, 0x02)
+    Notify(\_SB.PC14.RR2D, 0x02)
+    Notify(\_SB.PC15.RR3A, 0x02)
+    Notify(\_SB.PC15.RR3B, 0x02)
+    Notify(\_SB.PC15.RR3C, 0x02)
+    Notify(\_SB.PC15.RR3D, 0x02)
+    Notify(\_SB.PC16.MCP4, 0x02)
+    Notify(\_SB.PC17.MCP5, 0x02)
+    Notify(\_SB.PC18.SRP0, 0x02)
+    Notify(\_SB.PC19.SR1A, 0x02)
+    Notify(\_SB.PC19.SR1B, 0x02)
+    Notify(\_SB.PC19.SR1C, 0x02)
+    Notify(\_SB.PC19.SR1D, 0x02)
+    Notify(\_SB.PC20.SR2A, 0x02)
+    Notify(\_SB.PC20.SR2B, 0x02)
+    Notify(\_SB.PC20.SR2C, 0x02)
+    Notify(\_SB.PC20.SR2D, 0x02)
+    Notify(\_SB.PC21.SR3A, 0x02)
+    Notify(\_SB.PC21.SR3B, 0x02)
+    Notify(\_SB.PC21.SR3C, 0x02)
+    Notify(\_SB.PC21.SR3D, 0x02)
+    Notify(\_SB.PC22.MCP6, 0x02)
+    Notify(\_SB.PC23.MCP7, 0x02)
+  }// end of _L09 GPE Method
+// APTIOV_SERVER_OVERRIDE_RC_END : _L09 will not be generated by AMISDL and used statically.
+}// end of _GPE scope.

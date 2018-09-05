@@ -1,0 +1,158 @@
+
+        TITLE   SerialCallback.ASM - Oem callback function from sredir.bin
+
+;****************************************************************************
+;****************************************************************************
+;**                                                                        **
+;**             (C)Copyright 1985-2014, American Megatrends, Inc.          **
+;**                                                                        **
+;**                          All Rights Reserved.                          **
+;**                                                                        **
+;**              5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093      **
+;**                                                                        **
+;**                          Phone (770)-246-8600                          **
+;**                                                                        **
+;****************************************************************************
+;****************************************************************************
+
+
+;----------------------------------------------------------------------------
+;       INCLUDE FILES
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;       EXTERNS USED
+;----------------------------------------------------------------------------
+.586p
+OEM16_CSEG SEGMENT PARA PUBLIC 'CODE' USE16
+        ASSUME cs:OEM16_CSEG, ds:OEM16_CSEG
+;-------------------------------------------------------------------------
+        PUBLIC SerialCallBackApiModuleStart
+SerialCallBackApiModuleStart LABEL BYTE
+        jmp     SHORT SerialCallbackCsm16Api
+
+;<AMI_PHDR_START>
+;----------------------------------------------------------------------------
+;
+; Procedure:     SerialCsm16_API
+;
+; Description:    This routine is implementation of the CSM16 API #B 
+;
+; Input:         CX     00h   - Serial Read
+;                     	01h   - Serial Write 
+;
+; Output:       
+;
+; Modified:         None
+;
+;----------------------------------------------------------------------------
+;<AMI_PHDR_END>
+SerialCallbackCsm16Api  PROC FAR PUBLIC
+        push    bp
+        mov     bp, sp
+        mov     dx,  ss:[bp+42h]    ; Serial Port Address
+        mov     ax,  ss:[bp+40h]    ; Write Data, For read it's invalid 
+
+        cmp     cx, 0
+        je      SerialRead
+        cmp     cx,1
+        je      SerialWrite
+        jmp     UnknownFunction
+SerialRead:
+        Call    ReadSerialPort 
+        jmp     UnknownFunction
+SerialWrite:
+        Call    WriteSerialPort
+        jmp     UnknownFunction
+
+UnknownFunction:
+        pop     bp
+
+; Adjust sp as if we returned to csm16_func_ret
+        add     sp, 4                   ; cs:ip of F000:csm16_func_ret
+
+; Save AX, restore it after popad
+        push    ax
+        pop     ds
+
+        popad
+
+        push    ds
+        pop     ax
+
+        pop     gs
+        pop     fs
+        pop     es
+        pop     ds
+
+        popf
+        pop     ds
+        pop     si
+
+        add     sp, 2                   ; Do not "pop ax", preserving return code
+
+        pop     bp
+        add     sp, 4
+
+        clc
+        retf        
+SerialCallbackCsm16Api  ENDP
+
+;<AMI_PHDR_START>
+;----------------------------------------------------------------------------
+;
+; Procedure:  	WriteSerialPort
+;
+; Description:  Oem Function before serial Read 
+;
+; Input:      	None
+;                
+; Output:       None
+;
+; Modified:	None
+;
+;----------------------------------------------------------------------------
+;<AMI_PHDR_END>
+WriteSerialPort   PROC    NEAR     PUBLIC
+        out     dx,al
+        jmp     $+2
+        ret
+WriteSerialPort   ENDP
+
+;<AMI_PHDR_START>
+;----------------------------------------------------------------------------
+;
+; Procedure:  	ReadSerialPort
+;
+; Description:  Oem Function before serial Write 
+;
+; Input:      	None
+;                
+; Output:       None
+;
+; Modified:	None
+;
+;----------------------------------------------------------------------------
+;<AMI_PHDR_END>
+ReadSerialPort   PROC    NEAR     PUBLIC
+        in      al,dx
+        jmp     $+2
+        ret
+ReadSerialPort   ENDP
+
+OEM16_CSEG ENDS
+
+END
+;****************************************************************************
+;****************************************************************************
+;**                                                                        **
+;**             (C)Copyright 1985-2014, American Megatrends, Inc.          **
+;**                                                                        **
+;**                          All Rights Reserved.                          **
+;**                                                                        **
+;**              5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093      **
+;**                                                                        **
+;**                          Phone (770)-246-8600                          **
+;**                                                                        **
+;****************************************************************************
+;****************************************************************************

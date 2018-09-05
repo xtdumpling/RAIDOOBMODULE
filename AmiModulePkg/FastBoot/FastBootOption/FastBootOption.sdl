@@ -1,0 +1,56 @@
+TOKEN
+    Name  = "FastBootOption_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable FastBootOption support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+    Master = Yes
+End
+
+PATH
+    Name  = "FastBootOption_DIR"
+End
+
+TOKEN
+    Name  = "IS_CORRECT_BOOT_OPTION_FUNCTION"
+    Value  = "IsCorrectBootoption"
+    Help  = "Check this boot option should insert or not."
+    TokenType = Expression
+    TargetH = Yes
+End
+
+INFComponent
+    Name  = "FastBootOption"
+    File  = "FastBootOption.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "UEFI_DRIVER"
+End
+
+INFComponent
+    Name  = "FastBootOptionBds"
+    File  = "FastBootOptionBds.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_DRIVER"
+End
+
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiModulePkg.FastBootOptionBds"
+    Override  = "AmiModulePkg.Bds"
+End
+
+
+ELINK
+    Name  = "RemoveFastBootOption,"
+    Parent  = "ReadBootOptions,"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "SetBootNextBootOption,"
+    Parent  = "SaveBootOptions,"
+    InvokeOrder = BeforeParent
+End

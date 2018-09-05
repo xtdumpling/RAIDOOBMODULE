@@ -1,0 +1,238 @@
+TOKEN
+    Name  = "AMI_TCG_PLATFORM_SUPPORT"
+    Value  = "1"
+    Help  = "Main token TCG to allow override of TCG functions"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    Master = Yes
+End
+
+
+TOKEN
+    Name  = "TCG_SIZE"
+    Value  = "1C650h"
+    Help  = "Size of Dxecore to measure"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "MeasureDxeCorePe"
+    Value  = "0"
+    Help  = "DxeCore is measured as part of the FV"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+End
+
+
+TOKEN
+    Name  = "USE_AMI_PERSISTENT_BIOS_MANAGEMENT_FLAGS_SUPPORT"
+    Value  = "1"
+    Help  = "Main token TCG to allow override of TCG functions"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+End
+
+
+TOKEN
+    Name  = "DONT_SEND_SELFTEST_TILL_READY_TO_BOOT"
+    Value  = "1"
+    Help  = "Main token TCG send selftest on ready to boot"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes
+    TargetMAK = Yes
+End
+
+TOKEN
+    Name  = "SELF_TEST_VID"
+    Value  = "015D1h"
+    Help  = "Size of Dxecore to measure"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+
+TOKEN
+    Name  = "Measure_Boot_Data"
+    Value  = "1"
+    Help  = "token to determine if EFI boot data information are measured"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "WAKE_EVENT_MEASUREMENT"
+    Value  = "0"
+    Help  = "token to allow measurement of wake events. Note LOG_EV_EFI_ACTION also needs to be enabled"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+Token = "LOG_EV_EFI_ACTION" "=" "1"
+End
+
+TOKEN
+    Name  = "PPI_DISPLAY_OFFSET"
+    Value  = "001"
+    Help  = ""
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "Measure_Smbios_Tables"
+    Value  = "0"
+    Help  = "token to determine if smbios tables are measured"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "TCGMeasureSecureBootVariables"
+    Value  = "1"
+    Help  = "Set 1 to measure secure boot Variables if Secureboot is Enabled. Note this requires WHCK connectedStandby compliance"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+    Token = "SecureBoot_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "UnconfiguredSecureBootVariables"
+    Value  = "0"
+    Help  = "Set 1 to allow measurement of Secureboot Variables even when Secureboot is not configured. Enabling this token will add about 50-100ms to platform boot time"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+    Token = "SecureBoot_SUPPORT" "=" "1"
+    Token = "TCGMeasureSecureBootVariables" "=" "1"
+End
+
+TOKEN
+    Name  = "MeasureCPUMicrocodeToken"
+    Value  = "0"
+    Help  = "Set 1 to measure cpu microcode"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+    Token = "AMI_ZTEIC_SUPPORT" "=" "0"
+End
+
+TOKEN
+    Name  = "MEASURE_CRTM_VERSION_PEI_FUNCTION"
+    Value  = "MeasureCRTMVersion"
+    Help  = "Function to measure crtm version. Input:EFI_PEI_SERVICES **. AMI function Modified Pcr 0"
+    TokenType = Expression
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "TPM20_MEASURE_CRTM_VERSION_PEI_FUNCTION"
+    Value  = "Tpm20MeasureCRTMVersion"
+    Help  = "Function to measure tpm20crtm version. Input:EFI_PEI_SERVICES **. AMI function Modified Pcr 0"
+    TokenType = Expression
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "MEASURE_TCG_PCCLIENT_ID_PEI_FUNCTION"
+    Value  = "MeasureTCGPcClientSpecID"
+    Help  = "Function to Measure TCG PcClient Spec ID. Input:EFI_PEI_SERVICES ** and PEI_TCG_PPI. Modifies Pcr 0"
+    TokenType = Expression
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "MEASURE_PLATFORM_CONFIG_FUNCTION"
+    Value  = "Tpm12PlatformHashConfig"
+    Help    = "Function to measure platform configuration"
+    TokenType = Expression
+    TargetH = Yes
+End
+
+
+TOKEN
+    Name  = "MEASURE_CORE_DXE_FW_VOL_PEI_FUNCTION"
+    Value  = "MeasureDxeCoreFwVol"
+    Help   = "Function to Measure Dxe FW volume. Gets Tcg Ppi, Peiservices and pointer to dxe fw vol. Modifies Pcr 0"
+    TokenType = Expression
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "MEASURE_PCI_OPTION_ROM_DXE_FUNCTION"
+    Value  = "MeasurePCIOproms"
+    Help  = "Function to measure dxe firmware volume. Inputs: None. Modifies Pcr 2"
+    TokenType = Expression
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "MEASURE_HANDOFF_TABLES_DXE_FUNCTION"
+    Value  = "MeasureHandoffTables"
+    Help   = "Measures BIOS tables ACPI and Smbios tables. Inputs: None. Modifies Pcr 0-ACPI, Pcr 1=Smbios"
+    TokenType = Expression
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "MEASURE_CPU_MICROCODE_DXE_FUNCTION"
+    Value = "MeasureCpuMicroCode"
+    Help  = "Measures CPU Microcode Information. Input:None. Modifies Pcr 1"
+    TokenType = Expression
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "MEASURES_TCG_BOOT_SEPARATORS_DXE_FUNCTION"
+    Value  = "MeasureSeparators"
+    Help  = "Measures TCG separtors. Input None: Modifies: Pcr 0-7"
+    TokenType = Expression
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "MEASURE_SECURE_BOOT_DXE_FUNCTION"
+    Value  = "MeasureSecurebootVariables"
+    Help  = "Measures Secureboot Variables. Input: None. Modifies PCR 5"
+    TokenType = Expression
+    TargetH = Yes
+    Token = "SecureBoot_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "MEASURES_BOOT_VARIABLES_DXE_FUNCTION"
+    Value  = "MeasureAllBootVariables"
+    Help  = "Measures EFI boot Variables. Input: None. Modifies PCR 5"
+    TokenType = Expression
+    TargetH = Yes
+End
+
+
+TOKEN
+    Name   = "MEASURE_WAKE_EVENT_DXE_FUNCTION"
+    Value  = "MeasureWakeEvent"
+    Help   = "Function to Measure platform wake event. Modifies PCR 6"
+    TokenType = Expression
+    TargetH = Yes
+End
+
+TOKEN
+    Name   = "SKIP_PHYSICAL_PRESENCE_LOCK_FUNCTION"
+    Value  = "DummySkipPhysicalPresence"
+    Help   = "Function to alert if locking of physical presence should be skipped"
+    TokenType = Expression
+    TargetH = Yes
+End

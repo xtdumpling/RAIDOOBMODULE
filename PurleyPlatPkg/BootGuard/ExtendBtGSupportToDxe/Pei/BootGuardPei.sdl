@@ -1,0 +1,34 @@
+TOKEN
+        Name  = "BOOT_GUARD_PEI_SUPPORT"
+        Value  = "1"
+        Help  = "Main switch to enable BOOT_GUARD_PEI_SUPPORT in Project"
+        TokenType = Boolean
+        TargetMAK = Yes
+        TargetH = Yes
+        Master = Yes
+        Token = "INTEL_BOOT_GUARD_CHAIN_OF_TRUST_SUPPORT" "=" "1"
+End
+
+INFComponent
+        Name = "BootGuardPei"
+        File = "BootGuardPei.inf"
+        Package = "PurleyPlatPkg"
+        Arch = "IA32"
+        ModuleTypes = "PEIM"
+End
+
+INFComponent
+        Name  = "ReserveBootGuardFvMainHashKey"
+        File  = "ReserveBootGuardFvMainHashKey.inf"
+        Package  = "PurleyPlatPkg"
+        ModuleTypes  = "USER_DEFINED"
+        Token = "INTEL_BOOT_GUARD_CHAIN_OF_TRUST_SUPPORT" "=" "1"        
+End
+
+FFS_FILE
+        Name  = "ReserveBootGuardFvMainHashKey"
+        FD_AREA  = "FV_BB"
+        INFComponent  = "PurleyPlatPkg.ReserveBootGuardFvMainHashKey"
+        Rule_Override  = "UncompressedBinaryNoChecksum"
+        Token = "INTEL_BOOT_GUARD_CHAIN_OF_TRUST_SUPPORT" "=" "1"
+End

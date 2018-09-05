@@ -1,0 +1,221 @@
+#****************************************************************************
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.01
+#      Bug Fixed:  Support SMC Memory map-out function.
+#      Reason:     
+#      Auditor:    Ivern Yeh
+#      Date:       Jul/07/2016
+#
+#  Rev. 1.00
+#      Bug Fixed:  add RC error log to BMC and report error DIMM To screen(refer to Grantley)
+#      Reason:     
+#      Auditor:    Timmy Wang
+#      Date:       May/26/2016
+#
+#*****************************************************************************
+
+## @file
+#  OemProcMemInitLib PEIM
+#
+#  Copyright (c) 2009 - 2017, Intel Corporation. All rights reserved.<BR>
+#
+#  This program and the accompanying materials
+#  are licensed and made available under the terms and conditions of the BSD License
+#  which accompanies this distribution. The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.php
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = OemProcMemInitLib
+  FILE_GUID                      = FBC62E13-365E-43cb-AE4E-EA56107F8F0E
+  MODULE_TYPE                    = BASE
+  LIBRARY_CLASS                  = OemProcMemInitLib | PEIM DXE_DRIVER DXE_SMM_DRIVER
+
+[Sources.Ia32]
+  EdkProcMemInit.c
+  EdkProcMemInit.h
+# SKX_TODO: Need a 64 bit version of this.
+  OemProcMemInit.c
+
+[Sources.X64]
+  OemProcMemInitX64.c
+
+[Sources]
+  CommonHooks.c
+  KtiHooks.c
+  MemHooks.c
+  BootGuardLibrary.c
+# APTIOV_SERVER_OVERRIDE_RC_START : Boot Guard changes override. Need to removed once proper changes are made.
+#  PeiBootGuardEventLogLib.c
+#  PeiBootGuardEventLogLib.h
+# APTIOV_SERVER_OVERRIDE_RC_END : Boot Guard changes override. Need to removed once proper changes are made.
+
+[Packages]
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  MdePkg/MdePkg.dec
+  IA32FamilyCpuPkg/IA32FamilyCpuPkg.dec
+# APTIOV_SERVER_OVERRIDE_RC_START
+#  SecurityPkg/SecurityPkg.dec
+# APTIOV_SERVER_OVERRIDE_RC_END
+  CpPlatPkg/CpPlatPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+# APTIOV_SERVER_OVERRIDE_RC_START
+#  BpCommonPkg/BpCommonPkg.dec
+# APTIOV_SERVER_OVERRIDE_RC_END
+  PurleySktPkg/SocketPkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+  PurleySktPkg/Me/MePkg.dec
+  PurleySktPkg/Ie/IePkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+# APTIOV_SERVER_OVERRIDE_RC_START
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+# APTIOV_SERVER_OVERRIDE_RC_END
+  PurleySktPkg/SocketPkg.dec
+  CryptoPkg/CryptoPkg.dec
+  AmiIpmiPkg/AmiIpmiPkg.dec   #SMCPKG_SUPPORT++
+  SmcPkg/SmcPkg.dec			#SMCPKG_SUPPORT++
+
+[LibraryClasses.Ia32]
+  PeimEntryPoint
+# APTIOV_SERVER_OVERRIDE_RC_START : USE AMI TCG module
+#  Tpm12CommandLib
+#  Tpm2CommandLib
+# APTIOV_SERVER_OVERRIDE_RC_END : USE AMI TCG module
+  UbaKtiLib 
+
+[LibraryClasses]
+  DebugLib
+  HobLib
+  IoLib
+  MeTypeLib
+  BiosGuardInitLib
+  PlatformHooksLib
+# APTIOV_SERVER_OVERRIDE_RC_START
+  #TpmCommLib
+# APTIOV_SERVER_OVERRIDE_RC_END
+  BaseLib
+  SetupLib
+  GpioLib
+# APTIOV_SERVER_OVERRIDE_RC_START
+# BeepLib
+# APTIOV_SERVER_OVERRIDE_RC_END
+  FpgaConfigurationLib
+# APTIOV_SERVER_OVERRIDE_RC_START
+  AmiBeepLib  # Using AmiBeepLib
+  ReportStatusCodeLib # Added to Resolve build error
+  AmiMrcHooksWrapperLib # Added to Resolve build error
+# APTIOV_SERVER_OVERRIDE_RC_END
+  SmcLib			#SMCPKG_SUPPORT++
+
+[LibraryClasses.IA32]
+  PeiServicesLib
+ 
+[Pcd.Ia32]
+# APTIOV_SERVER_OVERRIDE_RC_START
+#  gEfiSecurityPkgTokenSpaceGuid.PcdTpmInstanceGuid                     ## CONSUMES 
+# APTIOV_SERVER_OVERRIDE_RC_END
+  
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+  gPlatformTokenSpaceGuid.PcdDfxAdvDebugJumper
+  gPlatformTokenSpaceGuid.PcdDprMemSize
+  gPlatformTokenSpaceGuid.PcdLtMemSize
+  gPlatformTokenSpaceGuid.PcdDprSizeFeatureSupport
+  gPlatformTokenSpaceGuid.PcdSyshostMemoryAddress
+  gPlatformTokenSpaceGuid.PcdPlatformType
+  gOemSkuTokenSpaceGuid.PcdOemSkuSubBoardID
+# APTIOV_SERVER_OVERRIDE_RC_START: Fall Back to default Memory Map once Memory Limit is reached.
+  gOemSkuTokenSpaceGuid.PcdAvailableMemoryBelow4G
+# APTIOV_SERVER_OVERRIDE_RC_END: Fall Back to default Memory Map once Memory Limit is reached.
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+  gCpPlatFlashTokenSpaceGuid.PcdFlashFvSecPeiBase
+  gCpPlatFlashTokenSpaceGuid.PcdFlashFvSecPeiSize
+  gCpPlatFlashTokenSpaceGuid.PcdFlashFvMrcNormalSize
+  gCpPlatFlashTokenSpaceGuid.PcdFlashFvMrcNormalBase
+
+[Guids.Ia32]
+# APTIOV_SERVER_OVERRIDE_RC_START : USE AMI TCG module
+#  gEfiTpmDeviceInstanceTpm12Guid
+#  gEfiTpmDeviceInstanceTpm20DtpmGuid
+#  gTcgEventEntryHobGuid
+#  gTcgEvent2EntryHobGuid
+# APTIOV_SERVER_OVERRIDE_RC_END : USE AMI TCG module
+
+[Guids]
+  gEfiAcpiVariableGuid
+  gEfiMemoryConfigDataGuid
+  gEfiSetupVariableGuid
+  gEfiGenericVariableGuid
+  gEfiMemoryConfigDataHobGuid
+  gEfiMemoryOverwriteControlDataGuid
+  gPrevBootErrSrcHobGuid
+  gEfiSocketIioVariableGuid
+  gEfiSocketCommonRcVariableGuid
+  gEfiSocketPciResourceDataGuid
+  gEfiSocketMemoryVariableGuid
+  gEfiMeRcVariableGuid
+  gEfiSocketPowermanagementVarGuid
+  gEfiSocketProcessorCoreVarGuid
+  gEfiOcDataGuid
+  gEfiNGNCfgCurGuid
+  gEfiNGNCfgOutGuid
+  gEfiRasHostGuid
+  gEfiPrevBootNGNDimmCfgVariableGuid
+  gAddressBasedMirrorGuid
+  gEfiPprVariableGuid
+  gEfiVirtualLockstepGuid
+  gEfiPlatformTxtDeviceMemoryGuid
+  
+  
+  gEfiMemoryMapGuid
+  gEfiSmmPeiSmramMemoryReserveGuid
+  gEfiMemoryTypeInformationGuid
+  
+
+[Ppis]
+  gMeUmaPpiGuid
+  gPeiIeHeciPpiGuid
+  gEfiPeiStallPpiGuid
+  gEfiPeiSystemBoardPpiGuid
+  gEfiPeiReadOnlyVariable2PpiGuid
+  gEfiPeiMemoryDiscoveredPpiGuid
+  gEfiSiliconRcHobsReadyPpi
+# APTIOV_SERVER_OVERRIDE_RC_START
+#  gPeiTpmInitializedPpiGuid
+# APTIOV_SERVER_OVERRIDE_RC_END
+  gPeiBaseMemoryTestPpiGuid
+  gPeiPlatformMemorySizePpiGuid
+  gPeiTxtScleanPpiGuid
+  gPchResetPpiGuid
+# APTIOV_SERVER_OVERRIDE_RC_START : To support Capsule update in Purley 
+  gEfiPeiCapsulePpiGuid
+# APTIOV_SERVER_OVERRIDE_RC_END : To support Capsule update in Purley 
+# APTIOV_SERVER_OVERRIDE_RC_START : Not available in AMI Source.
+#  gEfiPeiFirmwareVolumeInfoMeasurementExcludedPpiGuid
+# APTIOV_SERVER_OVERRIDE_RC_END : Not available in AMI Source.
+
+[BuildOptions.Ia32]
+  MSFT:*_*_*_CC_FLAGS     = /W4 /Gs999999 /GF /GL- /wd4214 /wd4334 /wd4142 /wd4819 /DIA32
+  GCC:*_*_*_CC_FLAGS     = -DIA32
+
+[BuildOptions.X64]
+  MSFT:*_*_X64_CC_FLAGS   = /W2 /Gs32768 /wd4142 /wd4819 /UIA32
+  GCC:*_*_X64_CC_FLAGS   = -UIA32

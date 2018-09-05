@@ -1,0 +1,77 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.01
+#    Bug Fix:  Add memory error LED function.
+#    Reason:   
+#    Auditor:  Jimmy Chiu
+#    Date:     Jul/03/2017
+#
+#  Rev. 1.00
+#    Bug fix:  Initialize revision
+#    Reason:   Clone from Sample folder.
+#    Auditor:  Jacker Yeh
+#    Date:     Feb/04/2016
+#
+#****************************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = X11DPUPeiDriver
+  FILE_GUID                      = 44cdfa70-2c7c-4791-9aa3-eae8777f0a8b
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = X11DPUPeiDriverInit
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+#
+
+[Sources]
+  X11DPUPeiDriver.c
+  X11DPUPeiDriver.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  SmcPkg/SmcPkg.dec
+
+[LibraryClasses]
+  PeimEntryPoint
+  AmiPeiLib
+  SmcCspLib
+  PciLib
+  IoLib
+
+[Guids]
+  gProjectOwnPeiProtocolGuid
+
+[Ppis]
+  gEfiPeiReadOnlyVariable2PpiGuid
+  gEfiPeiSmbus2PpiGuid
+
+[Pcd]
+  gSmcPkgTokenSpaceGuid.PcdSmcAOCLocation
+  gSmcPkgTokenSpaceGuid.PcdSmcAOCExtendFlag
+  gSmcPkgTokenSpaceGuid.PcdSmcAOCNVMeMode
+  gSmcPkgTokenSpaceGuid.PcdSmcSXB1Index
+  gSmcPkgTokenSpaceGuid.PcdSmcSXB3Index
+  gSmcPkgTokenSpaceGuid.PcdSmcRiserID
+
+[Depex]
+  TRUE
+
+#**********************************************************************

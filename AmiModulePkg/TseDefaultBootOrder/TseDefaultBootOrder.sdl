@@ -1,0 +1,27 @@
+TOKEN
+	Name  = "TseDefaultBootOrder_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable TseDefaultBootOrder support in Project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+ELINK
+	Name   = "SetDefaultTseBootOrder,"
+	Parent = "SaveBootOptions,"
+	InvokeOrder = BeforeParent
+End
+
+INFComponent
+	Name = "TseDefaultBootOrder"
+	File = "TseDefaultBootOrder.inf"
+	Package = "AmiModulePkg"
+	ModuleTypes = "USER_DEFINED"
+End
+
+LibraryMapping
+	Class = "NULL"
+	Instance = "AmiModulePkg.TseDefaultBootOrder"
+	Override = "AmiModulePkg.Bds"
+End
+

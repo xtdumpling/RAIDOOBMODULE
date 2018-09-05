@@ -1,0 +1,54 @@
+#***************************************************************************
+#***************************************************************************
+#**                                                                       **
+#**       (C)Copyright 1993-2016 Supermicro Computer, Inc.                **
+#**                                                                       **
+#**                                                                       **
+#***************************************************************************
+#***************************************************************************
+#
+#  File History
+#
+#  Rev. 1.00
+#    Bug Fix:  ACPI Debug Feature.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Apr/07/2016
+#
+#***************************************************************************
+## @file
+#
+#  Copyright (c) 2009 - 2010, Intel Corporation. All rights reserved.<BR>
+#
+#  This program and the accompanying materials
+#  are licensed and made available under the terms and conditions of the BSD License
+#  which accompanies this distribution. The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.php
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = AcpiDebugTables
+  FILE_GUID                      = ad414dd9-076f-40fa-8b6a-1b6779adeca3
+  MODULE_TYPE                    = USER_DEFINED
+  VERSION_STRING                 = 1.0
+
+[Sources]
+  AcpiDebug.asl
+
+[Packages]
+  MdePkg/MdePkg.dec
+#  WellsburgPkg/WellsburgPkg.dec
+#  GrantleyPkg/PlatformPkg.dec
+#  GrantleySocketPkg/SocketPkg.dec
+# AptioV server override
+  ServerCommonPkg/ServerCommonPkg.dec
+  
+[BuildOptions]  
+  *_*_*_ASL_FLAGS = -oi
+
+

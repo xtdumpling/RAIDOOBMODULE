@@ -1,0 +1,80 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+## @file
+#   This driver Handles the File System for the Boot Block Recovery 
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = FsRecovery
+  FILE_GUID                      = 7ecd9c20-68b9-4a6f-b515-d64ff500b109
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = FsRecoveryPeimEntry
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF EBC
+#
+
+[Sources]
+  FsRecovery.c
+  FsRecovery.h
+  ../ReportCapsuleSize.c
+
+[Packages]
+  AmiModulePkg/AmiModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  
+[LibraryClasses]
+  PeimEntryPoint
+  AmiPeiLib
+  
+[Pcd]
+  gAmiModulePkgTokenSpaceGuid.PcdRecoveryImageSize
+  gAmiModulePkgTokenSpaceGuid.PcdCdRecoverySupport
+  gAmiModulePkgTokenSpaceGuid.PcdFatRecoverySupport
+  gAmiModulePkgTokenSpaceGuid.PcdRecoveryImageName
+  
+[Ppis]
+  gEfiPeiDeviceRecoveryModulePpiGuid    ## PRODUCES
+  gEfiPeiVirtualBlockIoPpiGuid          ## CONSUMES
+  
+[Guids]
+  gBlockDeviceCapsuleGuid
+  
+[Depex]
+  gEfiPeiBootInRecoveryModePpiGuid AND
+  gEfiPeiMemoryDiscoveredPpiGuid AND
+  gEfiPeiDecompressPpiGuid
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************  

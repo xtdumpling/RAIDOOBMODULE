@@ -1,0 +1,38 @@
+TOKEN
+    Name  = "DESKTOP_306FX"
+    Value  = "0"
+    Help = "Intel(R) Haswell-E"
+    TokenType = Boolean
+    Master = Yes
+End
+
+TOKEN
+    Name  = "DESKTOP_MEF306F1"
+    Value  = "1"
+    Help  = "Intel(R) Haswell-E Processor L-0"
+    TokenType = Boolean
+    Token = "NON_PRODUCTION_MICROCODE" "=" "1"
+End
+
+TOKEN
+    Name  = "DESKTOP_M6F306F2"
+    Value  = "1"
+    Help  = "Intel(R) Haswell-E Processor  M-0, R-2"
+    TokenType = Boolean
+End
+
+ELINK
+    Name  = "$(MICROCODE_DESKTOP_DIR)/MEF306F1_80000013.mcb"
+    Parent  = "MICROCODE_FILES"
+    Help  = "Intel(R) Haswell-E Processor L-0"
+    Token = "DESKTOP_MEF306F1" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(MICROCODE_DESKTOP_DIR)/M6F306F2_0000003A.mcb"
+    Parent  = "MICROCODE_FILES"
+    Help  = "Intel(R) Haswell-E Processor M-0, R-2"
+    Token = "DESKTOP_M6F306F2" "=" "1"
+    InvokeOrder = AfterParent
+End

@@ -1,0 +1,76 @@
+# 
+#  This file contains 'Framework Code' and is licensed as such
+#  under the terms of your license agreement with Intel or your
+#  vendor.  This file may not be modified, except as allowed by
+#  additional terms of your license agreement.
+#                                     
+#
+## @file
+#
+#  Static Board Data DXE Driver.
+#
+#  Copyright (c) 2012 - 2016, Intel Corporation. All rights reserved.<BR>
+#  This software and associated documentation (if any) is furnished
+#  under a license and may only be used or copied in accordance
+#  with the terms of the license. Except as permitted by such
+#  license, no part of this software or documentation may be
+#  reproduced, stored in a retrieval system, or transmitted in any
+#  form or by any means without the express written consent of
+#  Intel Corporation.
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = StaticSkuDataDxeLightningRidgeEXECB2
+  FILE_GUID                      = 6ADFFA83-55AE-4C9F-94A4-800C469BDABC
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+
+  ENTRY_POINT                    = StaticSkuConfigDataDxeEntry
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = x64
+#
+
+[Sources]
+  StaticSkuDataDxe.c
+  StaticSkuDataDxe.h
+  DeviceDataInstall.c
+  PlatformDeviceDataSRP.c
+  AcpiStaticData.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  CpPlatPkg/CpPlatPkg.dec  
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+# APTIOV_SERVER_OVERRIDE_RC_START
+#  BpCommonPkg/BpCommonPkg.dec
+# APTIOV_SERVER_OVERRIDE_RC_END
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  PurleyRpPkg/PlatformPkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/Me/MePkg.dec
+
+[LibraryClasses]
+  BaseLib
+  BaseMemoryLib
+  MemoryAllocationLib
+  UefiBootServicesTableLib
+  UefiDriverEntryPoint
+  UefiLib
+  DebugLib
+  IoLib
+
+[Guids]
+
+[Protocols]
+  gUbaConfigDatabaseProtocolGuid
+  
+[Pcd]
+
+
+[Depex]
+  gEfiPlatformTypeLightningRidgeEXECB2ProtocolGuid

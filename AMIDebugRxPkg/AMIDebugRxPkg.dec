@@ -1,0 +1,66 @@
+
+
+
+################################################################################
+#
+# Defines Section - statements that will be processed to create a Makefile.
+#
+################################################################################
+
+[Defines]
+  DEC_SPECIFICATION              = 0x00010005
+  PACKAGE_NAME                   = AMIDebugRxPkg
+  PACKAGE_GUID                   = 5D2E6849-CC72-4c28-97FC-6C2955D7D154
+  PACKAGE_VERSION                = 0.1
+
+################################################################################
+#
+# Include Section - list of Include Paths that are provided by this package.
+#                   Comments are used for Keywords and Module Types.
+#
+# Supported Module Types: 
+#  SEC PEIM DXE_DRIVER DXE_RUNTIME_DRIVER DXE_SMM_DRIVER DXE_SAL_DRIVER UEFI_DRIVER
+#
+################################################################################
+[Includes]
+  Include
+  ../Build
+
+[LibraryClasses]
+  ##  @libraryclass  Provides communication I/O functions between Debug Agent and HOST.
+  ##
+
+[Guids]
+  ## MdeModule package token space guid
+  gEfiAMIDebugRxPkgTokenSpaceGuid = {0xb2c7d8f7, 0x4e7f, 0x46a9, { 0x8c, 0xde, 0xf9, 0xfb, 0x6d, 0x27, 0x62, 0x78 }}
+
+[PcdsFixedAtBuild, PcdsPatchableInModule]
+  ## The mask of exception numbers whose handlers would be ignored and cannot be replaced or 
+  ## hooked by Debug Agent Library.
+  gEfiAMIDebugRxPkgTokenSpaceGuid.PcdExceptionsIgnoredByDebugger|0x00000000|UINT32|0x00000001
+
+  ## The memory BAR of xhci host controller, in which usb debug feature is enabled.
+  ## Note that the memory BAR address is only used before Pci bus resource allocation.
+  # @Prompt Configure ehci host controller memory BAR.
+  gEfiAMIDebugRxPkgTokenSpaceGuid.PcdUsbXhciMemorySpaceBase|0xFE400000|UINT64|0x00000002
+  
+  ## The pci address of xhci host controller, in which usb debug feature is enabled.
+  #  The format of pci address is :<BR>
+  #      -----------------------------------------------------------------------<BR>
+  #      | Bits 28..31 | Bits 20..27 | Bits 15..19 | Bits 12..14 | Bits 00..11 |<BR>
+  #      -----------------------------------------------------------------------<BR>
+  #      |      0      |     Bus     |   Device    |   Function  |      0      |<BR>
+  #      -----------------------------------------------------------------------<BR>
+  #  For the value 0x000A0000, it means the pci address at bus 0x0, device 0x14, function 0x0.
+  # @Prompt Configure xhci host controller pci address.
+  # @Expression  0x80000001 | (gEfiSourceLevelDebugPkgTokenSpaceGuid.PcdUsbXhciPciAddress & 0xF0000FFF) == 0
+  gEfiAMIDebugRxPkgTokenSpaceGuid.PcdUsbXhciPciAddress|0x000A0000|UINT32|0x00000003
+  
+  ## Per XHCI spec, software shall impose a timeout between the detection of the Debug Host 
+  ## connection and the DbC Run transition to 1. This PCD specifies the timeout value in microsecond.
+  # @Prompt Configure debug device detection timeout value.
+  gEfiAMIDebugRxPkgTokenSpaceGuid.PcdUsbXhciDebugDetectTimeout|3000000|UINT64|0x00000004
+  
+  gEfiAMIDebugRxPkgTokenSpaceGuid.PcdNvramBaseAddres|0xFFA00000|UINT64|0x00000005
+  
+  gEfiAMIDebugRxPkgTokenSpaceGuid.PcdNvramHeaderSize|144|UINT32|0x00000006

@@ -1,0 +1,318 @@
+//
+// This file contains an 'Intel Peripheral Driver' and is
+// licensed for Intel CPUs and chipsets under the terms of your
+// license agreement with Intel or your vendor.  This file may
+// be modified by the user, subject to additional terms of the
+// license agreement
+//
+// *++
+//
+// Copyright (c) 1999 - 2016 Intel Corporation. All rights reserved
+// This software and associated documentation (if any) is furnished
+// under a license and may only be used or copied in accordance
+// with the terms of the license. Except as permitted by such
+// license, no part of this software or documentation may be
+// reproduced, stored in a retrieval system, or transmitted in any
+// form or by any means without the express written consent of
+// Intel Corporation.
+//
+//
+// Module Name:
+//
+//   MemoryDfxSetup.hfr
+//
+// Abstract:
+//
+//   Memory Setup formset.
+//
+// Revision History:
+//
+// --*/
+
+
+  //
+  // Memory Dfx Setup Options
+  //
+form formid = VFR_FORMID_MEMORY_DFX,
+    title   = STRING_TOKEN(STR_MEMORY_DFX_CONFIG_FORM_TITLE);
+
+    subtitle text = STRING_TOKEN(STR_MEMORY_DFX_CONFIG_FORM_TITLE);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+    oneof varid = SOCKET_MEMORY_CONFIGURATION.dfxDimmManagement,
+        prompt  = STRING_TOKEN(STR_DIMM_MGMT_PROMPT),
+        help    = STRING_TOKEN(STR_DIMM_MGMT_HELP),
+        option text = STRING_TOKEN(STR_AUTO),                 value = DIMM_MGMT_AUTO, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_BIOS_SETUP),           value = DIMM_MGMT_BIOS_SETUP,  flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_CR_MGMT_DRIVER),       value = DIMM_MGMT_CR_MGMT_DRIVER,   flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid = SOCKET_MEMORY_CONFIGURATION.dfxLoadDimmMgmtDriver,
+        prompt  = STRING_TOKEN(STR_LOAD_DIMM_MGMT_DRV_PROMPT),
+        help    = STRING_TOKEN(STR_LOAD_DIMM_MGMT_DRV_HELP),
+        option text = STRING_TOKEN(STR_AUTO),                 value = LOAD_NGN_DIMM_MGMT_DRIVER_AUTO, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_DISABLE),              value = LOAD_NGN_DIMM_MGMT_DRIVER_DIS,  flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLE),               value = LOAD_NGN_DIMM_MGMT_DRIVER_EN,   flags = RESET_REQUIRED;
+    endoneof;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.dfxDimmManagement == DIMM_MGMT_CR_MGMT_DRIVER;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.dfxPerMemMode,
+          prompt  = STRING_TOKEN(STR_PEM_MEM_MODE),
+          help    = STRING_TOKEN(STR_PER_MEM_MODE_HELP),
+          option text = STRING_TOKEN(STR_AUTO),             value = MEM_MODE_AUTO, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_DISABLE),          value = NON_PER_MEM_MODE,       flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),           value = PER_MEM_MODE,           flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+    
+    suppressif ideqval SOCKET_COMMONRC_CONFIGURATION.NumaEn == NUMA_EN;
+        oneof varid = SOCKET_MEMORY_CONFIGURATION.dfxMaxNodeInterleave,
+            prompt  = STRING_TOKEN(STR_INTERLEAVING_PROMPT),
+            help    = STRING_TOKEN(STR_INTERLEAVING_HELP),
+            option text = STRING_TOKEN(STR_AUTO),                value = SOCKET_INTER_AUTO, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_1WAY),                value = SOCKET_1WAY, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_2WAY),                value = SOCKET_2WAY, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_4WAY),                value = SOCKET_4WAY, flags = RESET_REQUIRED;
+        endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.dfxDimmManagement == DIMM_MGMT_CR_MGMT_DRIVER;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.dfxPartitionDDRTDimm,
+          prompt  = STRING_TOKEN(STR_PARTITION_DDRT_PROMPT),
+          help    = STRING_TOKEN(STR_PARTITION_DDRT_HELP),    
+          option text = STRING_TOKEN(STR_DISABLE),      value = 0,  flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;  
+          option text = STRING_TOKEN(STR_ENABLE),       value = 1,   flags = RESET_REQUIRED;
+      endoneof;
+    endif;   
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.dfxDimmManagement == DIMM_MGMT_CR_MGMT_DRIVER;
+      grayoutif ideqval SOCKET_MEMORY_CONFIGURATION.dfxPartitionDDRTDimm == 0;
+        oneof varid = SOCKET_MEMORY_CONFIGURATION.dfxPartitionRatio[0],
+            prompt  = STRING_TOKEN(STR_S0MC0_PARTITION_RATIO_PROMPT),
+            help    = STRING_TOKEN(STR_S0MC0_PARTITION_RATIO_HELP),    
+            option text = STRING_TOKEN(STR_RATIO_20_80_0),      value = RATIO_20_80_0,  flags = RESET_REQUIRED;  
+            option text = STRING_TOKEN(STR_RATIO_80_20_0),      value = RATIO_80_20_0,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_50_50_0),      value = RATIO_50_50_0,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_60_0_40),      value = RATIO_60_0_40,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_40_10_50),     value = RATIO_40_10_50,  flags = RESET_REQUIRED| MANUFACTURING | DEFAULT; 
+            option text = STRING_TOKEN(STR_RATIO_0_40_60),      value = RATIO_0_40_60,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_0_30_70),      value = RATIO_0_30_70,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_100_0_0),      value = RATIO_100_0_0,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_0_100_0),      value = RATIO_0_100_0,   flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_RATIO_0_0_100),      value = RATIO_0_0_100,   flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_RATIO_30_60_10),     value = RATIO_30_60_10,   flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_RATIO_70_0_30),      value = RATIO_70_0_30,   flags = RESET_REQUIRED;
+        endoneof;
+      endif;
+    endif;   
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.dfxDimmManagement == DIMM_MGMT_CR_MGMT_DRIVER;
+      grayoutif ideqval SOCKET_MEMORY_CONFIGURATION.dfxPartitionDDRTDimm == 0;
+        //oneof varid = SOCKET_MEMORY_CONFIGURATION.S0MC1_PartitionRatio,
+        oneof varid = SOCKET_MEMORY_CONFIGURATION.dfxPartitionRatio[1],
+            prompt  = STRING_TOKEN(STR_S0MC1_PARTITION_RATIO_PROMPT),
+            help    = STRING_TOKEN(STR_S0MC1_PARTITION_RATIO_HELP),    
+            option text = STRING_TOKEN(STR_RATIO_20_80_0),      value = RATIO_20_80_0,  flags = RESET_REQUIRED;  
+            option text = STRING_TOKEN(STR_RATIO_80_20_0),      value = RATIO_80_20_0,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_50_50_0),      value = RATIO_50_50_0,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_60_0_40),      value = RATIO_60_0_40,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_40_10_50),     value = RATIO_40_10_50,  flags = RESET_REQUIRED| MANUFACTURING | DEFAULT; 
+            option text = STRING_TOKEN(STR_RATIO_0_40_60),      value = RATIO_0_40_60,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_0_30_70),      value = RATIO_0_30_70,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_100_0_0),      value = RATIO_100_0_0,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_0_100_0),      value = RATIO_0_100_0,   flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_RATIO_0_0_100),      value = RATIO_0_0_100,   flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_RATIO_30_60_10),     value = RATIO_30_60_10,   flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_RATIO_70_0_30),      value = RATIO_70_0_30,   flags = RESET_REQUIRED;
+        endoneof;
+      endif;  
+    endif;  
+    
+#if (MAX_SOCKET > 1)
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.dfxDimmManagement == DIMM_MGMT_CR_MGMT_DRIVER;
+      grayoutif ideqval SOCKET_MEMORY_CONFIGURATION.dfxPartitionDDRTDimm == 0;
+        oneof varid = SOCKET_MEMORY_CONFIGURATION.dfxPartitionRatio[2],
+            prompt  = STRING_TOKEN(STR_S1MC0_PARTITION_RATIO_PROMPT),
+            help    = STRING_TOKEN(STR_S1MC0_PARTITION_RATIO_HELP),    
+            option text = STRING_TOKEN(STR_RATIO_20_80_0),      value = RATIO_20_80_0,  flags = RESET_REQUIRED;  
+            option text = STRING_TOKEN(STR_RATIO_80_20_0),      value = RATIO_80_20_0,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_50_50_0),      value = RATIO_50_50_0,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_60_0_40),      value = RATIO_60_0_40,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_40_10_50),     value = RATIO_40_10_50,  flags = RESET_REQUIRED| MANUFACTURING | DEFAULT; 
+            option text = STRING_TOKEN(STR_RATIO_0_40_60),      value = RATIO_0_40_60,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_0_30_70),      value = RATIO_0_30_70,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_100_0_0),      value = RATIO_100_0_0,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_0_100_0),      value = RATIO_0_100_0,   flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_RATIO_0_0_100),      value = RATIO_0_0_100,   flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_RATIO_30_60_10),     value = RATIO_30_60_10,   flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_RATIO_70_0_30),      value = RATIO_70_0_30,   flags = RESET_REQUIRED;
+        endoneof;
+      endif;  
+    endif;  
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.dfxDimmManagement == DIMM_MGMT_CR_MGMT_DRIVER;
+      grayoutif ideqval SOCKET_MEMORY_CONFIGURATION.dfxPartitionDDRTDimm == 0;
+        oneof varid = SOCKET_MEMORY_CONFIGURATION.dfxPartitionRatio[3],
+            prompt  = STRING_TOKEN(STR_S1MC1_PARTITION_RATIO_PROMPT),
+            help    = STRING_TOKEN(STR_S1MC1_PARTITION_RATIO_HELP),    
+            option text = STRING_TOKEN(STR_RATIO_20_80_0),      value = RATIO_20_80_0,  flags = RESET_REQUIRED;  
+            option text = STRING_TOKEN(STR_RATIO_80_20_0),      value = RATIO_80_20_0,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_50_50_0),      value = RATIO_50_50_0,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_60_0_40),      value = RATIO_60_0_40,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_40_10_50),     value = RATIO_40_10_50,  flags = RESET_REQUIRED| MANUFACTURING | DEFAULT; 
+            option text = STRING_TOKEN(STR_RATIO_0_40_60),      value = RATIO_0_40_60,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_0_30_70),      value = RATIO_0_30_70,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_100_0_0),      value = RATIO_100_0_0,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_0_100_0),      value = RATIO_0_100_0,   flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_RATIO_0_0_100),      value = RATIO_0_0_100,   flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_RATIO_30_60_10),     value = RATIO_30_60_10,   flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_RATIO_70_0_30),      value = RATIO_70_0_30,   flags = RESET_REQUIRED;
+        endoneof;
+      endif;  
+    endif;  
+#endif
+#if (MAX_SOCKET > 2)
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.dfxDimmManagement == DIMM_MGMT_CR_MGMT_DRIVER;
+      grayoutif ideqval SOCKET_MEMORY_CONFIGURATION.dfxPartitionDDRTDimm == 0;
+        oneof varid = SOCKET_MEMORY_CONFIGURATION.dfxPartitionRatio[4],
+            prompt  = STRING_TOKEN(STR_S2MC0_PARTITION_RATIO_PROMPT),
+            help    = STRING_TOKEN(STR_S2MC0_PARTITION_RATIO_HELP),    
+            option text = STRING_TOKEN(STR_RATIO_20_80_0),      value = RATIO_20_80_0,  flags = RESET_REQUIRED;  
+            option text = STRING_TOKEN(STR_RATIO_80_20_0),      value = RATIO_80_20_0,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_50_50_0),      value = RATIO_50_50_0,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_60_0_40),      value = RATIO_60_0_40,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_40_10_50),     value = RATIO_40_10_50,  flags = RESET_REQUIRED| MANUFACTURING | DEFAULT; 
+            option text = STRING_TOKEN(STR_RATIO_0_40_60),      value = RATIO_0_40_60,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_0_30_70),      value = RATIO_0_30_70,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_100_0_0),      value = RATIO_100_0_0,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_0_100_0),      value = RATIO_0_100_0,   flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_RATIO_0_0_100),      value = RATIO_0_0_100,   flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_RATIO_30_60_10),     value = RATIO_30_60_10,   flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_RATIO_70_0_30),      value = RATIO_70_0_30,   flags = RESET_REQUIRED;
+        endoneof;
+      endif;      
+    endif;      
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.dfxDimmManagement == DIMM_MGMT_CR_MGMT_DRIVER;
+      grayoutif ideqval SOCKET_MEMORY_CONFIGURATION.dfxPartitionDDRTDimm == 0;
+        oneof varid = SOCKET_MEMORY_CONFIGURATION.dfxPartitionRatio[5],
+            prompt  = STRING_TOKEN(STR_S2MC1_PARTITION_RATIO_PROMPT),
+            help    = STRING_TOKEN(STR_S2MC1_PARTITION_RATIO_HELP),    
+            option text = STRING_TOKEN(STR_RATIO_20_80_0),      value = RATIO_20_80_0,  flags = RESET_REQUIRED;  
+            option text = STRING_TOKEN(STR_RATIO_80_20_0),      value = RATIO_80_20_0,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_50_50_0),      value = RATIO_50_50_0,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_60_0_40),      value = RATIO_60_0_40,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_40_10_50),     value = RATIO_40_10_50,  flags = RESET_REQUIRED| MANUFACTURING | DEFAULT; 
+            option text = STRING_TOKEN(STR_RATIO_0_40_60),      value = RATIO_0_40_60,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_0_30_70),      value = RATIO_0_30_70,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_100_0_0),      value = RATIO_100_0_0,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_0_100_0),      value = RATIO_0_100_0,   flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_RATIO_0_0_100),      value = RATIO_0_0_100,   flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_RATIO_30_60_10),     value = RATIO_30_60_10,   flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_RATIO_70_0_30),      value = RATIO_70_0_30,   flags = RESET_REQUIRED;
+        endoneof;
+      endif;   
+    endif;   
+#endif
+#if (MAX_SOCKET > 3)
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.dfxDimmManagement == DIMM_MGMT_CR_MGMT_DRIVER;
+      grayoutif ideqval SOCKET_MEMORY_CONFIGURATION.dfxPartitionDDRTDimm == 0;
+        oneof varid = SOCKET_MEMORY_CONFIGURATION.dfxPartitionRatio[6],
+            prompt  = STRING_TOKEN(STR_S3MC0_PARTITION_RATIO_PROMPT),
+            help    = STRING_TOKEN(STR_S3MC0_PARTITION_RATIO_HELP),    
+            option text = STRING_TOKEN(STR_RATIO_20_80_0),      value = RATIO_20_80_0,  flags = RESET_REQUIRED;  
+            option text = STRING_TOKEN(STR_RATIO_80_20_0),      value = RATIO_80_20_0,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_50_50_0),      value = RATIO_50_50_0,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_60_0_40),      value = RATIO_60_0_40,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_40_10_50),     value = RATIO_40_10_50,  flags = RESET_REQUIRED| MANUFACTURING | DEFAULT; 
+            option text = STRING_TOKEN(STR_RATIO_0_40_60),      value = RATIO_0_40_60,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_0_30_70),      value = RATIO_0_30_70,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_100_0_0),      value = RATIO_100_0_0,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_0_100_0),      value = RATIO_0_100_0,   flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_RATIO_0_0_100),      value = RATIO_0_0_100,   flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_RATIO_30_60_10),     value = RATIO_30_60_10,   flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_RATIO_70_0_30),      value = RATIO_70_0_30,   flags = RESET_REQUIRED;
+        endoneof;
+      endif;  
+    endif;  
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.dfxDimmManagement == DIMM_MGMT_CR_MGMT_DRIVER;
+      grayoutif ideqval SOCKET_MEMORY_CONFIGURATION.dfxPartitionDDRTDimm == 0;
+        oneof varid = SOCKET_MEMORY_CONFIGURATION.dfxPartitionRatio[7],
+            prompt  = STRING_TOKEN(STR_S3MC1_PARTITION_RATIO_PROMPT),
+            help    = STRING_TOKEN(STR_S3MC1_PARTITION_RATIO_HELP),    
+            option text = STRING_TOKEN(STR_RATIO_20_80_0),      value = RATIO_20_80_0,  flags = RESET_REQUIRED;  
+            option text = STRING_TOKEN(STR_RATIO_80_20_0),      value = RATIO_80_20_0,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_50_50_0),      value = RATIO_50_50_0,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_60_0_40),      value = RATIO_60_0_40,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_40_10_50),     value = RATIO_40_10_50,  flags = RESET_REQUIRED| MANUFACTURING | DEFAULT; 
+            option text = STRING_TOKEN(STR_RATIO_0_40_60),      value = RATIO_0_40_60,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_0_30_70),      value = RATIO_0_30_70,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_100_0_0),      value = RATIO_100_0_0,  flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_RATIO_0_100_0),      value = RATIO_0_100_0,   flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_RATIO_0_0_100),      value = RATIO_0_0_100,   flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_RATIO_30_60_10),     value = RATIO_30_60_10,   flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_RATIO_70_0_30),      value = RATIO_70_0_30,   flags = RESET_REQUIRED;
+        endoneof;
+      endif;      
+    endif;
+#endif
+
+    oneof varid = SOCKET_MEMORY_CONFIGURATION.dfxHighAddressStartBitPosition,
+        prompt  = STRING_TOKEN(STR_MEMMAP_HIGHADDRBIT_PROMPT),
+        help    = STRING_TOKEN(STR_MEMMAP_HIGHADDRBIT_HELP),
+        option text = STRING_TOKEN(STR_AUTO_STRING),                    value = 0,  flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_MEMMAP_HIGHADDRBIT_33_STRING),   value = 33, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_MEMMAP_HIGHADDRBIT_34_STRING),   value = 34, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_MEMMAP_HIGHADDRBIT_35_STRING),   value = 35, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_MEMMAP_HIGHADDRBIT_36_STRING),   value = 36, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_MEMMAP_HIGHADDRBIT_37_STRING),   value = 37, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_MEMMAP_HIGHADDRBIT_38_STRING),   value = 38, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_MEMMAP_HIGHADDRBIT_39_STRING),   value = 39, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_MEMMAP_HIGHADDRBIT_40_STRING),   value = 40, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_MEMMAP_HIGHADDRBIT_41_STRING),   value = 41, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_MEMMAP_HIGHADDRBIT_42_STRING),   value = 42, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_MEMMAP_HIGHADDRBIT_43_STRING),   value = 43, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_MEMMAP_HIGHADDRBIT_44_STRING),   value = 44, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_MEMMAP_HIGHADDRBIT_45_STRING),   value = 45, flags = RESET_REQUIRED;
+    endoneof;
+
+
+    oneof varid = SOCKET_MEMORY_CONFIGURATION.dfxLowMemChannel,
+        prompt  = STRING_TOKEN(STR_MEMMAP_LOWMEMCHANNEL_PROMPT),
+        help    = STRING_TOKEN(STR_MEMMAP_LOWMEMCHANNEL_HELP),
+        option text = STRING_TOKEN(STR_AUTO_STRING), value = 0, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_MEMMAP_LOWMEMCHANNEL_0_STRING),  value = 1, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_MEMMAP_LOWMEMCHANNEL_1_STRING),  value = 2, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_MEMMAP_LOWMEMCHANNEL_2_STRING),  value = 3, flags = RESET_REQUIRED;
+    endoneof;
+
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.volMemMode == VOL_MEM_MODE_1LM; 
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.dfxCfgMask2LM,
+          prompt  = STRING_TOKEN(STR_CFG_MASK_2LM),
+          help    = STRING_TOKEN(STR_CFG_MASK_2LM_HELP),
+          option text = STRING_TOKEN(STR_NORMAL),           value = CFG_MASK_2LM_NORMAL,             flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_AGGRESSIVE),       value = CFG_MASK_2LM_AGGRESSIVE,         flags = RESET_REQUIRED;    
+      endoneof;
+    endif;
+
+    oneof varid  = SOCKET_MEMORY_CONFIGURATION.crMixedSKU,
+        prompt   = STRING_TOKEN (STR_CR_MIXED_SKU_PROMPT),
+        help     = STRING_TOKEN (STR_CR_MIXED_SKU_HELP),
+        option text = STRING_TOKEN (STR_AUTO),     value = CR_MIXED_SKU_AUTO, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_DISABLED), value = CR_MIXED_SKU_DIS, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN (STR_ENABLED),  value = CR_MIXED_SKU_EN, flags = RESET_REQUIRED;
+    endoneof;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.EccSupport == ECC_EN;	
+        oneof varid  = SOCKET_MEMORY_CONFIGURATION.EccSupport,
+            prompt   = STRING_TOKEN (STR_ECC_SUPPORT_PROMPT),
+            help     = STRING_TOKEN (STR_ECC_SUPPORT_HELP),
+            option text = STRING_TOKEN (STR_AUTO),    value = ECC_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+            option text = STRING_TOKEN (STR_DISABLE), value = ECC_DIS, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN (STR_ENABLE),  value = ECC_EN, flags = RESET_REQUIRED;
+        endoneof;
+    endif;
+
+endform;
+

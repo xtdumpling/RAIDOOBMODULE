@@ -1,0 +1,86 @@
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
+
+//**********************************************************************
+//<AMI_FHDR_START>
+//
+// Name: FboGroupForm.vfr
+//
+// Description:
+//
+//<AMI_FHDR_END>
+//**********************************************************************
+
+#include <token.h>
+#include "Build/AutoId.h"
+#include "AmiModulePkg/FixedBootOrder/FixedBootOrder.h"
+
+#if 0
+STRING_TOKEN(STR_DISABLED)
+STRING_TOKEN(STR_BOOT_OPTION_HELP)
+
+#endif
+
+formset guid  = FBO_GROUP_FORM_FORM_SET_GUID,
+	title     = STRING_TOKEN(STR_FBO_GROUP_FORM_SUBTITLE),
+ 	help      = STRING_TOKEN(STR_FBO_GROUP_FORM_HELP),
+    class     = FBO_GROUP_FORM_FORM_SET_CLASS,
+    subclass  = 0,  
+            
+    varstore FIXED_BOOT_SETUP,
+        key   = FIXED_BOOT_GROUP_KEY,
+        name  = FixedBoot,
+        guid  = FBO_GROUP_FORM_FORM_SET_GUID;
+        
+    // Make default to variable "StdDefault",don't display.
+    form formid = AUTO_ID(STD_DEFAULT_DUMMY_FORM),
+        title = STRING_TOKEN(STR_EMPTY) ;
+        suppressif TRUE;  
+            oneof varid     = FIXED_BOOT_SETUP.LegacyDevice[0], 
+                prompt      = STRING_TOKEN(STR_EMPTY),
+                help        = STRING_TOKEN(STR_EMPTY),
+                option text = STRING_TOKEN(STR_EMPTY),  value = 0, flags = DEFAULT;
+                option text = STRING_TOKEN(STR_EMPTY),  value = 1, flags = 0;
+            endoneof;
+        endif;  
+    endform;
+    
+        //--------------------------------------------------
+        //  UEFI GROUP FORM ITEM
+        //--------------------------------------------------
+MAKEFILE_INSERT_UEFI_GROUP_FORM_ITEM_FLAG
+
+#if CSM_SUPPORT
+        //--------------------------------------------------
+        //  LEGACY GROUP FORM ITEM
+        //--------------------------------------------------
+MAKEFILE_INSERT_LEGACY_GROUP_FORM_ITEM_FLAG
+
+#endif
+    
+endformset;
+
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************

@@ -1,0 +1,978 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**         5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+#
+#**********************************************************************
+# $Header: $
+#
+# $Revision: $
+#
+# $Date: $
+#**********************************************************************
+#<AMI_FHDR_START>
+#-----------------------------------------------------------------------
+#
+# Name:         CmosBoard.sdl
+#
+# Description:  This AMI SDL file defines porting constants used in
+#               the CMOS Board subcomponent.
+#
+#-----------------------------------------------------------------------
+#<AMI_FHDR_END>
+#
+#============================================================================
+# Southbridge porting notes
+#============================================================================
+#
+# These tokens are included as an example of tokens to add to the
+# Southbridge module for implementing access to CMOS banks above
+# 0x7f.
+#
+#TOKEN
+#    Name  = "CMOS_BANK1_INDEX"
+#    Value  = "0x72"
+#    Help  = "Index port to access the second CMOS bank. \(Registers in range: 0x80-0xff)"
+#    TokenType = Integer
+#    TargetEQU = Yes
+#    TargetH = Yes
+#End
+#
+#TOKEN
+#    Name  = "CMOS_BANK1_DATA"
+#    Value  = "0x73"
+#    Help  = "Data port to access the second CMOS bank. \(Registers in range: 0x80-0xff)"
+#    TokenType = Integer
+#    TargetEQU = Yes
+#    TargetH = Yes
+#End
+#
+#TOKEN
+#    Name  = "CMOS_BANK1_INDEX_IS_TRANSLATED"
+#    Value  = "1"
+#    Help  = "1 = Index port value requires translation from CMOS address.\0 = Index port value equals CMOS address."
+#    TokenType = Boolean
+#    TargetEQU = Yes
+#    TargetH = Yes
+#End
+#ELINK
+#    Name  = "{0, 0, 0x80, 0xff, ReadWriteSecondBankTranslated},"
+#    Parent  = "CMOS_PORT_MAPPING"
+#    Help  = "Second bank CMOS access range (Registers in range: 0x80-0xff), when index port value is not identical to CMOS address"
+#    InvokeOrder = AfterParent
+#    Token = "CMOS_BANK1_INDEX_IS_TRANSLATED" "=" "1"
+#End
+#
+#ELINK
+#    Name  = "{CMOS_BANK1_INDEX, CMOS_BANK1_DATA, 0x80, 0xff, NULL},"
+#    Parent  = "CMOS_PORT_MAPPING"
+#    Help  = "Second bank CMOS access range (Registers in range: 0x80-0xff), when index port value is identical to CMOS address"
+#    InvokeOrder = AfterParent
+#    Token = "CMOS_BANK1_INDEX_IS_TRANSLATED" "=" "0"
+#End
+#============================================================================
+
+
+#<AMI_GHDR_START>
+#----------------------------------------------------------------------------
+#
+#  Name:    All_Elinks_Tokens
+#
+#  Description:
+#       The following files contain the SDL Tokens/Elinks  
+#       used in the CMOS Manager module, which may be ported. 
+#
+#                   CmosBoard.sdl --    SDL Tokens/Elinks typically
+#                                       used for project-specific porting
+#
+#                   CmosManager.sdl --  SDL Tokens/Elinks typically 
+#                                       not modified
+#
+#----------------------------------------------------------------------------
+#<AMI_GHDR_END>
+
+
+#<AMI_SHDR_START>
+#----------------------------------------------------------------------------
+#
+# Name:    FULL_CMOS_MANAGER_DEBUG
+#
+# Description:
+#
+#      Default value is 0
+#
+#               1  = Turn on all available CMOS Manager debug messages,  
+#                    resulting in larger build.
+#               0  = Only basic debugging messages are displayed,
+#                    dependent upon project-level debug settings.
+#
+#----------------------------------------------------------------------------
+#<AMI_SHDR_END>
+
+#<AMI_SHDR_START>
+#----------------------------------------------------------------------------
+#
+# Name:    FIRST_MANAGED_CMOS_ADDRESS
+#
+# Description:
+#
+#       Default value is 0x40
+#
+#       This is the lower limit of the CMOS register range to be managed 
+#       by CMOS Manager
+#
+#       The region starting at FIRST_MANAGED_CMOS_ADDRESS and ending at
+#       MAX_MANAGED_CMOS_ADDRESS - 1 represents the managed region.
+#
+#----------------------------------------------------------------------------
+#<AMI_SHDR_END>
+
+#<AMI_SHDR_START>
+#----------------------------------------------------------------------------
+#
+# Name:    MAX_MANAGED_CMOS_ADDRESS
+#
+# Description:
+#
+#       Default value is 128 (128 bytes with max address of 127)
+#
+#       This is the upper limit (last address + 1) of CMOS address locations 
+#       that are managed by CMOS Manager.
+#
+#       (I.e., if 256 bytes of CMOS is available and is entirely managed
+#       by CMOS Manager, then the value of this token would be 256.)
+#
+#----------------------------------------------------------------------------
+#<AMI_SHDR_END>
+
+#<AMI_SHDR_START>
+#----------------------------------------------------------------------------
+#
+# Name:    CMOS_MGR_RECOVER_ONLY_CHECKUMMED
+#
+# Description:
+#
+#       Default value is 0 (all Managed Region locations are recovered)
+#
+#                   1  = Do not recover non-checksummed locations in the 
+#                        Managed Region
+#
+#                   0  = Recover all locations in the Managed Region
+#
+#       This configures the recovery policy so that the Optimal Defaults
+#       buffer is only used for checksummed locations upon bad checksum 
+#       detection.
+#
+# Notes:  
+#               1.  For the bad battery condition, the Optimal Defaults buffer
+#                   will always be used.
+#
+#----------------------------------------------------------------------------
+#<AMI_SHDR_END>
+
+#<AMI_SHDR_START>
+#----------------------------------------------------------------------------
+#
+# Name:    CMOS_MGR_RECOVER_IN_PEI
+#
+# Description:
+#
+#       Default value is 1 (PEI recovery is enabled)
+#
+#       This configures the recovery policy so that the Optimal Defaults
+#       buffer is written to CMOS in the PEI phase.
+#
+# Notes:  
+#            	1.  This setting may require replacement of the 
+#                   default function defined in the CMOS_IS_COLD_BOOT_MAPPING 
+#                   eLink.
+#
+#               2.  The bad checksum bit in the legacy status CMOS register 
+#                   will indicate bad checksum until the DXE phase, but 
+#                   physical CMOS will be used in the PEI phase.
+#
+#----------------------------------------------------------------------------
+#<AMI_SHDR_END>
+
+#<AMI_SHDR_START>
+#----------------------------------------------------------------------------
+#
+# Name:    CMOS_SMM_SUPPORT
+#
+# Description:
+#
+#       Default value is 1 (SMM support is enabled)
+#
+#       This token specifies whether or not the CMOS Access interface is  
+#       available in SMM.
+#
+#      			1 = Enable SMM CMOS Access
+#      			0 = Disable SMM CMOS Access
+#
+#----------------------------------------------------------------------------
+#<AMI_SHDR_END>
+
+#<AMI_SHDR_START>
+#----------------------------------------------------------------------------
+#
+# Name:    CMOS_USES_STANDARD_RANGE_ACCESS
+#
+# Description:
+#
+#       Default value is 1 (default function is enabled)
+#
+#       Specifies whether or not to use CMOS Manager's default access 
+#       function for the 0-0x7f range.  If a platform provides a different 
+#       access function for this region this token should be FALSE.
+#
+# Notes:
+#               *   If this SDL Token is turned off, an alternate   
+#                   function must be defined using the CMOS_PORT_MAPPING
+#                   SDL eLink.
+#
+#----------------------------------------------------------------------------
+#<AMI_SHDR_END>
+
+#<AMI_SHDR_START>
+#----------------------------------------------------------------------------
+#
+# Name:    CMOS_BANK0_INDEX
+#
+# Description:
+#
+#       Default value is 0x70
+#
+#       Index I/O port to access CMOS registers in range: 0x0-0x7f.
+#      
+#----------------------------------------------------------------------------
+#<AMI_SHDR_END>
+
+#<AMI_SHDR_START>
+#----------------------------------------------------------------------------
+#
+# Name:    CMOS_BANK0_DATA
+#
+# Description:
+#
+#       Default value is 0x71
+#
+#       Data I/O port to access CMOS registers in range: 0x0-0x7f.
+#      
+#----------------------------------------------------------------------------
+#<AMI_SHDR_END>
+
+#<AMI_SHDR_START>
+#----------------------------------------------------------------------------
+#
+# Name:    CMOS_MGR_SET_NMI_BIT
+#
+# Description:
+#
+#       Default value is 1 (NMI access is enabled for 0x0-0x7f)
+#
+#               1 = Set NMI bit for access to NMI region
+#               0 = Do not set NMI bit for access to NMI region
+#
+#----------------------------------------------------------------------------
+#<AMI_SHDR_END>
+
+#<AMI_SHDR_START>
+#----------------------------------------------------------------------------
+#
+# Name:    CMOS_NMI_BIT_VALUE
+#
+# Description:
+#
+#       Default value is 0x80 (CMOS_MGR_SET_NMI_BIT = TRUE by default)
+#
+#       There are two possible values for this token as determined by the 
+#       value of CMOS_MGR_SET_NMI_BIT:
+#
+#                   0x80 = if CMOS_MGR_SET_NMI_BIT == TRUE
+#                   0x00 = if CMOS_MGR_SET_NMI_BIT == FALSE
+#
+# Notes:
+#
+#       This value will be OR'ed with the index value for CMOS access to 
+#       bank 0 locations. The value will be negated and AND'ed with the 
+#       index to clear the NMI bit if the original index value is to be 
+#       restored.
+#
+#----------------------------------------------------------------------------
+#<AMI_SHDR_END>
+
+#<AMI_SHDR_START>
+#----------------------------------------------------------------------------
+#
+# Name:    CMOS_SETUP_SUPPORT
+#
+# Description:
+#
+#       Default value is 0 (CMOS_SETUP_SUPPORT = FALSE by default)
+#
+#       This token specifies whether or not a setup page is enabled
+#       to provide CMOS Manager related information/options.
+#
+# Notes:
+#
+#       This feature is only supported for TSE labels only supported for 
+#       TSE versions 4.6.2_TSE_2_01_1204 and later.
+#
+#----------------------------------------------------------------------------
+#<AMI_SHDR_END>
+
+#<AMI_SHDR_START>
+#----------------------------------------------------------------------------
+#
+# Name:    CMOS_MESSAGES_SUPPORT
+#
+# Description:
+#
+#       Default value is 0 (CMOS_SETUP_SUPPORT = FALSE by default)
+#
+#       This token specifies whether or not messages are displayed
+#       to provide CMOS Manager related power-on information.
+#
+# Notes:
+#
+#       This feature is only supported for TSE labels only supported for 
+#       TSE versions 4.6.2_TSE_2_01_1204 and later.
+#
+#----------------------------------------------------------------------------
+#<AMI_SHDR_END>
+
+#<AMI_SHDR_START>
+#----------------------------------------------------------------------------
+#
+# Name:    CMOS_USES_STANDARD_BATTERY_TEST
+#
+# Description:
+#
+#       Default value is 1 (default function is used)
+#
+#       This SDL Token specifies whether or not to use the default function
+#       to determine whether or not the CMOS battery is good.
+#
+# Notes:
+#       If this SDL Token is turned off, an alternate function must be
+#       defined and linked using the CMOS_BATTERY_TEST_MAPPING SDL eLink.
+#
+#       The default function eLink is CmosMgrBatteryIsGood.
+#
+#----------------------------------------------------------------------------
+#<AMI_SHDR_END>
+
+#<AMI_SHDR_START>
+#----------------------------------------------------------------------------
+#
+# Name:    CMOS_USES_STANDARD_IS_FIRST_BOOT
+#
+# Description:
+#
+#       Default value is 1 (default function is used)
+#
+#       This SDL Token specifies whether or not to use the default function
+#       to determine whether or not the platform is executing a first boot.
+#
+# Notes:
+#       If this SDL Token is turned off, an alternate function must be
+#       defined using the CMOS_IS_FIRST_BOOT_MAPPING SDL eLink.
+#
+#       The default function eLink is CmosMgrIsFirstBoot.
+#
+#----------------------------------------------------------------------------
+#<AMI_SHDR_END>
+
+#<AMI_SHDR_START>
+#----------------------------------------------------------------------------
+#
+# Name:    CMOS_USES_STANDARD_IS_CMOS_USABLE
+#
+# Description:
+#
+#       Default value is 1 (default function is used)
+#
+#       This SDL Token specifies whether or not to use the default function
+#       to determine whether or not the CMOS hardware is usable.  
+#       If a platform provides a different function, this token should be 
+#       disabled.
+#
+# Notes:
+#       If this SDL Token is turned off, an alternate function must be
+#       defined using the CMOS_IS_USABLE_MAPPING SDL eLink.
+#
+#       The default function eLink is CmosMgrIsBsp.
+#
+#----------------------------------------------------------------------------
+#<AMI_SHDR_END>
+
+
+#<AMI_SHDR_START>
+#----------------------------------------------------------------------------
+#
+# Name:    CMOS_USES_STANDARD_IS_BSP
+#
+# Description:
+#
+#       Default value is 1 (default function is used)
+#
+#       This SDL Token specifies whether or not to use the default function
+#       to determine whether or not the boot strap processor is executing.  
+#       If a platform provides a different function for determining the BSP, 
+#       this token should be disabled.
+#
+# Notes:
+#       If this SDL Token is turned off, an alternate function must be
+#       defined using the CMOS_IS_BSP_MAPPING SDL eLink.
+#
+#       The default function eLink is CmosMgrIsBsp.
+#
+#----------------------------------------------------------------------------
+#<AMI_SHDR_END>
+
+#<AMI_SHDR_START>
+#----------------------------------------------------------------------------
+#
+# Name:    CMOS_USES_STANDARD_IS_COLD_BOOT
+#
+# Description:
+#
+#       Default value is 1 (default function is used)
+#
+#       This SDL Token specifies whether or not to use the default function
+#       to determine whether or not the platform is executing a cold boot.
+#
+# Notes:
+#
+#               1.  The default function eLink is CmosMgrIsColdBoot.
+#
+#               2.  In the case of a bad checksum, the Optimal Defaults buffer
+#                   is written to physical CMOS in the PEI phase if:
+#
+#                 	a. CMOS_MGR_RECOVER_IN_PEI is enabled and
+#                 	b. CmosMgrIsColdBoot returns TRUE
+#
+#               3.  Some platforms may execute a warm-reset in the PEI phase,
+#                   with a dependency on some CMOS value, causing 
+#                   unpredicatable results ...possibly an infinite reboot 
+#                   sequence.
+#
+#               4.  A cold boot is defined as a power-on boot, as opposed 
+#                   to a warm boot where a reset is initiated through 
+#                   software.
+#
+#               5.  If this SDL Token is turned off, an alternate function  
+#                   must be defined using the CMOS_IS_COLD_BOOT_MAPPING 
+#                   SDL eLink.
+#
+#----------------------------------------------------------------------------
+#<AMI_SHDR_END>
+
+#<AMI_SHDR_START>
+#----------------------------------------------------------------------------
+#
+# Name:    CMOS_PORT_MAPPING
+#
+# Description:
+#
+#       Default value (see Notes below)
+#
+#       This Elink is used to associate CMOS register address ranges with 
+#       an 8-bit index/data port pair or an access function.
+#
+#       Additional ranges can be specified by adding additional eLinks.
+#
+#       The default eLink for the 0x0-0x7f range can be replaced by first
+#       disabling the CMOS_USES_STANDARD_RANGE_ACCESS SDL token and then 
+#       defining a new eLink.
+#
+# Notes:
+#      Format:
+#
+#                   {IndexPort, DataPort, LowIndex, HighIndex, FunctionName},
+#
+#      Default:
+#
+#                   ELINK
+#                       Name  = "{0, 0, 0, 127, ReadWriteStandardRange},"
+#                       Parent  = "CMOS_PORT_MAPPING"
+#                       Help  = "Standard NMI-capable access range"
+#                       Token = "CMOS_USES_STANDARD_RANGE_ACCESS" "=" "1"
+#                       InvokeOrder = AfterParent
+#                   End
+#
+#      	        * FunctionName takes precedence over IndexPort/DataPort, if
+#                 both are specified.
+#
+#               * The comma is required.
+#
+#----------------------------------------------------------------------------
+#<AMI_SHDR_END>
+
+#<AMI_SHDR_START>
+#----------------------------------------------------------------------------
+#
+# Name:    CMOS_BATTERY_TEST_MAPPING
+#
+# Description:
+#
+#       The default function is CmosMgrBatteryIsGood.
+#
+#       This SDL eLink provides a mechanism to replace the default function 
+#       for determining whether or not the battery is bad.
+#
+# Notes:
+#       To override the default function, set the 
+#       CMOS_USES_STANDARD_BATTERY_TEST SDL Token to false and define a
+#       new eLink.
+#
+#----------------------------------------------------------------------------
+#<AMI_SHDR_END>
+
+#<AMI_SHDR_START>
+#----------------------------------------------------------------------------
+#
+# Name:    CMOS_IS_USABLE_MAPPING
+#
+# Description:
+#
+#       The default function is CmosIsUsable.
+#
+#       This SDL eLink provides a mechanism to replace the default function 
+#       for determining whether or not the CMOS hardware is usable. (Note,
+#       the CMOS may be usable even if the battery is bad.)
+#
+# Notes:
+#       To override the default function, set the 
+#       CMOS_USES_STANDARD_IS_CMOS_USABLE SDL Token to FALSE (0) and define a
+#       new eLink.
+#
+#----------------------------------------------------------------------------
+#<AMI_SHDR_END>
+
+
+#<AMI_SHDR_START>
+#----------------------------------------------------------------------------
+#
+# Name:    CMOS_IS_FIRST_BOOT_MAPPING
+#
+# Description:
+#
+#       The default function is CmosMgrIsFirstBoot.
+#
+#       This SDL eLink provides a mechanism to replace the default function 
+#       for determining whether or not the current execution is the first 
+#       boot after programming the boot firmware device (flash part, ROM 
+#       emulator,  ...).
+#
+# Notes:
+#       To override the default function, set the 
+#       CMOS_USES_STANDARD_IS_FIRST_BOOT SDL Token to FALSE (0) and define a
+#       new eLink.
+#
+#----------------------------------------------------------------------------
+#<AMI_SHDR_END>
+
+#<AMI_SHDR_START>
+#----------------------------------------------------------------------------
+#
+# Name:    CMOS_IS_BSP_MAPPING
+#
+# Description:
+#
+#       The default function is CmosMgrIsBsp.
+#
+#       This SDL eLink provides a mechanism to replace the default function 
+#       for determining whether or not the currently executing CPU core is 
+#       the boot strap processor (BSP).
+#
+# Notes:
+#       To override the default function, set the 
+#       CMOS_USES_STANDARD_IS_BSP SDL Token to FALSE (0) and define a
+#       new eLink.
+#
+#----------------------------------------------------------------------------
+#<AMI_SHDR_END>
+
+#<AMI_SHDR_START>
+#----------------------------------------------------------------------------
+#
+# Name:    CMOS_IS_COLD_BOOT_MAPPING
+#
+# Description:
+#
+#       The default function is CmosMgrIsColdBoot.
+#
+#       This SDL eLink provides a mechanism to replace the default function 
+#       for determining whether or not the platform is executing a cold
+#       boot.
+#
+# Notes:
+#       To override the default function, set the 
+#       CMOS_USES_STANDARD_IS_COLD_BOOT SDL Token to FALSE (0) and define a
+#       new eLink.
+#
+#----------------------------------------------------------------------------
+#<AMI_SHDR_END>
+
+TOKEN
+    Name  = "FULL_CMOS_MANAGER_DEBUG"
+    Value  = "0"
+    Help  = "1-Turns on all available CMOS Manager module-level debug messages, resulting in larger build\0-Only basic debugging messages are supported, dependent upon project-level debug settings."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "FIRST_MANAGED_CMOS_ADDRESS"
+    Value  = "0x40"
+    Help  = "This is the lower limit of the CMOS register range to be managed by CMOS Manager. \\Note: the region starting at FIRST_MANAGED_CMOS_ADDRESS and ending at MAX_MANAGED_CMOS_ADDRESS - 1 represents the managed region."
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "MAX_MANAGED_CMOS_ADDRESS"
+    Value  = "128"
+    Help  = "Last CMOS address + 1 used to specify the maximum address that is managed by CMOS Manager. \\Note: the region starting at FIRST_MANAGED_CMOS_ADDRESS and ending at MAX_MANAGED_CMOS_ADDRESS - 1 represents the managed region."
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "CMOS_MGR_RECOVER_ONLY_CHECKUMMED"
+    Value  = "0"
+    Help  = "Upon incoherency detection in the Managed Region, only use the Optimal Defaults buffer for checksummed locations."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "CMOS_MGR_RECOVER_IN_PEI"
+    Value  = "1"
+    Help  = "Upon incoherency detection due to bad checksum in the Managed Region, invoke the recovery policy in the PEI phase."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "CMOS_SEC_SUPPORT"
+    Value  = "0"
+    Help  = "Specifies whether or not to the CMOS Access interface is available in SMM."
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes
+    TargetMAK = Yes
+End
+
+TOKEN
+    Name  = "CMOS_SMM_SUPPORT"
+    Value  = "0"
+    Help  = "Specifies whether or not to the CMOS Access interface is available in SMM."
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes
+    TargetMAK = Yes
+End
+
+TOKEN
+    Name  = "CMOS_MANAGER_ASL_SUPPORT"
+    Value  = "0"
+    Help  = "Enable ASL support for CMOS Manager as a CMOS device. (Requires CMOS_SMM_SUPPORT.)"
+    TokenType = Boolean
+    TargetMAK = Yes
+    TargetH = Yes
+    Token = "CMOS_SMM_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "CMOS_USES_STANDARD_RANGE_ACCESS"
+    Value  = "1"
+    Help  = "Specifies whether or not to use CMOS Manager's default access function for the 0-0x7f range.  If a platform provides a different access function for this region this token should be disabled."
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "CMOS_BANK0_INDEX"
+    Value  = "0x70"
+    Help  = "Index I/O port to access CMOS registers in range: 0x0-0x7f."
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "CMOS_BANK0_DATA"
+    Value  = "0x71"
+    Help  = "Data I/O port to access CMOS registers in range: 0x0-0x7f."
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "CMOS_BANK1_INDEX"
+    Value  = "0x72"
+    Help  = "Index I/O port to access CMOS registers in range: 0x80-0xff."
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "CMOS_BANK1_DATA"
+    Value  = "0x73"
+    Help  = "Data I/O port to access CMOS registers in range: 0x80-0xff."
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "CMOS_BANK1_OFFSET"
+    Value  = "0"
+    Help  = "Value to be subtracted from CMOS address location when CMOS accesses BANK1.\(In some chipsets, bit 7 must not be touched for bank 1.)"
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "CMOS_MGR_SET_NMI_BIT"
+    Value  = "1"
+    Help  = "1-Set NMI bit for access to NMI region\0-Do not set NMI bit for access to NMI region"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "CMOS_NMI_BIT_VALUE"
+    Value  = "0x80"
+    Help  = "Value to be ORed with the index port value for BANK0 access, when NMI access is enabled."
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetH = Yes
+    Token = "CMOS_MGR_SET_NMI_BIT" "=" "1"
+End
+
+TOKEN
+    Name  = "CMOS_NMI_BIT_VALUE"
+    Value  = "0x0"
+    Help  = "Value to be ORed with the index port value for BANK0 access, when NMI access is disabled."
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetH = Yes
+    Token = "CMOS_MGR_SET_NMI_BIT" "=" "0"
+End
+
+TOKEN
+    Name  = "CMOS_BASED_API_SUPPORT"
+    Value  = "1"
+    Help  = "Specifies whether or not the 32-bit mode CMOS Access interface pointer is saved to CMOS."
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes
+    TargetMAK = Yes
+End
+
+TOKEN
+    Name  = "CMOS_BASED_API_INDEX"
+    Value  = "$(CMOS_BANK0_INDEX)"
+    Help  = "Index I/O port to access CMOS registers for the CMOS Access API pointer."
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetH = Yes
+    Token = "CMOS_BASED_API_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "CMOS_BASED_API_DATA"
+    Value  = "$(CMOS_BANK0_DATA)"
+    Help  = "Data I/O port to access CMOS registers for the CMOS Access API pointer."
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetH = Yes
+    Token = "CMOS_BASED_API_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "CMOS_ACCESS_API_BYTE3"
+    Value  = "0x42"
+    Help  = "The high byte of the CMOS Access API pointer registers.\If you change this token, you must overide the CMOS Tokens in CmosManager.ssp."
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetH = Yes
+    Token = "CMOS_BASED_API_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "CMOS_SETUP_SUPPORT"
+    Value  = "0"
+    Help  = "This SDL Token specifies whether or not the CMOS module setup page is supported.\(This feature is only supported for TSE versions 4.6.2_TSE_2_01_1204 and later)"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes
+    TargetMAK = Yes
+End
+
+TOKEN
+    Name  = "CMOS_MESSAGES_SUPPORT"
+    Value  = "0"
+    Help  = "This SDL Token specifies whether or not CMOS messages are supported.\(This feature is only supported for TSE versions 4.6.2_TSE_2_01_1204 and later)"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes
+    TargetMAK = Yes
+End
+
+
+TOKEN
+    Name  = "CMOS_USES_STANDARD_BATTERY_TEST"
+    Value  = "1"
+    Help  = "Specifies whether or not to use CMOS Manager's default battery test function.  If a platform provides a different battery test function this token should be disabled."
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "CMOS_USES_STANDARD_IS_FIRST_BOOT"
+    Value  = "1"
+    Help  = "Specifies whether or not to use CMOS Manager's default first boot test function.  If a platform provides a different first boot test function this token should be disabled."
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "CMOS_USES_STANDARD_IS_BSP"
+    Value  = "1"
+    Help  = "This SDL Token specifies whether or not to use the default function to determine whether or not the boot strap processor is executing.   If a platform provides a different function for determining the BSP, this token should be disabled."
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "CMOS_USES_STANDARD_IS_CMOS_USABLE"
+    Value  = "1"
+    Help  = "This SDL Token specifies whether or not to use the default function to determine whether or not the CMOS is usable.   If a platform provides a different function for determining the usability of CMOS, this token should be disabled."
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "CMOS_USES_STANDARD_IS_COLD_BOOT"
+    Value  = "1"
+    Help  = "This SDL Token specifies whether or not to use the default function to determine whether or not the platform is executing a cold boot."
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+ELINK
+    Name  = "{0, 0, 0, 127, ReadWriteStandardRange},"
+    Parent  = "CMOS_PORT_MAPPING"
+    Help  = "Standard NMI-capable access range"
+    Token = "CMOS_USES_STANDARD_RANGE_ACCESS" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "CmosMgrBatteryIsGood,"
+    Parent  = "CMOS_BATTERY_TEST_MAPPING"
+    Help  = "Link the standard function to determine whether or not the CMOS battery is good."
+    Token = "CMOS_USES_STANDARD_BATTERY_TEST" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "CmosMgrIsFirstBoot,"
+    Parent  = "CMOS_IS_FIRST_BOOT_MAPPING"
+    Help  = "Link the standard function to determine whether or not the platform is executing a first boot."
+    Token = "CMOS_USES_STANDARD_IS_FIRST_BOOT" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "CmosIsUsable,"
+    Parent  = "CMOS_IS_USABLE_MAPPING"
+    Help  = "Link the standard function to determine whether or not the is usable.  (The CMOS may be usable if the battery is bad.)"
+    Token = "CMOS_USES_STANDARD_IS_CMOS_USABLE" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "CmosMgrIsBsp,"
+    Parent  = "CMOS_IS_BSP_MAPPING"
+    Help  = "Link the standard function to determine whether or not the BSP is currently executing."
+    Token = "CMOS_USES_STANDARD_IS_BSP" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "CmosMgrIsColdBoot,"
+    Parent  = "CMOS_IS_COLD_BOOT_MAPPING"
+    Help  = "Link the standard function to determine whether or not the platform is executing a cold boot."
+    Token = "CMOS_USES_STANDARD_IS_COLD_BOOT" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(CMOS_MANAGER_DIR)\CmosSetup.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	InvokeOrder = AfterParent
+    Token = "CMOS_SETUP_SUPPORT" "=" "1"
+End
+
+ELINK
+    Name  = "$(CMOS_MANAGER_DIR)/CmosSetup.uni"
+    Parent  = "SetupStringFiles"
+    InvokeOrder = AfterParent
+    Token = "CMOS_SETUP_SUPPORT" "=" "1"
+End
+
+PCIDEVICE
+    Title  = "CMOS Access ASL"
+    Parent  = "PciHost (Virtual)"
+    Attribute  = "0x0"
+    Dev_type  = "Container"
+    Dev  = 00h
+    Fun  = 00h
+    SleepNum  = 01h
+    ASLfile  = "'AmiCompatibilityPkg\CmosManager\CmosAccess.asl;After Pci Tree'"
+    DeviceType = OnBoard
+    PCIBusSize = 32bit
+    ROMMain = No
+    Virtual = Yes
+    Token = "CMOS_MANAGER_ASL_SUPPORT" "=" "1"
+End
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**         5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

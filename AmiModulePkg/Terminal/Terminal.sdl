@@ -1,0 +1,779 @@
+TOKEN
+    Name  = "Terminal_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to Enable/Disable Terminal Driver support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+    Master = Yes
+End
+
+TOKEN
+    Name  = "SerialIo_SUPPORT"
+    Value  = "1"
+    Help  = "Enabled to install SerialIo protocol for the UART devices by Terminal driver,Else it will be handled by Other SerialIo driver"
+    TokenType = Boolean
+    TargetMAK = Yes
+End
+
+TOKEN
+    Name  = "SERIALIO_PCI_SERIAL_SUPPORT"
+    Value  = "0"
+    Help  = "0-Serial IO doesn't support the PCI serial Devices.1- Serial Io Driver installs the Serial IO for PCI serial Device."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "DISABLE_TERMINAL_FOR_SCT_TEST"
+    Value  = "0"
+    Help  = "Enabling this token will turn off Console redirection, while running SCT test.As SCT tests were consuming SerialIo protocol API's."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "TOTAL_SIO_SERIAL_PORTS"
+    Value  = "1"
+    Help  = "**PORTING NEEDED** Total number of Super IO serial ports or ISA serial port present"
+    TokenType = Integer
+    TargetMAK = Yes
+    TargetH = Yes
+    Range  = "0-10"
+End
+
+TOKEN
+    Name  = "TOTAL_PCI_SERIAL_PORTS"
+    Value  = "0"
+    Help  = "**PORTING NEEDED** Total number of PCI serial ports present."
+    TokenType = Integer
+    TargetMAK = Yes
+    TargetH = Yes
+    Range  = "0-4"
+End
+
+TOKEN
+    Name  = "TOTAL_SERIAL_PORTS"
+    Value  = "$(TOTAL_SIO_SERIAL_PORTS)+$(TOTAL_PCI_SERIAL_PORTS)"
+    Help  = "Total number of serial ports present (both Super IO and PCI)."
+    TokenType = Integer
+    TargetMAK = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "PCI_SERIAL_PORT_0_INDEX"
+    Value  = "$(TOTAL_SIO_SERIAL_PORTS)"
+    Help  = "Used in the Terminal.sd file."
+    TokenType = Integer
+    TargetMAK = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "PCI_SERIAL_PORT_1_INDEX"
+    Value  = "$(TOTAL_SIO_SERIAL_PORTS) + 1"
+    Help  = "Used in the Terminal.sd file. VfrCompile does not allow the use of arithmetic expressions as array indeces."
+    TokenType = Integer
+    TargetMAK = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "PCI_SERIAL_PORT_2_INDEX"
+    Value  = "$(TOTAL_SIO_SERIAL_PORTS) + 2"
+    Help  = "Used in the Terminal.sd file. VfrCompile does not allow the use of arithmetic expressions as array indeces."
+    TokenType = Integer
+    TargetMAK = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "PCI_SERIAL_PORT_3_INDEX"
+    Value  = "$(TOTAL_SIO_SERIAL_PORTS) + 3"
+    Help  = "Used in the Terminal.sd file. VfrCompile does not allow the use of arithmetic expressions as array indeces."
+    TokenType = Integer
+    TargetMAK = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "UART_DEFAULT_BAUD_RATE"
+    Value  = "115200"
+    Help  = "Default baud rate for UART."
+    TokenType = Integer
+    TargetH = Yes
+    Range  = "9600, 19200, 38400, 57600, 115200"
+End
+
+TOKEN
+    Name  = "UART_DEFAULT_BAUD_RATE_INDEX"
+    Value  = "7"
+    Help  = "Index into array gAcpiSpcrTableComBaudRates."
+    TokenType = Integer
+    TargetH = Yes
+    Range  = "3 -9600,4 -19200,5 -38400,6 -57600,7 -115200"
+End
+
+TOKEN
+    Name  = "UART_DEFAULT_DATA_BITS"
+    Value  = "8"
+    Help  = "Data Bits to be programmed for UART."
+    TokenType = Integer
+    TargetH = Yes
+    Range  = "7 or 8"
+End
+
+TOKEN
+    Name  = "UART_DEFAULT_PARITY"
+    Value  = "1"
+    Help  = "Parity type to be programmed for UART."
+    TokenType = Integer
+    TargetH = Yes
+    Range  = "1- None,2- Even,3- Odd,4- Mark,5- Space"
+End
+
+TOKEN
+    Name  = "UART_DEFAULT_STOP_BITS"
+    Value  = "1"
+    Help  = "Stop Bits to be programmed for UART."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "UART_DEFAULT_FLOW_CONTROL"
+    Value  = "0"
+    Help  = "Flow control to be programmed for UART."
+    TokenType = Integer
+    TargetH = Yes
+    Range  = "0- None, 1- Hardware flow control"
+End
+
+TOKEN
+    Name  = "DEFAULT_TERMINAL_TYPE"
+    Value  = "3"
+    Help  = "Default terminal type."
+    TokenType = Integer
+    TargetH = Yes
+    Range = "0- VT100, 1- VT100Plus, 2 - VT_UTF8, 3 - ANSI"
+End
+
+TOKEN
+    Name  = "PCI_UART_INPUT_CLOCK"
+    Value  = "1843200"
+    Help  = "Specifies PCI UART input clock. The default value is (24000000/13) = 1843200 MHz"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "COM0_DEFAULT_CONSOLE_REDIRECTION_ENABLE"
+    Value  = "1"
+    Help  = "Specifies the Setup default value for COM0 redirection."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "COM1_DEFAULT_CONSOLE_REDIRECTION_ENABLE"
+    Value  = "0"
+    Help  = "Specifies the Setup default value for COM1 redirection."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "COM2_DEFAULT_CONSOLE_REDIRECTION_ENABLE"
+    Value  = "0"
+    Help  = "Specifies the Setup default value for COM2 redirection."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "COM3_DEFAULT_CONSOLE_REDIRECTION_ENABLE"
+    Value  = "0"
+    Help  = "Specifies the Setup default value for COM3 redirection."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "COM4_DEFAULT_CONSOLE_REDIRECTION_ENABLE"
+    Value  = "0"
+    Help  = "Specifies the Setup default value for COM4 redirection."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "COM5_DEFAULT_CONSOLE_REDIRECTION_ENABLE"
+    Value  = "0"
+    Help  = "Specifies the Setup default value for COM5 redirection."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "COM6_DEFAULT_CONSOLE_REDIRECTION_ENABLE"
+    Value  = "0"
+    Help  = "Specifies the Setup default value for COM6 redirection."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "COM7_DEFAULT_CONSOLE_REDIRECTION_ENABLE"
+    Value  = "0"
+    Help  = "Specifies the Setup default value for COM7 redirection."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "COM8_DEFAULT_CONSOLE_REDIRECTION_ENABLE"
+    Value  = "0"
+    Help  = "Specifies the Setup default value for COM8 redirection."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "COM9_DEFAULT_CONSOLE_REDIRECTION_ENABLE"
+    Value  = "0"
+    Help  = "Specifies the Setup default value for COM9 redirection."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "PCI0_DEFAULT_CONSOLE_REDIRECTION_ENABLE"
+    Value  = "0"
+    Help  = "Specifies the Setup default value for PCI port #0 redirection."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "PCI1_DEFAULT_CONSOLE_REDIRECTION_ENABLE"
+    Value  = "0"
+    Help  = "Specifies the Setup default value for PCI port #1 redirection."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "PCI2_DEFAULT_CONSOLE_REDIRECTION_ENABLE"
+    Value  = "0"
+    Help  = "Specifies the Setup default value for PCI port #2 redirection."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "PCI3_DEFAULT_CONSOLE_REDIRECTION_ENABLE"
+    Value  = "0"
+    Help  = "Specifies the Setup default value for PCI port #3 redirection."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "DEFAULT_DEBUGGER_CONSOLE_REDIRECTION_ENABLE"
+    Value  = "1"
+    Help  = "Specifies the Setup default value for the COM port, if redirection is through debugger(AmidebuggerRx)."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "DEFAULT_ACPI_SPCR_COM_PORT"
+    Value  = "0"
+    Help  = "Default COM port value for SPCR table, If Serial port is from Amidebugger or reading Setup variable fails."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "DEFAULT_ACPI_SPCR_CONSOLE_REDIRECTION_ENABLE"
+    Value  = "1"
+    Help  = "Enable or disable the default COM port specified in SPCR,If Serial port is from Amidebugger or reading Setup variable fails."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "DEFAULT_ACPI_SPCR_TABLE_TERMINAL_TYPE"
+    Value  = "2"
+    Help  = "Default terminal type for SPCR table, If Serial port is from Amidebugger or reading Setup variable fails."
+    TokenType = Integer
+    TargetH = Yes
+    Range  = " 0- VT100, 1- VT100Plus, 2 - VT_UTF8, 3 - ANSI"
+End
+TOKEN
+    Name  = "EXTENDED_RESOLUTION_ENABLE"
+    Value  = "0"
+    Help  = "Enable or disable 100 x 31 terminal resolution"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "VTUTF8_ENABLE"
+    Value  = "1"
+    Help  = "Enable or disable VT-UTF8 Combination Key Support for ANSI/VT100 terminals"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "RECORDER_MODE_ENABLE"
+    Value  = "0"
+    Help  = "Enable this token to send only text characters to the remote system."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "MAX_FAILURES_ALLOWED"
+    Value  = "5"
+    Help  = "This token value controls the hardware flow control retry count.  Once the counter expired, Hardware flow control will be disabled. Setting maximum value would increase the BIOS POST time."
+    TokenType = Integer
+    TargetH = Yes
+    Range  = "01h to 0xFFh"
+End
+
+TOKEN
+    Name  = "TIMEOUT_FOR_DETERMINING_LONE_ESC_CHAR"
+    Value  = "10000000"
+    Help  = "Time period to wait until complete ESC Sequence is received by the Target system. If complete ESC key sequence is not received within this time period, then it will be considered as ESC key."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "NUMBER_OF_TIME_FOR_ESC_SEQUENCE_CHECKING"
+    Value  = "20"
+    Help  = "Specify the number of times to check for the next ESC sequence character within the time mentioned in TIMEOUT_FOR_DETERMINING_LONE_ESC_CHAR."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "UART_FIFO_SIZE"
+    Value  = "16"
+    TokenType = Integer
+    TargetH = Yes
+    Help  = "UART fifo size. Maximum supported UART size is 16."
+    Range  = "0-16."
+End
+
+TOKEN
+    Name  = "REFRESH_SCREEN_KEY"
+    Value  = "0x0012"
+    Help  = "Unicode Value of Key to Refresh the Screen.Default is set to Ctrl+r"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "ASCII_CONTROL_CODE_SUPPORT"
+    Value  = "1"
+    Help  = "Enable or disable ASCII control code support"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "SPCR_ACPI_OEM_ID"
+    Value  = "A M I "
+    Help  = "OEM Id (Manufacturer Id), a string value to be filled in SPCR ACPI table headers."
+    TokenType = Expression
+    TargetMAK = Yes
+    TargetH = Yes
+    Range  = "1-6 characters"
+End
+
+TOKEN
+    Name  = "SPCR_ACPI_OEM_TBL_ID"
+    Value  = "APTIO V"
+    Help  = "OEM Table Id (Manufacturer Model ID), a string value to be filled in SPCR ACPI table headers."
+    TokenType = Expression
+    TargetMAK = Yes
+    TargetH = Yes
+    Range  = "1-8 characters"
+End
+
+TOKEN
+    Name  = "spcr_interface_type"
+    Value  = "0"
+    Help  = "Indicate the type of the COM Port register interface to be filled in the SPCR table.(ACPI 2.0 SPEC)."
+    TokenType = Integer
+    TargetH = Yes
+    Range = "0 = full 16550 interface; 1 = full 16450 interface; 2 = Reserved (Do Not Use); 3 = ARM PL011 UART; 4-255 = Reserved (Do Not Use)"
+    Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+    Name  = "spcr_addr_spc_id"
+    Value  = "1"
+    Help  = "Indicate the address space of UART BLK Register Id (Part of GAS_20 Structure, refer to ACPI v2.0 spec for details)"
+    TokenType = Integer
+    TargetH = Yes
+    Range  = "0=System memory; 1=System I/O; 2=PCI Config Space; 3=Embeded Controller; 4=SMBus; 0x7F=Functional Fixed Hardware; All other values reserved"
+    Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+    Name  = "spcr_addr_bit_width"
+    Value  = "8"
+    Help  = "Size of UART BLK Register in Bits (Part of GAS_20 Structure, refer to ACPI v2.0 spec for details)"
+    TokenType = Integer
+    TargetH = Yes
+    Range  = "value range depends on other GAS_20 elements"
+    Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+    Name  = "spcr_addr_bit_offset"
+    Value  = "0"
+    Help  = "Offset value for UART BLK Register Bit (Part of GAS_20 Structure, refer to ACPI v2.0 spec for details)"
+    TokenType = Integer
+    TargetH = Yes
+    Range  = "value range depends on other GAS_20 elements"
+    Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+    Name  = "spcr_access_size"
+    Value  = "0"
+    Help  = "Access size for UART BLK Register Bit (Part of GAS_20 Structure, refer to ACPI v2.0 spec for details)"
+    TokenType = Integer
+    TargetH = Yes
+    Range  = "value range depends on other GAS_20 elements"
+    Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+    Name  = "spcr_interrupt_type"
+    Value  = "05h"
+    Help  = "Interrupt type(s) used by the UART."
+    TokenType = Integer
+    TargetH = Yes
+    Range  = "Bit[0]=PC-AT dual-8259 PIC IRQ; Bit[1]=I/O APIC interrupt; Bit[2]=I/O SAPIC interrupt; Bit[3:7]=reserved (must be 0)"
+    Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+    Name  = "spcr_parity"
+    Value  = "0"
+    Help  = "Specifies the UART parity check value, which is to be updated in SPCR table"
+    TokenType = Integer
+    TargetH = Yes
+    Range  = "(Refer to ACPI v2.0 spec for details)"
+    Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+    Name  = "spcr_stop_bits"
+    Value  = "1"
+    Help  = "Specifies the UART stop bits, which is to be updated in SPCR table"
+    TokenType = Integer
+    TargetH = Yes
+    Range  = "(Refer to ACPI v2.0 spec for details)"
+    Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+    Name  = "spcr_pci_device_id"
+    Value  = "0FFFFh"
+    Help  = "Specify the device ID, if UART is from PCI bus. If UART is not from PCI bus, then this value should be 0FFFFh."
+    TokenType = Integer
+    TargetH = Yes
+    Range  = "0-0xffff (Refer to ACPI v2.0 spec for details)"
+    Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+    Name  = "spcr_pci_vendor_id"
+    Value  = "0FFFFh"
+    Help  = "Specify the vendor ID, if UART is from PCI bus. If UART is not from PCI bus, then this value should be 0FFFFh"
+    TokenType = Integer
+    TargetH = Yes
+    Range  = "0-0xffff (Refer to ACPI v2.0 spec for details)"
+    Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+    Name  = "spcr_pci_bus_number"
+    Value  = "0"
+    Help  = "Specify the PCI bus number, if UART is from PCI bus. If UART is not from PCI bus, then this value should be 00h"
+    TokenType = Integer
+    TargetH = Yes
+    Range  = "0-0xff (Refer to ACPI v2.0 spec for details)"
+    Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+    Name  = "spcr_pci_device_number"
+    Value  = "0"
+    Help  = "Specify the PCI device number, if UART is from PCI bus. If UART is not from PCI bus, then this value should be 00h."
+    TokenType = Integer
+    TargetH = Yes
+    Range  = "0-31 (Refer to ACPI v2.0 spec for details)"
+    Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+    Name  = "spcr_pci_function_number"
+    Value  = "0"
+    Help  = "Specify the PCI Function number, if UART is from PCI bus If UART is not from PCI bus, then this value should be 00h"
+    TokenType = Integer
+    TargetH = Yes
+    Range  = "0-7 (Refer to ACPI v2.0 spec for details)"
+    Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+    Name  = "spcr_pci_flags"
+    Value  = "0"
+    Help  = "if UART is on PCI bus - PCI flags"
+    TokenType = Integer
+    TargetH = Yes
+    Range  = "0-0xff (Refer to ACPI v2.0 spec for details)"
+    Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+    Name  = "spcr_pci_segment"
+    Value  = "0"
+    Help  = "Specify the PCI Segment number, if UART is from PCI bus"
+    TokenType = Integer
+    TargetH = Yes
+    Range  = "0-0xff (Refer to ACPI v2.0 spec for details)"
+    Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+    Name  = "SERIAL_WRITE_ERROR_CHECK"
+    Value  = "1"
+    Help  = "Enable or disable Serial Port Write Error checking."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "MAXIMUM_SERIAL_WRITE_ERROR_COUNT"
+    Value  = "10"
+    Help  = "This token specifies the number of retry count for serial port write error. Once this count reaches all the serialWrite calls will be returned as error. This token is valid only when the SERIAL_WRITE_ERROR_CHECK is enabled"
+    TokenType = Integer
+    TargetH = Yes
+    Range  = "1-0xffffffff "
+    Token = "SERIAL_WRITE_ERROR_CHECK" "=" "1"
+End
+
+TOKEN
+    Name  = "CLEAR_TERMINAL_KB_BUFFER_AT_READYTOBOOT"
+    Value  = "0"
+    Help  = "ON- Terminal KB Buffer will be cleared at ReadyToBoot.OFF - Terminal KB Buffer will not be cleared at ReadyToBoot."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "OEM_ESC_SEQUENCES"
+    Value  = "1"
+    Help  = "Enable or Disable the OEM ESC Sequence."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "INSTALL_LEGACY_OS_THROUGH_REMOTE"
+    Value  = "0"
+    Help  = "Install Legacy OS like Linux through redirection. To make that happen some Linux are force to install in text mode and some others are redirected in graphics mode itself. Note: All Linux Versions cannot be installed through remote as different Linux kernel's behave differently."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "DONT_SEND_ASCII_CONTROL_PRINTABLE_CHARACTERS"
+    Value  = "0"
+    Help  = "Applications like HyperTerminal supports printable characters in the ASCII control characters value's(0 - 0x1F) but Putty does not. so,to print the printable ASCII control characters we will send the equivalent ASCII printable value(whichever is applicable) if the token is enabled."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "DISABLE_PCI_REDIRECTION_ON_ACPI_ENABLE_DISABLE"
+    Value  = "0"
+    Help  = "When Redirection is enabled for Legacy OS, the system installation gets slow as Legacy Serial Redirection enables the PCI Serial interrupt for redirection and sometime after that OS uses its own IVT but PCI Serial interrupt is generated and not handled.So, disable redirection at OS level. we disable redirection on ACPI enable/disable call and reset the Interrupt Enable Register."
+    TokenType = Boolean
+    TargetH = Yes
+    TargetMAK = Yes
+End
+
+TOKEN
+    Name  = "SERIAL_MOUSE_DETECTION"
+    Value  = "0"
+    Help  = "Detect the Serial Mouse in the Serial Port and if the Serial Mouse is present, redirection will not be enabled."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "EFI_SIO_PROTOCOL_SUPPORT"
+    Value  = "0"
+    Help  = "1 - SerialIO driver supports EFI_SIO_PROTOCOL interface.0 - SerialIO driver supports AMI_SIO_PROTOCOL interface"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "TERMINAL_HOTKEY_POST_MSG"
+    Value  = "0"
+    Help  = "1 - Automatically display corresponding Serial Redirection hotkeys used to enter Setup and for BBS PopUp on post screen, if Redirection Enabled"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "MAX_DATA_READ_RETRY_COUNT"
+    Value  = "0"
+    Help  = "Maximum retry count to loop and read serial data.eg: 500, 1000"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "DATA_READ_RETRY_DELAY"
+    Value  = "50"
+    Help  = "Delay between each loop to read serial data. Units in usec"
+    TokenType = Integer
+    TargetH = Yes
+    Token = "MAX_DATA_READ_RETRY_COUNT" ">" "0"
+End
+
+TOKEN
+    Name  = "CONNECT_SERIAL_DEVICES_IN_BDS_FLOW"
+    Value  = "0"
+    Help  = "Connect the ISA Uart, PCI UART and Ami Serial UART devices before the InstallConOutStartedProtocol BDS link to enable the remote screen and remote keyboard."
+    TokenType = Boolean
+End
+
+PATH
+    Name  = "TERMINAL_DIR"
+End
+
+ELINK
+    Name  = "$(TERMINAL_DIR)/Terminal.sd"
+    Parent  = "SETUP_DEFINITIONS"
+    Priority  = 80
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(TERMINAL_DIR)/Terminal.uni"
+    Parent  = "SetupStringFiles"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(TERMINAL_DIR)/InitTerminalStrings.c"
+    Parent  = "SetupCallbackFiles"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "InitTerminalStrings,"
+    Parent  = "SetupStringInit"
+    Token = "Terminal_SUPPORT" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "TerminalHotKeyPostMsg,"
+    Parent  = "ProcessConInAvailability,"
+    InvokeOrder = AfterParent
+    Token = "TERMINAL_HOTKEY_POST_MSG" "=" "1"
+End
+
+ELINK
+    Name  = "gEfiSerialIoProtocolGuid"
+    Parent  = "ADDITIONAL_AMITSE_Protocols"
+    InvokeOrder = AfterParent
+    Token = "TERMINAL_HOTKEY_POST_MSG" "=" "1"
+End
+
+ELINK
+    Name  = "$(TERMINAL_DIR)/TerminalPostMsg.c"
+    Parent  = "TSE_SOURCE_FILES"
+    InvokeOrder = AfterParent
+    Token = "TERMINAL_HOTKEY_POST_MSG" "=" "1"
+End
+
+ELINK
+    Name  = "$(TERMINAL_DIR)/Terminal.uni"
+    Parent  = "TSE_STRING_FILES"
+    InvokeOrder = AfterParent
+    Token = "TERMINAL_HOTKEY_POST_MSG" "=" "1"
+End
+
+INFComponent
+    Name  = "TerminalSrc"
+    File  = "TerminalSrc.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "UEFI_DRIVER"
+End
+
+INFComponent
+    Name  = "SerialIo"
+    File  = "SerialIo.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "UEFI_DRIVER"
+    Token = "SerialIo_SUPPORT" "=" "1"
+End
+
+INFComponent
+    Name  = "TerminalAcpi"
+    File  = "TerminalAcpi.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_SMM_DRIVER"
+    Token = "DISABLE_PCI_REDIRECTION_ON_ACPI_ENABLE_DISABLE" "=" "1"
+End
+
+ELINK
+    Name  = "ConnectUartDevices,"
+    Parent  = "InstallConOutStartedProtocol,"
+    Token = "CONNECT_SERIAL_DEVICES_IN_BDS_FLOW" "=" "1"
+    InvokeOrder = BeforeParent
+End
+
+INFComponent
+    Name  = "TerminalBdsLib"
+    File  = "TerminalBds.inf"
+    Package  = "AmiModulePkg"
+    Token = "CONNECT_SERIAL_DEVICES_IN_BDS_FLOW" "=" "1"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiModulePkg.TerminalBdsLib"
+    Override  = "AmiModulePkg.Bds"
+    Token = "CONNECT_SERIAL_DEVICES_IN_BDS_FLOW" "=" "1"
+End
+
+ELINK
+    Name  = "PciDeviceUartClockAndWidthList"
+    InvokeOrder = ReplaceParent
+    Help  = "UART clock and MMIO width list in the format of( {Vendor ID, Device ID, UartClock, MmioWidth }, Vendor,Device ID of the PCI device controller has to be given. MmioWidth Value can be 1-byte width,2-Word width,4-Dword Width" 
+End
+
+OUTPUTREGISTER
+    Name = "TerminalDriverElinkFile"
+    File = "TerminalElink.h"
+    Path = "Build"
+    Template = "TerminalDriverElink.txt"
+End

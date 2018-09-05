@@ -1,0 +1,1928 @@
+//****************************************************************************
+//****************************************************************************
+//**                                                                        **
+//**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+//**                                                                        **
+//****************************************************************************
+//****************************************************************************
+//
+//  File History
+//
+//  Rev. 1.02
+//    Bug Fix : N/A.
+//    Reason  : Based on Purley_Setup_Mapping_Language_Draft_20170301_Joe.xlsx 
+//              and Official_BIOS_SOP_Revised_Draft_20170301_Mapping_Language_Joe.xlsx 
+//              to implement HII mapping language for BIOS setting preservation.
+//    Auditor : Joe Jhang
+//    Date    : Mar/02/2017
+//
+//  Rev. 1.01
+//    Bug Fix:  Draft template v0.1.
+//    Reason:   
+//    Auditor:  Jimmy Chiu
+//    Date:     Jan/20/2017
+//
+//  Rev. 1.00
+//    Bug Fix:  Change Terminal Type to VT100+
+//    Reason:   
+//    Auditor:  Hartmann Hsieh
+//    Date:     Jun/16/2016
+//
+//*************************************************************************
+//*************************************************************************
+//**                                                                     **
+//**        (C)Copyright 1985-2015, American Megatrends, Inc.            **
+//**                                                                     **
+//**                       All Rights Reserved.                          **
+//**                                                                     **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+//**                                                                     **
+//**                       Phone: (770)-246-8600                         **
+//**                                                                     **
+//*************************************************************************
+//*************************************************************************
+
+/** @file Terminal.sd
+    This is the setup page 'Serial Port Console Redirection.'
+    The link to the page is in the setup 'Advanced' tab.
+**/
+
+#ifdef FORM_SET_TYPEDEF
+
+//----------------------------------------------------------------------------
+#include "TerminalSetupVar.h"
+
+//----------------------------------------------------------------------------
+
+#endif 
+
+#ifdef SETUP_DATA_DEFINITION
+    #if (TOTAL_SERIAL_PORTS > 0)
+
+        UINT8   BaudRate[ TOTAL_SERIAL_PORTS ];
+        UINT8   DataBits[ TOTAL_SERIAL_PORTS ];
+        UINT8   Parity[ TOTAL_SERIAL_PORTS ];
+        UINT8   StopBits[ TOTAL_SERIAL_PORTS ];
+        UINT8   FlowControl[ TOTAL_SERIAL_PORTS ];
+        UINT8   ConsoleRedirectionEnable[ TOTAL_SERIAL_PORTS ];
+        UINT8   TerminalType[ TOTAL_SERIAL_PORTS ];
+        UINT8   VtUtf8[ TOTAL_SERIAL_PORTS ];
+        UINT8   RecorderMode[ TOTAL_SERIAL_PORTS ];
+        UINT8   Resolution[ TOTAL_SERIAL_PORTS ];
+        UINT8   LegacyOsResolution[ TOTAL_SERIAL_PORTS ];
+        UINT8   PuttyFunctionKeyPad[ TOTAL_SERIAL_PORTS ];
+        UINT8   RedirectionAfterBiosPost[ TOTAL_SERIAL_PORTS ];
+#if  (INSTALL_LEGACY_OS_THROUGH_REMOTE == 1)
+        UINT8   InstallLegacyOSthroughRemote[ TOTAL_SERIAL_PORTS ];
+#endif
+
+        UINT8   AcpiSpcrConsoleRedirectionEnable;
+        UINT8   AcpiSpcrPort;
+        UINT8   AcpiSpcrTerminalType;
+        UINT8   AcpiSpcrBaudRate;
+        UINT8   AcpiSpcrFlowControl;
+        UINT8   AcpiSpcrSetupDummyVar;
+    #endif //(TOTAL_SERIAL_PORTS > 0)
+        UINT8   DebuggerConsoleRedirectionEnable;
+        UINT8   DebuggerTerminalType;
+        UINT8   ComPortforLegacy;
+#endif //ifdef SETUP_DATA_DEFINITION
+
+////////////////////////////////////
+
+#if (TOTAL_SERIAL_PORTS > 0)
+    #ifdef FORM_SET_VARSTORE
+
+    varstore SERIAL_PORTS_ENABLED_VAR,
+        key     = AUTO_ID(SERIAL_PORTS_ENABLED_VAR_KEY),
+        name    = SerialPortsEnabledVar,
+        guid    = TERMINAL_VAR_GUID;
+
+    #endif //FORM_SET_VARSTORE
+#endif //if (TOTAL_SERIAL_PORTS > 0)
+
+    #ifdef FORM_SET_VARSTORE
+
+    varstore DEBUGGER_SERIAL_PORTS_ENABLED_VAR,
+        key     = AUTO_ID(DEBUGGER_SERIAL_PORTS_ENABLED_VAR_KEY),
+        name    = DebuggerSerialPortsEnabledVar,
+        guid    = DEBUGGER_TERMINAL_VAR_GUID;
+
+    #endif //FORM_SET_VARSTORE
+
+#if defined(VFRCOMPILE) && !defined(CONTROLS_ARE_DEFINED)
+#define CONTROL_DEFINITION
+#endif
+#ifdef CONTROL_DEFINITION
+
+#ifdef CONSOLE_REDIRECTION_SUPPORT
+#if CONSOLE_REDIRECTION_SUPPORT == 1
+
+#define TERMINAL_CHECKBOX_DEBUGGERCONSOLEREDIRECTIONENABLE\
+        checkbox varid    = SETUP_DATA.DebuggerConsoleRedirectionEnable,\
+            prompt        = STRING_TOKEN(STR_CONSOLE_REDIRECTION),\
+            help          = STRING_TOKEN(STR_CONSOLE_REDIRECTION_ENABLE_HELP),\
+            flags         = RESET_REQUIRED,\
+            default value = DEFAULT_DEBUGGER_CONSOLE_REDIRECTION_ENABLE,\
+            default = DEFAULT_DEBUGGER_CONSOLE_REDIRECTION_ENABLE, defaultstore = AmiMfgDefault,\
+        endcheckbox;
+
+#define TERMINAL_ONEOF_DEBUGGERTERMINALTYPE\
+        oneof varid = SETUP_DATA.DebuggerTerminalType,\
+            prompt = STRING_TOKEN (STR_DEBUGGER_TERMINAL_TYPE),\
+            help   = STRING_TOKEN (STR_DEBUGGER_TERMINAL_TYPE_HELP),\
+            option text  = STRING_TOKEN (STR_VT100),\
+                   value = 0,\
+                   flags = 0;\
+            option text  = STRING_TOKEN (STR_VT100_PLUS),\
+                   value = 1,\
+                   flags = 0;\
+            option text  = STRING_TOKEN (STR_VT_UTF8),\
+                   value = 2,\
+                   flags = 0;\
+            option text  = STRING_TOKEN (STR_ANSI),\
+                   value = 3,\
+                   flags = RESET_REQUIRED;\
+            default = 3,\
+            default = 3, defaultstore = AmiMfgDefault,\
+        endoneof;
+#else
+    #define TERMINAL_CHECKBOX_DEBUGGERCONSOLEREDIRECTIONENABLE
+    #define TERMINAL_ONEOF_DEBUGGERTERMINALTYPE
+#endif // END #if CONSOLE_REDIRECTION_SUPPORT == 1
+#else
+    #define TERMINAL_CHECKBOX_DEBUGGERCONSOLEREDIRECTIONENABLE
+    #define TERMINAL_ONEOF_DEBUGGERTERMINALTYPE
+#endif // END #ifdef CONSOLE_REDIRECTION_SUPPORT
+
+//---------------------------------------------------------------------------
+// DEFINES USED IN PORT_SUB_PAGE MACRO START
+//---------------------------------------------------------------------------
+
+#if (TOTAL_SERIAL_PORTS > 0)
+
+#define TERMINAL_ONEOF_TERMINALTYPE(PORT_NUM)\
+        oneof varid = SETUP_DATA.TerminalType[PORT_NUM],\
+            prompt = STRING_TOKEN (STR_TERMINAL_TYPE),\
+            help   = STRING_TOKEN (STR_TERMINAL_TYPE_HELP),\
+            option text  = STRING_TOKEN (STR_VT100),\
+                   value = 0,\
+                   flags = 0;\
+            option text  = STRING_TOKEN (STR_VT100_PLUS),\
+                   value = 1,\
+                   flags = 0;\
+            option text  = STRING_TOKEN (STR_VT_UTF8),\
+                   value = 2,\
+                   flags = 0;\
+            option text  = STRING_TOKEN (STR_ANSI),\
+                   value = 3,\
+                   flags = RESET_REQUIRED;\
+            default = 1,\
+            default = 1, defaultstore = AmiMfgDefault,\
+        endoneof;
+
+#define TERMINAL_ONEOF_BAUDRATE(PORT_NUM)\
+        oneof varid = SETUP_DATA.BaudRate[PORT_NUM],\
+            prompt = STRING_TOKEN (STR_BAUD_RATE),\
+            help   = STRING_TOKEN (STR_BAUD_RATE_HELP),\
+            option text  = STRING_TOKEN (STR_9600),\
+                   value = 3,\
+                   flags = 0;\
+            option text  = STRING_TOKEN (STR_19200),\
+                   value = 4,\
+                   flags = 0;\
+            option text  = STRING_TOKEN (STR_38400),\
+                   value = 5,\
+                   flags = 0;\
+            option text  = STRING_TOKEN (STR_57600),\
+                   value = 6,\
+                   flags = 0;\
+            option text  = STRING_TOKEN (STR_115200),\
+                   value = 7,\
+                   flags = RESET_REQUIRED;\
+            default = 7,\
+            default = 7, defaultstore = AmiMfgDefault,\
+        endoneof;
+
+#define TERMINAL_ONEOF_DATABITS(PORT_NUM)\
+        oneof varid = SETUP_DATA.DataBits[PORT_NUM],\
+            prompt = STRING_TOKEN (STR_DATA_BITS),\
+            help   = STRING_TOKEN (STR_DATA_BITS_HELP),\
+            option text  = STRING_TOKEN (STR_7),\
+                   value = 7,\
+                   flags = 0;\
+            option text  = STRING_TOKEN (STR_8),\
+                   value = 8,\
+                   flags = RESET_REQUIRED;\
+            default = 8,\
+            default = 8, defaultstore = AmiMfgDefault,\
+        endoneof;
+
+#define TERMINAL_ONEOF_PARITY(PORT_NUM)\
+        oneof varid     = SETUP_DATA.Parity[PORT_NUM],\
+            prompt = STRING_TOKEN (STR_PARITY),\
+            help   = STRING_TOKEN (STR_PARITY_HELP),\
+            option text  = STRING_TOKEN (STR_NONE),\
+                   value = 1,\
+                   flags = RESET_REQUIRED;\
+            option text  = STRING_TOKEN (STR_EVEN),\
+                   value = 2,\
+                   flags = 0;\
+            option text  = STRING_TOKEN (STR_ODD),\
+                   value = 3,\
+                   flags = 0;\
+            option text  = STRING_TOKEN (STR_MARK),\
+                   value = 4,\
+                   flags = 0;\
+            option text  = STRING_TOKEN (STR_SPACE),\
+                   value = 5,\
+                   flags = 0;\
+            default = 1,\
+            default = 1, defaultstore = AmiMfgDefault,\
+        endoneof;
+
+#define TERMINAL_ONEOF_STOPBITS(PORT_NUM)\
+        oneof varid     = SETUP_DATA.StopBits[PORT_NUM],\
+            prompt = STRING_TOKEN (STR_STOP_BITS),\
+            help   = STRING_TOKEN (STR_STOP_BITS_HELP),\
+            option text  = STRING_TOKEN (STR_1),\
+                   value = 1,\
+                   flags = RESET_REQUIRED;\
+            option text  = STRING_TOKEN (STR_2),\
+                   value = 3,\
+                   flags = 0;\
+            default = 1,\
+            default = 1, defaultstore = AmiMfgDefault,\
+        endoneof;
+
+#define TERMINAL_ONEOF_FLOWCONTROL(PORT_NUM)\
+        oneof varid = SETUP_DATA.FlowControl[PORT_NUM],\
+            prompt = STRING_TOKEN (STR_FLOW_CTRL),\
+            help   = STRING_TOKEN (STR_FLOW_CTRL_HELP),\
+            option text  = STRING_TOKEN (STR_NONE),\
+                   value = 0,\
+                   flags = RESET_REQUIRED;\
+            option text  = STRING_TOKEN (STR_HARDWARE_FLOW_CTRL),\
+                   value = HARDWARE_FLOW_CONTROL_SETUP_OPTION,\
+                   flags = 0;\
+            default = 0,\
+            default = 0, defaultstore = AmiMfgDefault,\
+        endoneof;
+
+#define TERMINAL_ONEOF_VTUTF8(PORT_NUM)\
+        checkbox varid = SETUP_DATA.VtUtf8[PORT_NUM],\
+            prompt      = STRING_TOKEN(STR_TERMINAL_VTUTF8),\
+            help        = STRING_TOKEN(STR_TERMINAL_VTUTF8_HELP),\
+            flags       = RESET_REQUIRED,\
+            default value = VTUTF8_ENABLE, \
+            default = VTUTF8_ENABLE, defaultstore = AmiMfgDefault,\
+        endcheckbox;
+
+#define TERMINAL_ONEOF_RECORDERMODE(PORT_NUM)\
+        checkbox varid = SETUP_DATA.RecorderMode[PORT_NUM],\
+            prompt      = STRING_TOKEN(STR_TERMINAL_RECORDER_MODE),\
+            help        = STRING_TOKEN(STR_TERMINAL_RECORDER_MODE_HELP),\
+            flags       = RESET_REQUIRED,\
+            default value = RECORDER_MODE_ENABLE, \
+            default = RECORDER_MODE_ENABLE, defaultstore = AmiMfgDefault,\
+        endcheckbox;
+
+#define TERMINAL_ONEOF_RESOLUTION(PORT_NUM)\
+        checkbox varid = SETUP_DATA.Resolution[PORT_NUM],\
+            prompt      = STRING_TOKEN(STR_TERMINAL_RESOLUTION),\
+            help        = STRING_TOKEN(STR_TERMINAL_RESOLUTION_HELP),\
+            flags       = RESET_REQUIRED,\
+            default value = EXTENDED_RESOLUTION_ENABLE, \
+            default = EXTENDED_RESOLUTION_ENABLE, defaultstore = AmiMfgDefault,\
+        endcheckbox;
+
+#define TERMINAL_ONEOF_LEGACYOSRESOLUTION(PORT_NUM)\
+        oneof varid = SETUP_DATA.LegacyOsResolution[PORT_NUM],\
+            prompt = STRING_TOKEN (STR_LEGACYOS_RESOLUTION),\
+            help   = STRING_TOKEN (STR_LEGACYOS_RESOLUTION_HELP),\
+            option text  = STRING_TOKEN (STR_80_24),\
+                   value = 0,\
+                   flags = RESET_REQUIRED;\
+            option text  = STRING_TOKEN (STR_80_25),\
+                   value = 1,\
+                   flags = 0;\
+            default = 0,\
+            default = 0, defaultstore = AmiMfgDefault,\
+        endoneof;
+
+#define TERMINAL_ONEOF_PUTTYFUNCTIONKEYPAD(PORT_NUM)\
+        oneof varid = SETUP_DATA.PuttyFunctionKeyPad[PORT_NUM],\
+            prompt = STRING_TOKEN (STR_PUTTYFUNCTION_KEYPAD),\
+            help   = STRING_TOKEN (STR_PUTTYFUNCTION_KEYPAD_HELP),\
+            option text  = STRING_TOKEN (STR_VT100), \
+                value = PUTTY_VT100, \
+                flags = RESET_REQUIRED; \
+            option text  = STRING_TOKEN (STR_LINUX), \
+                value = PUTTY_LINUX, \
+                flags = 0; \
+            option text  = STRING_TOKEN (STR_XTERMR6), \
+                value = PUTTY_XTERMR6, \
+                flags = 0; \
+            option text  = STRING_TOKEN (STR_SCO), \
+                value = PUTTY_SCO, \
+                flags = 0; \
+            option text  = STRING_TOKEN (STR_ESCN), \
+                value = PUTTY_ESCN, \
+                flags = 0; \
+            option text  = STRING_TOKEN (STR_VT400), \
+                value = PUTTY_VT400, \
+                flags = 0; \
+            default = PUTTY_VT100,\
+            default = PUTTY_VT100, defaultstore = AmiMfgDefault,\
+        endoneof;
+
+#if  (INSTALL_LEGACY_OS_THROUGH_REMOTE == 1)
+#define TERMINAL_ONEOF_INSTALLLEGACYOSTHROUGHREMOTE(PORT_NUM)\
+        checkbox varid = SETUP_DATA.InstallLegacyOSthroughRemote[PORT_NUM],\
+            prompt      = STRING_TOKEN(STR_FORCE_SYSTEM_VGA_TO_TEXT_MODE),\
+            help        = STRING_TOKEN(STR_FORCE_SYSTEM_VGA_TO_TEXT_MODE_HELP),\
+            flags       = RESET_REQUIRED,\
+            default value = INSTALL_LEGACY_OS_THROUGH_REMOTE, \
+            default = INSTALL_LEGACY_OS_THROUGH_REMOTE, defaultstore = AmiMfgDefault,\
+        endcheckbox;
+#else
+#define TERMINAL_ONEOF_INSTALLLEGACYOSTHROUGHREMOTE(PORT_NUM)
+#endif
+
+#define TERMINAL_ONEOF_REDIRECTIONAFTERBIOSENABLE(PORT_NUM)\
+        oneof varid = SETUP_DATA.RedirectionAfterBiosPost[PORT_NUM],\
+            prompt = STRING_TOKEN (STR_REDIRECTION_AFTER_BIOS_POST),\
+            help   = STRING_TOKEN (STR_REDIRECTION_AFTER_BIOS_POST_HELP),\
+            option text  = STRING_TOKEN (STR_ALWAY_ENABLE),\
+                   value = 0,\
+                   flags = RESET_REQUIRED;\
+            option text  = STRING_TOKEN (STR_BOOTLOADER),\
+                   value = 1,\
+                   flags = 0;\
+            default value = 0,\
+            default = 0, defaultstore = AmiMfgDefault,\
+        endoneof;
+//---------------------------------------------------------------------------
+// DEFINES USED IN PORT_SUB_PAGE MACRO END
+//---------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------
+// DEFINES USED IN PORT_CONTROLS and PORT_CONTROLS_PCI MACRO START
+//---------------------------------------------------------------------------
+
+#define TERMINAL_ONEOF_CONSOLEREDIRECTIONENABLE(PORT_NUM,DEFAULT_CONSOLE_REDIRECTION_ENABLE)\
+        checkbox varid  = SETUP_DATA.ConsoleRedirectionEnable[PORT_NUM],\
+            prompt      = STRING_TOKEN(STR_CONSOLE_REDIRECTION),\
+            help        = STRING_TOKEN(STR_CONSOLE_REDIRECTION_ENABLE_HELP),\
+            flags       = RESET_REQUIRED,\
+            default value = DEFAULT_CONSOLE_REDIRECTION_ENABLE, \
+            default = DEFAULT_CONSOLE_REDIRECTION_ENABLE, defaultstore = AmiMfgDefault,\
+        endcheckbox;
+
+#endif
+//---------------------------------------------------------------------------
+// DEFINES USED IN PORT_CONTROLS and PORT_CONTROLS_PCI MACRO END
+//---------------------------------------------------------------------------
+
+#if (TOTAL_SERIAL_PORTS > 0)
+
+#define TERMINAL_CHECKBOX_ACPISPCRCONSOLEREDIRECTIONENABLE\
+        checkbox varid  = SETUP_DATA.AcpiSpcrConsoleRedirectionEnable,\
+            prompt      = STRING_TOKEN(STR_EMS_CONSOLE_REDIRECTION),\
+            help        = STRING_TOKEN(STR_CONSOLE_REDIRECTION_ENABLE_HELP),\
+            flags       = RESET_REQUIRED,\
+            default     = DEFAULT_ACPI_SPCR_CONSOLE_REDIRECTION_ENABLE, \
+            default = DEFAULT_ACPI_SPCR_CONSOLE_REDIRECTION_ENABLE, defaultstore = AmiMfgDefault,\
+        endcheckbox;
+
+#define TERMINAL_ONEOF_ACPISPCRTERMINALTYPE\
+       oneof varid = SETUP_DATA.AcpiSpcrTerminalType,\
+            prompt = STRING_TOKEN (STR_EMS_TERMINAL_TYPE),\
+            help   = STRING_TOKEN (STR_OUT_OF_BAND_MGMT_TERMINAL_TYPE_HELP),\
+            option text  = STRING_TOKEN (STR_VT100),\
+                   value = 0,\
+                   flags = 0;\
+            option text  = STRING_TOKEN (STR_VT100_PLUS),\
+                   value = 1,\
+                   flags = 0;\
+            option text  = STRING_TOKEN (STR_VT_UTF8),\
+                   value = 2,\
+                   flags = RESET_REQUIRED;\
+            option text  = STRING_TOKEN (STR_ANSI),\
+                   value = 3,\
+                   flags = 0;\
+            default value = 2,\
+            default = 2, defaultstore = AmiMfgDefault,\
+        endoneof;
+
+#define TERMINAL_ONEOF_ACPISPCRBAUDRATE\
+        oneof varid = SETUP_DATA.AcpiSpcrBaudRate,\
+            prompt = STRING_TOKEN (STR_EMS_BAUD_RATE),\
+            help   = STRING_TOKEN (STR_BAUD_RATE_HELP),\
+            option text  = STRING_TOKEN (STR_9600),\
+                   value = 3,\
+                   flags = 0;\
+            option text  = STRING_TOKEN (STR_19200),\
+                   value = 4,\
+                   flags = 0;\
+            option text  = STRING_TOKEN (STR_57600),\
+                   value = 6,\
+                   flags = 0;\
+            option text  = STRING_TOKEN (STR_115200),\
+                   value = 7,\
+                   flags = RESET_REQUIRED;\
+            default value = 7,\
+            default = 7, defaultstore = AmiMfgDefault,\
+        endoneof;
+
+#define TERMINAL_ONEOF_ACPISPCRFLOWCONTROL\
+        oneof varid = SETUP_DATA.AcpiSpcrFlowControl,\
+            prompt = STRING_TOKEN (STR_EMS_FLOW_CTRL),\
+            help   = STRING_TOKEN (STR_FLOW_CTRL_HELP),\
+            option text  = STRING_TOKEN (STR_NONE),\
+                   value = 0,\
+                   flags = RESET_REQUIRED;\
+            option text  = STRING_TOKEN (STR_HARDWARE_FLOW_CTRL),\
+                   value = HARDWARE_FLOW_CONTROL_SETUP_OPTION,\
+                   flags = 0;\
+            option text  = STRING_TOKEN (STR_SOFTWARE_FLOW_CTRL),\
+                   value = SOFTWARE_FLOW_CONTROL_SETUP_OPTION,\
+                   flags = 0;\
+            default value = 0,\
+            default = 0, defaultstore = AmiMfgDefault,\
+        endoneof;
+
+#else
+    #define TERMINAL_CHECKBOX_ACPISPCRCONSOLEREDIRECTIONENABLE
+    #define TERMINAL_ONEOF_ACPISPCRTERMINALTYPE
+    #define TERMINAL_ONEOF_ACPISPCRBAUDRATE
+    #define TERMINAL_ONEOF_ACPISPCRFLOWCONTROL
+#endif // END #if (TOTAL_SERIAL_PORTS > 0)
+
+#if (TOTAL_SERIAL_PORTS > 0)
+
+//---------------------------------------------------------------------------
+// PCI PORT OPTION TEXT INDEX DEFINITION
+//---------------------------------------------------------------------------
+
+#if (TOTAL_PCI_SERIAL_PORTS > 0) && (TOTAL_SIO_SERIAL_PORTS == 0)
+
+#define PCI_PORT_OPTION_TEXT_INDEX\
+        option text  = STRING_TOKEN (STR_PCI_SERIAL_PORT0),\
+             value = PCI_SERIAL_PORT_0_INDEX,\
+             flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+
+#else
+
+#define PCI_PORT_OPTION_TEXT_INDEX\
+           option text  = STRING_TOKEN (STR_PCI_SERIAL_PORT0),\
+             value = PCI_SERIAL_PORT_0_INDEX,\
+             flags = RESET_REQUIRED;
+
+#endif // END #if (TOTAL_PCI_SERIAL_PORTS > 0) && (TOTAL_SIO_SERIAL_PORTS == 0)
+
+//---------------------------------------------------------------------------
+// PCI PORT OPTION TEXT DEFINITION START
+//---------------------------------------------------------------------------
+
+#if (TOTAL_PCI_SERIAL_PORTS == 0)
+
+        #define PCI_PORT_OPTION_TEXT
+
+#endif // END #if (TOTAL_PCI_SERIAL_PORTS == 0)
+
+#if (TOTAL_PCI_SERIAL_PORTS == 1)
+
+#define PCI_PORT_OPTION_TEXT\
+        PCI_PORT_OPTION_TEXT_INDEX
+
+#endif // END #if (TOTAL_PCI_SERIAL_PORTS == 1)
+
+#if (TOTAL_PCI_SERIAL_PORTS == 2)
+
+#define PCI_PORT_OPTION_TEXT\
+        PCI_PORT_OPTION_TEXT_INDEX\
+        option text  = STRING_TOKEN (STR_PCI_SERIAL_PORT1),\
+             value = PCI_SERIAL_PORT_1_INDEX,\
+             flags = RESET_REQUIRED;
+
+#endif // END #if (TOTAL_PCI_SERIAL_PORTS == 2)
+
+#if (TOTAL_PCI_SERIAL_PORTS == 3)
+
+#define PCI_PORT_OPTION_TEXT\
+        PCI_PORT_OPTION_TEXT_INDEX\
+        option text  = STRING_TOKEN (STR_PCI_SERIAL_PORT1),\
+             value = PCI_SERIAL_PORT_1_INDEX,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_PCI_SERIAL_PORT2),\
+             value = PCI_SERIAL_PORT_2_INDEX,\
+             flags = RESET_REQUIRED;
+
+#endif // END #if (TOTAL_PCI_SERIAL_PORTS == 3)
+
+#if (TOTAL_PCI_SERIAL_PORTS == 4)
+
+#define PCI_PORT_OPTION_TEXT\
+        PCI_PORT_OPTION_TEXT_INDEX\
+        option text  = STRING_TOKEN (STR_PCI_SERIAL_PORT1),\
+             value = PCI_SERIAL_PORT_1_INDEX,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_PCI_SERIAL_PORT2),\
+             value = PCI_SERIAL_PORT_2_INDEX,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_PCI_SERIAL_PORT3),\
+             value = PCI_SERIAL_PORT_3_INDEX,\
+             flags = RESET_REQUIRED;
+
+#endif // END #if (TOTAL_PCI_SERIAL_PORTS == 4)
+
+//---------------------------------------------------------------------------
+// PCI PORT OPTION TEXT DEFINITION END
+//---------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------
+// SIO PORT OPTION TEXT INDEX DEFINITION START
+//---------------------------------------------------------------------------
+
+//#if (TOTAL_SIO_SERIAL_PORTS > 0)
+
+#define SIO_PORT_OPTION_TEXT_INDEX\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT0),\
+             value = TERMINAL_PORT0,\
+             flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+
+#endif // END #if (TOTAL_SIO_SERIAL_PORTS > 0)
+
+//---------------------------------------------------------------------------
+// SIO PORT OPTION TEXT INDEX DEFINITION END
+//---------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------
+// SIO PORT OPTION TEXT DEFINITION START
+//---------------------------------------------------------------------------
+
+#if (TOTAL_SIO_SERIAL_PORTS == 0)
+
+        #define SIO_PORT_OPTION_TEXT
+
+#endif // END #if (TOTAL_SIO_SERIAL_PORTS == 0)
+
+#if (TOTAL_SIO_SERIAL_PORTS == 1)
+
+#define SIO_PORT_OPTION_TEXT\
+        SIO_PORT_OPTION_TEXT_INDEX
+
+#endif // END #if (TOTAL_SIO_SERIAL_PORTS == 1)
+
+#if (TOTAL_SIO_SERIAL_PORTS == 2)
+//X11SPG+
+#define SIO_PORT_OPTION_TEXT\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT1),\
+             value = TERMINAL_PORT1,\
+             flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+
+#endif // END #if (TOTAL_SIO_SERIAL_PORTS == 2)
+//X11SPG-
+#if (TOTAL_SIO_SERIAL_PORTS == 3)
+
+#define SIO_PORT_OPTION_TEXT\
+        SIO_PORT_OPTION_TEXT_INDEX\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT1),\
+             value = TERMINAL_PORT1,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT2),\
+             value = TERMINAL_PORT2,\
+             flags = RESET_REQUIRED;
+
+#endif // END #if (TOTAL_SIO_SERIAL_PORTS == 3)
+
+#if (TOTAL_SIO_SERIAL_PORTS == 4)
+
+#define SIO_PORT_OPTION_TEXT\
+        SIO_PORT_OPTION_TEXT_INDEX\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT1),\
+             value = TERMINAL_PORT1,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT2),\
+             value = TERMINAL_PORT2,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT3),\
+             value = TERMINAL_PORT3,\
+             flags = RESET_REQUIRED;
+
+#endif // END #if (TOTAL_SIO_SERIAL_PORTS == 4)
+
+#if (TOTAL_SIO_SERIAL_PORTS == 5)
+
+#define SIO_PORT_OPTION_TEXT\
+        SIO_PORT_OPTION_TEXT_INDEX\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT1),\
+             value = TERMINAL_PORT1,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT2),\
+             value = TERMINAL_PORT2,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT3),\
+             value = TERMINAL_PORT3,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT4),\
+             value = TERMINAL_PORT4,\
+             flags = RESET_REQUIRED;
+
+#endif // END #if (TOTAL_SIO_SERIAL_PORTS == 5)
+
+#if (TOTAL_SIO_SERIAL_PORTS == 6)
+
+#define SIO_PORT_OPTION_TEXT\
+        SIO_PORT_OPTION_TEXT_INDEX\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT1),\
+             value = TERMINAL_PORT1,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT2),\
+             value = TERMINAL_PORT2,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT3),\
+             value = TERMINAL_PORT3,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT4),\
+             value = TERMINAL_PORT4,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT5),\
+             value = TERMINAL_PORT5,\
+             flags = RESET_REQUIRED;
+
+#endif // END #if (TOTAL_SIO_SERIAL_PORTS == 6)
+
+#if (TOTAL_SIO_SERIAL_PORTS == 7)
+
+#define SIO_PORT_OPTION_TEXT\
+        SIO_PORT_OPTION_TEXT_INDEX\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT1),\
+             value = TERMINAL_PORT1,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT2),\
+             value = TERMINAL_PORT2,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT3),\
+             value = TERMINAL_PORT3,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT4),\
+             value = TERMINAL_PORT4,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT5),\
+             value = TERMINAL_PORT5,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT6),\
+             value = TERMINAL_PORT6,\
+             flags = RESET_REQUIRED;
+
+#endif // END #if (TOTAL_SIO_SERIAL_PORTS == 7)
+
+#if (TOTAL_SIO_SERIAL_PORTS == 8)
+
+#define SIO_PORT_OPTION_TEXT\
+        SIO_PORT_OPTION_TEXT_INDEX\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT1),\
+             value = TERMINAL_PORT1,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT2),\
+             value = TERMINAL_PORT2,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT3),\
+             value = TERMINAL_PORT3,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT4),\
+             value = TERMINAL_PORT4,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT5),\
+             value = TERMINAL_PORT5,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT6),\
+             value = TERMINAL_PORT6,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT7),\
+             value = TERMINAL_PORT7,\
+             flags = RESET_REQUIRED;
+
+#endif // END #if (TOTAL_SIO_SERIAL_PORTS == 8)
+
+#if (TOTAL_SIO_SERIAL_PORTS == 9)
+
+#define SIO_PORT_OPTION_TEXT\
+        SIO_PORT_OPTION_TEXT_INDEX\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT1),\
+             value = TERMINAL_PORT1,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT2),\
+             value = TERMINAL_PORT2,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT3),\
+             value = TERMINAL_PORT3,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT3),\
+             value = TERMINAL_PORT3,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT4),\
+             value = TERMINAL_PORT4,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT5),\
+             value = TERMINAL_PORT5,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT6),\
+             value = TERMINAL_PORT6,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT7),\
+             value = TERMINAL_PORT7,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT8),\
+             value = TERMINAL_PORT8,\
+             flags = RESET_REQUIRED;
+
+#endif // END #if (TOTAL_SIO_SERIAL_PORTS == 9)
+
+#if (TOTAL_SIO_SERIAL_PORTS == 10)
+
+#define SIO_PORT_OPTION_TEXT\
+        SIO_PORT_OPTION_TEXT_INDEX\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT1),\
+             value = TERMINAL_PORT1,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT2),\
+             value = TERMINAL_PORT2,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT3),\
+             value = TERMINAL_PORT3,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT4),\
+             value = TERMINAL_PORT4,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT5),\
+             value = TERMINAL_PORT5,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT6),\
+             value = TERMINAL_PORT6,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT7),\
+             value = TERMINAL_PORT7,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT8),\
+             value = TERMINAL_PORT8,\
+             flags = RESET_REQUIRED;\
+        option text  = STRING_TOKEN (STR_SIO_SERIAL_PORT9),\
+             value = TERMINAL_PORT9,\
+             flags = RESET_REQUIRED;
+     
+#endif // END #if (TOTAL_SIO_SERIAL_PORTS == 10)
+
+//---------------------------------------------------------------------------
+// SIO PORT OPTION TEXT DEFINITION END
+//---------------------------------------------------------------------------
+
+
+//---------------------------------------------------------------------------
+// AcpiSpcrPort VARIABLE DEFINITION START
+//---------------------------------------------------------------------------
+
+#if (TOTAL_SERIAL_PORTS > 0)
+
+#define TERMINAL_ONEOF_ACPISPCRPORT\
+        oneof varid = SETUP_DATA.AcpiSpcrPort,\
+            prompt = STRING_TOKEN (STR_OUT_OF_BAND_MANAGEMENT_PORT),\
+            help   = STRING_TOKEN (STR_OUT_OF_BAND_MANAGEMENT_PORT_HELP),\
+            SIO_PORT_OPTION_TEXT\
+            PCI_PORT_OPTION_TEXT\
+        endoneof;
+
+#endif // ((TOTAL_SERIAL_PORTS > 0)
+
+#ifndef TERMINAL_ONEOF_ACPISPCRPORT
+    #define TERMINAL_ONEOF_ACPISPCRPORT
+#endif // END #ifndef TERMINAL_ONEOF_ACPISPCRPORT
+
+//---------------------------------------------------------------------------
+// AcpiSpcrPort VARIABLE DEFINITION END
+//---------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------
+// ComPortforLegacy VARIABLE DEFINITION START
+//---------------------------------------------------------------------------
+
+#if( LEGACYSREDIR_SUPPORT ==1)
+#if (TOTAL_SERIAL_PORTS > 0)
+
+#define TERMINAL_ONEOF_LEGACYPORT\
+        oneof varid = SETUP_DATA.ComPortforLegacy,\
+            prompt = STRING_TOKEN (STR_COM_FOR_LEGACY_REDIRECTION),\
+            help   = STRING_TOKEN (STR_COM_FOR_LEGACY_REDIRECTION_HELP),\
+            SIO_PORT_OPTION_TEXT\
+            PCI_PORT_OPTION_TEXT\
+        endoneof;
+
+#endif // END #if (TOTAL_SERIAL_PORTS > 1)
+
+#ifndef TERMINAL_ONEOF_LEGACYPORT
+    #define TERMINAL_ONEOF_LEGACYPORT
+#endif // END #ifndef TERMINAL_ONEOF_LEGACYPORT
+
+#endif
+//---------------------------------------------------------------------------
+// ComPortforLegacy VARIABLE DEFINITION END
+//---------------------------------------------------------------------------
+
+#endif // END #ifdef CONTROL_DEFINITION
+
+#ifdef CONTROLS_WITH_DEFAULTS
+#define PORT_CONTROLS_DEFAULT(PORT_NUM, DEFAULT_CONSOLE_REDIRECTION_ENABLE) \
+    TERMINAL_ONEOF_TERMINALTYPE(PORT_NUM) \
+    TERMINAL_ONEOF_BAUDRATE(PORT_NUM) \
+    TERMINAL_ONEOF_DATABITS(PORT_NUM) \
+    TERMINAL_ONEOF_PARITY(PORT_NUM) \
+    TERMINAL_ONEOF_STOPBITS(PORT_NUM) \
+    TERMINAL_ONEOF_FLOWCONTROL(PORT_NUM) \
+    TERMINAL_ONEOF_VTUTF8(PORT_NUM) \
+    TERMINAL_ONEOF_RECORDERMODE(PORT_NUM) \
+    TERMINAL_ONEOF_RESOLUTION(PORT_NUM) \
+    TERMINAL_ONEOF_LEGACYOSRESOLUTION(PORT_NUM) \
+    TERMINAL_ONEOF_PUTTYFUNCTIONKEYPAD(PORT_NUM) \
+    TERMINAL_ONEOF_REDIRECTIONAFTERBIOSENABLE(PORT_NUM) \
+    TERMINAL_ONEOF_CONSOLEREDIRECTIONENABLE(PORT_NUM,DEFAULT_CONSOLE_REDIRECTION_ENABLE)
+    
+    TERMINAL_CHECKBOX_DEBUGGERCONSOLEREDIRECTIONENABLE
+    TERMINAL_ONEOF_DEBUGGERTERMINALTYPE
+
+#if (TOTAL_SIO_SERIAL_PORTS > 0)
+    PORT_CONTROLS_DEFAULT(TERMINAL_PORT0, COM0_DEFAULT_CONSOLE_REDIRECTION_ENABLE)
+#if  (INSTALL_LEGACY_OS_THROUGH_REMOTE == 1)
+    TERMINAL_ONEOF_INSTALLLEGACYOSTHROUGHREMOTE(TERMINAL_PORT0)
+#endif
+#endif
+
+#if (TOTAL_SIO_SERIAL_PORTS > 1)
+    PORT_CONTROLS_DEFAULT(TERMINAL_PORT1, COM1_DEFAULT_CONSOLE_REDIRECTION_ENABLE)
+#if  (INSTALL_LEGACY_OS_THROUGH_REMOTE == 1)
+    TERMINAL_ONEOF_INSTALLLEGACYOSTHROUGHREMOTE(TERMINAL_PORT1)
+#endif
+#endif
+
+#if (TOTAL_SIO_SERIAL_PORTS > 2)
+    PORT_CONTROLS_DEFAULT(TERMINAL_PORT2, COM2_DEFAULT_CONSOLE_REDIRECTION_ENABLE)
+#if  (INSTALL_LEGACY_OS_THROUGH_REMOTE == 1)
+    TERMINAL_ONEOF_INSTALLLEGACYOSTHROUGHREMOTE(TERMINAL_PORT2)
+#endif
+#endif
+
+#if (TOTAL_SIO_SERIAL_PORTS > 3)
+    PORT_CONTROLS_DEFAULT(TERMINAL_PORT3, COM3_DEFAULT_CONSOLE_REDIRECTION_ENABLE)
+#if  (INSTALL_LEGACY_OS_THROUGH_REMOTE == 1)
+    TERMINAL_ONEOF_INSTALLLEGACYOSTHROUGHREMOTE(TERMINAL_PORT3)
+#endif
+#endif
+
+#if (TOTAL_SIO_SERIAL_PORTS > 4)
+    PORT_CONTROLS_DEFAULT(TERMINAL_PORT4, COM4_DEFAULT_CONSOLE_REDIRECTION_ENABLE)
+#if  (INSTALL_LEGACY_OS_THROUGH_REMOTE == 1)
+    TERMINAL_ONEOF_INSTALLLEGACYOSTHROUGHREMOTE(TERMINAL_PORT4)
+#endif
+#endif
+
+#if (TOTAL_SIO_SERIAL_PORTS > 5)
+    PORT_CONTROLS_DEFAULT(TERMINAL_PORT5, COM5_DEFAULT_CONSOLE_REDIRECTION_ENABLE)
+#if  (INSTALL_LEGACY_OS_THROUGH_REMOTE == 1)
+    TERMINAL_ONEOF_INSTALLLEGACYOSTHROUGHREMOTE(TERMINAL_PORT5)
+#endif
+#endif
+
+#if (TOTAL_SIO_SERIAL_PORTS > 6)
+    PORT_CONTROLS_DEFAULT(TERMINAL_PORT6, COM6_DEFAULT_CONSOLE_REDIRECTION_ENABLE)
+#if  (INSTALL_LEGACY_OS_THROUGH_REMOTE == 1)
+    TERMINAL_ONEOF_INSTALLLEGACYOSTHROUGHREMOTE(TERMINAL_PORT6)
+#endif
+#endif
+
+#if (TOTAL_SIO_SERIAL_PORTS > 7)
+    PORT_CONTROLS_DEFAULT(TERMINAL_PORT7, COM7_DEFAULT_CONSOLE_REDIRECTION_ENABLE)
+#if  (INSTALL_LEGACY_OS_THROUGH_REMOTE == 1)
+    TERMINAL_ONEOF_INSTALLLEGACYOSTHROUGHREMOTE(TERMINAL_PORT7)
+#endif
+#endif
+
+#if (TOTAL_SIO_SERIAL_PORTS > 8)
+    PORT_CONTROLS_DEFAULT(TERMINAL_PORT8, COM8_DEFAULT_CONSOLE_REDIRECTION_ENABLE)
+#if  (INSTALL_LEGACY_OS_THROUGH_REMOTE == 1)
+    TERMINAL_ONEOF_INSTALLLEGACYOSTHROUGHREMOTE(TERMINAL_PORT8)
+#endif
+#endif
+
+#if (TOTAL_SIO_SERIAL_PORTS > 9)
+    PORT_CONTROLS_DEFAULT(TERMINAL_PORT9, COM9_DEFAULT_CONSOLE_REDIRECTION_ENABLE)
+#if  (INSTALL_LEGACY_OS_THROUGH_REMOTE == 1)
+    TERMINAL_ONEOF_INSTALLLEGACYOSTHROUGHREMOTE(TERMINAL_PORT9)
+#endif
+#endif
+////////////////////////////////////
+
+#if (TOTAL_PCI_SERIAL_PORTS > 0)
+    PORT_CONTROLS_DEFAULT(PCI_SERIAL_PORT_0_INDEX, PCI0_DEFAULT_CONSOLE_REDIRECTION_ENABLE)
+#if  (INSTALL_LEGACY_OS_THROUGH_REMOTE == 1)
+    TERMINAL_ONEOF_INSTALLLEGACYOSTHROUGHREMOTE(PCI_SERIAL_PORT_0_INDEX)
+#endif
+#endif
+
+#if (TOTAL_PCI_SERIAL_PORTS > 1)
+    PORT_CONTROLS_DEFAULT(PCI_SERIAL_PORT_1_INDEX, PCI1_DEFAULT_CONSOLE_REDIRECTION_ENABLE)
+#if  (INSTALL_LEGACY_OS_THROUGH_REMOTE == 1)
+    TERMINAL_ONEOF_INSTALLLEGACYOSTHROUGHREMOTE(PCI_SERIAL_PORT_1_INDEX)
+#endif
+#endif
+
+#if (TOTAL_PCI_SERIAL_PORTS > 2)
+    PORT_CONTROLS_DEFAULT(PCI_SERIAL_PORT_2_INDEX, PCI2_DEFAULT_CONSOLE_REDIRECTION_ENABLE)
+#if  (INSTALL_LEGACY_OS_THROUGH_REMOTE == 1)
+    TERMINAL_ONEOF_INSTALLLEGACYOSTHROUGHREMOTE(PCI_SERIAL_PORT_2_INDEX)
+#endif
+#endif
+
+#if (TOTAL_PCI_SERIAL_PORTS > 3)
+    PORT_CONTROLS_DEFAULT(PCI_SERIAL_PORT_3_INDEX, PCI3_DEFAULT_CONSOLE_REDIRECTION_ENABLE)
+#if  (INSTALL_LEGACY_OS_THROUGH_REMOTE == 1)
+    TERMINAL_ONEOF_INSTALLLEGACYOSTHROUGHREMOTE(PCI_SERIAL_PORT_3_INDEX)
+#endif
+#endif
+////////////////////////////////////
+    TERMINAL_CHECKBOX_ACPISPCRCONSOLEREDIRECTIONENABLE
+    TERMINAL_ONEOF_ACPISPCRTERMINALTYPE
+    TERMINAL_ONEOF_ACPISPCRBAUDRATE
+    TERMINAL_ONEOF_ACPISPCRFLOWCONTROL
+    TERMINAL_ONEOF_ACPISPCRPORT
+
+#endif // END #ifdef CONTROLS_WITH_DEFAULTS
+////////////////////////////////////
+
+#ifdef ADVANCED_FORM_SET
+
+#ifndef SUPPRESS_GRAYOUT_ENDIF //old Core
+#define SUPPRESS_GRAYOUT_ENDIF endif;
+#endif
+
+
+    #ifdef FORM_SET_GOTO
+        goto TERMINAL_FORM_ID, 
+            prompt  = STRING_TOKEN(STR_TERMINAL_FORM_TITLE),
+            help    = STRING_TOKEN(STR_TERMINAL_FORM_TITLE);
+    #endif 
+
+
+    #ifdef FORM_SET_FORM
+
+    #ifndef TERMINAL_FORM_MAIN
+    #define TERMINAL_FORM_MAIN
+        form formid = AUTO_ID(TERMINAL_FORM_ID),
+        title     = STRING_TOKEN(STR_TERMINAL_FORM_TITLE);
+
+////////////////////////////////////
+
+#if (TOTAL_SERIAL_PORTS == 0)
+
+    SEPARATOR
+    SUBTITLE(STRING_TOKEN(STR_NO_SERIAL_PORTS_PRESENT))
+
+#else 
+
+////////////////////////////////////
+
+#define PORT_CONTROLS(SUBTITLE_STR_TOKEN, FORM_ID, PORT_NUM,DEFAULT_CONSOLE_REDIRECTION_ENABLE) \
+    SEPARATOR \
+    SUBTITLE(SUBTITLE_STR_TOKEN) \
+\
+    suppressif ideqval SERIAL_PORTS_ENABLED_VAR.PortsEnabled[PORT_NUM]==1; \
+    text \
+        help   = STRING_TOKEN(STR_BLANK), \
+        text   = STRING_TOKEN(STR_CONSOLE_REDIRECTION), \
+        text   = STRING_TOKEN(STR_PORT_IS_DISABLED), \
+        flags  = 0, \
+        key    = 0; \
+    endif; \
+\
+    suppressif ideqval SERIAL_PORTS_ENABLED_VAR.PortsEnabled[PORT_NUM]==0; \
+        TERMINAL_ONEOF_CONSOLEREDIRECTIONENABLE(PORT_NUM,DEFAULT_CONSOLE_REDIRECTION_ENABLE) \
+    endif; \
+\
+    suppressif ideqval SERIAL_PORTS_ENABLED_VAR.PortsEnabled[PORT_NUM]==0; \
+    grayoutif ideqval SETUP_DATA.ConsoleRedirectionEnable[PORT_NUM] == 0; \
+    goto FORM_ID, \
+      prompt  = STRING_TOKEN(STR_CONSOLE_REDIRECTION_SETTINGS), \
+      help    = STRING_TOKEN(STR_CONSOLE_REDIRECTION_SETTINGS_HELP); \
+    SUPPRESS_GRAYOUT_ENDIF
+
+#define PORT_CONTROLS_PCI(SUBTITLE_STR_TOKEN, FORM_ID, PORT_NUM, DEFAULT_PCI_CONSOLE_REDIRECTION_ENABLE) \
+    SEPARATOR \
+    SUBTITLE(SUBTITLE_STR_TOKEN) \
+\
+    suppressif ideqval SERIAL_PORTS_ENABLED_VAR.PortsEnabled[PORT_NUM]==1; \
+    text \
+        help   = STRING_TOKEN(STR_BLANK), \
+        text   = STRING_TOKEN(STR_CONSOLE_REDIRECTION), \
+        text   = STRING_TOKEN(STR_PORT_IS_DISABLED), \
+        flags  = 0, \
+        key    = 0; \
+    endif; \
+\
+    suppressif ideqval SERIAL_PORTS_ENABLED_VAR.PortsEnabled[PORT_NUM]==0; \
+        TERMINAL_ONEOF_CONSOLEREDIRECTIONENABLE(PORT_NUM,DEFAULT_PCI_CONSOLE_REDIRECTION_ENABLE) \
+    endif; \
+\
+    suppressif ideqval SERIAL_PORTS_ENABLED_VAR.PortsEnabled[PORT_NUM]==0; \
+    grayoutif ideqval SETUP_DATA.ConsoleRedirectionEnable[PORT_NUM] == 0; \
+    goto FORM_ID, \
+      prompt  = STRING_TOKEN(STR_CONSOLE_REDIRECTION_SETTINGS), \
+      help    = STRING_TOKEN(STR_CONSOLE_REDIRECTION_SETTINGS_HELP); \
+    SUPPRESS_GRAYOUT_ENDIF
+
+#if (TOTAL_SIO_SERIAL_PORTS > 0)
+//    PORT_CONTROLS(STRING_TOKEN(STR_SIO_SERIAL_PORT0), COM0_FORM_ID, TERMINAL_PORT0, COM0_DEFAULT_CONSOLE_REDIRECTION_ENABLE)
+    SEPARATOR 
+suppressif 1;//X11SPG   
+    SUBTITLE(STRING_TOKEN(STR_SIO_SERIAL_PORT0))
+
+    suppressif ideqval SERIAL_PORTS_ENABLED_VAR.PortsEnabled[TERMINAL_PORT0]==1;
+    text
+        help   = STRING_TOKEN(STR_BLANK),
+        text   = STRING_TOKEN(STR_CONSOLE_REDIRECTION),
+        text   = STRING_TOKEN(STR_PORT_IS_DISABLED),
+        flags  = 0,
+        key    = 0;
+    endif;
+ 
+    suppressif ideqval SERIAL_PORTS_ENABLED_VAR.PortsEnabled[TERMINAL_PORT0]==0;
+//        TERMINAL_ONEOF_CONSOLEREDIRECTIONENABLE(PORT_NUM,DEFAULT_CONSOLE_REDIRECTION_ENABLE)
+        checkbox varid  = SETUP_DATA.ConsoleRedirectionEnable[TERMINAL_PORT0],
+            prompt      = STRING_TOKEN(STR_COM1_CONSOLE_REDIRECTION), // SMC_PORTING
+            help        = STRING_TOKEN(STR_CONSOLE_REDIRECTION_ENABLE_HELP),
+            flags       = RESET_REQUIRED,
+            default value = COM0_DEFAULT_CONSOLE_REDIRECTION_ENABLE,
+            default = COM0_DEFAULT_CONSOLE_REDIRECTION_ENABLE, defaultstore = AmiMfgDefault,
+        endcheckbox;
+    endif;
+    suppressif ideqval SERIAL_PORTS_ENABLED_VAR.PortsEnabled[TERMINAL_PORT0]==0;
+    grayoutif ideqval SETUP_DATA.ConsoleRedirectionEnable[TERMINAL_PORT0] == 0;
+    goto COM0_FORM_ID,
+      prompt  = STRING_TOKEN(STR_CONSOLE_REDIRECTION_SETTINGS),
+      help    = STRING_TOKEN(STR_CONSOLE_REDIRECTION_SETTINGS_HELP);
+    SUPPRESS_GRAYOUT_ENDIF
+endif;//X11SPG    
+#endif
+
+#if (TOTAL_SIO_SERIAL_PORTS > 1)
+//    PORT_CONTROLS(STRING_TOKEN(STR_SIO_SERIAL_PORT1), COM1_FORM_ID, TERMINAL_PORT1, COM1_DEFAULT_CONSOLE_REDIRECTION_ENABLE)
+    SEPARATOR 
+    SUBTITLE(STRING_TOKEN(STR_SIO_SERIAL_PORT1))
+
+    suppressif ideqval SERIAL_PORTS_ENABLED_VAR.PortsEnabled[TERMINAL_PORT1]==1;
+    text
+        help   = STRING_TOKEN(STR_BLANK),
+        text   = STRING_TOKEN(STR_CONSOLE_REDIRECTION),
+        text   = STRING_TOKEN(STR_PORT_IS_DISABLED),
+        flags  = 0,
+        key    = 0;
+    endif;
+    suppressif ideqval SERIAL_PORTS_ENABLED_VAR.PortsEnabled[TERMINAL_PORT1]==0;
+//        TERMINAL_ONEOF_CONSOLEREDIRECTIONENABLE(PORT_NUM,DEFAULT_CONSOLE_REDIRECTION_ENABLE)
+        checkbox varid  = SETUP_DATA.ConsoleRedirectionEnable[TERMINAL_PORT1],
+            prompt      = STRING_TOKEN(STR_COM2_CONSOLE_REDIRECTION), //SMC_PORTING
+            help        = STRING_TOKEN(STR_CONSOLE_REDIRECTION_ENABLE_HELP),
+            flags       = RESET_REQUIRED,
+            default value = COM1_DEFAULT_CONSOLE_REDIRECTION_ENABLE,
+            default = COM1_DEFAULT_CONSOLE_REDIRECTION_ENABLE, defaultstore = AmiMfgDefault,
+        endcheckbox;
+    endif;
+    suppressif ideqval SERIAL_PORTS_ENABLED_VAR.PortsEnabled[TERMINAL_PORT1]==0;
+    grayoutif ideqval SETUP_DATA.ConsoleRedirectionEnable[TERMINAL_PORT1] == 0;
+    goto COM1_FORM_ID,
+      prompt  = STRING_TOKEN(STR_CONSOLE_REDIRECTION_SETTINGS),
+      help    = STRING_TOKEN(STR_CONSOLE_REDIRECTION_SETTINGS_HELP);
+    SUPPRESS_GRAYOUT_ENDIF
+#endif
+
+#if (TOTAL_SIO_SERIAL_PORTS > 2)
+    PORT_CONTROLS(STRING_TOKEN(STR_SIO_SERIAL_PORT2), COM2_FORM_ID, TERMINAL_PORT2, COM2_DEFAULT_CONSOLE_REDIRECTION_ENABLE)
+#endif
+
+#if (TOTAL_SIO_SERIAL_PORTS > 3)
+    PORT_CONTROLS(STRING_TOKEN(STR_SIO_SERIAL_PORT3), COM3_FORM_ID, TERMINAL_PORT3, COM3_DEFAULT_CONSOLE_REDIRECTION_ENABLE)
+#endif
+
+#if (TOTAL_SIO_SERIAL_PORTS > 4)
+    PORT_CONTROLS(STRING_TOKEN(STR_SIO_SERIAL_PORT4), COM4_FORM_ID, TERMINAL_PORT4, COM4_DEFAULT_CONSOLE_REDIRECTION_ENABLE)
+#endif
+
+#if (TOTAL_SIO_SERIAL_PORTS > 5)
+    PORT_CONTROLS(STRING_TOKEN(STR_SIO_SERIAL_PORT5), COM5_FORM_ID, TERMINAL_PORT5, COM5_DEFAULT_CONSOLE_REDIRECTION_ENABLE)
+#endif
+
+#if (TOTAL_SIO_SERIAL_PORTS > 6)
+    PORT_CONTROLS(STRING_TOKEN(STR_SIO_SERIAL_PORT6), COM6_FORM_ID, TERMINAL_PORT6, COM6_DEFAULT_CONSOLE_REDIRECTION_ENABLE)
+#endif
+
+#if (TOTAL_SIO_SERIAL_PORTS > 7)
+    PORT_CONTROLS(STRING_TOKEN(STR_SIO_SERIAL_PORT7), COM7_FORM_ID, TERMINAL_PORT7, COM7_DEFAULT_CONSOLE_REDIRECTION_ENABLE)
+#endif
+
+#if (TOTAL_SIO_SERIAL_PORTS > 8)
+    PORT_CONTROLS(STRING_TOKEN(STR_SIO_SERIAL_PORT8), COM8_FORM_ID, TERMINAL_PORT8, COM8_DEFAULT_CONSOLE_REDIRECTION_ENABLE)
+#endif
+
+#if (TOTAL_SIO_SERIAL_PORTS > 9)
+    PORT_CONTROLS(STRING_TOKEN(STR_SIO_SERIAL_PORT9), COM9_FORM_ID, TERMINAL_PORT9, COM9_DEFAULT_CONSOLE_REDIRECTION_ENABLE)
+#endif
+
+////////////////////////////////////
+
+#if (TOTAL_PCI_SERIAL_PORTS > 0)
+    PORT_CONTROLS_PCI(STRING_TOKEN(STR_PCI_SERIAL_PORT0), PCI_SERIAL0_FORM_ID,
+                    PCI_SERIAL_PORT_0_INDEX, PCI0_DEFAULT_CONSOLE_REDIRECTION_ENABLE)
+#endif
+
+#if (TOTAL_PCI_SERIAL_PORTS > 1)
+    PORT_CONTROLS_PCI(STRING_TOKEN(STR_PCI_SERIAL_PORT1), PCI_SERIAL1_FORM_ID,
+                    PCI_SERIAL_PORT_1_INDEX, PCI1_DEFAULT_CONSOLE_REDIRECTION_ENABLE)
+#endif
+
+#if (TOTAL_PCI_SERIAL_PORTS > 2)
+    PORT_CONTROLS_PCI(STRING_TOKEN(STR_PCI_SERIAL_PORT2), PCI_SERIAL2_FORM_ID,
+                    PCI_SERIAL_PORT_2_INDEX, PCI2_DEFAULT_CONSOLE_REDIRECTION_ENABLE)
+#endif
+
+#if (TOTAL_PCI_SERIAL_PORTS > 3)
+    PORT_CONTROLS_PCI(STRING_TOKEN(STR_PCI_SERIAL_PORT3), PCI_SERIAL3_FORM_ID,
+                    PCI_SERIAL_PORT_3_INDEX, PCI3_DEFAULT_CONSOLE_REDIRECTION_ENABLE)
+#endif
+
+#endif
+////////////////////////////////////
+
+    SEPARATOR
+#ifdef CONSOLE_REDIRECTION_SUPPORT
+#if CONSOLE_REDIRECTION_SUPPORT == 1
+
+   SUBTITLE(STRING_TOKEN(STR_DEBUGGER_TERMINAL))
+
+    suppressif ideqval DEBUGGER_SERIAL_PORTS_ENABLED_VAR.PortEnabled == 1;
+    text 
+        help   = STRING_TOKEN(STR_BLANK), 
+        text   = STRING_TOKEN(STR_CONSOLE_REDIRECTION),
+        text   = STRING_TOKEN(STR_PORT_IS_DISABLED),
+        flags  = 0,
+        key    = 0;
+    endif;
+
+
+    suppressif ideqval DEBUGGER_SERIAL_PORTS_ENABLED_VAR.PortEnabled==0;
+        TERMINAL_CHECKBOX_DEBUGGERCONSOLEREDIRECTIONENABLE
+    endif;
+
+    suppressif ideqval DEBUGGER_SERIAL_PORTS_ENABLED_VAR.PortEnabled==0;
+    grayoutif ideqval SETUP_DATA.DebuggerConsoleRedirectionEnable == 0; 
+        TERMINAL_ONEOF_DEBUGGERTERMINALTYPE
+    SUPPRESS_GRAYOUT_ENDIF 
+
+    SEPARATOR
+#endif
+#endif
+
+#if( LEGACYSREDIR_SUPPORT ==1)
+#if (TOTAL_SERIAL_PORTS > 0)
+    SUBTITLE(STRING_TOKEN(STR_LEGACY_CONSOLE_REDIRECTION))
+#if (SMCPKG_SUPPORT == 0) || (SMC_SETUP_STYLE == 0)
+    goto LEGACYSREDIR_FORM_ID, 
+      prompt  = STRING_TOKEN(STR_LEGACY_CONSOLE_REDIRECTION_SETTINGS),
+      help    = STRING_TOKEN(STR_LEGACY_CONSOLE_REDIRECTION_SETTINGS);
+#else
+grayoutif 1; //X11SPG   
+    TERMINAL_ONEOF_LEGACYPORT
+endif; //X11SPG    
+#endif
+    
+    SEPARATOR
+#endif
+#endif
+
+#if (TOTAL_SERIAL_PORTS > 0)
+    SUBTITLE(STRING_TOKEN(STR_SERIAL_PORT_FOR_OUT_OF_BAND_MGMT))
+#else
+    SUBTITLE(STRING_TOKEN(STR_NO_SERIAL_PORT_FOR_OUT_OF_BAND_MGMT))
+#endif
+
+    SUBTITLE(STRING_TOKEN(STR_EMERGENCY_MANAGEMENT_SERIVCES_EMS))
+
+#if (TOTAL_SERIAL_PORTS > 0)
+
+    TERMINAL_CHECKBOX_ACPISPCRCONSOLEREDIRECTIONENABLE
+
+    grayoutif ideqval SETUP_DATA.AcpiSpcrConsoleRedirectionEnable == 0;
+    goto SPCR_FORM_ID,
+      prompt  = STRING_TOKEN(STR_CONSOLE_REDIRECTION_SETTINGS),
+      help    = STRING_TOKEN(STR_CONSOLE_REDIRECTION_SETTINGS_HELP);
+    endif;
+
+#endif 
+    endform;
+#endif // END #if TERMINAL_FORM_MAIN
+
+    #ifndef TERMINAL_FORM_SPCR
+    #define TERMINAL_FORM_SPCR
+
+	form formid = AUTO_ID(SPCR_FORM_ID),
+	title = STRING_TOKEN(STR_CONSOLE_REDIRECTION_SETTINGS);
+
+#if ((TOTAL_SERIAL_PORTS == 1) && (TOTAL_SIO_SERIAL_PORTS == 1))
+
+    suppressif ideqval SETUP_DATA.AcpiSpcrSetupDummyVar == 0; 
+        TERMINAL_ONEOF_ACPISPCRPORT 
+    endif; 
+
+    text 
+        help   = STRING_TOKEN(STR_OUT_OF_BAND_MANAGEMENT_PORT_HELP),
+        text   = STRING_TOKEN(STR_OUT_OF_BAND_MANAGEMENT_PORT),
+        text   = STRING_TOKEN(STR_SIO_SERIAL_PORT0),
+        flags  = 0,
+        key    = 0;
+
+#endif //if ((TOTAL_SERIAL_PORTS == 1) && (TOTAL_SIO_SERIAL_PORTS == 1))
+
+#if ((TOTAL_SERIAL_PORTS == 1) && (TOTAL_PCI_SERIAL_PORTS == 1))
+
+    suppressif ideqval SETUP_DATA.AcpiSpcrSetupDummyVar == 0;
+        TERMINAL_ONEOF_ACPISPCRPORT
+    endif; 
+
+    text 
+        help   = STRING_TOKEN(STR_OUT_OF_BAND_MANAGEMENT_PORT_HELP),
+        text   = STRING_TOKEN(STR_OUT_OF_BAND_MANAGEMENT_PORT),
+        text   = STRING_TOKEN(STR_PCI_SERIAL_PORT0),
+        flags  = 0,
+        key    = 0;
+
+#endif //if ((TOTAL_SERIAL_PORTS == 1) && (TOTAL_PCI_SERIAL_PORTS == 1))
+
+#if (TOTAL_SERIAL_PORTS > 1)
+
+    TERMINAL_ONEOF_ACPISPCRPORT
+
+#endif //if (TOTAL_SERIAL_PORTS > 1)
+
+#if (TOTAL_SERIAL_PORTS > 0)
+
+    grayoutif	ideqval SETUP_DATA.AcpiSpcrConsoleRedirectionEnable == 0;
+        TERMINAL_ONEOF_ACPISPCRTERMINALTYPE
+    endif;
+
+    grayoutif	ideqval SETUP_DATA.AcpiSpcrConsoleRedirectionEnable == 0;
+        TERMINAL_ONEOF_ACPISPCRBAUDRATE
+    endif;
+
+    grayoutif	ideqval SETUP_DATA.AcpiSpcrConsoleRedirectionEnable == 0;
+        TERMINAL_ONEOF_ACPISPCRFLOWCONTROL
+    endif; 
+
+    grayoutif	ideqval SETUP_DATA.AcpiSpcrConsoleRedirectionEnable == 0;
+    text
+        help   = STRING_TOKEN(STR_DATA_BITS_HELP),
+        text   = STRING_TOKEN(STR_DATA_BITS),
+        text   = STRING_TOKEN(STR_8),
+        flags  = 0,
+        key    = 0;
+    endif;
+
+    grayoutif ideqval SETUP_DATA.AcpiSpcrConsoleRedirectionEnable == 0;
+    text
+        help   = STRING_TOKEN(STR_PARITY_HELP),
+        text   = STRING_TOKEN(STR_PARITY),
+        text   = STRING_TOKEN(STR_NONE),
+        flags  = 0,
+        key    = 0;
+    endif;
+
+    grayoutif	ideqval SETUP_DATA.AcpiSpcrConsoleRedirectionEnable == 0;
+    text 
+        help   = STRING_TOKEN(STR_STOP_BITS_HELP),
+        text   = STRING_TOKEN(STR_STOP_BITS),
+        text   = STRING_TOKEN(STR_1),
+        flags  = 0,
+        key    = 0;
+    endif;
+
+#endif //if (TOTAL_SERIAL_PORTS > 0)
+
+    endform;
+
+#endif // END #if TERMINAL_FORM_SPCR
+
+#if( LEGACYSREDIR_SUPPORT ==1)
+#ifndef LEGACYSREDIR_FORM
+#define LEGACYSREDIR_FORM
+    
+    form formid = AUTO_ID(LEGACYSREDIR_FORM_ID),
+    title = STRING_TOKEN(STR_LEGACY_CONSOLE_REDIRECTION_SETTINGS);
+    TERMINAL_ONEOF_LEGACYPORT
+    endform;
+#endif // END #if LEGACYSREDIR_FORM
+#endif
+
+#endif //ifdef FORM_SET_FORM
+
+#define PORT_SUB_PAGE(TITLE_STR_TOKEN, SUBTITLE_STR_TOKEN, \
+                        FORM_ID, PORT_NUM) \
+\
+    form formid = FORM_ID, \
+    title     = TITLE_STR_TOKEN; \
+\
+    SUBTITLE_STR_TOKEN \
+    SUBTITLE(STRING_TOKEN(STR_CONSOLE_REDIRECTION_SETTINGS)) \
+    SEPARATOR \
+\
+    TERMINAL_ONEOF_TERMINALTYPE(PORT_NUM) \
+\
+    TERMINAL_ONEOF_BAUDRATE(PORT_NUM) \
+\
+    TERMINAL_ONEOF_DATABITS(PORT_NUM) \
+\
+    TERMINAL_ONEOF_PARITY(PORT_NUM) \
+\
+    TERMINAL_ONEOF_STOPBITS(PORT_NUM) \
+\
+    TERMINAL_ONEOF_FLOWCONTROL(PORT_NUM) \
+\
+    TERMINAL_ONEOF_VTUTF8(PORT_NUM) \
+\
+    TERMINAL_ONEOF_RECORDERMODE(PORT_NUM) \
+\
+    TERMINAL_ONEOF_RESOLUTION(PORT_NUM) \
+\
+    TERMINAL_ONEOF_LEGACYOSRESOLUTION(PORT_NUM) \
+\
+    TERMINAL_ONEOF_PUTTYFUNCTIONKEYPAD(PORT_NUM) \
+\
+    TERMINAL_ONEOF_INSTALLLEGACYOSTHROUGHREMOTE(PORT_NUM)\
+\
+    TERMINAL_ONEOF_REDIRECTIONAFTERBIOSENABLE(PORT_NUM)\
+\
+    SEPARATOR \
+\
+    endform;
+
+////////////////////////////////////
+
+#if (TOTAL_SIO_SERIAL_PORTS > 0)
+    #ifdef FORM_SET_FORM
+//    PORT_SUB_PAGE(STRING_TOKEN(STR_SIO_SERIAL_PORT0),
+//                    SUBTITLE(STRING_TOKEN(STR_SIO_SERIAL_PORT0)),
+//                    AUTO_ID(COM0_FORM_ID), TERMINAL_PORT0)
+
+//#define PORT_SUB_PAGE(TITLE_STR_TOKEN, SUBTITLE_STR_TOKEN, \
+//                        FORM_ID, PORT_NUM) \
+
+    form formid = AUTO_ID(COM0_FORM_ID),
+    title     = STRING_TOKEN(STR_SIO_SERIAL_PORT0);
+
+    SUBTITLE(STRING_TOKEN(STR_SIO_SERIAL_PORT0))
+    SUBTITLE(STRING_TOKEN(STR_CONSOLE_REDIRECTION_SETTINGS))
+    SEPARATOR
+
+//    TERMINAL_ONEOF_TERMINALTYPE(PORT_NUM)
+         oneof varid = SETUP_DATA.TerminalType[TERMINAL_PORT0],
+            prompt = STRING_TOKEN (STR_COM1_TERMINAL_TYPE),
+            help   = STRING_TOKEN (STR_TERMINAL_TYPE_HELP),
+            option text  = STRING_TOKEN (STR_VT100),
+                   value = 0,
+                   flags = 0;
+            option text  = STRING_TOKEN (STR_VT100_PLUS),
+                   value = 1,
+                   flags = 0;
+            option text  = STRING_TOKEN (STR_VT_UTF8),
+                   value = 2,
+                   flags = 0;
+            option text  = STRING_TOKEN (STR_ANSI),
+                   value = 3,
+                   flags = RESET_REQUIRED;
+            default = 1,
+            default = 1, defaultstore = AmiMfgDefault,
+        endoneof;
+
+//    TERMINAL_ONEOF_BAUDRATE(PORT_NUM)
+        oneof varid = SETUP_DATA.BaudRate[TERMINAL_PORT0],
+            prompt = STRING_TOKEN (STR_COM1_BAUD_RATE),
+            help   = STRING_TOKEN (STR_BAUD_RATE_HELP),
+            option text  = STRING_TOKEN (STR_9600),
+                   value = 3,
+                   flags = 0;
+            option text  = STRING_TOKEN (STR_19200),
+                   value = 4,
+                   flags = 0;
+            option text  = STRING_TOKEN (STR_38400),
+                   value = 5,
+                   flags = 0;
+            option text  = STRING_TOKEN (STR_57600),
+                   value = 6,
+                   flags = 0;
+            option text  = STRING_TOKEN (STR_115200),
+                   value = 7,
+                   flags = RESET_REQUIRED;
+            default = 7,
+            default = 7, defaultstore = AmiMfgDefault,
+        endoneof;
+//    TERMINAL_ONEOF_DATABITS(PORT_NUM)
+        oneof varid = SETUP_DATA.DataBits[TERMINAL_PORT0],
+            prompt = STRING_TOKEN (STR_COM1_DATA_BITS),
+            help   = STRING_TOKEN (STR_DATA_BITS_HELP),
+            option text  = STRING_TOKEN (STR_7),
+                   value = 7,
+                   flags = 0;
+            option text  = STRING_TOKEN (STR_8),
+                   value = 8,
+                   flags = RESET_REQUIRED;
+            default = 8,
+            default = 8, defaultstore = AmiMfgDefault,
+        endoneof;
+
+//    TERMINAL_ONEOF_PARITY(PORT_NUM)
+        oneof varid     = SETUP_DATA.Parity[TERMINAL_PORT0],
+            prompt = STRING_TOKEN (STR_COM1_PARITY),
+            help   = STRING_TOKEN (STR_PARITY_HELP),
+            option text  = STRING_TOKEN (STR_NONE),
+                   value = 1,
+                   flags = RESET_REQUIRED;
+            option text  = STRING_TOKEN (STR_EVEN),
+                   value = 2,
+                   flags = 0;
+            option text  = STRING_TOKEN (STR_ODD),
+                   value = 3,
+                   flags = 0;
+            option text  = STRING_TOKEN (STR_MARK),
+                   value = 4,
+                   flags = 0;
+            option text  = STRING_TOKEN (STR_SPACE),
+                   value = 5,
+                   flags = 0;
+            default = 1,
+            default = 1, defaultstore = AmiMfgDefault,
+        endoneof;
+
+//    TERMINAL_ONEOF_STOPBITS(PORT_NUM)
+        oneof varid     = SETUP_DATA.StopBits[TERMINAL_PORT0],
+            prompt = STRING_TOKEN (STR_COM1_STOP_BITS),
+            help   = STRING_TOKEN (STR_STOP_BITS_HELP),
+            option text  = STRING_TOKEN (STR_1),
+                   value = 1,
+                   flags = RESET_REQUIRED;
+            option text  = STRING_TOKEN (STR_2),
+                   value = 3,
+                   flags = 0;
+            default = 1,
+            default = 1, defaultstore = AmiMfgDefault,
+        endoneof;
+
+//    TERMINAL_ONEOF_FLOWCONTROL(PORT_NUM)
+        oneof varid = SETUP_DATA.FlowControl[TERMINAL_PORT0],
+            prompt = STRING_TOKEN (STR_COM1_FLOW_CTRL),
+            help   = STRING_TOKEN (STR_FLOW_CTRL_HELP),
+            option text  = STRING_TOKEN (STR_NONE),
+                   value = 0,
+                   flags = RESET_REQUIRED;
+            option text  = STRING_TOKEN (STR_HARDWARE_FLOW_CTRL),
+                   value = HARDWARE_FLOW_CONTROL_SETUP_OPTION,
+                   flags = 0;
+            default = 0,
+            default = 0, defaultstore = AmiMfgDefault,
+        endoneof;
+
+//    TERMINAL_ONEOF_VTUTF8(PORT_NUM)
+        checkbox varid = SETUP_DATA.VtUtf8[TERMINAL_PORT0],
+            prompt      = STRING_TOKEN(STR_COM1_TERMINAL_VTUTF8),
+            help        = STRING_TOKEN(STR_TERMINAL_VTUTF8_HELP),
+            flags       = RESET_REQUIRED,
+            default value = VTUTF8_ENABLE,
+            default = VTUTF8_ENABLE, defaultstore = AmiMfgDefault,
+        endcheckbox;
+
+//    TERMINAL_ONEOF_RECORDERMODE(PORT_NUM)
+        checkbox varid = SETUP_DATA.RecorderMode[TERMINAL_PORT0],
+            prompt      = STRING_TOKEN(STR_COM1_TERMINAL_RECORDER_MODE),
+            help        = STRING_TOKEN(STR_TERMINAL_RECORDER_MODE_HELP),
+            flags       = RESET_REQUIRED,
+            default value = RECORDER_MODE_ENABLE,
+            default = RECORDER_MODE_ENABLE, defaultstore = AmiMfgDefault,
+        endcheckbox;
+
+//    TERMINAL_ONEOF_RESOLUTION(PORT_NUM)
+        checkbox varid = SETUP_DATA.Resolution[TERMINAL_PORT0],
+            prompt      = STRING_TOKEN(STR_COM1_TERMINAL_RESOLUTION),
+            help        = STRING_TOKEN(STR_TERMINAL_RESOLUTION_HELP),
+            flags       = RESET_REQUIRED,
+            default value = EXTENDED_RESOLUTION_ENABLE,
+            default = EXTENDED_RESOLUTION_ENABLE, defaultstore = AmiMfgDefault,
+        endcheckbox;
+
+//    TERMINAL_ONEOF_LEGACYOSRESOLUTION(PORT_NUM)
+        oneof varid = SETUP_DATA.LegacyOsResolution[TERMINAL_PORT0],
+            prompt = STRING_TOKEN (STR_COM1_LEGACYOS_RESOLUTION),
+            help   = STRING_TOKEN (STR_LEGACYOS_RESOLUTION_HELP),
+            option text  = STRING_TOKEN (STR_80_24),
+                   value = 0,
+                   flags = RESET_REQUIRED;
+            option text  = STRING_TOKEN (STR_80_25),
+                   value = 1,
+                   flags = 0;
+            default = 0,
+            default = 0, defaultstore = AmiMfgDefault,
+        endoneof;
+
+//    TERMINAL_ONEOF_PUTTYFUNCTIONKEYPAD(PORT_NUM)
+        oneof varid = SETUP_DATA.PuttyFunctionKeyPad[TERMINAL_PORT0],
+            prompt = STRING_TOKEN (STR_COM1_PUTTYFUNCTION_KEYPAD),
+            help   = STRING_TOKEN (STR_PUTTYFUNCTION_KEYPAD_HELP),
+            option text  = STRING_TOKEN (STR_VT100),
+                value = PUTTY_VT100,
+                flags = RESET_REQUIRED;
+            option text  = STRING_TOKEN (STR_LINUX),
+                value = PUTTY_LINUX,
+                flags = 0;
+            option text  = STRING_TOKEN (STR_XTERMR6),
+                value = PUTTY_XTERMR6,
+                flags = 0;
+            option text  = STRING_TOKEN (STR_SCO),
+                value = PUTTY_SCO,
+                flags = 0;
+            option text  = STRING_TOKEN (STR_ESCN),
+                value = PUTTY_ESCN,
+                flags = 0;
+            option text  = STRING_TOKEN (STR_VT400),
+                value = PUTTY_VT400,
+                flags = 0;
+            default = PUTTY_VT100,
+            default = PUTTY_VT100, defaultstore = AmiMfgDefault,
+        endoneof;
+
+//    TERMINAL_ONEOF_INSTALLLEGACYOSTHROUGHREMOTE(PORT_NUM)
+#if  (INSTALL_LEGACY_OS_THROUGH_REMOTE == 1)
+        checkbox varid = SETUP_DATA.InstallLegacyOSthroughRemote[TERMINAL_PORT0],
+            prompt      = STRING_TOKEN(STR_FORCE_SYSTEM_VGA_TO_TEXT_MODE),
+            help        = STRING_TOKEN(STR_FORCE_SYSTEM_VGA_TO_TEXT_MODE_HELP),
+            flags       = RESET_REQUIRED,
+            default value = INSTALL_LEGACY_OS_THROUGH_REMOTE,
+            default = INSTALL_LEGACY_OS_THROUGH_REMOTE, defaultstore = AmiMfgDefault,
+        endcheckbox;
+#endif
+
+//    TERMINAL_ONEOF_REDIRECTIONAFTERBIOSENABLE(PORT_NUM)
+        oneof varid = SETUP_DATA.RedirectionAfterBiosPost[TERMINAL_PORT0],
+            prompt = STRING_TOKEN (STR_COM1_REDIRECTION_AFTER_BIOS_POST),
+            help   = STRING_TOKEN (STR_REDIRECTION_AFTER_BIOS_POST_HELP),
+            option text  = STRING_TOKEN (STR_ALWAY_ENABLE),
+                   value = 0,
+                   flags = RESET_REQUIRED;
+            option text  = STRING_TOKEN (STR_BOOTLOADER),
+                   value = 1,
+                   flags = 0;
+            default value = 0,
+            default = 0, defaultstore = AmiMfgDefault,
+        endoneof;
+
+    SEPARATOR
+
+    endform;
+    #endif
+#endif
+
+#if (TOTAL_SIO_SERIAL_PORTS > 1)
+    #ifdef FORM_SET_FORM
+//    PORT_SUB_PAGE(STRING_TOKEN(STR_SIO_SERIAL_PORT1),
+//                    SUBTITLE(STRING_TOKEN(STR_SIO_SERIAL_PORT1)),
+//                    AUTO_ID(COM1_FORM_ID), TERMINAL_PORT1)
+
+    form formid = AUTO_ID(COM1_FORM_ID),
+    title     = STRING_TOKEN(STR_SIO_SERIAL_PORT1);
+
+    SUBTITLE(STRING_TOKEN(STR_SIO_SERIAL_PORT1))
+    SUBTITLE(STRING_TOKEN(STR_CONSOLE_REDIRECTION_SETTINGS))
+    SEPARATOR
+
+//    TERMINAL_ONEOF_TERMINALTYPE(PORT_NUM)
+         oneof varid = SETUP_DATA.TerminalType[TERMINAL_PORT1],
+            prompt = STRING_TOKEN (STR_COM2_TERMINAL_TYPE),
+            help   = STRING_TOKEN (STR_TERMINAL_TYPE_HELP),
+            option text  = STRING_TOKEN (STR_VT100),
+                   value = 0,
+                   flags = 0;
+            option text  = STRING_TOKEN (STR_VT100_PLUS),
+                   value = 1,
+                   flags = 0;
+            option text  = STRING_TOKEN (STR_VT_UTF8),
+                   value = 2,
+                   flags = 0;
+            option text  = STRING_TOKEN (STR_ANSI),
+                   value = 3,
+                   flags = RESET_REQUIRED;
+            default = 1,
+            default = 1, defaultstore = AmiMfgDefault,
+        endoneof;
+
+//    TERMINAL_ONEOF_BAUDRATE(PORT_NUM)
+        oneof varid = SETUP_DATA.BaudRate[TERMINAL_PORT1],
+            prompt = STRING_TOKEN (STR_COM2_BAUD_RATE),
+            help   = STRING_TOKEN (STR_BAUD_RATE_HELP),
+            option text  = STRING_TOKEN (STR_9600),
+                   value = 3,
+                   flags = 0;
+            option text  = STRING_TOKEN (STR_19200),
+                   value = 4,
+                   flags = 0;
+            option text  = STRING_TOKEN (STR_38400),
+                   value = 5,
+                   flags = 0;
+            option text  = STRING_TOKEN (STR_57600),
+                   value = 6,
+                   flags = 0;
+            option text  = STRING_TOKEN (STR_115200),
+                   value = 7,
+                   flags = RESET_REQUIRED;
+            default = 7,
+            default = 7, defaultstore = AmiMfgDefault,
+        endoneof;
+//    TERMINAL_ONEOF_DATABITS(PORT_NUM)
+        oneof varid = SETUP_DATA.DataBits[TERMINAL_PORT1],
+            prompt = STRING_TOKEN (STR_COM2_DATA_BITS),
+            help   = STRING_TOKEN (STR_DATA_BITS_HELP),
+            option text  = STRING_TOKEN (STR_7),
+                   value = 7,
+                   flags = 0;
+            option text  = STRING_TOKEN (STR_8),
+                   value = 8,
+                   flags = RESET_REQUIRED;
+            default = 8,
+            default = 8, defaultstore = AmiMfgDefault,
+        endoneof;
+
+//    TERMINAL_ONEOF_PARITY(PORT_NUM)
+        oneof varid     = SETUP_DATA.Parity[TERMINAL_PORT1],
+            prompt = STRING_TOKEN (STR_COM2_PARITY),
+            help   = STRING_TOKEN (STR_PARITY_HELP),
+            option text  = STRING_TOKEN (STR_NONE),
+                   value = 1,
+                   flags = RESET_REQUIRED;
+            option text  = STRING_TOKEN (STR_EVEN),
+                   value = 2,
+                   flags = 0;
+            option text  = STRING_TOKEN (STR_ODD),
+                   value = 3,
+                   flags = 0;
+            option text  = STRING_TOKEN (STR_MARK),
+                   value = 4,
+                   flags = 0;
+            option text  = STRING_TOKEN (STR_SPACE),
+                   value = 5,
+                   flags = 0;
+            default = 1,
+            default = 1, defaultstore = AmiMfgDefault,
+        endoneof;
+
+//    TERMINAL_ONEOF_STOPBITS(PORT_NUM)
+        oneof varid     = SETUP_DATA.StopBits[TERMINAL_PORT1],
+            prompt = STRING_TOKEN (STR_COM2_STOP_BITS),
+            help   = STRING_TOKEN (STR_STOP_BITS_HELP),
+            option text  = STRING_TOKEN (STR_1),
+                   value = 1,
+                   flags = RESET_REQUIRED;
+            option text  = STRING_TOKEN (STR_2),
+                   value = 3,
+                   flags = 0;
+            default = 1,
+            default = 1, defaultstore = AmiMfgDefault,
+        endoneof;
+
+//    TERMINAL_ONEOF_FLOWCONTROL(PORT_NUM)
+        oneof varid = SETUP_DATA.FlowControl[TERMINAL_PORT1],
+            prompt = STRING_TOKEN (STR_COM2_FLOW_CTRL),
+            help   = STRING_TOKEN (STR_FLOW_CTRL_HELP),
+            option text  = STRING_TOKEN (STR_NONE),
+                   value = 0,
+                   flags = RESET_REQUIRED;
+            option text  = STRING_TOKEN (STR_HARDWARE_FLOW_CTRL),
+                   value = HARDWARE_FLOW_CONTROL_SETUP_OPTION,
+                   flags = 0;
+            default = 0,
+            default = 0, defaultstore = AmiMfgDefault,
+        endoneof;
+
+//    TERMINAL_ONEOF_VTUTF8(PORT_NUM)
+        checkbox varid = SETUP_DATA.VtUtf8[TERMINAL_PORT1],
+            prompt      = STRING_TOKEN(STR_COM2_TERMINAL_VTUTF8),
+            help        = STRING_TOKEN(STR_TERMINAL_VTUTF8_HELP),
+            flags       = RESET_REQUIRED,
+            default value = VTUTF8_ENABLE,
+            default = VTUTF8_ENABLE, defaultstore = AmiMfgDefault,
+        endcheckbox;
+
+//    TERMINAL_ONEOF_RECORDERMODE(PORT_NUM)
+        checkbox varid = SETUP_DATA.RecorderMode[TERMINAL_PORT1],
+            prompt      = STRING_TOKEN(STR_COM2_TERMINAL_RECORDER_MODE),
+            help        = STRING_TOKEN(STR_TERMINAL_RECORDER_MODE_HELP),
+            flags       = RESET_REQUIRED,
+            default value = RECORDER_MODE_ENABLE,
+            default = RECORDER_MODE_ENABLE, defaultstore = AmiMfgDefault,
+        endcheckbox;
+
+//    TERMINAL_ONEOF_RESOLUTION(PORT_NUM)
+        checkbox varid = SETUP_DATA.Resolution[TERMINAL_PORT1],
+            prompt      = STRING_TOKEN(STR_COM2_TERMINAL_RESOLUTION),
+            help        = STRING_TOKEN(STR_TERMINAL_RESOLUTION_HELP),
+            flags       = RESET_REQUIRED,
+            default value = EXTENDED_RESOLUTION_ENABLE,
+            default = EXTENDED_RESOLUTION_ENABLE, defaultstore = AmiMfgDefault,
+        endcheckbox;
+
+//    TERMINAL_ONEOF_LEGACYOSRESOLUTION(PORT_NUM)
+        oneof varid = SETUP_DATA.LegacyOsResolution[TERMINAL_PORT1],
+            prompt = STRING_TOKEN (STR_COM2_LEGACYOS_RESOLUTION),
+            help   = STRING_TOKEN (STR_LEGACYOS_RESOLUTION_HELP),
+            option text  = STRING_TOKEN (STR_80_24),
+                   value = 0,
+                   flags = RESET_REQUIRED;
+            option text  = STRING_TOKEN (STR_80_25),
+                   value = 1,
+                   flags = 0;
+            default = 0,
+            default = 0, defaultstore = AmiMfgDefault,
+        endoneof;
+
+//    TERMINAL_ONEOF_PUTTYFUNCTIONKEYPAD(PORT_NUM)
+        oneof varid = SETUP_DATA.PuttyFunctionKeyPad[TERMINAL_PORT1],
+            prompt = STRING_TOKEN (STR_COM2_PUTTYFUNCTION_KEYPAD),
+            help   = STRING_TOKEN (STR_PUTTYFUNCTION_KEYPAD_HELP),
+            option text  = STRING_TOKEN (STR_VT100),
+                value = PUTTY_VT100,
+                flags = RESET_REQUIRED;
+            option text  = STRING_TOKEN (STR_LINUX),
+                value = PUTTY_LINUX,
+                flags = 0;
+            option text  = STRING_TOKEN (STR_XTERMR6),
+                value = PUTTY_XTERMR6,
+                flags = 0;
+            option text  = STRING_TOKEN (STR_SCO),
+                value = PUTTY_SCO,
+                flags = 0;
+            option text  = STRING_TOKEN (STR_ESCN),
+                value = PUTTY_ESCN,
+                flags = 0;
+            option text  = STRING_TOKEN (STR_VT400),
+                value = PUTTY_VT400,
+                flags = 0;
+            default = PUTTY_VT100,
+            default = PUTTY_VT100, defaultstore = AmiMfgDefault,
+        endoneof;
+
+//    TERMINAL_ONEOF_INSTALLLEGACYOSTHROUGHREMOTE(PORT_NUM)
+#if  (INSTALL_LEGACY_OS_THROUGH_REMOTE == 1)
+        checkbox varid = SETUP_DATA.InstallLegacyOSthroughRemote[TERMINAL_PORT1],
+            prompt      = STRING_TOKEN(STR_FORCE_SYSTEM_VGA_TO_TEXT_MODE),
+            help        = STRING_TOKEN(STR_FORCE_SYSTEM_VGA_TO_TEXT_MODE_HELP),
+            flags       = RESET_REQUIRED,
+            default value = INSTALL_LEGACY_OS_THROUGH_REMOTE,
+            default = INSTALL_LEGACY_OS_THROUGH_REMOTE, defaultstore = AmiMfgDefault,
+        endcheckbox;
+#endif
+
+//    TERMINAL_ONEOF_REDIRECTIONAFTERBIOSENABLE(PORT_NUM)
+        oneof varid = SETUP_DATA.RedirectionAfterBiosPost[TERMINAL_PORT1],
+            prompt = STRING_TOKEN (STR_COM2_REDIRECTION_AFTER_BIOS_POST),
+            help   = STRING_TOKEN (STR_REDIRECTION_AFTER_BIOS_POST_HELP),
+            option text  = STRING_TOKEN (STR_ALWAY_ENABLE),
+                   value = 0,
+                   flags = RESET_REQUIRED;
+            option text  = STRING_TOKEN (STR_BOOTLOADER),
+                   value = 1,
+                   flags = 0;
+            default value = 0,
+            default = 0, defaultstore = AmiMfgDefault,
+        endoneof;
+
+    SEPARATOR
+
+    endform;
+    #endif
+#endif
+
+#if (TOTAL_SIO_SERIAL_PORTS > 2)
+    #ifdef FORM_SET_FORM
+    PORT_SUB_PAGE(STRING_TOKEN(STR_SIO_SERIAL_PORT2),
+                    SUBTITLE(STRING_TOKEN(STR_SIO_SERIAL_PORT2)),
+                    AUTO_ID(COM2_FORM_ID), TERMINAL_PORT2)
+    #endif
+#endif
+
+#if (TOTAL_SIO_SERIAL_PORTS > 3)
+    #ifdef FORM_SET_FORM
+    PORT_SUB_PAGE(STRING_TOKEN(STR_SIO_SERIAL_PORT3),
+                    SUBTITLE(STRING_TOKEN(STR_SIO_SERIAL_PORT3)),
+                    AUTO_ID(COM3_FORM_ID), TERMINAL_PORT3)
+    #endif
+#endif
+
+#if (TOTAL_SIO_SERIAL_PORTS > 4)
+    #ifdef FORM_SET_FORM
+    PORT_SUB_PAGE(STRING_TOKEN(STR_SIO_SERIAL_PORT4),
+                    SUBTITLE(STRING_TOKEN(STR_SIO_SERIAL_PORT4)),
+                    AUTO_ID(COM4_FORM_ID), TERMINAL_PORT4)
+    #endif
+#endif
+
+#if (TOTAL_SIO_SERIAL_PORTS > 5)
+    #ifdef FORM_SET_FORM
+    PORT_SUB_PAGE(STRING_TOKEN(STR_SIO_SERIAL_PORT5),
+                    SUBTITLE(STRING_TOKEN(STR_SIO_SERIAL_PORT5)),
+                    AUTO_ID(COM5_FORM_ID), TERMINAL_PORT5)
+    #endif
+#endif
+
+#if (TOTAL_SIO_SERIAL_PORTS > 6)
+    #ifdef FORM_SET_FORM
+    PORT_SUB_PAGE(STRING_TOKEN(STR_SIO_SERIAL_PORT6),
+                    SUBTITLE(STRING_TOKEN(STR_SIO_SERIAL_PORT6)),
+                    AUTO_ID(COM6_FORM_ID), TERMINAL_PORT6)
+    #endif
+#endif
+
+#if (TOTAL_SIO_SERIAL_PORTS > 7)
+    #ifdef FORM_SET_FORM
+    PORT_SUB_PAGE(STRING_TOKEN(STR_SIO_SERIAL_PORT7),
+                    SUBTITLE(STRING_TOKEN(STR_SIO_SERIAL_PORT7)),
+                    AUTO_ID(COM7_FORM_ID), TERMINAL_PORT7)
+    #endif
+#endif
+
+#if (TOTAL_SIO_SERIAL_PORTS > 8)
+    #ifdef FORM_SET_FORM
+    PORT_SUB_PAGE(STRING_TOKEN(STR_SIO_SERIAL_PORT8),
+                    SUBTITLE(STRING_TOKEN(STR_SIO_SERIAL_PORT8)),
+                    AUTO_ID(COM8_FORM_ID), TERMINAL_PORT8)
+    #endif
+#endif
+
+#if (TOTAL_SIO_SERIAL_PORTS > 9)
+    #ifdef FORM_SET_FORM
+    PORT_SUB_PAGE(STRING_TOKEN(STR_SIO_SERIAL_PORT9),
+                    SUBTITLE(STRING_TOKEN(STR_SIO_SERIAL_PORT9)),
+                    AUTO_ID(COM9_FORM_ID), TERMINAL_PORT9)
+    #endif
+#endif 
+
+////////////////////////////////////
+
+#if (TOTAL_PCI_SERIAL_PORTS > 0)
+    #ifdef FORM_SET_FORM
+    PORT_SUB_PAGE(STRING_TOKEN(STR_PCI_SERIAL_PORT0),
+                    SUBTITLE(STRING_TOKEN(STR_PCI_SERIAL_PORT0)),
+                    AUTO_ID(PCI_SERIAL0_FORM_ID), PCI_SERIAL_PORT_0_INDEX)
+    #endif
+#endif
+
+#if (TOTAL_PCI_SERIAL_PORTS > 1)
+    #ifdef FORM_SET_FORM
+    PORT_SUB_PAGE(STRING_TOKEN(STR_PCI_SERIAL_PORT1),
+                    SUBTITLE(STRING_TOKEN(STR_PCI_SERIAL_PORT1)),
+                    AUTO_ID(PCI_SERIAL1_FORM_ID), PCI_SERIAL_PORT_1_INDEX)
+    #endif
+#endif
+
+#if (TOTAL_PCI_SERIAL_PORTS > 2)
+    #ifdef FORM_SET_FORM
+    PORT_SUB_PAGE(STRING_TOKEN(STR_PCI_SERIAL_PORT2),
+                    SUBTITLE(STRING_TOKEN(STR_PCI_SERIAL_PORT2)),
+                    AUTO_ID(PCI_SERIAL2_FORM_ID), PCI_SERIAL_PORT_2_INDEX)
+    #endif
+#endif
+
+#if (TOTAL_PCI_SERIAL_PORTS > 3)
+    #ifdef FORM_SET_FORM
+    PORT_SUB_PAGE(STRING_TOKEN(STR_PCI_SERIAL_PORT3),
+                    SUBTITLE(STRING_TOKEN(STR_PCI_SERIAL_PORT3)),
+                    AUTO_ID(PCI_SERIAL3_FORM_ID), PCI_SERIAL_PORT_3_INDEX)
+    #endif
+#endif
+////////////////////////////////////
+
+#endif //ifdef ADVANCED_FORM_SET
+
+//*************************************************************************
+//*************************************************************************
+//**                                                                     **
+//**        (C)Copyright 1985-2015, American Megatrends, Inc.            **
+//**                                                                     **
+//**                       All Rights Reserved.                          **
+//**                                                                     **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+//**                                                                     **
+//**                       Phone: (770)-246-8600                         **
+//**                                                                     **
+//*************************************************************************
+//*************************************************************************

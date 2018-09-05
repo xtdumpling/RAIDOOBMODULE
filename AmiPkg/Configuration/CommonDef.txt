@@ -1,0 +1,90 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+##############################################################
+### Common Definitions Shared by All Tool Chains
+##############################################################
+
+#######################################################
+## Built Tool Flags
+#######################################################
+*_*_*_ASL_FLAGS          =
+*_*_*_ASL_OUTFLAGS       = -p
+*_*_*_VFR_FLAGS          = -n ENV(EXTERNAL_VFR_FLAGS)
+*_*_*_OPTROM_FLAGS       = -e
+*_*_*_GENFW_FLAGS        = ENV(EXTERNAL_GENFW_FLAGS)
+*_*_*_NASMB_FLAGS        = -f bin
+
+#######################################################
+## Built Tool Paths
+#######################################################
+*_*_*_ASL_PATH           = ENV(TOOLS_DIR)/ENV(ASL_COMPILER)
+*_*_*_DT_PATH            = ENV(TOOLS_DIR)/iasl5
+*_*_*_VFR_PATH           = VfrCompile
+*_*_*_OPTROM_PATH        = EfiRom
+*_*_*_GENFW_PATH         = GenFw
+*_*_*_NASM_PATH          = ENV(NASM_PREFIX)nasm
+
+#######################################################
+## GUID Tools (Tools producing GUID-ed FFS sections)
+#######################################################
+
+##################
+# LzmaCompress tool definitions
+##################
+*_*_*_LZMA_PATH          = LzmaCompress
+*_*_*_LZMA_GUID          = EE4E5898-3914-4259-9D6E-DC7BD79403CF
+
+##################
+# LzmaF86Compress tool definitions with converter for x86 code.
+# It can improve the compression ratio if the input file is IA32 or X64 PE image.
+# Notes: If X64 PE image is built based on GCC44, it may not get the better compression.
+##################
+*_*_*_LZMAF86_PATH       = LzmaF86Compress
+*_*_*_LZMAF86_GUID       = D42AE6BD-1352-4bfb-909A-CA72A6EAE889
+
+##################
+# TianoCompress tool definitions
+##################
+*_*_*_TIANO_PATH         = TianoCompress
+*_*_*_TIANO_GUID         = A31280AD-481E-41B6-95E8-127F4C984779
+
+##################
+# BPDG tool definitions
+##################
+*_*_*_VPDTOOL_PATH       = BPDG
+*_*_*_VPDTOOL_GUID       = 8C3D856A-9BE6-468E-850A-24F7A8D38E08
+##################
+
+##################
+# Unused tool definitions 
+##################
+*_*_*_OBJCOPY_PATH       = echo
+*_*_*_OBJCOPY_FLAGS      = objcopy not needed for
+*_*_*_SYMRENAME_PATH     = echo
+*_*_*_SYMRENAME_FLAGS    = Symbol renaming not needed for
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

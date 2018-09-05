@@ -1,0 +1,122 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2009, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+
+#**********************************************************************
+# $Header: /Alaska/SOURCE/Flash_Combined_2/Core/STD/StdFlash.sdl 4     11/02/09 4:35a Calvinchen $
+#
+# $Revision: 4 $
+#
+# $Date: 11/02/09 4:35a $
+#**********************************************************************
+
+TOKEN
+	Name  = "STDFlash_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable STD Flash support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "Spansion_29GLxxx"
+	Value  = "1"
+	Help  = "This enables support for the SPANSION 29GL01G/512/256/128P STD flash parts"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "Numonyx_256P30x"
+	Value  = "1"
+	Help  = "This token enables support for the Numonyx 256P30x and AB flash parts"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "Mxic_29LVxxx"
+	Value  = "1"
+	Help  = "This token enables support for the MXIC 29LVxxx and SST 39VF16xx flash parts"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+PATH
+	Name  = "STDFlash_DIR"
+End
+
+ELINK
+	Name  = "mStdSpansionIdentify,"
+	Parent  = "FlashList"
+	Token = "Spansion_29GLxxx" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "IntelSTDIdentify,"
+	Parent  = "FlashList"
+	Token = "Numonyx_256P30x" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "mStdMxicIdentify,"
+	Parent  = "FlashList"
+	Token = "Mxic_29LVxxx" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+INFComponent
+    Name  = "StdFlashLib"
+    File  = "StdFlash.inf"
+    Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+    Class  = "StdFlashLib"
+    Instance  = "AmiModulePkg.StdFlashLib"
+    ModuleTypes  = "DXE_CORE DXE_DRIVER DXE_RUNTIME_DRIVER DXE_SAL_DRIVER DXE_SMM_DRIVER SMM_CORE UEFI_APPLICATION UEFI_DRIVER"
+End
+
+INFComponent
+    Name  = "StdFlashPeiLib"
+    File  = "StdFlashPei.inf"
+    Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+    Class  = "StdFlashLib"
+    Instance  = "AmiModulePkg.StdFlashPeiLib"
+    ModuleTypes  = "PEIM"
+End
+
+
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2009, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************

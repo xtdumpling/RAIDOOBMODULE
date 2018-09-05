@@ -1,0 +1,52 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**     5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093            **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+TOKEN
+	Name  = "BIOS_GUARD_SMM_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable BiosGuardSmm support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+INFComponent
+	Name = "BiosGuardSmm"
+	File = "BiosGuardSmm.inf"
+	Package = "AmiChipsetModulePkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+End
+
+TOKEN
+    Name = "BIOS_GUARD_RECOVERY_ROM_SECTION"
+    Value = "7"
+    Help = "This GUID is used for BIOS Guard recovery rom section. BIT0: FV_BB, BIT1: FV_MAIN, BIT2: FV_NV."
+    TokenType = Expression
+    TargetH = Yes
+End
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**     5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093            **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

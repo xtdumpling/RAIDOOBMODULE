@@ -1,0 +1,143 @@
+#****************************************************************************
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#
+#  File History
+#
+#  Rev. 1.02
+#       Bug fixed:   Early Graphic Logo Support.
+#       Reason:
+#       Auditor:     Isaac Hsu
+#       Date:        Mar/14/2017
+#
+#  Rev. 1.01
+#       Bug fixed:   Fix WDT no function.
+#       Reason:
+#       Auditor:     Kasber Chen
+#       Date:        Sep/10/2016
+#
+#  Rev. 1.00
+#       Bug fixed:   Rewrite module
+#       Reason:
+#       Auditor:     Leon Xu
+#       Date:        Dec/31/2014
+#
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+#
+# @file DxeIpmiBmcInitialize.inf
+#
+# INF description file for DxeIpmiBmcInitialize driver
+#
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = DxeIpmiBmcInitialize
+  FILE_GUID                      = 6372357A-06D7-43ef-B55C-1964F3DD6916
+  MODULE_TYPE                    = DXE_RUNTIME_DRIVER
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = InitializeIpmiPhysicalLayer
+
+[Sources]
+  DxeIpmiBmcInitialize.c
+  DxeSmmIpmiBmc.c
+  ../BmcCommonAccess/DxeSmmIpmiBmc.h
+  ../BmcCommonAccess/IpmiBmc.h
+  ../BmcCommonAccess/IpmiBmc.c
+  ../BmcCommonAccess/KcsBmc.h
+  ../BmcCommonAccess/KcsBmc.c
+  ../BmcCommonAccess/BtBmc.c
+  ../BmcCommonAccess/BtBmc.h
+  ../BmcCommonAccess/IpmbBmc.c
+  ../BmcCommonAccess/IpmbBmc.h
+  ../BmcCommonAccess/SsifBmc.c
+  ../BmcCommonAccess/SsifBmc.h
+  Spmi.h
+  Spmi.c
+  IpmiSmbiosTypes.c
+  IpmiCmosClear.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiIpmiPkg/AmiIpmiPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec	#SMCPKG_SUPPORT
+  AmiTsePkg/AmiTsePkg.dec	#SMCPKG_SUPPORT
+  PurleyPlatPkg/PlatPkg.dec	#SMCPKG_SUPPORT
+  SmcPkg/SmcPkg.dec		#SMCPKG_SUPPORT
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  MemoryAllocationLib
+  BaseLib  
+  UefiLib
+  UefiRuntimeLib
+  DebugLib
+  IoLib
+  BaseMemoryLib
+  TimerLib
+  ReportStatusCodeLib
+  AmiDxeLib
+  PcdLib                                #SMCPKG_SUPPORT
+
+[Protocols]
+  gEfiDxeIpmiTransportProtocolGuid  #PRODUCES
+  gEfiBmcSelfTestLogProtocolGuid    #PRODUCES
+  gEfiSmbiosProtocolGuid            #CONSUMES
+  gEfiAcpiTableProtocolGuid         #CONSUMES
+  gEfiSmmIpmiTransportProtocolGuid  #CONSUMES
+  gEfiSmmCommunicationProtocolGuid  #CONSUMES
+  gEfiRealTimeClockArchProtocolGuid #CONSUMES
+  gEfiResetArchProtocolGuid         #CONSUMES
+  gEfiI2cMasterProtocolGuid         #CONSUMES
+  gEfiSmbusHcProtocolGuid           #CONSUMES
+  gBdsAllDriversConnectedProtocolGuid	#SMCPKG_SUPPORT
+  gAmiLegacyBootProtocolGuid		#SMCPKG_SUPPORT
+
+[Guids]
+  gEfiServerMgmtSetupVariableGuid
+  gEfiEventVirtualAddressChangeGuid
+  gEfiIpmiCmosClearVariableGuid
+  gEfiAcpiTableGuid
+  gAmiTseEventBeforeBootGuid		#SMCPKG_SUPPORT
+  gEfiSetupVariableGuid			#SMCPKG_SUPPORT
+
+[Pcd]
+  gSmcPkgTokenSpaceGuid.PcdSmcColor     #SMCPKG_SUPPORT
+
+[Depex]
+  gEfiVariableArchProtocolGuid AND gEfiVariableWriteArchProtocolGuid
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**         5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093     **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

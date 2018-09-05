@@ -1,0 +1,33 @@
+TOKEN
+	Name  = "Library_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling Library support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+INFComponent
+	Name  = "PeiPlatformHookLib"
+	File  = "PeiPlatformHookLib\PeiPlatformHooklib.inf"
+	Package  = "PurleyRpPkg"
+	ModuleTypes  = "PEIM"
+End
+
+LibraryMapping
+	Class  = "PeiPlatformHookLib"
+	Instance  = "PurleyRpPkg.PeiPlatformHookLib"
+	ModuleTypes  = "PEIM PEI_CORE SEC"
+End
+
+INFComponent
+	Name  = "UbaGpioInitLib"
+	File  = "UbaGpioInitLib/UbaGpioInitLib.inf"
+	Package  = "PurleyRpPkg"
+	ModuleTypes  = "PEIM"
+End
+
+LibraryMapping
+	Class  = "UbaGpioInitLib"
+	Instance  = "PurleyRpPkg.UbaGpioInitLib"
+	ModuleTypes  = "PEIM PEI_CORE "
+End

@@ -1,0 +1,441 @@
+#
+# This file contains an 'Intel Peripheral Driver' and is
+# licensed for Intel CPUs and chipsets under the terms of your
+# license agreement with Intel or your vendor.  This file may
+# be modified by the user, subject to additional terms of the
+# license agreement
+#
+## @file
+# CPU MP DXE Driver.
+#
+# This DXE Driver does processor initialization, configures multi-processor environment,
+# logs data to SMBIOS table for processor subclass and cache subclass, and installs
+# MP Services Protocol.
+#
+# Copyright (c) 2006 - 2016, Intel Corporation. All rights reserved.<BR>
+#
+#  This software and associated documentation (if any) is furnished
+#  under a license and may only be used or copied in accordance
+#  with the terms of the license. Except as permitted by such
+#  license, no part of this software or documentation may be
+#  reproduced, stored in a retrieval system, or transmitted in any
+#  form or by any means without the express written consent of
+#  Intel Corporation.
+#
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = CpuMpDxe
+  MODULE_UNI_FILE                = CpuMpDxe.uni
+  FILE_GUID                      = 40BEAB40-CECE-4909-B133-20A413AE19E9
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = MultiProcessorInitialize
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+#  Create Event Guid C Name:  Event Type: EVENT_TYPE_PERIODIC_TIMER
+#
+#  HOB Guid C Name: gEfiHtBistHobGuid Hob Type: GUID_EXTENSION
+#
+
+[Sources]
+  SMBIOS/ProcessorSubClass.c
+  SMBIOS/ProcessorData.c
+  SMBIOS/Processor.h
+  SMBIOS/CpuSmbios.c
+  SMBIOS/CacheSubClass.c
+  SMBIOS/Cache.h
+  Vt.h
+  Vt.c
+  Xd.h
+  Xd.c
+  ThermalManagement.h
+  ThermalManagement.c
+  Setting.c
+  SelectLfp.c
+  ProgramBeforeReset.h
+  ProgramBeforeReset.c
+  ProcessorConfig.c
+  Prefetcher.h
+  Prefetcher.c
+  Peci.h
+  Peci.c
+  MpService.h
+  MpService.c
+  MpCommon.h
+  MpCommon.c
+  Microcode.h
+  Microcode.c
+  MchkInit.h
+  MchkInit.c
+  LimitCpuIdValue.h
+  LimitCpuIdValue.c
+  FerrSignalBreak.h
+  FerrSignalBreak.c
+  Feature.h
+  FastString.h
+  FastString.c
+  Eist.h
+  Eist.c
+  DataCollection.c
+  Cpu.h
+  C1e.h
+  C1e.c
+  GateA20m.c
+  GateA20m.h
+  Misc.c
+  Misc.h
+  TState.c
+  TState.h
+  Aes.c
+  Aes.h
+  Dca.c
+  Dca.h
+  CState.c
+  CState.h
+  X2Apic.c
+  X2Apic.h
+  Analysis.c
+  Strings.uni
+#
+# PURLEY_OVERRIDE_BEGIN
+#
+  SktScopeMsrInit.c
+  BdeSpecificHooks.c
+  BdeSpecificHooks.h
+
+  CpuSncInit.c
+  CpuSncInit.h
+#
+# PURLEY_OVERRIDE_END
+#
+
+[Sources.Ia32]
+  IA32/MpFuncs.asm
+  IA32/MpFuncs.S
+  IA32/CpuOnlyReset.h
+  IA32/CpuOnlyReset.c
+  IA32/CpuAsm.asm
+  IA32/CpuAsm.S
+  IA32/AsmInclude.inc
+  IA32/ArchSpecificDef.h
+  IA32/ArchSpecific.c
+
+[Sources.X64]
+  X64/MpFuncs.asm
+  X64/MpFuncs.S
+  X64/CpuOnlyReset.h
+  X64/CpuOnlyReset.c
+  X64/CpuAsm.asm
+  X64/CpuAsm.S
+  X64/AsmInclude.inc
+  X64/ArchSpecificDef.h
+  X64/ArchSpecific.c
+
+[Packages]
+#
+# PURLEY_OVERRIDE_BEGIN
+#
+# following will be removed when IA32FamilyCpuPkg overrides are merged back to trunk
+  ServerCommonPkg/ServerCommonPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  PurleySktPkg/Override/IA32FamilyCpuPkg/IA32FamilyCpuPkg.dec
+#
+# PURLEY_OVERRIDE_END
+#
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  IA32FamilyCpuPkg/IA32FamilyCpuPkg.dec
+  UefiCpuPkg/UefiCpuPkg.dec
+#
+# PURLEY_OVERRIDE_BEGIN
+#
+  #
+  # The dependency can be removed when we find better way to save CPU's S3 information.
+  #
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+# APTIOV_SERVER_OVERRIDE_RC_START : Disable SMI's while waking up AP's
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+# APTIOV_SERVER_OVERRIDE_RC_END : Disable SMI's while waking up AP's
+#
+# PURLEY_OVERRIDE_END
+#
+
+[LibraryClasses]
+  TimerLib
+  DxeServicesTableLib
+  CpuConfigLib
+  CpuLib
+  IoLib
+  PcdLib
+  UefiRuntimeServicesTableLib
+  UefiBootServicesTableLib
+  MemoryAllocationLib
+  UefiDriverEntryPoint
+  ReportStatusCodeLib
+  BaseMemoryLib
+  HiiLib
+  HobLib
+  UefiLib
+  DebugLib
+  BaseLib
+  SynchronizationLib
+  UefiCpuLib
+  MtrrLib
+  S3BootScriptLib
+  DebugAgentLib
+  LocalApicLib
+  PrintLib
+#
+# PURLEY_OVERRIDE_BEGIN
+#
+  PlatformHooksLib
+#
+# PURLEY_OVERRIDE_END
+#
+
+# APTIOV_SERVER_OVERRIDE_RC_START: OEM hook NULL wrapper to override the CpuConfigContextBuffer
+ AmiPlatformHooksLib
+# APTIOV_SERVER_OVERRIDE_RC_END: OEM hook NULL wrapper to override the CpuConfigContextBuffer
+
+[Guids]
+  gEfiHtBistHobGuid                             ## CONSUMES  ## HOB
+  gEfiEventExitBootServicesGuid                 ## CONSUMES  ## Event
+  gIdleLoopEventGuid                            ## CONSUMES  ## Event
+  gEfiCpuTokenSpaceGuid                         ## CONSUMES  ## TokenSpaceGuid
+#
+# PURLEY_OVERRIDE_BEGIN
+#
+  gPrevBootErrSrcHobGuid
+  gPlatformTokenSpaceGuid
+#
+# PURLEY_OVERRIDE_END
+#
+
+[Ppis]
+  gEfiSecPlatformInformation2PpiGuid            ## UNDEFINED # HOB
+  gEfiSecPlatformInformationPpiGuid             ## UNDEFINED # HOB
+
+[Protocols]
+  gEfiSmbiosProtocolGuid                        ## CONSUMES
+  gEfiMpServiceProtocolGuid                     ## PRODUCES
+  gEfiCpuArchProtocolGuid                       ## CONSUMES
+  gEfiGenericMemTestProtocolGuid                ## SOMETIMES_CONSUMES
+  ## NOTIFY
+  ## SOMETIMES_CONSUMES
+  gEfiLegacyBiosProtocolGuid
+  gEfiSmmConfigurationProtocolGuid              ## NOTIFY
+  gEfiTimerArchProtocolGuid                     ## CONSUMES
+  gEfiTcgProtocolGuid                           ## SOMETIMES_CONSUMES
+  ## NOTIFY
+  ## CONSUMES
+  gEfiDxeSmmReadyToLockProtocolGuid
+#
+# PURLEY_OVERRIDE_BEGIN
+#
+  gEfiIioUdsProtocolGuid
+  gEfiCpuCsrAccessGuid                          # PROTOCOL ALWAYS_CONSUMED
+#
+# PURLEY_OVERRIDE_END
+#
+
+
+[FeaturePcd]
+  gEfiCpuTokenSpaceGuid.PcdCpuPeciFlag                       ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuFerrSignalBreakFlag            ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuIpPrefetcherFlag               ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuDcuPrefetcherFlag              ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuAdjacentCacheLinePrefetchFlag  ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuHardwarePrefetcherFlag         ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuFastStringFlag                 ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuSelectLfpAsBspFlag             ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuMachineCheckFlag               ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuMicrocodeUpdateFlag            ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuExecuteDisableBitFlag          ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuMaxCpuIDValueLimitFlag         ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuVtLtFlag                       ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuEnhancedCStateFlag             ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuEistFlag                       ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuThermalManagementFlag          ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuConroeFamilyFlag               ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuCedarMillFamilyFlag            ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuPrescottFamilyFlag             ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuTunnelCreekFamilyFlag          ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuNehalemFamilyFlag              ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuGateA20MDisableFlag            ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuSandyBridgeFamilyFlag          ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuSilvermontFamilyFlag           ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuGoldmontFamilyFlag             ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuIvyBridgeFamilyFlag            ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuHaswellFamilyFlag              ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuBroadwellFamilyFlag            ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuSkylakeFamilyFlag              ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuKnightsLandingFamilyFlag       ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuMlcStreamerPrefetcherFlag      ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuMlcSpatialPrefetcherFlag       ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuMonitorMwaitFlag               ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuThreeStrikeCounterFlag         ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuEnergyPerformanceBiasFlag      ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuTStateFlag                     ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuAesFlag                        ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuDcaFlag                        ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuCStateFlag                     ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuX2ApicFlag                     ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuApicTprUpdateMessageFlag       ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuDcuModeSelectionFlag           ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuSocketIdReassignmentFlag       ## CONSUMES
+#
+# PURLEY_OVERRIDE_BEGIN
+#
+  gEfiCpuTokenSpaceGuid.PcdCpuPCIeDownStreamPECIFlag         ## CONSUME
+#
+# PURLEY_OVERRIDE_END
+#
+  gEfiCpuTokenSpaceGuid.PcdCpuHotPlugSupport                 ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuEnableIaUntrustedModeFlag      ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuPeciDownstreamWriteFlag        ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuL2PrefetcherFlag               ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuL1DataPrefetcherFlag           ## CONSUMES
+
+#
+# PURLEY_OVERRIDE_BEGIN
+#
+[FixedPcd]
+
+  gUefiCpuPkgTokenSpaceGuid.PcdCpuLocalApicBaseAddress
+#
+# PURLEY_OVERRIDE_END
+#
+
+[Pcd]
+  gEfiCpuTokenSpaceGuid.PcdCpuMaxLogicalProcessorNumber                ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuApLoopMode                               ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdPlatformType                                ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdPlatformDynamicVidSupport                   ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdPlatformHighPowerLoadLineSupport            ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuMicrocodePatchRegionSize                 ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuMicrocodePatchAddress                    ## CONSUMES
+#
+# PURLEY_OVERRIDE_BEGIN
+#
+  gCpuUncoreTokenSpaceGuid.PcdFlashNvStorageMicrocodeBase              ## CONSUMES
+  gCpuUncoreTokenSpaceGuid.PcdFlashNvStorageMicrocodeSize              ## CONSUMES
+#
+# PURLEY_OVERRIDE_END
+#
+  gEfiCpuTokenSpaceGuid.PcdPlatformCpuAssetTags                        ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdPlatformCpuSocketNames                      ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdPlatformCpuSocketCount                      ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdPlatformCpuFrequencyLists                   ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdPlatformCpuMaxFsbFrequency                  ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdPlatformCpuMaxCoreFrequency                 ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuApStackSize                              ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuApInitTimeOutInMicroSeconds              ## CONSUMES
+  ## CONSUMES
+  ## PRODUCES
+  gEfiCpuTokenSpaceGuid.PcdCpuProcessorFeatureSetting
+  ## CONSUMES
+  ## PRODUCES
+  gEfiCpuTokenSpaceGuid.PcdCpuProcessorFeatureCapability
+  gEfiCpuTokenSpaceGuid.PcdCpuProcessorFeatureUserConfiguration        ## CONSUMES
+  ## CONSUMES
+  ## PRODUCES
+  gEfiCpuTokenSpaceGuid.PcdCpuProcessorFeatureSettingEx1
+  ## CONSUMES
+  ## PRODUCES
+  gEfiCpuTokenSpaceGuid.PcdCpuProcessorFeatureCapabilityEx1
+  gEfiCpuTokenSpaceGuid.PcdCpuProcessorFeatureUserConfigurationEx1     ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuConfigContextBuffer                      ## PRODUCES
+  gEfiCpuTokenSpaceGuid.PcdCpuCallbackSignal                           ## PRODUCES
+  gEfiCpuTokenSpaceGuid.PcdIsPowerOnReset                              ## CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuPageTableAddress                         ## CONSUMES
+  ## CONSUMES
+  ## SOMETIMES_PRODUCES
+  gEfiCpuTokenSpaceGuid.PcdCpuMtrrTableAddress
+  gUefiCpuPkgTokenSpaceGuid.PcdCpuS3DataAddress                        ## PRODUCES
+  gEfiCpuTokenSpaceGuid.PcdCpuHwCoordination                           ## SOMETIMES_CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuEnergyPolicy                             ## SOMETIMES_CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuClockModulationDutyCycle                 ## SOMETIMES_CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuAcpiLvl2Addr                             ## SOMETIMES_CONSUMES
+  gEfiCpuTokenSpaceGuid.PcdCpuPackageCStateLimit                       ## SOMETIMES_CONSUMES
+#
+# PURLEY_OVERRIDE_BEGIN
+#
+  gEfiCpuTokenSpaceGuid.PcdCpuCoreCStateValue
+#
+# PURLEY_OVERRIDE_END
+#
+  gEfiCpuTokenSpaceGuid.PcdCpuDcuMode                                  ## SOMETIMES_CONSUMES
+#
+# PURLEY_OVERRIDE_BEGIN
+#
+  gEfiCpuTokenSpaceGuid.PcdCpuProcessorMsrLockCtrl
+#ESS Override Start
+# 4168379: Odin: PL1 cannot be changed greater than 200W and lock bit set.
+  gEfiCpuTokenSpaceGuid.PcdCpuTurboOverride
+#ESS Override End
+  gEfiCpuTokenSpaceGuid.PcdPchTraceHubEn
+  gEfiCpuTokenSpaceGuid.PcdCpuIioLlcWaysBitMask
+  gEfiCpuTokenSpaceGuid.PcdCpuExpandedIioLlcWaysBitMask
+  gEfiCpuTokenSpaceGuid.PcdCpuRemoteWaysBitMask
+  gEfiCpuTokenSpaceGuid.PcdCpuQlruCfgBitMask
+  gEfiCpuTokenSpaceGuid.PcdSbspSelection
+  gEfiCpuTokenSpaceGuid.PcdCpuSocketId
+#
+# PURLEY_OVERRIDE_END
+#
+  gEfiCpuTokenSpaceGuid.PcdCpuTccActivationOffset                      ## SOMETIMES_CONSUMES
+  gEfiIntelFrameworkModulePkgTokenSpaceGuid.PcdEbdaReservedMemorySize  ## CONSUMES
+  gEfiIntelFrameworkModulePkgTokenSpaceGuid.PcdOpromReservedMemoryBase ## CONSUMES
+  gEfiIntelFrameworkModulePkgTokenSpaceGuid.PcdOpromReservedMemorySize ## CONSUMES
+#
+# PURLEY_OVERRIDE_BEGIN
+#
+  gEfiCpuTokenSpaceGuid.PcdCpuRRQCountThreshold
+  gEfiMdePkgTokenSpaceGuid.PcdSpinLockTimeout|0
+#
+# PURLEY_OVERRIDE_END
+#
+[PcdEx]
+  ## CONSUMES
+  ## UNDEFINED # Token
+#
+# PURLEY_OVERRIDE_BEGIN
+#
+  #gEfiCpuTokenSpaceGuid.PcdCpuSocketId
+#
+# PURLEY_OVERRIDE_END
+#
+  
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[Depex]
+ # APTIOV_SERVER_OVERRIDE_RC_START
+#  gEfiGenericMemTestProtocolGuid AND
+  gEfiSmbiosProtocolGuid AND
+  gIntelCpuPcdsSetDoneProtocolGuid AND
+  gEfiTimerArchProtocolGuid
+ # APTIOV_SERVER_OVERRIDE_RC_END
+[UserExtensions.TianoCore."ExtraFiles"]
+  CpuMpDxeExtra.uni
+
+#
+# PURLEY_OVERRIDE_BEGIN_4929970
+#
+[BuildOptions]
+  # Append new linker alignment option (= is Append, == is Replace)
+  MSFT:*_*_*_DLINK_FLAGS = /ALIGN:128
+  GCC:*_*_*_DLINK_FLAGS = -z common-page-size=0x80
+#
+# PURLEY_OVERRIDE_END_4929970
+#

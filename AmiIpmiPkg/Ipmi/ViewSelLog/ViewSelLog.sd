@@ -1,0 +1,182 @@
+//****************************************************************************
+//**                                                                        **
+//**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+//**                                                                        **
+//****************************************************************************
+//  File History
+//
+//  Rev. 1.00
+//    Bug Fix:  Initialize revision
+//    Reason:   Get base code from Grantley
+//    Auditor:  Kasber Chen
+//    Date:     Jun/07/2016
+//
+//****************************************************************************
+//****************************************************************************
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
+
+//
+// @file  ViewSelLog.sd
+//
+//  Contains the setup description for ViewSelLog Page
+//
+
+#ifdef SERVER_MGMT_CONFIGURATION_DATA_DEFINITION
+//***********************************************************
+// Put NVRAM data definitions here.
+// For example:    UINT8 Data1;
+// These definitions will be converted by the build process
+// to a definitions of SERVER_MGMT_CONFIGURATION_DATA fields.
+//***********************************************************
+    //
+    // When Value is,
+    // 1 or 4: Print STR_SEL_COLUMN_TITLE_SCREEN
+    // 2: Print STR_SEL_NO_PROTOCOL_FOUND
+    // 3: Print STR_SEL_NO_RECORDS_FOUND
+    // 4: Print STR_VIEW_MORE_SEL_LOG_TITLE
+    //
+    UINT8         ViewSelLogFlag;
+#endif //#ifdef SERVER_MGMT_CONFIGURATION_DATA_DEFINITION
+
+#if defined(VFRCOMPILE) && !defined(CONTROLS_ARE_DEFINED)
+#define CONTROL_DEFINITION
+#endif
+
+#ifdef CONTROL_DEFINITION
+//
+// Add control definitions here
+//
+#endif //#ifdef CONTROL_DEFINITION
+
+#ifdef CONTROLS_WITH_DEFAULTS
+//
+// Add deaful control definitions here
+//
+#endif //#ifdef CONTROLS_WITH_DEFAULTS
+
+#ifdef SERVER_MGMT_FORM_SET
+
+    #ifdef FORM_SET_TYPEDEF
+    //
+    // If you need any additional type definitions add them here
+    //
+    #endif
+
+    #ifdef FORM_SET_VARSTORE
+    //
+    //If you need custom varstore's define them here
+    //
+    varstore ERROR_MANAGER,
+        key = ERROR_MANAGER_KEY_ID,
+        name = ErrorManager,
+        guid = ERROR_MANAGER_GUID;
+    #endif
+
+    #ifdef FORM_SET_ITEM
+    //
+    // Define controls to be added to the main page of the formset
+    //
+    #endif
+
+    #ifdef FORM_SET_GOTO
+       	suppressif  SMCPKG_SUPPORT;
+        suppressif  ideqval SERVER_MGMT_CONFIGURATION_DATA.BmcSupport == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+        goto VIEW_SEL_LOG_FORM,
+            prompt  = STRING_TOKEN(STR_VIEW_SEL_LOG_TITLE),
+            help    = STRING_TOKEN(STR_VIEW_SEL_LOG_HELP),
+            flags   = INTERACTIVE,
+            key     = AUTO_ID(VIEW_SEL_LOG_FORM_KEY);
+        SUPPRESS_GRAYOUT_ENDIF
+	endif;
+    #endif
+
+    #ifdef FORM_SET_FORM
+        #ifndef VIEWSELLOG_FORM_SERVERMGMT
+        #define VIEWSELLOG_FORM_SERVERMGMT
+        form formid = AUTO_ID(VIEW_SEL_LOG_FORM),
+            title  = STRING_TOKEN(STR_VIEW_SEL_LOG_TITLE);
+
+            //
+            // Print View More SEL Log if ViewSelLogFlag is 4.
+            //
+            suppressif NOT ideqvallist SERVER_MGMT_CONFIGURATION_DATA.ViewSelLogFlag == 4;
+            goto VIEW_SEL_LOG_FORM,
+                prompt = STRING_TOKEN(STR_VIEW_MORE_SEL_LOG_TITLE),
+                help = STRING_TOKEN(STR_VIEW_MORE_SEL_LOG_HELP),
+                flags   = INTERACTIVE,
+                key     = AUTO_ID(VIEW_MORE_SEL_LOG_KEY);
+
+            subtitle text = STRING_TOKEN(STR_EMPTY);
+            endif;
+
+            //
+            // Print No. of Log entries in SEL if ViewSelLogFlag != 2.
+            //
+            suppressif ideqvallist SERVER_MGMT_CONFIGURATION_DATA.ViewSelLogFlag == 2;
+                subtitle text = STRING_TOKEN(STR_SYSTEM_ELOG_COUNT_STRING);
+                subtitle text = STRING_TOKEN(STR_EMPTY);
+            endif;
+
+            //
+            // Print Protocl not found error if ViewSelLogFlag is 2.
+            //
+            suppressif NOT ideqvallist SERVER_MGMT_CONFIGURATION_DATA.ViewSelLogFlag == 2;
+                subtitle text = STRING_TOKEN(STR_SEL_NO_PROTOCOL_FOUND);
+            endif;
+
+            //
+            // Print Protocl not found error if ViewSelLogFlag is 3.
+            //
+            suppressif NOT ideqvallist SERVER_MGMT_CONFIGURATION_DATA.ViewSelLogFlag == 3;
+                subtitle text = STRING_TOKEN(STR_SEL_NO_RECORDS_FOUND);
+            endif;
+
+            //
+            // Print Column title if ViewSelLogFlag is 1 or 4.
+            //
+            suppressif NOT ideqvallist SERVER_MGMT_CONFIGURATION_DATA.ViewSelLogFlag == 1 AND
+                       NOT ideqvallist SERVER_MGMT_CONFIGURATION_DATA.ViewSelLogFlag == 4;
+                subtitle text = STRING_TOKEN(STR_SEL_COLUMN_TITLE_SCREEN);
+                subtitle text = STRING_TOKEN(STR_EMPTY);
+            endif;
+
+            //
+            // Special suppressif control to view SEL.
+            //
+            suppressif ideqvallist ERROR_MANAGER.ErrorCount == 0xFFFF;
+            goto VIEW_SEL_LOG_FORM,
+                prompt = STRING_TOKEN(STR_EMPTY),
+                help = STRING_TOKEN(STR_EMPTY);
+            endif;
+
+        endform;
+        #endif //#ifndef VIEWSELLOG_FORM_SERVERMGMT
+    #endif //#ifdef FORM_SET_FORM
+#endif //#ifdef SERVER_MGMT_FORM_SET
+
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**         5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093     **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************

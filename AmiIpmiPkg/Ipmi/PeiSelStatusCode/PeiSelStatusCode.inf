@@ -1,0 +1,79 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+# @file PeiSelStatusCode.inf
+#
+#INF description file for PeiSelStatusCode PEIM
+#
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = PeiSelStatusCode
+  FILE_GUID                      = 2700F72F-E0EA-4767-9A1E-D172F0704778
+  MODULE_TYPE                    = PEIM
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = InitializePeiSel
+
+[Sources]
+  PeiSelStatusCode.c
+  PeiSelStatusCode.h
+
+[Packages]
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiIpmiPkg/AmiIpmiPkg.dec
+  SmcPkg/SmcPkg.dec	#SMCPKG_SUPPORT
+
+[LibraryClasses]
+  PeimEntryPoint
+  BaseLib
+  DebugLib
+  MemoryAllocationLib
+  PeiServicesLib
+
+[Ppis]
+  gEfiPeiReadOnlyVariable2PpiGuid   #CONSUMES
+  gEfiPeiMemoryDiscoveredPpiGuid    #CONSUMES
+  gEfiPeiIpmiTransportPpiGuid       #CONSUMES
+  gEfiPeiRscHandlerPpiGuid          #CONSUMES
+  gEfiPeiSelPpiGuid                 #PRODUCES
+
+
+[Guids]
+  gEfiServerMgmtSetupVariableGuid
+  gSuperMPeiPrococolGuid	#SMCPKG_SUPPORT
+
+[Pcd]
+  gAmiIpmiPkgTokenSpaceGuid.SelFullBehaviour
+
+[Depex]
+  gEfiPeiReadOnlyVariable2PpiGuid AND
+  gEfiPeiIpmiTransportPpiGuid AND
+  gEfiPeiRscHandlerPpiGuid
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**         5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093     **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

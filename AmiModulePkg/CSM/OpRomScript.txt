@@ -1,0 +1,7 @@
+BEGIN { RS = ")" }
+{
+	print gensub(\
+		/OPROM[[:space:]]*\([[:space:]]*(.+)[[:space:]]*,[[:space:]]*(.+)[[:space:]]*,[[:space:]]*(.+),[[:space:]]*(.+)/,\
+		"[MODULE]\nModuleID = \\1\nVendorID = \\2\nDeviceID = \\3\nFile = \\4\n", "g"\
+	)
+}

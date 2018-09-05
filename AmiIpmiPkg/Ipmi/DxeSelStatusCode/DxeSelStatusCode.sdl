@@ -1,0 +1,47 @@
+TOKEN
+    Name  = "DxeSelStatusCode_SUPPORT"
+    Value  = "1"
+    Help  = "Switch for Enabling DxeSelStatusCode support in the project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    Master = Yes
+End
+
+PATH
+    Name  = "DxeSelStatusCode_DIR"
+    Path  = "AmiIpmiPkg/Ipmi/DxeSelStatusCode"
+    Help  = "Path to DxeSelStatusCode sub module in project."
+End
+
+ELINK
+    Name  = "$(DxeSelStatusCode_DIR)/SelSetup.sd"
+    Parent  = "SERVER_MGMT_SETUP_DEFINITIONS"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include SelSetup.sd file in ServerMgmtSetup definitions files list."
+End
+
+ELINK
+    Name  = "$(DxeSelStatusCode_DIR)/SelSetup.uni"
+    Parent  = "ServerMgmtSetupStringFiles"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include SelSetup.uni file in ServerMgmtSetup string files list."
+End
+
+INFComponent
+    Name  = "DxeSelStatusCode"
+    File  = "DxeSelStatusCode.inf"
+    Package  = "AmiIpmiPkg"
+    ModuleTypes  = "DXE_DRIVER"
+    Path  = "DxeSelStatusCode_DIR"
+    Help  = "Includes DxeSelStatusCode.inf to Project."
+End
+
+FFS_FILE
+    Name  = "DxeSelStatusCode"
+    FD_AREA  = "FV_MAIN"
+    INFComponent  = "AmiIpmiPkg.DxeSelStatusCode"
+    Apriori_Index  = "6"
+    Help  = "Includes DxeSelStatusCode driver in FV_MAIN and dispatches based on a priori index."
+End
+

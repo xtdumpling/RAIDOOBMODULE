@@ -1,0 +1,74 @@
+TOKEN
+	Name  = "PurleySocketPkg_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling PurleySktPkg support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+    Name  = "SW_SMI_SAVE_MSR"
+    Value  = "0x56"
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "SW_SMI_RESTORE_MSR"
+    Value  = "0x57"
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+ELINK
+    Name  = "PROGRAM_IIO_OEM_SVID_SID"
+    InvokeOrder = ReplaceParent
+End
+
+PcdMapping
+	Name  = "PcdSktFpgaActive"
+	GuidSpace  = "gSocketPkgFpgaGuid"
+	PcdType  = "PcdsFeatureFlag"
+	Value  = "TRUE"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuApStackSize"
+	GuidSpace  = "gUefiCpuPkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0x1000"
+	Arch  = "common"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuApInitTimeOutInMicroSeconds"
+	GuidSpace  = "gUefiCpuPkgTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "30000"
+	Arch  = "common"
+	SkuId  = "DEFAULT"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdCpuSmmRuntimeCtlHooks"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsDynamicDefault"
+	Value  = "FALSE"
+	Arch  = "X64"
+	SkuId  = "DEFAULT"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End

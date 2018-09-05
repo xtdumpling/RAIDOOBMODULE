@@ -1,0 +1,87 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+#
+# @file  DxeFrb.inf
+#
+#   INF description file for DxeFrb driver
+#
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = DxeFrb
+  FILE_GUID                      = 9D0CEA63-745B-417d-BBA4-E5193061C907
+  MODULE_TYPE                    = DXE_DRIVER
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = InitializeDxeFrb
+
+[Sources]
+  DxeFrb.c
+  DxeFrb.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiIpmiPkg/AmiIpmiPkg.dec
+  AmiTsePkg/AmiTsePkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  MemoryAllocationLib
+  BaseLib
+  DebugLib
+  BaseMemoryLib
+  UefiLib
+
+[Protocols]
+  gEfiDxeIpmiTransportProtocolGuid  #CONSUMES
+  gAmiLegacyBootProtocolGuid        #CONSUMES
+  gEfiSmFrbProtocolGuid             #PRODUCES
+  gOpromStartEndProtocolGuid        #CONSUMES
+
+[Guids]
+  gEfiHobListGuid
+  gEfiServerMgmtSetupVariableGuid
+  gAmiTseEventBeforeBootGuid
+  gAmiTseSetupEnterGuid
+  gAmiTsePasswordPromptEnterGuid
+  gAmiTsePasswordPromptExitGuid
+  gAmiTseBeforeTimeOutGuid
+  gAmiTseAfterTimeOutGuid
+  gAmiTseAfterFirstBootOptionGuid
+
+[Pcd]
+
+
+[Depex]
+  gEfiDxeIpmiTransportProtocolGuid
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**         5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093     **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

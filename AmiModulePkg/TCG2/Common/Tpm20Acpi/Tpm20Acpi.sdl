@@ -1,0 +1,85 @@
+PCIDEVICE
+    Title  = "TCG Container"
+    Parent  = "PciHost (Virtual)"
+    Attribute  = "0x0"
+    Dev_type  = "Container"
+    Dev  = 00h
+    Fun  = 00h
+    SleepNum  = 01h
+    ASLfile  = "'AmiModulePkg\TCG2\Common\Tpm20Acpi\tpm.asl;After Pci Tree','AmiModulePkg\TCG2\Common\Tpm20Acpi\tcg_ppi1_3_Ex.asl;After Pci Tree'"
+    DeviceType = OnBoard
+    PCIBusSize = 32bit
+    ROMMain = No
+    Virtual = Yes
+    ASL_PTS  = "Method;\_SB.TPM.TPTS(Arg0)"
+End
+
+TOKEN
+    Name  = "PPIV"
+    Value  = "0"
+    Help  = "PPI version flag"
+    TokenType = Integer
+    TargetASL = Yes
+End
+
+TOKEN
+    Name  = "TPM20ACPI_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable TCGSMM support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    Master = Yes
+End
+
+TOKEN
+    Name  = "MOR_RESET_S4S5"
+    Value  = "0"
+    Help  = "When OS Reset the systme under S4/S5, we can reset the MOR Bit"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "TCG_WAIT_OS_TPM_READY"
+    Value  = "0"
+    Help  = "Patch for most TPM, when OS ResetSystem/Shutdown/Resume, we need to wait the TPM_Shutdown(...) Command finishted"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+End
+
+
+TOKEN
+    Name  = "TPM20_CRB_WITH_START_METHOD"
+    Value  = "0"
+    Help  = "Patch for some Intel fTPM, the windows driver is access faster than HW response"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "INTELFTPMBASE"
+    Value  = "0xFED70000"
+    Help  = "Ftpm base"
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+End
+
+
+PATH
+    Name  = "TPM20ACPI_DIR"
+End
+
+INFComponent
+    Name  = "Tpm20Acpi"
+    File  = "Tpm20Acpi.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_DRIVER"
+End
+

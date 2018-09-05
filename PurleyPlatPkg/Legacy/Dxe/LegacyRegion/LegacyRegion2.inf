@@ -1,0 +1,59 @@
+## @file
+#
+#  Copyright (c) 2009 - 2016, Intel Corporation. All rights reserved.<BR>
+#
+#  This program and the accompanying materials
+#  are licensed and made available under the terms and conditions of the BSD License
+#  which accompanies this distribution. The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.php
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = LegacyRegion2
+  FILE_GUID                      = AA7B4695-00B4-4468-AD92-99370AC031C5
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = LegacyRegionInstall
+
+[Sources]
+  LegacyRegion.c
+  LegacyRegion.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+
+[LibraryClasses]
+  BaseLib
+  HobLib
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  PcdLib
+  DebugLib
+
+ [Protocols]
+  gEfiLegacyRegion2ProtocolGuid
+  gEfiCpuCsrAccessGuid
+  gEfiIioUdsProtocolGuid
+  
+[Guids]
+  
+[Pcd]
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[Depex]
+  gEfiVariableArchProtocolGuid     	AND
+  gEfiCpuCsrAccessGuid                  AND
+  gEfiIioUdsProtocolGuid             	
+

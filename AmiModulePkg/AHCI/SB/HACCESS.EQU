@@ -1,0 +1,70 @@
+
+	TITLE   HACCESS.EQU - Accessing HBA memory-mapped register
+
+;****************************************************************************
+;****************************************************************************
+;**                                                                        **
+;**             (C)Copyright 1985-2014, American Megatrends, Inc.          **
+;**                                                                        **
+;**                          All Rights Reserved.                          **
+;**                                                                        **
+;**                 5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093   **
+;**                                                                        **
+;**                          Phone (770)-246-8600                          **
+;**                                                                        **
+;****************************************************************************
+;****************************************************************************
+
+
+;
+;****************************************************************************
+
+;-------------------------------------------------------------------------
+;
+; Input parameter in register CH to read/write memory-mapped registers.
+;
+;ACCESS_DATA    equ 0ADh
+;
+; Output parameter in register CH from read/write memory-mapped registers.
+; This data is checked for determining whether access is successful.
+;
+;DATA_ACCESSED  equ 0DAh    ; Access is Successful
+                            ; Any other value -> error
+;
+;-------------------------------------------------------------------------
+; Function number used for common control routine to access memory-mapped
+; registers using any access method
+;
+;READ_BYTE          equ 00h ; Func# 00h for Read Byte Data
+;READ_WORD          equ 01h ; Func# 01h for Read Word Data
+;READ_DWORD         equ 02h ; Func# 02h for Read Dword Data
+;
+;WRITE_BYTE         equ 10h ; Func# 10h for Write Byte Data
+;WRITE_WORD         equ 11h ; Func# 11h for Write Word Data
+;WRITE_DWORD        equ 12h ; Func# 12h for Write Dword Data
+;
+;INIT_BYTE_ARRAY    equ 20h ; Func# 20h for Init Byte Array
+;INIT_WORD_ARRAY    equ 21h ; Func# 21h for Init Word Array
+;INIT_DWORD_ARRAY   equ 22h ; Func# 22h for Init Dword Array
+;
+;-------------------------------------------------------------------------
+;
+;RW_FUNC_STRUC  struc
+;  bFunction    db  ?   ; Function#
+;  wPtrToRoutine    dw  ?   ; Offset of execution routine
+;RW_FUNC_STRUC  ends
+;-------------------------------------------------------------------------
+;****************************************************************************
+;****************************************************************************
+;**                                                                        **
+;**             (C)Copyright 1985-2014, American Megatrends, Inc.          **
+;**                                                                        **
+;**                          All Rights Reserved.                          **
+;**                                                                        **
+;**                 5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093      **
+;**                                                                        **
+;**                          Phone (770)-246-8600                          **
+;**                                                                        **
+;****************************************************************************
+;****************************************************************************
+

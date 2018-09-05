@@ -1,0 +1,493 @@
+//****************************************************************************
+//**                                                                        **
+//**            (C)Copyright 1993-2015 Supermicro Computer, Inc.            **
+//**                                                                        **
+//****************************************************************************
+//  File History
+//
+//  Rev. 1.04
+//    Bug Fix:  Add option [Legacy] for Onboard NVMe Option ROM
+//    Reason:   
+//    Auditor:  Jimmy Chiu
+//    Date:     Jan/18/2017
+//
+//  Rev. 1.03
+//    Bug Fix:  Support 12 NVMe
+//    Reason:   
+//    Auditor:  Kasber Chen
+//    Date:     Sep/29/2016
+//
+//  Rev. 1.02
+//    Bug Fix:  Support extern ROM of lan chip. ex:X722, X710
+//    Reason:   
+//    Auditor:  Kasber Chen
+//    Date:     Sep/14/2016
+//
+//  Rev. 1.01
+//    Bug Fix:  Support 6 NVMe
+//    Reason:   
+//    Auditor:  Kasber Chen
+//    Date:     Jul/14/2016
+//
+//  Rev. 1.00
+//    Bug Fix:  Initialize revision
+//    Reason:   Get base code from Grantley
+//    Auditor:  Salmon Chen
+//    Date:     Dec/09/2014
+//
+//****************************************************************************
+//****************************************************************************
+
+
+#ifdef SETUP_DATA_DEFINITION
+///***********************************************************/
+///* Put NVRAM data definitions here.
+///* For example: UINT8 Data1;
+///* These definitions will be converted by the build process
+///* to a definitions of SETUP_DATA fields.
+///***********************************************************/
+	UINT8   SmcPciSlotOpRom[11];
+	UINT8   SmcLanOpRom[4];
+	UINT8   SmcNVMeOpRom[12];
+	UINT8	SmcSASOpRom;
+	UINT8	OnboardVideoOpRom;
+	UINT8	OnboardLANOpRomType;
+#endif //SETUP_DATA_DEFINITION
+
+#define PCIBUS_SLOT1_OPROM_CONTROL\
+        oneof varid       = SETUP_DATA.SmcPciSlotOpRom[0],\
+          prompt      = STRING_TOKEN (STR_SMC_PCI_SLOT_1_OPROM),\
+          help        = STRING_TOKEN (STR_SMC_PCI_SLOT_1_OPROM_HELP),\
+          option text = STRING_TOKEN (STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_LEGACY),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_EFI),  value = 2, flags = RESET_REQUIRED;\
+        endoneof;
+
+#define PCIBUS_SLOT2_OPROM_CONTROL\
+        oneof varid       = SETUP_DATA.SmcPciSlotOpRom[1],\
+          prompt      = STRING_TOKEN (STR_SMC_PCI_SLOT_2_OPROM),\
+          help        = STRING_TOKEN (STR_SMC_PCI_SLOT_2_OPROM_HELP),\
+          option text = STRING_TOKEN (STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_LEGACY),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_EFI),  value = 2, flags = RESET_REQUIRED;\
+        endoneof;
+
+#define PCIBUS_SLOT3_OPROM_CONTROL\
+        oneof varid       = SETUP_DATA.SmcPciSlotOpRom[2],\
+          prompt      = STRING_TOKEN (STR_SMC_PCI_SLOT_3_OPROM),\
+          help        = STRING_TOKEN (STR_SMC_PCI_SLOT_3_OPROM_HELP),\
+          option text = STRING_TOKEN (STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_LEGACY),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_EFI),  value = 2, flags = RESET_REQUIRED;\
+        endoneof;
+
+#define PCIBUS_SLOT4_OPROM_CONTROL\
+        oneof varid       = SETUP_DATA.SmcPciSlotOpRom[3],\
+          prompt      = STRING_TOKEN (STR_SMC_PCI_SLOT_4_OPROM),\
+          help        = STRING_TOKEN (STR_SMC_PCI_SLOT_4_OPROM_HELP),\
+          option text = STRING_TOKEN (STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_LEGACY),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_EFI),  value = 2, flags = RESET_REQUIRED;\
+        endoneof;
+
+#define PCIBUS_SLOT5_OPROM_CONTROL\
+        oneof varid       = SETUP_DATA.SmcPciSlotOpRom[4],\
+          prompt      = STRING_TOKEN (STR_SMC_PCI_SLOT_5_OPROM),\
+          help        = STRING_TOKEN (STR_SMC_PCI_SLOT_5_OPROM_HELP),\
+          option text = STRING_TOKEN (STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_LEGACY),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_EFI),  value = 2, flags = RESET_REQUIRED;\
+        endoneof;
+
+#define PCIBUS_SLOT6_OPROM_CONTROL\
+        oneof varid       = SETUP_DATA.SmcPciSlotOpRom[5],\
+          prompt      = STRING_TOKEN (STR_SMC_PCI_SLOT_6_OPROM),\
+          help        = STRING_TOKEN (STR_SMC_PCI_SLOT_6_OPROM_HELP),\
+          option text = STRING_TOKEN (STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_LEGACY),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_EFI),  value = 2, flags = RESET_REQUIRED;\
+        endoneof;
+
+#define PCIBUS_SLOT7_OPROM_CONTROL\
+        oneof varid       = SETUP_DATA.SmcPciSlotOpRom[6],\
+          prompt      = STRING_TOKEN (STR_SMC_PCI_SLOT_7_OPROM),\
+          help        = STRING_TOKEN (STR_SMC_PCI_SLOT_7_OPROM_HELP),\
+          option text = STRING_TOKEN (STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_LEGACY),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_EFI),  value = 2, flags = RESET_REQUIRED;\
+        endoneof;
+
+#define PCIBUS_SLOT8_OPROM_CONTROL\
+        oneof varid       = SETUP_DATA.SmcPciSlotOpRom[7],\
+          prompt      = STRING_TOKEN (STR_SMC_PCI_SLOT_8_OPROM),\
+          help        = STRING_TOKEN (STR_SMC_PCI_SLOT_8_OPROM_HELP),\
+          option text = STRING_TOKEN (STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_LEGACY),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_EFI),  value = 2, flags = RESET_REQUIRED;\
+        endoneof;
+
+#define PCIBUS_SLOT9_OPROM_CONTROL\
+        oneof varid       = SETUP_DATA.SmcPciSlotOpRom[8],\
+          prompt      = STRING_TOKEN (STR_SMC_PCI_SLOT_9_OPROM),\
+          help        = STRING_TOKEN (STR_SMC_PCI_SLOT_9_OPROM_HELP),\
+          option text = STRING_TOKEN (STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_LEGACY),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_EFI),  value = 2, flags = RESET_REQUIRED;\
+        endoneof;
+
+#define PCIBUS_SLOT10_OPROM_CONTROL\
+        oneof varid       = SETUP_DATA.SmcPciSlotOpRom[9],\
+          prompt      = STRING_TOKEN (STR_SMC_PCI_SLOT_10_OPROM),\
+          help        = STRING_TOKEN (STR_SMC_PCI_SLOT_10_OPROM_HELP),\
+          option text = STRING_TOKEN (STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_LEGACY),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_EFI),  value = 2, flags = RESET_REQUIRED;\
+        endoneof;
+
+#define PCIBUS_SLOT11_OPROM_CONTROL\
+        oneof varid       = SETUP_DATA.SmcPciSlotOpRom[10],\
+          prompt      = STRING_TOKEN (STR_SMC_PCI_SLOT_11_OPROM),\
+          help        = STRING_TOKEN (STR_SMC_PCI_SLOT_11_OPROM_HELP),\
+          option text = STRING_TOKEN (STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_LEGACY),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_EFI),  value = 2, flags = RESET_REQUIRED;\
+        endoneof;
+
+#define PCIBUS_ONBOARD_SAS_OPROM_SEL\
+        oneof varid       = SETUP_DATA.SmcSASOpRom,\
+          prompt      = STRING_TOKEN (STR_SMC_ONBOARD_SAS_SELECT),\
+          help        = STRING_TOKEN (STR_SMC_ONBOARD_SAS_SELECT_HELP),\
+          option text = STRING_TOKEN (STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_LEGACY),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_EFI),  value = 2, flags = RESET_REQUIRED;\
+        endoneof;
+
+#define PCIBUS_ONBOARD_LAN_OPROM_TYPE\
+        oneof varid       = SETUP_DATA.OnboardLANOpRomType,\
+          prompt      = STRING_TOKEN (STR_ONBOARD_LAN_OPROM_TYPE_PROMPT),\
+          help        = STRING_TOKEN (STR_ONBOARD_LAN_OPROM_TYPE_HELP),\
+          option text = STRING_TOKEN (STR_LEGACY), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_EFI), value = 1, flags = RESET_REQUIRED;\
+        endoneof;
+
+#if SMC_ONBOARD_LAN_DID1 == 0xffff
+#define PCIBUS_ONBOARD_LAN1_OPROM_SEL\
+        oneof varid       = SETUP_DATA.SmcLanOpRom[0],\
+          prompt      = STRING_TOKEN (STR_SMC_ONBOARD_LAN_1_SELECT),\
+          help        = STRING_TOKEN (STR_SMC_ONBOARD_LAN_1_SELECT_HELP),\
+          option text = STRING_TOKEN (STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_LEGACY),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_EFI),  value = 3, flags = RESET_REQUIRED;\
+        endoneof;
+        
+#define PCIBUS_ONBOARD_LAN1_10G_OPROM_SEL\
+        oneof varid       = SETUP_DATA.SmcLanOpRom[0],\
+          prompt      = STRING_TOKEN (STR_SMC_ONBOARD_LAN_1_10G_SELECT),\
+          help        = STRING_TOKEN (STR_SMC_ONBOARD_LAN_1_SELECT_HELP),\
+          option text = STRING_TOKEN (STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_LEGACY),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_EFI),  value = 3, flags = RESET_REQUIRED;\
+        endoneof;
+#else
+#define PCIBUS_ONBOARD_LAN1_OPROM_SEL\
+        oneof varid       = SETUP_DATA.SmcLanOpRom[0],\
+          prompt      = STRING_TOKEN (STR_SMC_ONBOARD_LAN_1_SELECT),\
+          help        = STRING_TOKEN (STR_SMC_ONBOARD_LAN_1_SELECT_HELP),\
+          option text = STRING_TOKEN (STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_SMC_LAN_OPROM_PXE),   value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_SMC_LAN_OPROM_ISCSI), value = 2, flags = RESET_REQUIRED;\
+        endoneof;
+
+#define PCIBUS_ONBOARD_LAN1_10G_OPROM_SEL\
+        oneof varid       = SETUP_DATA.SmcLanOpRom[0],\
+          prompt      = STRING_TOKEN (STR_SMC_ONBOARD_LAN_1_10G_SELECT),\
+          help        = STRING_TOKEN (STR_SMC_ONBOARD_LAN_1_SELECT_HELP),\
+          option text = STRING_TOKEN (STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_SMC_LAN_OPROM_PXE),   value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_SMC_LAN_OPROM_ISCSI), value = 2, flags = RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_SMC_LAN_OPROM_FCOE), value = 3, flags = RESET_REQUIRED;\
+        endoneof;
+#endif
+        
+#if SMC_ONBOARD_LAN_DID2 == 0xffff
+#define PCIBUS_ONBOARD_LAN2_OPROM_SEL\
+        oneof varid       = SETUP_DATA.SmcLanOpRom[1],\
+          prompt      = STRING_TOKEN (STR_SMC_ONBOARD_LAN_2_SELECT),\
+          help        = STRING_TOKEN (STR_SMC_ONBOARD_LAN_2_SELECT_HELP),\
+          option text = STRING_TOKEN (STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_LEGACY),  value = 1, flags = RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_EFI),  value = 3, flags = RESET_REQUIRED;\
+        endoneof;
+#else
+#define PCIBUS_ONBOARD_LAN2_OPROM_SEL\
+        oneof varid       = SETUP_DATA.SmcLanOpRom[1],\
+          prompt      = STRING_TOKEN (STR_SMC_ONBOARD_LAN_2_SELECT),\
+          help        = STRING_TOKEN (STR_SMC_ONBOARD_LAN_2_SELECT_HELP),\
+          option text = STRING_TOKEN (STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED ;\
+          option text = STRING_TOKEN (STR_SMC_LAN_OPROM_PXE),   value = 1, flags = RESET_REQUIRED;\
+        endoneof;
+#endif
+        
+#if SMC_ONBOARD_LAN_DID3 == 0xffff
+#define PCIBUS_ONBOARD_LAN3_OPROM_SEL\
+        oneof varid       = SETUP_DATA.SmcLanOpRom[2],\
+          prompt      = STRING_TOKEN (STR_SMC_ONBOARD_LAN_3_SELECT),\
+          help        = STRING_TOKEN (STR_SMC_ONBOARD_LAN_3_SELECT_HELP),\
+          option text = STRING_TOKEN (STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_LEGACY),  value = 1, flags = RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_EFI),  value = 3, flags = RESET_REQUIRED;\
+        endoneof;
+#else
+#define PCIBUS_ONBOARD_LAN3_OPROM_SEL\
+        oneof varid       = SETUP_DATA.SmcLanOpRom[2],\
+          prompt      = STRING_TOKEN (STR_SMC_ONBOARD_LAN_3_SELECT),\
+          help        = STRING_TOKEN (STR_SMC_ONBOARD_LAN_3_SELECT_HELP),\
+          option text = STRING_TOKEN (STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_SMC_LAN_OPROM_PXE),   value = 1, flags = RESET_REQUIRED;\
+        endoneof;
+#endif
+        
+#if SMC_ONBOARD_LAN_DID4 == 0xffff
+#define PCIBUS_ONBOARD_LAN4_OPROM_SEL\
+        oneof varid       = SETUP_DATA.SmcLanOpRom[3],\
+          prompt      = STRING_TOKEN (STR_SMC_ONBOARD_LAN_4_SELECT),\
+          help        = STRING_TOKEN (STR_SMC_ONBOARD_LAN_4_SELECT_HELP),\
+          option text = STRING_TOKEN (STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_LEGACY),  value = 1, flags = RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_EFI),  value = 3, flags = RESET_REQUIRED;\
+        endoneof;
+#else
+#define PCIBUS_ONBOARD_LAN4_OPROM_SEL\
+        oneof varid       = SETUP_DATA.SmcLanOpRom[3],\
+          prompt      = STRING_TOKEN (STR_SMC_ONBOARD_LAN_4_SELECT),\
+          help        = STRING_TOKEN (STR_SMC_ONBOARD_LAN_4_SELECT_HELP),\
+          option text = STRING_TOKEN (STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_SMC_LAN_OPROM_PXE),   value = 1, flags = RESET_REQUIRED;\
+        endoneof;
+#endif
+
+#define PCIBUS_ONBOARD_NVME1_OPROM_SEL\
+        oneof varid       = SETUP_DATA.SmcNVMeOpRom[0],\
+          prompt      = STRING_TOKEN (STR_SMC_ONBOARD_NVME_1_SELECT),\
+          help        = STRING_TOKEN (STR_SMC_ONBOARD_NVME_1_SELECT_HELP),\
+          option text = STRING_TOKEN (STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+suppressif NVMEINT13_SUPPORT == 0;\
+          option text = STRING_TOKEN (STR_LEGACY), value = 1, flags = RESET_REQUIRED;\
+endif\
+          option text = STRING_TOKEN (STR_EFI), value = 2, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+        endoneof;
+        
+#define PCIBUS_ONBOARD_NVME2_OPROM_SEL\
+        oneof varid       = SETUP_DATA.SmcNVMeOpRom[1],\
+          prompt      = STRING_TOKEN (STR_SMC_ONBOARD_NVME_2_SELECT),\
+          help        = STRING_TOKEN (STR_SMC_ONBOARD_NVME_2_SELECT_HELP),\
+          option text = STRING_TOKEN (STR_DISABLED), value = 0, flags = RESET_REQUIRED ;\
+suppressif NVMEINT13_SUPPORT == 0;\
+          option text = STRING_TOKEN (STR_LEGACY), value = 1, flags = RESET_REQUIRED;\
+endif\
+          option text = STRING_TOKEN (STR_EFI),   value = 2, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+        endoneof;
+        
+#define PCIBUS_ONBOARD_NVME3_OPROM_SEL\
+        oneof varid       = SETUP_DATA.SmcNVMeOpRom[2],\
+          prompt      = STRING_TOKEN (STR_SMC_ONBOARD_NVME_3_SELECT),\
+          help        = STRING_TOKEN (STR_SMC_ONBOARD_NVME_3_SELECT_HELP),\
+          option text = STRING_TOKEN (STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+suppressif NVMEINT13_SUPPORT == 0;\
+          option text = STRING_TOKEN (STR_LEGACY), value = 1, flags = RESET_REQUIRED;\
+endif\
+          option text = STRING_TOKEN (STR_EFI),   value = 2, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+        endoneof;
+        
+#define PCIBUS_ONBOARD_NVME4_OPROM_SEL\
+        oneof varid       = SETUP_DATA.SmcNVMeOpRom[3],\
+          prompt      = STRING_TOKEN (STR_SMC_ONBOARD_NVME_4_SELECT),\
+          help        = STRING_TOKEN (STR_SMC_ONBOARD_NVME_4_SELECT_HELP),\
+          option text = STRING_TOKEN (STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+suppressif NVMEINT13_SUPPORT == 0;\
+          option text = STRING_TOKEN (STR_LEGACY), value = 1, flags = RESET_REQUIRED;\
+endif\
+          option text = STRING_TOKEN (STR_EFI),   value = 2, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+        endoneof;
+
+#define PCIBUS_ONBOARD_NVME5_OPROM_SEL\
+        oneof varid       = SETUP_DATA.SmcNVMeOpRom[4],\
+          prompt      = STRING_TOKEN (STR_SMC_ONBOARD_NVME_5_SELECT),\
+          help        = STRING_TOKEN (STR_SMC_ONBOARD_NVME_5_SELECT_HELP),\
+          option text = STRING_TOKEN (STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+suppressif NVMEINT13_SUPPORT == 0;\
+          option text = STRING_TOKEN (STR_LEGACY), value = 1, flags = RESET_REQUIRED;\
+endif\
+          option text = STRING_TOKEN (STR_EFI),   value = 2, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+        endoneof;
+        
+#define PCIBUS_ONBOARD_NVME6_OPROM_SEL\
+        oneof varid       = SETUP_DATA.SmcNVMeOpRom[5],\
+          prompt      = STRING_TOKEN (STR_SMC_ONBOARD_NVME_6_SELECT),\
+          help        = STRING_TOKEN (STR_SMC_ONBOARD_NVME_6_SELECT_HELP),\
+          option text = STRING_TOKEN (STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+suppressif NVMEINT13_SUPPORT == 0;\
+          option text = STRING_TOKEN (STR_LEGACY), value = 1, flags = RESET_REQUIRED;\
+endif\
+          option text = STRING_TOKEN (STR_EFI),   value = 2, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+        endoneof;
+        
+#define PCIBUS_ONBOARD_NVME7_OPROM_SEL\
+        oneof varid       = SETUP_DATA.SmcNVMeOpRom[6],\
+          prompt      = STRING_TOKEN (STR_SMC_ONBOARD_NVME_7_SELECT),\
+          help        = STRING_TOKEN (STR_SMC_ONBOARD_NVME_7_SELECT_HELP),\
+          option text = STRING_TOKEN (STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+suppressif NVMEINT13_SUPPORT == 0;\
+          option text = STRING_TOKEN (STR_LEGACY), value = 1, flags = RESET_REQUIRED;\
+endif\
+          option text = STRING_TOKEN (STR_EFI),   value = 2, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+        endoneof;
+
+#define PCIBUS_ONBOARD_NVME8_OPROM_SEL\
+        oneof varid       = SETUP_DATA.SmcNVMeOpRom[7],\
+          prompt      = STRING_TOKEN (STR_SMC_ONBOARD_NVME_8_SELECT),\
+          help        = STRING_TOKEN (STR_SMC_ONBOARD_NVME_8_SELECT_HELP),\
+          option text = STRING_TOKEN (STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+suppressif NVMEINT13_SUPPORT == 0;\
+          option text = STRING_TOKEN (STR_LEGACY), value = 1, flags = RESET_REQUIRED;\
+endif\
+          option text = STRING_TOKEN (STR_EFI),   value = 2, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+        endoneof;
+        
+#define PCIBUS_ONBOARD_NVME9_OPROM_SEL\
+        oneof varid       = SETUP_DATA.SmcNVMeOpRom[8],\
+          prompt      = STRING_TOKEN (STR_SMC_ONBOARD_NVME_9_SELECT),\
+          help        = STRING_TOKEN (STR_SMC_ONBOARD_NVME_9_SELECT_HELP),\
+          option text = STRING_TOKEN (STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+suppressif NVMEINT13_SUPPORT == 0;\
+          option text = STRING_TOKEN (STR_LEGACY), value = 1, flags = RESET_REQUIRED;\
+endif\
+          option text = STRING_TOKEN (STR_EFI),   value = 2, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+        endoneof;
+        
+#define PCIBUS_ONBOARD_NVME10_OPROM_SEL\
+        oneof varid       = SETUP_DATA.SmcNVMeOpRom[9],\
+          prompt      = STRING_TOKEN (STR_SMC_ONBOARD_NVME_10_SELECT),\
+          help        = STRING_TOKEN (STR_SMC_ONBOARD_NVME_10_SELECT_HELP),\
+          option text = STRING_TOKEN (STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+suppressif NVMEINT13_SUPPORT == 0;\
+          option text = STRING_TOKEN (STR_LEGACY), value = 1, flags = RESET_REQUIRED;\
+endif\
+          option text = STRING_TOKEN (STR_EFI),   value = 2, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+        endoneof;
+        
+#define PCIBUS_ONBOARD_NVME11_OPROM_SEL\
+        oneof varid       = SETUP_DATA.SmcNVMeOpRom[10],\
+          prompt      = STRING_TOKEN (STR_SMC_ONBOARD_NVME_11_SELECT),\
+          help        = STRING_TOKEN (STR_SMC_ONBOARD_NVME_11_SELECT_HELP),\
+          option text = STRING_TOKEN (STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+suppressif NVMEINT13_SUPPORT == 0;\
+          option text = STRING_TOKEN (STR_LEGACY), value = 1, flags = RESET_REQUIRED;\
+endif\
+          option text = STRING_TOKEN (STR_EFI),   value = 2, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+        endoneof;
+        
+#define PCIBUS_ONBOARD_NVME12_OPROM_SEL\
+        oneof varid       = SETUP_DATA.SmcNVMeOpRom[11],\
+          prompt      = STRING_TOKEN (STR_SMC_ONBOARD_NVME_12_SELECT),\
+          help        = STRING_TOKEN (STR_SMC_ONBOARD_NVME_12_SELECT_HELP),\
+          option text = STRING_TOKEN (STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+suppressif NVMEINT13_SUPPORT == 0;\
+          option text = STRING_TOKEN (STR_LEGACY), value = 1, flags = RESET_REQUIRED;\
+endif\
+          option text = STRING_TOKEN (STR_EFI),   value = 2, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+        endoneof;
+        
+#define PCIBUS_ONBOARD_VIDEO_OPROM_SEL\
+        oneof varid       = SETUP_DATA.OnboardVideoOpRom,\
+          prompt      = STRING_TOKEN (STR_ONBOARD_VIDEO_OPROM_PROMPT),\
+          help        = STRING_TOKEN (STR_ONBOARD_VIDEO_OPROM_HELP),\
+          option text = STRING_TOKEN (STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_LEGACY), value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_EFI), value = 2, flags = RESET_REQUIRED;\
+        endoneof;
+        
+#ifdef CONTROLS_WITH_DEFAULTS
+
+
+        PCIBUS_SLOT1_OPROM_CONTROL
+        PCIBUS_SLOT2_OPROM_CONTROL
+        PCIBUS_SLOT3_OPROM_CONTROL
+        PCIBUS_SLOT4_OPROM_CONTROL
+        PCIBUS_SLOT5_OPROM_CONTROL
+        PCIBUS_SLOT6_OPROM_CONTROL
+        PCIBUS_SLOT7_OPROM_CONTROL
+        PCIBUS_SLOT8_OPROM_CONTROL
+        PCIBUS_SLOT9_OPROM_CONTROL
+        PCIBUS_SLOT10_OPROM_CONTROL
+        PCIBUS_SLOT11_OPROM_CONTROL
+
+	PCIBUS_ONBOARD_SAS_OPROM_SEL
+#if SMC_ONBOARD_LAN_DID1 != 0xffff
+	PCIBUS_ONBOARD_LAN_OPROM_TYPE
+#endif
+	PCIBUS_ONBOARD_LAN1_OPROM_SEL
+	PCIBUS_ONBOARD_LAN1_10G_OPROM_SEL
+	PCIBUS_ONBOARD_LAN2_OPROM_SEL
+	PCIBUS_ONBOARD_LAN3_OPROM_SEL
+	PCIBUS_ONBOARD_LAN4_OPROM_SEL
+	PCIBUS_ONBOARD_NVME1_OPROM_SEL
+	PCIBUS_ONBOARD_NVME2_OPROM_SEL
+	PCIBUS_ONBOARD_NVME3_OPROM_SEL
+	PCIBUS_ONBOARD_NVME4_OPROM_SEL
+	PCIBUS_ONBOARD_NVME5_OPROM_SEL
+	PCIBUS_ONBOARD_NVME6_OPROM_SEL
+	PCIBUS_ONBOARD_NVME7_OPROM_SEL
+	PCIBUS_ONBOARD_NVME8_OPROM_SEL
+	PCIBUS_ONBOARD_NVME9_OPROM_SEL
+	PCIBUS_ONBOARD_NVME10_OPROM_SEL
+	PCIBUS_ONBOARD_NVME11_OPROM_SEL
+	PCIBUS_ONBOARD_NVME12_OPROM_SEL
+#if ONBOARD_VGA_DID
+	PCIBUS_ONBOARD_VIDEO_OPROM_SEL
+#endif
+#endif //#ifdef CONTROLS_WITH_DEFAULTS
+
+#ifdef ADVANCED_FORM_SET
+#ifndef SUPPRESS_GRAYOUT_ENDIF //old Core
+    #define SUPPRESS_GRAYOUT_ENDIF endif;
+    #endif
+
+	#ifdef FORM_SET_ITEM
+	// Define controls to be added to the main page of the formset
+	#endif
+
+	#ifdef FORM_SET_GOTO
+/*
+	// Define goto commands for the forms defined in this file
+		goto SMC_PCI_FORM_ID,
+			prompt = STRING_TOKEN(SMC_STR_PCI_FORM),
+			help = STRING_TOKEN(SMC_STR_PCI_FORM_HELP);
+*/
+	#endif
+
+
+#ifdef FORM_SET_FORM
+//
+// Define forms
+//
+//////////////////////////////////////////////////////////////
+//============================================================
+//Main SMC PCI Form START
+//------------------------------------------------------------
+#ifndef SMCPCIBUS_FORM_PCI
+#define SMCPCIBUS_FORM_PCI
+//------------------------------------------------------------
+
+#endif //SMCPCIBUS_FORM_PCI
+
+//-----------------------------------------------------------
+
+//-----------------------------------------------------------
+#endif  // FORM_SET_FORM
+
+//-----------------------------------------------------------
+#endif  // ADVANCED_FORM_SET
+
+
+   

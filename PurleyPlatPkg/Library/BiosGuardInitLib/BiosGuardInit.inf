@@ -1,0 +1,145 @@
+#
+# This file contains an 'Intel Peripheral Driver' and is
+# licensed for Intel CPUs and chipsets under the terms of your
+# license agreement with Intel or your vendor.  This file may
+# be modified by the user, subject to additional terms of the
+# license agreement
+#
+# Copyright (c) 2015 - 2016, Intel Corporation. All rights reserved.<BR>
+# This software and associated documentation (if any) is furnished
+# under a license and may only be used or copied in accordance
+# with the terms of the license. Except as permitted by such
+# license, no part of this software or documentation may be
+# reproduced, stored in a retrieval system, or transmitted in any
+# form or by any means without the express written consent of
+# Intel Corporation.
+#
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = BiosGuardInitLib
+  FILE_GUID                      = 52B16EA0-1371-4683-8B07-4F2CEC873BD6
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = BiosGuardInitLib|PEIM DXE_SMM_DRIVER
+
+[Sources]
+  BiosGuardInit.c
+  # APTIOV_SERVER_OVERRIDE_RC_START : Add missing file
+  BiosGuardInit.h 
+  # APTIOV_SERVER_OVERRIDE_RC_END : Add missing file
+
+[Packages]
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  CryptoPkg/CryptoPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+
+[LibraryClasses]
+  DebugLib
+  HobLib
+  IoLib
+  PlatformHooksLib
+  BaseMemoryLib
+  BaseCryptLib
+  MmPciLib
+
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+
+[Guids]
+  gEfiPlatformInfoGuid
+  gBiosGuardHobGuid
+
+[Ppis]
+  gEfiPeiResetPpiGuid
+  gEfiPeiSystemBoardPpiGuid
+
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+gCpPlatFlashTokenSpaceGuid.PcdFlashAreaBase
+
+gCpPlatFlashTokenSpaceGuid.PcdBiosSize
+gCpPlatFlashTokenSpaceGuid.PcdBiosBase
+#gCpPlatFlashTokenSpaceGuid.PcdCpuAddressWidthLimit
+gCpPlatFlashTokenSpaceGuid.PcdFlashBase
+gCpPlatFlashTokenSpaceGuid.PcdFlashSize
+gCpPlatFlashTokenSpaceGuid.PcdFlashBlockSize
+
+
+# for PeiSec FD
+
+
+
+gCpPlatFlashTokenSpaceGuid.PcdFlashFdSecPeiBase
+gCpPlatFlashTokenSpaceGuid.PcdFlashFdSecPeiSize
+
+gCpuUncoreTokenSpaceGuid.PcdFlashNvStorageMicrocodeBase
+gCpuUncoreTokenSpaceGuid.PcdFlashNvStorageMicrocodeSize
+
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvMrcNormalSize
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvMrcNormalBase
+
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvPeiPolicySize
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvPeiPolicyBase
+
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvAcmSize
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvAcmBase
+
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvSecPeiBase
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvSecPeiSize
+
+
+
+
+# for Main FD
+
+gCpPlatFlashTokenSpaceGuid.PcdFlashFdMainBase
+gCpPlatFlashTokenSpaceGuid.PcdFlashFdMainSize
+
+
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvMainSize
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvMainBase
+
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvOemLogoSize
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvOemLogoBase
+
+
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvWheaSize
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvWheaBase
+
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvNvStorageEventLogSize
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvNvStorageEventLogBase
+
+
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvAcmHeaderSize
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvAcmHeaderBase
+
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvMainPolicySize
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvMainPolicyBase
+
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvAcmSinitSize
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvAcmSinitBase
+
+
+#gCpPlatFlashTokenSpaceGuid.PcdPTUFlashAreaBaseAddress
+#gCpPlatFlashTokenSpaceGuid.PcdMEFlashAreaBaseAddress
+
+
+
+## This PCD specifies the size of the physical device containing the BIOS, SMBIOS will use it.
+
+
+gCpPlatFlashTokenSpaceGuid.PcdFlashBackupRegionBase
+gCpPlatFlashTokenSpaceGuid.PcdFlashBackupRegionSize
+

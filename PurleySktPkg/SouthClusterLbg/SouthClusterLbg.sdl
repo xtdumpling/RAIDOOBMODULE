@@ -1,0 +1,519 @@
+TOKEN
+	Name  = "SouthClusterLbg_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling SouthClusterLbg support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "PCH_DEFAULT_SVID"
+	Value  = "0x8086"
+	Help  = "Pch default Sub Sytem Vendor ID. This value is taken from PchRegs.h file."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PCH_DEFAULT_SID"
+	Value  = "0x7270"
+	Help  = "Pch default Sub Sytem ID. This value is taken from PchRegs.h file."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+ELINK
+	Name  = "PROGRAM_PCH_OEM_SVID_SID"
+	InvokeOrder = ReplaceParent
+End
+
+TOKEN
+	Name  = "LegacyInterrupt_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling LegacyInterrupt support in the project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "IntelPchLegacyInterrupt"
+	File  = "LegacyInterrupt\Dxe\LegacyInterrupt.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "LegacyInterrupt_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "PchInitDxe_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable PchInitDxe support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "PchInitDxe"
+	File  = "PchInit\Dxe\PchInitDxe.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "PchInitDxe_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "PchInitSmm_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable PchInitSmm support in Project"
+    TokenType = Boolean
+End
+
+INFComponent
+    Name  = "PchInitSmm"
+    File  = "PchInit\Smm\PchInitSmm.inf"
+    Package  = "PurleySktPkg"
+    ModuleTypes  = "DXE_SMM_DRIVER"
+    Token = "PchInitSmm_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "PchSmiDispatcher_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling PchSmiDispatcher support in the project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "PchSmiDispatcher"
+	File  = "PchSmiDispatcher\Smm\PchSmiDispatcher.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "PchSmiDispatcher_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "PchReset_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable PchReset support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "PchResetRuntime"
+	File  = "Reset\RuntimeDxe\PchResetRuntime.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "DXE_RUNTIME_DRIVER"
+	Token = "PchReset_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "SataController_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable SataController support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "SataController"
+	File  = "SataController\Dxe\SataController.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "UEFI_DRIVER"
+	Token = "SataController_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "PchSerialGpio_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable PchSerialGpio support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "PchSerialGpio"
+	File  = "SerialGpio\Dxe\PchSerialGpio.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "PchSerialGpio_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "SmartTimer_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling SmartTimer support in the project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "SmartTimer"
+	File  = "SmartTimer\Dxe\SmartTimer.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "SmartTimer_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "PchSmbusDxe_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable PchSmbusDxe support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "PchSmbusSmm_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable PchSmbusSmm support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "PchSmbusDxe"
+	File  = "Smbus\Dxe\PchSmbusDxe.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "PchSmbusDxe_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "PchSmbusSmm"
+	File  = "Smbus\Smm\PchSmbusSmm.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "PchSmbusSmm_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "WdtDxe_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable WdtDxe support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+    Name  = "WdtDxe"
+    File  = "Wdt\Dxe\WdtDxe.inf"
+    Package  = "PurleySktPkg"
+    ModuleTypes  = "DXE_DRIVER"
+    Token = "WdtDxe_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "SiInit_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable SiInit support in Project"
+    TokenType = Boolean
+End
+
+TOKEN
+    Name  = "SiInitPreMem_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable SiInitPreMem support in Project"
+    TokenType = Boolean
+End
+
+INFComponent
+    Name  = "SiInit"
+    File  = "SiInit\Pei\SiInit.inf"
+    Package  = "PurleySktPkg"
+    ModuleTypes  = "PEIM"
+    Token = "SiInit_SUPPORT" "=" "1"
+End
+
+INFComponent
+    Name  = "SiInitPreMem"
+    File  = "SiInit\Pei\SiInitPreMem.inf"
+    Package  = "PurleySktPkg"
+    ModuleTypes  = "PEIM"
+    Token = "SiInitPreMem_SUPPORT" "=" "1"
+End
+
+INFComponent
+    Name  = "SmmControl"
+    File  = "SmmControl\RuntimeDxe\SmmControl.inf"
+    Package  = "PurleySktPkg"
+    ModuleTypes  = "DXE_RUNTIME_DRIVER"
+End
+
+FFS_FILE 
+    Name  = "SiInitPreMem"
+    FD_AREA  = "FV_BB"
+    INFComponent  = "SiInitPreMem"
+    Apriori_Index  = "5"
+    Token = "SiInitPreMem_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "PchInitLib_SUPPORT"
+    Value  = "1"
+    Help  = "Switch for Enabling PchInitLib support in the project"
+    TokenType = Boolean
+End
+
+INFComponent
+    Name  = "PeiPchInitLib"
+    File  = "LibraryPrivate\PeiPchInitLib\PeiPchInitLib.inf"
+    Package  = "PurleySktPkg"
+    ModuleTypes  = "PEIM"
+    Token = "PchInitLib_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+    Class  = "PchInitLib"
+    Instance  = "PurleySktPkg.PeiPchInitLib"
+    Token = "PchInitLib_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "PchResetCommonLib_SUPPORT"
+    Value  = "1"
+    Help  = "Switch for Enabling PchResetCommonLib support in the project"
+    TokenType = Boolean
+End
+
+INFComponent
+    Name  = "BasePchResetCommonLib"
+    File  = "LibraryPrivate\BasePchResetCommonLib\BasePchResetCommonLib.inf"
+    Package  = "PurleySktPkg"
+    ModuleTypes  = "BASE"
+    Token = "PchResetCommonLib_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+    Class  = "PchResetCommonLib"
+    Instance  = "PurleySktPkg.BasePchResetCommonLib"
+    Token = "PchResetCommonLib_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "PchSpiCommonLib_SUPPORT"
+    Value  = "1"
+    Help  = "Switch for Enabling PchSpiCommonLib support in the project"
+    TokenType = Boolean
+End
+
+INFComponent
+    Name  = "BasePchSpiCommonLib"
+    File  = "LibraryPrivate\BasePchSpiCommonLib\BasePchSpiCommonLib.inf"
+    Package  = "PurleySktPkg"
+    ModuleTypes  = "BASE"
+    Token = "PchSpiCommonLib_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+    Class  = "PchSpiCommonLib"
+    Instance  = "PurleySktPkg.BasePchSpiCommonLib"
+    Token = "PchSpiCommonLib_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "PchHdaLib_SUPPORT"
+    Value  = "1"
+    Help  = "Switch for Enabling PchHdaLib support in the project"
+    TokenType = Boolean
+End
+
+INFComponent
+    Name  = "DxePchHdaLib"
+    File  = "LibraryPrivate\DxePchHdaLib\DxePchHdaLib.inf"
+    Package  = "PurleySktPkg"
+    ModuleTypes  = "BASE"
+    Token = "PchHdaLib_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+    Class  = "PchHdaLib"
+    Instance  = "PurleySktPkg.DxePchHdaLib"
+    Token = "PchHdaLib_SUPPORT" "=" "1"
+End
+
+INFComponent
+    Name  = "PeiDxeSmmGpioPrivateLib"
+    File  = "LibraryPrivate\PeiDxeSmmGpioPrivateLib\PeiDxeSmmGpioPrivateLib.inf"
+    Package  = "PurleySktPkg"
+    ModuleTypes  = "BASE"
+End
+
+LibraryMapping
+    Class  = "GpioPrivateLib"
+    Instance  = "PurleySktPkg.PeiDxeSmmGpioPrivateLib"
+End
+
+TOKEN
+    Name  = "PchInitCommonLib_SUPPORT"
+    Value  = "1"
+    Help  = "Switch for Enabling PchInitCommonLib support in the project"
+    TokenType = Boolean
+End
+
+INFComponent
+    Name  = "PeiDxeSmmPchInitCommonLib"
+    File  = "LibraryPrivate\PeiDxeSmmPchInitCommonLib\PeiDxeSmmPchInitCommonLib.inf"
+    Package  = "PurleySktPkg"
+    ModuleTypes  = "BASE"
+    Token = "PchInitCommonLib_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+    Class  = "PchInitCommonLib"
+    Instance  = "PurleySktPkg.PeiDxeSmmPchInitCommonLib"
+    Token = "PchInitCommonLib_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "PchPciExpressHelpersLib_SUPPORT"
+    Value  = "1"
+    Help  = "Switch for Enabling PchPciExpressHelpersLib support in the project"
+    TokenType = Boolean
+End
+
+INFComponent
+    Name  = "PeiDxeSmmPchPciExpressHelpersLib"
+    File  = "LibraryPrivate\PeiDxeSmmPchPciExpressHelpersLib\PeiDxeSmmPchPciExpressHelpersLib.inf"
+    Package  = "PurleySktPkg"
+    ModuleTypes  = "BASE"
+    Token = "PchPciExpressHelpersLib_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+    Class  = "PchPciExpressHelpersLib"
+    Instance  = "PurleySktPkg.PeiDxeSmmPchPciExpressHelpersLib"
+    Token = "PchPciExpressHelpersLib_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+    Class  = "PeiDxeSmmPchPciExpressHelpersLib"
+    Instance  = "PurleySktPkg.PeiDxeSmmPchPciExpressHelpersLib"
+    Token = "PchPciExpressHelpersLib_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "PchSmbusCommonLib_SUPPORT"
+    Value  = "1"
+    Help  = "Switch for Enabling PchSmbusCommonLib support in the project"
+    TokenType = Boolean
+End
+
+INFComponent
+    Name  = "PeiDxeSmmPchSmbusCommonLib"
+    File  = "LibraryPrivate\PeiDxeSmmPchSmbusCommonLib\PeiDxeSmmPchSmbusCommonLib.inf"
+    Package  = "PurleySktPkg"
+    ModuleTypes  = "BASE"
+    Token = "PchSmbusCommonLib_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+    Class  = "PchSmbusCommonLib"
+    Instance  = "PurleySktPkg.PeiDxeSmmPchSmbusCommonLib"
+    Token = "PchSmbusCommonLib_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "PchWdtCommonLib_SUPPORT"
+    Value  = "1"
+    Help  = "Switch for Enabling PchWdtCommonLib support in the project"
+    TokenType = Boolean
+End
+
+INFComponent
+    Name  = "PeiDxeSmmPchWdtCommonLib"
+    File  = "LibraryPrivate\PeiDxeSmmPchWdtCommonLib\PeiDxeSmmPchWdtCommonLib.inf"
+    Package  = "PurleySktPkg"
+    ModuleTypes  = "BASE"
+    Token = "PchWdtCommonLib_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+    Class  = "PchWdtCommonLib"
+    Instance  = "PurleySktPkg.PeiDxeSmmPchWdtCommonLib"
+    Token = "PchWdtCommonLib_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "PchRcLib_SUPPORT"
+    Value  = "1"
+    Help  = "Switch for Enabling PchRcLib support in the project"
+    TokenType = Boolean
+End
+
+INFComponent
+    Name  = "PeiPchRcLib"
+    File  = "LibraryPrivate\PeiPchRcLib\PeiPchRcLib.inf"
+    Package  = "PurleySktPkg"
+    ModuleTypes  = "PEIM"
+    Token = "PchRcLib_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+    Class  = "PeiPchRcLib"
+    Instance  = "PurleySktPkg.PeiPchRcLib"
+    Token = "PchRcLib_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "PchSmmControlLib_SUPPORT"
+    Value  = "1"
+    Help  = "Switch for Enabling PchSmmControlLib support in the project"
+    TokenType = Boolean
+End
+
+INFComponent
+    Name  = "PeiPchSmmControlLib"
+    File  = "LibraryPrivate\PeiPchSmmControlLib\PeiPchSmmControlLib.inf"
+    Package  = "PurleySktPkg"
+    ModuleTypes  = "PEIM"
+    Token = "PchSmmControlLib_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+    Class  = "PchSmmControlLib"
+    Instance  = "PurleySktPkg.PeiPchSmmControlLib"
+    Token = "PchSmmControlLib_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "PchSmmControlLib_SUPPORT"
+    Value  = "1"
+    Help  = "Switch for Enabling PchSmmControlLib support in the project"
+    TokenType = Boolean
+End
+
+INFComponent
+    Name  = "PeiPchSmmControlLib"
+    File  = "LibraryPrivate\PeiPchSmmControlLib\PeiPchSmmControlLib.inf"
+    Package  = "PurleySktPkg"
+    ModuleTypes  = "PEIM"
+    Token = "PchSmmControlLib_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+    Class  = "PchSmmControlLib"
+    Instance  = "PurleySktPkg.PeiPchSmmControlLib"
+    Token = "PchSmmControlLib_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "PeiDxeSmmPchAlternateAccessModeLib"
+	File  = "LibraryPrivate\PeiDxeSmmPchAlternateAccessModeLib\PeiDxeSmmPchAlternateAccessModeLib.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "BASE"
+End
+
+LibraryMapping
+	Class  = "PchAlternateAccessModeLib"
+	Instance  = "PurleySktPkg.PeiDxeSmmPchAlternateAccessModeLib"
+End
+
+INFComponent
+	Name  = "PeiDxeSmmPchXhciLib"
+	File  = "LibraryPrivate\PeiDxeSmmPchXhciLib\PeiDxeSmmPchXhciLib.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "BASE"
+End
+
+LibraryMapping
+	Class  = "PchXhciLib"
+	Instance  = "PurleySktPkg.PeiDxeSmmPchXhciLib"
+End
+
+TOKEN
+    Name = "PORT61H_EMULATION"
+    Value = "0"
+    Help = "0 - Disable Port 61h emulation, 1 - Enable Port 61h emulation"
+    TokenType = Boolean
+    TargetH = Yes
+End

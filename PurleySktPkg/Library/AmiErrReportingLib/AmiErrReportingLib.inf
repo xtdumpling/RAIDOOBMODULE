@@ -1,0 +1,95 @@
+#//**********************************************************************//
+#//**********************************************************************//
+#//**                                                                  **//
+#//**        (C)Copyright 1985-2016, American Megatrends, Inc.         **//
+#//**                                                                  **//
+#//**                       All Rights Reserved.                       **//
+#//**                                                                  **//
+#//**       5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093       **//
+#//**                                                                  **//
+#//**                       Phone: (770)-246-8600                      **//
+#//**                                                                  **//
+#//**********************************************************************//
+#//**********************************************************************//
+
+
+
+################################################################################
+#
+# Defines Section - statements that will be processed to create a Makefile.
+#
+################################################################################
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = AmiErrReportingLib
+  FILE_GUID                      = DD3b1b11-9DCC-4F80-A399-B58867798951
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = AmiErrReportingLib | DXE_SMM_DRIVER
+
+[Sources]
+  AmiErrReportingLib.c
+  AmiErrReportingLib.h
+
+################################################################################
+#
+# Package Dependency Section - list of Package files that are required for
+#                              this module.
+#
+################################################################################
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  PurleySktPkg/SocketPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  UefiCpuPkg/UefiCpuPkg.dec
+  CpPlatPkg/CpPlatPkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+
+################################################################################
+#
+# Library Class Section - list of Library Classes that are required for
+#                         this module.
+#
+################################################################################
+
+[LibraryClasses]
+  BaseLib
+  BaseMemoryLib
+  UefiRuntimeServicesTableLib
+  UefiBootServicesTableLib
+  UefiDriverEntryPoint
+  UefiLib
+  DebugLib
+  EmcaPlatformHooksLib
+
+[Protocols]
+  gEfiCpuCsrAccessGuid
+  gEfiPlatformRasPolicyProtocolGuid
+
+[Guids]
+  gErrRecordNotifyCmcGuid
+  gErrRecordPlatformMemErrGuid
+ 
+[Depex]
+  gEfiSmmBase2ProtocolGuid
+
+  
+#//**********************************************************************//
+#//**********************************************************************//
+#//**                                                                  **//
+#//**        (C)Copyright 1985-2016, American Megatrends, Inc.         **//
+#//**                                                                  **//
+#//**                       All Rights Reserved.                       **//
+#//**                                                                  **//
+#//**       5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093       **//
+#//**                                                                  **//
+#//**                       Phone: (770)-246-8600                      **//
+#//**                                                                  **//
+#//**********************************************************************//
+#//**********************************************************************//

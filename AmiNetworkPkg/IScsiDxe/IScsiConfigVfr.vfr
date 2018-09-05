@@ -1,0 +1,500 @@
+//*************************************************************************
+//*************************************************************************
+//**                                                                     **
+//**        (C)Copyright 1985-2014, American Megatrends, Inc.            **
+//**                                                                     **
+//**                       All Rights Reserved.                          **
+//**                                                                     **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+//**                                                                     **
+//**                       Phone: (770)-246-8600                         **
+//**                                                                     **
+//*************************************************************************
+//*************************************************************************
+/** @file
+  VFR file used by the iSCSI configuration component.
+  
+Copyright (c) 2004 - 2011, Intel Corporation. All rights reserved.<BR>
+This program and the accompanying materials
+are licensed and made available under the terms and conditions of the BSD License
+which accompanies this distribution.  The full text of the license may be found at
+http://opensource.org/licenses/bsd-license.php
+
+THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+
+**/
+
+#include "IScsiConfigNVDataStruc.h"
+
+#define EFI_NETWORK_DEVICE_CLASS  0x04
+#define ISCSI_WELL_KNOWN_PORT     3260      // AMI PORTING : Set default value for Target Port.
+
+formset
+  guid     = ISCSI_CONFIG_GUID,
+  title    = STRING_TOKEN(STR_ISCSI_CONFIG_FORM_TITLE),
+  help     = STRING_TOKEN(STR_ISCSI_CONFIG_FORM_HELP),
+  class    = EFI_NETWORK_DEVICE_CLASS,
+  subclass = 0x03,
+
+  varstore ISCSI_CONFIG_IFR_NVDATA,
+    varid = CONFIGURATION_VARSTORE_ID,
+    name = ISCSI_CONFIG_IFR_NVDATA,
+    guid = ISCSI_CONFIG_GUID;
+
+  defaultstore AmiMfgDefault, prompt = STRING_TOKEN(STR_NULL), attribute = 0x1;    // AMI PORTING - Manufacturing defaults
+  form formid = FORMID_MAIN_FORM,
+    title  = STRING_TOKEN(STR_ISCSI_MAIN_FORM_TITLE);
+
+    //
+    // AMI PORTING START : Grayout IScsi Initiator name when access level is user
+    //
+    grayoutif ideqval ISCSI_CONFIG_IFR_NVDATA.SystemAccessVar == SYSTEM_PASSWORD_USER;
+      string  varid   = ISCSI_CONFIG_IFR_NVDATA.InitiatorName,
+              prompt  = STRING_TOKEN(STR_ISCSI_CONFIG_INIT_NAME),
+              help    = STRING_TOKEN(STR_ISCSI_CONFIG_INIT_NAME_HELP),
+              flags   = INTERACTIVE,
+              key     = KEY_INITIATOR_NAME,
+              minsize = ISCSI_NAME_IFR_MIN_SIZE,
+              maxsize = ISCSI_NAME_IFR_MAX_SIZE,
+              default = STRING_TOKEN(STR_NULL),                                // AMI PORTING - Defaults for initiator name
+              default = STRING_TOKEN(STR_NULL), defaultstore = AmiMfgDefault,  // AMI PORTING - Manufacturing defaults
+      endstring;
+    endif; //grayoutif
+    //
+    // AMI PORTING END : Grayout IScsi Initiator name when access level is user
+    //
+
+    //
+    // AMI PORTING START: Gray out setup options Add Attempt, Delete Attempt and Change Attempt Order when iscsi name is not valid.
+    //
+    grayoutif NOT ideqval ISCSI_CONFIG_IFR_NVDATA.IsInitiatorNameValid == 1;       
+      subtitle text = STRING_TOKEN(STR_NULL);
+
+      goto FORMID_MAC_FORM,
+         prompt = STRING_TOKEN(STR_ADD_ATTEMPT_ENTRY),
+         help   = STRING_TOKEN(STR_ADD_ATTEMPT_ENTRY),
+         flags  = INTERACTIVE,
+         key    = KEY_ADD_ATTEMPT;
+
+      label ATTEMPT_ENTRY_LABEL;
+      label LABEL_END;
+
+      subtitle text = STRING_TOKEN(STR_NULL);
+
+      goto FORMID_DELETE_FORM,
+        prompt = STRING_TOKEN (STR_DEL_ATTEMPT_ENTRY),
+        help   = STRING_TOKEN (STR_DEL_ATTEMPT_ENTRY_HELP),
+        flags  = INTERACTIVE,
+        key    = KEY_DELETE_ATTEMPT;
+
+      subtitle text = STRING_TOKEN(STR_NULL);
+
+      goto FORMID_ORDER_FORM,
+        prompt = STRING_TOKEN (STR_ORDER_ATTEMPT_ENTRY),
+        help   = STRING_TOKEN (STR_ORDER_ATTEMPT_ENTRY_HELP),  // AMI PORTING.
+        flags  = INTERACTIVE,
+        key    = KEY_ORDER_ATTEMPT_CONFIG;
+
+      subtitle text = STRING_TOKEN(STR_NULL);
+    endif; //grayoutif 
+  //
+  // AMI PORTING END: Gray out setup options Add Attempt, Delete Attempt and Change Attempt Order when iscsi name is not valid.
+  //
+
+  endform;
+
+  form formid = FORMID_MAC_FORM,
+    title  = STRING_TOKEN(STR_ISCSI_MAC_FORM_TITLE);
+
+    label MAC_ENTRY_LABEL;
+    label LABEL_END;
+
+  endform;
+
+  form formid = FORMID_ORDER_FORM,
+    title  = STRING_TOKEN(STR_ORDER_ATTEMPT_ENTRY);
+
+    label ORDER_ENTRY_LABEL;
+    label LABEL_END;
+
+  //
+  // AMI PORTING START : Adding RESET_REQUIRED flag for prompting user to reset on changing attempt order
+  //
+    text
+      help   = STRING_TOKEN (STR_SAVE_AND_EXIT),
+      text   = STRING_TOKEN (STR_SAVE_AND_EXIT),
+      flags  = INTERACTIVE | RESET_REQUIRED,
+      key    = KEY_SAVE_ORDER_CHANGES;
+  //
+  // AMI PORTING END : Adding RESET_REQUIRED flag for prompting user to reset on changing attempt order
+  //
+
+    text
+      help   = STRING_TOKEN (STR_NO_SAVE_AND_EXIT),
+      text   = STRING_TOKEN (STR_NO_SAVE_AND_EXIT),
+      flags  = INTERACTIVE,
+      key    = KEY_IGNORE_ORDER_CHANGES;
+  endform;
+
+  form formid = FORMID_DELETE_FORM,
+    title  = STRING_TOKEN(STR_DEL_ATTEMPT_ENTRY);
+
+    label DELETE_ENTRY_LABEL;
+    label LABEL_END;
+
+  //
+  // AMI PORTING START : Adding RESET_REQUIRED flag for prompting user to reset on deleting an attempt
+  //
+    text
+      help   = STRING_TOKEN (STR_SAVE_AND_EXIT),
+      text   = STRING_TOKEN (STR_SAVE_AND_EXIT),
+      flags  = INTERACTIVE | RESET_REQUIRED,
+      key    = KEY_SAVE_DELETE_ATTEMPT;
+  //
+  // AMI PORTING END : Adding RESET_REQUIRED flag for prompting user to reset on deleting an attempt
+  //
+
+    text
+      help   = STRING_TOKEN (STR_NO_SAVE_AND_EXIT),
+        text   = STRING_TOKEN (STR_NO_SAVE_AND_EXIT),
+      flags  = INTERACTIVE,
+      key    = KEY_IGNORE_DELETE_ATTEMPT;
+  endform;
+
+  form formid = FORMID_ATTEMPT_FORM,
+    title  = STRING_TOKEN(STR_ISCSI_ATTEMPT_FORM_TITLE);
+
+    string  varid   = ISCSI_CONFIG_IFR_NVDATA.AttemptName,
+            prompt  = STRING_TOKEN(STR_ISCSI_ATTEMPT_NAME),
+            help    = STRING_TOKEN(STR_ISCSI_ATTEMPT_NAME_HELP),
+            flags   = INTERACTIVE,
+            key     = KEY_ATTEMPT_NAME,
+            minsize = 0,
+            maxsize = ATTEMPT_NAME_IFR_MAX_SIZE,    // AMI PORTING : Changing macro name to ATTEMPT_NAME_IFR_MAX_SIZE
+            default = STRING_TOKEN(STR_NULL),                                // AMI PORTING - Defaults for Attempt Name
+            default = STRING_TOKEN(STR_NULL), defaultstore = AmiMfgDefault,  // AMI PORTING - Manufacturing defaults
+    endstring;
+
+    subtitle text = STRING_TOKEN(STR_NULL);
+
+    oneof varid  = ISCSI_CONFIG_IFR_NVDATA.Enabled,
+          prompt = STRING_TOKEN(STR_ISCSI_MODE_PROMPT),
+          help   = STRING_TOKEN(STR_ISCSI_MODE_HELP),
+          option text = STRING_TOKEN(STR_ISCSI_MODE_DISABLED),         value = ISCSI_DISABLED,         flags = 0;  // AMI PORTING - Defaults are set below
+          option text = STRING_TOKEN(STR_ISCSI_MODE_ENABLED),          value = ISCSI_ENABLED,          flags = 0;
+          option text = STRING_TOKEN(STR_ISCSI_MODE_ENABLED_FOR_MPIO), value = ISCSI_ENABLED_FOR_MPIO, flags = 0;
+          default = ISCSI_DISABLED,  // AMI PORTING - Defaults for iSCSI mode
+          default = ISCSI_DISABLED, defaultstore = AmiMfgDefault,    // AMI PORTING - Manufacturing defaults
+    endoneof;
+
+    subtitle text = STRING_TOKEN(STR_NULL);
+
+    oneof varid  = ISCSI_CONFIG_IFR_NVDATA.IpMode,
+          questionid = KEY_IP_MODE,
+          prompt = STRING_TOKEN(STR_IP_MODE_PROMPT),
+          help   = STRING_TOKEN(STR_IP_MODE_HELP),
+          option text = STRING_TOKEN(STR_IP_MODE_IP4),        value = IP_MODE_IP4,        flags = INTERACTIVE;  // AMI PORTING - Defaults are set below
+          option text = STRING_TOKEN(STR_IP_MODE_IP6),        value = IP_MODE_IP6,        flags = INTERACTIVE;
+          option text = STRING_TOKEN(STR_IP_MODE_AUTOCONFIG), value = IP_MODE_AUTOCONFIG, flags = INTERACTIVE;
+          default = IP_MODE_IP4,  // AMI PORTING - Defaults for IP mode
+          default = IP_MODE_IP4, defaultstore = AmiMfgDefault,    // AMI PORTING - Manufacturing defaults
+    endoneof;
+
+    subtitle text = STRING_TOKEN(STR_NULL);
+
+    numeric varid   = ISCSI_CONFIG_IFR_NVDATA.ConnectRetryCount,
+            prompt  = STRING_TOKEN(STR_ISCSI_CONFIG_RETRY),
+            help    = STRING_TOKEN(STR_ISCSI_CONFIG_RETRY_HELP),
+            flags   = 0,
+            minimum = CONNECT_MIN_RETRY,
+            maximum = CONNECT_MAX_RETRY,
+            step    = 1,  // AMI PORTING - Step is made one
+            default = CONNECT_MIN_RETRY,  // AMI PORTING - Defaults for Connection Retry Count
+            default = CONNECT_MIN_RETRY, defaultstore = AmiMfgDefault,    // AMI PORTING - Manufacturing defaults
+    endnumeric;  
+    
+    numeric varid   = ISCSI_CONFIG_IFR_NVDATA.ConnectTimeout,
+            prompt  = STRING_TOKEN(STR_ISCSI_CONFIG_TIMEOUT),
+            help    = STRING_TOKEN(STR_ISCSI_CONFIG_TIMEOUT_HELP),
+            flags   = 0,
+            minimum = CONNECT_MIN_TIMEOUT,
+            maximum = CONNECT_MAX_TIMEOUT,
+            step    = 1,  // AMI PORTING - Step is made one
+            default = CONNECT_DEFAULT_TIMEOUT,
+            default = CONNECT_DEFAULT_TIMEOUT, defaultstore = AmiMfgDefault,    // AMI PORTING - Manufacturing defaults
+    endnumeric;
+
+    subtitle text = STRING_TOKEN(STR_NULL);
+    //
+    // AMI PORTING.
+    //
+    text
+        help  = STRING_TOKEN(STR_ISCSI_OUI_FROMAT_ISID_HELP),
+        text  = STRING_TOKEN(STR_ISCSI_OUI_FROMAT_ISID),
+        text  = STRING_TOKEN(STR_ISCSI_OUI_FROMAT_ISID_VALUE),
+        flags = 0, key = 0;
+	
+    string  varid   = ISCSI_CONFIG_IFR_NVDATA.IsId, 
+            prompt  = STRING_TOKEN(STR_ISCSI_CONFIG_ISID),
+            help    = STRING_TOKEN(STR_ISCSI_CONFIG_ISID_HELP),
+            flags   = INTERACTIVE,
+            key     = KEY_CONFIG_ISID,
+            minsize = ISID_CONFIGURABLE_MIN_LEN,
+            maxsize = ISID_CONFIGURABLE_MAX_LEN,
+            default = STRING_TOKEN(STR_NULL),  // AMI PORTING - Defaults for IsID
+            default = STRING_TOKEN(STR_NULL), defaultstore = AmiMfgDefault,    // AMI PORTING - Manufacturing defaults
+    endstring;
+
+    subtitle text = STRING_TOKEN(STR_NULL);
+
+    suppressif ideqval ISCSI_CONFIG_IFR_NVDATA.IpMode == IP_MODE_AUTOCONFIG;
+    checkbox varid = ISCSI_CONFIG_IFR_NVDATA.InitiatorInfoFromDhcp,
+            prompt = STRING_TOKEN(STR_ISCSI_ENABLE_DHCP),
+            help   = STRING_TOKEN(STR_ISCSI_ENABLE_DHCP),
+            flags  = INTERACTIVE | CHECKBOX_DEFAULT | CHECKBOX_DEFAULT_MFG,  // AMI PORTING - Optimal and Manufacturing defaults for InitiatorInfoFromDhcp
+            key    = KEY_DHCP_ENABLE,
+    endcheckbox;
+    endif;
+
+    suppressif ideqval ISCSI_CONFIG_IFR_NVDATA.InitiatorInfoFromDhcp == 0x01 OR
+               ideqval ISCSI_CONFIG_IFR_NVDATA.IpMode == IP_MODE_IP6 OR 
+               ideqval ISCSI_CONFIG_IFR_NVDATA.IpMode == IP_MODE_AUTOCONFIG;
+    string  varid   = ISCSI_CONFIG_IFR_NVDATA.LocalIp,
+            prompt  = STRING_TOKEN(STR_ISCSI_LOCAL_IP_ADDRESS),
+            help    = STRING_TOKEN(STR_ISCSI_IP_ADDRESS_HELP),
+            flags   = INTERACTIVE,
+            key     = KEY_LOCAL_IP,
+            minsize = IP4_MIN_SIZE,
+            maxsize = IP4_MAX_SIZE,
+            default = STRING_TOKEN(STR_DEFAULT_LOCAL_IP),  // AMI PORTING  : Set default value for Local IP
+            default = STRING_TOKEN(STR_DEFAULT_LOCAL_IP), defaultstore = AmiMfgDefault,    // AMI PORTING - Manufacturing defaults
+    endstring;
+
+    string  varid   = ISCSI_CONFIG_IFR_NVDATA.SubnetMask,
+            prompt  = STRING_TOKEN(STR_ISCSI_LOCAL_MASK),
+            help    = STRING_TOKEN(STR_ISCSI_IP_ADDRESS_HELP),
+            flags   = INTERACTIVE,
+            key     = KEY_SUBNET_MASK,
+            minsize = IP4_MIN_SIZE,
+            maxsize = IP4_MAX_SIZE,
+            default = STRING_TOKEN(STR_DEFAULT_SUBNET_MASK),  // AMI PORTING  : Set default value for Subnet Mask
+            default = STRING_TOKEN(STR_DEFAULT_SUBNET_MASK), defaultstore = AmiMfgDefault,  // AMI PORTING - Manufacturing defaults
+    endstring;
+
+    string  varid   = ISCSI_CONFIG_IFR_NVDATA.Gateway,
+            prompt  = STRING_TOKEN(STR_ISCSI_LOCAL_GATEWAY),
+            help    = STRING_TOKEN(STR_ISCSI_IP_ADDRESS_HELP),
+            flags   = INTERACTIVE,
+            key     = KEY_GATE_WAY,
+            minsize = IP4_MIN_SIZE,
+            maxsize = IP4_MAX_SIZE,
+            default = STRING_TOKEN(STR_DEFAULT_GATEWAY),  // AMI PORTING  : Set default value for Gateway
+            default = STRING_TOKEN(STR_DEFAULT_GATEWAY), defaultstore = AmiMfgDefault,  // AMI PORTING - Manufacturing defaults
+    endstring;
+    
+    endif;
+
+//
+// AMI Porting Start - Display initiator IP when DHCP is enabled
+//
+    suppressif ideqval ISCSI_CONFIG_IFR_NVDATA.InitiatorInfoFromDhcp == 0x00  AND NOT ideqval ISCSI_CONFIG_IFR_NVDATA.IpMode == IP_MODE_IP6;
+    subtitle text = STRING_TOKEN(STR_NULL);
+    subtitle text  = STRING_TOKEN(STR_DISPLAY_INITIATOR_IP_VALUE);
+    endif;
+//
+// AMI Porting End - Display initiator IP when DHCP is enabled
+//
+    suppressif ideqval ISCSI_CONFIG_IFR_NVDATA.IpMode == IP_MODE_AUTOCONFIG;
+    subtitle text = STRING_TOKEN(STR_NULL);
+    endif;     
+
+    suppressif ideqval ISCSI_CONFIG_IFR_NVDATA.IpMode == IP_MODE_AUTOCONFIG OR
+               ideqval ISCSI_CONFIG_IFR_NVDATA.InitiatorInfoFromDhcp == 0x00;
+    checkbox varid  = ISCSI_CONFIG_IFR_NVDATA.TargetInfoFromDhcp,
+             prompt = STRING_TOKEN(STR_ISCSI_ENABLE_DHCP_ON_TARGET),
+             help   = STRING_TOKEN(STR_ISCSI_ENABLE_DHCP_ON_TARGET),
+             default = 0,
+             default = 0, defaultstore = AmiMfgDefault,  // AMI PORTING - Manufacturing defaults
+    endcheckbox;
+    endif;
+
+    suppressif ideqval ISCSI_CONFIG_IFR_NVDATA.IpMode == IP_MODE_AUTOCONFIG OR
+               ideqval ISCSI_CONFIG_IFR_NVDATA.TargetInfoFromDhcp == 0x01;
+
+    string  varid   = ISCSI_CONFIG_IFR_NVDATA.TargetName,
+            prompt  = STRING_TOKEN(STR_ISCSI_TARGET_NAME),
+            help    = STRING_TOKEN(STR_ISCSI_TARGET_NAME_HELP),
+            flags   = INTERACTIVE,
+            key     = KEY_TARGET_NAME,
+            minsize = ISCSI_NAME_IFR_MIN_SIZE,
+            maxsize = ISCSI_NAME_IFR_MAX_SIZE,
+            default = STRING_TOKEN(STR_NULL),
+            default = STRING_TOKEN(STR_NULL), defaultstore = AmiMfgDefault,  // AMI PORTING - Manufacturing defaults
+    endstring;
+
+    string  varid   = ISCSI_CONFIG_IFR_NVDATA.TargetIp,
+            prompt  = STRING_TOKEN(STR_ISCSI_TARGET_IP_ADDRESS),
+            help    = STRING_TOKEN(STR_ISCSI_IP_ADDRESS_HELP),
+            flags   = INTERACTIVE,
+            key     = KEY_TARGET_IP,
+            minsize = IP_MIN_SIZE,
+            maxsize = IP_MAX_SIZE,
+            default = STRING_TOKEN(STR_DEFAULT_TARGET_IP),  // AMI PORTING  : Set default value for Target IP
+            default = STRING_TOKEN(STR_DEFAULT_TARGET_IP), defaultstore = AmiMfgDefault,  // AMI PORTING - Manufacturing defaults
+    endstring;
+
+    numeric varid   = ISCSI_CONFIG_IFR_NVDATA.TargetPort,
+            prompt  = STRING_TOKEN(STR_ISCSI_TARGET_PORT),
+            help    = STRING_TOKEN(STR_ISCSI_TARGET_PORT),
+            flags   = 0,
+            minimum = TARGET_PORT_MIN_NUM,
+            maximum = TARGET_PORT_MAX_NUM,
+            step    = 1,  // AMI PORTING - Step is made one
+            default = ISCSI_WELL_KNOWN_PORT,         // AMI PORTING : Set default value for Target Port.
+            default = ISCSI_WELL_KNOWN_PORT, defaultstore = AmiMfgDefault,  // AMI PORTING - Manufacturing defaults
+    endnumeric;
+
+    string varid    = ISCSI_CONFIG_IFR_NVDATA.BootLun,
+            prompt  = STRING_TOKEN(STR_ISCSI_BOOT_LUN),
+            help    = STRING_TOKEN(STR_ISCSI_BOOT_LUN_HELP),
+            flags   = INTERACTIVE,
+            key     = KEY_BOOT_LUN,
+            minsize = LUN_MIN_SIZE,
+            maxsize = LUN_MAX_SIZE,
+            default = STRING_TOKEN(STR_DEFAULT_BOOT_LUN),  // AMI PORTING  : Set the default value for Boot LUN
+            default = STRING_TOKEN(STR_DEFAULT_BOOT_LUN), defaultstore = AmiMfgDefault,  // AMI PORTING - Manufacturing defaults
+    endstring;
+    
+    endif;
+
+    suppressif ideqval ISCSI_CONFIG_IFR_NVDATA.IpMode == IP_MODE_AUTOCONFIG;
+    subtitle text = STRING_TOKEN(STR_NULL);
+    endif; 
+
+    oneof varid  = ISCSI_CONFIG_IFR_NVDATA.AuthenticationType,
+          questionid = KEY_AUTH_TYPE,      
+          prompt = STRING_TOKEN(STR_AUTHEN_TYPE_PROMPT),
+          help   = STRING_TOKEN(STR_AUTHEN_TYPE_HELP),
+          option text = STRING_TOKEN(STR_AUTHEN_TYPE_CHAP),     value = ISCSI_AUTH_TYPE_CHAP, flags = INTERACTIVE;  // AMI PORTING  : Add interactive flag to get control to key.
+          option text = STRING_TOKEN(STR_AUTHEN_TYPE_NONE),     value = ISCSI_AUTH_TYPE_NONE, flags = 0;
+          default = ISCSI_AUTH_TYPE_NONE,  // AMI PORTING  : Set the default value for Authentication Type
+          default = ISCSI_AUTH_TYPE_NONE, defaultstore = AmiMfgDefault,  // AMI PORTING - Manufacturing defaults
+    endoneof;
+
+    suppressif NOT ideqval ISCSI_CONFIG_IFR_NVDATA.AuthenticationType == ISCSI_AUTH_TYPE_CHAP;    
+    oneof varid  = ISCSI_CONFIG_IFR_NVDATA.CHAPType,
+          prompt = STRING_TOKEN(STR_CHAP_TYPE_PROMPT),
+          help   = STRING_TOKEN(STR_CHAP_TYPE_HELP),
+          option text = STRING_TOKEN(STR_CHAP_TYPE_UNI),    value = ISCSI_CHAP_UNI,    flags = 0;
+          option text = STRING_TOKEN(STR_CHAP_TYPE_MUTUAL), value = ISCSI_CHAP_MUTUAL, flags = 0;
+          default = ISCSI_CHAP_MUTUAL,  // AMI PORTING  : Set the default value for CHAPType
+          default = ISCSI_CHAP_MUTUAL, defaultstore = AmiMfgDefault,  // AMI PORTING - Manufacturing defaults
+    endoneof;
+    endif;
+
+    suppressif NOT ideqval ISCSI_CONFIG_IFR_NVDATA.AuthenticationType == ISCSI_AUTH_TYPE_CHAP;
+    string  varid   = ISCSI_CONFIG_IFR_NVDATA.CHAPName,
+            prompt  = STRING_TOKEN(STR_ISCSI_CHAP_NAME),
+            help    = STRING_TOKEN(STR_ISCSI_CHAP_NAME),
+            flags   = INTERACTIVE,
+            key     = KEY_CHAP_NAME,
+            minsize = 0,
+            maxsize = ISCSI_CHAP_NAME_MAX_LEN,
+            default = STRING_TOKEN(STR_NULL),  // AMI PORTING  : Set default value for CHAPName
+            default = STRING_TOKEN(STR_NULL), defaultstore = AmiMfgDefault,  // AMI PORTING - Manufacturing defaults
+    endstring;
+    //
+    // AMI PORTING START : Change the "CHAP Secret" control from String varid to Passoword varid.
+    // and add the text control for displaying the status of CHAP secret.
+    //
+    password  varid    = ISCSI_CONFIG_IFR_NVDATA.CHAPSecret,
+            prompt   = STRING_TOKEN(STR_ISCSI_CHAP_SECRET),
+            help     = STRING_TOKEN(STR_ISCSI_CHAP_SECRET_HELP),
+            flags    = INTERACTIVE,
+            key      = KEY_CHAP_SECRET,
+            minsize  = ISCSI_CHAP_SECRET_MIN_LEN,
+            maxsize  = ISCSI_CHAP_SECRET_MAX_LEN,
+            default  = STRING_TOKEN(STR_NULL),  // AMI PORTING  : Set default value for CHAPSecret
+            default  = STRING_TOKEN(STR_NULL), defaultstore = AmiMfgDefault,  // AMI PORTING - Manufacturing defaults
+    endpassword;
+
+    text
+      help   = STRING_TOKEN (STR_ISCSI_CHAP_SECRET_HELP),
+      text   = STRING_TOKEN (STR_CHAP_SECRET_STATUS),
+      text   = STRING_TOKEN (STR_ISCSI_CHAP_STATUS),
+      flags  = 0,
+      key    = 0;
+    //
+    // AMI PORTING END : Change the "CHAP Secret" control from String varid to Passoword varid.
+    // and add the text control for displaying the status of CHAP secret.
+    //
+
+    endif;
+
+    suppressif NOT ideqval ISCSI_CONFIG_IFR_NVDATA.AuthenticationType == ISCSI_AUTH_TYPE_CHAP OR
+               NOT ideqval ISCSI_CONFIG_IFR_NVDATA.CHAPType == ISCSI_CHAP_MUTUAL;
+
+    string  varid   = ISCSI_CONFIG_IFR_NVDATA.ReverseCHAPName,
+            prompt  = STRING_TOKEN(STR_ISCSI_REVERSE_CHAP_NAME),
+            help    = STRING_TOKEN(STR_ISCSI_REVERSE_CHAP_NAME),
+            flags   = INTERACTIVE,
+            key     = KEY_REVERSE_CHAP_NAME,
+            minsize = 0,
+            maxsize = ISCSI_CHAP_NAME_MAX_LEN,
+            default = STRING_TOKEN(STR_NULL),  // AMI PORTING  : Set default value for Reverse CHAP Name
+            default = STRING_TOKEN(STR_NULL), defaultstore = AmiMfgDefault,  // AMI PORTING - Manufacturing defaults
+    endstring;
+    
+    //
+    // AMI PORTING START : Change the "Reverse CHAP Secret" control from String varid to Passoword varid.
+    // and add the text control for displaying the status of Reverse CHAP secret.
+    //
+    password  varid    = ISCSI_CONFIG_IFR_NVDATA.ReverseCHAPSecret,
+            prompt   = STRING_TOKEN(STR_ISCSI_REVERSE_CHAP_SECRET),
+            help     = STRING_TOKEN(STR_ISCSI_CHAP_SECRET_HELP),
+            flags    = INTERACTIVE,
+            key      = KEY_REVERSE_CHAP_SECRET,
+            minsize  = ISCSI_CHAP_SECRET_MIN_LEN,
+            maxsize  = ISCSI_CHAP_SECRET_MAX_LEN,
+            default  = STRING_TOKEN(STR_NULL),  // AMI PORTING  : Set default value for Reverse CHAP Secret
+            default = STRING_TOKEN(STR_NULL), defaultstore = AmiMfgDefault,  // AMI PORTING - Manufacturing defaults
+    endpassword;
+
+    text
+      help   = STRING_TOKEN (STR_ISCSI_CHAP_SECRET_HELP),
+      text   = STRING_TOKEN (STR_REVERSE_CHAP_SECRET_STATUS),
+      text   = STRING_TOKEN (STR_ISCSI_REVERSE_CHAP_STATUS),
+      flags  = 0,
+      key    = 0;    
+    //
+    // AMI PORTING END : Change the "Reverse CHAP Secret" control from String varid to Passoword varid.
+    // and add the text control for displaying the status of Reverse CHAP secret.
+    //
+
+    endif;
+
+    subtitle text = STRING_TOKEN(STR_NULL);
+
+  //
+  // AMI PORTING START : Adding RESET_REQUIRED flag for prompting user to reset on adding 
+  // and saving a new attempt
+  //
+    text
+      help   = STRING_TOKEN (STR_SAVE_CHANGES_HELP),
+      text   = STRING_TOKEN (STR_SAVE_CHANGES),
+      flags  = INTERACTIVE | RESET_REQUIRED,
+      key    = KEY_SAVE_ATTEMPT_CONFIG;
+  //
+  // AMI PORTING END : Adding RESET_REQUIRED flag for prompting user to reset on adding 
+  // and saving a new attempt
+  //
+
+    goto FORMID_MAIN_FORM,
+    prompt = STRING_TOKEN (STR_RETURN_MAIN_FORM),
+    help   = STRING_TOKEN (STR_RETURN_MAIN_FORM),
+    flags  = 0;
+
+  endform;
+
+endformset;

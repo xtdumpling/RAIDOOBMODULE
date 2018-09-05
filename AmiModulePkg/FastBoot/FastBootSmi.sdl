@@ -1,0 +1,29 @@
+TOKEN
+    Name  = "FAST_BOOT_SMI_SUPPORT"
+    Value  = "0"
+    Help  = "Switch to enable FastBootSmi in the project."
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+    Master = Yes    
+End
+
+TOKEN
+    Name  = "FAST_BOOT_DISABLE_SWSMI"
+    Value  = "0xDC"
+    Help  = "Disable fast boot function SW SMI number."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+PATH
+    Name  = "FastBootSmi_DIR"
+End
+
+INFComponent
+    Name  = "FastBootSmi"
+    File  = "FastBootSmi.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_SMM_DRIVER"
+End

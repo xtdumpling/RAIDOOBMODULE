@@ -1,0 +1,83 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+## @file KbcEmul.inf
+#  Provides functions to enable the SMI event for port 60/64 and install the Trap handle protocol.
+##
+[Defines]
+  INF_VERSION                    = 0x00010015
+  VERSION_STRING                 = 1.0
+  BASE_NAME                      = KbcEmul
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  FILE_GUID                      = 3b24f79d-91a0-46ff-be29-458ae211fac5
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  ENTRY_POINT                    = EmulationEntryPoint
+
+[Sources]
+  KbcEmul.c
+  KbcEmul.h
+  KbcEmulLib.h
+  KbcEmulLib.c
+  Kbc.h
+  KbcDevEmul.h
+  Kbccore.c
+  Legacykbc.c
+  Legacykbd.c
+  LegacyMouse.c
+  VirtualKbc.c
+  VirtualKbd.c
+  VirtualMouse.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+
+[LibraryClasses]
+  AmiDxeLib
+  UefiDriverEntryPoint
+
+[Protocols]
+  gEfiSmmBase2ProtocolGuid
+  gEfiSmmCpuProtocolGuid
+  gEfiSmmUsbDispatch2ProtocolGuid
+  gEmul6064MsInputProtocolGuid
+  gEmul6064TrapProtocolGuid
+  gEmul6064KbdInputProtocolGuid
+  gEfiSmmSwDispatch2ProtocolGuid
+  gEfiDevicePathProtocolGuid
+  gEfiLoadedImageProtocolGuid
+  gEfiUsbProtocolGuid
+[Depex]
+  gEfiSmmBase2ProtocolGuid AND
+  gEfiPciRootBridgeIoProtocolGuid AND
+  gEfiSmmSwDispatch2ProtocolGuid AND
+  gEfiSmmUsbDispatch2ProtocolGuid AND
+  gEfiSmmCpuProtocolGuid
+
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+
+

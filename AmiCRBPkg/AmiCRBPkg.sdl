@@ -1,0 +1,52 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+TOKEN
+	Name  = "AmiCRBPkg_SUPPORT"
+	Value  = 1
+	Help  = "Main switch to enable CRB Chipset wrapper code support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+ELINK
+	Name  = "PcdLib"
+	Parent  = "AMI_CSP_LIBRARIES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "PciLib"
+	Parent  = "AMI_CSP_LIBRARIES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "PchPcrLib"
+    Parent  = "AMI_CSP_LIBRARIES"
+    InvokeOrder = AfterParent
+End
+
+FFS_FILE
+	Name  = "VmdVrocDriverEfi"
+	FD_AREA  = "FV_MAIN"
+	FILE_Stmt  = "AmiCRBPkg\VMDVROCDriverFdfFileStatement.txt"
+End
+
+FFS_FILE
+	Name  = "Hfi1SocketConfiguration"
+	FD_AREA  = "FV_MAIN"
+	FILE_Stmt  = "AmiCRBPkg\hfi1_socket_configuration.txt"
+End

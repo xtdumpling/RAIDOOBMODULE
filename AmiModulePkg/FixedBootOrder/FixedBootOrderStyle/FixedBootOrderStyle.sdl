@@ -1,0 +1,57 @@
+TOKEN
+	Name  = "FixedBootOrderStyle_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable module support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+	Token = "FIXED_BOOT_SWAP_POLICY" "=" "1"
+End
+
+TOKEN
+	Name  = "SET_BOOT_OPTION_TEXT_POSITION"
+	Value  = "6"
+	Help  = "Set boot option text position."
+	TokenType = Integer
+	TargetH = Yes
+	Token = "FIXED_BOOT_DISPLAY_DEVICE_NAME_IN_SETUP" "=" "1"
+End
+
+TOKEN
+	Name  = "SET_BOOT_OPTION_NUMBER_POSITION"
+	Value  = "2"
+	Help  = "Set boot option number position."
+	TokenType = Integer
+	TargetH = Yes
+	Token = "FIXED_BOOT_DISPLAY_DEVICE_NAME_IN_SETUP" "=" "1"
+End
+
+PATH
+    	Name  = "FixedBootOrderStyle_DIR"
+End
+
+#MODULE
+#    	Help  = "Includes FixedBootOrderStyle_DIR.mak to Project"
+#    	File  = "FixedBootOrderStyle.mak"
+#End
+
+ELINK
+    	Name  = "$(FixedBootOrderStyle_DIR)\FixedBootOrderStyle.c"
+        Parent  = "TSE_SOURCE_FILES"
+    	InvokeOrder = AfterParent
+End
+
+ELINK
+    	Name  = "AmiTsePkg/AmiTsePrivatePkg.dec"
+        Parent  = "ADDITIONAL_AMITSE_Packages"
+    	InvokeOrder = AfterParent
+End
+
+ELINK
+    	Name  = "FixedBootOrderStyleProcessEnterSetup,"
+    	Parent  = "ProcessEnterSetup,"
+    	InvokeOrder = AfterParent
+End
+

@@ -1,0 +1,206 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+#**********************************************************************
+## @file
+# Defines FFS file packaging rules that are included into project FDF file.
+# The rules define FFS file construction rules for a given module type.
+# To add custom rule(s) or override some of the rules, create a new file 
+# and add it as a child of the FdfRules eLink.
+# NOTE: If there is more than one rule for a given module type, the last one is used
+# To completely replace these rules with the customer rules, create a new file and 
+# add it as a child of the "AmiPkg/Configuration/FdfRules.txt" eLink with the "Replace" attribute.
+#**********************************************************************
+
+[Rule.Common.SEC]
+  FILE SEC = $(NAMED_GUID) RELOCS_STRIPPED {
+    $(UNCOMPRESSED_PEI_EXECUTABLE_SECTION) $(SEC_CORE_EXECUTABLE_ALIGNMENT) |.efi
+    RAW      RAW  Optional   Align = 16      |.com
+    RAW      RAW  Optional   Align = 16      |.bin
+  }
+
+[Rule.Common.PEI_CORE]
+  FILE PEI_CORE = $(NAMED_GUID) $(FFS_FILE_CHECKSUM_KEYWORD) {
+    $(UNCOMPRESSED_PEI_EXECUTABLE_SECTION) $(UNCOMPRESSED_PEI_EXECUTABLES_ALIGNMENT) |.efi
+    UI        STRING="$(MODULE_NAME)" Optional
+    VERSION   STRING="$(INF_VERSION)" Optional BUILD_NUM=$(BUILD_NUMBER)
+  }
+  
+[Rule.Common.PEIM]
+  FILE PEIM = $(NAMED_GUID) $(FFS_FILE_CHECKSUM_KEYWORD) {
+    PEI_DEPEX PEI_DEPEX Optional           |.depex
+    $(UNCOMPRESSED_PEI_EXECUTABLE_SECTION) $(UNCOMPRESSED_PEI_EXECUTABLES_ALIGNMENT) |.efi
+    UI        STRING="$(MODULE_NAME)" Optional
+    VERSION   STRING="$(INF_VERSION)" Optional BUILD_NUM=$(BUILD_NUMBER)
+  }
+  
+[Rule.Common.PEIM.NORELOC]
+  FILE PEIM = $(NAMED_GUID) RELOCS_STRIPPED $(FFS_FILE_CHECKSUM_KEYWORD) {
+    PEI_DEPEX PEI_DEPEX Optional  |.depex
+    $(UNCOMPRESSED_PEI_EXECUTABLE_SECTION) |.efi
+    UI        STRING="$(MODULE_NAME)" Optional
+    VERSION   STRING="$(INF_VERSION)" Optional BUILD_NUM=$(BUILD_NUMBER)
+  }
+
+[Rule.Common.PEIM.Compressed]
+  FILE PEIM = $(NAMED_GUID) $(FFS_FILE_CHECKSUM_KEYWORD) {
+    PEI_DEPEX PEI_DEPEX Optional  |.depex
+	$(PEI_COMPRESSION_SECTION) {
+      PE32      PE32              |.efi
+      UI        STRING="$(MODULE_NAME)" Optional
+      VERSION   STRING="$(INF_VERSION)" Optional BUILD_NUM=$(BUILD_NUMBER)
+	}
+  }
+  
+[Rule.Common.DXE_CORE]
+  FILE DXE_CORE = $(NAMED_GUID) $(FFS_FILE_CHECKSUM_KEYWORD) {
+    # Since DXE Core is decompressed by the PEI code, we are using $(PEI_COMPRESSION_SECTION) here.
+    $(PEI_COMPRESSION_SECTION) {
+        PE32      PE32            |.efi
+        UI        STRING="$(MODULE_NAME)" Optional
+        VERSION   STRING="$(INF_VERSION)" Optional BUILD_NUM=$(BUILD_NUMBER)
+    }
+  }
+
+[Rule.Common.DXE_DRIVER]
+  FILE DRIVER = $(NAMED_GUID) $(FFS_FILE_CHECKSUM_KEYWORD) {
+    DXE_DEPEX   DXE_DEPEX Optional      |.depex
+    $(DXE_COMPRESSION_SECTION) {
+        PE32      PE32                  |.efi
+        UI        STRING="$(MODULE_NAME)" Optional
+        VERSION   STRING="$(INF_VERSION)" Optional BUILD_NUM=$(BUILD_NUMBER)
+    }
+  }
+
+[Rule.Common.SMM_CORE]
+  FILE SMM_CORE = $(NAMED_GUID) $(FFS_FILE_CHECKSUM_KEYWORD) {
+    $(DXE_COMPRESSION_SECTION) {
+        PE32      PE32                  |.efi
+        UI        STRING="$(MODULE_NAME)" Optional
+        VERSION   STRING="$(INF_VERSION)" Optional BUILD_NUM=$(BUILD_NUMBER)
+    }
+  }
+
+[Rule.Common.DXE_SMM_DRIVER]
+  FILE SMM = $(NAMED_GUID) $(FFS_FILE_CHECKSUM_KEYWORD) {
+    SMM_DEPEX    SMM_DEPEX Optional     |.depex
+    $(DXE_COMPRESSION_SECTION) {
+        PE32      PE32                  |.efi
+        UI        STRING="$(MODULE_NAME)" Optional
+        VERSION   STRING="$(INF_VERSION)" Optional BUILD_NUM=$(BUILD_NUMBER)
+    }
+  }
+  
+[Rule.Common.UEFI_DRIVER]
+  FILE DRIVER = $(NAMED_GUID) $(FFS_FILE_CHECKSUM_KEYWORD) {
+    DXE_DEPEX   DXE_DEPEX Optional      |.depex
+    $(DXE_COMPRESSION_SECTION) {
+        PE32      PE32                  |.efi
+        UI        STRING="$(MODULE_NAME)" Optional
+        VERSION   STRING="$(INF_VERSION)" Optional BUILD_NUM=$(BUILD_NUMBER)
+    }
+  }
+  
+[Rule.Common.DXE_RUNTIME_DRIVER]
+  FILE DRIVER = $(NAMED_GUID) $(FFS_FILE_CHECKSUM_KEYWORD) {
+    DXE_DEPEX   DXE_DEPEX Optional      |.depex
+    $(DXE_COMPRESSION_SECTION) {
+        PE32      PE32                  |.efi
+        UI        STRING="$(MODULE_NAME)" Optional
+        VERSION   STRING="$(INF_VERSION)" Optional BUILD_NUM=$(BUILD_NUMBER)
+    }
+  }
+
+[Rule.Common.UEFI_APPLICATION]
+  FILE APPLICATION = $(NAMED_GUID) $(FFS_FILE_CHECKSUM_KEYWORD) {
+    $(DXE_COMPRESSION_SECTION) {
+        PE32      PE32                  |.efi
+        UI        STRING="$(MODULE_NAME)" Optional
+        VERSION   STRING="$(INF_VERSION)" Optional BUILD_NUM=$(BUILD_NUMBER)
+    }
+  }
+
+[Rule.Common.USER_DEFINED]
+  FILE FREEFORM = $(NAMED_GUID) $(FFS_FILE_CHECKSUM_KEYWORD) {
+    $(DXE_COMPRESSION_SECTION) {
+      RAW BIN  Optional                |.bin
+      RAW RAW  Optional                |.com
+      RAW ASL  Optional                |.aml
+      RAW ACPI Optional                |.acpi
+	}
+  } 
+
+[Rule.Common.USER_DEFINED.Uncompressed]
+  FILE FREEFORM = $(NAMED_GUID) $(FFS_FILE_CHECKSUM_KEYWORD) {
+    RAW BIN  Optional                |.bin
+    RAW RAW  Optional                |.com
+    RAW ASL  Optional                |.aml
+    RAW ACPI Optional                |.acpi
+  }
+
+[Rule.Common.USER_DEFINED.UncompressedNoChecksum]
+  FILE FREEFORM = $(NAMED_GUID) {
+    RAW BIN  Optional                |.bin
+    RAW RAW  Optional                |.com
+    RAW ASL  Optional                |.aml
+    RAW ACPI Optional                |.acpi
+  }
+
+[Rule.Common.USER_DEFINED.BINARY]
+  FILE FREEFORM = $(NAMED_GUID) $(FFS_FILE_CHECKSUM_KEYWORD) {
+    $(DXE_COMPRESSION_SECTION) {
+      RAW BIN
+	}
+  } 
+
+[Rule.Common.USER_DEFINED.UncompressedBinary]
+  FILE FREEFORM = $(NAMED_GUID) $(FFS_FILE_CHECKSUM_KEYWORD) {
+    RAW BIN
+  } 
+
+[Rule.Common.USER_DEFINED.UncompressedBinaryNoChecksum]
+  FILE FREEFORM = $(NAMED_GUID) {
+    RAW BIN
+  } 
+  
+ [Rule.Common.USER_DEFINED.SubtypeGuidCompressed]
+  FILE FREEFORM = $(NAMED_GUID) $(FFS_FILE_CHECKSUM_KEYWORD) {
+    $(DXE_COMPRESSION_SECTION) {
+      SUBTYPE_GUID GUID=$(SECTION_GUID) BIN  Optional  |.bin
+      SUBTYPE_GUID GUID=$(SECTION_GUID) RAW  Optional  |.com
+    }
+  }
+
+[Rule.Common.USER_DEFINED.SubtypeGuidUncompressed]
+  FILE FREEFORM = $(NAMED_GUID) $(FFS_FILE_CHECKSUM_KEYWORD) {
+    SUBTYPE_GUID GUID=$(SECTION_GUID) BIN  |.bin
+  }
+
+[Rule.Common.USER_DEFINED.SubtypeGuidUncompressedNoChecksum]
+  FILE FREEFORM = $(NAMED_GUID) {
+    SUBTYPE_GUID GUID=$(SECTION_GUID) BIN  |.bin
+  }
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

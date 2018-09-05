@@ -1,0 +1,90 @@
+#
+# This file contains an 'Intel Peripheral Driver' and is
+# licensed for Intel CPUs and chipsets under the terms of your
+# license agreement with Intel or your vendor.  This file may
+# be modified by the user, subject to additional terms of the
+# license agreement
+#
+#/*++
+#
+# Copyright (c) 2011 - 2016, Intel Corporation. All rights reserved
+# This software and associated documentation (if any) is furnished
+# under a license and may only be used or copied in accordance
+# with the terms of the license. Except as permitted by such
+# license, no part of this software or documentation may be
+# reproduced, stored in a retrieval system, or transmitted in any
+# form or by any means without the express written consent of
+# Intel Corporation.
+#
+#  Module Name:
+#
+#    MeSmbios.inf
+#
+#  Abstract:
+#
+#    Component description file for the SmbiosMisc Driver.
+#    {C73F128A-D892-46f9-8B5B-9D63F440BBED}
+#    0xc73f128a, 0xd892, 0x46f9, 0x8b, 0x5b, 0x9d, 0x63, 0xf4, 0x40, 0xbb, 0xed
+#
+#--*/
+
+[defines]
+  INF_VERSION          = 0x00010005
+  BASE_NAME            = MeSmbios
+  FILE_GUID            = E764500B-E398-4AB7-BBBC-99A8E683681F
+  MODULE_TYPE          = DXE_DRIVER
+  VERSION_STRING       = 1.0
+  ENTRY_POINT          = MeSmbiosDriverEntryPoint
+
+[sources.common]
+  MeSmbios.h
+  MeSmbios.c
+  MiscOemType0x82Function.c
+  MiscOemType0x82Data.c
+  MiscOemType0x83Function.c
+  MiscOemType0x83Data.c
+  MeSmbiosDataTable.c
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  BaseLib
+  BaseMemoryLib
+# PciLib             SERVER_BIOS_FLAG
+  UefiLib
+  DxeAmtLib
+  DxeMbpDataLib
+  MeTypeLib
+  SetupLib
+
+[Protocols]
+  gEfiSmbiosProtocolGuid
+  gHeciProtocolGuid
+  gMebxProtocolGuid
+
+[Guids]
+  gMeBiosExtensionSetupGuid
+  gEfiSocketIioVariableGuid
+  gEfiSocketProcessorCoreVarGuid
+  gEfiEndOfDxeEventGroupGuid
+
+[Packages]
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  MdePkg/MdePkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  PurleySktPkg/Me/MePkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[Depex]
+  gEfiSmbiosProtocolGuid         AND
+  gHeciProtocolGuid
+

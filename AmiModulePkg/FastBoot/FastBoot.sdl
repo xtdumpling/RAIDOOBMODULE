@@ -1,0 +1,559 @@
+TOKEN
+    Name  = "POST_TIME_TUNING_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable FastBoot (Post Time Tuning) module in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+    Master = Yes
+End
+
+TOKEN
+    Name  = "FAST_BOOT_SUPPORT"
+    Value  = "1"
+    Help  = "Switch to enable FastBoot support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+    Lock = Yes
+End
+
+TOKEN
+    Name  = "PTT_VER"
+    Value  = "10"
+    Help  = "FastBoot (PTT) module version"
+    TokenType = Integer
+    TargetH = Yes
+    Lock = Yes
+End
+
+TOKEN
+    Name  = "MAX_SATA_DEVICE_COUNT"
+    Value  = "8"
+    Help  = "Max count of Sata device are stored in LastBoot variable"
+    TokenType = Integer
+    TargetH = Yes
+    Lock = Yes
+End
+
+TOKEN
+    Name  = "SKIP_TSE_HANDSHAKE"
+    Value  = "0"
+    Help  = "On: Skip TSE execution on fast boot path, \Logo will not be shown.\Use FASTBOOT_MODE_CHANGE_HOTKEY to change mode.\At least keep one console in and one console out, if user need to support password security during fastboot.\\OFF: Keep TSE execution on fast boot path, "
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "ALLOW_FIRST_FASTBOOT_IN_S4"
+    Value  = "1"
+    Help  = "On: First FastBoot can be start when system power on from S4.\OFF: First FastBoot only can be start when system power on from S0."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "USB_SKIP_TABLE"
+    Value  = "{{0, 0, 0, 0, 0, 0}}"
+    Help  = "This Table is only used when SetupOption 'Partial Initial' is selected.\This structure must end with zero structure."
+    TokenType = Expression
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "FAST_BOOT_PCI_SKIP_LIST"
+    Value  = "{{0x01,0xFF},{0x03,0xFF},{0x06,0xFF}}"
+    Help  = "(EIP85135)When enabled XHCI support difficult into setup menu in fastboot mode'\{ClassCode,SubClassCode}\{0x01,0xFF}  Storage\{0x02,0xFF}  NetWrok\{0x03,0xFF}  VGA\{0x06,0xFF}  Bridge"
+    TokenType = Expression
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "FAST_BOOT_TSE_HOTKEY_SUPPORT"
+    Value  = "1"
+    Help  = "(EIP96276.6)Change FastBoot mode and enter setup by TSE hotkey"
+    TokenType = Boolean
+End
+
+TOKEN
+    Name  = "LAST_BOOT_FAIL_MECHANISM"
+    Value  = "1"
+    Help  = "(EIP98617)Enter setup automatically if previous fast boot fail."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "MAX_LAST_BOOT_FAIL_COUNT"
+    Value  = "2"
+    Help  = "Once fast boot fail count is reach this number, system will perform a full boot."
+    TokenType = Integer
+    TargetH = Yes
+    Token = "LAST_BOOT_FAIL_MECHANISM" "=" "0"
+End
+
+TOKEN
+    Name  = "OVERRIDE_FastBootLaunch"
+    Value  = "1"
+    Help  = "Fastboot Modules Overrides the FastBootLaunch() function of TSE"
+    TokenType = Boolean
+    TargetH = Yes
+    Token = "SKIP_TSE_HANDSHAKE" "=" "0"
+End
+
+TOKEN
+    Name  = "DEFAULT_FAST_BOOT"
+    Value  = "0"
+    Help  = "Default value of the Fast Boot option"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "DEFAULT_SATA_SUPPORT_SETTING"
+    Value  = "1"
+    Help  = "Default value of SATA Support option"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "DEFAULT_SATA_SUPPORT_SETTING"
+    Value  = "2"
+    Help  = "Default value of SATA Support option"
+    TokenType = Integer
+    TargetH = Yes
+    Token = "SUPPORT_RAID_DRIVER" "=" "1"
+End
+
+TOKEN
+    Name  = "DEFAULT_VGA_SUPPORT_SETTING"
+    Value  = "1"
+    Help  = "Default value of VGA Support option"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "DEFAULT_USB_SUPPORT_SETTING"
+    Value  = "2"
+    Help  = "Default value of USB Support option"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "DEFAULT_PS2_SUPPORT_SETTING"
+    Value  = "1"
+    Help  = "Default value of the PS2 Devices Support option"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "DEFAULT_REDIRECTION_SUPPORT_SETTING"
+    Value  = "0"
+    Help  = "Default value of Redirection Support option"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "DEFAULT_NETWORK_STACK_SUPPORT_SETTING"
+    Value  = "0"
+    Help  = "Default value of NetWork Stack Driver Support option"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "CONNECT_EVERYTHING_IN_FASTBOOT"
+    Value  = "1"
+    Help  = "Connect all Pci Handles on fastboot path except the Pci class in the FAST_BOOT_PCI_SKIP_LIST"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "SINGAL_ALL_DRIVERS_CONNECTED_EVENT"
+    Value  = "1"
+    Help  = "Signal BDS_ALL_DRIVERS_CONNECTED_PROTOCOL_GUID on fastboot path"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "CALL_DISPATCHER_AGAIN_IN_FASTBOOT"
+    Value  = "1"
+    Help  = "Call DXE dispatcher again on fastboot path"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "IS_VALID_FASTBOOT_BOOT_OPTION_FUNC"
+    Value  = "IsValidFastBootOption"
+    Help  = "Function to validate fastboot boot option"
+    TokenType = Expression
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "SUPPORT_RAID_DRIVER"
+    Value  = "0"
+    Help  = "Check if support for raid driver."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "FASTBOOT_NEED_RESTART"
+    Value  = "0"
+    Help  = "Check if need to restart."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "FASTBOOT_DEBUG_MESSAGES"
+    Value  = "0"
+    Help  = "Enables/disables debug messages for FastBoot driver."
+    TokenType = Boolean
+    Token = "DEBUG_CODE" "=" "1"
+End
+
+
+TOKEN
+    Name  = "SKIP_USB_STORAGE"
+    Value  = "1"
+    Help  = "Skip usb storage device when usb support option set partial initial."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+PATH
+    Name  = "FastBoot_DIR"
+    Help  = "Path to FastBoot Module in Project"
+End
+
+MODULE
+    Help  = "Includes FastBoot.mak to Project"
+    File  = "FastBoot.mak"
+End
+
+ELINK
+    Name  = "$(FastBoot_DIR)/FastBoot.sd"
+    Parent  = "SETUP_DEFINITIONS"
+    Priority  = 0
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(FastBoot_DIR)/FastBoot.uni"
+    Parent  = "SetupStringFiles"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "FastBootConInAvailHook,"
+    Parent  = "ProcessConInAvailability,"
+    Token = "IPMI_SUPPORT" "=" "0"
+    InvokeOrder = ReplaceParent
+End
+
+ELINK
+    Name  = "FastBootBbsBootHook,"
+    Parent  = "BbsBoot,"
+    InvokeOrder = ReplaceParent
+End
+
+ELINK
+    Name  = "FastBootMinisetupDriverEntryHook,"
+    Parent  = "MinisetupDriverEntryHookHook,"
+    Help  = "(EIP63924)Add an Elink for install fast boot tse protocol"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "IsFastBootDefault,"
+    Parent  = "IsFastBootList"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "CheckPostManagerKey,"
+    Parent  = "FastBootCheckModeChangeList"
+    Token = "FAST_BOOT_TSE_HOTKEY_SUPPORT" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "FbConnectEverything,"
+    Parent  = "BeforeConnectFastBootDeviceHook"
+    Help  = "(EIP85135)When enabled XHCI support difficult into setup menu in fastboot mode"
+    Token = "CONNECT_EVERYTHING_IN_FASTBOOT" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "SignalAllDriversConnectedEvent,"
+    Parent  = "FastBootAfterAllDriverConnctHook"
+    Token = "SINGAL_ALL_DRIVERS_CONNECTED_EVENT" "=" "1"
+    Token = "CORE_COMBINED_VERSION" ">" "0x40280"
+    InvokeOrder = BeforeParent
+End
+
+ELINK
+    Name  = "FastBootTseLib"
+    Parent  = "ADDITIONAL_AMITSE_LibraryClasses"
+    InvokeOrder = AfterParent
+End
+
+
+ELINK
+    Name  = "IsFastBootList"
+    InvokeOrder = ReplaceParent
+End
+
+ELINK
+    Name  = "FastBootAfterAllDriverConnctHook"
+    Help  = "(EIP62683)Add an Elink after all driver connect in FastBoot (PTT) module"
+    InvokeOrder = ReplaceParent
+End
+
+ELINK
+    Name  = "FastBootCheckModeChangeList"
+    Help  = "(EIP63924)Add an Elink for check mode change in FastBoot (PTT) module"
+    InvokeOrder = ReplaceParent
+End
+
+ELINK
+    Name  = "BeforeConnectFastBootDeviceHook"
+    Help  = "(EIP62845)Connect all sata devices in fastboot"
+    InvokeOrder = ReplaceParent
+End
+
+ELINK
+    Name  = "ResetFastBootVariable,"
+    Parent  = "ReturnNormalMode"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "DisconnectUsbController,"
+    Parent  = "ReturnNormalMode"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "BdsRemoveStrings,"
+    Parent  = "ReturnNormalMode"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "ReturnNormalMode"
+    InvokeOrder = ReplaceParent
+End
+
+ELINK
+    Name  = "BeforeBdsFlow,"
+    Parent  = "BDS_CONTROL_FLOW"
+    InvokeOrder = BeforeParent
+End
+
+ELINK
+    Name  = "FastBootFlowList"
+    InvokeOrder = ReplaceParent
+End
+
+ELINK
+    Name  = "FastbootCheckBootFlow,"
+    Parent  = "FastBootFlowList"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "FastbootCapsulePresent,"
+    Parent  = "FastBootFlowList"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "FastbootOemConfigurationChanged,"
+    Parent  = "FastBootFlowList"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "FastbootCheckLastBootVariablePresent,"
+    Parent  = "FastBootFlowList"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "FastbootUpdateAndShowPolicy,"
+    Parent  = "FastBootFlowList"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "FastbootCheckBootOption,"
+    Parent  = "FastBootFlowList"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "FastbootConsoleCheck,"
+    Parent  = "FastBootFlowList"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "FastbootBdsLoadStrings,"
+    Parent  = "FastBootFlowList"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "FastbootBeforeConnectDeviceHook,"
+    Parent  = "FastBootFlowList"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "FastbootSataCheck,"
+    Parent  = "FastBootFlowList"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "FastbootConnectBootDevice,"
+    Parent  = "FastBootFlowList"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "FastbootAfterAllDriverConnct,"
+    Parent  = "FastBootFlowList"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "FastbootCallTheDispatcher,"
+    Parent  = "FastBootFlowList"
+    Token = "CALL_DISPATCHER_AGAIN_IN_FASTBOOT" "=" "1"
+    Token = "CORE_COMBINED_VERSION" ">" "0x40280"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "FastbootRecoverTheMemory,"
+    Parent  = "FastBootFlowList"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "FastbootChangePs2VarValue,"
+    Parent  = "FastBootFlowList"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "FastbootTseHandshake,"
+    Parent  = "FastBootFlowList"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "FastbootPrepareToBoot,"
+    Parent  = "FastBootFlowList"
+    InvokeOrder = AfterParent
+End
+
+INFComponent
+    Name  = "FastBootTseHook"
+    File  = "FastBootTseHook.inf"
+    Package  = "AmiModulePkg"
+End
+
+INFComponent
+    Name  = "FastBootRuntime"
+    File  = "FastBootRuntime.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_RUNTIME_DRIVER"
+End
+
+FFS_FILE
+    Name  = "FastBootRuntime"
+    FD_AREA  = "FV_MAIN"
+    INFComponent  = "AmiModulePkg.FastBootRuntime"
+    Apriori_Index  = "4"
+End
+
+INFComponent
+    Name  = "FastBoot"
+    File  = "../../Build/FastBoot.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_DRIVER"
+End
+
+LibraryMapping
+    Class  = "FastBootTseLib"
+    Instance  = "AmiModulePkg.FastBootTseHook"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiModulePkg.FastBoot"
+    Override  = "AmiModulePkg.Bds"
+End
+
+ELINK
+    Name  = "InitialRebootCount,"
+    Parent  = "ProcessEnterSetupHook,"
+    InvokeOrder = AfterParent
+    Token = "FASTBOOT_NEED_RESTART" "=" "1"
+End
+
+ELINK
+    Name  = "CollectUsbBbsDevices,"
+    Parent  = "FastBootAfterAllDriverConnctHook"
+    Token = "AMIUSB_SUPPORT" "=" "1"
+    Token = "USB_DRIVER_BUILD_VER" ">=" "27"
+    Token = "UINT13_SUPPORT" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "CollectUsbBbsDevices,"
+    Parent  = "FastBootAfterAllDriverConnctHook"
+    Token = "AMIUSB_SUPPORT" "=" "1"
+    Token = "USB_DRIVER_MINOR_VER" ">=" "11"
+    Token = "UINT13_SUPPORT" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "CollectUsbBbsDevices,"
+    Parent  = "FastBootAfterAllDriverConnctHook"
+    Token = "AMIUSB_SUPPORT" "=" "1"
+    Token = "USB_DRIVER_MAJOR_VER" ">=" "9"
+    Token = "UINT13_SUPPORT" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+PcdMapping
+    Name  = "PcdFixedDebugPrintErrorLevel"
+    GuidSpace  = "gEfiMdePkgTokenSpaceGuid"
+    PcdType  = "PcdsFixedAtBuild"
+    Value  = "0"
+    Override  = "AmiModulePkg.FastBoot"
+    Offset  = 00h
+    Length  = 00h
+    Help  = "Disables all debug messages based on FASTBOOT_DEBUG_MESSAGES token value"
+    TargetDSC = Yes
+    Token = "FASTBOOT_DEBUG_MESSAGES" "=" "0"
+End

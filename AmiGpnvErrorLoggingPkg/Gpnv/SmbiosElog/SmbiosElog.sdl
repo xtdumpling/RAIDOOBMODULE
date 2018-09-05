@@ -1,0 +1,32 @@
+TOKEN
+        Name  = "SmbiosElog_SUPPORT"
+        Value  = "1"
+        Help  = "Main switch to enable SmbiosElog support in Project"
+        TokenType = Boolean
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+        Master = Yes
+End
+
+PATH
+        Name  = "SmbiosElog_DIR"
+        Path  = "AmiGpnvErrorLoggingPkg/Gpnv/SmbiosElog"
+        Help  = "Path to SmbiosElog Module in Project"
+End
+
+INFComponent
+        Name  = "SmbiosElog"
+        File  = "SmbiosElog.inf"
+        Package  = "AmiGpnvErrorLoggingPkg"
+        ModuleTypes  = "DXE_RUNTIME_DRIVER"
+        Help  = "INF Component for SmbiosElog driver"
+End
+
+ELINK
+        Name  = "$(SmbiosElog_DIR)/SmbiosElogSetup.sd"
+        Parent  = "SETUP_DEFINITIONS"
+        Priority  = 50
+        InvokeOrder = AfterParent
+        Help  = "ELink to add SmbiosElogSetup.sd to Setup data definition"
+End

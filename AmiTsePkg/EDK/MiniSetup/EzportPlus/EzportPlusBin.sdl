@@ -1,0 +1,219 @@
+TOKEN
+	Name  = "TSE_STYLE_EZPORTPLUS_BIN_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable EzportPlus Style in TSE"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+TOKEN	
+	Name  = "STYLE_COLOR_GRAYOUT"
+	Value = "EFI_DARKGRAY"
+	Help  = " Item grayout colour "
+	TokenType = Expression
+	TargetH = Yes
+	Range  = "0x0-0x0f"
+End
+
+TOKEN
+	Name  = "FIRST_PAGE_ID_INDEX"
+	Value  = "2"
+	Help  = "EIP25281.style"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SETUP_STYLE_BIN_EZPORTPLUS"
+	Value  = "1"
+	Help  = "Condition to support EzportPlus Style Sources"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TSE_PRN_SCRN_KEY_SCAN"
+	Value  = "SCAN_F12"
+	Help  = "Set to one of the defined constants from EFI_SIMPLE_TEXT_INPUT protocol. On pressing this key AMITSE_PRINT_SCREEN_PRESS_GUID event will be generated."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TSE_ANSI_ESC_CODE_SUPPORT"
+	Value  = "1"
+	Help  = "Tse advanced Esc colour support"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "HOTCLICK_FULLSCREEN_SUPPORT"
+	Value  = "1"
+	Help  = "Set one to enable the hot click support for full screen. The x,y coordinates for corresponding hot click ELINKS are done for a sample case(style). If customer needs his own style or not needs full screen then values in the ELINKS should be customized based on thier needs."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+ELINK
+	Name  = "{{SCAN_F4, 0},0, EzportPlusHandleSaveExitKey, 0 },"
+	Parent  = "HOTKEY_LIST"
+	InvokeOrder = AfterParent
+End
+
+TOKEN
+	Name  = "SETUP_UPDATE_BOOT_ORDER_CURSOR"
+	Value  = "1"
+	Help  = "When the boot order is changed, the cursor moves with the selection. Else, the cursor remains in the same location as the current question."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+ELINK
+	Name  = "{{SCAN_F2, 0 },0,EzportPlusHandlePrevValuesKey, 1 },"
+	Parent  = "HOTKEY_LIST"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "{{SCAN_F3, 0 },0,EzportPlusHandleOptimalKey, 1 },"
+	Parent  = "HOTKEY_LIST"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "{{SCAN_F1, 0 },0,EzportPlusHandleHelpKey, 1 },"
+	Parent  = "HOTKEY_LIST"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "{{SCAN_ESC,0},0, EzportPlusHandleEscKey, 0 },"
+	Parent  = "HOTKEY_LIST"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "{{TSE_PRN_SCRN_KEY_SCAN,0},0, EzportPlusHandlePrnScrnKey, 0 },"
+	Parent  = "HOTKEY_LIST"
+	InvokeOrder = AfterParent
+	Token = "TSE_PRN_SCRN_EVENT_SUPPORT" "=" "1"
+End
+
+ELINK
+	Name  = "{{SCAN_F11, 0},0, SetupShowDebugScreen, 0 },"
+	Parent  = "HOTKEY_LIST"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "{ 1, 3, 1 + 64, 3+25, EzportPlusMainFrameHandlewithMouse, 0 },"
+	Parent  = "HOTCLICK_LIST"
+	InvokeOrder = AfterParent
+	Help  = "Dont change the HOTCLICK_LIST order, for 100*31 mode"
+    Token = "HOTCLICK_FULLSCREEN_SUPPORT" "=" "1"
+End
+
+ELINK
+	Name  = "{ 67, 5, 67 + 32, 5 + 23, EzportPlusHelpFrameHandlewithMouse, 1 },"
+	Parent  = "HOTCLICK_LIST"
+	InvokeOrder = AfterParent
+	Help  = "Dont change the HOTCLICK_LIST order, for 100*31 mode"
+    Token = "HOTCLICK_FULLSCREEN_SUPPORT" "=" "1"
+End
+
+ELINK
+	Name  = "{ 0, 29, 0 + 100, 29 + 2, EzportPlusNavFrameHandlewithMouse, 1 },"
+	Parent  = "HOTCLICK_LIST"
+	InvokeOrder = AfterParent
+	Help  = "Dont change the HOTCLICK_LIST order, for 100*31 mode"
+    Token = "HOTCLICK_FULLSCREEN_SUPPORT" "=" "1"
+End
+
+ELINK
+	Name  = "{ 0, 0, 0, 0, EzportPlusMainFrameHandlewithMouse, 0 },"
+	Parent  = "HOTCLICK_LIST"
+	InvokeOrder = AfterParent
+	Help  = "Dont change the HOTCLICK_LIST order, for 80*25 mode. Not supported customization needed"
+    Token = "HOTCLICK_FULLSCREEN_SUPPORT" "=" "1"
+End
+
+ELINK
+	Name  = "{ 0, 0, 0, 0, EzportPlusHelpFrameHandlewithMouse, 1 },"
+	Parent  = "HOTCLICK_LIST"
+	InvokeOrder = AfterParent
+	Help  = "Dont change the HOTCLICK_LIST order, for 80*25 mode. Not supported customization needed"
+    Token = "HOTCLICK_FULLSCREEN_SUPPORT" "=" "1"
+End
+
+ELINK
+	Name  = "{ 0, 0, 0, 0, EzportPlusNavFrameHandlewithMouse, 1 },"
+	Parent  = "HOTCLICK_LIST"
+	InvokeOrder = AfterParent
+	Help  = "Dont change the HOTCLICK_LIST order, for 80*25 mode. Not supported customization needed"	
+    Token = "HOTCLICK_FULLSCREEN_SUPPORT" "=" "1"
+End
+
+
+PATH
+	Name  = "TSE_STYLE_DIR"
+End
+
+
+ELINK
+	Name  = "$(TSE_STYLE_DIR)/StyleStr.uni"
+	Parent  = "TSE_STRING_FILES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(TSE_STYLE_DIR)/StyleTokens.c"
+	Parent  = "TSE_STRING_CONSUMERS_LIST"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(TSE_STYLE_DIR)/HotkeyBin.h"
+	Parent  = "TSE_SOURCE_FILES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(TSE_STYLE_DIR)/HotkeyBin.c"
+	Parent  = "TSE_SOURCE_FILES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(TSE_STYLE_DIR)/HotclickBin.c"
+	Parent  = "TSE_SOURCE_FILES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(TSE_STYLE_DIR)/HotclickBin.h"
+	Parent  = "TSE_SOURCE_FILES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "EzportPlusBin"
+	Parent  = "ADDITIONAL_AMITSE_LibraryClasses"
+	InvokeOrder = AfterParent
+End
+
+INFComponent
+	Name  = "EzportPlusBin"
+	File  = "EzportPlusBin.inf"
+	Package  = "AmiTsePkg"
+End
+
+
+LibraryMapping
+	Class  = "EzportPlusBin"
+	Instance  = "AmiTsePkg.EzportPlusBin"
+#	Arch  = "X64"
+End
+

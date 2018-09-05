@@ -1,0 +1,87 @@
+## @file
+#  FpgaPlatformEarlyInit PEIM
+#
+#  Copyright (c) 2016, Intel Corporation. All rights reserved.<BR>
+#
+#  This program and the accompanying materials
+#  are licensed and made available under the terms and conditions of the BSD License
+#  which accompanies this distribution. The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.php
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = FpgaPlatformEarlyInit
+  FILE_GUID                      = 0C85DF8A-4212-4cc1-A4AA-1A7A36E8DA97
+  MODULE_TYPE                    = PEIM
+  ENTRY_POINT                    = FpgaPlatformEarlyInitEntry
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+ 
+[Sources]
+  FpgaPlatformEarlyInit.c
+  FpgaBbsInit.c
+# APTIOV_SERVER_OVERRIDE_RC_START : Added header file
+  FpgaPlatformEarlyInit.h
+# APTIOV_SERVER_OVERRIDE_RC_END : Added header file
+
+[Packages]
+  MdeModulePkg/MdeModulePkg.dec
+  MdePkg/MdePkg.dec
+# APTIOV_SERVER_OVERRIDE_RC_START
+#  BpCommonPkg/BpCommonPkg.dec
+# APTIOV_SERVER_OVERRIDE_RC_END
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+  CpPlatPkg/CpPlatPkg.dec
+  CpPcPlatPkg/CpPcPlatPkg.dec
+  
+[LibraryClasses]
+  PeiServicesLib
+  PeimEntryPoint
+  DebugLib
+  HobLib
+  IoLib
+  PlatformHooksLib
+  PcdLib
+  PrintLib
+  PeiServicesTablePointerLib
+  PciExpressLib 
+  SetupLib
+  FpgaPlatformHooksLib
+  ReadFfsLib
+  FpgaConfigurationLib
+  
+[Pcd]
+  gSocketPkgFpgaGuid.PcdSktFpgaActive       
+  gCpPlatFlashTokenSpaceGuid.PcdFlashFdFpgaBase
+  gCpPlatFlashTokenSpaceGuid.PcdFlashFdFpgaSize
+  gPlatformTokenSpaceGuid.PcdSyshostMemoryAddress
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[Guids]  
+  gFpgaSocketVariableGuid
+
+[Ppis]
+  gFpgaInitPpiGuid        ## PRODUCES
+  gPeiSpiPpiGuid
+  gEfiPeiReadOnlyVariable2PpiGuid
+  gMrcHooksChipServicesPpiGuid
+  gEfiPeiMpServicesPpiGuid
+
+[Depex]
+  gPeiSpiPpiGuid AND gEfiPeiReadOnlyVariable2PpiGuid AND gEfiPeiMemoryDiscoveredPpiGuid AND gEfiPeiSystemBoardPpiGuid AND gEfiPeiMpServicesPpiGuid
+

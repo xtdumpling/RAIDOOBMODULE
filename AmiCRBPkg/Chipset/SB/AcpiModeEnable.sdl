@@ -1,0 +1,90 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2010, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+TOKEN
+    Name = "AcpiModeEnable_SUPPORT"
+    Value = "1"
+    Help = "Main switch to enable AcpiModeEnable support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    Master = Yes
+End
+
+TOKEN
+    Name = "SW_SMI_ACPI_ENABLE"
+    Value = "0xA0"
+    Help = "Value to be written into SMI command register \to enable SCI generation and switch to ACPI mode"
+    TokenType = Integer
+    TargetH = Yes
+    Range = "0-0xff"
+End
+
+TOKEN
+    Name = "SW_SMI_ACPI_DISABLE"
+    Value = "0xA1"
+    Help = "Value to write into SMI command register to disable \SCI generation and switch to non ACPI mode"
+    TokenType = Integer
+    TargetH = Yes
+    Range = "0 - 0xff"
+End
+
+TOKEN
+    Name = "REGISTER_DUMMY_SWSMI_TIMER_FOR_CRB"
+    Value = "1"
+    Help = "To register a dummy SWSMI Timer handler for avoid that system hang at S3 resume path if any other SWSMI Timer handler is registered and then unregistered (e.q. USB)."
+    TokenType = Boolean
+    TargetH = Yes
+    TOKEN  = "A_S3" "=" "1"    
+End
+
+PATH
+    Name = "ACPI_MODE_ENABLE_DIR"
+    Path  = "AmiCRBPkg/Chipset/SB"
+End
+
+MODULE
+    Help = "Includes AcpiModeEnable.mak to Project"
+    File = "AcpiModeEnable.mak"
+End
+
+ELINK
+    Name  = "AcpiEnableCallbackList"
+    InvokeOrder = ReplaceParent
+End
+
+ELINK
+    Name  = "AcpiDisableCallbackList"
+    InvokeOrder = ReplaceParent
+End
+
+INFComponent
+    Name  = "AcpiModeEnable"
+    File  = "AcpiModeEnable.inf"
+    Package  = "AmiCRBPkg"
+    ModuleTypes = "DXE_SMM_DRIVER"
+End
+
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2010, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************

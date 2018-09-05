@@ -1,0 +1,92 @@
+## @file
+#  Component description file for DXE DxePolicyUpdateLib Library
+#
+#@copyright
+# Copyright (c) 2012 - 2016, Intel Corporation. All rights reserved
+# This software and associated documentation (if any) is furnished
+# under a license and may only be used or copied in accordance
+# with the terms of the license. Except as permitted by the
+# license, no part of this software or documentation may be
+# reproduced, stored in a retrieval system, or transmitted in any
+# form or by any means without the express written consent of
+# Intel Corporation.
+# This file contains a 'Sample Driver' and is licensed as such
+# under the terms of your license agreement with Intel or your
+# vendor. This file may be modified by the user, subject to
+# the additional terms of the license agreement.
+#
+#@par Specification Reference:
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = DxePolicyUpdateLib
+  FILE_GUID                      = f0225e4f-202a-41ca-bb74-91129617af05
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = DxePolicyUpdateLib|DXE_DRIVER
+
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF EBC
+#
+
+[Sources]
+  DxeAmtPolicyUpdate.c
+  DxeMePolicyUpdate.c
+#  DxeSaPolicyUpdate.c                              SERVER_BIOS_FLAG
+  # APTIOV_SERVER_OVERRIDE_RC_START
+  DxeAmtPolicyUpdate.h
+  DxeMePolicyUpdate.h
+  # APTIOV_SERVER_OVERRIDE_RC_END
+
+[Packages]
+  MdePkg/MdePkg.dec
+#  SkylakePlatSamplePkg/PlatformPkg.dec             SERVER_BIOS_FLAG
+#  ClientCommonPkg/ClientCommonPkg.dec              SERVER_BIOS_FLAG
+#  SkylakeSiPkg/SiPkg.dec                           SERVER_BIOS_FLAG
+  PurleySktPkg/Me/MePkg.dec                         # SERVER_BIOS_FLAG
+  PurleyPlatPkg/PlatPkg.dec                         # SERVER_BIOS_FLAG
+  PurleySktPkg/SocketPkg.dec                        # SERVER_BIOS_FLAG
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec         # SERVER_BIOS_FLAG
+  CpRcPkg/RcPlatPurley.dec                          # SERVER_BIOS_FLAG
+  CpRcPkg/CpRcPkg.dec
+
+[LibraryClasses]
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  BaseLib
+  BaseMemoryLib
+#  PciLib                                           SERVER_BIOS_FLAG
+  PcdLib
+  DebugLib
+  IoLib
+#  CpuPlatformLib                                   SERVER_BIOS_FLAG
+#  DxeMeLib                                         SERVER_BIOS_FLAG
+  MmPciLib
+  HobLib
+  MeConfigLib                                       # SERVER_BIOS_FLAG
+
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+
+[Protocols]
+#  gPlatformInfoProtocolGuid                        SERVER_BIOS_FLAG
+  gHeciProtocolGuid
+#  gFpdtPerformanceProtocolGuid                     SERVER_BIOS_FLAG
+
+[Guids]
+#  gMeBiosExtensionSetupGuid                        SERVER_BIOS_FLAG
+#  gPlatformInfoHobGuid                             SERVER_BIOS_FLAG
+#  gEfiGlobalVariableGuid                           SERVER_BIOS_FLAG
+#  gBootStateGuid
+  gEfiEndOfDxeEventGroupGuid
+#  gSaDataHobGuid                                   SERVER_BIOS_FLAG
+  gMeInfoSetupGuid
+  gMeBiosPayloadHobGuid
+#  gSetupVariableGuid                               SERVER_BIOS_FLAG
+  gEfiMeRcVariableGuid                            # SERVER_BIOS_FLAG
+#  gSaSetupVariableGuid                             SERVER_BIOS_FLAG
+#  gMeSetupVariableGuid                             SERVER_BIOS_FLAG
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount

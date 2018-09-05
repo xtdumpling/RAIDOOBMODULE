@@ -1,0 +1,50 @@
+;**********************************************************************
+;**********************************************************************
+;**                                                                  **
+;**        (C)Copyright 1985-2012, American Megatrends, Inc.         **
+;**                                                                  **
+;**                       All Rights Reserved.                       **
+;**                                                                  **
+;**         5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093        **
+;**                                                                  **
+;**                       Phone: (770)-246-8600                      **
+;**                                                                  **
+;**********************************************************************
+;**********************************************************************
+
+;**********************************************************************
+; $Header: /Alaska/SOURCE/Modules/SMBIOS/SmbiosFlashData/SmbiosFlashData.asm 4     6/02/09 11:28a Davidd $
+;
+; $Revision: 4 $
+;
+; $Date: 6/02/09 11:28a $
+;**********************************************************************
+
+	INCLUDE Token.equ
+
+.686p
+.model  flat
+.data
+	dd '_ASB'
+_FlashDataSize label dword
+	dd offset FlashDataEnd - offset FlashDataStart
+;align 4
+FlashDataStart EQU $
+        db MKF_FLASHDATA_SIZE dup (0FFh)
+FlashDataEnd label byte
+	db 4 dup (0FFh)	;Mark end of table. Same size as each flash data entry.
+end
+
+;**********************************************************************
+;**********************************************************************
+;**                                                                  **
+;**        (C)Copyright 1985-2012, American Megatrends, Inc.         **
+;**                                                                  **
+;**                       All Rights Reserved.                       **
+;**                                                                  **
+;**         5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093        **
+;**                                                                  **
+;**                       Phone: (770)-246-8600                      **
+;**                                                                  **
+;**********************************************************************
+;**********************************************************************

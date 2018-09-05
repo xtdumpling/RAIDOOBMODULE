@@ -1,0 +1,52 @@
+#/*++
+# This file contains a 'Sample Driver' and is licensed as such
+# under the terms of your license agreement with Intel or your
+# vendor.  This file may be modified by the user, subject to
+# the additional terms of the license agreement
+#--*/
+#/*++
+#
+#  Copyright (c) 2016 Intel Corporation. All rights reserved
+#  This software and associated documentation (if any) is furnished
+#  under a license and may only be used or copied in accordance
+#  with the terms of the license. Except as permitted by such
+#  license, no part of this software or documentation may be
+#  reproduced, stored in a retrieval system, or transmitted in any
+#  form or by any means without the express written consent of
+#  Intel Corporation.
+#
+#  Module Name:
+#
+#    MeConfigLib.inf
+#
+#  Abstract:
+#
+#    Component description file for PEI/DXE ME Config Lib
+#
+#--*/
+
+[defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = MeConfigLib
+  FILE_GUID                      = AC91EA9D-5B1E-4EBC-A6C1-F5FDA4AFE364
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = MeConfigLib
+
+[sources.common]
+  MeConfigLib.c
+
+
+[LibraryClasses]
+  DebugLib
+  PlatformHooksLib
+  MmPciLib
+  HobLib
+  MeTypeLib
+
+[Packages]
+  CpRcPkg/CpRcPkg.dec
+  MdePkg/MdePkg.dec
+  PurleySktPkg/Me/MePkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+

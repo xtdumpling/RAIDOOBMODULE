@@ -1,0 +1,54 @@
+//***************************************************************************
+//***************************************************************************
+//**                                                                       **
+//**       (C)Copyright 1993-2015 Supermicro Computer, Inc.                **
+//**                                                                       **
+//**                                                                       **
+//***************************************************************************
+//***************************************************************************
+//
+//  File History
+//
+//  Rev. 1.00
+//    Bug Fix:  Initialize revision
+//    Reason:   Get base code from Grantley
+//    Auditor:  Salmon Chen
+//    Date:     Dec/04/2014
+//
+//***************************************************************************
+//***************************************************************************
+
+#ifdef SETUP_DATA_DEFINITION
+  UINT8   EarlyVideo_Logo;
+#endif //SETUP_DATA_DEFINITION
+
+#ifdef CONTROL_DEFINITION
+
+#define SMC_EARLYVIDEO_LOGO \
+        oneof varid   = SETUP_DATA.EarlyVideo_Logo,\
+          prompt      = STRING_TOKEN (STR_EARLYVIDEO_LOGO),\
+          help        = STRING_TOKEN (STR_EARLYVIDEO_LOGO_HELP),\
+          default     = EarlyVideo_Logo_Mode,\
+          option text = STRING_TOKEN (STR_DISABLED),  value = 0, flags = RESET_REQUIRED;\
+          option text = STRING_TOKEN (STR_ENABLED),   value = 1, flags = RESET_REQUIRED;\
+        endoneof;
+
+#endif
+
+#ifdef CONTROLS_WITH_DEFAULTS
+    SMC_EARLYVIDEO_LOGO
+#endif //#ifdef CONTROLS_WITH_DEFAULTS
+
+#ifdef ADVANCED_FORM_SET
+
+    #ifdef FORM_SET_ITEM
+    // Define controls to be added to the main page of the formset
+        suppressif 1;
+          SMC_EARLYVIDEO_LOGO
+        endif;
+    #endif
+
+#endif  // ADVANCED_FORM_SET
+
+
+//*************************************************************************

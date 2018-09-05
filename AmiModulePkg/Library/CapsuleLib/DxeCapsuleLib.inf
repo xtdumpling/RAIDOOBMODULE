@@ -1,0 +1,35 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2013, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+## @file
+# Capsule library instance for DXE_DRIVER, DXE_RUNTIME_DRIVER
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = DxeCapsuleLib
+  FILE_GUID                      = f92f227f-b39e-425f-8fc0-254013cc9a03
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = CapsuleLib|DXE_DRIVER DXE_RUNTIME_DRIVER UEFI_APPLICATION
+
+[Sources]
+  SupportCapsuleImage.c
+  DxeProcessCapsuleImage.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+
+[LibraryClasses]
+  BaseMemoryLib

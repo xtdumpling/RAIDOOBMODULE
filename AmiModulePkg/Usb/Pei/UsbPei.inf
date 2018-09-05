@@ -1,0 +1,90 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+[Defines]
+  INF_VERSION  =  0x00010005
+  BASE_NAME  = UsbPei
+  FILE_GUID  = 39E8CA1A-7A69-4a73-834A-D06381933286
+  MODULE_TYPE = PEIM
+  VERSION_STRING  =  1.0
+  ENTRY_POINT  = UsbPeiEntryPoint
+
+[Sources]
+  HubPeim.c
+  PeiUsbLib.c
+  UsbIoPeim.c
+  UsbPei.c
+  UsbPei.h
+  UsbPeim.c
+  PeiEhci.c
+  PeiEhci.h
+  PeiEhciBoard.c
+  PeiOhci.c
+  PeiOhci.h
+  PeiOhciBoard.c
+  PeiUhci.c
+  UhcPeim.c
+  UhcPeim.h
+  PeiXhci.c
+  PeiXhci.h
+  Atapi.h
+  BotPeim.c
+  BotPeim.h
+  PeiAtapi.c
+  UsbBotPeim.c
+  UsbBotPeim.h
+
+[LibraryClasses]
+  PeimEntryPoint
+  PeiServicesLib
+  AmiPeiLib
+  BaseMemoryLib
+  IoLib
+  DebugLib
+ 
+[Ppis]
+  gPeiUsbIoPpiGuid
+  gPeiUsbHostControllerPpiGuid
+  gPeiUsbControllerPpiGuid
+  gEfiEndOfPeiSignalPpiGuid
+  gEfiPeiCpuIoPpiInstalledGuid
+  gEfiPeiVirtualBlockIoPpiGuid
+  gEfiPeiStallPpiGuid
+  gEfiPeiBootInRecoveryModePpiGuid
+  
+ [Packages]
+  AmiModulePkg/AmiModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  
+[Depex]
+  gEfiPeiMemoryDiscoveredPpiGuid AND
+  gEfiPeiDecompressPpiGuid AND
+  gEfiPeiCpuIoPpiInstalledGuid AND
+  gEfiPciCfg2PpiGuid
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

@@ -1,0 +1,160 @@
+TOKEN
+    Name  = "DxeIpmiInitialize_SUPPORT"
+    Value  = "1"
+    Help  = "Switch for Enabling DxeIpmiInitialize support in the project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    Master = Yes
+End
+
+TOKEN
+    Name  = "IPMI_CMOS_CLEAR_RESET_TYPE"
+    Value  = "1"
+    Help  = "Select value 1 - Warm Reset, 0 - Cold Reset"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+End
+
+PATH
+    Name  = "DxeIpmiInitialize_DIR"
+    Path  = "AmiIpmiPkg/Ipmi/IpmiInitialize"
+    Help = "Path to DxeIpmiInitialize sub module in project."
+End
+
+INFComponent
+    Name  = "DxeIpmiInitialize"
+    File  = "DxeIpmiBmcInitialize.inf"
+    Package  = "AmiIpmiPkg"
+    ModuleTypes  = "DXE_RUNTIME_DRIVER"
+    Help  = "Includes DxeIpmiBmcInitialize.inf to Project."
+End
+
+FFS_FILE
+    Name  = "DxeIpmiInitialize"
+    FD_AREA  = "FV_MAIN"
+    INFComponent  = "AmiIpmiPkg.DxeIpmiInitialize"
+    Apriori_Index  = "5"
+    Help  = "Includes DxeIpmiInitialize driver in FV_MAIN and dispatches based on a priori index."
+End
+
+PCIDEVICE
+    Title  = "Ipmi KCS Asl Container"
+    Parent  = "PciHost (Virtual)"
+    Attribute  = "0x0"
+    Help  = "Under SPMI scope, initializes the resource details for KCS interface."
+    Dev_type  = "Container"
+    Dev  = 00h
+    ASLfile  = "'AmiIpmiPkg/Ipmi/IpmiInitialize/IpmiKcs.asl;After Pci Tree'"
+    Token = "IPMI_SYSTEM_INTERFACE" "=" "$(KCS_INTERFACE)"
+    Virtual = Yes
+End
+
+PCIDEVICE
+    Title  = "Ipmi BT Asl Container"
+    Parent  = "PciHost (Virtual)"
+    Attribute  = "0x0"
+    Help  = "Under SPMI scope, initializes the resource details for BT interface."
+    Dev_type  = "Container"
+    Dev  = 00h
+    ASLfile  = "'AmiIpmiPkg/Ipmi/IpmiInitialize/IpmiBt.asl;After Pci Tree'"
+    Token = "IPMI_SYSTEM_INTERFACE" "=" "$(BT_INTERFACE)"
+    Virtual = Yes
+End
+
+PCIDEVICE
+    Title  = "Ipmi SSIF Asl Container"
+    Parent  = "PciHost (Virtual)"
+    Attribute  = "0x0"
+    Help  = "Under SPMI scope, initializes the resource details for SSIF interface."
+    Dev_type  = "Container"
+    Dev  = 00h
+    ASLfile  = "'AmiIpmiPkg/Ipmi/IpmiInitialize/IpmiSsif.asl;After Pci Tree'"
+    Token = "IPMI_SYSTEM_INTERFACE" "=" "$(SSIF_INTERFACE)"
+    Virtual = Yes
+End
+
+ELINK
+    Name  = "gEfiDxeIpmiTransportProtocolGuid"
+    Parent  = "AdditionalServerMgmtSetupProtocols"
+    InvokeOrder = AfterParent
+    Help  = "Elink to provide Dxe Ipmi Transport Protocol Guid in Additional ServerMgmt Setup Protocols list."
+End
+
+ELINK
+    Name  = "gAmiPostManagerProtocolGuid"
+    Parent  = "AdditionalServerMgmtSetupProtocols"
+    InvokeOrder = AfterParent
+    Help  = "Elink to provide Ami Post Manager Protocol Guid in Additional ServerMgmt Setup Protocols list."
+End
+
+ELINK
+    Name  = "$(DxeIpmiInitialize_DIR)/BmcTimeZoneCallback.c"
+    Parent  = "ServerMgmtSetupCallbackFiles"
+    InvokeOrder = AfterParent
+    Token = "BMC_TIMEZONE_SUPPORT" "=" "1"
+    Help  = "Elink to include BmcTimeZoneCallback.c file in ServerMgmtSetup callback files list when Time zone support is enabled."
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SERVER_MGMT_CLASS_ID,SERVER_MGMT_SUBCLASS_ID,BMC_TIME_ZONE_KEY,BmcTimeZoneCallback),"
+    parent  ="ServerMgmtSetupItemCallbacks"
+    InvokeOrder  = AfterParent
+    Token = "BMC_TIMEZONE_SUPPORT" "=" "1"
+    Help  = "Elink to include BmcTimeZoneCallback to ServerMgmtSetup callback's list when Time zone support is enabled."
+End
+
+ELINK
+    Name = "InitBmcTimeZoneDisplay,"
+    Parent = "ServerMgmtStringInit"
+    InvokeOrder = AfterParent
+    Token = "BMC_TIMEZONE_SUPPORT" "=" "1"
+    Help  = "Elink to include default function to initialize the current BMC time zone when Time zone support is enabled."
+End
+
+ELINK
+    Name  = "$(DxeIpmiInitialize_DIR)/BmcWarmReset.c"
+    Parent  = "ServerMgmtSetupCallbackFiles"
+    InvokeOrder = AfterParent
+    Token = "BMC_WARM_RESET_SUPPORT" "=" "1"
+    Help  = "Elink to include BmcWarmReset.c file in ServerMgmtSetup callback files list when Warm reset support is enabled."
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SERVER_MGMT_CLASS_ID,SERVER_MGMT_SUBCLASS_ID,BMC_WARM_RESET_KEY,BmcWarmResetCallbackFunction),"
+    parent  ="ServerMgmtSetupItemCallbacks"
+    InvokeOrder  = AfterParent
+    Token = "BMC_WARM_RESET_SUPPORT" "=" "1"
+    Help  = "Elink to include BmcWarmResetCallbackFunction to ServerMgmtSetup callback's list when Warm reset support is enabled."
+End
+
+ELINK
+    Name  = "IPMI_OEM_DXE_INIT_HOOK"
+    InvokeOrder = ReplaceParent
+    Token = "IPMI_DEFAULT_HOOK_SUPPORT" "=" "0"
+    Help  = "Elink to provide hooks for OEM DXE initialization when Default hook support is disabled."
+End
+
+ELINK
+    Name  = "IPMI_OEM_SPMI_UPDATE_HOOK"
+    InvokeOrder = ReplaceParent
+    Token = "IPMI_DEFAULT_HOOK_SUPPORT" "=" "0"
+    Help  = "Elink to provide hooks for OEM SPMI initialization when Default hook support is disabled."
+End
+
+ELINK
+    Name  = "IPMI_OEM_SMBIOS_TYPES_UPDATE_HOOK"
+    InvokeOrder = ReplaceParent
+    Token = "IPMI_DEFAULT_HOOK_SUPPORT" "=" "0"
+    Help  = "Elink to provide hooks for OEM Smbios types initialization when Default hook support is disabled."
+End
+
+TOKEN
+    Name = "IPMI_BMC_TIME_SYNC_TO_BIOS_TIME_SUPPORT"
+    Value = "1"
+    Help = "To enable or disable setting BMC time synchronous to BIOS time. 1-Sets Bmc time sync to Bios time, 0-Do not set Bmc time sync to Bios time."
+    TokenType = Boolean
+    TargetH = Yes
+End

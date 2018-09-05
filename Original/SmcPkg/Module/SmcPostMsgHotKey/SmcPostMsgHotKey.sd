@@ -1,0 +1,511 @@
+//***************************************************************************
+//**                                                                       **
+//**       (C)Copyright 1993-2017 Supermicro Computer, Inc.                **
+//**                                                                       **
+//**                                                                       **
+//***************************************************************************
+//***************************************************************************
+//
+//  Rev. 1.15
+//      Bug Fix:    Expose "PCIe PLL SSC" setup item for clock spectrum function.
+//      Reason:   
+//      Auditor:    Jimmy Chiu
+//      Date:       Jul/26/2017
+//
+//  Rev. 1.14
+//      Bug Fix:    Use token to control IO port 61h emulation function.
+//      Reason:   
+//      Auditor:    Leon Xu
+//      Date:       May/12/2017
+//
+//  Rev. 1.13
+//      Bug Fix:    Add WDT timer out value selection feature.
+//      Reason:   
+//      Auditor:    Jimmy Chiu (Refer Greenlow - Mark Chen)
+//      Date:       May/05/2017
+//
+//  Rev. 1.12
+//      Bug Fixed:  Support Throttle on Power Fail.
+//      Reason:     
+//      Auditor:    Leon Xu
+//      Date:       Mar/08/2017
+//
+//  Rev. 1.11
+//      Bug Fixed:  Add NVDIMM/CPLD function
+//      Reason:     
+//      Auditor:    Leon Xu
+//      Date:       Feb/17/2017
+//
+//  Rev. 1.10
+//    Bug Fix:  Draft template v0.1.
+//    Reason:   
+//    Auditor:  Jimmy Chiu
+//    Date:     Jan/17/2017
+//
+//  Rev. 1.09
+//    Bug Fix:  Add a Port61 item.
+//    Reason:   For adaptec card hang on OPROM.
+//    Auditor:  Kasber Chen
+//    Date:     Jan/03/2017
+//
+//  Rev. 1.08
+//    Bug Fix:  Add a function that limit the primary VGA's resources under 
+//              4G.(Refer to Grantley)
+//    Reason:   To prevent form Display have no output when enabled Above 4G
+//              and set VGA Priority to offboard.
+//    Auditor:  Isaac Hsu
+//    Date:     Dec/14/2016
+//
+//  Rev. 1.07
+//    Bug Fix:  Adjust draft setup template.
+//    Reason:   
+//    Auditor:  Jacker Yeh
+//    Date:     Nov/06/2016
+//
+//  Rev. 1.06
+//    Bug Fix:  Draft template.
+//    Reason:   
+//    Auditor:  Kasber Chen
+//    Date:     Nov/04/2016
+//
+//  Rev. 1.05
+//    Bug Fix:  Add win7 USB workaround
+//    Reason:   
+//    Auditor:  Sunny Yang
+//    Date:     Sep/07/2016
+//
+//  Rev. 1.04
+//    Bug Fix:  Retry boot feature enable.
+//    Reason:   
+//    Auditor:  Sunny Yang
+//    Date:     Aug/16/2016
+//
+//
+//  Rev. 1.03
+//    Bug Fix:  Use AMIBCP to disable boot procedure messages displaying.
+//    Reason:   
+//    Auditor:  Hartmann Hsieh
+//    Date:     Jun/21/2016
+//
+//    Rev.  1.02
+//       Bug fixed:     Add Boot Feature Page in setup menu.
+//       Reason:        
+//       Auditor:       Hartmann Hsieh
+//       Issue Date:    Jun/06/2016
+//
+//    Rev.  1.01
+//       Bug fixed:     Switch hot key message color for new logo.
+//       Reason:        
+//       Auditor:       Jacker Yeh
+//       Issue Date:    Feb/05/2016
+//
+//    Rev.  1.00
+//       Bug fixed:     Initial revision
+//       Reason:        
+//       Auditor:       Leon Xu
+//       Issue Date:    Dec/29/2014
+//
+//***************************************************************************
+#ifdef FORM_SET_TYPEDEF
+
+    #include "SmcSetup.h"
+
+#endif
+
+#ifdef SETUP_DATA_DEFINITION
+	UINT8   SmcF1KeySkipErrorMsg;
+	UINT8   SmcNotFirstBoot;
+	UINT8   SmcReTryBoot;
+	UINT8   SmcWatchDogFn;
+	UINT8   SmcWatchDogTime;
+	UINT8   HotKey_Msg_Foreground_Color;
+	UINT8   HotKey_Msg_Background_Color;
+	UINT8   HotKey_Support;
+	UINT8   SmcBootProcedureMsg_Support;
+	UINT8   SmcW7USB;
+	UINT8   SmcPriorVgaBus;
+	UINT8   PchPort61hSmm;
+#endif
+
+#ifdef CONTROL_DEFINITION
+#define HOTKEY_MSG_FOREGROUND_COLOR \
+	oneof varid = SETUP_DATA.HotKey_Msg_Foreground_Color,\
+		prompt = STRING_TOKEN(STR_HOTKEY_MSG_FOREGROUND_COLOR),\
+		help = STRING_TOKEN(STR_HOTKEY_MSG_FOREGROUND_COLOR_HELP),\
+		option text = STRING_TOKEN(STR_BLACK),        value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_BLUE),         value = 1, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_GREEN),        value = 2, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_CYAN),         value = 3, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_RED),          value = 4, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_MAGENTA),      value = 5, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_BROWN),        value = 6, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_LIGHTGRAY),    value = 7, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_DARKGRAY),     value = 8, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_LIGHTBLUE),    value = 9, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_LIGHTGREEN),   value = 10, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_LIGHTCYAN),    value = 11, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_LIGHTRED),     value = 12, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_LIGHTMAGENTA), value = 13, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_YELLOW),       value = 14, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_WHITE),        value = 15, flags = RESET_REQUIRED;\
+	endoneof;
+	
+#define HOTKEY_MSG_BACKGROUND_COLOR \
+	oneof varid = SETUP_DATA.HotKey_Msg_Background_Color,\
+		prompt = STRING_TOKEN(STR_HOTKEY_MSG_BACKGROUND_COLOR),\
+		help = STRING_TOKEN(STR_HOTKEY_MSG_BACKGROUND_COLOR_HELP),\
+		option text = STRING_TOKEN(STR_BLACK),        value = 0, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_BLUE),         value = 1, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_GREEN),        value = 2, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_CYAN),         value = 3, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_RED),          value = 4, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_MAGENTA),      value = 5, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_BROWN),        value = 6, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_LIGHTGRAY),    value = 7, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_DARKGRAY),     value = 8, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_LIGHTBLUE),    value = 9, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_LIGHTGREEN),   value = 10, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_LIGHTCYAN),    value = 11, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_LIGHTRED),     value = 12, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_LIGHTMAGENTA), value = 13, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_YELLOW),       value = 14, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_WHITE),        value = 15, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+	endoneof;
+
+#define HOTKEY_SUPPORT \
+	oneof varid = SETUP_DATA.HotKey_Support,\
+		prompt = STRING_TOKEN(STR_HOTKEY_MSG_IN_LOGO),\
+		help = STRING_TOKEN(STR_HOTKEY_MSG_IN_LOGO_HELP),\
+		option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;\
+	endoneof;
+
+#define SMC_BOOT_PROCEDURE_MSG_SUPPORT \
+	oneof varid = SETUP_DATA.SmcBootProcedureMsg_Support,\
+		prompt = STRING_TOKEN(STR_BOOT_PROCEDURE_MSG_IN_LOGO),\
+		help = STRING_TOKEN(STR_BOOT_PROCEDURE_MSG_IN_LOGO_HELP),\
+		option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;\
+	endoneof;
+
+#define SMC_F1_KEY_SKIP_ERR_MSG \
+	oneof varid       = SETUP_DATA.SmcF1KeySkipErrorMsg,\
+		prompt      = STRING_TOKEN (STR_SMC_F1_KEY_SKIP_ERR_MSG),\
+		help        = STRING_TOKEN (STR_SMC_F1_KEY_SKIP_ERR_MSG_HELP),\
+		option text = STRING_TOKEN (STR_DISABLED),  value = 0, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN (STR_ENABLED),   value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+	endoneof;
+#define SMC_RETRY_BOOT \
+       oneof varid       = SETUP_DATA.SmcReTryBoot,\
+          prompt      = STRING_TOKEN (STR_SMC_RETRY_BOOT),\
+          help        = STRING_TOKEN (STR_SMC_RETRY_BOOT_HELP),\
+                 option text = STRING_TOKEN (STR_DISABLED),  value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+                 option text = STRING_TOKEN (STR_LEGACY_BOOT),   value = 1, flags = RESET_REQUIRED;\
+                 option text = STRING_TOKEN (STR_EFI_BOOT),   value = 2, flags = RESET_REQUIRED;\
+       endoneof;
+
+#define SMC_WIN7_USB_WA \
+       oneof varid    = SETUP_DATA.SmcW7USB,\
+          prompt      = STRING_TOKEN (STR_SMC_WIN7_USB_WA),\
+          help        = STRING_TOKEN (STR_SMC_WIN7_USB_WA_HELP),\
+                 option text = STRING_TOKEN (STR_DISABLED),  value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+                 option text = STRING_TOKEN (STR_ENABLED),   value = 1, flags = RESET_REQUIRED;\
+       endoneof;
+
+#define SMC_WATCH_DOG_FN \
+	oneof varid       = SETUP_DATA.SmcWatchDogFn,\
+		prompt      = STRING_TOKEN (STR_SMC_WATCH_DOG_FN),\
+		help        = STRING_TOKEN (STR_SMC_WATCH_DOG_FN_HELP),\
+		option text = STRING_TOKEN (STR_DISABLED),  value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+		option text = STRING_TOKEN (STR_ENABLED),   value = 1, flags = RESET_REQUIRED;\
+	endoneof;
+
+#define SMC_WATCH_DOG_TIME \
+	oneof varid       = SETUP_DATA.SmcWatchDogTime,\
+		prompt      = STRING_TOKEN (STR_SMC_WATCH_DOG_TIME),\
+		help        = STRING_TOKEN (STR_SMC_WATCH_DOG_TIME_HELP),\
+		option text = STRING_TOKEN (STR_5MIN),  value = 5, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;\
+		option text = STRING_TOKEN (STR_10MIN),   value = 10, flags = RESET_REQUIRED;\
+		option text = STRING_TOKEN (STR_15MIN),   value = 15, flags = RESET_REQUIRED;\
+	endoneof;
+
+#define SB_ONEOF_PORT61HSMM\
+        oneof varid  = SETUP_DATA.PchPort61hSmm,\
+            prompt   = STRING_TOKEN(STR_PORT61H_SMM),\
+            help     = STRING_TOKEN(STR_PORT61H_SMM_HELP),\
+            default     = SB_ONEOF_PORT61HSMM_DEFAULT,\
+            default     = SB_ONEOF_PORT61HSMM_DEFAULT, defaultstore = AmiMfgDefault,\
+            option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_ENABLED), value = 1, flags = RESET_REQUIRED;\
+        endoneof;
+#endif
+
+#ifdef CONTROLS_WITH_DEFAULTS
+	HOTKEY_MSG_FOREGROUND_COLOR
+	HOTKEY_MSG_BACKGROUND_COLOR
+	HOTKEY_SUPPORT
+	SMC_BOOT_PROCEDURE_MSG_SUPPORT
+	SMC_F1_KEY_SKIP_ERR_MSG
+	SMC_RETRY_BOOT
+	SMC_WIN7_USB_WA
+	SMC_WATCH_DOG_FN
+	SMC_WATCH_DOG_TIME
+	SB_ONEOF_PORT61HSMM
+#endif
+
+#ifdef ADVANCED_FORM_SET
+
+    #ifdef FORM_SET_ITEM
+        // Define controls to be added to the main page of the formset
+    #endif
+
+    #ifdef FORM_SET_GOTO
+        // Define goto commands for the forms defined in this file
+        goto BOOT_FEATURE_FORM_ID,
+            prompt  = STRING_TOKEN (STR_BOOT_FEATURE_FORM),
+            help    = STRING_TOKEN (STR_BOOT_FEATURE_FORM_HELP);
+
+	goto 
+	    formsetguid = SOCKET_FORMSET_GUID,
+            formid = VFR_FORMID_PROCESSOR,
+            question = 0,
+            prompt = STRING_TOKEN(STR_SMC_CPU_CONFIGURATION_FORM),
+            help = STRING_TOKEN(STR_SMC_CPU_CONFIGURATION_FORM_HELP);
+
+	goto SMC_CSP_CFG_FORM_ID,
+            prompt  = STRING_TOKEN(STR_CSP_CFG_FORM),
+            help    = STRING_TOKEN(STR_CSP_CFG_FORM_HELP);
+
+        goto 
+            formsetguid = SYSTEM_CONFIGURATION_GUID,
+            formid = VFR_FORMID_SPS_ME,
+            question = 0,
+            prompt = STRING_TOKEN(STR_SPS_FORM),
+            help = STRING_TOKEN(STR_SPS_FORM_HELP);
+
+        goto 
+            formsetguid = SYSTEM_CONFIGURATION_GUID,
+            formid = PCH_SATA_OPTIONS_FORM_ID,
+            question = 0,
+            prompt = STRING_TOKEN(STR_PCH_SATA_OPTIONS_FORM),
+            help = STRING_TOKEN(STR_PCH_SATA_OPTIONS_FORM_HELP);
+
+        goto 
+            formsetguid = SYSTEM_CONFIGURATION_GUID,
+            formid = PCH_SSATA_OPTIONS_FORM_ID,
+            question = 0,
+            prompt = STRING_TOKEN(STR_PCH_SSATA_OPTIONS_FORM),
+            help = STRING_TOKEN(STR_PCH_SSATA_OPTIONS_FORM_HELP);
+    #endif
+
+    #ifdef FORM_SET_FORM
+    
+        form formid = AUTO_ID(BOOT_FEATURE_FORM_ID),
+            title = STRING_TOKEN(STR_BOOT_FEATURE_FORM);
+
+            SEPARATOR
+            checkbox varid = AMITSESETUP.AMISilentBoot,
+                prompt = STRING_TOKEN(STR_QUIET_BOOT),
+                help = STRING_TOKEN(STR_QUIET_BOOT_HELP),
+                default = DEFAULT_QUIET_BOOT,
+            endcheckbox;
+
+            SEPARATOR
+            CSM_ONEOF_EXPANSIONCARDTEXT
+            oneof varid = SETUP_DATA.Numlock,
+                prompt = STRING_TOKEN(STR_CSM_BOOTUP_NUMLOCK),
+                help = STRING_TOKEN(STR_CSM_BOOTUP_NUMLOCK_HELP),
+                option text = STRING_TOKEN(STR_CSM_BOOTUP_NUMLOCK_ON), value = 1, flags = DEFAULT | RESET_REQUIRED;
+                option text = STRING_TOKEN(STR_CSM_BOOTUP_NUMLOCK_OFF), value = 0, flags = 0;
+            endoneof;
+            SMC_F1_KEY_SKIP_ERR_MSG
+            CSM_CHECKBOX_I19TRAP
+            SMC_RETRY_BOOT
+            SMC_WIN7_USB_WA
+            SB_ONEOF_PORT61HSMM
+
+            SEPARATOR
+
+            SUBTITLE (STRING_TOKEN (STR_SMC_ADV_PWR_CFG))
+
+            SMC_WATCH_DOG_FN
+suppressif 1;
+            SMC_WATCH_DOG_TIME
+endif;
+
+#if SMC_CPLD_SUPPORT
+suppressif SMC_SETUP_STYLE;  //SMCPKG_SUPPORT S
+		SEPARATOR
+		SMC_CPLDWDT
+		suppressif ideqval SETUP_DATA.SmcCPLDWDT == 0;
+		SMC_CPLDWDT_SECOND
+		//SMC_CPLD_ADR
+		SMC_CPLD_WDT_NMI_RESET
+		endif;
+		SEPARATOR
+endif;  //SMCPKG_SUPPORT E
+#endif
+
+            //SMC_PWR_BTN_FN
+#if SMCSetPowerStatus_SUPPORT
+            suppressif  1;	
+                AC_LOSS_POLICY
+            endif;	
+            SMC_AFTER_G3_SAVE
+            SMC_PWR_BTN_FN
+#endif	//#if defined SMCSetPowerStatus_SUPPORT && SMCSetPowerStatus_SUPPORT == 1
+
+#if SMC_CPLD_SUPPORT
+		SMC_TROTTLEONPOWERFAIL
+#endif
+            suppressif 1;
+                HOTKEY_MSG_FOREGROUND_COLOR
+                HOTKEY_MSG_BACKGROUND_COLOR
+                SMC_BOOT_PROCEDURE_MSG_SUPPORT
+            endif;
+
+        endform;
+
+	form formid = AUTO_ID(SMC_CSP_CFG_FORM_ID),
+            title = STRING_TOKEN(STR_CSP_CFG_FORM);
+            SUBTITLE(STRING_TOKEN(STR_CSP_CFG_WARN_MSG))
+            SUBTITLE(STRING_TOKEN(STR_CSP_CFG_WARN_MSG1))
+//North Bridge Configuration   
+	    goto SMC_NB_FORM_ID, 
+		prompt = STRING_TOKEN(STR_SMC_NB_FORM),
+		help = STRING_TOKEN(STR_SMC_NB_FORM_HELP);
+
+//South Bridge Configuration
+	    goto SMC_SB_FORM_ID, 
+		prompt  = STRING_TOKEN(STR_SMC_SB_FORM),
+		help    = STRING_TOKEN(STR_SMC_SB_FORM_HELP);	
+	endform;
+
+//North Bridge Form
+	form formid = AUTO_ID(SMC_NB_FORM_ID),
+	    title = STRING_TOKEN(STR_SMC_NB_FORM);
+
+        suppressif SMC_SETUP_STYLE;  //SMCPKG_SUPPORT S
+	    goto
+		formsetguid = SOCKET_FORMSET_GUID,
+		formid = VFR_FORMID_COMMONRC,
+		question = 0,
+		prompt = STRING_TOKEN(STR_RC_COMMON_FORM),
+		help = STRING_TOKEN(STR_RC_COMMON_FORM_HELP);
+        endif;  //SMCPKG_SUPPORT E
+
+	    goto
+		formsetguid = SOCKET_FORMSET_GUID,
+		formid = VFR_FORMID_KTI,
+		question = 0,
+		prompt = STRING_TOKEN(STR_KTI_CONFIG_FORM),
+		help = STRING_TOKEN(STR_KTI_CONFIG_FORM_HELP);
+
+	    goto 
+		formsetguid = SOCKET_FORMSET_GUID,
+		formid = VFR_FORMID_MEMORY,
+		question = 0,
+		prompt = STRING_TOKEN(STR_MEMORY_CONFIG_FORM),
+		help = STRING_TOKEN(STR_MEMORY_CONFIG_FORM_HELP);
+
+	    goto 
+		formsetguid = SOCKET_FORMSET_GUID,
+		formid = VFR_FORMID_IIO,
+		question = 0,
+		prompt = STRING_TOKEN(STR_IIO_CONFIG_FORM),
+		help = STRING_TOKEN(STR_IIO_CONFIG_FORM_HELP);
+
+	endform;
+
+//South Bridge Form
+	form formid = AUTO_ID(SMC_SB_FORM_ID),
+	    title = STRING_TOKEN(STR_SMC_SB_FORM);
+
+        suppressif SMC_SETUP_STYLE;  //SMCPKG_SUPPORT S
+        goto
+        formsetguid = SYSTEM_CONFIGURATION_GUID,
+		formid = VFR_FORMID_PCH,
+		question = 0,
+        prompt = STRING_TOKEN(STR_PCH_CONFIG_FORM),
+        help   = STRING_TOKEN(STR_PCH_CONFIG_FORM_HELP);
+
+        goto
+        formsetguid = SYSTEM_CONFIGURATION_GUID,
+		formid = VFR_FORMID_MISC,
+		question = 0,
+        prompt = STRING_TOKEN(STR_MISC_FORM),
+        help   = STRING_TOKEN(STR_MISC_FORM_HELP);
+
+        goto
+        formsetguid = SYSTEM_CONFIGURATION_GUID,
+		formid = VFR_FORMID_EVENT_LOG,
+		question = 0,
+        prompt = STRING_TOKEN(STR_EVENT_LOG_FORM),
+        help   = STRING_TOKEN(STR_EVENT_LOG_FORM_HELP);
+        
+        goto
+        formsetguid = SYSTEM_CONFIGURATION_GUID,
+		formid = VFR_RESERVE_MEMORY,
+		question = 0,
+        prompt = STRING_TOKEN(STR_RESERVE_MEMORY_OPTION),
+        help   = STRING_TOKEN(STR_RESERVE_MEMORY_OPTION_HELP);
+            
+        goto
+        formsetguid = SYSTEM_CONFIGURATION_GUID,
+		formid = VFR_FORMID_RESET_TESTING,
+		question = 0,
+        prompt = STRING_TOKEN(STR_RESET_TESTING_FORM),
+        help   = STRING_TOKEN(STR_RESET_TESTING_HELP);
+        endif;  //SMCPKG_SUPPORT E
+
+	    SEPARATOR
+        //Display USB Module Version. 
+	    text
+		help   = STRING_TOKEN(STR_EMPTY),
+		text   = STRING_TOKEN(STR_USB_MODULE_VER_HELP),
+		text   = STRING_TOKEN(STR_USB_MODULE_VER),
+		flags  = 0,
+		key    = 0;
+
+	    SEPARATOR
+	    text
+		help   = STRING_TOKEN(STR_EMPTY),
+		text   = STRING_TOKEN(STR_USB_DEVICES_ENABLED),
+		text   = STRING_TOKEN(STR_EMPTY),
+		flags  = 0,
+		key    = 0;
+
+	    SUBTITLE(STRING_TOKEN(STR_USB_DEVICES_ENABLED_LIST))
+	    SEPARATOR
+
+	    suppressif ideqval USB_SUPPORT_SETUP.UsbMainSupport == 0;
+		grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+		USB_ONEOF_USBLEGACYSUPPORT
+	    SUPPRESS_GRAYOUT_ENDIF
+        
+        #if XHCI_SUPPORT
+	    grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+		USB_ONEOF_USBXHCIHANDOFF
+	    endif;
+        #endif
+
+	#if defined (EMUL6064_SUPPORT) && EMUL6064_SUPPORT
+	    suppressif ideqval USB_SUPPORT_SETUP.UsbMainSupport == 0;
+		grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+		USB_ONEOF_USBEMUL6064
+	    SUPPRESS_GRAYOUT_ENDIF
+	#endif
+
+#if SMC_SETUP_STYLE
+      oneof varid = PCH_RC_CONFIGURATION.PciePllSsc,
+        prompt   = STRING_TOKEN(STR_PCIE_PLL_SSC_PROMPT),
+        help     = STRING_TOKEN(STR_PCIE_PLL_SSC_HELP),
+        option text = STRING_TOKEN(STR_DISABLED_STRING),   value = 0xff, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED_STRING),    value = 5,    flags = RESET_REQUIRED;
+      endoneof;
+#endif
+	endform;
+    #endif  // FORM_SET_FORM
+
+#endif  // ADVANCED_FORM_SET
+

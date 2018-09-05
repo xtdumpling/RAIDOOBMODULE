@@ -1,0 +1,185 @@
+TOKEN
+	Name  = "PciBusLibraryInstances_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable PciBusLibraryInstances support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+INFComponent
+	Name  = "AmiPciBusLib"
+	File  = "AmiPciBusLib/AmiPciBusLib.inf"
+	Package  = "AmiModulePkg"
+End
+
+INFComponent
+	Name  = "AmiPciExpressLib"
+	File  = "AmiPciExpressLib/AmiPciExpressLib.inf"
+	Package  = "AmiModulePkg"
+	Token = "PCI_EXPRESS_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "AmiPciExpressLibNull"
+	File  = "AmiPciExpressLibNull/AmiPciExpressLibNull.inf"
+	Package  = "AmiModulePkg"
+	Token = "PCI_EXPRESS_SUPPORT" "=" "0"
+End
+
+INFComponent
+	Name  = "AmiPciExpressGen2Lib"
+	File  = "AmiPciExpressGen2Lib/AmiPciExpressGen2Lib.inf"
+	Package  = "AmiModulePkg"
+	Token = "PCI_EXPRESS_GEN2_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "AmiPciExpressGen2LibNull"
+	File  = "AmiPciExpressGen2LibNull/AmiPciExpressGen2LibNull.inf"
+	Package  = "AmiModulePkg"
+	Token = "PCI_EXPRESS_GEN2_SUPPORT" "=" "0"
+End
+
+INFComponent
+	Name  = "AmiPciExpressGen3Lib"
+	File  = "AmiPciExpressGen3Lib/AmiPciExpressGen3Lib.inf"
+	Package  = "AmiModulePkg"
+	Token = "PCI_EXPRESS_GEN3_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "AmiPciExpressGen3LibNull"
+	File  = "AmiPciExpressGen3LibNull/AmiPciExpressGen3LibNull.inf"
+	Package  = "AmiModulePkg"
+	Token = "PCI_EXPRESS_GEN3_SUPPORT" "=" "0"
+End
+
+INFComponent
+	Name  = "AmiPciHotPlugLib"
+	File  = "AmiPciHotPlugLib/AmiPciHotPlugLib.inf"
+	Package  = "AmiModulePkg"
+	Token = "HOTPLUG_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "AmiPciHotPlugLibNull"
+	File  = "AmiPciHotPlugLibNull/AmiPciHotPlugLibNull.inf"
+	Package  = "AmiModulePkg"
+	Token = "HOTPLUG_SUPPORT" "=" "0"
+End
+
+INFComponent
+	Name  = "AmiSriovLib"
+	File  = "AmiSriovLib/AmiSriovLib.inf"
+	Package  = "AmiModulePkg"
+	Token = "SRIOV_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "AmiSriovLibNull"
+	File  = "AmiSriovLibNull/AmiSriovLibNull.inf"
+	Package  = "AmiModulePkg"
+	Token = "SRIOV_SUPPORT" "=" "0"
+End
+
+INFComponent
+	Name  = "PciExpressSegLib"
+	File  = "PciExpressSegLib/PciExpressSegLib.inf"
+	Package  = "AmiModulePkg"
+	Token = "PCI_EXPRESS_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "AmiPciBusLib"
+	Instance  = "AmiModulePkg.AmiPciBusLib"
+	ModuleTypes  = "DXE_DRIVER UEFI_DRIVER DXE_SMM_DRIVER"
+End
+
+LibraryMapping
+	Class  = "AmiPciExpressLib"
+	Instance  = "AmiModulePkg.AmiPciExpressLib"
+	ModuleTypes  = "DXE_DRIVER UEFI_DRIVER"
+	Token = "PCI_EXPRESS_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "AmiPciExpressLib"
+	Instance  = "AmiModulePkg.AmiPciExpressLibNull"
+	ModuleTypes  = "DXE_DRIVER UEFI_DRIVER"
+	Token = "PCI_EXPRESS_SUPPORT" "=" "0"
+End
+
+LibraryMapping
+	Class  = "AmiPciExpressGen2Lib"
+	Instance  = "AmiModulePkg.AmiPciExpressGen2Lib"
+	ModuleTypes  = "DXE_DRIVER UEFI_DRIVER"
+	Token = "PCI_EXPRESS_GEN2_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "AmiPciExpressGen2Lib"
+	Instance  = "AmiModulePkg.AmiPciExpressGen2LibNull"
+	ModuleTypes  = "DXE_DRIVER UEFI_DRIVER"
+	Token = "PCI_EXPRESS_GEN2_SUPPORT" "=" "0"
+End
+
+LibraryMapping
+	Class  = "AmiPciExpressGen3Lib"
+	Instance  = "AmiModulePkg.AmiPciExpressGen3Lib"
+	ModuleTypes  = "DXE_DRIVER UEFI_DRIVER"
+	Token = "PCI_EXPRESS_GEN3_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "AmiPciExpressGen3Lib"
+	Instance  = "AmiModulePkg.AmiPciExpressGen3LibNull"
+	ModuleTypes  = "DXE_DRIVER UEFI_DRIVER"
+	Token = "PCI_EXPRESS_GEN3_SUPPORT" "=" "0"
+End
+
+LibraryMapping
+	Class  = "AmiPciHotPlugLib"
+	Instance  = "AmiModulePkg.AmiPciHotPlugLib"
+	ModuleTypes  = "DXE_DRIVER UEFI_DRIVER"
+	Token = "HOTPLUG_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "AmiPciHotPlugLib"
+	Instance  = "AmiModulePkg.AmiPciHotPlugLibNull"
+	ModuleTypes  = "DXE_DRIVER UEFI_DRIVER"
+	Token = "HOTPLUG_SUPPORT" "=" "0"
+End
+
+LibraryMapping
+	Class  = "AmiSriovLib"
+	Instance  = "AmiModulePkg.AmiSriovLib"
+	ModuleTypes  = "DXE_DRIVER UEFI_DRIVER"
+	Token = "SRIOV_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "AmiSriovLib"
+	Instance  = "AmiModulePkg.AmiSriovLibNull"
+	ModuleTypes  = "DXE_DRIVER UEFI_DRIVER"
+	Token = "SRIOV_SUPPORT" "=" "0"
+End
+
+LibraryMapping
+	Class  = "PciExpressLib"
+	Instance  = "AmiModulePkg.PciExpressSegLib"
+	ModuleTypes  = "DXE_DRIVER DXE_SMM_DRIVER"
+	Override  = "AmiModulePkg.PciRootBridge"
+	Token = "PCI_EXPRESS_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "PciExpressLib"
+	Instance  = "AmiModulePkg.PciExpressSegLib"
+	ModuleTypes  = "DXE_DRIVER DXE_SMM_DRIVER"
+	Override  = "AmiModulePkg.SmmPciRbIo"
+	Token = "PCI_EXPRESS_SUPPORT" "=" "1"
+End
+

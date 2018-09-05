@@ -1,0 +1,74 @@
+TOKEN
+    Name  = "IpmiRedirFru_SUPPORT"
+    Value  = "1"
+    Help  = "Switch for Enabling IpmiRedirFru support in the project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    Master = Yes
+End
+
+INFComponent
+    Name  = "IpmiRedirFru"
+    File  = "IpmiRedirFru.inf"
+    Package  = "AmiIpmiPkg"
+    ModuleTypes  = "DXE_RUNTIME_DRIVER"
+    Help  = "Includes IpmiRedirFru.inf to Project."
+End
+
+LibraryMapping
+    Class  = "PcdLib"
+    Instance  = "MdePkg.DxePcdLib"
+    Override  = "AmiIpmiPkg.IpmiRedirFru"
+    Help  = "Library mapping for DxePcdLib under IpmiRedirFru.inf in Platform.dsc."
+End
+
+TOKEN
+    Name  = "IANA_PEN_IPMI_FORUM"
+    Value  = "0x1BF2"
+    Help  = "Internet Assigned Number Authority - Private Enterprise Number for Intelligent Platform Management Interface forum."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "IANA_PEN_INTEL"
+    Value  = "0x157"
+    Help  = "Internet Assigned Number Authority - Private Enterprise Number for Intel Corporation."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "OEM_MANF_ID"
+    Value  = "0x51EE"
+    Help  = "Manufacturer ID of OEM in IPMI 'Get Device ID' command. This is same as 'Enterprise Numbers' from IANA website. Default value: 0x51EE (AMI)."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "FRU_DEVICE_ID"
+    Value  = "0xFF"
+    Help  = "Device ID of FRU that has Manufacturer, Base Board & Chassis info for SMBIOS."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name = "CUSTOM_FRU_ID_SUPPORT"
+    Value = "0"
+    Help = "Support to read only the particular FRU details by directly giving the FRU ID. Hence it avoids reading all SDR records and reduce the boot time"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name = "CUSTOM_FRU_ID"
+    Value = "0"
+    Help = "Define the FRU ID to read the particular FRU details only"
+    TokenType = Integer
+    TargetH = Yes
+    Token = "CUSTOM_FRU_ID_SUPPORT" "=" "1"
+End
+

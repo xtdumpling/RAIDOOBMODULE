@@ -1,0 +1,64 @@
+TOKEN
+    Name  = "OEM_ACTIVATION_TABLE_LOCATION"
+    Value = "1"
+    Help  = "OEM Activation Table location: \0 = FID Table.\1 = Non-Critical Block."
+    TokenType = Boolean
+    TargetH = Yes
+    Master = Yes
+End
+
+TOKEN
+    Name  = "OEM_ACTIVATION_TABLE_ADDRESS"
+    Value = "$(FV_BB_BASE)-$(OEM_ACTIVATION_TABLE_SIZE)"
+    Help  = "OEM Activation Table address in the NCB. Port this token!" 
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "OEM_ACTIVATION_TABLE_SIZE"
+    Value = "$(FLASH_BLOCK_SIZE)"
+    Help  = "OEM Activation Table size in the NCB. Port this token!" 
+    TokenType = Integer
+    TargetH = Yes
+End
+
+ELINK
+    Name   = "OemActivationUpdateBlockTypeId,"
+    Parent = "SMIFlashEndHandlerList"
+    InvokeOrder = AfterParent
+End
+
+INFComponent
+    Name  = "OA3_SmiFlashHook"
+    File  = "OA3_SmiFlashHook.inf"
+    Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+    Class = "NULL"
+    Instance = "AmiModulePkg.OA3_SmiFlashHook"
+    Override = "AmiModulePkg.SMIFlash"
+End
+
+TOKEN
+    Name  = "FV_MAIN_SIZE"
+    Value  = "$(FLASH_SIZE) - $(FV_BB_SIZE) - $(FV_MAIN_OFFSET) - $(OEM_ACTIVATION_TABLE_SIZE)"
+    Help  = "Size of the FV_MAIN area"
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+    Range  = "From: 0 To: FLASH_SIZE - FV_BB - FV_MAIN_OFFSET"
+    Token = "OEM_ACTIVATION_TABLE_LOCATION" "=" "1"
+End
+
+FD_AREA
+    Name  = "OA_TABLE"
+    TYPE  = "RAW"
+    FD_INFO  = "AMIROM"
+    Offset  = "$(OEM_ACTIVATION_TABLE_ADDRESS) - (0xFFFFFFFF - $(FLASH_SIZE) + 1)"
+    Size  = "$(OEM_ACTIVATION_TABLE_SIZE)"
+    Token = "OEM_ACTIVATION_TABLE_LOCATION" "=" "1"
+End
+

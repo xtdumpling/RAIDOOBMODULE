@@ -1,0 +1,83 @@
+TOKEN
+	Name  = "RxDbgrLib_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling DbgRxDbgrLib\DbgRxDbgrX64Lib support in the project"
+	TokenType = Boolean
+	Master = Yes
+	Token = "REDIRECTION_ONLY_MODE" "=" "1"
+End
+
+TOKEN
+	Name  = "DbgRxDbgrLib_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable DbgRxDbgrLib support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "DbgRxDbgrX64Lib_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable DbgRxDbgrX64Lib support in Project"
+	TokenType = Boolean
+	Token = "X64_SUPPORT" "=" "1"
+End
+
+PATH
+	Name  = "DbgRxDbgrLib_DIR"
+	Path  = "AMIDebugRxPkg\AMIDebugRx\DbgRxDbgrLib"
+End
+
+INFComponent
+	Name  = "CommonDbgrLib"
+	File  = "CommonDbgrLib.inf"
+	Package  = "AMIDebugRx"
+	Arch  = "common"
+	Path  = "DbgRxDbgrLib_DIR"
+End
+
+INFComponent
+	Name  = "DbgRxDbgrLib"
+	File  = "DbgRxDbgrLib.inf"
+	Package  = "AMIDebugRx"
+	Arch  = "common"
+	Path  = "DbgRxDbgrLib_DIR"
+End
+
+INFComponent
+	Name  = "DbgRxDbgrX64Lib"
+	File  = "DbgRxDbgrX64Lib.inf"
+	Package  = "AMIDebugRx"
+	Arch  = "common"
+	Path  = "DbgRxDbgrLib_DIR"
+	Token = "DbgRxDbgrX64Lib_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "CommonDbgrLib"
+	Instance  = "AMIDebugRx.CommonDbgrLib"
+End
+
+LibraryMapping
+	Class  = "PeiDebugDbgrLib"
+	Instance  = "AMIDebugRx.DbgRxDbgrLib"
+	Arch  = "IA32"
+End
+
+LibraryMapping
+	Class  = "PeiDebugDbgrLib"
+	Instance  = "AMIDebugRx.DbgRxDbgrX64Lib"
+	Arch  = "X64"
+	Token = "DbgRxDbgrX64Lib_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "DxeDebugDbgrLib"
+	Instance  = "AMIDebugRx.DbgRxDbgrLib"
+	Token = "X64_SUPPORT" "=" "0"
+End
+
+LibraryMapping
+	Class  = "DxeDebugDbgrLib"
+	Instance  = "AMIDebugRx.DbgRxDbgrX64Lib"
+	Token = "DbgRxDbgrX64Lib_SUPPORT" "=" "1"
+End

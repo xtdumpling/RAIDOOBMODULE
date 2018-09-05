@@ -1,0 +1,81 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+TOKEN
+	Name  = FWUpdateLib_ME_11
+	Value  = 1
+	TokenType = Boolean
+	Master = Yes
+	Help  = "Main switch to enable MEFwUpdLcl support in Project"
+        Token = "MEFwUpdLcl_SUPPORT" "=" "1"
+        Token = "ME_FW_UPDATE_API_CONTROL" "=" "1"
+End
+
+TOKEN
+	Name  = "ME_FW_OEM_ID"
+	Value  = "{0, 0, 0, {0, 0, 0, 0, 0, 0, 0, 0}}"
+	Help  = "ME Firmware OEM ID."
+	TokenType = Expression
+	TargetH = Yes
+	Range  = "GUID"
+End
+
+INFComponent
+	Name  = "FWUpdateLib"
+	File  = "FWUpdateLib.inf"
+	Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "AmiModulePkg.FWUpdateLib"
+	Override  = "AmiModulePkg.MEFwUpdLcl"
+End
+
+INFComponent
+	Name  = "FWUpdatePlatformLib"
+	File  = "FWUpdatePlatformLib.inf"
+	Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "AmiModulePkg.FWUpdatePlatformLib"
+	Override  = "AmiModulePkg.MEFwUpdLcl"
+End
+
+ELINK
+        Name  = "Build/ChipsetReference.dec"
+        Parent  = "MEFwUpdLcLPackages"
+        InvokeOrder = BeforeParent
+End
+
+ELINK
+        Name  = "gHeciProtocolGuid"
+        Parent  = "MEFwUpdLcLDepex"
+        InvokeOrder = BeforeParent
+End
+
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************

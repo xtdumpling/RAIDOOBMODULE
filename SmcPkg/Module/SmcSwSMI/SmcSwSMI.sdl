@@ -1,0 +1,43 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2015 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.00
+#    Bug Fix:  Initialize revision
+#    Reason:   
+#    Auditor:  Salmon Chen
+#    Date:     Jan/29/2015
+#
+#****************************************************************************
+#****************************************************************************
+TOKEN
+	Name  = "SmcSwSMI_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable SmcSwSMI support in Project"
+	TokenType = Boolean
+	TargetMAK = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "BootUEFI_SWSMI"
+	Value  = "0x07"
+	Help  = "Value to write into SMI command register to generate software SMI for boot to UEFI USB/build-in Shell"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0 - 0xff"
+End
+
+PATH
+	Name  = "SmcSwSMI_DIR"
+End
+
+INFComponent
+    Name  = "SmcSwSMI"
+    File  = "SmcSwSMI.inf"
+    Package  = "SmcPkg"
+    ModuleTypes = "DXE_SMM_DRIVER"
+End

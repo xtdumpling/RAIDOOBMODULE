@@ -1,0 +1,117 @@
+;;@file
+;
+;@copyright
+; Copyright (c) 2010 - 2016 Intel Corporation. All rights reserved
+; This software and associated documentation (if any) is furnished
+; under a license and may only be used or copied in accordance
+; with the terms of the license. Except as permitted by the
+; license, no part of this software or documentation may be
+; reproduced, stored in a retrieval system, or transmitted in any
+; form or by any means without the express written consent of
+; Intel Corporation.
+; This file contains a 'Sample Driver' and is licensed as such
+; under the terms of your license agreement with Intel or your
+; vendor. This file may be modified by the user, subject to
+; the additional terms of the license agreement.
+;
+;@par Specification Reference:
+;;
+.686p
+.model small
+
+CALLBACK_CSEG  SEGMENT 'CODE' USE16
+; ASSUME  cs:CALLBACK_CSEG, ds:CALLBACK_CSEG
+  ASSUME  cs:CALLBACK_CSEG
+
+           dw  ControlEntry
+KeyboardSwitch      dw  0
+gAX        dw  ?
+gBP        dw  ?
+CurrentINT16      dd  ?
+
+Int16  proc
+  .if ah == 0             ; get keystroke from keyboard
+   pushf
+   call CurrentINT16
+   mov gBP,bp
+   mov bp,sp
+   pushf
+   pop word ptr ss:[bp+4]
+   mov bp,gBP
+  .elseif ah == 1         ; check for keystroke in the keyboard buffer
+   mov gAX,ax
+   mov gBP,bp
+   mov bp,sp
+   mov ax,ss:[bp+4]       ; sp, ss, flag
+   or ax,40h              ; ZF = 1, no avilable key
+   mov ss:[bp+4],ax
+   mov bp,gBP
+   mov ax,gAX
+  .else
+   pushf
+   call CurrentINT16
+   mov gBP,bp
+   mov bp,sp
+   pushf
+   pop word ptr ss:[bp+4]
+   mov bp,gBP
+  .endif
+  iret
+Int16  endp
+
+ControlEntry   proc far
+  .if ah == 0             ; 0 = Init
+   mov ax,1234h           ;  Magic Code
+  .elseif ah == 1         ; 1 = Hook Int16
+   push ax
+   push bx
+   push dx
+   mov bx,16h             ; get current INT 16h
+   call GetInterrupt
+   mov word ptr CurrentINT16[0],ax
+   mov word ptr CurrentINT16[2],dx
+   mov bx,16h             ; set new INT 16h
+   mov dx,cs
+   mov ax,offset Int16
+   call SetInterrupt
+   pop dx
+   pop bx
+   pop ax
+   mov ax,1234h           ;   Success Code
+  .elseif ah == 2         ; 2 = Unhook Int16
+   push ax
+   push bx
+   push dx
+   mov bx,16h             ; get current INT 16h
+   mov ax, word ptr CurrentINT16[0]
+   mov dx, word ptr CurrentINT16[2]
+   call SetInterrupt
+   pop dx
+   pop bx
+   pop ax
+   mov ax,1234h           ;   Success Code
+  .endif
+  ret
+ControlEntry   endp
+
+GetInterrupt   proc
+  push bx
+  shl bx,2
+  mov ax,es:[bx+0]
+  mov dx,es:[bx+2]
+  pop bx
+  ret
+GetInterrupt  endp
+
+SetInterrupt  proc
+  push bx
+  shl bx,2
+  mov es:[bx+0],ax
+  mov es:[bx+2],dx
+  pop bx
+  ret
+SetInterrupt  endp
+
+CALLBACK_CSEG  ENDS
+
+  END

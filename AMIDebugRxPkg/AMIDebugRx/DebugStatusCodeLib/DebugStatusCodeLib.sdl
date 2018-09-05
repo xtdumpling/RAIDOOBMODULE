@@ -1,0 +1,160 @@
+TOKEN
+	Name  = "DebugStatusCodeLib_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling DebugStatusCodeLib support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "DxeDebugStatusCodeLib_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable DxeDebugStatusCodeLib support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "PeiDebugStatusCodeLib_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable PeiDebugStatusCodeLib support in Project"
+	TokenType = Boolean
+End
+
+PATH
+	Name  = "DebugStatusCodeLib_DIR"
+	Path  = "AMIDebugRxPkg\AMIDebugRx\DebugStatusCodeLib"
+End
+
+INFComponent
+	Name  = "CommonDebugStatusCodeLib"
+	File  = "CommonDebugStatusCodeLib.inf"
+	Package  = "AMIDebugRx"
+	Arch  = "common Ia32 X64"
+	Path  = "DebugStatusCodeLib_DIR"
+End
+
+INFComponent
+	Name  = "DxeDebugStatusCodeLib"
+	File  = "DxeDebugStatusCodeLib.inf"
+	Package  = "AMIDebugRx"
+	Arch  = "common Ia32 X64"
+	Path  = "DebugStatusCodeLib_DIR"
+End
+
+INFComponent
+    Name  = "PeiDebugStatusCodeLib"
+    File  = "PeiDebugStatusCodeLib.inf"
+    Package  = "AMIDebugRx"
+	Arch  = "common Ia32 X64"
+	Path  = "DebugStatusCodeLib_DIR"
+End
+
+INFComponent
+	Name  = "SmmDebugStatusCodeLib"
+	File  = "SmmDebugStatusCodeLib.inf"
+	Package  = "AMIDebugRx"
+	Arch  = "common Ia32 X64"
+	Path  = "DebugStatusCodeLib_DIR"
+	Token = "SMM_DEBUG_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "CommonDebugStatusCodeLib"
+	Instance  = "AMIDebugRx.CommonDebugStatusCodeLib"
+End
+
+LibraryMapping
+	Class  = "PeiDebugStatusCodeLib"
+	Instance  = "AMIDebugRx.PeiDebugStatusCodeLib"
+	ModuleTypes  = "PEIM PEI_CORE"
+End
+
+LibraryMapping
+	Class  = "DxeDebugStatusCodeLib"
+	Instance  = "AMIDebugRx.DxeDebugStatusCodeLib"
+	ModuleTypes  = "DXE_CORE DXE_DRIVER DXE_RUNTIME_DRIVER UEFI_APPLICATION UEFI_DRIVER"
+End
+
+LibraryMapping
+	Class  = "SmmDebugStatusCodeLib"
+	Instance  = "AMIDebugRx.SmmDebugStatusCodeLib"
+	ModuleTypes  = "SMM_CORE DXE_SMM_DRIVER"
+	Token = "SMM_DEBUG_SUPPORT" "=" "1"	
+End
+
+ELINK
+	Name  = "PeiDbgrSendDebugText,"
+	Parent  = "PeiReportStringStatus"
+	Token = "SEND_DEBUG_MESSAGE_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "PeiDbgrSendDebugText,"
+	Parent  = "DxeReportStringStatus"
+	Token = "SEND_DEBUG_MESSAGE_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "PeiDbgrSendDebugText,"
+	Parent  = "SmmReportStringStatus"
+	Token = "SEND_DEBUG_MESSAGE_SUPPORT" "=" "1"
+	Token = "SMM_DEBUG_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+#ELINK
+#	Name  = "PeiDbgrSendDebugText,"
+#	Parent  = "RtReportStringStatus"
+#	Token = "SEND_DEBUG_MESSAGE_SUPPORT" "=" "1"
+#	InvokeOrder = AfterParent
+#End
+
+ELINK
+	Name  = "PeiDbgrSendProgressCode,"
+	Parent  = "PeiReportCheckpoint"
+	Token = "SEND_CHECKPOINT_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "PeiDbgrSendProgressCode,"
+	Parent  = "DxeReportCheckpoint"
+	Token = "SEND_CHECKPOINT_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "PeiDbgrSendProgressCode,"
+	Parent  = "SmmReportCheckpoint"
+	Token = "SEND_CHECKPOINT_SUPPORT" "=" "1"
+	Token = "SMM_DEBUG_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+#ELINK
+#	Name  = "PeiDbgrSendProgressCode,"
+#	Parent  = "RtReportCheckpoint"
+#	Token = "SEND_CHECKPOINT_SUPPORT" "=" "1"
+#	InvokeOrder = AfterParent
+#End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "AMIDebugRx.PeiDebugStatusCodeLib"
+	Override  = "AmiModulePkg.StatusCodePei"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "AMIDebugRx.DxeDebugStatusCodeLib"
+	Override  = "AmiModulePkg.StatusCodeDxe"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "AMIDebugRx.SmmDebugStatusCodeLib"
+	Override  = "AmiModulePkg.StatusCodeSmm"
+	Token = "SMM_DEBUG_SUPPORT" "=" "1"
+End

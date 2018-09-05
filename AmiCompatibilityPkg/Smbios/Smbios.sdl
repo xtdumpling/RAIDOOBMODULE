@@ -1,0 +1,91 @@
+TOKEN
+	Name  = "SMBIOS_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable SMBIOS  support in Project"
+	TokenType = Boolean
+    TargetH = Yes
+	Master = Yes
+End
+
+TOKEN
+    Name  = "AMI_SMBIOS_MODULE_VERSION"
+    Value  = "0111"
+    Help  = "AMI SMBIOS module version number: MMNN -> MM = Major, NN = Minor"
+    TokenType = Integer
+    TargetMAK = Yes
+    TargetH = Yes
+    Lock = Yes
+End
+
+TOKEN
+    Name  = "SMBIOS_2X_MAJOR_VERSION"
+    Value  = "2"
+    Help  = "SMBIOS major version"
+    TokenType = Integer
+    TargetH = Yes
+    Lock = Yes
+End
+
+TOKEN
+    Name  = "SMBIOS_2X_MINOR_VERSION"
+    Value  = "8"
+    Help  = "SMBIOS minor version"
+    TokenType = Integer
+    TargetH = Yes
+    Lock = Yes
+End
+
+TOKEN
+    Name  = "SMBIOS_3X_MAJOR_VERSION"
+    Value  = "3"
+    Help  = "SMBIOS major version"
+    TokenType = Integer
+    TargetH = Yes
+    Lock = Yes
+End
+
+TOKEN
+    Name  = "SMBIOS_3X_MINOR_VERSION"
+    Value  = "1"
+    Help  = "SMBIOS minor version"
+    TokenType = Integer
+    TargetH = Yes
+    Lock = Yes
+End
+
+TOKEN
+    Name  = "SMBIOS_DOC_VERSION"
+    Value  = "1"
+    Help  = "SMBIOS document version"
+    TokenType = Integer
+    TargetH = Yes
+    Lock = Yes
+End
+
+TOKEN
+    Name  = "SMBIOS_SPEC_VERSION"
+    Value  = "$(SMBIOS_3X_MAJOR_VERSION)*100 + $(SMBIOS_3X_MINOR_VERSION)*10 + $(SMBIOS_DOC_VERSION)"
+    Help  = "SMBIOS specification version"
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "SMBIOS_DYNAMIC_UPDATE_TPL"
+    Value  = "8"
+    Help  = "SmbiosDynamicUpdate callback registration level \8 = TPL_CALLBACK \16 = TPL_NOTIFY"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+PATH
+	Name  = "SMBIOS_DIR"
+End
+
+INFComponent
+    Name  = "Smbios"
+    File  = "Smbios.inf"
+    Package  = "AmiModulePkg"
+	ModuleTypes  = "DXE_DRIVER"
+End

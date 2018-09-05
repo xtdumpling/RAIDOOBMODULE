@@ -1,0 +1,209 @@
+#***************************************************************************
+#***************************************************************************
+#**                                                                       **
+#**       (C)Copyright 1993-2015 Supermicro Computer, Inc.                **
+#**                                                                       **
+#**                                                                       **
+#***************************************************************************
+#***************************************************************************
+#
+#  File History
+#
+#  Rev. 1.00
+#    Bug Fix:  Initialize revision
+#    Reason:   Get base code from Brickland
+#    Auditor:  Salmon Chen
+#    Date:     Feb/04/2015
+#
+#***************************************************************************
+#***************************************************************************
+TOKEN
+	Name  = "SameDebug_SUPPORT"
+	Value  = "0"
+	Help  = "Enables/Disables A7_DEBUG"
+	TokenType = Boolean
+	TargetH = Yes
+	Master    = Yes
+End
+
+TOKEN
+	Name  = "A7_MRC_DEBUG"
+	Value  = "1"
+	Help  = "Enables/Disables A7_DEBUG"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "A7_PEI_DEBUG"
+	Value  = "1"
+	Help  = "Enables/Disables A7_PEI_DEBUG"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "A7_DXE_DEBUG"
+	Value  = "1"
+	Help  = "Enables/Disables A7_DXE_DEBUG"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "A7_SMM_DEBUG"
+	Value  = "1"
+	Help  = "Enables/Disables A7_SMM_DEBUG"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+
+ELINK
+	Name  = "A7StatusReport,"
+	Parent  = "PeiReportStringStatus"
+	Help  = "SPI A7 string status code"
+	InvokeOrder = AfterParent
+       Token = "A7_PEI_DEBUG" "=" "1"
+End
+
+
+ELINK
+	Name  = "A7StatusReport,"
+	Parent  = "DxeReportStringStatus"
+	Help  = "SPI A7 string status code"
+	InvokeOrder = AfterParent
+	Token = "A7_DXE_DEBUG" "=" "1"
+End
+
+
+ELINK
+	Name  = "A7StatusReport,"
+	Parent  = "SmmReportStringStatus"
+	Help  = "SPI A7 string status code"
+	InvokeOrder = AfterParent
+	Token = "A7_SMM_DEBUG" "=" "1"
+End
+
+ELINK
+	Name  = "A7StatusReport,"
+	Parent  = "RtReportStringStatus"
+	Help  = "SPI A7 string status code"
+	InvokeOrder = AfterParent
+	Token = "A7_DXE_DEBUG" "=" "1"
+	
+End
+
+ELINK
+	Name  = "A7CheckPointStatus,"
+	Parent  = "PeiReportSimpleStatus"
+	Help  = "This is a list of checkpoint routines. \The child eLink must be in the following format: 'FunctionName,'"
+	InvokeOrder = AfterParent
+       Token = "A7_PEI_DEBUG" "=" "1"
+End
+
+ELINK
+	Name  = "A7CheckPointStatus,"
+	Parent  = "DxeReportSimpleStatus"
+	Help  = "This is a list of checkpoint routines. \The child eLink must be in the following format: 'FunctionName,'"
+	InvokeOrder = AfterParent
+	Token = "A7_DXE_DEBUG" "=" "1"
+End
+
+ELINK
+	Name  = "A7CheckPointStatus,"
+	Parent  = "RtReportSimpleStatus"
+	Help  = "This is a list of checkpoint routines. \The child eLink must be in the following format: 'FunctionName,'"
+	InvokeOrder = AfterParent
+	Token = "A7_DXE_DEBUG" "=" "1"
+End
+
+ELINK
+	Name  = "A7CheckPointStatus,"
+	Parent  = "SmmReportSimpleStatus"
+	Help  = "This is a list of checkpoint routines. \The child eLink must be in the following format: 'FunctionName,'"
+	InvokeOrder = AfterParent
+	Token = "A7_SMM_DEBUG" "=" "1"
+End
+
+INFComponent
+	Name  = "A7PrintfLib"
+	File  = "A7PrintfLib.inf"
+	Package  = "SmcPkg"
+End
+
+LibraryMapping
+	Class  = "A7PrintfLib"
+	Instance  = "SmcPkg.A7PrintfLib"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "SmcPkg.A7PrintfLib"
+	Override = "AmiModulePkg.StatusCodePei"
+	Token = "A7_PEI_DEBUG" "=" "1"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "SmcPkg.A7PrintfLib"
+	Override = "AmiModulePkg.StatusCodeDxe"
+	Token = "A7_DXE_DEBUG" "=" "1"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "SmcPkg.A7PrintfLib"
+	Override = "AmiModulePkg.StatusCodeSmm"
+	Token = "A7_SMM_DEBUG" "=" "1"
+End
+
+#LibraryMapping
+#	Class  = "NULL"
+#	Instance  = "SmcPkg.A7PrintfLib"
+#	Override = "BricklandSocketPkg.UncoreInitPeim"
+#	Token = "A7_MRC_DEBUG" "=" "1"
+#End
+#
+#LibraryMapping
+#	Class  = "NULL"
+#	Instance  = "SmcPkg.A7PrintfLib"
+#	Override = "BricklandSocketPkg.UncoreInitPeimIvt"
+#	Token = "A7_MRC_DEBUG" "=" "1"
+#End
+#
+#LibraryMapping
+#	Class  = "NULL"
+#	Instance  = "SmcPkg.A7PrintfLib"
+#	Override = "BricklandPkg.MemRas"
+#	Token = "A7_MRC_DEBUG" "=" "1"
+#End
+#
+#LibraryMapping
+#	Class  = "NULL"
+#	Instance  = "SmcPkg.A7PrintfLib"
+#	Override = "BricklandPkg.MemRasIvt"
+#	Token = "A7_MRC_DEBUG" "=" "1"
+#End
+#
+#LibraryMapping
+#	Class  = "NULL"
+#	Instance  = "SmcPkg.A7PrintfLib"
+#	Override = "BricklandPkg.QpiRas"
+#	Token = "A7_MRC_DEBUG" "=" "1"
+#End
+#
+#LibraryMapping
+#	Class  = "NULL"
+#	Instance  = "SmcPkg.A7PrintfLib"
+#	Override = "BricklandPkg.QpiRasIvt"
+#	Token = "A7_MRC_DEBUG" "=" "1"
+#End
+#
+#LibraryMapping
+#	Class  = "NULL"
+#	Instance  = "SmcPkg.A7PrintfLib"
+#	Override = "BricklandSocketPkg.MemoryQpiInitIvt"
+#	Token = "A7_MRC_DEBUG" "=" "1"
+#End
+#

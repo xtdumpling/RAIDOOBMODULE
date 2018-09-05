@@ -1,0 +1,1107 @@
+TOKEN
+    Name  = "====== SIO Global Control Tokens ======"
+    Value  = "!!!DO NOT CHANGE NAMES JUST VALUES!!!"
+    Help  = "Specify global control tokens."
+    TokenType = Expression
+End
+
+TOKEN
+    Name  = "AST2500_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable AST2500 support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes
+    Master = Yes
+End
+
+TOKEN
+    Name  = "SIO_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable SIO support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_DBG_SUPPORT"
+    Value  = "1"
+    Help  = "Switch to enable SIO serial port debug function support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_RECOVERY_SUPPORT"
+    Value  = "1"
+    Help  = "Switch to enable SIO recovery support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "====== SIO For Debug Setting =========="
+    Value  = "!!!DO NOT CHANGE NAMES JUST VALUES!!!"
+    Help  = "The Debug Serial Port Setting."
+    TokenType = Expression
+End
+
+TOKEN
+    Name  = "DEBUG_COM_PORT_ADDR"
+    Value  = "0x3F8"
+    Help  = "COM Port address the debugger uses. "
+    TokenType = Integer
+    TargetH = Yes
+    Token = "AST2500_DBG_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "DEBUG_LDN_UART"
+    Value  = "$(AST2500_LDN_UART1)"
+    Help  = "UARTx Logical Devive for Debugger."
+    TokenType = Integer
+    TargetH = Yes
+    Token = "DEBUG_COM_PORT_ADDR" "=" "0x3F8"
+End
+
+TOKEN
+    Name  = "DEBUG_LDN_UART"
+    Value  = "$(AST2500_LDN_UART2)"
+    Help  = "UARTx Logical Devive for Debugger."
+    TokenType = Integer
+    TargetH = Yes
+    Token = "DEBUG_COM_PORT_ADDR" "=" "0x2F8"
+End
+
+TOKEN
+    Name  = "DEBUG_LDN_UART"
+    Value  = "$(AST2500_LDN_UART3)"
+    Help  = "UARTx Logical Devive for Debugger."
+    TokenType = Integer
+    TargetH = Yes
+    Token = "DEBUG_COM_PORT_ADDR" "=" "0x3E8"
+End
+
+TOKEN
+    Name  = "DEBUG_LDN_UART"
+    Value  = "$(AST2500_LDN_UART4)"
+    Help  = "UARTx Logical Devive for Debugger."
+    TokenType = Integer
+    TargetH = Yes
+    Token = "DEBUG_COM_PORT_ADDR" "=" "0x2E8"
+End
+
+TOKEN
+    Name  = "====== SIO For Recovery Setting =========="
+    Value  = "!!!DO NOT CHANGE NAMES JUST VALUES!!!"
+    Help  = "The Recovery Serial Port Setting."
+    TokenType = Expression
+End
+
+TOKEN
+    Name  = "RECOVERY_COM_PORT_ADDR"
+    Value  = "0x3F8"
+    Help  = "COM Port address the recovery uses."
+    TokenType = Integer
+    TargetH = Yes
+    Token = "AST2500_RECOVERY_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "RECOVERY_LDN_UART"
+    Value  = "$(AST2500_LDN_UART1)"
+    Help  = "UARTx Logical Devive for recovery."
+    TokenType = Integer
+    TargetH = Yes
+    Token = "RECOVERY_COM_PORT_ADDR" "=" "0x3F8"
+End
+
+TOKEN
+    Name  = "RECOVERY_LDN_UART"
+    Value  = "$(AST2500_LDN_UART2)"
+    Help  = "UARTx Logical Devive for recovery."
+    TokenType = Integer
+    TargetH = Yes
+    Token = "RECOVERY_COM_PORT_ADDR" "=" "0x2F8"
+End
+
+TOKEN
+    Name  = "RECOVERY_LDN_UART"
+    Value  = "$(AST2500_LDN_UART3)"
+    Help  = "UARTx Logical Devive for recovery."
+    TokenType = Integer
+    TargetH = Yes
+    Token = "RECOVERY_COM_PORT_ADDR" "=" "0x3E8"
+End
+
+TOKEN
+    Name  = "RECOVERY_LDN_UART"
+    Value  = "$(AST2500_LDN_UART4)"
+    Help  = "UARTx Logical Devive for recovery."
+    TokenType = Integer
+    TargetH = Yes
+    Token = "RECOVERY_COM_PORT_ADDR" "=" "0x2E8"
+End
+
+TOKEN
+    Name  = "=== SIO Logic Device Present Settings =========="
+    Value  = "!!!DO NOT CHANGE NAMES JUST VALUES!!!"
+    Help  = "All Logic Device Present / Not Present."
+    TokenType = Expression
+End
+
+TOKEN
+    Name  = "AST2500_KEYBOARD_PRESENT"
+    Value  = "1"
+    Help  = "Keyboard Present / Not Present."
+    TokenType = Boolean
+    TargetH = Yes
+    Token = "KBC_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "AST2500_MOUSE_PRESENT"
+    Value  = "1"
+    Help  = "Mouse Present / Not Present."
+    TokenType = Boolean
+    TargetH = Yes
+    Token = "KBC_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "AST2500_SERIAL_PORT1_PRESENT"
+    Value  = "1"
+    Help  = "Serial Port 1 (COMA / UART1) Present / Not Present."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_SERIAL_PORT2_PRESENT"
+    Value  = "1"
+    Help  = "Serial Port 2 (COMB / UART2) Present / Not Present."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_SERIAL_PORT3_PRESENT"
+    Value  = "1"
+    Help  = "Serial Port 3 (COMC / UART3) Present / Not Present."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_SERIAL_PORT4_PRESENT"
+    Value  = "1"
+    Help  = "Serial Port 4 (COMD / UART4) Present / Not Present."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_GPIO_PORT_PRESENT"
+    Value  = "0"
+    Help  = "GPIO Present / Not Present."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_SWC_PRESENT"
+    Value  = "1"
+    Help  = "System Wake Up Controller Present / Not Present."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_ILPC2AHB_PRESENT"
+    Value  = "1"
+    Help  = "ILPC to AHB Controller Present / Not Present."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_MAILBOX_PRESENT"
+    Value  = "0"
+    Help  = "MailBox Controller Present / Not Present."
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "====== SIO Registers Layout =========="
+    Value  = "!!!DO NOT CHANGE NAMES JUST VALUES!!!"
+    Help  = "Specify Register address inside SIO Chip."
+    TokenType = Expression
+End
+
+TOKEN
+    Name  = "AST2500_SUCBASE"
+    Value  = "0x1E6E2000"
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_CONFIG_INDEX"
+    Value  = "0x2E"
+    Help  = "SIO index port."
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_CONFIG_DATA"
+    Value  = "0x2F"
+    Help  = "SIO data port."
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_LDN_SEL_REGISTER"
+    Value  = "0x07"
+    Help  = "Logical Device Select Register Address"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_ACTIVATE_REGISTER"
+    Value  = "0x30"
+    Help  = "Device Identification Register Address"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_BASE1_HI_REGISTER"
+    Value  = "0x60"
+    Help  = "Device BaseAddres Register#1 MSB Address"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_BASE1_LO_REGISTER"
+    Value  = "0x61"
+    Help  = "Device BaseAddres Register#1 LSB Address"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_BASE2_HI_REGISTER"
+    Value  = "0x62"
+    Help  = "Device BaseAddres Register#2 MSB Address"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_BASE2_LO_REGISTER"
+    Value  = "0x63"
+    Help  = "Device BaseAddres Register#2 LSB Address"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_IRQ1_REGISTER"
+    Value  = "0x70"
+    Help  = "Device IRQ Register#1 Address"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_IRQ2_REGISTER"
+    Value  = "0x72"
+    Help  = "Device IRQ Register#2 Address"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_DMA1_REGISTER"
+    Value  = "0x74"
+    Help  = "Device DMA Register#1 Address"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_DMA2_REGISTER"
+    Value  = "0x75"
+    Help  = "Device DMA Register#2 Address"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "====== SIO Logical Devices Numbers ======"
+    Value  = "!!!DO NOT CHANGE NAMES JUST VALUES!!!"
+    Help  = "Specify Devices Logical Number."
+    TokenType = Expression
+End
+
+TOKEN
+    Name  = "AST2500_LDN_PS2K"
+    Value  = "0x05"
+    Help  = "LDN for PS2 Keyboard Controller"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_LDN_PS2M"
+    Value  = "0x05"
+    Help  = "LDN for PS2 Mouse Controller. (it is same as PS2K specify same value)"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_LDN_GPIO"
+    Value  = "0x07"
+    Help  = "LDN for GPIO."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_LDN_SWC"
+    Value  = "0x07"
+    Help  = "LDN for System Wake Up Control"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_LDN_UART1"
+    Value  = "0x02"
+    Help  = "LDN for Serial Port 1 Controller"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_LDN_UART2"
+    Value  = "0x03"
+    Help  = "LDN for Serial Port 2 Controller"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_LDN_UART3"
+    Value  = "0x0B"
+    Help  = "LDN for Serial Port 3 Controller"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_LDN_UART4"
+    Value  = "0x0C"
+    Help  = "LDN for Serial Port 4 Controller"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_LDN_ILPC2AHB"
+    Value  = "0x0D"
+    Help  = "LDN for iLPC2AHB Register"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_LDN_MAILBOX"
+    Value  = "0x0E"
+    Help  = "LDN for Mail Box Register"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "=== SIO Global Registers Settings =========="
+    Value  = "!!!DO NOT CHANGE NAMES JUST VALUES!!!"
+    Help  = "SIO Global Registers Setting"
+    TokenType = Expression
+End
+
+TOKEN
+    Name  = "=== SIO Activation Values =========="
+    Value  = "!!!DO NOT CHANGE NAMES JUST VALUES!!!"
+    Help  = "Specify Logical Device Activation Value."
+    TokenType = Expression
+End
+
+TOKEN
+    Name  = "AST2500_CONFIG_MODE_ENTER_VALUE"
+    Value  = "0xA5"
+    Help  = "Value to enter the SIO Configuration Mode."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_CONFIG_MODE_EXIT_VALUE"
+    Value  = "0xAA"
+    Help  = "Value to enter the SIO Configuration Mode."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "ENTK"
+    Value  = "$(AST2500_CONFIG_MODE_ENTER_VALUE)"
+    Help  = "ASL alias for SIO Config Mode Enter Value."
+    TokenType = Integer
+    TargetASL = Yes
+End
+
+TOKEN
+    Name  = "EXTK"
+    Value  = "$(AST2500_CONFIG_MODE_EXIT_VALUE)"
+    Help  = "ASL alias for SIO Config Mode Exit Value."
+    TokenType = Integer
+    TargetASL = Yes
+End
+
+TOKEN
+    Name  = "AST2500_ACTIVATE_VALUE"
+    Value  = "0x01"
+    Help  = "Value to activate Device."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_DEACTIVATE_VALUE"
+    Value  = "0x00"
+    Help  = "Value to deactivate Device."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "====== SIO BASE ADDRESS Setting =========="
+    Value  = "!!!DO NOT CHANGE NAMES JUST VALUES!!!"
+    Help  = "SIO some base address setting "
+    TokenType = Expression
+End
+
+TOKEN
+    Name  = "AST2500_TOTAL_BASE_ADDRESS"
+    Value  = "0xA00"
+    Help  = "It's used for IODecode, System will open TOTAL_BASE_ADDRESS+TOTAL_LENGTH IODecode for GPIO+PME+..."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_SWC_BASE_ADDRESS"
+    Value  = "$(AST2500_TOTAL_BASE_ADDRESS)"
+    Help  = "Base Address of SWC. If changed, please update PeiSetLpcDeviceDecoding() in AST2500PEI.c too."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_SWC_LENGTH"
+    Value  = "0x10"
+    Help  = "Base Address's length of SWC. If changed, please update PeiSetLpcDeviceDecoding() in AST2500PEI.c too."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "IO1B"
+    Value  = "$(AST2500_SWC_BASE_ADDRESS)"
+    Help  = "Base Address of SWC Controller."
+    TokenType = Integer
+    TargetASL = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "IO1L"
+    Value  = "$(AST2500_SWC_LENGTH)"
+    Help  = "Length of SWC Controller."
+    TokenType = Integer
+    TargetASL = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_PM1B_EVT_BASE_ADDRESS"
+    Value  = "$(AST2500_TOTAL_BASE_ADDRESS)+$(IO1L)"
+    Help  = "Base Address of PM1B_EVT Direct Access. If changed, please update PeiSetLpcDeviceDecoding() in AST2500PEI.c too."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_PM1B_EVT_LENGTH"
+    Value  = "0x10"
+    Help  = "Base Address's length of PM1B_EVT Direct Access. If changed, please update PeiSetLpcDeviceDecoding() in AST2500PEI.c too."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "IO2B"
+    Value  = "$(AST2500_PM1B_EVT_BASE_ADDRESS)"
+    Help  = "Base Address of PM1B_EVT Controller."
+    TokenType = Integer
+    TargetASL = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "IO2L"
+    Value  = "$(AST2500_PM1B_EVT_LENGTH)"
+    Help  = "Length of PM1B_EVT Controller."
+    TokenType = Integer
+    TargetASL = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_PM1B_CNT_BASE_ADDRESS"
+    Value  = "$(AST2500_TOTAL_BASE_ADDRESS)+$(IO1L)+$(IO2L)"
+    Help  = "Base Address of PM1B_CNT Direct Access. If changed, please update PeiSetLpcDeviceDecoding() in AST2500PEI.c too."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_PM1B_CNT_LENGTH"
+    Value  = "0x10"
+    Help  = "Base Address's length of PM1B_CNT Direct Access. If changed, please update PeiSetLpcDeviceDecoding() in AST2500PEI.c too."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "IO3B"
+    Value  = "$(AST2500_PM1B_CNT_BASE_ADDRESS)"
+    Help  = "Base Address of PM1B_CNT Controller."
+    TokenType = Integer
+    TargetASL = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "IO3L"
+    Value  = "$(AST2500_PM1B_CNT_LENGTH)"
+    Help  = "Length of PM1B_CNT Controller."
+    TokenType = Integer
+    TargetASL = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_GPE1_BLK_BASE_ADDRESS"
+    Value  = "$(AST2500_TOTAL_BASE_ADDRESS)+$(IO1L)+$(IO2L)+$(IO3L)"
+    Help  = "Base Address of GPE1_BLK Direct Access. If changed, please update PeiSetLpcDeviceDecoding() in AST2500PEI.c too."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_GPE1_BLK_LENGTH"
+    Value  = "0x10"
+    Help  = "Base Address's length of GPE1_BLK Direct Access. If changed, please update PeiSetLpcDeviceDecoding() in AST2500PEI.c too."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "IO4B"
+    Value  = "$(AST2500_GPE1_BLK_BASE_ADDRESS)"
+    Help  = "Base Address of GPE1_BLK Controller."
+    TokenType = Integer
+    TargetASL = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "IO4L"
+    Value  = "$(AST2500_GPE1_BLK_LENGTH)"
+    Help  = "Length of GPE1_BLK Controller."
+    TokenType = Integer
+    TargetASL = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_MAILBOX_BASE_ADDRESS"
+    Value  = "$(AST2500_TOTAL_BASE_ADDRESS)+$(IO1L)+$(IO2L)+$(IO3L)+$(IO4L)"
+    Help  = "Base Address of MAILBOX Direct Access. If changed, please update PeiSetLpcDeviceDecoding() in AST2500PEI.c too."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_MAILBOX_LENGTH"
+    Value  = "0x10"
+    Help  = "Base Address's length of MAILBOX Direct Access. If changed, please update PeiSetLpcDeviceDecoding() in AST2500PEI.c too."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "IO5B"
+    Value  = "$(AST2500_MAILBOX_BASE_ADDRESS)"
+    Help  = "Base Address of MAILBOX Controller."
+    TokenType = Integer
+    TargetASL = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "IO5L"
+    Value  = "$(AST2500_MAILBOX_LENGTH)"
+    Help  = "Length of MAILBOX Controller."
+    TokenType = Integer
+    TargetASL = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "AST2500_TOTAL_LENGTH"
+    Value  = "$(IO1L)+$(IO2L)+$(IO3L)+$(IO4L)+$(IO5L)"
+    Help  = "IODecode base address 's length. 0xFF >= TOTAL_LENGTH >= GPIO_LENGTH + PME_LENGTH + ..."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+
+TOKEN
+    Name  = "===== SIO token only been used in ASL  ====="
+    Value  = "!!!DO NOT CHANGE NAMES JUST VALUES!!!"
+    Help  = "Provide Resource properties."
+    TokenType = Expression
+End
+
+TOKEN
+    Name  = "SP1O"
+    Value  = "$(AST2500_CONFIG_INDEX)"
+    Help  = "Super IO Index/Data configuration port for ASL."
+    TokenType = Integer
+    TargetASL = Yes
+End
+
+TOKEN
+    Name  = "KBFG"
+    Value  = "0"
+    Help  = "Keyboard wake-up flag."
+    TokenType = Integer
+    TargetASL = Yes
+    Token = "AST2500_KEYBOARD_PRESENT" "=" "0"
+End
+
+TOKEN
+    Name  = "MSFG"
+    Value  = "0"
+    Help  = "Mouse wake-up flag."
+    TokenType = Integer
+    TargetASL = Yes
+    Token = "AST2500_MOUSE_PRESENT" "=" "0"
+End
+
+TOKEN
+    Name  = "IOES"
+    Value  = "0x00"
+    Help  = "It is used similar to IOST, when Device's DCAT > 0x0F , then it will be used."
+    TokenType = Integer
+    TargetASL = Yes
+End
+
+TOKEN
+    Name  = "===== SIO Module Setting   ======"
+    Value  = "!!!DO NOT CHANGE NAMES JUST VALUES!!!"
+    Help  = "SIO Module Setting"
+    TokenType = Expression
+End
+
+PATH
+    Name  = "AST2500_DIR"
+End
+
+MODULE
+    Help  = "Includes AST2500.MAK to Project"
+    File  = "AST2500.MAK"
+End
+
+ELINK
+    Name  = "$(AST2500_DIR)\AST2500Setup.sd"
+    Parent  = "SETUP_DEFINITIONS"
+    Priority  = 40
+    InvokeOrder = AfterParent
+    Token = "SIO_SETUP_USE_APTIO_4_STYLE" "=" "1"
+End
+
+ELINK
+    Name  = "-i $(AST2500_DIR)"
+    Parent  = "SETUP_VFR_INCLUDES"
+    InvokeOrder = AfterParent
+    Token = "SIO_SETUP_USE_APTIO_4_STYLE" "=" "1"
+End
+
+ELINK
+    Name  = "{dsUART,0x00, STR_SERIAL1_CONFIG_VALUE},"
+    Parent  = "SetupStrTableList"
+    InvokeOrder = AfterParent
+    Token = "SIO_SETUP_USE_APTIO_4_STYLE" "=" "1"
+End
+
+ELINK
+    Name  = "{dsUART,0x01, STR_SERIAL2_CONFIG_VALUE},"
+    Parent  = "SetupStrTableList"
+    InvokeOrder = AfterParent
+    Token = "SIO_SETUP_USE_APTIO_4_STYLE" "=" "1"
+End
+
+ELINK
+    Name  = "{dsUART,0x02, STR_SERIAL3_CONFIG_VALUE},"
+    Parent  = "SetupStrTableList"
+    InvokeOrder = AfterParent
+    Token = "SIO_SETUP_USE_APTIO_4_STYLE" "=" "1"
+End
+
+ELINK
+    Name  = "{dsUART,0x03, STR_SERIAL4_CONFIG_VALUE},"
+    Parent  = "SetupStrTableList"
+    InvokeOrder = AfterParent
+    Token = "SIO_SETUP_USE_APTIO_4_STYLE" "=" "1"
+End
+
+ELINK
+    Name  = "$(AST2500_DIR)\AST2500Setup.c"
+    Parent  = "SetupCallbackFiles"
+    InvokeOrder = AfterParent
+    Token = "SIO_SETUP_USE_APTIO_4_STYLE" "=" "1"
+End
+
+ELINK
+    Name  = "OemInitAST2500SetupStrings,"
+    Parent  = "SetupStringInit"
+    InvokeOrder = AfterParent
+    Token = "SIO_SETUP_USE_APTIO_4_STYLE" "=" "1"
+End
+
+ELINK
+    Name  = "$(AST2500_DIR)\AST2500Setup.uni"
+    Parent  = "SetupStringFiles"
+    InvokeOrder = AfterParent
+    Token = "SIO_SETUP_USE_APTIO_4_STYLE" "=" "1"
+End
+
+ELINK
+    Name  = "*_*_*_ASLPP_FLAGS"
+    Type  = "BuildOptions"
+    Arch  = "COMMON"
+    InvokeOrder = ReplaceParent
+    OutDSC = Yes
+End
+
+ELINK
+    Name  = "-D SIO_PTS=\_SB.PCI0.SBRG.SIO1.SIOS"
+    Parent  = "*_*_*_ASLPP_FLAGS"
+    Type  = "BuildOptions"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "-D SIO_WAK=\_SB.PCI0.SBRG.SIO1.SIOW"
+    Parent  = "*_*_*_ASLPP_FLAGS"
+    Type  = "BuildOptions"
+    InvokeOrder = AfterParent
+End
+
+INFComponent
+    Name  = "AST2500DxeInit"
+    File  = "AST2500DxeInit.inf"
+    Package  = "AmiModulePkg"
+End
+
+INFComponent
+    Name  = "AST2500PeiInit"
+    File  = "AST2500PeiInit.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "PEIM"
+    Token = "AST2500_SUPPORT" "=" "1"
+End
+
+INFComponent
+    Name  = "AST2500PlatformHookSerialPortLib"
+    File  = "AST2500PlatformHookSerialPortLib.inf"
+    Package  = "AmiModulePkg"
+    Token = "AST2500_DBG_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+    Class  = "PlatformHookLib"
+    Instance  = "AmiModulePkg.AST2500PlatformHookSerialPortLib"
+    ModuleTypes  = "PEIM PEI_CORE SEC"
+    Token = "AST2500_DBG_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiModulePkg.AST2500DxeInit"
+    Override  = "AmiModulePkg.SioDxeInit"
+    Token = "AST2500_SUPPORT" "=" "1"
+End
+
+FFS_FILE
+    Name  = "AST2500PeiInit"
+    FD_AREA  = "FV_BB"
+    INFComponent  = "AmiModulePkg.AST2500PeiInit"
+    Apriori_Index  = "0"
+End
+
+SIODEVICE
+    Name  = "AST2500"
+    Parent  = "LpcBridge"
+    IndexPort  = 02eh
+    DataPort  = 02fh
+    StdSioType  = "Yes"
+    DevSelReg  = 07h
+    ActivateReg  = 030h
+    ActivateVal  = 01h
+    DeActivateVal  = 00h
+    BaseHiReg1  = 060h
+    BaseLoReg1  = 061h
+    BaseHiReg2  = 062h
+    BaseLoReg2  = 063h
+    Irq1Reg  = 070h
+    Irq2Reg  = 072h
+    Dma1Reg  = 074h
+    Dma2Reg  = 075h
+    GblRegFlag  = "0x3fe000000000"
+    LocalRegFlag  = "0xffffffff0000000000000000000000000033000f000000000001000000000000"
+    EnterConfig  = "Script,'Index;Write;A5h','Index;Write;A5h'"
+    ExitConfig  = "Script,'Index;Write;AAh'"
+    SMBIOSStr  = "Test String"
+    GPEbit  = 01dh
+    SleepNum  = 03h
+    ASLfile  = "'AmiModulePkg\IO\AST2500\AST2500Dev.asl','AmiModulePkg\IO\AST2500\AST2500Evt.asl'"
+    ASLdeviceName  = "SIO1"
+    #ASL_PTS  = "Method;SIO_PTS(Arg0)"
+    #ASL_WAK  = "Method;SIO_WAK(Arg0)"
+    WakeEnabled = Yes
+End
+
+LDEVICE
+    Name  = "Ps2Kb"
+    SioDevice  = "AST2500"
+    Dev_Type  = "dsPS2CK"
+    LDev_Num  = "05h"
+    UID  = "00h"
+    PnPID  = "0303h"
+    SIO_RES_Flag  = "0x0"
+    HasSetup = Yes
+    ResBaseAddr1  = "00h"
+    ResLength1  = "00h"
+    ResBaseAddr2  = "00h"
+    ResLength2  = "00h"
+    InitRoutine  = "AST2500_KBC_Init"
+    SleepNum  = 01h
+    ASLfile  = "'AmiModulePkg\GenericSio\PS2_KB.asl'"
+    ASLdeviceName  = "PS2K"
+    Token = "AST2500_KEYBOARD_PRESENT" "=" "1"
+End
+
+LDEVICE
+    Name  = "Ps2Ms"
+    SioDevice  = "AST2500"
+    Dev_Type  = "dsPS2CM"
+    LDev_Num  = "05h"
+    UID  = "00h"
+    PnPID  = "0f03h"
+    SIO_RES_Flag  = "0x3"
+    HasSetup = Yes
+    ResBaseAddr1  = "00h"
+    ResLength1  = "00h"
+    ResBaseAddr2  = "00h"
+    ResLength2  = "00h"
+    SleepNum  = 01h
+    ASLfile  = "'AmiModulePkg\GenericSio\PS2_MS.asl'"
+    ASLdeviceName  = "PS2M"
+    Token = "AST2500_MOUSE_PRESENT" "=" "1"
+End
+
+LDEVICE
+    Name  = "Com1"
+    SioDevice  = "AST2500"
+    Dev_Type  = "dsUART"
+    LDev_Num  = "02h"
+    UID  = "00h"
+    PnPID  = "0501h"
+    SIO_RES_Flag  = "0x0"
+    HasSetup = Yes
+    ResBaseAddr1  = "00h"
+    ResLength1  = "00h"
+    ResBaseAddr2  = "00h"
+    ResLength2  = "00h"
+    InitRoutine  = "AST2500_COM_Init"
+    SleepNum  = 01h
+    ASLfile  = "'AmiModulePkg\GenericSio\UART1.asl'"
+    ASLdeviceName  = "UAR1"
+    Token = "AST2500_SERIAL_PORT1_PRESENT" "=" "1"
+End
+
+LDEVICE
+    Name  = "Com2"
+    SioDevice  = "AST2500"
+    Dev_Type  = "dsUART"
+    LDev_Num  = "03h"
+    UID  = "01h"
+    PnPID  = "0501h"
+    SIO_RES_Flag  = "0x0"
+    HasSetup = Yes
+    ResBaseAddr1  = "00h"
+    ResLength1  = "00h"
+    ResBaseAddr2  = "00h"
+    ResLength2  = "00h"
+    InitRoutine  = "AST2500_COM_Init"
+    SleepNum  = 01h
+    ASLfile  = "'AmiModulePkg\GenericSio\UART2.asl'"
+    ASLdeviceName  = "UAR2"
+    Token = "AST2500_SERIAL_PORT2_PRESENT" "=" "1"
+End
+
+LDEVICE
+    Name  = "Com3"
+    SioDevice  = "AST2500"
+    Dev_Type  = "dsUART"
+    LDev_Num  = "0Bh"
+    UID  = "02h"
+    PnPID  = "0501h"
+    SIO_RES_Flag  = "0x0"
+    HasSetup = Yes
+    ResBaseAddr1  = "00h"
+    ResLength1  = "00h"
+    ResBaseAddr2  = "00h"
+    ResLength2  = "00h"
+    InitRoutine  = "AST2500_COM_Init"
+    SleepNum  = 01h
+    ASLfile  = "'AmiModulePkg\IO\AST2500\Uart3.asl'"
+    ASLdeviceName  = "UAR3"
+    Token = "AST2500_SERIAL_PORT3_PRESENT" "=" "1"
+End
+
+LDEVICE
+    Name  = "Com4"
+    SioDevice  = "AST2500"
+    Dev_Type  = "dsUART"
+    LDev_Num  = "0Ch"
+    UID  = "03h"
+    PnPID  = "0501h"
+    SIO_RES_Flag  = "0x4"
+    HasSetup = Yes
+    ResBaseAddr1  = "00h"
+    ResLength1  = "00h"
+    ResBaseAddr2  = "00h"
+    ResLength2  = "00h"
+    InitRoutine  = "AST2500_COM_Init"
+    SleepNum  = 01h
+    ASLfile  = "'AmiModulePkg\IO\AST2500\Uart4.asl'"
+    ASLdeviceName  = "UAR4"
+    Token = "AST2500_SERIAL_PORT4_PRESENT" "=" "1"
+End
+LDEVICE
+    Name  = "Swc"
+    SioDevice  = "AST2500"
+    Dev_Type  = "dsNone"
+    LDev_Num  = "04h"
+    UID  = "00h"
+    PnPID  = "0C08h"
+    SIO_RES_Flag  = "0x0"
+    ResBaseAddr1  = "$(IO1B)"
+    ResLength1  = "$(IO1L)"
+    ResBaseAddr2  = "$(IO2B)"
+    ResLength2  = "$(IO2L)"
+    InitRoutine  = "AST2500_SWC_Init"
+    SleepNum  = 01h
+    ASLfile  = "'AmiModulePkg\GenericSio\NO_RES_STA.asl'"
+    ASLdeviceName  = "SSWC"
+    Token = "AST2500_SWC_PRESENT" "=" "1"
+End
+
+LDEVICE
+    Name  = "Gpio"
+    SioDevice  = "AST2500"
+    Dev_Type  = "dsGPIO"
+    LDev_Num  = "07h"
+    UID  = "01h"
+    PnPID  = "0C08h"
+    SIO_RES_Flag  = "0x80"
+    ResBaseAddr1  = "00h"
+    ResLength1  = "00h"
+    ResBaseAddr2  = "00h"
+    ResLength2  = "00h"
+    InitRoutine  = "AST2500_GPIO_Init"
+    SleepNum  = 01h
+    ASLfile  = "'AmiModulePkg\GenericSio\NO_RES_STA.asl'"
+    ASLdeviceName  = "GPIO"
+    Token = "AST2500_GPIO_PORT_PRESENT" "=" "1"
+End
+
+LDEVICE
+    Name  = "Lpc2Ahb"
+    SioDevice  = "AST2500"
+    Dev_Type  = "dsNone"
+    LDev_Num  = "0Dh"
+    UID  = "02h"
+    PnPID  = "0C08h"
+    SIO_RES_Flag  = "0x80"
+    ResBaseAddr1  = "00h"
+    ResLength1  = "00h"
+    ResBaseAddr2  = "00h"
+    ResLength2  = "00h"
+    InitRoutine  = "AST2500_ILPC2AHB_Init"
+    SleepNum  = 01h
+    ASLfile  = "'AmiModulePkg\GenericSio\NO_RES_STA.asl'"
+    ASLdeviceName  = "LPC2"
+    Token = "AST2500_ILPC2AHB_PRESENT" "=" "1"
+End
+
+LDEVICE
+    Name  = "Mailbox"
+    SioDevice  = "AST2500"
+    Dev_Type  = "dsNone"
+    LDev_Num  = "0Eh"
+    UID  = "03h"
+    PnPID  = "0C08h"
+    SIO_RES_Flag  = "0x0"
+    ResBaseAddr1  = "$(IO5B)"
+    ResLength1  = "$(IO5L)"
+    ResBaseAddr2  = "00h"
+    ResLength2  = "00h"
+    InitRoutine  = "AST2500_MAILBOX_Init"
+    SleepNum  = 01h
+    ASLfile  = "'AmiModulePkg\GenericSio\NO_RES_STA.asl'"
+    ASLdeviceName  = "MAIL"
+    Token = "AST2500_MAILBOX_PRESENT" "=" "1"
+End
+

@@ -1,0 +1,57 @@
+PATH
+    Name  = "AMI_TCG_PLATFORM_PEI_DIR"
+End
+
+INFComponent
+    Name  = "AmiTcgLibPei"
+    File  = "AmiTcgLibPei.inf"
+    Package = "AmiModulePkg"
+End
+
+LibraryMapping
+    Class  = "AmiTcgLibPei"
+    Instance  = "AmiModulePkg.AmiTcgLibPei"
+End
+
+TOKEN
+    Name  = "TPM20_MEASURE_CRTM_VERSION_PEI_FUNCTION"
+    Value  = "Tpm20MeasureCRTMVersion"
+    Help   = ""
+    TokenType = Expression
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "TCGRomLayout_SUPPORT"
+    Value  = "1"
+    Help  = "Define RomLayout Token in Token.h for use in TCG"
+    TokenType = Boolean
+    TargetMAK = Yes
+    TargetH = Yes
+    Token = "RomLayout_SUPPORT" "=" "1"
+End
+
+
+
+INFComponent
+    Name  = "AmiTcgPlatformPeiBeforeMem"
+    File  = "AmiTcgPlatformPeiBeforeMem.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "PEIM"
+End
+
+INFComponent
+    Name  = "AmiTcgPlatformPeiAfterMem"
+    File  = "AmiTcgPlatformPeiAfterMem.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "PEIM"
+End
+
+
+INFComponent
+    Name  = "AmiTpm20PlatformPei"
+    File  = "AmiTpm20PlatformPei.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "PEIM"
+End
+

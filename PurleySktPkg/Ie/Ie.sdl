@@ -1,0 +1,50 @@
+TOKEN
+    Name  = "IE_ENABLE"
+    Value  = "1"
+    Help  = "Enable or disable the IE"
+    TokenType = Boolean
+    TargetMAK = Yes
+    Master = Yes
+End
+
+TOKEN
+	Name  = "IeHeciInit_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable IeHeciInit support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "IeHeciCoreLib"
+	File  = "Heci\Library\IeHeciCoreLib\IeHeciCoreLib.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "BASE"
+End
+
+INFComponent
+	Name  = "IeHeciInit"
+	File  = "Heci\Pei\IeHeciInit.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "PEIM"
+	Token = "IeHeciInit_SUPPORT" "=" "1"
+	Token = "IE_ENABLE" "=" "1"
+End
+
+INFComponent
+	Name  = "IePeiPolicyAccessLib"
+	File  = "Policy\Library\IePeiPolicyAccessLib\IePeiPolicyAccessLib.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "PEIM"
+End
+
+LibraryMapping
+    Class  = "IeHeciCoreLib"
+    Instance  = "PurleySktPkg.IeHeciCoreLib"
+    Token = "IE_ENABLE" "=" "1"
+End
+
+LibraryMapping
+    Class  = "IePeiPolicyAccessLib"
+    Instance  = "PurleySktPkg.IePeiPolicyAccessLib"
+    Token = "IE_ENABLE" "=" "1"
+End

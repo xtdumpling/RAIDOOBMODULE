@@ -1,0 +1,85 @@
+## @file
+#  Boot Mode PEIM
+#
+#  Copyright (c) 2009 - 2016, Intel Corporation. All rights reserved.<BR>
+#
+#  This program and the accompanying materials
+#  are licensed and made available under the terms and conditions of the BSD License
+#  which accompanies this distribution. The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.php
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = BootMode
+  FILE_GUID                      = 1D0CFB9B-EB00-43A6-819C-D218DF8DC4B4
+  MODULE_TYPE                    = PEIM
+  ENTRY_POINT                    = UpdateBootMode
+
+[Sources]
+  BootMode.c
+  # APTIOV_SERVER_OVERRIDE_RC_START
+  BootMode.h
+  # APTIOV_SERVER_OVERRIDE_RC_END
+[Packages]
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  MdePkg/MdePkg.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+  # APTIOV_SERVER_OVERRIDE_RC_START
+#  BpCommonPkg/BpCommonPkg.dec
+  # APTIOV_SERVER_OVERRIDE_RC_END
+  PurleySktPkg/SocketPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+
+[LibraryClasses]
+  PeiServicesLib
+  PeimEntryPoint
+  DebugLib
+  HobLib
+  IoLib
+  PciLib
+  PlatformHooksLib
+  PcdLib
+  PrintLib
+  PeiServicesTablePointerLib
+  # APTIOV_SERVER_OVERRIDE_RC_START
+  #CmosAccessLib
+  # APTIOV_SERVER_OVERRIDE_RC_END
+  SetupLib
+  PeiPolicyInit
+  PeiPlatformHookLib
+  PchInitLib
+  SerialPortLib
+  GpioLib
+  PchAlternateAccessModeLib
+  # APTIOV_SERVER_OVERRIDE_RC_START : Call AMI IsRecovery function
+  AmiCspLib
+  # APTIOV_SERVER_OVERRIDE_RC_END : Call AMI IsRecovery function
+ 
+[Pcd]
+  gEfiIntelFrameworkModulePkgTokenSpaceGuid.PcdBootState
+  gEfiPchTokenSpaceGuid.PcdPchAcpiIoPortBaseAddress
+  gPlatformTokenSpaceGuid.PcdWakeupType
+
+[Guids]
+  gEfiSetupVariableGuid
+  gEfiAdminPasswordHobGuid
+
+[Ppis]
+  gEfiPeiBootInRecoveryModePpiGuid
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[Depex]
+  TRUE
+

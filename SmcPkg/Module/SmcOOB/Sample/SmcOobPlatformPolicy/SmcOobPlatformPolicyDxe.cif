@@ -1,0 +1,44 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.02
+#    Bug Fix:  Add an interface to call platform specific SmmRomHoleLib
+#    Reason:
+#    Auditor:  Durant Lin
+#    Date:     Feb/07/2018
+#
+#  Rev. 1.01
+#    Bug Fix:  Add a interface to hook updatevariable before.
+#    Reason:
+#    Auditor:  Durant Lin
+#    Date:     Jan/17/2018
+#
+#  Rev. 1.00
+#    Bug fixed: Initial SMC_OOB_PLATFORM_POLICY for SMC OOB module binary release.
+#    Reason   : 
+#    Auditor  : Jason Hsu
+#    Date     : Jun/09/07
+#
+#*****************************************************************************
+
+<component>
+  name      = "SmcOobPlatformPolicyDxe"
+  category  = ModulePart
+  Rank      = 100
+  LocalRoot = "SmcPkg\Module\SmcOOB\SmcOobPlatformPolicy"
+  RefName   = "SmcOobPlatformPolicyDxe"
+
+[INF]
+"SmcOobPlatformPolicyDxe.inf"
+"SmcOobPlatformPolicySmm.inf"
+[files]
+"SmcOobPlatformPolicyDxe.sdl"
+"PlatformSpecificFunc.txt"
+[parts]
+
+<endComponent>

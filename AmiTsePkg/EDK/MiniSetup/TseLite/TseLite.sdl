@@ -1,0 +1,41 @@
+TOKEN
+	Name  = "TseLite_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable TseLite sources support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "TSE_LITE_SOURCES_SUPPORT"
+	Value  = "1"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+
+PATH
+	Name  = "TSELITESRC_DIR"
+End
+
+ELINK
+	Name  = "TseLite"
+	Parent  = "TseLiteBin"
+	InvokeOrder = ReplaceParent
+End
+
+INFComponent
+	Name  = "TseLite"
+	File  = "TseLite.inf"
+	Package  = "AmiTsePkg"
+End
+
+LibraryMapping
+	Class  = "TseLite"
+	Instance  = "AmiTsePkg.TseLite"
+#	Arch  = "X64"
+End
+
+

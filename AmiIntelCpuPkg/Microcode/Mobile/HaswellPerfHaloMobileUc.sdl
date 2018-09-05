@@ -1,0 +1,39 @@
+TOKEN
+    Name  = "MOBILE_4066X"
+    Value = "0"
+    Help  = "Intel(R) Haswell Perf Halo"
+    TokenType = Boolean
+    Master = Yes
+End
+
+TOKEN
+    Name  = "MOBILE_M3240660" 
+    Value  = "1"
+    Help  = "Intel(R) Haswell Perf Halo Processor B-0 Stepping"
+    TokenType = Boolean
+    Token = "NON_PRODUCTION_MICROCODE" "=" "1"
+End
+
+TOKEN
+    Name  = "MOBILE_M3240661"
+    Value  = "1"
+    Help  = "Intel(R) Haswell Perf Halo Processor C-0 Stepping"
+    TokenType = Boolean
+End
+
+ELINK
+    Name  = "$(MICROCODE_MOBILE_DIR)/M3240660_FFFF0011.mcb"
+    Parent  = "MICROCODE_FILES"
+    Help  = "Intel(R) Haswell Perf Halo Processor B-0 Stepping"
+    Token = "MOBILE_M3240660" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(MICROCODE_MOBILE_DIR)/M3240661_00000016.mcb"
+    Parent  = "MICROCODE_FILES"
+    Help  = "Intel(R) Haswell Perf Halo Processor C-0 Stepping"
+    Token = "MOBILE_M3240661" "=" "1"
+    InvokeOrder = AfterParent
+End
+

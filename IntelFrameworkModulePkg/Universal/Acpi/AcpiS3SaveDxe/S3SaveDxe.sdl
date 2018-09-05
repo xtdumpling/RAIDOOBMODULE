@@ -1,0 +1,27 @@
+TOKEN
+	Name  = "S3SaveDxe_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable Edk2S3SaveDxe support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+INFComponent
+    Name  = "AcpiS3SaveDxe"
+    File  = "AcpiS3SaveDxe.inf"
+    Arch  = "IA32 X64"
+    ModuleTypes  = "DXE_DRIVER"
+    Package  = "IntelFrameworkModulePkg"
+End
+
+PcdMapping
+	Name  = "PcdS3AcpiReservedMemorySize"
+	GuidSpace  = "gEfiIntelFrameworkModulePkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "$(S3_BASE_MEMORY_SIZE)"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End

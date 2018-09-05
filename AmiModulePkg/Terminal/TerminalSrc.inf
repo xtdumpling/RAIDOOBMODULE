@@ -1,0 +1,90 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+
+## @file TerminalSrc.inf
+#   This driver installs Terminal
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = TerminalSrc
+  FILE_GUID                      = 54891A9E-763E-4377-8841-8D5C90D88CDE
+  MODULE_TYPE                    = UEFI_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = TerminalEntryPoint
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF EBC
+#
+
+[Sources]
+  TerminalSetup.c
+  TerminalBoard.h
+  Terminal.h
+  Terminal.c
+  TerminalName.c
+  TerminalSimpleTextIn.c
+  TerminalSimpleTextOut.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  
+[LibraryClasses]
+  AmiDxeLib
+  UefiDriverEntryPoint
+  
+[Protocols]
+  gEfiAmiSioProtocolGuid
+  gEfiSioProtocolGuid
+  gEfiSimpleTextInProtocolGuid
+  gEfiSimpleTextInputExProtocolGuid
+  gEfiComponentNameProtocolGuid
+  gEfiComponentName2ProtocolGuid
+  gEfiSimpleTextOutProtocolGuid
+  gEfiSerialIoProtocolGuid
+  gAmiEfiKeycodeProtocolGuid
+  gEfiDriverBindingProtocolGuid
+  gEfiAcpiSupportGuid
+  gEfiPciIoProtocolGuid
+  gAmiSerialProtocolGuid
+  gEfiDevicePathProtocolGuid
+  
+[Guids]
+  gEfiPcAnsiGuid
+  gEfiVT100Guid
+  gEfiVT100PlusGuid
+  gEfiVTUTF8Guid
+  gEfiUartDevicePathGuid
+
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************

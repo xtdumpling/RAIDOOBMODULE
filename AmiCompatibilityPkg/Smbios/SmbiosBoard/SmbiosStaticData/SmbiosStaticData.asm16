@@ -1,0 +1,179 @@
+;****************************************************************************
+;****************************************************************************
+;**                                                                        **
+;**           (C)Copyright 1985-2012, American Megatrends, Inc.            **
+;**                                                                        **
+;**                          All Rights Reserved.                          **
+;**                                                                        **
+;**            5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093           **
+;**                                                                        **
+;**                          Phone: (770)-246-8600                         **
+;**                                                                        **
+;****************************************************************************
+;****************************************************************************
+
+;****************************************************************************
+; $Header: /Alaska/BIN/Modules/SMBIOS/SmbiosStaticData/SmbiosStaticData.asm 10    3/26/12 12:02p Davidd $
+;
+; $Revision: 10 $
+;
+; $Date: 3/26/12 12:02p $
+;****************************************************************************
+
+;----------------------------------------------------------------------------
+
+        INCLUDE Token.equ
+        INCLUDE SmbHdr.equ
+        INCLUDE SmbMacro.aid
+        INCLUDE SmbStruc.def
+        INCLUDE Smb.equ
+        INCLUDE SmbData.mac
+        INCLUDE SmbDesc.def
+
+;----------------------------------------------------------------------------
+
+SMBIOS_DSEG SEGMENT BYTE    PUBLIC  'DATA'
+        ASSUME  cs: SMBIOS_DSEG
+.586p
+
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+        PUBLIC  _SMBDATA_STARTS
+_smbdata_starts         LABEL   BYTE    ; Marks start of module
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;   SMBIOS DATA STRUCTURES
+;----------------------------------------------------------------------------
+
+;SMBDataModuleHeaderSTRUC   {'_AMIDMI_',0203h,0101h,00h,offset smbios_structures_end,00h}
+
+;----------------------------------------------------------------------------
+        PUBLIC  smbios_structures_start
+smbios_structures_start LABEL   BYTE
+
+        handle = -1
+IF MKF_TYPE0_STRUCTURE
+        handle = CreateBiosInfo(handle)
+ENDIF
+IF MKF_TYPE1_STRUCTURE
+        handle = CreateSysInfo(handle)
+ENDIF
+IF MKF_TYPE2_STRUCTURE
+        handle = CreateBaseBoardInfo(handle)
+ENDIF
+IF MKF_TYPE3_STRUCTURE
+        handle = CreateSysChassisInfo(handle)
+ENDIF
+IF MKF_TYPE4_STRUCTURE
+        handle = CreateProcessorInfo(handle)
+ENDIF
+IF MKF_TYPE5_STRUCTURE
+        handle = CreateMemCtrlInfo(handle, handle+1)
+ENDIF
+IF MKF_TYPE6_STRUCTURE
+        handle = CreateMemModuleInfo(handle)
+ENDIF
+IF MKF_TYPE7_STRUCTURE
+        handle = CreateExternalCacheInfo(handle)
+ENDIF
+IF MKF_TYPE8_STRUCTURE
+        handle = CreatePortConnectorInfo(handle)
+ENDIF
+IF MKF_TYPE9_STRUCTURE
+        handle = CreateSystemSlotInfo(handle)
+ENDIF
+IF MKF_TYPE10_STRUCTURE
+        handle = CreateOnboardDeviceInfo(handle)
+ENDIF
+IF MKF_TYPE11_STRUCTURE
+        handle = CreateOemStringInfo(handle)
+ENDIF
+IF MKF_TYPE12_STRUCTURE
+        handle = CreateSystemConfigOptionInfo(handle)
+ENDIF
+IF MKF_TYPE15_STRUCTURE
+        handle = CreateEventLogInfo(handle)
+ENDIF
+IF MKF_TYPE16_STRUCTURE
+        handle = CreateMemoryInfo(handle)
+ENDIF
+IF MKF_FLASH_MEMORY_ARRAY_INFO
+        handle = CreateFlashMemoryInfo(handle)
+ENDIF
+IF MKF_TYPE21_STRUCTURE
+        handle = CreateBuiltinPointingDeviceInfo(handle)
+ENDIF
+IF MKF_TYPE22_STRUCTURE
+        handle = CreatePortableBatteryInfo(handle)
+ENDIF
+IF MKF_TYPE23_STRUCTURE
+        handle = CreateSystemResetInfo(handle)
+ENDIF
+IF MKF_TYPE24_STRUCTURE
+        handle = CreateHardwareSecurityInfo(handle)
+ENDIF
+IF MKF_TYPE25_STRUCTURE
+        handle = CreateSystemPowerControlsInfo(handle)
+ENDIF
+IF MKF_TYPE30_STRUCTURE
+        handle = CreateOutofBandRemoteAccessInfo(handle)
+ENDIF
+IF MKF_TYPE31_STRUCTURE
+        handle = CreateBootIntegrityServicesInfo(handle)
+ENDIF
+IF MKF_TYPE32_STRUCTURE
+        handle = CreateSystemBootInfo(handle)
+ENDIF
+IF MKF_TYPE33_STRUCTURE
+        handle = CreateSixtyFourBitMemoryErrorInfo(handle)
+ENDIF
+IF MKF_TYPE34_STRUCTURE
+        handle = CreateManagementDeviceInfo(handle)
+ENDIF
+IF MKF_TYPE37_STRUCTURE
+        handle = CreateMemoryChannelInfo(handle)
+ENDIF
+IF MKF_TYPE39_STRUCTURE
+        handle = CreateSystemPowerSupplyInfo(handle)
+ENDIF
+IF MKF_TYPE40_STRUCTURE
+        handle = CreateAdditionalInformation(handle)
+ENDIF
+IF MKF_TYPE41_STRUCTURE
+        handle = CreateOnboardDevicesExtendedInfo(handle)
+ENDIF
+IF MKF_TYPE241_STRUCTURE
+        handle = CreateOEMMemoryMappedGpnvInfo(handle)
+ENDIF
+IF MKF_TYPE240_STRUCTURE
+        handle = CreateOEMIOMappedGpnvInfo(handle)
+ENDIF
+IF MKF_TYPE38_STRUCTURE
+        handle = CreateIPMIDeviceInfo(handle)
+ENDIF
+IF MKF_TYPE129_STRUCTURE
+        handle = CreateIntelASFTable(handle)
+ENDIF
+        handle = CreateEndOfTable(handle)
+
+        db      MKF_EXTRA_RESERVED_BYTES dup (0FFh)          ; Extra Space
+
+SMBIOS_DSEG    ENDS                 ; End of Segment
+END                                 ; End of File
+
+;----------------------------------------------------------------------------
+;****************************************************************************
+;****************************************************************************
+;**                                                                        **
+;**           (C)Copyright 1985-2012, American Megatrends, Inc.            **
+;**                                                                        **
+;**                          All Rights Reserved.                          **
+;**                                                                        **
+;**            5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093           **
+;**                                                                        **
+;**                          Phone: (770)-246-8600                         **
+;**                                                                        **
+;****************************************************************************
+;****************************************************************************

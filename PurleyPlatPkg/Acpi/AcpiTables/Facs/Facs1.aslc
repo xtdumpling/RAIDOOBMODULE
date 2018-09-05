@@ -1,0 +1,113 @@
+/*++
+  This file contains an 'Intel Peripheral Driver' and is        
+  licensed for Intel CPUs and chipsets under the terms of your  
+  license agreement with Intel or your vendor.  This file may   
+  be modified by the user, subject to additional terms of the   
+  license agreement                                             
+--*/
+/*++
+Copyright (c) 1996 - 2005, Intel Corporation.
+
+This source code and any documentation accompanying it ("Material") is furnished
+under license and may only be used or copied in accordance with the terms of that
+license.  No license, express or implied, by estoppel or otherwise, to any
+intellectual property rights is granted to you by disclosure or delivery of these
+Materials.  The Materials are subject to change without notice and should not be
+construed as a commitment by Intel Corporation to market, license, sell or support
+any product or technology.  Unless otherwise provided for in the license under which
+this Material is provided, the Material is provided AS IS, with no warranties of
+any kind, express or implied, including without limitation the implied warranties
+of fitness, merchantability, or non-infringement.  Except as expressly permitted by
+the license for the Material, neither Intel Corporation nor its suppliers assumes
+any responsibility for any errors or inaccuracies that may appear herein.  Except
+as expressly permitted by the license for the Material, no part of the Material
+may be reproduced, stored in a retrieval system, transmitted in any form, or
+distributed by any means without the express written consent of Intel Corporation.
+
+
+Module Name:
+
+  Facs1.0.c
+
+Abstract:
+
+  This file contains a structure definition for the ACPI 1.0 Firmware ACPI 
+  Control Structure (FACS).  The contents of this file should only be modified 
+  for bug fixes, no porting is required.  The table layout is defined in 
+  Acpi1_0.h and the table contents are defined in Acpi1.0.h and Facs.h.
+
+--*/
+
+//
+// Statements that include other files
+//
+#include <Acpi/Facs.h>
+
+//
+// Firmware ACPI Control Structure
+// Please modify all values in Facs.h only.
+//
+EFI_ACPI_1_0_FIRMWARE_ACPI_CONTROL_STRUCTURE  FACS = {
+  EFI_ACPI_1_0_FIRMWARE_ACPI_CONTROL_STRUCTURE_SIGNATURE,
+  sizeof (EFI_ACPI_1_0_FIRMWARE_ACPI_CONTROL_STRUCTURE),
+  //
+  // Hardware Signature will be updated at runtime
+  //
+  0x00000000,
+  EFI_ACPI_FIRMWARE_WAKING_VECTOR,
+  EFI_ACPI_GLOBAL_LOCK,
+  EFI_ACPI_FIRMWARE_CONTROL_STRUCTURE_FLAGS,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_ACPI_RESERVED_BYTE
+};
+
+VOID*
+ReferenceAcpiTable (
+  VOID
+  )
+
+{
+  //
+  // Reference the table being generated to prevent the optimizer from removing the 
+  // data structure from the exeutable
+  //
+  return (VOID*)&FACS;
+}

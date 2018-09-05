@@ -1,0 +1,49 @@
+#/*++
+#
+# Copyright (c)  2006 Intel Corporation. All rights reserved
+# This software and associated documentation (if any) is furnished
+# under a license and may only be used or copied in accordance
+# with the terms of the license. Except as permitted by such
+# license, no part of this software or documentation may be
+# reproduced, stored in a retrieval system, or transmitted in any
+# form or by any means without the express written consent of
+# Intel Corporation.
+#
+#  Module Name:
+#
+#    HybridDriver.inf
+#
+#  Abstract:
+#
+#    Component description file for the HybridDriver BS_DRIVER
+#
+#--*/
+
+[defines]
+BASE_NAME            = HybridDriver
+FILE_GUID            = 6EB44D26-1D39-4FEB-A993-4DAAFB5F8D85
+COMPONENT_TYPE       = BS_DRIVER
+
+[sources.common]
+  HybridDriverMain.c
+  HybridDriver.h
+  DriverBinding.c
+
+[libraries.common]
+  EfiDriverLib
+  ProtocolLib
+
+[includes.common]
+  $(EFI_SOURCE)\Edk\Foundation\Include
+  $(EFI_SOURCE)\Edk\Foundation\Efi\Include
+  $(EFI_SOURCE)\Edk\Foundation\Framework\Include
+  $(EFI_SOURCE)\Edk\Foundation\Efi
+  $(EFI_SOURCE)\Edk\Foundation\Library\Dxe\Include
+  $(EFI_SOURCE)\Edk\Foundation
+  $(EFI_SOURCE)\Edk\Foundation\Framework
+  $(EFI_SOURCE)
+
+[nmake.common]
+  IMAGE_ENTRY_POINT=HybridDriverEntry
+  DPX_SOURCE=HybridDriverDepex.dxs
+

@@ -1,0 +1,342 @@
+//***************************************************************************
+//**                                                                       **
+//**       (C)Copyright 1993-2016 Supermicro Computer, Inc.                **
+//**                                                                       **
+//**                                                                       **
+//***************************************************************************
+//***************************************************************************
+//
+//  File History
+//
+//  Rev. 1.01
+//    Bug Fix:  Draft template.
+//    Reason:   
+//    Auditor:  Kasber Chen
+//    Date:     Dec/16/2016
+//
+//  Rev. 1.00
+//   Bug Fixed:  Fixe Memory Map out feature could not work. 
+//   Reason:     
+//   Auditor:    Chen Lin
+//   Date:       Sep/26/2016
+//
+//***************************************************************************
+//
+// This file contains an 'Intel Peripheral Driver' and is
+// licensed for Intel CPUs and chipsets under the terms of your
+// license agreement with Intel or your vendor.  This file may
+// be modified by the user, subject to additional terms of the
+// license agreement
+//
+// *++
+//
+// Copyright (c) 1999 - 2014 Intel Corporation. All rights reserved
+// This software and associated documentation (if any) is furnished
+// under a license and may only be used or copied in accordance
+// with the terms of the license. Except as permitted by such
+// license, no part of this software or documentation may be
+// reproduced, stored in a retrieval system, or transmitted in any
+// form or by any means without the express written consent of
+// Intel Corporation.
+//
+//
+// Module Name:
+//
+//   MemorySetupRas.hfr
+//
+// Abstract:
+//
+//   Memory Setup formset.
+//
+// Revision History:
+//
+// --*/
+
+#include <MemDefaults.h>
+
+  //
+  // Ras Config
+  //
+  form formid = VFR_FORMID_MEMORY_RAS,
+
+    title  = STRING_TOKEN(STR_MEMORY_RAS_CONFIG_FORM_TITLE);
+
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+    subtitle text = STRING_TOKEN(STR_RAS_CONFIG_SETUP);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+    
+    oneof varid = SOCKET_COMMONRC_CONFIGURATION.LockStep,
+        prompt  = STRING_TOKEN(STR_LOCKSTEPMODE_PROMPT),
+        help    = STRING_TOKEN(STR_LOCKSTEPMODE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE),            value = RAS_MODE_DISABLE, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLE),           value = LOCKSTEP_ENABLED, flags = RESET_REQUIRED;
+    endoneof;
+    
+    grayoutif ideqval SOCKET_MEMORY_CONFIGURATION.PartialMirrorUefi == PMIRROR_ENABLED OR 
+    ideqval SOCKET_MEMORY_CONFIGURATION.partialmirror == PMIRROR_1LM OR ideqval SOCKET_MEMORY_CONFIGURATION.partialmirror == PMIRROR_2LM OR
+    ideqval SOCKET_MEMORY_CONFIGURATION.partialmirrorsad0 == PMIRROR_1LM;
+    oneof varid = SOCKET_COMMONRC_CONFIGURATION.MirrorMode,
+        prompt  = STRING_TOKEN(STR_MIRRORMODE_PROMPT),
+        help    = STRING_TOKEN(STR_MIRRORMODE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE),            value = RAS_MODE_DISABLE, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_MIRROR_1LM),         value = MIRROR_1LM_ENABLED, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_MIRROR_2LM),         value = MIRROR_2LM_ENABLED, flags = RESET_REQUIRED;
+    endoneof;
+    endif;
+
+    suppressif  ideqvallist SOCKET_COMMONRC_CONFIGURATION.SystemRasType == HEDT_RAS STANDARD_RAS CORE_RAS;
+
+    grayoutif ideqval SOCKET_COMMONRC_CONFIGURATION.MirrorMode == MIRROR_1LM_ENABLED OR ideqval SOCKET_COMMONRC_CONFIGURATION.MirrorMode == MIRROR_2LM_ENABLED;
+       
+       oneof varid = SOCKET_MEMORY_CONFIGURATION.partialmirrorsad0,
+        prompt  = STRING_TOKEN(STR_PARTIAL_SAD0_PROMPT),
+         help    = STRING_TOKEN(STR_PARTIAL_SAD0_HELP),
+         option text = STRING_TOKEN(STR_ENABLED_STRING),    value = PMIRROR_1LM, flags = RESET_REQUIRED;
+         option text = STRING_TOKEN(STR_DISABLED_STRING),   value = PMIRROR_DISABLED, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+       endoneof;
+  
+    grayoutif ideqval SOCKET_MEMORY_CONFIGURATION.PartialMirrorUefi == PMIRROR_ENABLED;
+       oneof varid = SOCKET_MEMORY_CONFIGURATION.partialmirror,
+         prompt  = STRING_TOKEN(STR_PARTIAL_MIRR_PROMPT),
+         help    = STRING_TOKEN(STR_PARTIAL_MIRR_HELP),
+         option text = STRING_TOKEN(STR_DISABLED_STRING),   value = PMIRROR_DISABLED, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         option text = STRING_TOKEN(STR_PMIRR1LM),    value = PMIRROR_1LM, flags = RESET_REQUIRED;
+         option text = STRING_TOKEN(STR_PMIRR2LM),    value = PMIRROR_2LM, flags = RESET_REQUIRED;
+       endoneof;
+     endif; 
+     
+     endif; 
+     endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.partialmirror == PMIRROR_DISABLED;
+       numeric varid = SOCKET_MEMORY_CONFIGURATION.partialmirrorsize[0],
+         prompt    = STRING_TOKEN(STR_MIRR1_SIZE_PROMPT),
+         help      = STRING_TOKEN(STR_MIRR_SIZE_HELP),
+         flags     = RESET_REQUIRED,
+         minimum   = 0,
+         maximum   = MAX_PMIRR_SIZE,
+         step      = 1,
+         default = 0, defaultstore = MyStandardDefault,
+         default = 0, defaultstore = MyManufactureDefault,
+       endnumeric;
+    endif;
+    
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.partialmirror == PMIRROR_DISABLED;
+       numeric varid = SOCKET_MEMORY_CONFIGURATION.partialmirrorsize[1],
+         prompt    = STRING_TOKEN(STR_MIRR2_SIZE_PROMPT),
+         help      = STRING_TOKEN(STR_MIRR_SIZE_HELP),
+         flags     = RESET_REQUIRED,
+         minimum   = 0,
+         maximum   = MAX_PMIRR_SIZE,
+         step      = 1,
+         default = 0, defaultstore = MyStandardDefault,
+         default = 0, defaultstore = MyManufactureDefault,
+       endnumeric;
+    endif;
+        
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.partialmirror == PMIRROR_DISABLED;
+       numeric varid = SOCKET_MEMORY_CONFIGURATION.partialmirrorsize[2],
+         prompt    = STRING_TOKEN(STR_MIRR3_SIZE_PROMPT),
+         help      = STRING_TOKEN(STR_MIRR_SIZE_HELP),
+         flags     = RESET_REQUIRED,
+         minimum   = 0,
+         maximum   = MAX_PMIRR_SIZE,
+         step      = 1,
+         default = 0, defaultstore = MyStandardDefault,
+         default = 0, defaultstore = MyManufactureDefault,
+       endnumeric;
+    endif;
+    
+  suppressif ideqval SOCKET_MEMORY_CONFIGURATION.partialmirror == PMIRROR_DISABLED;
+     numeric varid = SOCKET_MEMORY_CONFIGURATION.partialmirrorsize[3],
+       prompt    = STRING_TOKEN(STR_MIRR4_SIZE_PROMPT),
+       help      = STRING_TOKEN(STR_MIRR_SIZE_HELP),
+       flags     = RESET_REQUIRED,
+       minimum   = 0,
+       maximum   = MAX_PMIRR_SIZE,
+       step      = 1,
+       default   = 0, defaultstore = MyStandardDefault,
+       default   = 0, defaultstore = MyManufactureDefault,
+     endnumeric;
+  endif;
+  
+   grayoutif ideqval SOCKET_COMMONRC_CONFIGURATION.MirrorMode == MIRROR_1LM_ENABLED OR ideqval SOCKET_COMMONRC_CONFIGURATION.MirrorMode == MIRROR_2LM_ENABLED OR
+   ideqval SOCKET_MEMORY_CONFIGURATION.partialmirror == PMIRROR_1LM OR ideqval SOCKET_MEMORY_CONFIGURATION.partialmirror == PMIRROR_2LM;
+     oneof varid = SOCKET_MEMORY_CONFIGURATION.PartialMirrorUefi,
+       prompt  = STRING_TOKEN(STR_PARTIAL_MIRR_UEFI_PROMPT),
+       help    = STRING_TOKEN(STR_PARTIAL_MIRR_UEFI_HELP),
+       option text = STRING_TOKEN(STR_DISABLED_STRING),   value = PMIRROR_DISABLED, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+       option text = STRING_TOKEN(STR_ENABLED_STRING),    value = PMIRROR_ENABLED, flags = RESET_REQUIRED;
+     endoneof;
+   
+   endif;
+       
+     suppressif ideqval SOCKET_MEMORY_CONFIGURATION.PartialMirrorUefi == PMIRROR_DISABLED;
+         numeric varid = SOCKET_MEMORY_CONFIGURATION.PartialMirrorUefiPercent,
+           prompt    = STRING_TOKEN(STR_PARTIAL_MIRR_PERCENT_PROMPT),
+           help      = STRING_TOKEN(STR_PARTIAL_MIRR_PERCENT_HELP),
+           flags     = RESET_REQUIRED,
+           minimum   = 0,
+           maximum   = MAX_PMIRR_PERCENT_SIZE,
+           step      = 1,
+           default   = 0, defaultstore = MyStandardDefault,
+           default   = 0, defaultstore = MyManufactureDefault,
+         endnumeric;
+     endif;
+
+    grayoutif ideqval SOCKET_COMMONRC_CONFIGURATION.MirrorMode == MIRROR_1LM_ENABLED OR ideqval SOCKET_COMMONRC_CONFIGURATION.MirrorMode == MIRROR_2LM_ENABLED;
+        oneof varid = SOCKET_MEMORY_CONFIGURATION.RankSparing,
+            prompt  = STRING_TOKEN(STR_MEM_SPARING_EN_PROMPT),
+            help    = STRING_TOKEN(STR_MEM_SPARING_EN_HELP),
+            option text = STRING_TOKEN(STR_DISABLED_STRING),         value = SPARING_DISABLED, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+            option text = STRING_TOKEN (STR_ENABLED_STRING),         value = SPARING_ENABLED, flags = RESET_REQUIRED;
+        endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.RankSparing == SPARING_DISABLED;
+
+        oneof varid = SOCKET_MEMORY_CONFIGURATION.multiSparingRanks,
+            prompt  = STRING_TOKEN(STR_MEM_MULTISPARING_PROMPT),
+            help    = STRING_TOKEN(STR_MEM_MULTISPARING_HELP),
+            option text = STRING_TOKEN(STR_ONERANK_SPARE),        value = ONE_RANK_SPARE, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_TWORANK_SPARE),        value = TWO_RANK_SPARE, flags =  MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        endoneof;
+    endif;
+//SGI+
+    numeric varid = SOCKET_MEMORY_CONFIGURATION.spareErrTh,
+        prompt = STRING_TOKEN(STR_SPAREERRTH_PROMPT),
+        help = STRING_TOKEN(STR_SPAREERRTH_HELP),
+        flags = RESET_REQUIRED ,
+        minimum = 0,
+        maximum = 0x7FFF,
+        step = 1, // Stepping of 0 equates to a manual entering of a value,
+        // otherwise it will auto-increment with a left/right arrow
+        default = 40, defaultstore = MyStandardDefault,
+        default = 40, defaultstore = MyManufactureDefault,
+//SGI-
+    endnumeric;
+    
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.RankSparing == SPARING_DISABLED;
+        numeric varid = SOCKET_MEMORY_CONFIGURATION.leakyBktLo,
+            prompt = STRING_TOKEN(STR_LEAKY_BKT_LO_PROMPT),
+            help = STRING_TOKEN(STR_LEAKY_BKT_LO_HELP),
+            flags = RESET_REQUIRED | DISPLAY_UINT_HEX,
+            minimum = 0,
+            maximum = 0x3F,
+            step = 1, // Stepping of 0 equates to a manual entering of a value,
+            // otherwise it will auto-increment with a left/right arrow
+            default = LEAKY_BUCKET_LO, defaultstore = MyStandardDefault,
+            default = LEAKY_BUCKET_LO, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        numeric varid = SOCKET_MEMORY_CONFIGURATION.leakyBktHi,
+            prompt = STRING_TOKEN(STR_LEAKY_BKT_HI_PROMPT),
+            help = STRING_TOKEN(STR_LEAKY_BKT_HI_HELP),
+            flags = RESET_REQUIRED | DISPLAY_UINT_HEX,
+            minimum = 0,
+            maximum = 0x29,
+            step = 1, // Stepping of 0 equates to a manual entering of a value,
+            // otherwise it will auto-increment with a left/right arrow
+            default = LEAKY_BUCKET_HI, defaultstore = MyStandardDefault,
+            default = LEAKY_BUCKET_HI, defaultstore = MyManufactureDefault,
+        endnumeric;
+    endif;
+
+    suppressif  ideqvallist SOCKET_COMMONRC_CONFIGURATION.SystemRasType == HEDT_RAS STANDARD_RAS CORE_RAS;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.SddcPlusOneEn,
+          prompt  = STRING_TOKEN(STR_SDDC_PLUSONE_EN_PROMPT),
+          help    = STRING_TOKEN(STR_SDDC_PLUSONE_EN_HELP),
+          option text = STRING_TOKEN(STR_DISABLE),            value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),             value = 1, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED; //SGI
+      endoneof;
+    endif;
+    
+    suppressif NOT ideqvallist SOCKET_COMMONRC_CONFIGURATION.SystemRasType == HEDT_RAS STANDARD_RAS CORE_RAS;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.SddcPlusOneEn,
+          prompt  = STRING_TOKEN(STR_SDDC_EN_PROMPT),
+          help    = STRING_TOKEN(STR_SDDC_EN_HELP),
+          option text = STRING_TOKEN(STR_DISABLE),            value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),             value = 1, flags =  MANUFACTURING | DEFAULT |RESET_REQUIRED;//SGI
+      endoneof;
+    endif;
+
+    oneof varid = SOCKET_MEMORY_CONFIGURATION.ADDDCEn,
+        prompt  = STRING_TOKEN(STR_ADDDC_PROMPT),
+        help    = STRING_TOKEN(STR_ADDDC_HELP),
+        option text = STRING_TOKEN(STR_DISABLE),            value = 0, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLE),             value = 1, flags = RESET_REQUIRED;
+    endoneof;
+    
+   suppressif ideqval SOCKET_MEMORY_CONFIGURATION.ADDDCEn == 0x00;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.AdddcErrInjEn,
+        prompt      = STRING_TOKEN(STR_ADDDC_ERR_INJ_PROMPT),
+        help        = STRING_TOKEN(STR_ADDDC_ERR_INJ_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;      
+      endoneof; 
+    endif;
+
+
+    oneof varid = SOCKET_MEMORY_CONFIGURATION.DieSparing,
+        prompt  = STRING_TOKEN(NGN_DIE_SPARING_PROMPT),
+        help    = STRING_TOKEN(NGN_DIE_SPARING_HELP),
+        option text = STRING_TOKEN(STR_DISABLE),          value = NGN_DIE_SPARING_DIS, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLE),           value = NGN_DIE_SPARING_EN, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+    endoneof;
+    
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.DieSparing == 0;
+        numeric varid = SOCKET_MEMORY_CONFIGURATION.DieSparingAggressivenessLevel,
+        prompt = STRING_TOKEN(NGN_DIE_SPARING_AGGRESSIVENESS_PROMPT),
+        help   = STRING_TOKEN(NGN_DIE_SPARING_AGGRESSIVENESS_HELP),
+        flags = 0 | RESET_REQUIRED,
+        minimum = 0,
+        maximum = 255,
+        step = 0,
+        default = NGN_DIE_SPARING_AGGRESSIVENESS_LEVEL_DEFAULT, defaultstore = MyStandardDefault,
+        default = NGN_DIE_SPARING_AGGRESSIVENESS_LEVEL_DEFAULT, defaultstore = MyManufactureDefault,
+        endnumeric;
+    endif;
+
+    oneof varid = SOCKET_MEMORY_CONFIGURATION.PatrolScrub,
+        prompt  = STRING_TOKEN(STR_PATROL_SCRUB_PROMPT),
+        help    = STRING_TOKEN(STR_PATROL_SCRUB_HELP),
+        option text = STRING_TOKEN(STR_DISABLE),          value = PATROL_SCRUB_DIS, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLE),           value = PATROL_SCRUB_EN, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+    endoneof;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.PatrolScrub == 0;
+        numeric varid   = SOCKET_MEMORY_CONFIGURATION.PatrolScrubDuration,
+        prompt  = STRING_TOKEN(STR_PATROL_SCRUB_DURATION_PROMPT),
+        help    = STRING_TOKEN(STR_PATROL_SCRUB_DURATION_HELP),
+        flags   = 0 | RESET_REQUIRED,
+        minimum = 0,
+        maximum = 24,
+        step    = 0,         // Stepping of 0 equates to a manual entering of a value,
+                                 // otherwise it will auto-increment with a left/right arrow
+        default = PATROL_SCRUB_DURATION_DEFAULT, defaultstore = MyStandardDefault,
+        default = PATROL_SCRUB_DURATION_DEFAULT, defaultstore = MyManufactureDefault,
+        endnumeric;
+    endif;
+
+    suppressif ideqval SOCKET_MEMORY_CONFIGURATION.PatrolScrub == 0;
+        oneof varid   = SOCKET_MEMORY_CONFIGURATION.PatrolScrubAddrMode,
+        prompt  = STRING_TOKEN(STR_PATROL_SCRUB_ADDRMODE_PROMPT),
+        help    = STRING_TOKEN(STR_PATROL_SCRUB_ADDRMODE_HELP),
+        option text = STRING_TOKEN(STR_REVERSE_ADDR),   value = PATROL_SCRUB_REVERSE_ADDR, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_SPA),          	value = PATROL_SCRUB_SPA, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+        endoneof;
+    endif;
+
+    // Demand Scrub Disable  shall not be used according to b311409
+    suppressif TRUE;
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.DemandScrubMode,
+      prompt  = STRING_TOKEN(STR_DEMAND_SCRUB_PROMPT),
+      help    = STRING_TOKEN(STR_DEMAND_SCRUB_HELP),
+      option text = STRING_TOKEN(STR_DISABLE),          value = 0, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_ENABLE),           value = 1, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+      endoneof;
+    endif;
+
+endform;

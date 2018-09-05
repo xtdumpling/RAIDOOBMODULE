@@ -1,0 +1,32 @@
+TOKEN
+	Name  = "PpiX_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable Physical Presence Interface – Extensions support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+	Token = "WORKSTATION_SUPPORT" "=" "0"
+	Token = "TCG2Support" "=" "1"
+End
+
+ELINK
+    Name  = "PerformPpiXRequest,"
+    Parent  = "SignalConnectDriversEvent,"
+    Help  = "Elink to include function to restore boot order before Signal Connect Drivers Event."
+    InvokeOrder = BeforeParent
+End
+
+INFComponent
+	Name  = "PpiX"
+	File  = "PpiX.inf"
+	Package  = "PurleyPlatPkg"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "PurleyPlatPkg.PpiX"
+	Override  = "AmiModulePkg.Bds"
+	Help  = "Library mapping for PpiX under BDS.inf in Platform.dsc."
+End
+

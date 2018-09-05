@@ -1,0 +1,51 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = CmosDxe
+  FILE_GUID                      = 3237418A-478C-4700-B59F-768E2CCBC726  
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = CmosManagerDxeEntry
+
+[Sources]
+  CmosManagerDxe.c
+  CmosManagerDxe.h
+  CmosManager.c
+  CmosManager.h
+  CmosAccess.c
+  CmosTables.c
+  CmosManagerHob.h
+  CmosTypes.h
+
+[Protocols]
+  gAmiCmosAccessDxeProtocolGuid
+
+[Packages]
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  AmiDxeLib
+  AmiCspLib
+  
+[Depex]
+  TRUE
+
+  
+  

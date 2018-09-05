@@ -1,0 +1,46 @@
+#
+# This file contains an 'Intel Peripheral Driver' and is      
+# licensed for Intel CPUs and chipsets under the terms of your
+## @file
+#  Instance of PlatformSaltLib Library.
+#
+# Copyright (c) 2013 - 2016, Intel Corporation. All rights reserved.<BR>
+#
+#  This software and associated documentation (if any) is furnished
+#  under a license and may only be used or copied in accordance
+#  with the terms of the license. Except as permitted by such
+#  license, no part of this software or documentation may be
+#  reproduced, stored in a retrieval system, or transmitted in any
+#  form or by any means without the express written consent of
+#  Intel Corporation.
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = PlatformSaltLib
+  FILE_GUID                      = C9235154-14C4-4c26-BE65-E14D578D7E50
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = PlatformSaltLib|DXE_CORE DXE_DRIVER DXE_RUNTIME_DRIVER DXE_SAL_DRIVER DXE_SMM_DRIVER UEFI_APPLICATION UEFI_DRIVER SMM_CORE
+  CONSTRUCTOR                    = InitializePlatformSaltLib
+
+[Sources]
+  PlatformSaltLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  CpPcPlatPkg/CpPcPlatPkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  
+[LibraryClasses]
+  BaseMemoryLib
+  DebugLib
+  HobLib
+  MemoryAllocationLib
+
+[Guids]
+  gEfiMfgUUIDHobGuid
+
+

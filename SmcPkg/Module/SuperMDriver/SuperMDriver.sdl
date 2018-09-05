@@ -1,0 +1,89 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2015 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.00
+#    Bug Fix:  Set default onboard LAN number to 0
+#    Reason:   
+#    Auditor:  Kasber Chen
+#    Date:     Aug/19/2016
+#
+#  Rev. 1.00
+#    Bug Fix:  Initialize revision
+#    Reason:   Get base code from Grantley
+#    Auditor:  Salmon Chen
+#    Date:     Dec/18/2014
+#
+#****************************************************************************
+#****************************************************************************
+TOKEN
+	Name  = "SuperMDriver_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch enable SuperM Driver Support"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "SystemConfigInfo_2_3"
+	Value  = "0x00FF"
+	Help  = "Byte 0: Sensor type.\Byte 1:Onboard lan number."
+	TokenType  = Integer
+	TargetH  = Yes
+	Range  = "1 byte length"
+	Token  = "IPMI_SUPPORT" "=" "1"
+End
+
+PATH
+	Name  = "SuperMDriver_DIR"
+End
+
+FFS_FILE
+	Name  = "SuperMPei"
+	FD_AREA  = "FV_BB"
+	INFComponent  = "SmcPkg.SuperMPei"
+	Apriori_Index  = "2"
+End
+
+FFS_FILE
+	Name  = "SuperMDxe"
+	FD_AREA  = "FV_MAIN"
+	INFComponent  = "SmcPkg.SuperMDxe"
+	Apriori_Index  = "4"
+End
+
+
+ELINK
+	Name  = "$(BUILD_DIR)\SuperMSmiDriver.ffs"
+	Parent  = "FV_MAIN"
+	Priority  = 0
+	InvokeOrder = AfterParent
+End
+
+# Following is added for EDKII style to include the .inf file into build system
+
+INFComponent
+        Name  = "SuperMPei"
+        File  = "SuperMDriverPei.inf"
+        Package  = "SmcPkg"
+        ModuleTypes  = "PEIM"
+End
+
+INFComponent
+        Name  = "SuperMDxe"
+        File  = "SuperMDriverDxe.inf"
+        Package  = "SmcPkg"
+        ModuleTypes = "DXE_DRIVER"
+End
+
+INFComponent
+        Name  = "SuperMSmm"
+        File  = "SuperMDriverSmm.inf"
+        Package  = "SmcPkg"
+        ModuleTypes  = "DXE_SMM_DRIVER"
+End

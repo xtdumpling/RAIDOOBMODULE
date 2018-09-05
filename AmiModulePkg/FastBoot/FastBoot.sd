@@ -1,0 +1,193 @@
+//*************************************************************************
+//*************************************************************************
+//**                                                                     **
+//**        (C)Copyright 1985-2016, American Megatrends, Inc.            **
+//**                                                                     **
+//**                       All Rights Reserved.                          **
+//**                                                                     **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+//**                                                                     **
+//**                       Phone: (770)-246-8600                         **
+//**                                                                     **
+//*************************************************************************
+//*************************************************************************
+
+/** @file FastBoot.sd
+ *  FastBoot Setup data definitions, currently go under Boot page.
+ */
+ 
+#ifdef SETUP_DATA_DEFINITION
+    UINT8   FastBoot;
+    UINT8   FbSata;
+    UINT8   FbVga;
+    UINT8   FbUsb;
+    UINT8   FbPs2;
+    UINT8   FbRedirection;    
+    UINT8   FbNetworkStack;
+#endif
+
+#if defined(VFRCOMPILE) && !defined(CONTROLS_ARE_DEFINED)
+#define CONTROL_DEFINITION
+#endif
+
+#ifdef CONTROL_DEFINITION
+///
+/// Put control definitions here.
+///
+
+#define FB_ONEOF_FASTBOOT\
+        oneof varid = SETUP_DATA.FastBoot,\
+            prompt = STRING_TOKEN(STR_FAST_BOOT),\
+            help = STRING_TOKEN(STR_FAST_BOOT_HELP),\
+            default = DEFAULT_FAST_BOOT,\
+            option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = MANUFACTURING | RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;\
+        endoneof;
+
+#if SUPPORT_RAID_DRIVER
+#define FB_ONEOF_FBSATA\
+            oneof varid = SETUP_DATA.FbSata,\
+                prompt = STRING_TOKEN(STR_FB_SATA),\
+                help = STRING_TOKEN(STR_FB_SATA_HELP),\
+                default = DEFAULT_SATA_SUPPORT_SETTING,\
+                option text = STRING_TOKEN(STR_SATA_LAST_BOOT_ONLY),  value = 0, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_SATA_ALL), value = 1, flags = MANUFACTURING | RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_SATA_HDD_ONLY), value = 2, flags = RESET_REQUIRED;\
+            endoneof;
+#else
+#define FB_ONEOF_FBSATA\
+            oneof varid = SETUP_DATA.FbSata,\
+                prompt = STRING_TOKEN(STR_FB_SATA),\
+                help = STRING_TOKEN(STR_FB_SATA_HELP),\
+                default = DEFAULT_SATA_SUPPORT_SETTING,\
+                option text = STRING_TOKEN(STR_SATA_LAST_BOOT_ONLY),  value = 0, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_SATA_ALL), value = 1, flags = MANUFACTURING | RESET_REQUIRED;\
+            endoneof;    
+#endif
+
+#define FB_ONEOF_FBVGA\
+            oneof varid = SETUP_DATA.FbVga,\
+                prompt = STRING_TOKEN(STR_FB_VGA),\
+                help = STRING_TOKEN(STR_FB_VGA_HELP),\
+                default = DEFAULT_VGA_SUPPORT_SETTING,\
+                option text = STRING_TOKEN(STR_AUTO),  value = 0, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_VGA_DRIVER), value = 1, flags = MANUFACTURING | RESET_REQUIRED;\
+            endoneof;      
+
+#define FB_ONEOF_FBUSB\
+            oneof varid = SETUP_DATA.FbUsb,\
+                prompt = STRING_TOKEN(STR_FB_USB),\
+                help = STRING_TOKEN(STR_FB_USB_HELP),\
+                default = DEFAULT_USB_SUPPORT_SETTING,\
+                option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_FULL_INIT), value = 1, flags = MANUFACTURING | RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_PATIAL_INIT), value = 2, flags = RESET_REQUIRED;\
+            endoneof;
+
+#define FB_ONEOF_FBPS2\
+            oneof varid = SETUP_DATA.FbPs2,\
+                prompt = STRING_TOKEN(STR_FB_PS2),\
+                help = STRING_TOKEN(STR_FB_PS2_HELP),\
+                default = DEFAULT_PS2_SUPPORT_SETTING,\
+                option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = MANUFACTURING | RESET_REQUIRED;\
+            endoneof;
+
+#define FB_ONEOF_FBSERIAL\
+        oneof varid = SETUP_DATA.FbRedirection,\
+            prompt = STRING_TOKEN(STR_FB_REDIRECTION),\
+            help = STRING_TOKEN(STR_FB_REDIRECTION_HELP),\
+            default = DEFAULT_REDIRECTION_SUPPORT_SETTING,\
+            option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = MANUFACTURING | RESET_REQUIRED;\
+            option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;\
+        endoneof;
+
+#define FB_ONEOF_FBNETWORKSTACK\
+            oneof varid = SETUP_DATA.FbNetworkStack,\
+                prompt = STRING_TOKEN(STR_FB_NETWORK_STACK),\
+                help = STRING_TOKEN(STR_FB_NETWORK_STACK_HELP),\
+                default = DEFAULT_NETWORK_STACK_SUPPORT_SETTING,\
+                option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = MANUFACTURING | RESET_REQUIRED;\
+            endoneof;
+
+#endif //#ifdef CONTROL_DEFINITION
+
+#ifdef CONTROLS_WITH_DEFAULTS
+///
+/// List macros of all the controls attached to the actual data.
+///
+    FB_ONEOF_FASTBOOT
+    FB_ONEOF_FBSATA
+    FB_ONEOF_FBVGA
+    FB_ONEOF_FBUSB
+    FB_ONEOF_FBPS2
+    FB_ONEOF_FBNETWORKSTACK
+
+#endif ///#ifdef CONTROLS_WITH_DEFAULTS
+
+///Select Top level menu itmem (forset) for you pages
+#ifdef BOOT_FORM_SET
+    #ifndef SUPPRESS_GRAYOUT_ENDIF //old Core
+    #define SUPPRESS_GRAYOUT_ENDIF endif;
+    #endif
+
+#ifdef FORM_SET_ITEM
+
+    FB_ONEOF_FASTBOOT
+       
+
+    suppressif ideqval SETUP_DATA.FastBoot == 0;
+    grayoutif ideqval SETUP_DATA.FastBoot == 0;    
+        FB_ONEOF_FBSATA
+    SUPPRESS_GRAYOUT_ENDIF
+     
+#if CSM_SUPPORT
+    suppressif ideqval SETUP_DATA.FastBoot == 0;   
+        FB_ONEOF_FBVGA  
+    endif;
+#else
+    suppressif ideqval SETUP_DATA.FastBoot == 0;
+    grayoutif ideqval SETUP_DATA.FastBoot == 1;    
+        FB_ONEOF_FBVGA
+    SUPPRESS_GRAYOUT_ENDIF
+#endif //#if CSM_SUPPORT
+
+#if AMIUSB_SUPPORT
+    suppressif ideqval SETUP_DATA.FastBoot == 0;
+    grayoutif ideqval SETUP_DATA.FastBoot == 0;    
+        FB_ONEOF_FBUSB
+    SUPPRESS_GRAYOUT_ENDIF
+#endif //#if AMIUSB_SUPPORT
+
+    suppressif ideqval SETUP_DATA.FastBoot == 0;
+    grayoutif ideqval SETUP_DATA.FastBoot == 0;           
+        FB_ONEOF_FBPS2
+    SUPPRESS_GRAYOUT_ENDIF   
+
+    suppressif ideqval SETUP_DATA.FastBoot == 0;
+    grayoutif ideqval SETUP_DATA.FastBoot == 0;           
+        FB_ONEOF_FBNETWORKSTACK
+    SUPPRESS_GRAYOUT_ENDIF 
+    
+    suppressif ideqval SETUP_DATA.FastBoot == 0;        
+        FB_ONEOF_FBSERIAL
+    endif;
+
+#endif ///#ifdef FORM_SET_ITEM
+
+#endif ///#ifdef BOOT_FORM_SET
+
+//*************************************************************************
+//*************************************************************************
+//**                                                                     **
+//**        (C)Copyright 1985-2016, American Megatrends, Inc.            **
+//**                                                                     **
+//**                       All Rights Reserved.                          **
+//**                                                                     **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+//**                                                                     **
+//**                       Phone: (770)-246-8600                         **
+//**                                                                     **
+//*************************************************************************
+//*************************************************************************

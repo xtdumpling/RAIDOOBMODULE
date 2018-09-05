@@ -1,0 +1,54 @@
+TOKEN
+	Name  = OemCert_SUPPORT
+	Value  = 1
+	TokenType = Boolean
+	TargetH = Yes
+	TargetMAK = Yes
+	Master = Yes
+	Help  = "Main switch to enable Oem Certificate support in Project"
+End
+
+TOKEN
+	Name  = "PK_signedBy"
+	Value  = "$(OemCert_DIR)$(PATH_SLASH)AMI_Test_PK_subject.pfx"
+	TokenType = Expression
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "PK_signedCert"
+	Value  = "$(OemCert_DIR)$(PATH_SLASH)PK_AmiTestPk.cer"
+	TokenType = Expression
+	TargetMAK = Yes
+End
+
+PATH
+	Name  = OemCert_DIR
+	Help  = "Path to Oem Module in Project"
+End
+
+ELINK
+	Name  = "$(OemCert_DIR)$(PATH_SLASH)PK_AmiTestPk.cer"
+	Parent = "CertList_PK"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(OemCert_DIR)$(PATH_SLASH)KEK_AmiTestKEK.cer"
+	Parent = "CertList_KEK"
+	InvokeOrder = AfterParent
+	Disable = Yes
+End
+
+ELINK
+	Name  = "$(OemCert_DIR)$(PATH_SLASH)dummy$(PATH_SLASH)dbx_hash0.cer"
+	Parent = "CertList_dbx"
+	Disable = Yes
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(OemCert_DIR)$(PATH_SLASH)PK_AmiTestPk.cer"
+	Parent = "CertList_dbr"
+	InvokeOrder = AfterParent
+End

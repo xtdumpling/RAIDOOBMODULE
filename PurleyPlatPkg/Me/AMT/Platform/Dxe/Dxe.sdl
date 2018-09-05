@@ -1,0 +1,52 @@
+TOKEN
+	Name  = "AmtPlatformDxe_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling AmtPlatformDxe support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "AmtPetAlert_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable AmtPetAlert support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "AmtWrapperDxe_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable AmtWrapperDxe support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "MeSmbios_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable MeSmbios support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "AmtWrapperDxe"
+	File  = "AmtWrapperDxe\AmtWrapperDxe.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "AmtWrapperDxe_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "MeSmbios"
+	File  = "MeSmbios\MeSmbios.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "MeSmbios_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "AmtPetAlert"
+	File  = "AmtPetAlert\AmtPetAlert.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "AmtPetAlert_SUPPORT" "=" "1"
+End

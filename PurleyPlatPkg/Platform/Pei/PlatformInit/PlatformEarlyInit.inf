@@ -1,0 +1,251 @@
+## @file
+#  PlatformEarlyInit PEIM
+#
+#  Copyright (c) 2009 - 2016, Intel Corporation. All rights reserved.<BR>
+#
+#  This program and the accompanying materials
+#  are licensed and made available under the terms and conditions of the BSD License
+#  which accompanies this distribution. The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.php
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = PlatformEarlyInit
+  FILE_GUID                      = EE685731-CFF3-4ee7-9388-7E63FC5A59B0
+  MODULE_TYPE                    = PEIM
+  ENTRY_POINT                    = PlatformEarlyInitEntry
+
+[Sources]
+  PchInitPeim.c
+  Common/FlashMap.c
+  Common/Stall.c
+  MemoryPeim.c
+  MemoryCallback.c
+  PlatformEarlyInit.c
+  Recovery.c
+  SioInitPeim.c
+
+[Packages]
+  IA32FamilyCpuPkg/IA32FamilyCpuPkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  MdePkg/MdePkg.dec
+# APTIOV_SERVER_OVERRIDE_RC_START
+#  BpCommonPkg/BpCommonPkg.dec
+# APTIOV_SERVER_OVERRIDE_RC_END
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+# APTIOV_SERVER_OVERRIDE_RC_START
+#  SecurityPkg/SecurityPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiCRBPkg/AmiCRBPkg.dec   # Added to use AmiPlatformHooksLib.
+  AmiModulePkg/AmiModulePkg.dec # Added to use gAmiGlobalVariableGuid
+# APTIOV_SERVER_OVERRIDE_RC_END
+  CryptoPkg/CryptoPkg.dec
+  PurleySktPkg/Me/MePkg.dec
+  CpPlatPkg/CpPlatPkg.dec
+
+[LibraryClasses]
+  PeiServicesLib
+  PeimEntryPoint
+  DebugLib
+  HobLib
+  IoLib
+  PciLib
+  PlatformHooksLib
+  PcdLib
+  PrintLib
+  PeiServicesTablePointerLib
+  PciExpressLib
+  BaseCryptLib
+# APTIOV_SERVER_OVERRIDE_RC_START
+  #CmosAccessLib
+# APTIOV_SERVER_OVERRIDE_RC_END
+  MeTypeLib
+  SetupLib
+  PeiPolicyInit
+  PeiPlatformHookLib
+  PchInitLib
+  PchPcrLib
+  PchInfoLib
+  SerialPortLib
+# APTIOV_SERVER_OVERRIDE_RC_START
+#  To resolve build errors
+  AmiCspLib
+  ReportStatusCodeLib
+  AmiPlatformHooksLib  # Added for Oem Hook to Override PchSoftStrap and to to use AmiPlatformHooksLib.
+# APTIOV_SERVER_OVERRIDE_RC_END
+
+[Pcd]
+  gEfiIntelFrameworkModulePkgTokenSpaceGuid.PcdBootState
+# APTIOV_SERVER_OVERRIDE_RC_START
+  #gEfiSecurityPkgTokenSpaceGuid.PcdTpmPhysicalPresence
+# APTIOV_SERVER_OVERRIDE_RC_END
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+  gEfiMdePkgTokenSpaceGuid.PcdDebugPrintErrorLevel
+  gEfiMePkgTokenSpaceGuid.PcdMePlatformResetType
+  gPlatformTokenSpaceGuid.PcdDfxAdvDebugJumper
+  gPlatformTokenSpaceGuid.PcdWakeupType
+# APTIOV_SERVER_OVERRIDE_RC_START: Fall Back to default Memory Map once Memory Limit is reached.
+  gOemSkuTokenSpaceGuid.PcdAvailableMemoryBelow4G
+# APTIOV_SERVER_OVERRIDE_RC_END: Fall Back to default Memory Map once Memory Limit is reached.
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[FeaturePcd]
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFrameworkCompatibilitySupport         ## CONSUMES
+
+[Guids]
+  gEfiSetupVariableGuid
+  gEfiPchRcVariableGuid
+  gEfiMeRcVariableGuid
+  gEfiSocketIioVariableGuid
+  gEfiSocketCommonRcVariableGuid
+  gEfiSocketMpLinkVariableGuid
+  gEfiSocketMemoryVariableGuid
+  gEfiSocketProcessorCoreVarGuid
+  gEfiPlatformInfoGuid
+  gEfiMemoryTypeInformationGuid
+  gEfiFlashMapHobGuid
+  gPeiCapsuleOnDataCDGuid
+  gPeiCapsuleOnFatIdeDiskGuid
+  gPeiCapsuleOnFatUsbDiskGuid
+  gEfiMdeModulePkgTokenSpaceGuid
+  gEfiPlatformTxtPolicyDataGuid
+  gEfiBiosIdGuid
+  gEfiAdminPasswordHobGuid
+  gEfiMemoryMapGuid
+[Ppis]
+  gPeiBaseMemoryTestPpiGuid         ## PRODUCES
+  gPchUsbPolicyPpiGuid              ## PRODUCES
+  gEfiPeiStallPpiGuid
+  gPeiFlashMapPpiGuid
+  gEfiPeiBootInRecoveryModePpiGuid
+  gEfiPeiRecoveryModulePpiGuid
+  gEfiPeiMemoryDiscoveredPpiGuid
+  gPeiPlatformMemorySizePpiGuid
+  gEfiPeiReadOnlyVariable2PpiGuid
+  gEfiPeiMasterBootModePpiGuid
+  gEfiPeiResetPpiGuid
+  gPeiSmbusPolicyPpiGuid
+  gEfiEndOfPeiSignalPpiGuid
+  gPeiAtaPolicyPpiGuid
+  gPeiCachePpiGuid
+  gPchPlatformPolicyPpiGuid
+  gEfiPeiVirtualBlockIoPpiGuid
+  gEfiPeiDeviceRecoveryModulePpiGuid
+  gEfiPeiSmbus2PpiGuid
+  gPchInitPpiGuid
+  gPchResetPpiGuid
+  gEfiPeiSystemBoardPpiGuid
+  gPeiSpiPpiGuid
+  gEfiSiliconRcHobsReadyPpi
+
+[Depex]
+  gEfiPeiSystemBoardPpiGuid AND
+  gPchInitPpiGuid AND
+  gPchResetPpiGuid AND
+  gPeiSpiPpiGuid
+
+[FixedPcd]
+
+
+gCpPlatFlashTokenSpaceGuid.PcdFlashAreaBase
+
+gCpPlatFlashTokenSpaceGuid.PcdBiosSize
+gCpPlatFlashTokenSpaceGuid.PcdBiosBase
+#gCpPlatFlashTokenSpaceGuid.PcdCpuAddressWidthLimit
+gCpPlatFlashTokenSpaceGuid.PcdFlashBase
+gCpPlatFlashTokenSpaceGuid.PcdFlashSize
+gCpPlatFlashTokenSpaceGuid.PcdFlashBlockSize
+
+
+# for PeiSec FD
+
+
+
+gCpPlatFlashTokenSpaceGuid.PcdFlashFdSecPeiBase
+gCpPlatFlashTokenSpaceGuid.PcdFlashFdSecPeiSize
+
+gCpuUncoreTokenSpaceGuid.PcdFlashNvStorageMicrocodeBase
+gCpuUncoreTokenSpaceGuid.PcdFlashNvStorageMicrocodeSize
+
+
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvMrcNormalSize
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvMrcNormalBase
+
+
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvPeiPolicySize
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvPeiPolicyBase
+
+
+
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvAcmSize
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvAcmBase
+
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvSecPeiBase
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvSecPeiSize
+
+
+
+# for Main FD
+
+gCpPlatFlashTokenSpaceGuid.PcdFlashFdMainBase
+gCpPlatFlashTokenSpaceGuid.PcdFlashFdMainSize
+
+
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvMainSize
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvMainBase
+
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvOemLogoSize
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvOemLogoBase
+
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvWheaSize
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvWheaBase
+
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableBase
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageVariableSize
+
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwSpareBase
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwSpareSize
+
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwWorkingBase
+  gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwWorkingSize
+
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvNvStorageEventLogSize
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvNvStorageEventLogBase
+
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvAcmHeaderSize
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvAcmHeaderBase
+
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvMainPolicySize
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvMainPolicyBase
+
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvAcmSinitSize
+gCpPlatFlashTokenSpaceGuid.PcdFlashFvAcmSinitBase
+
+#gCpPlatFlashTokenSpaceGuid.PcdPTUFlashAreaBaseAddress
+#gCpPlatFlashTokenSpaceGuid.PcdMEFlashAreaBaseAddress
+
+
+
+## This PCD specifies the size of the physical device containing the BIOS, SMBIOS will use it.
+
+
+gCpPlatFlashTokenSpaceGuid.PcdFlashBackupRegionBase
+gCpPlatFlashTokenSpaceGuid.PcdFlashBackupRegionSize
+
+  gEfiPchTokenSpaceGuid.PcdPchAcpiIoPortBaseAddress
+  gEfiPchTokenSpaceGuid.PcdTcoBaseAddress
+

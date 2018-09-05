@@ -1,0 +1,51 @@
+#****************************************************************************
+#**            (C)Copyright 1993-2015 Supermicro Computer, Inc.            **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.00
+#    Bug Fix:  Initialize revision.
+#    Reason:   
+#    Auditor:  Leon Xu
+#    Date:     Dec/28/2014
+#**************************************************************************//
+TOKEN
+	Name  = "SMCSetPowerStatus_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch enable Set Power Status."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+End
+
+PATH
+	Name  = "SmcSetPowerStatus_DIR"
+End
+
+ELINK
+	Name  = "$(SmcSetPowerStatus_DIR)\SmcSetPowerStatus.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(SmcSetPowerStatus_DIR)\SmcSetPowerStatus.uni"
+	Parent  = "SetupStringFiles"
+	InvokeOrder = AfterParent
+End
+
+INFComponent
+	Name  = "SmcSetPowerStatus"
+	File  = "SmcSetPowerStatus.inf"
+	Package  = "SmcPkg"
+	ModuleTypes = "DXE_DRIVER"
+End
+
+INFComponent
+	Name  = "SmcSetPowerStatusSmm"
+	File  = "SmcSetPowerStatusSmm.inf"
+	Package  = "SmcPkg"
+	ModuleTypes = "DXE_SMM_DRIVER"
+End

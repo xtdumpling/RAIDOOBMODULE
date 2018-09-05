@@ -1,0 +1,542 @@
+##****************************************************************************
+##****************************************************************************
+##**                                                                        **
+##**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+##**                                                                        **
+##****************************************************************************
+##****************************************************************************
+#
+#  File History
+#
+#  Rev. 1.03
+#    Bug Fix:  Add an interface to call platform specific SmmRomHoleLib.
+#    Reason:
+#    Auditor:  Durant Lin
+#    Date:     Feb/07/2018
+#
+#  Rev. 1.02
+#    Bug Fix:  Add a interface to hook updatevariable before.
+#    Reason:
+#    Auditor:  Durant Lin
+#    Date:     Jan/17/2018
+#
+#  Rev. 1.01
+#    Bug Fix : N/A
+#    Reason  : Updated SUM Feature Flag specification revision to 1.6 based 
+#              on SUM_FeatureSupportFlagsSpecification_V1.6_rev20170930_1.docx 
+#              for SMC OOB TPM provisioning via IPMI.
+#    Auditor : Joe Jhang
+#    Date    : Nov/07/2017
+#
+#  Rev. 1.00
+#    Bug fixed: Initial SMC_OOB_PLATFORM_POLICY for SMC OOB module binary release.
+#    Reason   : 
+#    Auditor  : Jason Hsu
+#    Date     : Jun/09/07
+#
+#*****************************************************************************
+
+TOKEN
+    Name         = "SMC_OOB_PLATFORM_POLICY_SUPPORT"
+    Value        = "1"
+    TokenType    = Boolean
+    TargetEQU    = Yes
+    TargetMAK    = Yes
+    TargetH      = Yes
+    Master       = Yes
+End
+
+TOKEN
+  Name           = "SMC_OOB_SOURCES"
+  Value          = "2"
+  Help           = "Module Sources: 0 - Binaries, 1 - Debug Binaries, 2 - Source Files"
+  TokenType      = Boolean
+  TargetMAK      = Yes
+  TargetH        = Yes
+End
+
+TOKEN
+    Name         = "SMC_HII_BBS_SUFFIX_STRING_SUPPORT"
+    Value        = "1"
+    Help         = "Add suffix strings in Setup BBS pages for SUM to identify boot devices if they have the same device name."
+    TokenType    = Boolean
+    TargetEQU    = Yes
+    TargetMAK    = Yes
+    TargetH      = Yes
+End
+
+TOKEN
+    Name         = "OOB_READ_DATA_FROM_DRAM"
+    Value        = "1"
+    Help         = "Select the way to download data from BMC. 0 - VRAM, 1 - BMC's DRAM."
+    TokenType    = Boolean
+    TargetEQU    = Yes
+    TargetMAK    = Yes
+    TargetH      = Yes
+End
+
+INFComponent
+    Name         = "SmcOobPlatformPolicyDxe"
+    File         = "SmcOobPlatformPolicyDxe.inf"
+    Package      = "SmcPkg"
+    ModuleTypes  = "DXE_DRIVER"
+End
+
+INFComponent
+    Name         = "SmcOobPlatformPolicySmm"
+    File         = "SmcOobPlatformPolicySmm.inf"
+    Package      = "SmcPkg"
+    ModuleTypes  = "DXE_SMM_DRIVER"
+End
+
+FFS_FILE
+    Name         = "SmcOobPlatformPolicyDxe"
+    FD_AREA      = "FV_MAIN"
+    INFComponent = "SmcPkg.SmcOobPlatformPolicyDxe"
+End
+
+FFS_FILE
+    Name          = "SmcOobPlatformPolicySmm"
+    FD_AREA       = "FV_MAIN"
+    INFComponent  = "SmcPkg.SmcOobPlatformPolicySmm"
+End
+
+TOKEN
+    Name      = "******************** SMC_OOB_PLATFORM_POLICY Settings ********************"
+    TokenType = Expression
+End
+
+TOKEN
+    Name         = "SMC_OOB_MD5_SUPPORT"
+    Value        = "1"
+    Help         = "Upload OOB file to BMC and save it's MD5 in variable. Prevent duplicating upload."
+    TokenType    = Boolean
+    TargetH      = Yes
+End
+
+TOKEN
+    Name         = "SmcAssetInfoVersion"
+    Value        = "0x0002"
+    TargetH      = Yes
+End
+
+TOKEN
+    Name         = "SmcBiosCfgVersion"
+    Value        = "0x0002"
+    TargetH      = Yes
+End
+
+TOKEN
+    Name         = "SmcFullSMVersion"
+    Value        = "0x0002"
+    TargetH      = Yes
+End
+
+TOKEN
+    Name         = "SmcHiiVersion"
+    Value        = "0x0002"
+    TargetH      = Yes
+End
+
+TOKEN
+    Name         = "SmcSmbiosVersion"
+    Value        = "0x0002"
+    TargetH      = Yes
+End
+
+TOKEN
+    Name         = "SWSMI_SMC_INBAND_E6"
+    Value        = "0xE6"
+    TargetH      = Yes
+End
+
+TOKEN
+    Name         = "SWSMI_SMC_INBAND_E8"
+    Value        = "0xE8"
+    Help         = "Sw Smi E8"
+    TargetEQU    = Yes
+    TargetH      = Yes
+End
+
+TOKEN
+    Name      = "******************** Sum Feature Support Flags ********************"
+    TokenType = Integer
+End
+
+TOKEN
+    Name         = "SUM_FEATURE_FLAGS_MAJORVERSION"
+    Value        = "1"
+    TokenType    = Integer
+    TargetH      = Yes
+End
+
+TOKEN
+    Name         = "SUM_FEATURE_FLAGS_MINORVERSION"
+    Value        = "6"
+    TokenType    = Integer
+    TargetH      = Yes
+End
+
+#
+#  Platform ID - Offset 0, Bit [0:6]:
+#
+#    00: Tylersburg
+#    01: Bromolow
+#    02: Romley
+#    03: Denlow
+#    04: Brickland
+#    05: Grantley
+#    06: Grangeville
+#    07: Groveport Self Boot
+#    08: Groveport Leverage
+#    09: Greenlow
+#    10: Purley # 0x0A
+#
+TOKEN
+    Name         = "SUM_PLATFORM_ID"
+    Value        = "10"
+    TokenType    = Integer
+    TargetH      = Yes
+End
+
+#
+#  With/Without BMC - Offset 0, Bit [7]:
+#
+#    00: Without
+#    01: With
+#
+TOKEN
+    Name         = "SUM_WITH_WITHOUT_BMC"
+    Value        = "$(IPMI_SUPPORT)"
+    TokenType    = Integer
+    TargetH      = Yes
+End
+
+#
+#  In-Band Jumperless UpdateBios, BIOS support (In-Band) - Offset 4, Bit [1]:
+#
+#    00: No
+#    01: Yes
+#
+TOKEN
+    Name         = "SUM_INBAND_JUMPERLESS_UPDATEBIOS"
+    Value        = "1"
+    TokenType    = Integer
+    TargetH      = Yes
+End
+
+#
+#  BIOS Configuration, BIOS support - Offset 4, Bit [3]:
+#
+#    00: No 
+#    01: Yes
+#
+TOKEN
+    Name         = "SUM_BIOS_CONFIGURATION_SUPPORT_OUTBAND"
+    Value        = "$(SmcOutBand_SUPPORT)"
+    TokenType    = Integer
+    TargetH      = Yes
+End
+
+#
+#  BIOS Configuration, BIOS support (In-Band) - Offset 4, Bit [4]:
+#
+#    00: No 
+#    01: Yes
+#
+TOKEN
+    Name         = "SUM_BIOS_CONFIGURATION_SUPPORT_INBAND"
+    Value        = "$(SmcInBand_SUPPORT)"
+    TokenType    = Integer
+    TargetH      = Yes
+End
+
+#
+#  Edit DMI, BIOS support - Offset 5, Bit [1]:
+#
+#    00: No 
+#    01: Yes
+#
+TOKEN
+    Name         = "SUM_EDIT_DMI_SUPPORT_OUTBAND"
+    Value        = "$(SmcOutBand_SUPPORT)"
+    TokenType    = Integer
+    TargetH      = Yes
+End
+
+#
+#  Edit DMI, BIOS support (In-Band) - Offset 5, Bit [2]:
+#
+#    00: No 
+#    01: Yes
+#
+TOKEN
+    Name         = "SUM_EDIT_DMI_SUPPORT_INBAND"
+    Value        = "$(SmcInBand_SUPPORT)"
+    TokenType    = Integer
+    TargetH      = Yes
+End
+
+#
+#  Persistent DMI/BIOSCFG, BIOS support - Offset 6, Bit [1]:
+#
+#    00: No 
+#    01: Yes
+#
+TOKEN
+    Name         = "SUM_PERSISTENT_DMI_BIOSCFG_SUPPORT_OUTBAND"
+    Value        = "$(SmcOutBand_SUPPORT)"
+    TokenType    = Integer
+    TargetH      = Yes
+End
+
+#
+#  Full SMBIOS information, BIOS support - Offset 10, Bit [1]:
+#
+#    00: No 
+#    01: Yes
+#
+TOKEN
+    Name         = "SUM_FULL_SMBIOS_SUPPORT_OUTBAND"
+    Value        = "$(SmcOutBand_SUPPORT)"
+    TokenType    = Integer
+    TargetH      = Yes
+End
+
+#
+#  Full SMBIOS information, BIOS support (In-Band) - Offset 10, Bit [2]:
+#
+#    00: No 
+#    01: Yes
+#
+TOKEN
+    Name         = "SUM_FULL_SMBIOS_SUPPORT_INBAND"
+    Value        = "$(SmcInBand_SUPPORT)"
+    TokenType    = Integer
+    TargetH      = Yes
+End
+
+#
+#  VPD information, BIOS support - Offset 10, Bit [4]:
+#
+#    00: No 
+#    01: Yes
+#
+TOKEN
+    Name         = "SUM_VPD_SUPPORT_OUTBAND"
+    Value        = "1"
+    TokenType    = Integer
+    TargetH      = Yes
+End
+
+#
+#  VPD information, BIOS support (In-Band) - Offset 10, Bit [5]:
+#
+#    00: No 
+#    01: Yes
+#
+TOKEN
+    Name         = "SUM_VPD_SUPPORT_INBAND"
+    Value        = "1"
+    TokenType    = Integer
+    TargetH      = Yes
+End
+
+#
+#  HDD information (PCH SATA), BIOS support - Offset 10, Bit [6]:
+#
+#    00: No 
+#    01: Yes
+#
+TOKEN
+    Name         = "SUM_HDD_INFORMATION_BIOS_SUPPORT"
+    Value        = "$(SmcAssetInfo_SUPPORT)"
+    TokenType    = Integer
+    TargetH      = Yes
+End
+
+#
+#  MCTP RAID controller update, BIOS support - Offset 11, Bit [5]:
+#
+#    00: No 
+#    01: Yes
+#
+TOKEN
+    Name         = "SUM_MCTP_FW_UPDATE_BIOS_SUPPORT"
+    Value        = "0"
+    TokenType    = Integer
+    TargetH      = Yes
+End
+
+#
+#  VPD in type 40, BIOS support - Offset 11, Bit [6]:
+#
+#    00: No 
+#    01: Yes
+#
+TOKEN
+    Name         = "SUM_VPD_TYPE40_BIOS_SUPPORT"
+    Value        = "1"
+    TokenType    = Integer
+    TargetH      = Yes
+End
+
+#
+#  FRU1 data, BIOS support - Offset 12, Bit [0]:
+#
+#    00: No 
+#    01: Yes
+#
+TOKEN
+    Name         = "SUM_FRU1_DATA_BIOS_SUPPORT"
+    Value        = "$(IPMI_SUPPORT)"
+    TokenType    = Integer
+    TargetH      = Yes
+End
+
+#
+#  Intel RC Event Log, BIOS support - Offset 14, Bit [1]:
+#
+#    00: No
+#    01: Yes
+#
+TOKEN
+    Name         = "SUM_INTEL_RC_EVENT_LOG_SUPPORT"
+    Value        = "1"
+    TokenType    = Integer
+    TargetH      = Yes
+End
+
+#
+#  TPM Provision, BIOS support - Offset 16, Bit [1]:
+#
+#    00: No
+#    01: Yes
+#
+TOKEN
+    Name         = "SUM_TPM_PROVISION_SUPPORT"
+    Value        = "1"
+    TokenType    = Integer
+    TargetH      = Yes
+End
+
+#
+#  Auto TPM provision, BIOS support - Offset 16, Bit [3]:
+#
+#    00: No
+#    01: Yes
+#
+TOKEN
+	Name  = "SUM_AUTO_TPM_PROVISION_SUPPORT"
+	Value  = "0"
+	TokenType = Integer
+	TargetH = Yes
+	Token = "SMC_TPM_PROVISION_SUPPORT" "=" "0"
+End
+
+TOKEN
+	Name  = "SUM_AUTO_TPM_PROVISION_SUPPORT"
+	Value  = "1"
+	TokenType = Integer
+	TargetH = Yes
+	Token = "SMC_TPM_PROVISION_SUPPORT" "=" "1"
+End
+
+#
+#  TPM custom provision table, BIOS support - Offset 16, Bit [5]:
+#
+#    00: No
+#    01: Yes
+#
+TOKEN
+	Name  = "SUM_TPM_CUSTOM_PROVISION_TABLE_SUPPORT"
+	Value  = "0"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SUM_TPM_CUSTOM_PROVISION_TABLE_SUPPORT"
+	Value  = "1"
+	TokenType = Integer
+	TargetH = Yes
+	Token = "PpiX_SUPPORT" "=" "1"
+	Token = "SMC_TPM_PROVISION_SUPPORT" "=" "1"
+End
+
+#
+#  TPM v1.2, BIOS support - Offset 17, Bit [0]:
+#
+#    00: No
+#    01: Yes
+#
+TOKEN
+    Name         = "SUM_TPM_V12_SUPPORT"
+    Value        = "0"
+    TokenType    = Integer
+    TargetH      = Yes
+End
+
+#
+#  TPM v2.0, BIOS support - Offset 17, Bit [1]:
+#
+#    00: No
+#    01: Yes
+#
+TOKEN
+    Name         = "SUM_TPM_V20_SUPPORT"
+    Value        = "1"
+    TokenType    = Integer
+    TargetH      = Yes
+End
+
+#
+#  BIOS update parameter default /R, BIOS support - Offset 18, Bit [0]:
+#
+#    00: No
+#    01: Yes
+#
+TOKEN
+    Name         = "SUM_DEFAULT_PRESERVE_SMBIOS_SUPPORT"
+    Value        = "1"
+    TokenType    = Integer
+    TargetH      = Yes
+End
+
+#
+#  BIOS update parameter default /N, BIOS support - Offset 18, Bit [1]:
+#
+#    00: No
+#    01: Yes
+#
+TOKEN
+    Name         = "SUM_DEFAULT_PROGRAM_NVRAM_SUPPORT"
+    Value        = "1"
+    TokenType    = Integer
+    TargetH      = Yes
+End
+
+#
+#  BIOS update parameter default /ME, BIOS support - Offset 18, Bit [2]:
+#
+#    00: No
+#    01: Yes
+#
+TOKEN
+    Name         = "SUM_DEFAULT_UPDATE_ME_SUPPORT"
+    Value        = "1"
+    TokenType    = Integer
+    TargetH      = Yes
+End
+
+OUTPUTREGISTER
+	Name  = "AUTOGEN_PLATFORM_SPECIFIC_FUNC_HEADER"
+	Path  = "Build"
+	File  = "PlatformSpecificFunc.h"
+	Template  = "PlatformSpecificFunc.txt"
+End
+
+ELINK
+	Name  = "PlatformSpecificFuncInit"
+	InvokeOrder = ReplaceParent
+End

@@ -1,0 +1,45 @@
+TOKEN
+	Name  = StyleHook_SUPPORT
+	Value  = 1
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+	Help  = "Main switch to enable StyleHook support in Project"
+End
+
+PATH
+	Name  = "TSESTYLEHOOK_DIR"
+End
+
+TOKEN
+	Name  = "STYLE_CLEAR_SCREEN_COLOR"
+	Value  = "((UINT8)(EFI_BACKGROUND_BLUE) | EFI_WHITE)"
+	Help  = "Background color of the Help Title Frame"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+ELINK
+	Name  = "$(BUILD_DIR)\StyleHook.lib"
+	Parent  = "$(TSELITESRC_DIR)\StyleHook\StyleHook$(ARCH).lib"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "StyleHook"
+	Parent  = "StyleHookBin"
+	InvokeOrder = ReplaceParent
+End
+
+INFComponent
+	Name  = "StyleHook"
+	File  = "StyleHook.inf"
+	Package  = "AmiTsePkg"
+End
+
+LibraryMapping
+	Class  = "StyleHook"
+	Instance  = "AmiTsePkg.StyleHook"
+#	Arch  = "X64"
+End

@@ -1,0 +1,39 @@
+TOKEN
+    Name  = "DMIEDIT_AFRI_SUPPORT"
+    Value  = "1"
+    Help  = "Support for DmiEdit with AMI Firmware Runtime Interface (AFRI) . \0 = AFRI Not supported \1 = AFRI supported\NOTE: THIS SUPPORT IS CURRENTLY AVAILABLE FOR ARM PLATFORM ONLY"
+    TokenType = Boolean
+    TargetH = Yes
+    Token = "AFRI_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "FLASH_BLOCK_VIRTUALIZATION"
+    Value  = "0"
+    Help  = "Set to virtualize Flash block address for DmiEdit data. This is a work-around token as some ARM-based system needs to have this address virtualized as opposed to Physical address"
+    TokenType = Boolean
+    TargetH = Yes
+    Token = "SMBIOS_DMIEDIT_DATA_LOC" "=" "0"
+End
+
+PATH
+    Name  = "SMBIOS_DMIEDIT_AFRI_DIR"
+End
+
+INFComponent
+    Name  = "SmbiosDmiEditAfri"
+    File  = "SmbiosDmiEditAfri.inf"
+    Package  = "AmiCompatibilityPkg"
+    ModuleTypes  = "DXE_RUNTIME_DRIVER"
+    Token = "DMIEDIT_AFRI_SUPPORT" "=" "1"
+    Token = "AFRI_PASS_TO_AFRI_PROTOCOL" "=" "1"
+End
+
+INFComponent
+    Name  = "SmbiosDmiEditAfriSmi"
+    File  = "SmbiosDmiEditAfriSmi.inf"
+    Package  = "AmiCompatibilityPkg"
+    ModuleTypes  = "DXE_SMM_DRIVER"
+    Token = "DMIEDIT_AFRI_SUPPORT" "=" "1"
+    Token = "AFRI_PASS_TO_SMM_COMMUNICATION" "=" "1"
+End

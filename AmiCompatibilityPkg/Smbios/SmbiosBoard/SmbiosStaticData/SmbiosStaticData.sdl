@@ -1,0 +1,4571 @@
+TOKEN
+	Name  = "SMBIOS_STATIC_DATA_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable/disable SMBIOS static data support in project"
+	TokenType = Boolean
+	TargetH = Yes
+	Master = Yes
+	Token = "SMBIOS_TABLES_BUILD_TYPE" "=" "0"
+End
+
+TOKEN
+    Name  = "DEFAULT_STRING"
+    Value  = "Default string"
+    Help  = "Default unported strings in Smbios static table"
+    TokenType = Expression
+End
+
+##############################################################################
+#
+#   TYPE 0 - BIOS INFORMATION
+#   
+##############################################################################
+
+TOKEN
+	Name  = "TYPE0_STRUCTURE"
+	Value  = "1"
+	Help  = "ON  -> BIOS Information structure will be present\OFF -> BIOS Information structure will not be present"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "BIOS_VENDOR"
+	Value  = "American Megatrends Inc."
+	Help  = "Specifies the BIOS Vendor's Name."
+	TokenType = Expression
+	TargetEQU = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "BIOS_VERSION_BACKWARD_COMPATIBILITY"
+	Value  = "0"
+	Help  = "Backward compatibility control token for Type 0 BIOS Version/System BIOS Major Release/System BIOS Minor Release\ON = Backward compatible\           BIOS Version = CORE_MAJOR_VERSION.CORE_MINOR_VERSION.CORE_REVISION\           System BIOS Major Release = CORE_MAJOR_VERSION\           System BIOS Minor Release = CORE_MINOR_VERSION\OFF = Not backward compatible\            BIOS Version = CORE_MAJOR_VERSION.CORE_BUILD_NUMBER\            System BIOS Major Release = CORE_MAJOR_VERSION\            System BIOS Minor Release = CORE_BUILD_NUMBER\            or OEM customized strings)"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+#
+# Note: CORE_REVISION SDL token has been removed starting with label 19 of AmiCompatibilityPkg.
+#       In this case, BIOS_VERSION_BACKWARD_COMPATIBILITY is automatically disabled
+#
+TOKEN
+    Name  = "BIOS_VERSION_BACKWARD_COMPATIBILITY"
+    Value  = "1"
+    Help  = "Backward compatibility control token for Type 0 BIOS Version/System BIOS Major Release/System BIOS Minor Release\ON = Backward compatible\           BIOS Version = CORE_MAJOR_VERSION.CORE_MINOR_VERSION.CORE_REVISION\           System BIOS Major Release = CORE_MAJOR_VERSION\           System BIOS Minor Release = CORE_MINOR_VERSION\OFF = Not backward compatible\            BIOS Version = CORE_MAJOR_VERSION.CORE_BUILD_NUMBER\            System BIOS Major Release = CORE_MAJOR_VERSION\            System BIOS Minor Release = CORE_BUILD_NUMBER\            or OEM customized strings)"
+    TokenType = Boolean
+    TargetEQU = Yes
+    Token = "CORE_MINOR_VERSION" "!=" "0"
+    Token = "CORE_REVISION" "!=" "0"
+End
+
+TOKEN
+	Name  = "SYSTEM_BIOS_VERSION"
+	Value = ""
+	Help  = "Specifies system BIOS version\BIOS Version = CORE_MAJOR_VERSION.CORE_BUILD_NUMBER when 'Value' is empty\"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "BIOS_VERSION_BACKWARD_COMPATIBILITY" "=" "0"
+End
+
+TOKEN
+	Name  = "SYSTEM_BIOS_MAJOR_VERSION"
+	Value  = "$(CORE_MAJOR_VERSION)"
+	Help  = "Specifies system BIOS major version"
+	TokenType = Integer
+	TargetEQU = Yes
+	Token = "BIOS_VERSION_BACKWARD_COMPATIBILITY" "=" "0"
+End
+
+TOKEN
+	Name  = "SYSTEM_BIOS_MINOR_VERSION"
+	Value  = "$(CORE_BUILD_NUMBER)"
+	Help  = "Specifies system BIOS minor version"
+	TokenType = Integer
+	TargetEQU = Yes
+	Token = "BIOS_VERSION_BACKWARD_COMPATIBILITY" "=" "0"
+End
+
+TOKEN
+	Name  = "BI_BIOS_START_ADDR"
+	Value  = "0F000h"
+	Help  = "Segment location of BIOS Starting Address, e.g.0E800h.\NOTE : The size of the runtime BIOS image can be computed by subtracting the Starting Address Segment from 10000h and multiplying the result by 16."
+	TokenType = Integer
+	TargetEQU = Yes
+End
+
+TOKEN
+    Name  = "BIOS_SIZE"
+    Value  = "$(FLASH_SIZE)"
+    Help  = "Physical size of the flash part containing the BIOS"
+    TokenType = Integer
+    TargetH = Yes
+    TargetEQU = Yes
+End
+
+##############################################################################
+
+TOKEN
+	Name  = "BIOS Characteristics"
+	Help  = "Defines which functions the BIOS supports. PCI, PCMCIA, Flash, etc."
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "BI_UNKNOWN_CHAR"
+	Value  = "0"
+	Help  = "BIOS Characteristics Bit 2\ON  -> BIOS Characteristics are Unknown\OFF -> BIOS Characteristics are Known "
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "BI_BIOS_CHAR_NOT_SUPPORTED"
+	Value  = "0"
+	Help  = "BIOS Characteristics Bit 3\ON  -> BIOS Characteristics are not Supported\OFF -> BIOS Characteristics are Supported."
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "BI_MCA"
+	Value  = "0"
+	Help  = "BIOS Characteristics Bit 5\ON  -> MCA is Supported.\OFF -> MCA is Not Supported."
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "BI_EISA"
+	Value  = "0"
+	Help  = "BIOS Characteristics Bit 6\ON  -> EISA is Supported.\OFF -> EISA is Not Supported."
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "BI_PCMCIA"
+	Value  = "0"
+	Help  = "BIOS Characteristics Bit 8\ON  -> PC Card (PCMCIA) is Supported.\OFF -> PC Card (PCMCIA) is Not Supported."
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "BI_BIOS_FLASH"
+	Value  = "1"
+	Help  = "BIOS Characteristics Bit 11\ON  -> BIOS is Upgradeable (Flash)\OFF -> BIOS is Not Upgradeable."
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "BI_BIOS_SHADOW"
+	Value  = "1"
+	Help  = "BIOS Characteristics Bit 12\ON  -> BIOS Shadowing is Allowed.\OFF -> BIOS Shadowing is Not Allowed."
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "BI_VL_VESA"
+	Value  = "0"
+	Help  = "BIOS Characteristics Bit 13\ON  -> VL-VESA is Supported.\OFF -> VL-VESA is Not Supported."
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "BI_ESCD"
+	Value  = "0"
+	Help  = "BIOS Characteristics Bit 14\ON  -> ESCD support is Available.\OFF -> ESCD support is Not Available"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "BI_CDROM_BOOT"
+	Value  = "1"
+	Help  = "BIOS Characteristics Bit 15\ON  -> Boot from CD is Supported\OFF -> Boot from CD is Not Supported."
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "BI_SELECTABLE_BOOT"
+	Value  = "1"
+	Help  = "BIOS Characteristics Bit 16\ON  -> Selectable Boot is Supported\OFF -> Selectable Boot is Not Supported"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "BI_BIOS_ROM_SOCKET"
+	Value  = "1"
+	Help  = "BIOS Characteristics Bit 17\ON  -> If the ROM is Socketed\OFF -> If the ROM is Soldered"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "BI_PCMCIA_BOOT"
+	Value  = "0"
+	Help  = "BIOS Characteristics Bit 18\ON  -> Boot from PC Card (PCMCIA) is Supported.\OFF -> Boot from PC Card (PCMCIA) is Not Supported."
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "BI_EDD"
+	Value  = "1"
+	Help  = "BIOS Characteristics Bit 19\ON  -> EDD (Enhanced Disk Drive) Specification is Supported.\OFF -> EDD (Enhanced Disk Drive) Specification is Not Supported."
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "BI_INT13_NEC9800"
+	Value  = "0"
+	Help  = "BIOS Characteristics Bit 20\ON  -> Int13h Japanese Floppy for NEC 9800 1.2MB (3.5inch, 1KBytes/Sector, 360 RPM) is Supported.\OFF -> Does Not Support."
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "BI_INT13_TOSHIBA"
+	Value  = "0"
+	Help  = "BIOS Characteristics Bit 21\ON  -> Int13h Japanese Floppy for Toshiba 1.2MB (3.5inch, 360 RPM) is Supported.\OFF -> Does Not Support."
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "BI_INT13_5_25_360"
+	Value  = "0"
+	Help  = "BIOS Characteristics Bit 22\ON  -> Int13h - 5.25inch/360KB Floppy Services are Supported.\OFF -> Does Not Support."
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "BI_INT13_5_25_1_2"
+	Value  = "1"
+	Help  = "BIOS Characteristics Bit 23\ON  -> Int13h - 5.25inch/1.2MB Floppy Services are Supported.\OFF -> Does Not Support."
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "BI_INT13_3_5_720"
+	Value  = "1"
+	Help  = "BIOS Characteristics Bit 24\ON  -> Int13h - 3.5inch/720KB Floppy Services are Supported.\OFF -> Does Not Support."
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "BI_INT13_3_5_2_88"
+	Value  = "1"
+	Help  = "BIOS Characteristics Bit 25\ON  -> Int13h - 3.5inch/2.88MB Floppy Services are Supported.\OFF -> Does Not Support."
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "BI_INT5_PRINT_SCRN"
+	Value  = "1"
+	Help  = "BIOS Characteristics Bit 26\ON  -> Int5h - Print Screen Service is Supported.\OFF -> Does Not Support."
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "BI_INT14_SERIAL_SVC"
+	Value  = "1"
+	Help  = "BIOS Characteristics Bit 28\ON  -> Int14h - Serial Services are Supported.\OFF -> Does Not Support."
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "BI_INT17_PRN_SVC"
+	Value  = "1"
+	Help  = "BIOS Characteristics Bit 29\ON  -> Int17h - Printer Services are Supported.\OFF -> Does Not Support."
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "BI_INT10_CGA_MONO"
+	Value  = "0"
+	Help  = "BIOS Characteristics Bit 30\ON  -> Int10h - CGA/Mono Video Services are Supported.\OFF -> Does Not Support."
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "BI_NEC_PC_98"
+	Value  = "0"
+	Help  = "BIOS Characteristics Bit 31\ON  -> NEC PC-98 is Supported.\OFF -> NEC PC-98 is Not Supported."
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+##############################################################################
+
+TOKEN
+	Name  = "BIOS Characteristics Extension Byte 1"
+	Help  = "Optional space reserved for future supported functions. The number of Extension Bytes that are present is indicated by the Length in offset 1 minus 12h."
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "BI_AGP_SUPPORT"
+	Value  = "0"
+	Help  = "BIOS Characteristics Extension Byte 1 Bit 2\ON  -> AGP is Supported.\OFF -> AGP is Not Supported"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "BI_I2O_BOOT_SUP"
+	Value  = "0"
+	Help  = "BIOS Characteristics Extension Byte 1 Bit 3\ON  -> I2O Boot is Supported.\OFF -> I2O Boot is Not Supported."
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "BI_LS120_BOOT_SUP"
+	Value  = "0"
+	Help  = "BIOS Characteristics Extension Byte 1 Bit 4\ON  -> LS-120 Boot is Supported.\OFF -> LS-120 Boot is Not Supported."
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "BI_ATAPI_ZIP_SUP"
+	Value  = "0"
+	Help  = "BIOS Characteristics Extension Byte 1 Bit 5\ON  -> ATAPI ZIP Drive Boot is Supported.\OFF -> ATAPI ZIP Drive Boot is Not Supported."
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "BI_IEEE_1394_SUP"
+	Value  = "0"
+	Help  = "BIOS Characteristics Extension Byte 1 Bit 6\ON  -> 1394 Boot is Supported.\OFF -> 1394 Boot is Not Supported."
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "BI_SMART_BAT_SUP"
+	Value  = "0"
+	Help  = "BIOS Characteristics Extension Byte 1 Bit 7\ON  -> Smart Battery is Supported.\OFF -> Smart Battery is Not Supported."
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+##############################################################################
+
+TOKEN
+	Name  = "BIOS Characteristics Extension Byte 2"
+	Help  = "Optional space reserved for future supported functions. The number of Extension Bytes that are present is indicated by the Length in offset 1 minus 12h."
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "BBS_SUPPORT"
+	Value  = "1"
+	Help  = "BIOS Characteristics Extension Byte 2 Bit 0\ON  -> Enable BIOS Boot Specification support.\OFF -> Disable BIOS Boot Specification support."
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "NETBOOT_SUPPORT"
+	Value  = "0"
+	Help  = "BIOS Characteristics Extension Byte 2 Bit 1\ON  -> Function key-initiated Network Service boot support enabled. \OFF  -> Function key-initiated Network Service boot support disabled."
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "BI_ETCD"
+	Value  = "1"
+	Help  = "BIOS Characteristics Extension Byte 2 Bit 2\ON  -> Enable Targeted Content Distribution is ON.\OFF -> Enable Targeted Content Distribution is OFF."
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "UEFI_SUPPORT"
+	Value  = "1"
+	Help  = "BIOS Characteristics Extension Byte 2 Bit 3\ON  -> UEFI Specification is supported.\OFF -> UEFI Specification is not supported."
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "VIRTUAL_MACHINE"
+	Value  = "0"
+	Help  = "BIOS Characteristics Extension Byte 2 Bit 4\ON  -> The SMBIOS table describes a virtual machine.\OFF -> The SMBIOS table describes a real machine."
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+##############################################################################
+
+TOKEN
+	Name  = "ECMA"
+	Value  = "0FFh"
+	Help  = "Embedded Controller Firmware Major Release.\0FFh = System does not have field upgradeable embedded controller firmware."
+	TokenType = Integer
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "ECMI"
+	Value  = "0FFh"
+	Help  = "Embedded Controller Firmware Minor Release.\0FFh = System does not have field upgradeable embedded controller firmware."
+	TokenType = Integer
+	TargetEQU = Yes
+End
+
+##############################################################################
+#
+#	TYPE 1 - SYSTEM INFORMATION
+#
+##############################################################################
+#
+#   The information in this Structure defines attributes of the overall
+#   system and is intended to be associated with the Component ID group of
+#   the system's MIF.\An SMBIOS implementation is associated with a single
+#   system instance and contains one and only one System Information
+#   (Type 1) structure.
+#
+##############################################################################
+
+TOKEN
+	Name  = "TYPE1_STRUCTURE"
+	Value  = "1"
+	Help  = "ON  -> System Information structure will be present\OFF -> System Information structure will not be present"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SYSTEM_MANUFACTURER"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the System Manufacturer Name."
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYSTEM_PRODUCT_NAME"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the System Product Name"
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYSTEM_VERSION"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the System Product Version."
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYSTEM_SERIAL_NUMBER"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the System Serial Number."
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYSTEM_WAKEUP_TYPE"
+	Value  = "06h"
+	Help  = "Specifies the System Wake-up Type.\00h     -     Reserved\01h     -     Other\02h     -     Unknown\03h     -     APM Timer\04h     -     Modem Ring\05h     -     LAN Remote\06h     -     Power Switch\07h     -     PCI PME#\08h     -     AC Power Restored"
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "01h - 08h"
+End
+
+TOKEN
+	Name  = "SYSTEM_SKU_NUMBER"
+	Value  = "$(DEFAULT_STRING)"
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYSTEM_FAMILY"
+	Value  = "$(DEFAULT_STRING)"
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SMBIOS_UUID"
+	Value  = "{0,2,0,3,0,4,0,5,0,6,0,7,0,8,0,9}"
+	Help  = "List of TYPE 1 UUID"
+	TokenType = Expression
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+##############################################################################
+#
+#	TYPE 2 - BASE BOARD (or MODULE) INFORMATION
+#
+##############################################################################
+#
+#   This information in this structure defines attributes of a system
+#   baseboard - for example a motherboard, planar, or server blade or other
+#   standard system module.
+#
+##############################################################################
+
+TOKEN
+	Name  = "BASE_BOARD_INFO"
+	Value  = "1"
+	Help  = "ON  -> BaseBoard Information (Type 2) structure will be present\OFF -> BaseBoard Information (Type 2) structure will not be present\"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TYPE2_STRUCTURE"
+	Value  = "$(BASE_BOARD_INFO)"
+	Help  = "Alternate token name for BASE_BOARD_INFO"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "NUMBER_OF_BASEBOARDS"
+	Value  = "1"
+	Help  = "Number of Baseboard (Type 2) structure"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+	Token = "BASE_BOARD_INFO" "=" "1"
+End
+
+############################################################################
+#   When NUMBER_OF_BASEBOARDS = 1:
+#     For backward compatibility, porting information is to be done below
+#
+#   When NUMBER_OF_BASEBOARDS > 1:
+#     Porting information is to be done in Smbdesc.def file
+############################################################################
+TOKEN
+	Name  = "BASE_BOARD_MANUFACTURER"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the Board Manufacturer."
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "BASE_BOARD_INFO" "=" "1"
+	Token = "NUMBER_OF_BASEBOARDS" "=" "1"
+End
+
+TOKEN
+	Name  = "BASE_BOARD_PRODUCT_NAME"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the Product Name"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "BASE_BOARD_INFO" "=" "1"
+	Token = "NUMBER_OF_BASEBOARDS" "=" "1"
+End
+
+TOKEN
+	Name  = "BASE_BOARD_VERSION"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the Product Version."
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "BASE_BOARD_INFO" "=" "1"
+	Token = "NUMBER_OF_BASEBOARDS" "=" "1"
+End
+
+TOKEN
+	Name  = "BASE_BOARD_SERIAL_NUMBER"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the Product Serial Number."
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "BASE_BOARD_INFO" "=" "1"
+	Token = "NUMBER_OF_BASEBOARDS" "=" "1"
+End
+
+TOKEN
+	Name  = "BB_ASSET_TAG"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the Asset Tag Number of the Base Board."
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "BASE_BOARD_INFO" "=" "1"
+	Token = "NUMBER_OF_BASEBOARDS" "=" "1"
+End
+
+TOKEN
+	Name  = "BB_LOC_IN_CHASSIS"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the Location of Base Board in the Chassis."
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "BASE_BOARD_INFO" "=" "1"
+	Token = "NUMBER_OF_BASEBOARDS" "=" "1"
+End
+
+TOKEN
+	Name  = "BB_BOARD_TYPE"
+	Value  = "0Ah"
+	Help  = "Specifies the Base Board type.\\01h     -     Unknown\02h     -     Other\03h     -     Server Blade\04h     -     Connectivity Switch\05h     -     System Management Module\06h     -     Processor Module\07h     -     I/O Module\08h     -     Memory Module\09h     -     Daughter Board\0Ah     -     Motherboard (includes Processor, Memory, and I/O)\0Bh     -     Processor/Memory Module\0Ch     -     Processor/IO Module\0Dh     -     Interconnect Board"
+	TokenType = Integer
+	TargetEQU = Yes
+	Token = "BASE_BOARD_INFO" "=" "1"
+	Token = "NUMBER_OF_BASEBOARDS" "=" "1"
+End
+
+TOKEN
+	Name  = "BB_HOSTING_BOARD"
+	Value  = "1"
+	Help  = "ON  - Board is Hosting Board eg. Motherboard\OFF - Board is not a Hosting Board"
+	TokenType = Boolean
+	TargetEQU = Yes
+	Range  = "ON - OFF"
+	Token = "BASE_BOARD_INFO" "=" "1"
+	Token = "NUMBER_OF_BASEBOARDS" "=" "1"
+End
+
+TOKEN
+	Name  = "BB_REQUIRE_AUX_BOARD"
+	Value  = "0"
+	Help  = "ON  - Board requires atleast one Daughter Board or Auxiliary card to function properly\OFF - Board can function properly without Daughter Board or Auxilliary Card"
+	TokenType = Boolean
+	TargetEQU = Yes
+	Range  = "ON - OFF"
+	Token = "BASE_BOARD_INFO" "=" "1"
+	Token = "NUMBER_OF_BASEBOARDS" "=" "1"
+End
+
+TOKEN
+	Name  = "BB_REMOVABLE"
+	Value  = "0"
+	Help  = "ON  - Board is Removable. It is designed to be taken in and out of the Chassis without imaparing the function of the Chassis.\OFF - Board is not Removable."
+	TokenType = Boolean
+	TargetEQU = Yes
+	Range  = "ON - OFF"
+	Token = "BASE_BOARD_INFO" "=" "1"
+	Token = "NUMBER_OF_BASEBOARDS" "=" "1"
+End
+
+TOKEN
+	Name  = "BB_REPLACEABLE"
+	Value  = "1"
+	Help  = "ON  - Board is Replaceable. It is possible to replace (either as a field repair or upgrade) the board with a physically different one. The board is inherently removable.\OFF - Board is not Replaceable."
+	TokenType = Boolean
+	TargetEQU = Yes
+	Range  = "ON - OFF"
+	Token = "BASE_BOARD_INFO" "=" "1"
+	Token = "NUMBER_OF_BASEBOARDS" "=" "1"
+End
+
+TOKEN
+	Name  = "BB_HOT_SWAPPABLE"
+	Value  = "0"
+	Help  = "ON  - Board is Hot Swappable. It is possible to replace the board with a physically different but equvalent one while power is applied to the Board. The board is inherently replaceable and removable.\OFF - Board is not Hot Swappable."
+	TokenType = Boolean
+	TargetEQU = Yes
+	Range  = "ON - OFF"
+	Token = "BASE_BOARD_INFO" "=" "1"
+	Token = "NUMBER_OF_BASEBOARDS" "=" "1"
+End
+
+TOKEN
+	Name  = "NUMBER_OF_OBJECT_HANDLES"
+	Value  = "0"
+	Help  = "Number of Contained Object Handles"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+	Range  = "0-255"
+	Token = "BASE_BOARD_INFO" "=" "1"
+	Token = "NUMBER_OF_BASEBOARDS" "=" "1"
+End
+
+##############################################################################
+#
+#	TYPE 3 - SYSTEM ENCLOSURE OR CHASSIS
+#
+##############################################################################
+#
+#	The information in this structure defines attributes of the system's
+#   mechanical enclosure(s). For example, if the system included a separate
+#   enclosure for its peripheral devices, two structures would be returned:
+#   one for the main, system enclosure and the second for the peripheral
+#   device enclosure.
+#
+##############################################################################
+
+TOKEN
+	Name  = "SYS_CHASSIS_INFO"
+	Value  = "1"
+	Help  = "ON  -> System Chassis Information (Type 3) structure will be present\OFF -> System Chassis Information (Type 3) structure will not be present\"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "TYPE3_STRUCTURE"
+	Value  = "$(SYS_CHASSIS_INFO)"
+	Help  = "Alternate token name for SYS_CHASSIS_INFO"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "NUMBER_OF_SYSTEM_CHASSIS"
+	Value  = "1"
+	Help  = "Number of System Chassis (Type 3) structure"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+	Token = "SYS_CHASSIS_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_MANUFACTURER_1"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the System Chassis Manufacturer."
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_MANUFACTURER_2"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the System Chassis Manufacturer."
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_MANUFACTURER_3"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the System Chassis Manufacturer."
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_MANUFACTURER_4"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the System Chassis Manufacturer."
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_MANUFACTURER_5"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the System Chassis Manufacturer."
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_LOCK_1"
+	Value  = "0"
+	Help  = "Bit7 of System Chassis Type\ON  => Chassis Lock is present \OFF => Either a Lock is not present or it is unknown if the Chassis or Enclosure has a lock"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_LOCK_2"
+	Value  = "0"
+	Help  = "Bit7 of System Chassis Type\ON  => Chassis Lock is present \OFF => Either a Lock is not present or it is unknown if the Chassis or Enclosure has a lock"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_LOCK_3"
+	Value  = "0"
+	Help  = "Bit7 of System Chassis Type\ON  => Chassis Lock is present \OFF => Either a Lock is not present or it is unknown if the Chassis or Enclosure has a lock"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_LOCK_4"
+	Value  = "0"
+	Help  = "Bit7 of System Chassis Type\ON  => Chassis Lock is present \OFF => Either a Lock is not present or it is unknown if the Chassis or Enclosure has a lock"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_LOCK_5"
+	Value  = "0"
+	Help  = "Bit7 of System Chassis Type\ON  => Chassis Lock is present \OFF => Either a Lock is not present or it is unknown if the Chassis or Enclosure has a lock"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_TYPE_1"
+	Value  = "03"
+    Help  = "Bits 6:0  -     Enumeration Value See Below.\01h     -     Other\02h     -     Unknown\03h     -     Desktop\04h     -     Low Profile Desktop\05h     -     Pizza Box\06h     -     Mini Tower\07h     -     Tower\08h     -     Portable\09h     -     Lap Top\0Ah     -     Notebook\0Bh     -     Hand Held\0Ch     -     Docking Station\0Dh     -     All in One\0Eh     -     Sub Notebook\0Fh     -     Space-saving\10h     -     Lunch Box\11h     -     Main Server Chassis\12h     -     Expansion Chassis\13h     -     Sub Chassis\14h     -     Bus Expansion Chassis\15h     -     Peripheral Chassis\16h     -     RAID Chassis\17h     -     Rack Mount Chassis\18h     -     Sealed-Case PC\19h     -     Multi-System Chassis. When this value is specified by an SMBIOS implementation, the physical chassis associated with this structure supports multiple, independently reporting physical systems\                 - regardless of the chassis' current configuration. Systems in the same physical chassis are required to report the same value in this structure's Serial Number field.\                 For a Chassis that may also be configured as either a single system or multiple physical systems, the Multi-System Chassis value is reported even if the chassis is currently configured as a \                 Single System. This allows management applications to recognize the multi-system potential of the chassis.\1Ah     -     CompactPCI\1Bh     -     AdvancedTCA\1Ch     -     Blade\1Dh     -     Blade Enclosure\1Eh     -     Tablet\1Fh     -     Convertible\20h     -     Detachable"
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "01h - 19h"
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_TYPE_2"
+	Value  = "03"
+    Help  = "Bits 6:0  -     Enumeration Value See Below.\01h     -     Other\02h     -     Unknown\03h     -     Desktop\04h     -     Low Profile Desktop\05h     -     Pizza Box\06h     -     Mini Tower\07h     -     Tower\08h     -     Portable\09h     -     Lap Top\0Ah     -     Notebook\0Bh     -     Hand Held\0Ch     -     Docking Station\0Dh     -     All in One\0Eh     -     Sub Notebook\0Fh     -     Space-saving\10h     -     Lunch Box\11h     -     Main Server Chassis\12h     -     Expansion Chassis\13h     -     Sub Chassis\14h     -     Bus Expansion Chassis\15h     -     Peripheral Chassis\16h     -     RAID Chassis\17h     -     Rack Mount Chassis\18h     -     Sealed-Case PC\19h     -     Multi-System Chassis. When this value is specified by an SMBIOS implementation, the physical chassis associated with this structure supports multiple, independently reporting physical systems\                 - regardless of the chassis' current configuration. Systems in the same physical chassis are required to report the same value in this structure's Serial Number field.\                 For a Chassis that may also be configured as either a single system or multiple physical systems, the Multi-System Chassis value is reported even if the chassis is currently configured as a \                 Single System. This allows management applications to recognize the multi-system potential of the chassis.\1Ah     -     CompactPCI\1Bh     -     AdvancedTCA\1Ch     -     Blade\1Dh     -     Blade Enclosure\1Eh     -     Tablet\1Fh     -     Convertible\20h     -     Detachable"
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "01h - 19h"
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_TYPE_3"
+	Value  = "03"
+    Help  = "Bits 6:0  -     Enumeration Value See Below.\01h     -     Other\02h     -     Unknown\03h     -     Desktop\04h     -     Low Profile Desktop\05h     -     Pizza Box\06h     -     Mini Tower\07h     -     Tower\08h     -     Portable\09h     -     Lap Top\0Ah     -     Notebook\0Bh     -     Hand Held\0Ch     -     Docking Station\0Dh     -     All in One\0Eh     -     Sub Notebook\0Fh     -     Space-saving\10h     -     Lunch Box\11h     -     Main Server Chassis\12h     -     Expansion Chassis\13h     -     Sub Chassis\14h     -     Bus Expansion Chassis\15h     -     Peripheral Chassis\16h     -     RAID Chassis\17h     -     Rack Mount Chassis\18h     -     Sealed-Case PC\19h     -     Multi-System Chassis. When this value is specified by an SMBIOS implementation, the physical chassis associated with this structure supports multiple, independently reporting physical systems\                 - regardless of the chassis' current configuration. Systems in the same physical chassis are required to report the same value in this structure's Serial Number field.\                 For a Chassis that may also be configured as either a single system or multiple physical systems, the Multi-System Chassis value is reported even if the chassis is currently configured as a \                 Single System. This allows management applications to recognize the multi-system potential of the chassis.\1Ah     -     CompactPCI\1Bh     -     AdvancedTCA\1Ch     -     Blade\1Dh     -     Blade Enclosure\1Eh     -     Tablet\1Fh     -     Convertible\20h     -     Detachable"
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "01h - 19h"
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_TYPE_4"
+	Value  = "03"
+    Help  = "Bits 6:0  -     Enumeration Value See Below.\01h     -     Other\02h     -     Unknown\03h     -     Desktop\04h     -     Low Profile Desktop\05h     -     Pizza Box\06h     -     Mini Tower\07h     -     Tower\08h     -     Portable\09h     -     Lap Top\0Ah     -     Notebook\0Bh     -     Hand Held\0Ch     -     Docking Station\0Dh     -     All in One\0Eh     -     Sub Notebook\0Fh     -     Space-saving\10h     -     Lunch Box\11h     -     Main Server Chassis\12h     -     Expansion Chassis\13h     -     Sub Chassis\14h     -     Bus Expansion Chassis\15h     -     Peripheral Chassis\16h     -     RAID Chassis\17h     -     Rack Mount Chassis\18h     -     Sealed-Case PC\19h     -     Multi-System Chassis. When this value is specified by an SMBIOS implementation, the physical chassis associated with this structure supports multiple, independently reporting physical systems\                 - regardless of the chassis' current configuration. Systems in the same physical chassis are required to report the same value in this structure's Serial Number field.\                 For a Chassis that may also be configured as either a single system or multiple physical systems, the Multi-System Chassis value is reported even if the chassis is currently configured as a \                 Single System. This allows management applications to recognize the multi-system potential of the chassis.\1Ah     -     CompactPCI\1Bh     -     AdvancedTCA\1Ch     -     Blade\1Dh     -     Blade Enclosure\1Eh     -     Tablet\1Fh     -     Convertible\20h     -     Detachable"
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "01h - 19h"
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_TYPE_5"
+	Value  = "03"
+    Help  = "Bits 6:0  -     Enumeration Value See Below.\01h     -     Other\02h     -     Unknown\03h     -     Desktop\04h     -     Low Profile Desktop\05h     -     Pizza Box\06h     -     Mini Tower\07h     -     Tower\08h     -     Portable\09h     -     Lap Top\0Ah     -     Notebook\0Bh     -     Hand Held\0Ch     -     Docking Station\0Dh     -     All in One\0Eh     -     Sub Notebook\0Fh     -     Space-saving\10h     -     Lunch Box\11h     -     Main Server Chassis\12h     -     Expansion Chassis\13h     -     Sub Chassis\14h     -     Bus Expansion Chassis\15h     -     Peripheral Chassis\16h     -     RAID Chassis\17h     -     Rack Mount Chassis\18h     -     Sealed-Case PC\19h     -     Multi-System Chassis. When this value is specified by an SMBIOS implementation, the physical chassis associated with this structure supports multiple, independently reporting physical systems\                 - regardless of the chassis' current configuration. Systems in the same physical chassis are required to report the same value in this structure's Serial Number field.\                 For a Chassis that may also be configured as either a single system or multiple physical systems, the Multi-System Chassis value is reported even if the chassis is currently configured as a \                 Single System. This allows management applications to recognize the multi-system potential of the chassis.\1Ah     -     CompactPCI\1Bh     -     AdvancedTCA\1Ch     -     Blade\1Dh     -     Blade Enclosure\1Eh     -     Tablet\1Fh     -     Convertible\20h     -     Detachable"
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "01h - 19h"
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_VERSION_1"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the Chassis Version"
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_VERSION_2"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the Chassis Version"
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_VERSION_3"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the Chassis Version"
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_VERSION_4"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the Chassis Version"
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_VERSION_5"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the Chassis Version"
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_SERIAL_NUM_1"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the Chassis Serial number"
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_SERIAL_NUM_2"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the Chassis Serial number"
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_SERIAL_NUM_3"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the Chassis Serial number"
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_SERIAL_NUM_4"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the Chassis Serial number"
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_SERIAL_NUM_5"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the Chassis Serial number"
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_ASSET_TAG_NUM_1"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the Asset Tag Number."
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_ASSET_TAG_NUM_2"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the Asset Tag Number."
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_ASSET_TAG_NUM_3"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the Asset Tag Number."
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_ASSET_TAG_NUM_4"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the Asset Tag Number."
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_ASSET_TAG_NUM_5"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the Asset Tag Number."
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_BOOT_STATE_1"
+	Value  = "03h"
+	Help  = "Specifies the state of the System Chassis or enclosure when it was last booted.\01h     -     Other\02h     -     Unknown\03h     -     Safe\04h     -     Warning\05h     -     Critical\06h     -     Non-recoverable"
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "01h - 06h"
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_BOOT_STATE_2"
+	Value  = "03h"
+	Help  = "Specifies the state of the System Chassis or enclosure when it was last booted.\01h     -     Other\02h     -     Unknown\03h     -     Safe\04h     -     Warning\05h     -     Critical\06h     -     Non-recoverable"
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "01h - 06h"
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_BOOT_STATE_3"
+	Value  = "03h"
+	Help  = "Specifies the state of the System Chassis or enclosure when it was last booted.\01h     -     Other\02h     -     Unknown\03h     -     Safe\04h     -     Warning\05h     -     Critical\06h     -     Non-recoverable"
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "01h - 06h"
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_BOOT_STATE_4"
+	Value  = "03h"
+	Help  = "Specifies the state of the System Chassis or enclosure when it was last booted.\01h     -     Other\02h     -     Unknown\03h     -     Safe\04h     -     Warning\05h     -     Critical\06h     -     Non-recoverable"
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "01h - 06h"
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_BOOT_STATE_5"
+	Value  = "03h"
+	Help  = "Specifies the state of the System Chassis or enclosure when it was last booted.\01h     -     Other\02h     -     Unknown\03h     -     Safe\04h     -     Warning\05h     -     Critical\06h     -     Non-recoverable"
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "01h - 06h"
+End
+
+TOKEN
+	Name  = "SYS_PWR_SUPPLY_STATE_1"
+	Value  = "03h"
+	Help  = "Specifies the state of System Chassis or enclosure's Power Supply(Supplies) when last booted. 01h\01h     -     Other\02h     -     Unknown\03h     -     Safe\04h     -     Warning\05h     -     Critical\06h     -     Non-recoverable"
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "01h - 06h"
+End
+
+TOKEN
+	Name  = "SYS_PWR_SUPPLY_STATE_2"
+	Value  = "03h"
+	Help  = "Specifies the state of System Chassis or enclosure's Power Supply(Supplies) when last booted. 01h\01h     -     Other\02h     -     Unknown\03h     -     Safe\04h     -     Warning\05h     -     Critical\06h     -     Non-recoverable"
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "01h - 06h"
+End
+
+TOKEN
+	Name  = "SYS_PWR_SUPPLY_STATE_3"
+	Value  = "03h"
+	Help  = "Specifies the state of System Chassis or enclosure's Power Supply(Supplies) when last booted. 01h\01h     -     Other\02h     -     Unknown\03h     -     Safe\04h     -     Warning\05h     -     Critical\06h     -     Non-recoverable"
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "01h - 06h"
+End
+
+TOKEN
+	Name  = "SYS_PWR_SUPPLY_STATE_4"
+	Value  = "03h"
+	Help  = "Specifies the state of System Chassis or enclosure's Power Supply(Supplies) when last booted. 01h\01h     -     Other\02h     -     Unknown\03h     -     Safe\04h     -     Warning\05h     -     Critical\06h     -     Non-recoverable"
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "01h - 06h"
+End
+
+TOKEN
+	Name  = "SYS_PWR_SUPPLY_STATE_5"
+	Value  = "03h"
+	Help  = "Specifies the state of System Chassis or enclosure's Power Supply(Supplies) when last booted. 01h\01h     -     Other\02h     -     Unknown\03h     -     Safe\04h     -     Warning\05h     -     Critical\06h     -     Non-recoverable"
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "01h - 06h"
+End
+
+TOKEN
+	Name  = "SYS_THERMAL_STATE_1"
+	Value  = "03h"
+	Help  = "Specifies the state of System Chassis or enclosure's Thermal State when last booted.\01h     -     Other\02h     -     Unknown\03h     -     Safe\04h     -     Warning\05h     -     Critical\06h     -     Non-recoverable"
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "01h - 06h"
+End
+
+TOKEN
+	Name  = "SYS_THERMAL_STATE_2"
+	Value  = "03h"
+	Help  = "Specifies the state of System Chassis or enclosure's Thermal State when last booted.\01h     -     Other\02h     -     Unknown\03h     -     Safe\04h     -     Warning\05h     -     Critical\06h     -     Non-recoverable"
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "01h - 06h"
+End
+
+TOKEN
+	Name  = "SYS_THERMAL_STATE_3"
+	Value  = "03h"
+	Help  = "Specifies the state of System Chassis or enclosure's Thermal State when last booted.\01h     -     Other\02h     -     Unknown\03h     -     Safe\04h     -     Warning\05h     -     Critical\06h     -     Non-recoverable"
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "01h - 06h"
+End
+
+TOKEN
+	Name  = "SYS_THERMAL_STATE_4"
+	Value  = "03h"
+	Help  = "Specifies the state of System Chassis or enclosure's Thermal State when last booted.\01h     -     Other\02h     -     Unknown\03h     -     Safe\04h     -     Warning\05h     -     Critical\06h     -     Non-recoverable"
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "01h - 06h"
+End
+
+TOKEN
+	Name  = "SYS_THERMAL_STATE_5"
+	Value  = "03h"
+	Help  = "Specifies the state of System Chassis or enclosure's Thermal State when last booted.\01h     -     Other\02h     -     Unknown\03h     -     Safe\04h     -     Warning\05h     -     Critical\06h     -     Non-recoverable"
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "01h - 06h"
+End
+
+TOKEN
+	Name  = "SYS_SECURE_STATE_1"
+	Value  = "03h"
+	Help  = "Specifies the System Chassis or enclosure's physical Security Status when last booted.\01h     -     Other\02h     -     Unknown\03h     -     None\04h     -     External interface locked out\05h     -     External interface enabled"
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "01h - 05h"
+End
+
+TOKEN
+	Name  = "SYS_SECURE_STATE_2"
+	Value  = "03h"
+	Help  = "Specifies the System Chassis or enclosure's physical Security Status when last booted.\01h     -     Other\02h     -     Unknown\03h     -     None\04h     -     External interface locked out\05h     -     External interface enabled"
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "01h - 05h"
+End
+
+TOKEN
+	Name  = "SYS_SECURE_STATE_3"
+	Value  = "03h"
+	Help  = "Specifies the System Chassis or enclosure's physical Security Status when last booted.\01h     -     Other\02h     -     Unknown\03h     -     None\04h     -     External interface locked out\05h     -     External interface enabled"
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "01h - 05h"
+End
+
+TOKEN
+	Name  = "SYS_SECURE_STATE_4"
+	Value  = "03h"
+	Help  = "Specifies the System Chassis or enclosure's physical Security Status when last booted.\01h     -     Other\02h     -     Unknown\03h     -     None\04h     -     External interface locked out\05h     -     External interface enabled"
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "01h - 05h"
+End
+
+TOKEN
+	Name  = "SYS_SECURE_STATE_5"
+	Value  = "03h"
+	Help  = "Specifies the System Chassis or enclosure's physical Security Status when last booted.\01h     -     Other\02h     -     Unknown\03h     -     None\04h     -     External interface locked out\05h     -     External interface enabled"
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "01h - 05h"
+End
+
+TOKEN
+	Name  = "SYS_OEM_1"
+	Value  = "0000000"
+	Help  = "Contains OEM or BIOS Vender Specific Information."
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "DWORD"
+End
+
+TOKEN
+	Name  = "SYS_OEM_2"
+	Value  = "0000000"
+	Help  = "Contains OEM or BIOS Vender Specific Information."
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "DWORD"
+End
+
+TOKEN
+	Name  = "SYS_OEM_3"
+	Value  = "0000000"
+	Help  = "Contains OEM or BIOS Vender Specific Information."
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "DWORD"
+End
+
+TOKEN
+	Name  = "SYS_OEM_4"
+	Value  = "0000000"
+	Help  = "Contains OEM or BIOS Vender Specific Information."
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "DWORD"
+End
+
+TOKEN
+	Name  = "SYS_OEM_5"
+	Value  = "0000000"
+	Help  = "Contains OEM or BIOS Vender Specific Information."
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "DWORD"
+End
+
+TOKEN
+	Name  = "SYS_HEIGHT_1"
+	Value  = "0"
+	Help  = "Specifies the Height of the System Enclosure in 'U's.\1U = 1.75 inches = 4.445cm\0 = UnSpecified Height"
+	TokenType = Integer
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYS_HEIGHT_2"
+	Value  = "0"
+	Help  = "Specifies the Height of the System Enclosure in 'U's.\1U = 1.75 inches = 4.445cm\0 = UnSpecified Height"
+	TokenType = Integer
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYS_HEIGHT_3"
+	Value  = "0"
+	Help  = "Specifies the Height of the System Enclosure in 'U's.\1U = 1.75 inches = 4.445cm\0 = UnSpecified Height"
+	TokenType = Integer
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYS_HEIGHT_4"
+	Value  = "0"
+	Help  = "Specifies the Height of the System Enclosure in 'U's.\1U = 1.75 inches = 4.445cm\0 = UnSpecified Height"
+	TokenType = Integer
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYS_HEIGHT_5"
+	Value  = "0"
+	Help  = "Specifies the Height of the System Enclosure in 'U's.\1U = 1.75 inches = 4.445cm\0 = UnSpecified Height"
+	TokenType = Integer
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "NO_PWR_CORDS_1"
+	Value  = "1"
+	Help  = "Specifies the Number of Power Cords in the System.\0 = UnSpecified"
+	TokenType = Integer
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "NO_PWR_CORDS_2"
+	Value  = "1"
+	Help  = "Specifies the Number of Power Cords in the System.\0 = UnSpecified"
+	TokenType = Integer
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "NO_PWR_CORDS_3"
+	Value  = "1"
+	Help  = "Specifies the Number of Power Cords in the System.\0 = UnSpecified"
+	TokenType = Integer
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "NO_PWR_CORDS_4"
+	Value  = "1"
+	Help  = "Specifies the Number of Power Cords in the System.\0 = UnSpecified"
+	TokenType = Integer
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "NO_PWR_CORDS_5"
+	Value  = "1"
+	Help  = "Specifies the Number of Power Cords in the System.\0 = UnSpecified"
+	TokenType = Integer
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "ELEMENT_COUNT_1"
+	Value  = "0"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+	Range  = "0-255"
+End
+
+TOKEN
+	Name  = "ELEMENT_COUNT_2"
+	Value  = "0"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+	Range  = "0-255"
+End
+
+TOKEN
+	Name  = "ELEMENT_COUNT_3"
+	Value  = "0"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+	Range  = "0-255"
+End
+
+TOKEN
+	Name  = "ELEMENT_COUNT_4"
+	Value  = "0"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+	Range  = "0-255"
+End
+
+TOKEN
+	Name  = "ELEMENT_COUNT_5"
+	Value  = "0"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+	Range  = "0-255"
+End
+
+TOKEN
+	Name  = "ELEMENT_LEN_1"
+	Value  = "3"
+	Help  = "Contained Element Record Length"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "ELEMENT_LEN_2"
+	Value  = "3"
+	Help  = "Contained Element Record Length"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "ELEMENT_LEN_3"
+	Value  = "3"
+	Help  = "Contained Element Record Length"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "ELEMENT_LEN_4"
+	Value  = "3"
+	Help  = "Contained Element Record Length"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "ELEMENT_LEN_5"
+	Value  = "3"
+	Help  = "Contained Element Record Length"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "CONT_ELEMENT_1"
+	Value  = "{0,0,0}"
+	Help  = "Contained Elements: please specify (ELEMENT_COUNT_1 * ELEMENT_LEN_1) byte entries"
+	TokenType = Expression
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "CONT_ELEMENT_2"
+	Value  = "{0,0,0,0,0,0}"
+	Help  = "Contained Elements: please specify (ELEMENT_COUNT_2 * ELEMENT_LEN_2) byte entries"
+	TokenType = Expression
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "CONT_ELEMENT_3"
+	Value  = "{0,0,0,0,0,0,0,0,0}"
+	Help  = "Contained Elements: please specify (ELEMENT_COUNT_3 * ELEMENT_LEN_3) byte entries"
+	TokenType = Expression
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "CONT_ELEMENT_4"
+	Value  = "{0,0,0,0,0,0,0,0,0,0,0,0}"
+	Help  = "Contained Elements: please specify (ELEMENT_COUNT_4 * ELEMENT_LEN_4) byte entries"
+	TokenType = Expression
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "CONT_ELEMENT_5"
+	Value  = "{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}"
+	Help  = "Contained Elements: please specify (ELEMENT_COUNT_5 * ELEMENT_LEN_5) byte entries"
+	TokenType = Expression
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_SKU_NUMBER_1"
+	Value  = "$(DEFAULT_STRING)"
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_SKU_NUMBER_2"
+	Value  = "$(DEFAULT_STRING)"
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_SKU_NUMBER_3"
+	Value  = "$(DEFAULT_STRING)"
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_SKU_NUMBER_4"
+	Value  = "$(DEFAULT_STRING)"
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SYS_CHASSIS_SKU_NUMBER_5"
+	Value  = "$(DEFAULT_STRING)"
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+##############################################################################
+#
+#	TYPE 4 - PROCESSOR INFORMATION
+#
+##############################################################################
+#
+#   The information in this structure defines the attributes of a single
+#   processor; a separate structure instance is provided for each system
+#   processor socket/slot.  For example, a system with an IntelDX2 processor
+#   would have a single structure instance while a system with an IntelSX2
+#   processor would have a structure to describe the main CPU and a second
+#   structure to describe the 80487 co-processor.
+#
+#   NOTE : One structure is provided for each processor instance in a system.
+#   For example, a system that supports up to two processors includes two
+#   Processor Information Structures - even if only one processor is
+#   currently installed. Software that interprets the SMBIOS information
+#   can count the Processor Information structures to determine the maximum
+#   possible configuration of the system.
+#
+##############################################################################
+
+TOKEN
+	Name  = "PROCESSOR_INFO"
+	Value  = "1"
+	Help  = "ON  -> Processor Information (Type 4) structure will be present\OFF -> Processor Information (Type 4) structure will not be present\The number of CPU is defined in CPU.SDL as NCPU.\Total number of processors will be NCPU ( specified in CPU.SDL) \Currenty there is support for 4 Processors. \To support more processores modify in SMBDESC.DEF and SMBIOS.SDL"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "TYPE4_STRUCTURE"
+	Value  = "$(PROCESSOR_INFO)"
+	Help  = "Alternate token name for PROCESSOR_INFO"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+############################
+### Moved to SmbiosBoard.sdl
+############################
+#TOKEN
+#	Name  = "NO_OF_PROCESSOR_SOCKETS"
+#	Value  = "1"
+#	Help  = "Specifies the Number of Physical Processors (Number of Processor Sockets) in the System."
+#	TokenType = Integer
+#	TargetEQU = Yes
+#	TargetH = Yes
+#	Range  = "1, 2, 3.........."
+#End
+
+##############################################################################
+#
+#	TYPE 5 - MEMORY CONTROLLER INFORMATION
+#
+##############################################################################
+#
+#   NOTE : This structure, and its companion Memory Module Information
+#   (Type 6), are OBSOLETE starting with version 2.1 of this specification;
+#   The Physical Memory Array (Type 16) and Memory Device (Type 17)
+#   structures, should be used instead to allow proper population of the
+#   DMI 2.0 required groups. The information in this structure defines the
+#   attributes of the system's memory controller(s) and the supported
+#   attributes of any memory-modules present in the sockets controlled by
+#   this controller.
+#
+##############################################################################
+
+TOKEN
+	Name  = "MEM_CTRL_INFO"
+	Value  = "0"
+	Help  = "ON  -> Memory Controller Information (Type 5) structure will be present\OFF -> Memory Controller Information (Type 5) structure will not be present.\The following information is needed only if MEMORY_CONTROLLER_INFO = Present. This structure (TYPE 5) is associated with MEMORY MODULE Structure(Type 6)\Handle information of Type 6 is defined in this structure."
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TYPE5_STRUCTURE"
+	Value  = "$(MEM_CTRL_INFO)"
+	Help  = "Alternate token name for MEM_CTRL_INFO"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "MEM_CTRL_EDD"
+	Value  = "06h"
+	Help  = "Please enter the proper value as per the SMBIOS spec 2.3.1"
+	TokenType = Integer
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "MEM_CTRL_INTRLV"
+	Value  = "03h"
+	Help  = "Please enter the proper value as per the SMBIOS spec 2.3.1"
+	TokenType = Integer
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "MAX_MEM_MODULE_SIZE"
+	Value  = "2048"
+	Help  = "Specify size in terms of MB only!!!"
+	TokenType = Integer
+	TargetEQU = Yes
+End
+
+##############################################################################
+
+TOKEN
+	Name  = "Memory Controller ECC"
+	Help  = "Following are the bit fiels according to SMBIOS 2.3.1"
+	TokenType = Integer
+End
+
+TOKEN
+	Name  = "MCE_OTHER"
+	Value  = "0"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "MCE_UNKNOWN"
+	Value  = "0"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "MCE_NONE"
+	Value  = "1"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "MCE_SINGLE_BIT_ECC"
+	Value  = "0"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "MCE_DOUBLE_BIT_ECC"
+	Value  = "0"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "MCE_ERROR_SCRUBBING"
+	Value  = "0"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+##############################################################################
+
+TOKEN
+	Name  = "MEMORY CONTROLLER SUPPORTED SPEED"
+	Help  = "Followin are the bit fields as per SMBIOS 2.3.1 topic 3.3.64"
+	TokenType = Integer
+End
+
+TOKEN
+	Name  = "SS_OTHER "
+	Value  = "0"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SS_UNKNOWN "
+	Value  = "0"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SS_70NS"
+	Value  = "1"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SS_60NS"
+	Value  = "1"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SS_50NS"
+	Value  = "0"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+##############################################################################
+
+TOKEN
+	Name  = "MEMORY CONTROLLER SUPPORTED MEMORY TYPES"
+	Help  = "Following are the supported memory types as per SMBIOS 2.3.1 topic 3.3.7.1"
+	TokenType = Integer
+End
+
+TOKEN
+	Name  = "TYPE_OTHER"
+	Value  = "0"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "TYPE_UNKNOWN"
+	Value  = "0"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "TYPE_STANDARD"
+	Value  = "0"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "TYPE_FAST_PAGE_MODE"
+	Value  = "0"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "TYPE_EDO"
+	Value  = "0"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "TYPE_PARITY"
+	Value  = "0"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "TYPE_ECC"
+	Value  = "0"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "TYPE_SIMM"
+	Value  = "0"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "TYPE_DIMM"
+	Value  = "1"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "TYPE_BURST_EDO"
+	Value  = "0"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "TYPE_SDRAM"
+	Value  = "1"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+##############################################################################
+
+TOKEN
+	Name  = "MEMORY MODULE VOTAGE SUPPORT"
+	Help  = "Following are bit fiels according to SMBIOS 2.3.1"
+	TokenType = Integer
+End
+
+TOKEN
+	Name  = "MM_VOLTAGE_29V"
+	Value  = "0"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "MM_VOLTAGE_33V"
+	Value  = "1"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "MM_VOLTAGE_5V"
+	Value  = "0"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+##############################################################################
+#
+#	TYPE 6 - MEMORY MODULE INFORMATION
+#
+##############################################################################
+#
+#   NOTE : This structure, and its companion Memory Controller Information
+#   (Type 5), are OBSOLETE starting with version 2.1 of this specification;
+#   The Physical Memory Array (Type 16) and Memory Device (Type 17)
+#   structures, should be used instead to allow proper population of the
+#   DMI 2.0 required groups. One Memory Module Information structure is
+#   included for each memory-module socket in the system. The information
+#   in this structure describes the Speed, Type, Size and Error Status of
+#   each system memory module. The supported attributes of each module are
+#   described by the 'owning'  Memory Controller Information Structure.
+#
+##############################################################################
+
+TOKEN
+	Name  = "MEM_MODULE_INFO"
+	Value  = "0"
+	Help  = "ON  -> Memory Module Information structure will be present\OFF -> Memory Module Information structure will not be present\Make sure to put proper Memory Module information under section 'Structure Type 6 : MEMORY MODULE INFORMATION' in file SMBDESC.DEF\Port 'get_mem_module_info' from NBSMBIOS.ASM"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TYPE6_STRUCTURE"
+	Value  = "$(MEM_MODULE_INFO)"
+	Help  = "Alternate token name for MEM_MODULE_INFO"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+##############################################################################
+#
+#	TYPE 7 - CACHE INFORMATION
+#
+##############################################################################
+#
+#   The information in this Structure defines the attributes of CPU Cache
+#   device in the System. One structure is specified for each such device,
+#   whether the device is internal to or external to the CPU module. Cache
+#   modules can be associated with a Processor structure in one or two ways
+#   depending on the SMBIOS version. CPU module will update the internal
+#   cache structure as its updationg the processor structures.
+#
+##############################################################################
+
+TOKEN
+	Name  = "NUMBER_OF_PROC_CACHE"
+	Value  = "3"
+	Help  = "Number of Processor Cache Present.\NOTE: DO NOT CHANGE THE VALUE."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Lock = Yes
+	Range  = "1-8"
+End
+
+TOKEN
+	Name  = "EXTERNAL_CACHE_INFORMATION"
+	Value  = "0"
+	Help  = "If you have external Cache define it in SMBDESC.DEF file and trun this flag ON\Make sure that functions 'ExternalCacheInit_FAR' from SMBPORT.ASM and \'CSPHk_get_ext_cache_info_FAR' from NBSMBIOS.ASM are properly ported."
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TYPE7_STRUCTURE"
+	Value  = "$(EXTERNAL_CACHE_INFORMATION)"
+	Help  = "Alternate token name for EXTERNAL_CACHE_INFORMATION"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+##############################################################################
+#
+#	TYPE 8 - PORT CONNECTOR INFORMATION
+#
+##############################################################################
+#
+#   The information in this structure defines the attributes of a system
+#   port connector, e.g. parallel, serial, keyboard, or mouse ports. The
+#   Port's type and Connector information are provided. One structure is
+#   present for each port provided by the system.
+#
+##############################################################################
+
+TOKEN
+	Name  = "PORT_CONNECTOR_INFO"
+	Value  = "1"
+	Help  = "Turn this flag Off for not generating the Type 8 structures"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TYPE8_STRUCTURE"
+	Value  = "$(PORT_CONNECTOR_INFO)"
+	Help  = "Alternate token name for PORT_CONNECTOR_INFO"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "NUMBER_OF_EXT_PORT_CONNECTORS"
+	Value  = "8"
+	Help  = "Number of External Port Connectors in the Sytem."
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "0 - 32"
+End
+
+TOKEN
+	Name  = "NUMBER_OF_INT_PORT_CONNECTORS"
+	Value  = "16"
+	Help  = "Number of Internal Port Connectors in the System."
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "0 - 32"
+End
+
+##############################################################################
+#
+#	TYPE 9 - SYSTEM SLOTS
+#
+##############################################################################
+#
+#   The information in this structure defines the attributes of a system
+#   slot. One structure is provided for each slot in the system.
+#
+##############################################################################
+
+TOKEN
+	Name  = "SYSTEM_SLOT_INFO"
+	Value  = "1"
+	Help  = "ON  -> System Slot Information structure will be present\OFF -> System Slot Information structure will not be present"
+	TokenType = Boolean
+	TargetEQU = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "TYPE9_STRUCTURE"
+	Value  = "$(SYSTEM_SLOT_INFO)"
+	Help  = "Alternate token name for SYSTEM_SLOT_INFO"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+############################
+### Moved to SmbiosBoard.sdl
+############################
+#TOKEN
+#	Name  = "NUMBER_OF_SYSTEM_SLOTS"
+#	Value  = "5"
+#	Help  = "Identifies the number of system slots available on platform including the AGP slot.\"
+#	TokenType = Integer
+#	TargetEQU = Yes
+#	TargetH = Yes
+#End
+TOKEN
+	Name  = "AGP_BRIDGE_BUS_DEV_FUNC_NO"
+	Value  = "08H"
+	Help  = "This variable contains the Bus#, dev#, func# of the AGP Bridge. A value of FFFF means no AGP Bridge present.\Bit 15-8 = Bus#\Bit7-3 = Device#\Bit2-0 = Function#"
+	TokenType = Integer
+	TargetEQU = Yes
+End
+
+##############################################################################
+#
+#	TYPE 10 - ON BOARD DEVICES INFORMATION
+#
+##############################################################################
+#
+#   The information in this structure defines the attributes of devices that
+#   are onboard (soldered onto) a system element, usually the baseboard. In
+#   general, an entry in this table implies that the BIOS has some level of
+#   control over the enabling of the associated device for use by the system.
+#
+##############################################################################
+
+TOKEN
+	Name  = "ONBOARD_DEVICE_INFO"
+	Value  = "1"
+	Help  = "ON  -> Onboard Device Information structure will be present\OFF -> OnBoard Device Information structure will not be present\The following information is needed only if ONBOARD_DEVICE_INFO = Present\Syntax:          ONBOARD_DEVICE_X    DEFINE  <Enabled or Disabled, Onboard Device Type, Descrition String>\                              Onboard device status  -> Describes the status(enabled/disabled) of on board device\                              On board device Type  -> Video, Audio, SCSI etc... for more detail search for On-board device Type equates in structure Type 10, refer SMB.EQU\                              Description String          -> Describes the on board device e.g.'Video', 'Audio' etc.."
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TYPE10_STRUCTURE"
+	Value  = "$(ONBOARD_DEVICE_INFO)"
+	Help  = "Alternate token name for ONBOARD_DEVICE_INFO"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "NUMBER_OF_ONBOARD_DEVICES"
+	Value  = "1"
+	Help  = "Number of Onboard Devices Present in the System."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+	Range  = "0 - 16"
+End
+
+##############################################################################
+#
+#	TYPE 11 - OEM STRINGS
+#
+##############################################################################
+#
+#   This structure contains free form strings defined by the OEM.
+#
+#   Examples of this are: Part Numbers for Reference Documents for the sytem,
+#   contact information for the manufacturer, etc.
+#
+##############################################################################
+
+TOKEN
+	Name  = "OEM_STRING_INFO"
+	Value  = "1"
+	Help  = "ON  -> OEM String Information structure will be present\OFF -> OEM String Information structure will not be present\Enter the related information in file SMBDESC.DEF"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TYPE11_STRUCTURE"
+	Value  = "$(OEM_STRING_INFO)"
+	Help  = "Alternate token name for OEM_STRING_INFO"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "NUMBER_OF_OEM_STRINGS"
+	Value  = "1"
+	Help  = "NUMBER OF OEM STRINGS\identifies the total number of OEM strings defined for this structure."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+	Range  = "0 - 32"
+End
+
+TOKEN
+	Name  = "OEM_STRING_1"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the OEM STRING"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "OEM_STRING_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "OEM_STRING_2"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the OEM STRING"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "OEM_STRING_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "OEM_STRING_3"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the OEM STRING"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "OEM_STRING_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "OEM_STRING_4"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the OEM STRING"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "OEM_STRING_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "OEM_STRING_5"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the OEM STRING"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "OEM_STRING_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "OEM_STRING_6"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the OEM STRING"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "OEM_STRING_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "OEM_STRING_7"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "OEM_STRING_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "OEM_STRING_8"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "OEM_STRING_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "OEM_STRING_9"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "OEM_STRING_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "OEM_STRING_10"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "OEM_STRING_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "OEM_STRING_11"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "OEM_STRING_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "OEM_STRING_12"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "OEM_STRING_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "OEM_STRING_13"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "OEM_STRING_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "OEM_STRING_14"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "OEM_STRING_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "OEM_STRING_15"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "OEM_STRING_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "OEM_STRING_16"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "OEM_STRING_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "OEM_STRING_17"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the OEM STRING"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "OEM_STRING_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "OEM_STRING_18"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the OEM STRING"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "OEM_STRING_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "OEM_STRING_19"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the OEM STRING"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "OEM_STRING_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "OEM_STRING_20"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the OEM STRING"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "OEM_STRING_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "OEM_STRING_21"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the OEM STRING"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "OEM_STRING_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "OEM_STRING_22"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the OEM STRING"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "OEM_STRING_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "OEM_STRING_23"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "OEM_STRING_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "OEM_STRING_24"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "OEM_STRING_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "OEM_STRING_25"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "OEM_STRING_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "OEM_STRING_26"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "OEM_STRING_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "OEM_STRING_27"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "OEM_STRING_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "OEM_STRING_28"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "OEM_STRING_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "OEM_STRING_29"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "OEM_STRING_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "OEM_STRING_30"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "OEM_STRING_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "OEM_STRING_31"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "OEM_STRING_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "OEM_STRING_32"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "OEM_STRING_INFO" "=" "1"
+End
+
+##############################################################################
+#
+#	TYPE 12 - SYSTEM CONFIGURATION OPTIONS
+#
+##############################################################################
+#
+#   This structure contains information required to configure the Base
+#   Board's Jumpers and Switches.
+#
+#   Examples of this are:
+#       JP2: 1-2 Cache Size is 256K, 2-3 Cache Size is 512K
+#       SW1-1: Close to Disable On Board Video'
+#
+##############################################################################
+
+TOKEN
+	Name  = "SYSTEM_CONFIG_OPTION_INFO"
+	Value  = "1"
+	Help  = "ON  -> System Configuration Strings Information structure will be present\OFF -> System Configuration Strings Information structure will not be present\Please port necessary structures from file SMBDESC.DEF"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TYPE12_STRUCTURE"
+	Value  = "$(SYSTEM_CONFIG_OPTION_INFO)"
+	Help  = "Alternate token name for SYSTEM_CONFIG_OPTION_INFO"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "NUMBER_OF_SYSTEM_CONFIG_STRINGS"
+	Value  = "1"
+	Help  = "NUMBER OF SYSTEM CONFIGURATION STRINGS\identifies the total number of strings defined for this structure."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+	Range  = "0 - 32"
+End
+
+TOKEN
+	Name  = "SYSTEM_CONFIG_STRING_1"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the OEM SYSTEM CONFIG STRING"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "SYSTEM_CONFIG_OPTION_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "SYSTEM_CONFIG_STRING_2"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the OEM STRING"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "SYSTEM_CONFIG_OPTION_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "SYSTEM_CONFIG_STRING_3"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the OEM STRING"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "SYSTEM_CONFIG_OPTION_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "SYSTEM_CONFIG_STRING_4"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the OEM STRING"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "SYSTEM_CONFIG_OPTION_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "SYSTEM_CONFIG_STRING_5"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the OEM STRING"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "SYSTEM_CONFIG_OPTION_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "SYSTEM_CONFIG_STRING_6"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "SYSTEM_CONFIG_OPTION_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "SYSTEM_CONFIG_STRING_7"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "SYSTEM_CONFIG_OPTION_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "SYSTEM_CONFIG_STRING_8"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "SYSTEM_CONFIG_OPTION_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "SYSTEM_CONFIG_STRING_9"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "SYSTEM_CONFIG_OPTION_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "SYSTEM_CONFIG_STRING_10"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "SYSTEM_CONFIG_OPTION_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "SYSTEM_CONFIG_STRING_11"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "SYSTEM_CONFIG_OPTION_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "SYSTEM_CONFIG_STRING_12"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "SYSTEM_CONFIG_OPTION_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "SYSTEM_CONFIG_STRING_13"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "SYSTEM_CONFIG_OPTION_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "SYSTEM_CONFIG_STRING_14"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "SYSTEM_CONFIG_OPTION_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "SYSTEM_CONFIG_STRING_15"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "SYSTEM_CONFIG_OPTION_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "SYSTEM_CONFIG_STRING_16"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "SYSTEM_CONFIG_OPTION_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "SYSTEM_CONFIG_STRING_17"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the OEM SYSTEM CONFIG STRING"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "SYSTEM_CONFIG_OPTION_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "SYSTEM_CONFIG_STRING_18"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the OEM STRING"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "SYSTEM_CONFIG_OPTION_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "SYSTEM_CONFIG_STRING_19"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the OEM STRING"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "SYSTEM_CONFIG_OPTION_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "SYSTEM_CONFIG_STRING_20"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the OEM STRING"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "SYSTEM_CONFIG_OPTION_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "SYSTEM_CONFIG_STRING_21"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the OEM STRING"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "SYSTEM_CONFIG_OPTION_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "SYSTEM_CONFIG_STRING_22"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "SYSTEM_CONFIG_OPTION_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "SYSTEM_CONFIG_STRING_23"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "SYSTEM_CONFIG_OPTION_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "SYSTEM_CONFIG_STRING_24"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "SYSTEM_CONFIG_OPTION_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "SYSTEM_CONFIG_STRING_25"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "SYSTEM_CONFIG_OPTION_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "SYSTEM_CONFIG_STRING_26"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "SYSTEM_CONFIG_OPTION_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "SYSTEM_CONFIG_STRING_27"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "SYSTEM_CONFIG_OPTION_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "SYSTEM_CONFIG_STRING_28"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "SYSTEM_CONFIG_OPTION_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "SYSTEM_CONFIG_STRING_29"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "SYSTEM_CONFIG_OPTION_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "SYSTEM_CONFIG_STRING_30"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "SYSTEM_CONFIG_OPTION_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "SYSTEM_CONFIG_STRING_31"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "SYSTEM_CONFIG_OPTION_INFO" "=" "1"
+End
+
+TOKEN
+    Name  = "SYSTEM_CONFIG_STRING_32"
+    Value  = "$(DEFAULT_STRING)"
+    Help  = "Specifies the OEM STRING"
+    TokenType = Expression
+    TargetEQU = Yes
+    Token = "SYSTEM_CONFIG_OPTION_INFO" "=" "1"
+End
+
+##############################################################################
+#
+#	TYPE 13 - BIOS LANGUAGE INFORMATION
+#
+##############################################################################
+#
+#   The information in this structure defines the installable language
+#   attributes of the BIOS.
+#
+##############################################################################
+
+TOKEN
+	Name  = "BIOS_LANGUAGE_INFO"
+	Value  = "1"
+	Help  = "ON  -> Bios Language Information structure will be present\OFF -> Bios Language Information structure will not be present"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "BIOS_LANGUAGE_FORMAT"
+	Value  = "0"
+	Help  = "Format of the Language Strings.\                              OFF -> Strings use Long Format   ON -> Strings use Abbreviated Fomat                \US English             <en|US|iso8859 - 1>                   <enUS>\French Canadian   <fr|CA|iso8859-1>                      <frCA>\Japanese               <ja|JP|unicode>                         <jaJP>\Espanol                  <es|ES|iso8859-1>                    <esES>\Dutch                     <de|DE|iso8859-1>                   <deDE>\Italian                      <it|IT|iso8859-1>                       <itIT>"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+##############################################################################
+#
+#	TYPE 14 - GROUP ASSOCIATION INFORMATION
+#
+##############################################################################
+#
+#   Not supported by BIOS
+#
+##############################################################################
+
+##############################################################################
+#
+#	TYPE 15 - SYSTEM EVENT LOG
+#
+##############################################################################
+#
+#   The presence of this structure within the SMBIOS data returned for a
+#   system indicates that the system supports an Event Log. An event Log is
+#   a fixed-length area within a non-volatile storage element, starting with
+#   a fixed-length (and vendor-specific) header record, followed by one or
+#   more variable-length log records.
+#
+##############################################################################
+
+TOKEN
+	Name  = "EVENT_LOG_INFO"
+	Value  = "0"
+	Help  = "ON  -> Event-log Information structure will be present\OFF -> Event-log Information structure will not be present\"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "TYPE15_STRUCTURE"
+	Value  = "$(EVENT_LOG_INFO)"
+	Help  = "Alternate token name for EVENT_LOG_INFO"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "NO_OF_SUPPORTED_EVENTS"
+	Value  = "10h"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+End
+
+##############################################################################
+#
+#	TYPE 16 - PHYSICAL MEMORY ARRAY
+#
+##############################################################################
+#
+#   This structure describes a collection of memory devices that operate
+#   together to form a memory address space.
+#
+##############################################################################
+
+TOKEN
+	Name  = "TYPE16_STRUCTURE"
+	Value  = "1"
+	Help  = "ON  -> Physical Memory Array Information structure will be present\OFF -> Physical Memory Array Information structure will not be present"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FLASH_MEMORY_ARRAY_INFO"
+	Value  = "0"
+	Help  = "ON   -> Flash Memory Array Information (Type 16,17,19,20) structures will be present.\OFF  -> Flash Memory Array Information (Type 16,17,19,20) structures will not be present."
+	TokenType = Boolean
+	TargetEQU = Yes
+    TargetH = Yes
+End
+
+############################
+### Moved to SmbiosBoard.sdl
+############################
+#TOKEN
+#	Name  = "NO_OF_PHYSICAL_MEMORY_ARRAY"
+#	Value  = "1"
+#	Help  = "Specifies the Total number of Physical Arrays in the System."
+#	TokenType = Integer
+#	TargetEQU = Yes
+#	TargetH = Yes
+#	Range  = "1 - 5"
+#End
+############################
+### Moved to SmbiosBoard.sdl
+############################
+#TOKEN
+#	Name  = "A1_MEMORY_SOCKETS"
+#	Value  = "4"
+#	Help  = "Number of Memory Modules/Slots in the first physical Memory Array"
+#	TokenType = Integer
+#	TargetEQU = Yes
+#	TargetH = Yes
+#End
+############################
+### Moved to SmbiosBoard.sdl
+############################
+#TOKEN
+#	Name  = "A2_MEMORY_SOCKETS"
+#	Value  = "0"
+#	Help  = "Number of Memory Modules/Slots in the second physical Memory Array"
+#	TokenType = Integer
+#	TargetEQU = Yes
+#	TargetH = Yes
+#	Token = "NO_OF_PHYSICAL_MEMORY_ARRAY" ">" "1"
+#End
+############################
+### Moved to SmbiosBoard.sdl
+############################
+#TOKEN
+#	Name  = "A3_MEMORY_SOCKETS"
+#	Value  = "0"
+#	Help  = "Number of Memory Modules/Slots in the third physical Memory Array"
+#	TokenType = Integer
+#	TargetEQU = Yes
+#	TargetH = Yes
+#	Token = "NO_OF_PHYSICAL_MEMORY_ARRAY" ">" "2"
+#End
+############################
+### Moved to SmbiosBoard.sdl
+############################
+#TOKEN
+#	Name  = "A4_MEMORY_SOCKETS"
+#	Value  = "0"
+#	Help  = "Number of Memory Modules/Slots in the fourth physical Memory Array"
+#	TokenType = Integer
+#	TargetEQU = Yes
+#	TargetH = Yes
+#	Token = "NO_OF_PHYSICAL_MEMORY_ARRAY" ">" "3"
+#End
+
+##############################################################################
+#
+#	TYPE 17 - MEMORY DEVICE INFORMATION
+#
+##############################################################################
+#
+#   This structure describes a single memory device that is a part of a
+#   larger Physical Memory Array (Type 16).
+#
+#   NOTE: If a system includes memory-device sockets, the SMBIOS
+#   implementation includes a Memory Device structure instance for each
+#   slot whether or not the socket is currently populated.
+#
+##############################################################################
+
+##############################################################################
+#
+#	TYPE 18 - 32-BIT MEMORY ERROR INFORMATION
+#
+##############################################################################
+#
+#   This structure identifies the specifics of an error that might be
+#   detected within a Physical Memory Array.
+#
+##############################################################################
+
+TOKEN
+	Name  = "MEMORY_ERROR_INFO"
+	Value  = "0"
+	Help  = "ON   -> Memory Error Information (Type 18) structures will be present.\OFF  -> Memory Error Information (Type 18) structures will not be present."
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "MEMORY_ERROR_TYPE"
+	Value  = "02h"
+	Help  = "The type of error that is associated with the current status reported for the Memory Array or Device.\01h     -     Other\02h     -     Unknown\03h     -     OK\04h     -     Bad Read\05h     -     Parity Error\06h     -     Single-Bit Error\07h     -     Double-Bit Error\08h     -     Multi-Bit Error\09h     -     Nibble Error\0Ah     -     CheckSum Error\0Bh     -     CRC Error\0Ch     -     Corrected Single-Bit Error\0Dh     -     Corrected Error\0Eh     -     UnCorrectable Error"
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "0h - 0Eh"
+End
+
+TOKEN
+	Name  = "ERROR_GRANULARITY"
+	Value  = "02h"
+	Help  = "Specifies the granularity, e.g. device vs. Partition, to which the error can be resolved.\01h     -     Other\02h     -     Unknown\03h     -     Device Level\04h     -     Memory Partition Level"
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "01h - 04h"
+End
+
+TOKEN
+	Name  = "ERROR_OPERATION"
+	Value  = "02h"
+	Help  = "Specifies the Memory Access Operation that caused the Error.\01h     -     Other\02h     -     Unknown\03h     -     Read\04h     -     Write\05h     -     Partial Write"
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "1 - 5"
+End
+
+TOKEN
+	Name  = "VENDOR_SYNDROME"
+	Value  = "00000000h"
+	Help  = "Specifies the Vendor-Specific ECC Syndrome or CRC Data associated with the erroneous Access.\If the value is Unknown, this field is 0000 0000h"
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "0 - 0FFFFFFFFh"
+End
+
+TOKEN
+	Name  = "MEMORY_ARRAY_ERROR_ADDRESS"
+	Value  = "80000000h"
+	Help  = "Specifies the 32-bit Pbysical Address of the Error Based on the Addressing of the Bus to which the Memory Array is connected.\If the address is Unknown, this field contains 8000 0000h"
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "0 - 0FFFFFFFFh"
+End
+
+TOKEN
+	Name  = "DEVICE_ERROR_ADDRESS"
+	Value  = "80000000h"
+	Help  = "Specifies the 32-bit Physical Address of the Error Relative to the Start of the Failing Memory Device, in Bytes.\If the address is Unknown, this field contains 8000 0000h"
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "0 - 0FFFFFFFFh"
+End
+
+TOKEN
+	Name  = "ERROR_RESOLUTION"
+	Value  = "80000000h"
+	Help  = "Specifies the range, in bytes, within which the Error can be determined, when an Error Address is given.\If the range is Unknown, this field contains 8000 0000h"
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "0 - 0FFFFFFFFh"
+End
+
+##############################################################################
+#
+#	TYPE 19 - MEMORY ARRAY MAPPED ADDRESS
+#
+##############################################################################
+#
+#   This structure provides the Address mapping for a Physical Memory Array.
+#   One structure is present for each contiguous address range described.
+#
+##############################################################################
+
+TOKEN
+	Name  = "ARRAY_MAPPED_STARTING_ADDRESS"
+	Value  = "00000000h"
+	Help  = "Specifies the Physical Address, in KiloBytes, of a range of memory mapped to the specified Physical Memory Array."
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "0 - 0FFFFFFFFh"
+End
+
+TOKEN
+	Name  = "ARRAY_MAPPED_ENDING_ADDRESS"
+	Value  = "00000000h"
+	Help  = "Specifies the Physical Ending Address of the last KiloByte of a range of Addresses mapped to the specified Physical Memory Array."
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "0 - 0FFFFFFFFh"
+End
+
+TOKEN
+	Name  = "PARTITION_WIDTH"
+	Value  = "00h"
+	Help  = "Specifies the Number of Memory Devices that form a single row or Memory for the address partition defined by this structure."
+	TokenType = Integer
+	TargetEQU = Yes
+End
+
+##############################################################################
+#
+#	TYPE 20 - MEMORY DEVICE MAPPED ADDRESS
+#
+##############################################################################
+#
+#   This structure maps Memory Address space usually to a Device-Level
+#   granularity. One structure is present for each contiguous address range
+#   described.
+#
+#   NOTE: A Memory Device Mapped Address structure is provided only if a
+#   Memory Device has a mapped address - there is no provision within this
+#   structure to map a zero-length address space.
+#
+##############################################################################
+
+TOKEN
+	Name  = "MEMORY_DEVICE_INFO"
+	Value  = "1"
+	Help  = "ON   -> Memory Device Mapped Address Information (Type 20) structures will be present.\OFF  -> Memory Device Mapped Address Information (Type 20) structures will not be present."
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "MEMORY_DEVICE_STARTING_ADDRESS"
+	Value  = "00000000h"
+	Help  = "Specifies the Physical Address, in KiloBytes, of a range of Memory Mapped to the referenced Memory Device."
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "0 - 0FFFFFFFFh"
+End
+
+TOKEN
+	Name  = "MEMORY_DEVICE_ENDING_ADDRESS"
+	Value  = "00000000h"
+	Help  = "Specifies the Physical Ending Address of the last KiloByte of a range of Addresses mapped to the referenced Memory Device."
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "0 - 0FFFFFFFFh"
+End
+
+TOKEN
+	Name  = "NO_OF_DEVICES_IN_ROW"
+	Value  = "01h"
+	Help  = "Specifies the Number of Memory Devices that form a Row.\For example, if two 8-bit devices form a 16-bit row, this field's value will be 2 or if two 64-bit devices form a 128-bit row then also the field's value will be 2.\or if 1 64-bit device form a 64-bit row then the field's value will be 1."
+	TokenType = Integer
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "INTERLEAVE_DATA_DEPTH"
+	Value  = "00h"
+	Help  = "Specifies the maximum number of consecutive rows from the referenced Memory Device that are accessed in a single interleaved transfer.\If the device is not part of an interleave, the field contains 0; if the interleave configuration is Unknown, the value is 0FFh.\For example, if a device transfers two rows each time it is read, its Interleaved Data Depth is set to 2.\If that device is 2:1 interleaved and in Interleave Position 1, the rows mapped to that device are 1,2,5,6,9,10, etc."
+	TokenType = Integer
+	TargetEQU = Yes
+End
+
+##############################################################################
+#
+#	TYPE 21 - BUILT-IN POINTING DEVICE
+#
+##############################################################################
+#
+#   This Structure describes the attributes of the built-in pointing device
+#   for the system. The presence of this structure does not imply that the
+#   built-in pointing device is active for the system's use.
+#
+##############################################################################
+
+TOKEN
+	Name  = "BUILTIN_POINTING_DEVICE_INFO"
+	Value  = "0"
+	Help  = "ON  -> Built In Pointing Device Information (Type 21) structure will be present\OFF -> Built In Pointing Device Information (Type 21) structure will not be present"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TYPE21_STRUCTURE"
+	Value  = "$(BUILTIN_POINTING_DEVICE_INFO)"
+	Help  = "Alternate token name for BUILTIN_POINTING_DEVICE_INFO"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "NO_OF_POINTING_DEVICE"
+	Value  = "01h"
+	Help  = "Specifies the number of Pointing Device."
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "01h - 05h"
+End
+
+##############################################################################
+#
+#	TYPE 22 - PORTABLE BATTERY
+#
+##############################################################################
+#
+#   This Structure describes the attributes of the Portable Battery(s) for
+#   the System. The Structure contains the static attributes for the group.
+#   Each structure describes a single battery pack's attributes.
+#
+##############################################################################
+
+TOKEN
+	Name  = "PORTABLE_BATTERY_INFO"
+	Value  = "0"
+	Help  = "ON  -> Portable Battery Information (Type 22) structure will be present\OFF -> Portable Battery Information (Type 22) structure will not be present"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TYPE22_STRUCTURE"
+	Value  = "$(PORTABLE_BATTERY_INFO)"
+	Help  = "Alternate token name for PORTABLE_BATTERY_INFO"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "NO_OF_PORTABLE_BATTERY"
+	Value  = "4"
+	Help  = "Specifies the Total number of Portable Batteries in the System."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+	Range  = "1 - 5"
+End
+
+TOKEN
+	Name  = "PORT_BAT_LOCATION_1"
+	Value  = "Location of the battery"
+	Help  = "Specifies the Battery Location"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_LOCATION_2"
+	Value  = "Location of the battery"
+	Help  = "Specifies the Battery Location"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_LOCATION_3"
+	Value  = "Location of the battery"
+	Help  = "Specifies the Battery Location"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_LOCATION_4"
+	Value  = "Location of the battery"
+	Help  = "Specifies the Battery Location"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_LOCATION_5"
+	Value  = "Location of the battery"
+	Help  = "Specifies the Battery Location"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_MANUFACTURER_1"
+	Value  = "Battery Manufacturer"
+	Help  = "Specifies the Battery Manufacturer"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_MANUFACTURER_2"
+	Value  = "Battery Manufacturer"
+	Help  = "Specifies the Battery Manufacturer"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_MANUFACTURER_3"
+	Value  = "Battery Manufacturer"
+	Help  = "Specifies the Battery Manufacturer"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_MANUFACTURER_4"
+	Value  = "Battery Manufacturer"
+	Help  = "Specifies the Battery Manufacturer"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_MANUFACTURER_5"
+	Value  = "Battery Manufacturer"
+	Help  = "Specifies the Battery Manufacturer"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_MANUFACTURE_DATE_1"
+	Value  = "01/01/2012"
+	Help  = "Specifies the Battery Manufacturer Date"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_MANUFACTURE_DATE_2"
+	Value  = "01/01/2012"
+	Help  = "Specifies the Battery Manufacturer Date"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_MANUFACTURE_DATE_3"
+	Value  = "01/01/2012"
+	Help  = "Specifies the Battery Manufacturer Date"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_MANUFACTURE_DATE_4"
+	Value  = "01/01/2012"
+	Help  = "Specifies the Battery Manufacturer Date"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_MANUFACTURE_DATE_5"
+	Value  = "01/01/2012"
+	Help  = "Specifies the Battery Manufacturer Date"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_SERIAL_NUMBER_1"
+	Value  = "Serial Number"
+	Help  = "Specifies the Battery Serial Number"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_SERIAL_NUMBER_2"
+	Value  = "Serial Number"
+	Help  = "Specifies the Battery Serial Number"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_SERIAL_NUMBER_3"
+	Value  = "Serial Number"
+	Help  = "Specifies the Battery Serial Number"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_SERIAL_NUMBER_4"
+	Value  = "Serial Number"
+	Help  = "Specifies the Battery Serial Number"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_SERIAL_NUMBER_5"
+	Value  = "Serial Number"
+	Help  = "Specifies the Battery Serial Number"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_DEVICE_NAME_1"
+	Value  = "Battery Name"
+	Help  = "Specifies the Battery Name"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_DEVICE_NAME_2"
+	Value  = "Battery Name"
+	Help  = "Specifies the Battery Name"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_DEVICE_NAME_3"
+	Value  = "Battery Name"
+	Help  = "Specifies the Battery Name"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_DEVICE_NAME_4"
+	Value  = "Battery Name"
+	Help  = "Specifies the Battery Name"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_DEVICE_NAME_5"
+	Value  = "Battery Name"
+	Help  = "Specifies the Battery Name"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "DEVICE_CHEMISTRY_1"
+	Value  = "04h"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "DEVICE_CHEMISTRY_2"
+	Value  = "04h"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "DEVICE_CHEMISTRY_3"
+	Value  = "04h"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "DEVICE_CHEMISTRY_4"
+	Value  = "04h"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "DEVICE_CHEMISTRY_5"
+	Value  = "04h"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "DESIGN_CAPACITY_1"
+	Value  = "00h"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "DESIGN_CAPACITY_2"
+	Value  = "00h"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "DESIGN_CAPACITY_3"
+	Value  = "00h"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "DESIGN_CAPACITY_4"
+	Value  = "00h"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "DESIGN_CAPACITY_5"
+	Value  = "00h"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "DESIGN_VOLTAGE_1"
+	Value  = "00h"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "DESIGN_VOLTAGE_2"
+	Value  = "00h"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "DESIGN_VOLTAGE_3"
+	Value  = "00h"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "DESIGN_VOLTAGE_4"
+	Value  = "00h"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "DESIGN_VOLTAGE_5"
+	Value  = "00h"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_SBDS_VER_NO_1"
+	Value  = "SBDS Version Number"
+	Help  = "Smart Battery Data Specification Version Number"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_SBDS_VER_NO_2"
+	Value  = "SBDS Version Number"
+	Help  = "Smart Battery Data Specification Version Number"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_SBDS_VER_NO_3"
+	Value  = "SBDS Version Number"
+	Help  = "Smart Battery Data Specification Version Number"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_SBDS_VER_NO_4"
+	Value  = "SBDS Version Number"
+	Help  = "Smart Battery Data Specification Version Number"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_SBDS_VER_NO_5"
+	Value  = "SBDS Version Number"
+	Help  = "Smart Battery Data Specification Version Number"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "MAX_ERROR_IN_BAT_DATA_1"
+	Value  = "0FFh"
+	Help  = "Maximum Error (as percentage in the range 0-100)"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "MAX_ERROR_IN_BAT_DATA_2"
+	Value  = "0FFh"
+	Help  = "Maximum Error (as percentage in the range 0-100)"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "MAX_ERROR_IN_BAT_DATA_3"
+	Value  = "0FFh"
+	Help  = "Maximum Error (as percentage in the range 0-100)"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "MAX_ERROR_IN_BAT_DATA_4"
+	Value  = "0FFh"
+	Help  = "Maximum Error (as percentage in the range 0-100)"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "MAX_ERROR_IN_BAT_DATA_5"
+	Value  = "0FFh"
+	Help  = "Maximum Error (as percentage in the range 0-100)"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_SBDS_SERIAL_NO_1"
+	Value  = "1234h"
+	Help  = "16-bit value - Identifies battery's serial number"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_SBDS_SERIAL_NO_2"
+	Value  = "1234h"
+	Help  = "16-bit value - Identifies battery's serial number"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_SBDS_SERIAL_NO_3"
+	Value  = "1234h"
+	Help  = "16-bit value - Identifies battery's serial number"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_SBDS_SERIAL_NO_4"
+	Value  = "1234h"
+	Help  = "16-bit value - Identifies battery's serial number"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_SBDS_SERIAL_NO_5"
+	Value  = "1234h"
+	Help  = "16-bit value - Identifies battery's serial number"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_SBDS_MAN_DATE_1"
+	Value  = "2821h"
+	Help  = "Cell Pack Manufacture Date"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_SBDS_MAN_DATE_2"
+	Value  = "2821h"
+	Help  = "Cell Pack Manufacture Date"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_SBDS_MAN_DATE_3"
+	Value  = "2821h"
+	Help  = "Cell Pack Manufacture Date"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_SBDS_MAN_DATE_4"
+	Value  = "2821h"
+	Help  = "Cell Pack Manufacture Date"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_SBDS_MAN_DATE_5"
+	Value  = "2821h"
+	Help  = "Cell Pack Manufacture Date"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_SBDS_DEV_CHEM_1"
+	Value  = "SBDS Device Chemistry"
+	Help  = "Battery Chemistry"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_SBDS_DEV_CHEM_2"
+	Value  = "SBDS Device Chemistry"
+	Help  = "Battery Chemistry"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_SBDS_DEV_CHEM_3"
+	Value  = "SBDS Device Chemistry"
+	Help  = "Battery Chemistry"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_SBDS_DEV_CHEM_4"
+	Value  = "SBDS Device Chemistry"
+	Help  = "Battery Chemistry"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "PORT_BAT_SBDS_DEV_CHEM_5"
+	Value  = "SBDS Device Chemistry"
+	Help  = "Battery Chemistry"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "DESIGN_CAPACITY_MULTIPLIER_1"
+	Value  = "01h"
+	Help  = "Multiplication Factor of the Design Capacity"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "DESIGN_CAPACITY_MULTIPLIER_2"
+	Value  = "01h"
+	Help  = "Multiplication Factor of the Design Capacity"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "DESIGN_CAPACITY_MULTIPLIER_3"
+	Value  = "01h"
+	Help  = "Multiplication Factor of the Design Capacity"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "DESIGN_CAPACITY_MULTIPLIER_4"
+	Value  = "01h"
+	Help  = "Multiplication Factor of the Design Capacity"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "DESIGN_CAPACITY_MULTIPLIER_5"
+	Value  = "01h"
+	Help  = "Multiplication Factor of the Design Capacity"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "OEM_SPECIFIC_1"
+	Value  = "12345678h"
+	Help  = "OEM or BIOS Vendor-specific Information"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "OEM_SPECIFIC_2"
+	Value  = "12345678h"
+	Help  = "OEM or BIOS Vendor-specific Information"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "OEM_SPECIFIC_3"
+	Value  = "12345678h"
+	Help  = "OEM or BIOS Vendor-specific Information"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "OEM_SPECIFIC_4"
+	Value  = "12345678h"
+	Help  = "OEM or BIOS Vendor-specific Information"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+TOKEN
+	Name  = "OEM_SPECIFIC_5"
+	Value  = "12345678h"
+	Help  = "OEM or BIOS Vendor-specific Information"
+	TokenType = Expression
+	TargetEQU = Yes
+	Token = "PORTABLE_BATTERY_INFO" "=" "1"
+End
+
+##############################################################################
+#
+#	TYPE 23 - SYSTEM RESET
+#
+##############################################################################
+#
+#   This structure describes whether Automatic System Reset functions
+#   enabled (Status). If the system has a watchdog Timer and the timer is
+#   not reset (Timer Reset) before the Interval elapses, an automatic system
+#   reset will occur. The system will re-boot according to the Boot Option.
+#   This function may repeat until the Limit is reached, at which time the
+#   system will re-boot according to the Boot Option at Limit.
+#
+##############################################################################
+
+TOKEN
+	Name  = "SYSTEM_RESET_INFO"
+	Value  = "0"
+	Help  = "ON  -> System Reset Information (Type 23) structure will be present\OFF -> System Reset Information (Type 23) structure will not be present"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TYPE23_STRUCTURE"
+	Value  = "$(SYSTEM_RESET_INFO)"
+	Help  = "Alternate token name for SYSTEM_RESET_INFO"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+##############################################################################
+#
+#	TYPE 24 - HARDWARE SECURITY
+#
+##############################################################################
+#
+#   This structure describes the system-wide Hardware Security Settings.
+#
+##############################################################################
+
+TOKEN
+	Name  = "HARDWARE_SECURITY_INFO"
+	Value  = "0"
+	Help  = "ON  -> Hardware Security Information (Type 24) structure will be present\OFF -> Hardware Security Information (Type 24) structure will not be present"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TYPE24_STRUCTURE"
+	Value  = "$(HARDWARE_SECURITY_INFO)"
+	Help  = "Alternate token name for HARDWARE_SECURITY_INFO"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "HARDWARE_SECURITY_SETTINGS"
+	Value  = "00h"
+	Help  = "Specifies the Password and reset status for the System.\Bits 7:6     Power-on Password Status\Bits 5:4     Keyboard Password Status\Bits 3:2     Administrator Password Status\Bits 1:0     Front Panel Reset Status\                 00b - Disabled\                 01b - Enabled\                 10b - Not Implemented\                 11b - Unknown"
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "Bit Field"
+End
+
+##############################################################################
+#
+#	TYPE 25 - SYSTEM POWER CONTROLS
+#
+##############################################################################
+#
+#   This structure describes the attributes for controlling the main power
+#   supply to the system. Software that interprets this structure uses the
+#   month, day, hour, minute and second values to determine the number of
+#   seconds untill the next power-on of the system. The presence of this
+#   structure implies that a timed power-on facility is available for the
+#   system.
+#
+##############################################################################
+
+TOKEN
+	Name  = "SYSTEM_POWER_CONTROLS_INFO"
+	Value  = "0"
+	Help  = "ON  -> System Power Controls Information (Type 25) structure will be present\OFF -> System Power Controls Information (Type 25) structure will not be present"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TYPE25_STRUCTURE"
+	Value  = "$(SYSTEM_POWER_CONTROLS_INFO)"
+	Help  = "Alternate token name for SYSTEM_POWER_CONTROLS_INFO"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+##############################################################################
+#
+#	TYPE 26 - VOLTAGE PROBE
+#
+##############################################################################
+#
+#   This describes the attributes for a Voltage Probe in the system. Each
+#   structure describes a single Voltage Probe.
+#
+##############################################################################
+
+TOKEN
+	Name  = "VOLTAGE_PROBE_INFO"
+	Value  = "0"
+	Help  = "ON  -> Voltage Probe Information (Type 26) structure will be present\OFF -> Voltage Probe Information (Type 26) structure will not be present"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+##############################################################################
+#
+#	TYPE 27 - COOLING DEVICE
+#
+##############################################################################
+#
+#   This structure describes the attributes for a cooling device in the
+#   system. Each structure describes a single cooling device.
+#
+##############################################################################
+
+TOKEN
+	Name  = "COOLING_DEVICE_INFO"
+	Value  = "0"
+	Help  = "ON  -> Cooling Device Information (Type 27) structure will be present\OFF -> Cooling Device Information (Type 27) structure will not be present"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "NUMBER_OF_COOLING_DEVICE"
+	Value  = "1"
+	Help  = "Identifies the number of Cooling Devices."
+	TokenType = Integer
+	TargetEQU = Yes
+End
+
+##############################################################################
+#
+#	TYPE 28 - TEMPERATURE PROBE
+#
+##############################################################################
+#
+#   The Structure describes the attributes for a temperature probe in the
+#   system. Each Structure describes a single Temperature Probe.
+#
+##############################################################################
+
+TOKEN
+	Name  = "TEMPERATURE_PROBE_INFO"
+	Value  = "0"
+	Help  = "ON  -> Temperature Probe Information (Type 28) structure will be present\OFF -> Temprature Probe Information (Type 28) structure will not be present"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+##############################################################################
+#
+#	TYPE 29 - ELECTRICAL CURRENT PROBE
+#
+##############################################################################
+#
+#   This Structure describes the attributes for an Electrical Current Probe
+#   in the system. Each structure describes a single Electrical Current
+#   Probe.
+#
+##############################################################################
+
+TOKEN
+	Name  = "ELECTRICAL_PROBE_INFO"
+	Value  = "0"
+	Help  = "ON  -> Electrical Probe Information (Type 29) structure will be present\OFF -> Electrical Probe Information (Type 29) structure will not be present"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+##############################################################################
+#
+#	TYPE 30 - OUT OF BAND REMOTE ACCESS
+#
+##############################################################################
+#
+#   This structure describes the attributes and policy settings of a
+#   hardware facility that may be used to gain remote access to a hardware
+#   system when the operating system is not available due to power-down
+#   status, hardware failures, or boot failures.
+#
+##############################################################################
+
+TOKEN
+	Name  = "OUT_OF_BAND_REMOTE_ACCESS_INFO"
+	Value  = "0"
+	Help  = "ON  -> OUT-OF-BAND Remote Access Information (Type 30) structure will be present\OFF -> OUT-OF-BAND Remote Access Information (Type 30) structure will not be present"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TYPE30_STRUCTURE"
+	Value  = "$(OUT_OF_BAND_REMOTE_ACCESS_INFO)"
+	Help  = "Alternate token name for OUT_OF_BAND_REMOTE_ACCESS_INFO"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "OBRA_MANUFACTURER_NAME"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "The string that contains the manufacturer of the Out-Of-Band Access facility"
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "OBRA_CONNECTIONS"
+	Value  = "0"
+	Help  = "Identifies the current Remote-Access connections:\Bits 7:2     -     Reserved for future definition by this specification, set to all zeros.\Bit   1        -     Outbound Connection enabled. Identifies whether (1) or not (0) the facility is allowed to initiate outbound connections to contact an alert management facility when critical conditions occur.\Bit   0        -     Inbound Connection enabled. Identifies whether (1) or not (0) the facility is allowed to initiate outbound connections to receive incomming connections for the purpose of remote\                       operations or problem management."
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "Bit Field"
+End
+
+##############################################################################
+#
+#	TYPE 31 - BOOT INTEGRITY SERVICES (BIS) ENTRY POINT
+#
+##############################################################################
+#
+#   This structure (Type 31) is reserved for use by the Boot Integrity
+#   Services (BIS).\Refer to the Boot Integrity Services API Specification
+#   for content details.
+#
+##############################################################################
+
+TOKEN
+	Name  = "BIS_INFO"
+	Value  = "0"
+	Help  = "ON  -> BIS Information structure will be present\OFF -> BIS Information structure will not be present\"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TYPE31_STRUCTURE"
+	Value  = "$(BIS_INFO)"
+	Help  = "Alternate token name for BIS_INFO"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "CHECKSUM"
+	Value  = "00H"
+	TokenType = Integer
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "BIS_ENTRY_POINT_REAL_MODE"
+	Value  = "0FFFFFFFFh"
+	TokenType = Integer
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "BIS_ENTRY_POINT_FLAT_MODE"
+	Value  = "0FFFFFFFFh"
+	TokenType = Integer
+	TargetEQU = Yes
+End
+
+##############################################################################
+#
+#	TYPE 32 - SYSTEM BOOT INFORMATION
+#
+##############################################################################
+#
+#   The Client system firmware, e.g. BIOS, communicates the System Boot
+#   Status to the client's Pre-boot Execution Environment (PXE) boot image
+#   or OS-present management application via this structure. When used in
+#   the PXE environment, for example, this code identifies the reason the
+#   PXE was initiated and can be used by boot-image software to further
+#   automate an enterprise's PXE sessions. For example, an enterprise could
+#   choose to automatically download a hardware-diagnostic image to a client
+#   whose reason code indicated either a firmware or operating system
+#   detected hardware failure.
+#
+##############################################################################
+
+TOKEN
+	Name  = "SYSTEM_BOOT_INFO"
+	Value  = "1"
+	Help  = "ON  -> System Boot Information (Type 32) structure will be present\OFF -> System Boot Information (Type 32) structure will not be present"
+	TokenType = Boolean
+	TargetEQU = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "TYPE32_STRUCTURE"
+	Value  = "$(SYSTEM_BOOT_INFO)"
+	Help  = "Alternate token name for SYSTEM_BOOT_INFO"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "BOOT_STATUS"
+	Value  = "0"
+	Help  = "Value     Description\0     -     No Errors Detected\1     -     No Bootable Media\2     -     The 'normal' operating system failed to load\3     -     Firmware detected hardware failure, including 'unknown' failure types.\4     -     Operating system detected hardware failure. For ACPI OS's, the system firmware might set this reason code when the OS reports a boot failure via interfaces defined in the Simple Boot Flag Specification.\5     -     User-requested boot, usually via a keystroke\6     -     System security violation\7     -     Previously requested image. This reason code allows coordination between OS-Present software and the OS-absent environment.\             For example, an OS-present application might enable (via a platform-specific interface) the system to boot to the PXE and request a specific boot-image.\8     -     A system watchdog timer expired, causing the system to reboot.\9     - 127     -     Reserved for future assignment via this specification.\128 - 191     -     Vendor/OEM-specific implementations.\                          The Vendor/OEM identifier is the 'Manufacturer' string found in the System Information Structure.\192 - 255     -     Product-specific implementations.\                          The Productidentifier is formed by the concatenation of the 'Manufacturer' and 'Product Name' strings found in the System Information Structure"
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "0-255"
+End
+
+##############################################################################
+#
+#	TYPE 33 - 64-BIT MEMORY ERROR INFORMATION
+#
+##############################################################################
+#
+#   The structure describes an error within a Physical Memory Array, when
+#   the error address is above 4G (0xFFFFFFFF).
+#
+##############################################################################
+
+TOKEN
+	Name  = "SIXTY_FOURBIT_MEMORY_ERROR_INFO"
+	Value  = "0"
+	Help  = "ON  -> 64 Bit Memory Error Information (Type 33) structure will be present\OFF -> 64 Bit Memory Error Information (Type 33) structure will not be present"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TYPE33_STRUCTURE"
+	Value  = "$(SIXTY_FOURBIT_MEMORY_ERROR_INFO)"
+	Help  = "Alternate token name for SIXTY_FOURBIT_MEMORY_ERROR_INFO"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+##############################################################################
+#
+#	TYPE 34 - MANAGEMENT DEVICE
+#
+##############################################################################
+#
+#   The information in this structure defines the attributes of a Management
+#   Device. A Management Device might control one or more fans or voltage,
+#   current, or temperature probes as defined by one or more Management
+#   Device Component Structures (Type 35)
+#
+##############################################################################
+
+TOKEN
+	Name  = "MANAGEMENT_DEVICE_INFO"
+	Value  = "0"
+	Help  = "ON  -> Management Device Information (Type 34) structure will be present\OFF -> Management Device Information (Type 34) structure will not be present"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TYPE34_STRUCTURE"
+	Value  = "$(MANAGEMENT_DEVICE_INFO)"
+	Help  = "Alternate token name for MANAGEMENT_DEVICE_INFO"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "NUMBER_OF_MANAGEMENT_DEVICES"
+	Value  = "1"
+	Help  = "Number of Management Devices in the System."
+	TokenType = Integer
+	TargetEQU = Yes
+End
+
+##############################################################################
+#
+#	TYPE 35 - MANAGEMENT DEVICE COMPONENT
+#
+##############################################################################
+#
+#   This Structure associates a Cooling Device or Environmental Probe with
+#   structures that define the controlling hardware device and (optionally)
+#   the component's thresholds.
+#
+##############################################################################
+
+TOKEN
+	Name  = "MGMT_DEV_COMPONENT_DESCRIPTION"
+	Value  = "$(DEFAULT_STRING)"
+	Help  = "Specifies the additional descriptive information about the component."
+	TokenType = Expression
+	TargetEQU = Yes
+End
+
+##############################################################################
+#
+#	TYPE 36 - MANAGEMENT DEVICE THRESHOLD DATA
+#
+##############################################################################
+#
+#   The information in this structure defines threshold information for a
+#   component (probe or cooling unit) contained within a Management Device.
+#
+#   For each threshold field present in the structure:
+#       1 - The threshold units (millivolts, milliamps, 1/10th degrees C,
+#           or RPMs) are as defined by the associated probe or cooling unit
+#           component structure.
+#       2 - If the value is unavailable, the field is set to 0x8000.
+#
+##############################################################################
+
+##############################################################################
+#
+#	TYPE 37 - MEMORY CHANNEL
+#
+##############################################################################
+#
+#   The information in this structure provides the correlation between a
+#   Memory Channel and its associated Memory Devices. Each device presents
+#   one or more loads to the channel; the sum of all device loads cannot
+#   exceed the channel's defined maximum.
+#
+##############################################################################
+
+TOKEN
+	Name  = "MEMORY_CHANNEL_INFO"
+	Value  = "0"
+	Help  = "ON  -> Memory Channel Information (Type 37) will be Present.\OFF -> Memory Channel Information (Type 37) will not be Present."
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+    Name  = "TYPE37_STRUCTURE"
+    Value  = "$(MEMORY_CHANNEL_INFO)"
+    Help  = "Alternate token name for MEMORY_CHANNEL_INFO"
+    TokenType = Integer
+    TargetEQU = Yes
+    TargetH = Yes
+End
+
+TOKEN
+	Name  = "NUMBER_OF_MEMORY_CHANNELS"
+	Value  = "2"
+	Help  = "Number of Memory Channels Present in the System."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+##############################################################################
+#
+#	TYPE 38 - IPMI DEVICE INFORMATION
+#
+##############################################################################
+#
+#   The information in this structure defines the attributes of an
+#   Intelligent Platform Management Interface (IPMI) Baseboard Management
+#   Controller (BMC).
+#
+#   Refer to the documents available at:
+#   http://developer.intel.com/design/servers/ipmi/spec.htm
+#   for full documentation of IPMI.
+#
+##############################################################################
+
+TOKEN
+	Name  = "IPMI_DEVICE_INFO"
+	Value  = "0"
+	Help  = "ON  ->IPMI Device Information structure will be present\OFF -> IPMI Device Information structure will not be present\"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TYPE38_STRUCTURE"
+	Value  = "$(IPMI_DEVICE_INFO)"
+	Help  = "Alternate token name for IPMI_DEVICE_INFO"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "IPMI_INTERFACE_TYPE"
+	Value  = "0"
+	Help  = "Baseboard Management Controller (BMC) interface type.\00h - Unknown\01h - KCS : Keyboard Controller Style\02h - SMIC : Server Management Interface Chip\03h - BT : Block Transfer\04h to 0FFh - Reserved for future assignment by this specification."
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "00 - 0FFh"
+End
+
+TOKEN
+	Name  = "IPMI_SPECIFICATION_REVISION"
+	Value  = "15h"
+	Help  = "Identifies the IPMI Specification Revision, in BCD format, to which the BMC was designed.\Bits 7:4 hold the most significant digit of the revision, while bits 3:0 hold the least significant bits.\eg. a value of 10h indicates revision 1.0"
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "00 - 99"
+End
+
+TOKEN
+	Name  = "I2C_SLAVE_ADDRESS"
+	Value  = "00h"
+	Help  = "The Slave Address on the I2C bus of this BMC."
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "00h - 0FFh"
+End
+
+TOKEN
+	Name  = "NV_STORAGE_DEVICE_ADDRESS"
+	Value  = "0FFh"
+	Help  = "Bus ID of the NV Storage Device. If no storage device exists for this BMC, the field is set to 0FFh."
+	TokenType = Integer
+	TargetEQU = Yes
+	Range  = "00h - 0FFh"
+End
+
+TOKEN
+	Name  = "BASE_ADDR_MOD_INTR_INFO"
+	Value  = "00h"
+	Help  = "Base Address Modifier.\Bits 7:6 Register spacing\   00 - Interface registers are not on successive byte boundaries\   01 - Interface registers are on 32-bit boundaries\   10 - Interface registers are on 16-byte boundaries\Bit 4 - LS-bit for addresses\   0 - Address bit 0 = 0\   1 - Address bit 0 = 1\Bit 3 - Interrupt Info\   0 - Interrupt info not specified\   1 - Interrupt info specified\Bit 1 - Interrupt Polarity\   0 - Active low\   1 - Active high\Bit 0 - Interrupt Trigger Mode\   0 - Edge\   1 - Level"
+	TokenType = Integer
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "INTERRUPT_NUMBER"
+	Value  = "00h"
+	Help  = "Interrupt number for IPMI System Interface\00 = unspecified/unsupported"
+	TokenType = Integer
+	TargetEQU = Yes
+End
+
+##############################################################################
+#
+#	TYPE 39 - SYSTEM POWER SUPPLY
+#
+##############################################################################
+#
+#   This structure identifies attributes of a System Power Supply. One
+#   instance of this record is present for each possible Power Supply in a
+#   System.
+#
+##############################################################################
+
+TOKEN
+	Name  = "SYSTEM_POWER_SUPPLY_INFO"
+	Value  = "0"
+	Help  = "Type 39 - System Power Supply\OFF -> System Power Supply will not be Present\ON  -> System Power Supply will be Present"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TYPE39_STRUCTURE"
+	Value  = "$(SYSTEM_POWER_SUPPLY_INFO)"
+	Help  = "Alternate token name for SYSTEM_POWER_SUPPLY_INFO"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "NUMBER_OF_POWER_SUPPLY"
+	Value  = "1"
+	Help  = "Number of Power Supplies Present in the System."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+##############################################################################
+#
+#	TYPE 40 - ADDITIONAL INFORMATION
+#
+##############################################################################
+#
+#   This structure is intended to provide additional information for
+#   handling unspecified enumerated values and interim field updates in
+#   another structure.
+#
+##############################################################################
+
+TOKEN
+	Name  = "ADDITIONAL_INFO"
+	Value  = "0"
+	Help  = "ON  -> Additional Information (Type 40) will be Present.\OFF -> Additional Information (Type 40) will not be Present."
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TYPE40_STRUCTURE"
+	Value  = "$(ADDITIONAL_INFO)"
+	Help  = "Alternate token name for ADDITIONAL_INFO"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "ADDITIONAL_INFO_COUNT"
+	Value  = "3"
+	Help  = "Number of additional information entries"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+##############################################################################
+#
+#	TYPE 41 - ONBOARD DEVICES EXTENDED INFORMATION
+#
+##############################################################################
+#
+#   This structure defines the attributes of devices that are onboard.
+#
+##############################################################################
+
+TOKEN
+	Name  = "ONBOARD_DEVICE_EXTENDED_INFO"
+	Value  = "1"
+	Help  = "ON  -> Onboard Devices Extended Information (Type 41) will be Present.\OFF -> Onboard Devices Extended Information (Type 41) will not be Present."
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TYPE41_STRUCTURE"
+	Value  = "$(ONBOARD_DEVICE_EXTENDED_INFO)"
+	Help  = "Alternate token name for ONBOARD_DEVICE_EXTENDED_INFO"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "ONBOARD_DEVICE_EXT_COUNT"
+	Value  = "3"
+	Help  = "Number of Onboard Devices"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+	Range  = "0 - 16"
+End
+
+##############################################################################
+#
+#	TYPE 129 - INTEL_ASF
+#
+##############################################################################
+#
+#   This structure is for Intel ASF support
+#
+##############################################################################
+
+TOKEN
+	Name  = "INTEL_ASF"
+	Value  = "0"
+	Help  = "Type 129 - Intel ASF Support"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "TYPE129_STRUCTURE"
+	Value  = "$(INTEL_ASF)"
+	Help  = "Alternate token name for INTEL_ASF"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+##############################################################################
+#
+#	TYPE 240 - OEM IO GPNV
+#
+##############################################################################
+#
+#   This structure is for OEM defined IO structure
+#
+##############################################################################
+
+TOKEN
+	Name  = "OEM_IO_GPNV_STRUC_INFO"
+	Value  = "0"
+	Help  = "Example of OEM defined structures"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "TYPE240_STRUCTURE"
+	Value  = "$(OEM_IO_GPNV_STRUC_INFO)"
+	Help  = "Alternate token name for OEM_IO_GPNV_STRUC_INFO"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+##############################################################################
+#
+#	TYPE 241 - OEM Memory GPNV
+#
+##############################################################################
+#
+#   This structure is for OEM Memory GPNV structure
+#
+##############################################################################
+
+TOKEN
+	Name  = "OEM_MEMORY_GPNV_STRUC_INFO"
+	Value  = "0"
+	Help  = "Example of OEM defined structures"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "TYPE241_STRUCTURE"
+	Value  = "$(OEM_MEMORY_GPNV_STRUC_INFO)"
+	Help  = "Alternate token name for OEM_MEMORY_GPNV_STRUC_INFO"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "INC_ISA"
+	Value  = "0"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "INC_PCI"
+	Value  = "1"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "INC_PNP"
+	Value  = "0"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+PATH
+	Name  = "SMBIOS_STATIC_DATA_DIR"
+End
+
+INFComponent
+	Name  = "SmbiosStaticData"
+	File  = "SmbiosStaticData.inf"
+	Package  = "AmiCompatibilityPkg"
+	ModuleTypes  = "USER_DEFINED"
+End
+
+FFS_FILE
+	Name  = "SmbiosStaticData"
+	FD_AREA  = "FV_MAIN"
+	INFComponent  = "AmiCompatibilityPkg.SmbiosStaticData"
+	Rule_Override  = "SubtypeGuidCompressed"
+End
+

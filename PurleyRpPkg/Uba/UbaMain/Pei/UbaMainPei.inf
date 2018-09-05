@@ -1,0 +1,386 @@
+#
+#  This file contains 'Framework Code' and is licensed as such
+#  under the terms of your license agreement with Intel or your
+#  vendor.  This file may not be modified, except as allowed by
+#  additional terms of your license agreement.
+#
+#
+## @file
+#
+#   Uba Main for multi-boards support in PEI phase.
+#
+#  Copyright (c) 2015 - 2016, Intel Corporation. All rights reserved.<BR>
+#  This software and associated documentation (if any) is furnished
+#  under a license and may only be used or copied in accordance
+#  with the terms of the license. Except as permitted by such
+#  license, no part of this software or documentation may be
+#  reproduced, stored in a retrieval system, or transmitted in any
+#  form or by any means without the express written consent of
+#  Intel Corporation.
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = UbaMainPeim
+  FILE_GUID                      = 64980BB9-7BA3-4cb0-AA83-FE396A7F6724
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+
+  ENTRY_POINT                    = UbaMainPeimEntry
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32
+#
+
+[Sources]
+  UbaMainPei.c
+  UbaMainPei.h
+  TypeNeonCityEPRP/GpioTable.c
+  TypeNeonCityEPRP/Clockgen.c
+  TypeNeonCityEPRP/PcdData.c
+  TypeNeonCityEPRP/UsbOC.c
+  TypeNeonCityEPRP/SoftStrapFixup.c
+  TypeNeonCityEPRP/AcpiTablePcds.c
+  TypeNeonCityEPRP/PchEarlyUpdate.c
+  TypeNeonCityEPRP/IioBifurInit.c
+  TypeNeonCityEPRP/SlotTable.c
+  TypeNeonCityEPRP/KtiEparam.c
+  # APTIOV_SERVER_OVERRIDE_RC_START : Support only NeonCity and LightningRidge
+  #  TypeHedtCRB/GpioTable.c
+  #  TypeHedtCRB/Clockgen.c
+  #  TypeHedtCRB/PcdData.c
+  #  TypeHedtCRB/UsbOC.c
+  #  TypeHedtCRB/SoftStrapFixup.c
+  #  TypeHedtCRB/AcpiTablePcds.c
+  #  TypeHedtCRB/IioBifurInit.c
+  #  TypeHedtCRB/SlotTable.c
+  #  TypeHedtCRB/KtiEparam.c
+  #  TypeHedtEV/GpioTable.c
+  #  TypeHedtEV/Clockgen.c
+  #  TypeHedtEV/PcdData.c
+  #  TypeHedtEV/UsbOC.c
+  #  TypeHedtEV/SoftStrapFixup.c
+  #  TypeHedtEV/AcpiTablePcds.c
+  #  TypeHedtEV/IioBifurInit.c
+  #  TypeHedtEV/SlotTable.c
+  #  TypeHedtEV/KtiEparam.c
+  #  TypeBuchananPass/GpioTable.c
+  #  TypeBuchananPass/Clockgen.c
+  #  TypeBuchananPass/PcdData.c
+  #  TypeBuchananPass/UsbOC.c
+  #  TypeBuchananPass/SoftStrapFixup.c
+  #  TypeBuchananPass/AcpiTablePcds.c
+  #  TypeBuchananPass/IioBifurInit.c
+  #  TypeBuchananPass/SlotTable.c
+  #  TypeBuchananPass/KtiEparam.c
+  #  TypeCrescentCity/GpioTable.c
+  #  TypeCrescentCity/Clockgen.c
+  #  TypeCrescentCity/PcdData.c
+  #  TypeCrescentCity/UsbOC.c
+  #  TypeCrescentCity/SoftStrapFixup.c
+  #  TypeCrescentCity/AcpiTablePcds.c
+  #  TypeCrescentCity/IioBifurInit.c
+  #  TypeCrescentCity/SlotTable.c
+  #  TypeCrescentCity/KtiEparam.c
+  #  TypeLightningRidgeEX8S1N/GpioTable.c
+  #  TypeLightningRidgeEX8S1N/Clockgen.c
+  #  TypeLightningRidgeEX8S1N/PcdData.c
+  #  TypeLightningRidgeEX8S1N/UsbOC.c
+  #  TypeLightningRidgeEX8S1N/SoftStrapFixup.c
+  #  TypeLightningRidgeEX8S1N/AcpiTablePcds.c
+  #  TypeLightningRidgeEX8S1N/IioBifurInit.c
+  #  TypeLightningRidgeEX8S1N/SlotTable.c
+  # TypeLightningRidgeEX8S1N/KtiEparam.c
+  #  TypeLightningRidgeEX8S2N/GpioTable.c
+  #  TypeLightningRidgeEX8S2N/Clockgen.c
+  #  TypeLightningRidgeEX8S2N/PcdData.c
+  #  TypeLightningRidgeEX8S2N/UsbOC.c
+  #  TypeLightningRidgeEX8S2N/SoftStrapFixup.c
+  #  TypeLightningRidgeEX8S2N/AcpiTablePcds.c
+  #  TypeLightningRidgeEX8S2N/IioBifurInit.c
+  #  TypeLightningRidgeEX8S2N/SlotTable.c
+  #  TypeLightningRidgeEX8S2N/KtiEparam.c
+  # APTIOV_SERVER_OVERRIDE_RC_END : Support only NeonCity and LightningRidge
+  TypeLightningRidgeEXECB1/GpioTable.c
+  TypeLightningRidgeEXECB1/Clockgen.c
+  TypeLightningRidgeEXECB1/PcdData.c
+  TypeLightningRidgeEXECB1/UsbOC.c
+  TypeLightningRidgeEXECB1/SoftStrapFixup.c
+  TypeLightningRidgeEXECB1/AcpiTablePcds.c
+  TypeLightningRidgeEXECB1/IioBifurInit.c
+  TypeLightningRidgeEXECB1/SlotTable.c
+  TypeLightningRidgeEXECB1/KtiEparam.c
+  TypeLightningRidgeEXECB2/GpioTable.c
+  TypeLightningRidgeEXECB2/Clockgen.c
+  TypeLightningRidgeEXECB2/PcdData.c
+  TypeLightningRidgeEXECB2/UsbOC.c
+  TypeLightningRidgeEXECB2/SoftStrapFixup.c
+  TypeLightningRidgeEXECB2/AcpiTablePcds.c
+  TypeLightningRidgeEXECB2/IioBifurInit.c
+  TypeLightningRidgeEXECB2/SlotTable.c
+  TypeLightningRidgeEXECB2/KtiEparam.c
+  TypeLightningRidgeEXECB3/GpioTable.c
+  TypeLightningRidgeEXECB3/Clockgen.c
+  TypeLightningRidgeEXECB3/PcdData.c
+  TypeLightningRidgeEXECB3/UsbOC.c
+  TypeLightningRidgeEXECB3/SoftStrapFixup.c
+  TypeLightningRidgeEXECB3/AcpiTablePcds.c
+  TypeLightningRidgeEXECB3/IioBifurInit.c
+  TypeLightningRidgeEXECB3/SlotTable.c
+  TypeLightningRidgeEXECB3/KtiEparam.c
+  TypeLightningRidgeEXECB4/GpioTable.c
+  TypeLightningRidgeEXECB4/Clockgen.c
+  TypeLightningRidgeEXECB4/PcdData.c
+  TypeLightningRidgeEXECB4/UsbOC.c
+  TypeLightningRidgeEXECB4/SoftStrapFixup.c
+  TypeLightningRidgeEXECB4/AcpiTablePcds.c
+  TypeLightningRidgeEXECB4/IioBifurInit.c
+  TypeLightningRidgeEXECB4/SlotTable.c
+  TypeLightningRidgeEXECB4/KtiEparam.c
+  TypeLightningRidgeEXRP/GpioTable.c
+  TypeLightningRidgeEXRP/Clockgen.c
+  TypeLightningRidgeEXRP/PcdData.c
+  TypeLightningRidgeEXRP/UsbOC.c
+  TypeLightningRidgeEXRP/SoftStrapFixup.c
+  TypeLightningRidgeEXRP/AcpiTablePcds.c
+  TypeLightningRidgeEXRP/IioBifurInit.c
+  TypeLightningRidgeEXRP/SlotTable.c
+  TypeLightningRidgeEXRP/KtiEparam.c
+  TypeNeonCityEPECB/GpioTable.c
+  TypeNeonCityEPECB/Clockgen.c
+  TypeNeonCityEPECB/PcdData.c
+  TypeNeonCityEPECB/UsbOC.c
+  TypeNeonCityEPECB/SoftStrapFixup.c
+  TypeNeonCityEPECB/AcpiTablePcds.c
+  TypeNeonCityEPECB/IioBifurInit.c
+  TypeNeonCityEPECB/SlotTable.c
+  TypeNeonCityEPECB/KtiEparam.c
+  # APTIOV_SERVER_OVERRIDE_RC_START : Support only NeonCity and LightningRidge
+  #  TypeOpalCitySTHI/GpioTable.c
+  #  TypeOpalCitySTHI/Clockgen.c
+  #  TypeOpalCitySTHI/PcdData.c
+  #  TypeOpalCitySTHI/UsbOC.c
+  #  TypeOpalCitySTHI/SoftStrapFixup.c
+  #  TypeOpalCitySTHI/AcpiTablePcds.c
+  #  TypeOpalCitySTHI/IioBifurInit.c
+  #  TypeOpalCitySTHI/SlotTable.c
+  #  TypeOpalCitySTHI/KtiEparam.c
+  #  TypePurleyLBGEPDVP/GpioTable.c
+  #  TypePurleyLBGEPDVP/Clockgen.c
+  #  TypePurleyLBGEPDVP/PcdData.c
+  #  TypePurleyLBGEPDVP/UsbOC.c
+  #  TypePurleyLBGEPDVP/SoftStrapFixup.c
+  #  TypePurleyLBGEPDVP/AcpiTablePcds.c
+  #  TypePurleyLBGEPDVP/IioBifurInit.c
+  #  TypePurleyLBGEPDVP/SlotTable.c
+  #  TypePurleyLBGEPDVP/KtiEparam.c
+  #  TypeWolfPass/GpioTable.c
+  #  TypeWolfPass/Clockgen.c
+  #  TypeWolfPass/PcdData.c
+  #  TypeWolfPass/UsbOC.c
+  #  TypeWolfPass/SoftStrapFixup.c
+  #  TypeWolfPass/AcpiTablePcds.c
+  TypeWolfPass/PchEarlyUpdate.c #This is included to resolve build error with LighteningRidge. Should be removed based on LighteningRidge implementation in RC.
+  #  TypeWolfPass/IioBifurInit.c
+  #  TypeWolfPass/SlotTable.c
+  #  TypeWolfPass/KtiEparam.c
+  # TypeKyanite/GpioTable.c
+  #  TypeKyanite/Clockgen.c
+  #  TypeKyanite/PcdData.c
+  #  TypeKyanite/UsbOC.c
+  #  TypeKyanite/SoftStrapFixup.c
+  #  TypeKyanite/AcpiTablePcds.c
+  # APTIOV_SERVER_OVERRIDE_RC_END : Support only NeonCity and LightningRidge
+  TypeKyanite/PchEarlyUpdate.c
+  # APTIOV_SERVER_OVERRIDE_RC_START : Support only NeonCity and LightningRidge
+  #  TypeKyanite/IioBifurInit.c
+  #  TypeKyanite/SlotTable.c
+  # APTIOV_SERVER_OVERRIDE_RC_END : Support only NeonCity and LightningRidge
+  TypeNeonCityFPGA/GpioTable.c
+  # APTIOV_SERVER_OVERRIDE_RC_START : Support only NeonCity and LightningRidge
+  #  TypeKyanite/KtiEparam.c
+  # APTIOV_SERVER_OVERRIDE_RC_END : Support only NeonCity and LightningRidge
+  TypeNeonCityFPGA/PcdData.c
+  TypeNeonCityFPGA/UsbOC.c
+  TypeNeonCityFPGA/AcpiTablePcds.c
+  TypeNeonCityFPGA/IioBifurInit.c
+  TypeNeonCityFPGA/SlotTable.c
+  # APTIOV_SERVER_OVERRIDE_RC_START : Support only NeonCity and LightningRidge
+  #  TypeOpalCityFPGA/GpioTable.c
+  # APTIOV_SERVER_OVERRIDE_RC_END : Support only NeonCity and LightningRidge
+  TypeNeonCityFPGA/KtiEparam.c
+  # APTIOV_SERVER_OVERRIDE_RC_START : Support only NeonCity and LightningRidge
+  #  TypeOpalCityFPGA/PcdData.c
+  #  TypeOpalCityFPGA/UsbOC.c
+  #  TypeOpalCityFPGA/AcpiTablePcds.c
+  #  TypeOpalCityFPGA/IioBifurInit.c
+  #  TypeOpalCityFPGA/SlotTable.c
+  #  TypeOpalCityFPGA/KtiEparam.c
+
+  # APTIOV_SERVER_OVERRIDE_RC_END : Support only NeonCity and LightningRidge
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  CpPlatPkg/CpPlatPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  PurleyPlatPkg/PlatPkg.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+  PurleyRpPkg/PlatformPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+# APTIOV_SERVER_OVERRIDE_RC_START
+  PurleySktPkg/Me/MePkg.dec
+# APTIOV_SERVER_OVERRIDE_RC_END
+
+[LibraryClasses]
+  BaseLib
+  BaseMemoryLib
+  MemoryAllocationLib
+  PeiServicesLib
+  PeimEntryPoint
+  DebugLib
+  PeiServicesTablePointerLib
+  IoLib
+  PcdLib
+  UbaPlatLib
+  GpioLib
+  GpioPrivateLib
+  PchInfoLib
+# APTIOV_SERVER_OVERRIDE_RC_START
+  MeTypeLib
+# APTIOV_SERVER_OVERRIDE_RC_END
+
+[Guids]
+  gEfiSocketIioVariableGuid
+  gPlatformKtiEparamUpdateDataGuid
+
+[Ppis]
+  gUbaConfigDatabasePpiGuid
+  gEfiPeiPlatformTypeWolfPassPpiGuid
+  gEfiPeiPlatformTypeNeonCityEPRPPpiGuid
+  gEfiPeiPlatformTypeBuchananPassPpiGuid
+  gEfiPeiPlatformTypeNeonCityEPECBPpiGuid
+  gEfiPeiPlatformTypePurleyLBGEPDVPPpiGuid
+  gEfiPeiPlatformTypeOpalCitySTHIPpiGuid
+  gEfiPeiPlatformTypeCrescentCityPpiGuid
+  gEfiPeiPlatformTypeHedtEVPpiGuid
+  gEfiPeiPlatformTypeHedtCRBPpiGuid
+  gEfiPeiPlatformTypeLightningRidgeEXRPPpiGuid
+  gEfiPeiPlatformTypeLightningRidgeEXECB1PpiGuid
+  gEfiPeiPlatformTypeLightningRidgeEXECB2PpiGuid
+  gEfiPeiPlatformTypeLightningRidgeEXECB3PpiGuid
+  gEfiPeiPlatformTypeLightningRidgeEXECB4PpiGuid
+  gEfiPeiPlatformTypeLightningRidgeEX8S1NPpiGuid
+  gEfiPeiPlatformTypeLightningRidgeEX8S2NPpiGuid
+  gEfiPeiPlatformTypeKyanitePpiGuid
+  gEfiPeiPlatformTypeNeonCityFPGAPpiGuid
+  gEfiPeiPlatformTypeOpalCityFPGAPpiGuid
+  gEfiPeiReadOnlyVariable2PpiGuid
+
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+
+  gOemSkuTokenSpaceGuid.PcdOemSkuBoardID
+  gOemSkuTokenSpaceGuid.PcdOemSkuSubBoardID
+  gOemSkuTokenSpaceGuid.PcdOemSkuBoardFamily
+
+  gOemSkuTokenSpaceGuid.PcdOemSkuFamilyName
+  gOemSkuTokenSpaceGuid.PcdOemSkuBoardName
+
+  gOemSkuTokenSpaceGuid.PcdOemSkuBoardSocketCount
+
+  gOemSkuTokenSpaceGuid.PcdOemSkuMaxChannel
+  gOemSkuTokenSpaceGuid.PcdOemSkuMaxDimmPerChannel
+  gOemSkuTokenSpaceGuid.PcdOemSkuDimmLayout
+
+  gOemSkuTokenSpaceGuid.PcdOemSkuPchUsbOverCurrentPort00
+  gOemSkuTokenSpaceGuid.PcdOemSkuPchUsbOverCurrentPort01
+  gOemSkuTokenSpaceGuid.PcdOemSkuPchUsbOverCurrentPort02
+  gOemSkuTokenSpaceGuid.PcdOemSkuPchUsbOverCurrentPort03
+  gOemSkuTokenSpaceGuid.PcdOemSkuPchUsbOverCurrentPort04
+  gOemSkuTokenSpaceGuid.PcdOemSkuPchUsbOverCurrentPort05
+  gOemSkuTokenSpaceGuid.PcdOemSkuPchUsbOverCurrentPort06
+  gOemSkuTokenSpaceGuid.PcdOemSkuPchUsbOverCurrentPort07
+  gOemSkuTokenSpaceGuid.PcdOemSkuPchUsbOverCurrentPort08
+  gOemSkuTokenSpaceGuid.PcdOemSkuPchUsbOverCurrentPort09
+  gOemSkuTokenSpaceGuid.PcdOemSkuPchUsbOverCurrentPort10
+  gOemSkuTokenSpaceGuid.PcdOemSkuPchUsbOverCurrentPort11
+  gOemSkuTokenSpaceGuid.PcdOemSkuPchUsbOverCurrentPort12
+  gOemSkuTokenSpaceGuid.PcdOemSkuPchUsbOverCurrentPort13
+
+  gOemSkuTokenSpaceGuid.PcdOemSkuPchUsbPortLengthPort00
+  gOemSkuTokenSpaceGuid.PcdOemSkuPchUsbPortLengthPort01
+  gOemSkuTokenSpaceGuid.PcdOemSkuPchUsbPortLengthPort02
+  gOemSkuTokenSpaceGuid.PcdOemSkuPchUsbPortLengthPort03
+  gOemSkuTokenSpaceGuid.PcdOemSkuPchUsbPortLengthPort04
+  gOemSkuTokenSpaceGuid.PcdOemSkuPchUsbPortLengthPort05
+  gOemSkuTokenSpaceGuid.PcdOemSkuPchUsbPortLengthPort06
+  gOemSkuTokenSpaceGuid.PcdOemSkuPchUsbPortLengthPort07
+  gOemSkuTokenSpaceGuid.PcdOemSkuPchUsbPortLengthPort08
+  gOemSkuTokenSpaceGuid.PcdOemSkuPchUsbPortLengthPort09
+  gOemSkuTokenSpaceGuid.PcdOemSkuPchUsbPortLengthPort10
+  gOemSkuTokenSpaceGuid.PcdOemSkuPchUsbPortLengthPort11
+  gOemSkuTokenSpaceGuid.PcdOemSkuPchUsbPortLengthPort12
+  gOemSkuTokenSpaceGuid.PcdOemSkuPchUsbPortLengthPort13
+
+  gOemSkuTokenSpaceGuid.PcdOemSkuPchUsb3OverCurrentPort00
+  gOemSkuTokenSpaceGuid.PcdOemSkuPchUsb3OverCurrentPort01
+  gOemSkuTokenSpaceGuid.PcdOemSkuPchUsb3OverCurrentPort02
+  gOemSkuTokenSpaceGuid.PcdOemSkuPchUsb3OverCurrentPort03
+  gOemSkuTokenSpaceGuid.PcdOemSkuPchUsb3OverCurrentPort04
+  gOemSkuTokenSpaceGuid.PcdOemSkuPchUsb3OverCurrentPort05
+
+  gOemSkuTokenSpaceGuid.PcdOemSkuAcpiName
+  gPlatformTokenSpaceGuid.PcdAcpiOemId
+  gPlatformTokenSpaceGuid.PcdAcpiTableOemId
+
+  gOemSkuTokenSpaceGuid.PcdOemSkuMrlAttnLed
+  gOemSkuTokenSpaceGuid.PcdOemSkuSdpActiveFlag
+
+  gOemSkuTokenSpaceGuid.PcdOemSku_GPIO_USE_SEL_VAL
+  gOemSkuTokenSpaceGuid.PcdOemSku_GPIO_USE_SEL2_VAL
+  gOemSkuTokenSpaceGuid.PcdOemSku_GPIO_USE_SEL3_VAL
+  gOemSkuTokenSpaceGuid.PcdOemSku_GPIO_IO_SEL_VAL
+  gOemSkuTokenSpaceGuid.PcdOemSku_GPIO_IO_SEL2_VAL
+  gOemSkuTokenSpaceGuid.PcdOemSku_GPIO_IO_SEL3_VAL
+  gOemSkuTokenSpaceGuid.PcdOemSku_GPIO_LVL_VAL
+  gOemSkuTokenSpaceGuid.PcdOemSku_GPIO_LVL2_VAL
+  gOemSkuTokenSpaceGuid.PcdOemSku_GPIO_LVL3_VAL
+  gOemSkuTokenSpaceGuid.PcdOemSku_GPIO_INV_VAL
+  gOemSkuTokenSpaceGuid.PcdOemSku_GPIO_BLINK_VAL
+  gOemSkuTokenSpaceGuid.PcdOemSku_GPIO_TABLE_SIZE
+
+  gOemSkuTokenSpaceGuid.PcdOemSku_Reg78Data32
+
+  gOemSkuTokenSpaceGuid.PcdOemSkuClockGenerator00
+  gOemSkuTokenSpaceGuid.PcdOemSkuClockGenerator01
+  gOemSkuTokenSpaceGuid.PcdOemSkuClockGenerator02
+  gOemSkuTokenSpaceGuid.PcdOemSkuClockGenerator03
+  gOemSkuTokenSpaceGuid.PcdOemSkuClockGenerator04
+  gOemSkuTokenSpaceGuid.PcdOemSkuClockGenerator05
+  gOemSkuTokenSpaceGuid.PcdOemSkuClockGenerator06
+  gOemSkuTokenSpaceGuid.PcdOemSkuClockGenerator07
+  gOemSkuTokenSpaceGuid.PcdOemSkuClockGenerator08
+  gOemSkuTokenSpaceGuid.PcdOemSkuClockGenerator09
+  gOemSkuTokenSpaceGuid.PcdOemSkuClockGenerator10
+  gOemSkuTokenSpaceGuid.PcdOemSkuClockGenerator11
+
+  gOemSkuTokenSpaceGuid.PcdOemSkuPlatformName
+  gOemSkuTokenSpaceGuid.PcdOemSkuPlatformNameSize
+  gOemSkuTokenSpaceGuid.PcdOemSkuPlatformFeatureFlag
+  gOemSkuTokenSpaceGuid.PcdOemSkuAssertPostGPIO
+  gOemSkuTokenSpaceGuid.PcdOemSkuAssertPostGPIOValue
+  gOemSkuTokenSpaceGuid.PcdOemSkuBmcPciePortNumber
+  gOemSkuTokenSpaceGuid.PcdOemTableIdXhci
+  gOemSkuTokenSpaceGuid.PcdOemSkuUplinkPortIndex
+  gPlatformTokenSpaceGuid.PcdBoardTypeBitmask
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[Depex]
+  gUbaConfigDatabasePpiGuid AND
+  gEfiPeiReadOnlyVariable2PpiGuid

@@ -1,0 +1,1179 @@
+TOKEN
+	Name  = "====== SIO Global Control Tokens ======"
+	Value  = "!!!DO NOT CHANGE NAMES JUST VALUES!!!"
+	Help  = "Specify global control tokens."
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "PILOT4_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable Pilot4 support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "SIO_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable SIO support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_DBG_SUPPORT"
+	Value  = "1"
+	Help  = "Switch to enable SIO serial port debug function support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "====== SIO For Debug Setting =========="
+	Value  = "!!!DO NOT CHANGE NAMES JUST VALUES!!!"
+	Help  = "The Debug Serial Port Setting."
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "DEBUG_COM_PORT_ADDR"
+	Value  = "0x3F8"
+	Help  = "COM Port address the debugger uses. "
+	TokenType = Integer
+	TargetH = Yes
+	Token = "PILOT4_DBG_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "DEBUG_LDN_UART"
+	Value  = "$(PILOT4_LDN_UART1)"
+	Help  = "UARTx Logical Devive for Debugger."
+	TokenType = Integer
+	TargetH = Yes
+	Token = "DEBUG_COM_PORT_ADDR" "=" "0x3F8"
+End
+
+TOKEN
+	Name  = "DEBUG_LDN_UART"
+	Value  = "$(PILOT4_LDN_UART2)"
+	Help  = "UARTx Logical Devive for Debugger."
+	TokenType = Integer
+	TargetH = Yes
+	Token = "DEBUG_COM_PORT_ADDR" "=" "0x2F8"
+End
+
+TOKEN
+	Name  = "=== SIO Logic Device Present Settings =========="
+	Value  = "!!!DO NOT CHANGE NAMES JUST VALUES!!!"
+	Help  = "All Logic Device Present / Not Present."
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "PILOT4_PSR_PRESENT"
+	Value  = "1"
+	Help  = "PSR Present / Not Present."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_SERIAL_PORT1_PRESENT"
+	Value  = "1"
+	Help  = "Serial Port 1 (COMA / UART1) Present / Not Present."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_SERIAL_PORT2_PRESENT"
+	Value  = "1"
+	Help  = "Serial Port 2 (COMB / UART2) Present / Not Present."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_SWC_PRESENT"
+	Value  = "1"
+	Help  = "SWC Present / Not Present."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_GPIO_PORT_PRESENT"
+	Value  = "1"
+	Help  = "GPIO Present / Not Present."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_WDT_PRESENT"
+	Value  = "1"
+	Help  = "Watch Dog Time Present / Not Present."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_KCS3_PRESENT"
+	Value  = "1"
+	Help  = "KCS3 Interface Present / Not Present."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_KCS4_PRESENT"
+	Value  = "1"
+	Help  = "KCS4 Interface Present / Not Present."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_KCS5_PRESENT"
+	Value  = "1"
+	Help  = "KCS5 Interface Present / Not Present."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_BT_PRESENT"
+	Value  = "1"
+	Help  = "BT Present / Not Present."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_SMIC_PRESENT"
+	Value  = "1"
+	Help  = "SMIC Present / Not Present."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_MAILBOX_PRESENT"
+	Value  = "1"
+	Help  = "MAILBOX Present / Not Present."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_HSPI_PRESENT"
+	Value  = "1"
+	Help  = "HSPI Present / Not Present."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_TAP_CONTROLLER_PRESENT"
+	Value  = "1"
+	Help  = "TAP Controller Present / Not Present."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "====== SIO Registers Layout =========="
+	Value  = "!!!DO NOT CHANGE NAMES JUST VALUES!!!"
+	Help  = "Specify Register address inside SIO Chip."
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "PILOT4_CONFIG_INDEX"
+	Value  = "0x2E"
+	Help  = "SIO index port."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_CONFIG_DATA"
+	Value  = "0x2F"
+	Help  = "SIO data port."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_LDN_SEL_REGISTER"
+	Value  = "0x07"
+	Help  = "Logical Device Select Register Address"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_ACTIVATE_REGISTER"
+	Value  = "0x30"
+	Help  = "Device Identification Register Address"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_BASE1_HI_REGISTER"
+	Value  = "0x60"
+	Help  = "Device BaseAddres Register#1 MSB Address"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_BASE1_LO_REGISTER"
+	Value  = "0x61"
+	Help  = "Device BaseAddres Register#1 LSB Address"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_BASE2_HI_REGISTER"
+	Value  = "0x62"
+	Help  = "Device BaseAddres Register#2 MSB Address"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_BASE2_LO_REGISTER"
+	Value  = "0x63"
+	Help  = "Device BaseAddres Register#2 LSB Address"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_IRQ1_REGISTER"
+	Value  = "0x70"
+	Help  = "Device IRQ Register#1 Address"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_IRQ2_REGISTER"
+	Value  = "0x72"
+	Help  = "Device IRQ Register#2 Address"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_DMA1_REGISTER"
+	Value  = "0x74"
+	Help  = "Device DMA Register#1 Address"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_DMA2_REGISTER"
+	Value  = "0x75"
+	Help  = "Device DMA Register#2 Address"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "====== SIO Logical Devices Numbers ======"
+	Value  = "!!!DO NOT CHANGE NAMES JUST VALUES!!!"
+	Help  = "Specify Devices Logical Number."
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "PILOT4_LDN_PSR"
+	Value  = "0x00"
+	Help  = "LDN for Pilot Specific Register"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_LDN_UART1"
+	Value  = "0x02"
+	Help  = "LDN for Serial Port 1 Controller"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_LDN_UART2"
+	Value  = "0x01"
+	Help  = "LDN for Serial Port 2 Controller"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_LDN_SWC"
+	Value  = "0x03"
+	Help  = "LDN for System Wake-Up Control"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_LDN_GPIO"
+	Value  = "0x04"
+	Help  = "LDN for GPIO."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_LDN_WDT"
+	Value  = "0x05"
+	Help  = "LDN for Watch Dog Timer"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_LDN_KCS3"
+	Value  = "0x08"
+	Help  = "LDN for KCS3 Interface."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_LDN_KCS4"
+	Value  = "0x09"
+	Help  = "LDN for KCS4 Interface."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_LDN_KCS5"
+	Value  = "0x0A"
+	Help  = "LDN for KCS5 Interface."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_LDN_BT"
+	Value  = "0x0B"
+	Help  = "LDN for Block Transfer Interface Register"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_LDN_SMIC"
+	Value  = "0x0C"
+	Help  = "LDN for Server Management Interface Chip Register"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_LDN_MAILBOX"
+	Value  = "0x0D"
+	Help  = "LDN for MailBox Register"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_LDN_HSPI"
+	Value  = "0x0F"
+	Help  = "LDN for Host SPI Register"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_LDN_TAPC"
+	Value  = "0x10"
+	Help  = "LDN for Tap Controller Register"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "=== SIO Global Registers Settings =========="
+	Value  = "!!!DO NOT CHANGE NAMES JUST VALUES!!!"
+	Help  = "SIO Global Registers Setting"
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "=== SIO Activation Values =========="
+	Value  = "!!!DO NOT CHANGE NAMES JUST VALUES!!!"
+	Help  = "Specify Logical Device Activation Value."
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "PILOT4_CONFIG_MODE_ENTER_VALUE"
+	Value  = "0x5A"
+	Help  = "Value to enter the SIO Configuration Mode."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_CONFIG_MODE_EXIT_VALUE"
+	Value  = "0xA5"
+	Help  = "Value to enter the SIO Configuration Mode."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "ENTK"
+	Value  = "$(PILOT4_CONFIG_MODE_ENTER_VALUE)"
+	Help  = "ASL alias for SIO Config Mode Enter Value."
+	TokenType = Integer
+	TargetASL = Yes
+End
+
+TOKEN
+	Name  = "EXTK"
+	Value  = "$(PILOT4_CONFIG_MODE_EXIT_VALUE)"
+	Help  = "ASL alias for SIO Config Mode Exit Value."
+	TokenType = Integer
+	TargetASL = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_ACTIVATE_VALUE"
+	Value  = "0x01"
+	Help  = "Value to activate Device."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_DEACTIVATE_VALUE"
+	Value  = "0x00"
+	Help  = "Value to deactivate Device."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "====== SIO BASE ADDRESS Setting =========="
+	Value  = "!!!DO NOT CHANGE NAMES JUST VALUES!!!"
+	Help  = "SIO some base address setting "
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "PILOT4_TOTAL_BASE_ADDRESS"
+	Value  = "0xA00"
+	Help  = "It's used for IODecode, System will open TOTAL_BASE_ADDRESS+TOTAL_LENGTH IODecode for GPIO+PME+..."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+    Name  = "PILOT4_PSR_BASE_ADDRESS"
+    Value  = "$(PILOT4_TOTAL_BASE_ADDRESS)"
+    Help  = "Base Address of Pilot Specific Register Direct Access. "
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "PILOT4_PSR_BASE_ADDRESS"
+    Value  = "0x00"
+    Help  = "Base Address of Pilot Specific Register Direct Access. "
+    TokenType = Integer
+    TargetH = Yes
+    Token = "PILOT4_PSR_PRESENT" "=" "0"
+End
+
+TOKEN
+    Name  = "PILOT4_PSR_LENGTH"
+    Value  = "0x10"
+    Help  = "Base Address's length of Pilot Specific Register Direct Access."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "PILOT4_PSR_LENGTH"
+    Value  = "0x00"
+    Help  = "Base Address's length of Pilot Specific Register Direct Access."
+    TokenType = Integer
+    TargetH = Yes
+    Token = "PILOT4_PSR_PRESENT" "=" "0"
+End
+
+TOKEN
+    Name  = "IO1B"
+    Value  = "$(PILOT4_PSR_BASE_ADDRESS)"
+    Help  = "Base Address of Pilot Specific Register."
+    TokenType = Integer
+    TargetASL = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "IO1L"
+    Value  = "$(PILOT4_PSR_LENGTH)"
+    Help  = "Length of Pilot Specific Register."
+    TokenType = Integer
+    TargetASL = Yes
+    TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_WDT_BASE_ADDRESS"
+	Value  = "$(PILOT4_TOTAL_BASE_ADDRESS)+$(IO1L)"
+	Help  = "Base Address of WDT Direct Access. "
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+    Name  = "PILOT4_WDT_BASE_ADDRESS"
+    Value  = "0x00"
+    Help  = "Base Address of WDT Direct Access. "
+    TokenType = Integer
+    TargetH = Yes
+    Token = "PILOT4_WDT_PRESENT" "=" "0"
+End
+
+TOKEN
+	Name  = "PILOT4_WDT_LENGTH"
+	Value  = "0x10"
+	Help  = "Base Address's length of WDT Direct Access."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+    Name  = "PILOT4_WDT_LENGTH"
+    Value  = "0x00"
+    Help  = "Base Address's length of WDT Direct Access."
+    TokenType = Integer
+    TargetH = Yes
+    Token = "PILOT4_WDT_PRESENT" "=" "0"
+End
+
+TOKEN
+	Name  = "IO2B"
+	Value  = "$(PILOT4_WDT_BASE_ADDRESS)"
+	Help  = "Base Address of WDT Controller."
+	TokenType = Integer
+	TargetASL = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "IO2L"
+	Value  = "$(PILOT4_WDT_LENGTH)"
+	Help  = "Length of WDT Controller."
+	TokenType = Integer
+	TargetASL = Yes
+	TargetH = Yes
+End
+
+TOKEN
+    Name  = "PILOT4_GPIO_BASE_ADDRESS"
+    Value  = "$(PILOT4_TOTAL_BASE_ADDRESS)+$(IO1L)+$(IO2L)"
+    Help  = "Base Address of GPIO Direct Access. "
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "PILOT4_GPIO_BASE_ADDRESS"
+    Value  = "0x00"
+    Help  = "Base Address of GPIO Direct Access. "
+    TokenType = Integer
+    TargetH = Yes
+    Token = "PILOT4_GPIO_PORT_PRESENT" "=" "0"
+End
+
+TOKEN
+    Name  = "PILOT4_GPIO_LENGTH"
+    Value  = "0x10"
+    Help  = "Base Address's length of GPIO Direct Access."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "PILOT4_GPIO_LENGTH"
+    Value  = "0x00"
+    Help  = "Base Address's length of GPIO Direct Access."
+    TokenType = Integer
+    TargetH = Yes
+    Token = "PILOT4_GPIO_PORT_PRESENT" "=" "0"
+End
+
+TOKEN
+    Name  = "IO3B"
+    Value  = "$(PILOT4_GPIO_BASE_ADDRESS)"
+    Help  = "Base Address of GPIO."
+    TokenType = Integer
+    TargetASL = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "IO3L"
+    Value  = "$(PILOT4_WDT_LENGTH)"
+    Help  = "Length of GPIO."
+    TokenType = Integer
+    TargetASL = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "PILOT4_KCS5_BASE_ADDRESS"
+    Value  = "$(PILOT4_TOTAL_BASE_ADDRESS)+$(IO1L)+$(IO2L)+$(IO3L)"
+    Help  = "Base Address of Pilot KCS5 DATA Direct Access. "
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "PILOT4_KCS5_BASE_ADDRESS"
+    Value  = "$(PILOT4_TOTAL_BASE_ADDRESS)+$(IO1L)+$(IO2L)+$(IO3L)"
+    Help  = "Base Address of Pilot KCS5 DATA Direct Access. "
+    TokenType = Integer
+    TargetH = Yes
+    Token = "PILOT4_KCS5_PRESENT" "=" "0"
+    Token = "PILOT4_BT_PRESENT" "=" "0"
+End
+
+TOKEN
+    Name  = "PILOT4_BT_BASE_ADDRESS"
+    Value  = "$(PILOT4_TOTAL_BASE_ADDRESS)+$(IO1L)+$(IO2L)+$(IO3L)+4"
+    Help  = "Base Address of Pilot Block Transfer Interface Direct Access. "
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_KCS_LENGTH"
+	Value  = "0x10"
+	Help  = "Base Address's length of KCS4,KCS5,BT,SMIC Direct Access."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+    Name  = "PILOT4_KCS_LENGTH"
+    Value  = "0x00"
+    Help  = "Base Address's length of KCS4,KCS5,BT,SMIC Direct Access."
+    TokenType = Integer
+    TargetH = Yes
+    Token = "PILOT4_KCS5_PRESENT" "=" "0"
+    Token = "PILOT4_BT_PRESENT" "=" "0"
+End
+
+TOKEN
+	Name  = "IO4B"
+	Value  = "$(PILOT4_KCS4_DATA_BASE_ADDRESS)"
+	Help  = "Base Address of KCS4,KCS5,BT,SMIC Controller."
+	TokenType = Integer
+	TargetASL = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "IO4L"
+	Value  = "$(PILOT4_KCS_LENGTH)"
+	Help  = "Length of KCS4,KCS5,BT,SMIC Controller."
+	TokenType = Integer
+	TargetASL = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_MAILBOX_BASE_ADDRESS"
+	Value  = "$(PILOT4_TOTAL_BASE_ADDRESS)+$(IO1L)+$(IO2L)+$(IO3L)+$(IO4L)"
+	Help  = "Base Address of MAILBOX Direct Access. "
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+    Name  = "PILOT4_MAILBOX_BASE_ADDRESS"
+    Value  = "0x00"
+    Help  = "Base Address of MAILBOX Direct Access. "
+    TokenType = Integer
+    TargetH = Yes
+    Token = "PILOT4_MAILBOX_PRESENT" "=" "0"
+End
+
+TOKEN
+	Name  = "PILOT4_MAILBOX_LENGTH"
+	Value  = "0x20"
+	Help  = "Base Address's length of MAILBOX Direct Access."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+    Name  = "PILOT4_MAILBOX_LENGTH"
+    Value  = "0x00"
+    Help  = "Base Address's length of MAILBOX Direct Access."
+    TokenType = Integer
+    TargetH = Yes
+    Token = "PILOT4_MAILBOX_PRESENT" "=" "0"
+End
+
+TOKEN
+	Name  = "IO5B"
+	Value  = "$(PILOT4_MAILBOX_BASE_ADDRESS)"
+	Help  = "Base Address of MAILBOX Controller."
+	TokenType = Integer
+	TargetASL = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "IO5L"
+	Value  = "$(PILOT4_MAILBOX_LENGTH)"
+	Help  = "Length of MAILBOX Controller."
+	TokenType = Integer
+	TargetASL = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PILOT4_TAPC_BASE_ADDRESS"
+	Value  = "$(PILOT4_TOTAL_BASE_ADDRESS)+$(IO1L)+$(IO2L)+$(IO3L)+$(IO4L)+$(IO5L)"
+	Help  = "Base Address of TAP Controller Direct Access. "
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+    Name  = "PILOT4_TAPC_BASE_ADDRESS"
+    Value  = "0x00"
+    Help  = "Base Address of TAP Controller Direct Access. "
+    TokenType = Integer
+    TargetH = Yes
+    Token = "PILOT4_TAP_CONTROLLER_PRESENT" "=" "0"
+End
+
+TOKEN
+	Name  = "PILOT4_TAPC_LENGTH"
+	Value  = "0x10"
+	Help  = "Base Address's length of TAP Controller Direct Access."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+    Name  = "PILOT4_TAPC_LENGTH"
+    Value  = "0x00"
+    Help  = "Base Address's length of TAP Controller Direct Access."
+    TokenType = Integer
+    TargetH = Yes
+    Token = "PILOT4_TAP_CONTROLLER_PRESENT" "=" "0"
+End
+
+TOKEN
+	Name  = "IO6B"
+	Value  = "$(PILOT4_TAPC_BASE_ADDRESS)"
+	Help  = "Base Address of TAP Controller."
+	TokenType = Integer
+	TargetASL = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "IO6L"
+	Value  = "$(PILOT4_TAPC_LENGTH)"
+	Help  = "Length of TAP Controller."
+	TokenType = Integer
+	TargetASL = Yes
+	TargetH = Yes
+End
+
+TOKEN
+    Name  = "PILOT4_TOTAL_LENGTH"
+    Value  = "$(IO1L)+$(IO2L)+$(IO3L)+$(IO4L)+$(IO5L)+$(IO6L)"
+    Help  = "IODecode base address 's length. 0xFF >= TOTAL_LENGTH >= GPIO_LENGTH + WDT_LENGTH + ..."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "PILOT4_SWC_BASE_ADDRESS"
+    Value  = "$(PILOT4_TOTAL_BASE_ADDRESS)+$(IO1L)+$(IO2L)+$(IO3L)+$(IO4L)+$(IO5L)+$(IO6L)"
+    Help  = "Base Address of SWC. "
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "PILOT4_SWC_BASE_ADDRESS"
+    Value  = "0x00"
+    Help  = "Base Address of SWC. "
+    TokenType = Integer
+    TargetH = Yes
+    Token = "PILOT4_SWC_PRESENT" "=" "0"
+End
+
+TOKEN
+    Name  = "PILOT4_SWC_LENGTH"
+    Value  = "0x90"
+    Help  = "Base Address's length of SWC(0x80) + PM1B_EVT(0x4) + PM1B_CNT(0x2) + GPE1_BLK(0x8)."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "PILOT4_SWC_LENGTH"
+    Value  = "0x00"
+    Help  = "Base Address's length of SWC(0x80) + PM1B_EVT(0x4) + PM1B_CNT(0x2) + GPE1_BLK(0x8)."
+    TokenType = Integer
+    TargetH = Yes
+    Token = "PILOT4_SWC_PRESENT" "=" "0"
+End
+
+TOKEN
+    Name  = "IO7B"
+    Value  = "$(PILOT4_SWC_BASE_ADDRESS)"
+    Help  = "Base Address of SWC Controller."
+    TokenType = Integer
+    TargetASL = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "IO7L"
+    Value  = "$(PILOT4_SWC_LENGTH)"
+    Help  = "Length of SWC Controller."
+    TokenType = Integer
+    TargetASL = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "PILOT4_HSPI_BASE_ADDRESS"
+    Value  = "$(PILOT4_TOTAL_BASE_ADDRESS)+$(IO1L)+$(IO2L)+$(IO3L)+$(IO4L)+$(IO5L)+$(IO6L)+$(IO7L)"
+    Help  = "Base Address of HSPI Direct Access. "
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "PILOT4_HSPI_BASE_ADDRESS"
+    Value  = "0x00"
+    Help  = "Base Address of HSPI Direct Access. "
+    TokenType = Integer
+    TargetH = Yes
+    Token = "PILOT4_HSPI_PRESENT" "=" "0"
+End
+
+TOKEN
+    Name  = "PILOT4_HSPI_LENGTH"
+    Value  = "0xF0"
+    Help  = "Base Address's length of HSPI Direct Access."
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "PILOT4_HSPI_LENGTH"
+    Value  = "0x00"
+    Help  = "Base Address's length of HSPI Direct Access."
+    TokenType = Integer
+    TargetH = Yes
+    Token = "PILOT4_HSPI_PRESENT" "=" "0"
+End
+
+TOKEN
+    Name  = "IO8B"
+    Value  = "$(PILOT4_HSPI_BASE_ADDRESS)"
+    Help  = "Base Address of HSPI."
+    TokenType = Integer
+    TargetASL = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "IO8L"
+    Value  = "$(PILOT4_HSPI_LENGTH)"
+    Help  = "Length of HSPI."
+    TokenType = Integer
+    TargetASL = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "PILOT4_KCS3_DATA_BASE_ADDRESS"
+    Value  = "0062h"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "PILOT4_KCS3_CMD_BASE_ADDRESS"
+    Value  = "0066h"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "PILOT4_KCS4_DATA_BASE_ADDRESS"
+    Value  = "0CA2h"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "PILOT4_KCS4_CMD_BASE_ADDRESS"
+    Value  = "0CA3h"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "PILOT4_SMIC_BASE_ADDRESS"
+    Value  = "0CA8h"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+	Name  = "===== SIO token only been used in ASL  ====="
+	Value  = "!!!DO NOT CHANGE NAMES JUST VALUES!!!"
+	Help  = "Provide Resource properties."
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "SP1O"
+	Value  = "$(PILOT4_CONFIG_INDEX)"
+	Help  = "Super IO Index/Data configuration port for ASL."
+	TokenType = Integer
+	TargetASL = Yes
+End
+
+TOKEN
+	Name  = "IOES"
+	Value  = "0x00"
+	Help  = "It is used similar to IOST, when Device's DCAT > 0x0F , then it will be used."
+	TokenType = Integer
+	TargetASL = Yes
+End
+
+TOKEN
+	Name  = "===== SIO Module Setting   ======"
+	Value  = "!!!DO NOT CHANGE NAMES JUST VALUES!!!"
+	Help  = "SIO Module Setting"
+	TokenType = Expression
+End
+
+PATH
+	Name  = "PILOT4_DIR"
+End
+
+MODULE
+	Help  = "Includes Pilot4.MAK to Project"
+	File  = "Pilot4.mak"
+End
+
+ELINK
+	Name  = "$(PILOT4_DIR)/Pilot4Setup.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	Priority  = 40
+	Token = "SIO_SETUP_USE_APTIO_4_STYLE" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "-i $(PILOT4_DIR)"
+	Parent  = "SETUP_VFR_INCLUDES"
+	Token = "SIO_SETUP_USE_APTIO_4_STYLE" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "{dsUART,0x00, STR_SERIAL1_CONFIG_VALUE},"
+	Parent  = "SetupStrTableList"
+	Token = "SIO_SETUP_USE_APTIO_4_STYLE" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "{dsUART,0x01, STR_SERIAL2_CONFIG_VALUE},"
+	Parent  = "SetupStrTableList"
+	Token = "SIO_SETUP_USE_APTIO_4_STYLE" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(PILOT4_DIR)/Pilot4Setup.c"
+	Parent  = "SetupCallbackFiles"
+	Token = "SIO_SETUP_USE_APTIO_4_STYLE" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "OemInitPilot4SetupStrings,"
+	Parent  = "SetupStringInit"
+	Token = "SIO_SETUP_USE_APTIO_4_STYLE" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(PILOT4_DIR)/Pilot4Setup.uni"
+	Parent  = "SetupStringFiles"
+	Token = "SIO_SETUP_USE_APTIO_4_STYLE" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "*_*_*_ASLPP_FLAGS"
+	Type  = "BuildOptions"
+	Arch  = "COMMON"
+	InvokeOrder = ReplaceParent
+	OutDSC = Yes
+End
+
+INFComponent
+	Name  = "Pilot4DxeInit"
+	File  = "Pilot4DxeInit.inf"
+	Package  = "AmiModulePkg"
+End
+
+INFComponent
+	Name  = "Pilot4PeiInit"
+	File  = "Pilot4PeiInit.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "PEIM"
+	Token = "PILOT4_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "Pilot4PlatformHookSerialPortLib"
+	File  = "Pilot4PlatformHookSerialPortLib.inf"
+	Package  = "AmiModulePkg"
+	Token = "PILOT4_DBG_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "PlatformHookLib"
+	Instance  = "AmiModulePkg.Pilot4PlatformHookSerialPortLib"
+	ModuleTypes  = "PEIM PEI_CORE SEC"
+	Token = "PILOT4_DBG_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "AmiModulePkg.Pilot4DxeInit"
+	Override  = "AmiModulePkg.SioDxeInit"
+	ModuleTypes  = "DXE_DRIVER"	
+	Token = "PILOT4_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiModulePkg.Pilot4DxeInit"
+    Override  = "AmiModulePkg.SmmGenericSio"
+    ModuleTypes  = "DXE_SMM_DRIVER" 
+    Token = "PILOT4_SUPPORT" "=" "1"
+    Token = "SMM_SUPPORT" "=" "1"
+    Token = "AMI_SIO_MINOR_VERSION" ">=" "6"    
+End
+
+FFS_FILE
+	Name  = "Pilot4PeiInit"
+	FD_AREA  = "FV_BB"
+	INFComponent  = "AmiModulePkg.Pilot4PeiInit"
+	Apriori_Index  = "0"
+End
+
+SIODEVICE
+	Name  = "Pilot4"
+	Parent  = "LpcBridge"
+	IndexPort  = 02eh
+	DataPort  = 02fh
+	StdSioType  = "Yes"
+	DevSelReg  = 07h
+	ActivateReg  = 030h
+	ActivateVal  = 01h
+	DeActivateVal  = 00h
+	BaseHiReg1  = 060h
+	BaseLoReg1  = 061h
+	BaseHiReg2  = 062h
+	BaseLoReg2  = 063h
+	Irq1Reg  = 070h
+	Irq2Reg  = 072h
+	Dma1Reg  = 074h
+	Dma2Reg  = 075h
+	GblRegFlag  = "0x1fe00000000"
+	LocalRegFlag  = "0xffffffff0000000000000000000000000033000f000000000001000000000000"
+	EnterConfig  = "Script,'Index;Write;5ah'"
+	ExitConfig  = "Script,'Index;Write;a5h'"
+	SMBIOSStr  = "Test String"
+	GPEbit  = 01dh
+	SleepNum  = 03h
+	ASLfile  = "'AmiModulePkg/IO/Pilot4/Pilot4Dev.asl'"
+	ASLdeviceName  = "SIO1"
+End
+
+LDEVICE
+	Name  = "Com1"
+	SioDevice  = "Pilot4"
+	Dev_Type  = "dsUART"
+	LDev_Num  = "02h"
+	UID  = "00h"
+	PnPID  = "0501h"
+	SIO_RES_Flag  = "0x0"
+	HasSetup = Yes
+	ResBaseAddr1  = "00h"
+	ResLength1  = "00h"
+	ResBaseAddr2  = "00h"
+	ResLength2  = "00h"
+	InitRoutine  = "Pilot4_COM_Init"
+	SleepNum  = 01h
+	ASLfile  = "'AmiModulePkg/GenericSio/UART1.ASL'"
+	ASLdeviceName  = "UAR1"
+	Token = "PILOT4_SERIAL_PORT1_PRESENT" "=" "1"
+End
+
+LDEVICE
+	Name  = "Com2"
+	SioDevice  = "Pilot4"
+	Dev_Type  = "dsUART"
+	LDev_Num  = "01h"
+	UID  = "01h"
+	PnPID  = "0501h"
+	SIO_RES_Flag  = "0x0"
+	HasSetup = Yes
+	ResBaseAddr1  = "00h"
+	ResLength1  = "00h"
+	ResBaseAddr2  = "00h"
+	ResLength2  = "00h"
+	InitRoutine  = "Pilot4_COM_Init"
+	SleepNum  = 01h
+	ASLfile  = "'AmiModulePkg/GenericSio/UART2.ASL'"
+	ASLdeviceName  = "UAR2"
+	Token = "PILOT4_SERIAL_PORT2_PRESENT" "=" "1"
+End
+

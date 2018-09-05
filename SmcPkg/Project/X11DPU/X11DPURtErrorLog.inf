@@ -1,0 +1,71 @@
+#***************************************************************************
+#***************************************************************************
+#**                                                                       **
+#**       (C)Copyright 1993-2017 Supermicro Computer, Inc.                **
+#**                                                                       **
+#**                                                                       **
+#***************************************************************************
+#***************************************************************************
+#
+#  File History
+#
+#  Rev. 1.02
+#    Bug Fix:  Fixed memory error LED can't turn on for runtime memory error.
+#    Reason:
+#    Auditor:  Jimmy Chiu
+#    Date:     Aug/24/2017
+#
+#  Rev. 1.01
+#    Bug Fix:  Fixed get SMBIOS data failed with AMIDEDOS issue.
+#    Reason:   No gEfiSmmIchnDispatch2ProtocolGuid installed in Purley kernel.
+#    Auditor:  Jacker Yeh
+#    Date:     Jul/28/2017
+#
+#  Rev. 1.00
+#    Bug Fix:  Initialize revision
+#    Reason:   
+#    Auditor:  Jimmy Chiu
+#    Date:     Jul/03/2017
+#
+#***************************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = RtErrorLogSmcLib
+  FILE_GUID                      = 21e0586d-0b9c-4ea9-96d3-565b884cc90a
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = RtErrorLogSmcLib | DXE_SMM_DRIVER
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 EBC
+#
+
+[Sources]
+  X11DPURtErrorLog.c
+  X11DPURtErrorLog.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  SmcPkg/SmcPkg.dec
+
+[LibraryClasses]
+  IoLib
+  BaseLib
+  DebugLib
+  AmiDxeLib
+  SmmServicesTableLib
+  
+[Protocols]
+  gEfiSmmBaseProtocolGuid
+  gEfiSmmSmbusProtocolGuid
+
+[Guids]
+    
+[Depex]
+  gEfiSmmBase2ProtocolGuid

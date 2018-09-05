@@ -1,0 +1,74 @@
+TOKEN
+	Name  = "TseLite_Bin_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable TseLite sources support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+PATH
+	Name  = "TSELITESRC_DIR"
+End
+
+ELINK
+	Name  = "$(TSELITESRC_DIR)\StyleHook\StyleHook$(ARCH).lib"
+	Parent  = "MINISETUPLIB"
+	Priority  = 100
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(TSELITESRC_DIR)\TseLiteLocal$(ARCH).lib"
+	Parent  = "TSELITELIB"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "HOTKEY_LIST"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "HOTCLICK_LIST"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "TseLiteBin"
+	Parent  = "ADDITIONAL_AMITSE_LibraryClasses"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "StyleHookBin"
+	Parent  = "ADDITIONAL_AMITSE_LibraryClasses"
+	Priority  = -100
+	InvokeOrder = AfterParent
+End
+
+INFComponent
+	Name  = "TseLiteBin"
+	File  = "TseLiteBin.inf"
+	Package  = "AmiTsePkg"
+End
+
+INFComponent
+	Name  = "StyleHookBin"
+	File  = "StyleHook\StyleHookBin.inf"
+	Package  = "AmiTsePkg"
+End
+
+
+LibraryMapping
+	Class  = "TseLiteBin"
+	Instance  = "AmiTsePkg.TseLiteBin"
+End
+
+
+LibraryMapping
+	Class  = "StyleHookBin"
+	Instance  = "AmiTsePkg.StyleHookBin"
+End
+

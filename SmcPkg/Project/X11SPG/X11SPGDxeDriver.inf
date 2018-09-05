@@ -1,0 +1,80 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.02         Add code to dynamic show the onboard LSI 3008 in SMBIOS Type 41.
+#       Bug fixed:
+#       Reason:
+#       Auditor:     Jimmy Chiu
+#       Date:        Oct/18/2016
+#
+#  Rev. 1.01         Add setup item "Onboard LAN Device" to enable/disable onboard LAN device.
+#       Bug fixed:
+#       Reason:      For onboard 10Gbe, set TOKEN "" to 1 and add code in project's PEI/DXE function "GetProjectPciEBifurcate"
+#       Auditor:     Jimmy Chiu
+#       Date:        Sep/08/2016
+#
+#  Rev. 1.00
+#       Bug fixed:   Initialize revision
+#       Reason:      Clone from Sample folder.
+#       Auditor:     Jimmy Chiu
+#       Date:        Sep/06/2016
+#
+#****************************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = X11SPGDxeDriver
+  FILE_GUID                      = 2dcbe49a-1e5b-486e-bc23-48156b8282c9
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = X11SPGDxeDriverInit
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+#  
+
+[Sources]  
+  X11SPGDxeDriver.c
+  X11SPGDxeDriver.h	
+  HideSetupItem.c
+  HideSetupItem.h
+
+[Packages]
+  MdePkg/MdePkg.dec   
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec 
+  AmiModulePkg/AmiModulePkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  SmcPkg/SmcPkg.dec
+  
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  AmiDxeLib
+  SmcCspLib
+  SmcLib
+
+[Guids]
+  gProjectOwnProtocolGuid
+
+[Pcd]  
+  gSmcPkgTokenSpaceGuid.PcdSmcOBLan1BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcOBLan2BDF
+  
+[Protocols]  
+  gSetupModifyProtocolGuid
+  gAmiSmbiosProtocolGuid
+  
+[Depex]
+  TRUE
+  
+#**********************************************************************

@@ -1,0 +1,267 @@
+TOKEN
+	Name  = "Setup_SUPPORT"
+	Value  = "1"
+	Help  = "This is a master token that enables/disables the Setup eModule in the project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "VFRID"
+	Value  = "VfrId /nologo"
+	TokenType = Expression
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "ALWAYS_PUBLISH_HII_RESOURCES"
+	Value  = "1"
+	Help  = "This token controls loading of the Setup related HII resources \(setup screens and strings). If this token is ‘0’, setup resources are \only published into HII database if the user enters setup. If \this token is ‘1’, setup resources are always published into the HiiDatabase. Keep it off for speed \optimization.  Set it to on if Runtime resources processing support is required."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SHOW_ADVANCED_FORMSET"
+	Value  = "1"
+	Help  = "The Advanced Formset usually contains setup questions associated with features available\ in the project. For example, most Super I/Os will place setup questions onto the advanced \formset for controlling the resources assigned to the onboard devices. Set this token to ‘0’ \to prevent the display of the Advanced Page. Leave it as ‘1’ to allow access to the \Advanced Page."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SHOW_CHIPSET_FORMSET"
+	Value  = "1"
+	Help  = "The Chipset formset is where the chipset reference code will place the setup questions \associated with the chipset features. For example, south bridges with SATA controllers will \generally have a setup question that controls the mode in which the SATA controller would \operate. This setup question is generally displayed on the chipset formset. A value of ‘0’ will \prevent the chipset formset from being accessible, while a value of ‘1’ \will cause the formset to be displayed."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SHOW_SECURITY_FORMSET"
+	Value  = "1"
+	Help  = "The Security formset is where administrator and user password questions are available, as \well as some other setup questions related to security (when their associated eModules are \in the project). A value of ‘0’ will prevent the security formset from being accessible, while a \value of ‘1’ will cause the formset to be displayed."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SHOW_BOOT_FORMSET"
+	Value  = "1"
+	Help  = "The Boot formset is where the boot order is displayed. A value of ‘0’ will prevent the boot formset from being accessible, while a \value of ‘1’ will cause the formset to be displayed."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PASSWORD_MAX_SIZE"
+	Value  = "20"
+	Help  = "This token defines the maximum number of characters for the User and Administrator \passwords. This token value is referenced by the password questions."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SETUP_PASSWORD_LENGTH"
+	Value  = "20"
+	Help  = "Default maximum password length. Normally defined in TSE. Defined here for compatibility."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PASSWORD_MAX_SIZE"
+	Value  = "$(SETUP_PASSWORD_LENGTH)"
+	TokenType = Integer
+	TargetH = Yes
+	Token = "AMITSE_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "PASSWORD_MIN_SIZE"
+	Value  = "3"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "DEFAULT_LANGUAGE_CODE"
+	Value  = "$(DEFAULT_LANGUAGE)"
+	Help  = "The default system language that the system should use. This token’s value will only be \used in the case that the HiiDatabase Protocol function GetLanguages does not return a list \of languages supported in the Hii String Packages."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "THE_LOWEST_AUTOID_NUMBER"
+	Value  = "10000"
+	Help  = "The lowest number used as an auto-id. This number has to be larger than the total number of setup controls. \The default value should work for most of the projects. \Increase this number if VFR compiler complains about question ID conflict.\"
+	TokenType = Integer
+	TargetMAK = Yes
+	Range  = "0-65535"
+End
+
+TOKEN
+	Name  = "FILTER_CUSTOM_LANGUAGE_CODES"
+	Value  = "1"
+	Help  = "Token to filter the custom language codes 'x-AMI' and 'x-OEM' from \the list of supported languages stored into the L'PlatformLangCodes' NVRAM Variable. \These two language codes are used to implement some AMI specific features, \and should not be in the list of displayable languages.\\On - Filter the Languages\Off - Do not filter the languages"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+PATH
+	Name  = "Setup_DIR"
+End
+
+MODULE
+	Help  = "Includes Setup.mak to Project"
+	File  = "Setup.mak"
+End
+
+ELINK
+	Name  = "RegisterSetupItems"
+	Parent  = "SetupInstallHiiPackagesHook"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "{ { 0x7B59104A, 0xC00D, 0x4158, 0x87, 0xFF, 0xF0, 0x4D, 0x63, 0x96, 0xA9, 0x15 }, SETUP_MAIN, NULL},"
+	Parent  = "AMITSE_HIDDEN_PAGE_LIST"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "{ { 0x7B59104A, 0xC00D, 0x4158, 0x87, 0xFF, 0xF0, 0x4D, 0x63, 0x96, 0xA9, 0x15 }, MAIN_MAIN, NULL},"
+	Parent  = "AMITSE_SUBPAGE_AS_ROOT_PAGE_LIST"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "{ { 0x7B59104A, 0xC00D, 0x4158, 0x87, 0xFF, 0xF0, 0x4D, 0x63, 0x96, 0xA9, 0x15 }, ADVANCED_MAIN, NULL},"
+	Parent  = "AMITSE_SUBPAGE_AS_ROOT_PAGE_LIST"
+	Token = "SHOW_ADVANCED_FORMSET" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "{ { 0x7B59104A, 0xC00D, 0x4158, 0x87, 0xFF, 0xF0, 0x4D, 0x63, 0x96, 0xA9, 0x15 }, CHIPSET_MAIN, NULL},"
+	Parent  = "AMITSE_SUBPAGE_AS_ROOT_PAGE_LIST"
+	Token = "SHOW_CHIPSET_FORMSET" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "{ { 0x7B59104A, 0xC00D, 0x4158, 0x87, 0xFF, 0xF0, 0x4D, 0x63, 0x96, 0xA9, 0x15 }, SECURITY_MAIN, NULL},"
+	Parent  = "AMITSE_SUBPAGE_AS_ROOT_PAGE_LIST"
+	Token = "SHOW_SECURITY_FORMSET" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "{ { 0x7B59104A, 0xC00D, 0x4158, 0x87, 0xFF, 0xF0, 0x4D, 0x63, 0x96, 0xA9, 0x15 }, BOOT_MAIN, NULL},"
+	Parent  = "AMITSE_SUBPAGE_AS_ROOT_PAGE_LIST"
+	Token = "SHOW_BOOT_FORMSET" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "{ { 0x7B59104A, 0xC00D, 0x4158, 0x87, 0xFF, 0xF0, 0x4D, 0x63, 0x96, 0xA9, 0x15 }, EXIT_MAIN, NULL},"
+	Parent  = "AMITSE_SUBPAGE_AS_ROOT_PAGE_LIST"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(Setup_DIR)/AmiBiosInfo.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	InvokeOrder = BeforeParent
+End
+
+ELINK
+	Name  = "$(Setup_DIR)/AmiTse.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	Token = "AMITSE_SUPPORT" "=" "1"
+	InvokeOrder = BeforeParent
+End
+
+ELINK
+	Name  = "$(Setup_DIR)/AmiBootOrder.sd"
+	Parent  = "SETUP_DEFINITIONS"
+	InvokeOrder = BeforeParent
+End
+
+ELINK
+	Name  = "SetupItemCallbacks"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "SetupStringFiles"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "SetupCallbackFiles"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "SetupStringInit"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "SetupInstallHiiPackagesHook"
+	Help  = "Items linked into this ELINK should not be comma terminated. Functions linked into this will be called just after HiiPackages are installed into the HiiDatabase. This ELINK is meant to allow the registration of String Initialization  functions, callback functions and additional HiiAccess functions"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "AdditionalSetupLibraryClasses"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "AdditionalSetupPackages"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "AdditionalSetupProtocols"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "AdditionalSetupGuids"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "AdditionalSetupPcds"
+	InvokeOrder = ReplaceParent
+End
+
+OUTPUTREGISTER
+	Name  = "AUTOGEN_SETUP_HEADER"
+	Path  = "Build"
+	File  = "SetupCallbackList.h"
+	Template  = "setupheader.txt"
+End
+
+INFComponent
+	Name  = "Setup"
+	File  = "..\..\Build\Setup.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "DXE_DRIVER"
+End
+
+INFComponent
+	Name  = "SetupDefaults"
+	File  = "..\..\Build\SetupDefaults.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Skip_Packaging = Yes
+End
+

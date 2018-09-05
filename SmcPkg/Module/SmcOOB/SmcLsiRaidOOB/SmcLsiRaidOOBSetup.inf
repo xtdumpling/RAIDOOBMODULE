@@ -1,0 +1,83 @@
+#****************************************************************************
+#****************************************************************************
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.00
+#    Bug Fix:  Initial revision.
+#    Reason:   
+#    Auditor:  Durant Lin
+#    Date:     Aug/13/2018
+#
+#****************************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SmcLsiRaidOOBSetup
+  FILE_GUID                      = 1A345BC0-cc35-9abc-1cea-1cad7d33addf
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = SmcLsiRaidOOBSetupEntry
+#
+#  This flag specifies whether HII resource section is generated into PE image.
+#
+  UEFI_HII_RESOURCE_SECTION      = TRUE
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF EBC
+#
+
+[Sources]
+  SmcLsiRaidOOBSetup.c
+  SmcLsiRaidOOBSetup.h
+  SmcLsiRaidOOBSetting.c
+  SmcLsiRaidOOBSetting.h
+  SmcLsiRaidOOBLib.h
+  SmcLsiRaidOOBSetupProtocol.h
+  SmcLsiRaidOOBSetupString.uni
+  SmcLsiRaidOOBSetupVfr.vfr
+
+[Packages]
+  MdePkg/MdePkg.dec   
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec 
+  AmiModulePkg/AmiModulePkg.dec
+  SmcPkg/SmcPkg.dec
+  SmcPkg/Module/SmcOOB/SmcOOB.dec
+  
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  IoLib
+  OobLibrary
+  UefiLib
+  PrintLib
+  HiiLib
+  BaseLib
+  BaseMemoryLib
+  AmiDxeLib
+  
+[Guids]
+  
+[Ppis]
+
+[Protocols]
+  gEfiHiiDatabaseProtocolGuid
+  gEfiHiiStringProtocolGuid
+  gEfiHiiConfigAccessProtocolGuid
+  gEfiHiiConfigRoutingProtocolGuid
+  gSmcLsiRaidOobSetupProtocolGuid
+  gSmcLsiRaidOobSetupDriverGuid
+
+[Pcd]
+
+[Depex]
+  gEfiHiiStringProtocolGuid AND
+  gEfiHiiDatabaseProtocolGuid AND
+  gEfiHiiConfigRoutingProtocolGuid
+
+[BuildOptions]
+  *_*_*_BUILD_FLAGS   = -s

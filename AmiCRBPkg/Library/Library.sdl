@@ -1,0 +1,234 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+
+TOKEN
+	Name  = "Library_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable CRB library code support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "PeiBmcBoardLib_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable PeiBmcBoardLib support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "BaseTscTimerLib"
+	File  = "TscTimerLib\BaseTscTimerLib.inf"
+	Package  = "AmiCRBPkg"
+	ModuleTypes  = "PEIM"
+	Disable = Yes
+End
+
+INFComponent
+	Name  = "DxeTscTimerLib"
+	File  = "TscTimerLib\DxeTscTimerLib.inf"
+	Package  = "AmiCRBPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Disable = Yes
+End
+
+INFComponent
+	Name  = "PeiTscTimerLib"
+	File  = "TscTimerLib\PeiTscTimerLib.inf"
+	Package  = "AmiCRBPkg"
+	ModuleTypes  = "PEIM"
+	Disable = Yes
+End
+
+INFComponent
+	Name  = "AmiPlatformAcpiLib"
+	File  = "AmiPlatformAcpiLib.inf"
+	Package  = "AmiCRBPkg"
+	ModuleTypes  = "DXE_DRIVER DXE_RUNTIME_DRIVER"
+End
+
+INFComponent
+	Name  = "AmiPlatformAcpiLibNull"
+	File  = "AmiPlatformAcpiLibNull\AmiPlatformAcpiLibNull.inf"
+	Package  = "AmiCRBPkg"
+	ModuleTypes  = "BASE"
+End
+
+INFComponent
+	Name  = "PeiBmcBoardLib"
+	File  = "PeiBmcBoardLib\PeiBmcBoardLib.inf"
+	Package  = "AmiCRBPkg"
+	ModuleTypes  = "PEIM"
+	Token = "PeiBmcBoardLib_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "PeiBmcBoardLib"
+	File  = "PeiBmcBoardLib\PeiBmcBoardLib.inf"
+	Package  = "AmiCRBPkg"
+End
+
+INFComponent
+	Name  = "AmiPlatformHooksLibNull"
+	File  = "AmiPlatformHooksLibNull/AmiPlatformHooksLibNull.inf"
+	Package  = "AmiCRBPkg"
+End
+
+LibraryMapping
+    Class  = "AmiPlatformHooksLib"
+    Instance  = "AmiCRBPkg.AmiPlatformHooksLibNull"
+End
+
+LibraryMapping
+	Class  = "TimerLib"
+	Instance  = "AmiCRBPkg.BaseTscTimerLib"
+	Disable = Yes
+End
+
+LibraryMapping
+	Class  = "TimerLib"
+	Instance  = "AmiCRBPkg.DxeTscTimerLib"
+	ModuleTypes  = "DXE_CORE DXE_DRIVER DXE_RUNTIME_DRIVER DXE_SMM_DRIVER UEFI_APPLICATION UEFI_DRIVER SMM_CORE"
+	Disable = Yes
+End
+
+LibraryMapping
+	Class  = "TimerLib"
+	Instance  = "AmiCRBPkg.PeiTscTimerLib"
+	ModuleTypes  = "PEIM PEI_CORE"
+	Disable = Yes
+End
+
+LibraryMapping
+	Class  = "AmiPlatformAcpiLib"
+	Instance  = "AmiCRBPkg.AmiPlatformAcpiLib"
+	ModuleTypes  = "DXE_DRIVER DXE_RUNTIME_DRIVER"
+End
+
+LibraryMapping
+	Class  = "AmiPlatformAcpiLib"
+	Instance  = "AmiCRBPkg.AmiPlatformAcpiLibNull"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "AmiCRBPkg.PeiBmcBoardLib"
+    Override  = "AmiIpmiPkg.PeiIpmiBmcInitialize"
+	Token = "PeiBmcBoardLib_SUPPORT" "=" "1"
+End
+
+ELINK
+    Name  = "DecodeBmcBaseAddress,"
+    Parent  = "InitLpcBmc,"
+    InvokeOrder = ReplaceParent
+    Token = "PeiBmcBoardLib_SUPPORT" "=" "1"
+End
+
+ELINK
+    Name  = "CheckPowerFailureStatus,"
+    Parent  = "BmcInitDelay,"
+    InvokeOrder = ReplaceParent
+    Token = "BMC_INIT_DELAY" "=" "1"
+    Token = "PeiBmcBoardLib_SUPPORT" "=" "1"
+End
+
+INFComponent
+    Name  = "AmiPciBusSetupOverrideLib"
+    File  = "AmiPciBusSetupOverrideLib.inf"
+    Package  = "AmiCRBPkg"
+    ModuleTypes  = "DXE_DRIVER DXE_RUNTIME_DRIVER UEFI_DRIVER"
+End
+
+INFComponent
+    Name  = "AmiPciBusSetupOverrideLibNull"
+    File  = "AmiPciBusSetupOverrideLibNull\AmiPciBusSetupOverrideLibNull.inf"
+    Package  = "AmiCRBPkg"
+    ModuleTypes  = "BASE"
+End
+
+LibraryMapping
+    Class  = "AmiPciBusSetupOverrideLib"
+    Instance  = "AmiCRBPkg.AmiPciBusSetupOverrideLib"
+    ModuleTypes  = "DXE_DRIVER DXE_RUNTIME_DRIVER UEFI_DRIVER"
+End
+
+LibraryMapping
+    Class  = "AmiPciBusSetupOverrideLib"
+    Instance  = "AmiCRBPkg.AmiPciBusSetupOverrideLibNull"
+End
+
+INFComponent
+    Name  = "AmiPciAccessCspBaseLibOverride"
+    File  = "AmiPciAccessCspBaseLibOverride\AmiPciAccessCspBaseLibOverride.inf"
+    Package  = "AmiCRBPkg"
+    ModuleTypes  = "BASE"
+End
+
+LibraryMapping
+	Class  = "PciAccessCspLib"
+	Instance  = "AmiCRBPkg.AmiPciAccessCspBaseLibOverride"
+	ModuleTypes  = "DXE_DRIVER UEFI_DRIVER DXE_SMM_DRIVER"
+End
+
+INFComponent
+    Name  = "AmiSetupVariableSyncLib"
+    File  = "AmiSetupVariableSyncLib/AmiSetupVariableSyncLib.inf"
+    Package  = "AmiCRBPkg"
+End
+
+ELINK
+    Name  = "SetNvramVariableSyncHook,"
+    Parent  = "SetVariableHook"
+    Help  = "Called before SetVariable"
+    InvokeOrder = AfterParent
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiCRBPkg.AmiSetupVariableSyncLib"
+    Override  = "AmiModulePkg.NvramDxe"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiCRBPkg.AmiSetupVariableSyncLib"
+    Override = "AmiModulePkg.NvramSmm"
+    Token = "SMM_SUPPORT" "=" "1"
+End
+
+INFComponent
+    Name  = "AmiSmmCorePlatformHooksLib"
+    File  = "AmiSmmCorePlatformHooksLib/AmiSmmCorePlatformHooksLib.inf"
+    Package  = "AmiCRBPkg"
+    Token = "SMM_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+    Class  = "AmiSmmCorePlatformHooksLib"
+    Instance  = "AmiCRBPkg.AmiSmmCorePlatformHooksLib"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiCRBPkg.AmiSmmCorePlatformHooksLib"
+    Override  = "MdeModulePkg.PiSmmCore"
+End
+
+ELINK
+    Name  = "RASProcessInViralBeforeSMM,"
+    Parent  = "PLATFORMHOOK_BEFORE_AFTER_SMMDISPATCH"
+    InvokeOrder = AfterParent
+End

@@ -1,0 +1,126 @@
+X11DDW-L / X11DDW-NT release note.
+--------------------------------------------------------------------------------------------------------------------------------
+ CPU Microcode                              | Option ROM/uEFi driver                            | Intel RC/LT-SX/ME
+--------------------------------------------------------------------------------------------------------------------------------
+ CPUID FAMILY                               | Aspeed VBIOS                         : 1.03.01    | RC Package : 140.R10
+ 50652 Skylake-EP B0             : 80000037 | Intel SATA RAID Option ROM           : 5.2.0.1029 | SPS        : 4.0.3.219
+ 50654 Skylake-EP H0             : 02000026 | Intel RSTe sSATA Option ROM          : 5.2.0.1029 | BIOS ACM   : 20170615 (1.3.2)
+                                            | Intel RSTe SATA UEFI driver          : 5.2.0.1029 | SINIT ACM  : 20170615 (1.3.2)
+                                            | Intel RSTe sSATA UEFI driver         : 5.2.0.1029 |
+ -------------------------------------------------------------------------------------------------------------------------------
+ BIOS feature             |  Support
+ -------------------------------------------------------------------------------------------------------------------------------
+ OOB Flash BIOS           |     Y
+ OOB Update Setting       |     Y
+ OOB Change SMBIOS        |     Y
+ InBand Flash BIOS        |     Y
+ InBand Update Setting    |     Y
+ InBand Change SMBIOS     |     Y
+ InBand SMI E7h supported |     Y
+ -------------------------------------------------------------------------------------------------------------------------------
+ SW ECO Caused By         |  Status
+ -------------------------------------------------------------------------------------------------------------------------------
+ BIOS/IPMI Customization  |     N
+ HW Vendor Updates        |     Y
+ BIOS/IPMI Workaround     |     N
+ BIOS/IPMI Vendor Updates |     Y
+ BIOS/IPMI Enhancements   |     Y
+ BIOS/IPMI Bug fixes      |     N
+ -------------------------------------------------------------------------------------------------------------------------------
+ ===============================================================================================================================
+ BIOS          : X11DDW7.808      Release Date  : 08/08/2017
+ BIOS Revision : 1.0b             BIOS Engineer : Curtis Wen
+ BIOS Checksum : 75FC63F1h        SVN Revision  : 1926 
+ BIOS Change:
+ 
+1. [Enhancements] Change BIOS revision to 1.0b
+    Description: Update BIOS revision
+    Validation : Check BIOS revision is corrected in BIOS Setup.
+
+2. [Enhancements] Update SPS_E5_04.00.03.219.0
+   Description: Intel released PV MR3 version for Purley Platforms.
+   Validation:  a) Enter Setup menu to check the SPS revision is 4.0.3.219 and current state is operational.
+                b) Check SPS functions like Node management.
+                c) Test BIOS upgrade/downgrade funciton to make sure SPS did not enter recovery mode after flash.
+
+3. [Enhancements] 5.12_PurleyCrb_0ACFD080_BETA for RC 140.R10 PV MR5.
+   Description: Update RC 140.R10 PV MR5 for below issues.
+                5385886: Memory configs with NVDIMMs installed are showing SBE and MBE when stressed
+                5385863: Windows 2016 CATERRs when trying to boot in non-NUMA mode with 128GB DIMMs
+   Validation:  a) Use PCI.exe to check Bus<0x00>/Device<0x08>/Function<0x02>/Reg<0x90> for RC version.
+                   // [31:20] = Major revision number
+                   // [19:12] = Minor revision number
+                   // [11:0] = Release Candidate number / Reserved
+                   // For example 140.R10 is 0x14052010
+                b) Validate standard CPU, memory, and PCIe functions with Skylake-EP CPU.
+                c) Running memory stress testing and margin testing.
+
+4. [Enhancements] Update CPU microcode for Skylake-EP H0 stepping CPUs.
+   Description: Update Skylake-EP H0 stepping CPU microcode M9750654_02000026.
+                Update Skylake-EP B0 stepping CPU microcode M9750652_80000037.
+   Validation:  Check Skylake-EP H0/B0 stepping CPU microcode version in setup menu.
+
+5. [Enhancements] Update SATA RAID OPROM/EFI driver to 5.2.0.1029.
+   Description: Update SATA RAID OPROM/EFI driver to 5.2.0.1029
+   Validation:  Please verify RAID related function. 
+
+6. [Enhancements] Update BIOS ACM 1.3.2 PW, SINIT ACM 1.3.0 PW.
+   Description: Update BIOS & SINIT ACM 1.3.2
+   Validation:  Please verify Intel TXT function.
+
+7. [Enhancements] Expose setup item "Energy Performance Bias Mode"
+   Description: setting "Energy Performance Bias Mode"->"Max Power Efficient" optimized for spec power.
+   Validation:  Please verify Spec power test with this optimized setting and system stability
+
+ -------------------------------------------------------------------------------------------------------------------------------
+ BIOS          : X11DDW7.623      Release Date  : 06/23/2017
+ BIOS Revision : 1.0a             BIOS Engineer : Curtis Wen
+ BIOS Checksum : FA8091DEh        SVN Revision  : 1746
+ BIOS Change:
+ 
+1. [Enhancements] Change BIOS revision to 1.0a
+    Description: Update BIOS revision
+    Validation : Check BIOS revision is corrected in BIOS Setup.
+
+2. [Enhancements] Update SPS_E5_04.00.03.211.0 PV MR3.
+   Description: Intel released PV MR3 version for Purley Platforms.
+   Validation:  a) Enter Setup menu to check the SPS revision is 4.0.3.211 and current state is operational.
+                b) Check SPS functions like Node management.
+                c) Test BIOS upgrade/downgrade funciton to make sure SPS did not enter recovery mode after flash.
+
+3. [Enhancements] Update 5.12_PurleyCrb_0ACFD078_BETA for RC 137.R08 PV MR3.
+   Description: RC 137.R08 fixed below issues.
+                5385685: Hitting 768G limitation with Mirror mode enabled + MMCFG base set to 1 + 768G DDR4 installed
+                5385686: [NVDIMM] System hangs with exception 0x0 at PC 0xD4, when ADR Batterybacked mode is enabled
+                5385666: s5372912 Needs to be extended for H0 and CLX
+   Validation:  a) Use PCI.exe to check Bus<0x00>/Device<0x08>/Function<0x02>/Reg<0x90> for RC version.
+                   // [31:20] = Major revision number
+                   // [19:12] = Minor revision number
+                   // [11:0] = Release Candidate number / Reserved
+                   // For example 137.R08 is 0x13752008
+                b) Validate standard CPU, memory, and PCIe functions with Skylake-EP CPU.
+                c) Running memory stress testing and margin testing.
+
+4. [Enhancements] Update CPU microcode for Skylake-EP H0 stepping CPUs.
+   Description: Update Skylake-EP H0 stepping CPU microcode M9750654_02000022.
+                Update Skylake-EP B0 stepping CPU microcode M9750652_80000037.
+   Validation:  Check Skylake-EP H0/B0 stepping CPU microcode version in setup menu.
+
+5. [Enhancements] Update SATA RAID OPROM/EFI driver to 5.2.0.1029.
+   Description: Update SATA RAID OPROM/EFI driver to 5.2.0.1029
+   Validation:  Please verify RAID related function. 
+
+6. [Enhancements] Update BIOS ACM 1.3.0 PW, SINIT ACM 1.3.0 PW.
+   Description: Update BIOS & SINIT ACM 1.3.0
+   Validation:  Please verify Intel TXT function.
+   
+7. [Enhancements] Change eSPI/EC setting to 24MHz | Single, Dual and Quad I/O support.
+   Description: HW designer asking to change to meet M/B design. 
+
+ -------------------------------------------------------------------------------------------------------------------------------
+ BIOS          : X11DDW7.427      Release Date  : 04/27/2017
+ BIOS Revision : 1.0              BIOS Engineer : Curtis Wen
+ BIOS Checksum : 5C568F2Bh
+ BIOS Change:
+
+ 1. First release.

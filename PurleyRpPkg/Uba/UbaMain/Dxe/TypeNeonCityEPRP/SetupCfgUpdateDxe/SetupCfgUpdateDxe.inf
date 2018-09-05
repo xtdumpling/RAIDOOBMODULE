@@ -1,0 +1,64 @@
+#
+# This file contains an 'Intel Peripheral Driver' and is      
+# licensed for Intel CPUs and chipsets under the terms of your
+# license agreement with Intel or your vendor.  This file may 
+# be modified by the user, subject to additional terms of the 
+# license agreement                                           
+#
+#/*++
+#
+# Copyright (c) 2013 Intel Corporation. All rights reserved
+# This software and associated documentation (if any) is furnished
+# under a license and may only be used or copied in accordance
+# with the terms of the license. Except as permitted by such
+# license, no part of this software or documentation may be
+# reproduced, stored in a retrieval system, or transmitted in any
+# form or by any means without the express written consent of
+# Intel Corporation.
+#
+#
+#  Module Name:
+#
+#    SetupCfgUpdateDxe.inf
+#
+#  Abstract:
+#
+#    Platform update multi-platform setup form data.
+#
+#--*/
+
+[defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SetupConfigUpdateDxeNeonCityEPRP
+  FILE_GUID                      = 52C877FD-C27C-4779-B750-7880B28B4306
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = SetupConfigUpdateEntry
+
+[sources]
+  SetupCfgUpdateDxe.c
+
+[LibraryClasses]
+  BaseLib
+  BaseMemoryLib
+  MemoryAllocationLib
+  DebugLib
+  UefiBootServicesTableLib
+  UefiDriverEntryPoint
+  UefiRuntimeServicesTableLib
+  UefiLib
+  UbaPlatLib
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  CpPlatPkg/CpPlatPkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  PurleyRpPkg/PlatformPkg.dec
+  
+[Protocols]
+  gUbaConfigDatabaseProtocolGuid
+
+[Depex]
+  gEfiPlatformTypeNeonCityEPRPProtocolGuid

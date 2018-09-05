@@ -1,0 +1,72 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.00
+#    Bug Fix:  Initialize revision
+#    Reason:   Get base code from Grantley
+#    Auditor:  Salmon Chen
+#    Date:     Dec/19/2014
+#
+#****************************************************************************
+#****************************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SmcNVDIMMPeiDriver
+  FILE_GUID                      = F9383ECA-8566-491e-8533-ED7D2EFEA80D
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = SmcNVDIMMPeiDriverInit
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+#
+
+[Sources]
+  SmcNVDIMMPeiDriver.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  SmcPkg/SmcPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  PurleySktPkg/Me/MePkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  
+[LibraryClasses]
+  AmiPeiLib
+  AmiCspLib
+  PeimEntryPoint
+  SmcCspLib
+  PcdLib 
+  PciExpressLib
+  MmPciLib
+  SetupLib
+  
+[Guids]
+  gEfiDxeServicesTableGuid
+
+[Ppis]
+  gEfiEndOfPeiSignalPpiGuid
+  gEfiPeiReadOnlyVariable2PpiGuid
+  
+[Pcd]
+  gSmcPkgTokenSpaceGuid.PcdSmcNVDIMM
+
+[Depex]
+  gEfiPeiCpuIoPpiInstalledGuid
+
+
+#**********************************************************************

@@ -1,0 +1,2103 @@
+//***************************************************************************
+//***************************************************************************
+//**                                                                       **
+//**       (C)Copyright 1993-2017 Supermicro Computer, Inc.                **
+//**                                                                       **
+//**                                                                       **
+//***************************************************************************
+//***************************************************************************
+//
+//  File History
+//
+//  Rev. 1.09
+//    Bug Fix:  Support power efficent.
+//    Reason:   
+//    Auditor:  Leon Xu
+//    Date:     Aug/04/2017
+//
+//  Rev. 1.08   
+//    Bug Fix:  Set PL1 and PL2 time window to 56.
+//    Reason:   Improve system performance.
+//    Auditor:  Kasber Chen
+//    Date:     Jul/20/2017
+//
+//  Rev. 1.07   Correct setup item "Workload Configuration" setting.
+//    Bug Fix:
+//    Reason:   Reference spec, MSR 0xA01 Bit[2:0] value should be 0:Balanced, 2:I/O sensitive.
+//    Auditor:  Jimmy Chiu
+//    Date:     Jul/19/2017
+//
+//  Rev. 1.06
+//    Bug Fix:  Expose setup item "Power Performance Tuning" and "ENERGY_PERF_BIAS_CFG mode" for performance tuning.
+//    Reason:   
+//    Auditor:  Jimmy Chiu
+//    Date:     Jun/29/2017
+//
+//  Rev. 1.05
+//    Bug Fix:  Add CPU Power Management profile
+//    Reason:   Derived from X10. We can use one item (profile) to reflect all CPU P/T/C items
+//    Auditor:  Donald Han
+//    Date:     Jun/22/2017
+//
+//  Rev. 1.04
+//    Bug Fix:  Unhide T STATE control item.
+//    Reason:   
+//    Auditor:  Kasber Chen
+//    Date:     Mar/06/2017
+//
+//  Rev. 1.03
+//    Bug Fix:  Set PROCHOT to input and output.
+//    Reason:   
+//    Auditor:  Kasber Chen
+//    Date:     Dec/23/2016
+//
+//  Rev. 1.02
+//    Bug Fix:  Draft template.
+//    Reason:   
+//    Auditor:  Kasber Chen
+//    Date:     Dec/16/2016
+//
+//  Rev. 1.01        Disable setup item "Hardware P-States" to fixed CPU P-state/T-state can't be changed with SPS NM. (Verified on X11SPI)
+//    Bug Fix:       
+//    Reason:        Refer Intel CRB BIOS default setting.
+//    Auditor:       Jimmy Chiu
+//    Date:          Jul/18/2016
+//
+//  Rev. 1.00        Add always turbo mode function.
+//                   Change following setup items to force always turbo mode.
+//                   [Socket Configuration] -> [Advanced Power Management Configuration] -> [CPU - Advanced PM Tuning] -> [Energy Perf BIAS] -> 
+//                     ->[Power Performance Tuning] -> [BIOS Controls EPB]
+//                     ->[ENERGY_PERF_BIAS_CFG mode] -> [Maximum Performance]
+//    Bug Fix:       
+//    Reason:        Reference from Grantlley, control by TOKEN "MAX_PERFORMANCE_OPTION", default disabled.
+//    Auditor:       Jimmy Chiu
+//    Date:          May/16/2016
+//
+//***************************************************************************
+// This file contains an 'Intel Peripheral Driver' and is
+// licensed for Intel CPUs and chipsets under the terms of your
+// license agreement with Intel or your vendor.  This file may
+// be modified by the user, subject to additional terms of the
+// license agreement
+//
+// *++
+//
+// Copyright (c) 1999 - 2017 Intel Corporation. All rights reserved
+// This software and associated documentation (if any) is furnished
+// under a license and may only be used or copied in accordance
+// with the terms of the license. Except as permitted by such
+// license, no part of this software or documentation may be
+// reproduced, stored in a retrieval system, or transmitted in any
+// form or by any means without the express written consent of
+// Intel Corporation.
+//
+//
+// Module Name:
+//
+//   PowerManagementSetup.hfr
+//
+// Abstract:
+//
+//   Power Management Setup formset.
+//
+// Revision History:
+//
+// --*/
+
+  form formid = VFR_FORMID_PWRMGT,
+
+    title         = STRING_TOKEN(STR_POWER_MGT_CONFIG_FORM_TITLE);
+    subtitle text = STRING_TOKEN(STR_POWER_MGT_CONFIG_FORM_TITLE);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+
+    suppressif SMC_SETUP_STYLE;  //SMCPKG_SUPPORT S
+    // use SPT workarounds - B2P cmd MISC_WORKAROUND_ENABLE
+    oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.SPTWorkaround,
+        prompt      = STRING_TOKEN(STR_USE_SPT_WORKAROUND),
+        help        = STRING_TOKEN(STR_USE_SPT_WORKAROUND_HELP),
+        option text = STRING_TOKEN(STR_DISABLE),  value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+    endoneof;
+    endif;      //SMCPKG_SUPPORT E
+    
+    oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.CpuPm,
+    	questionid  = 0x2800,
+        prompt      = STRING_TOKEN(STR_CPU_PM_PROMPT),
+        help        = STRING_TOKEN(STR_CPU_PM_PROMPT_HELP),
+			option text = STRING_TOKEN(STR_CPU_PM_DISABLED),    value = 0, flags = INTERACTIVE | RESET_REQUIRED;
+			option text = STRING_TOKEN(STR_CPU_PM_ENABLED),     value = 1, flags = INTERACTIVE | DEFAULT | MANUFACTURING | RESET_REQUIRED;
+			option text = STRING_TOKEN(STR_CPU_PM_CUSTOM),      value = 2, flags = INTERACTIVE | RESET_REQUIRED;
+    endoneof;
+
+grayoutif NOT ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.CpuPm == 2;
+
+#if (SMCPKG_SUPPORT == 1) && (SMC_SETUP_STYLE == 1)
+      grayoutif ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.ProcessorHWPMEnable == 2;  //if HWPM = OOB Mode
+        // Power Performance Tuning Configuration Mode - MSR 0x1FC [25]
+        oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.PwrPerfTuning,
+            prompt      = STRING_TOKEN(STR_PWR_PERF_TUNING),
+            help        = STRING_TOKEN(STR_PWR_PERF_TUNING_HELP),
+            option text = STRING_TOKEN(STR_PWR_PERF_OS_EPB),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_PWR_PERF_BIOS_EPB),   value = 1, flags = RESET_REQUIRED;
+        endoneof;
+      endif;
+
+      grayoutif ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.PwrPerfTuning == 0;
+      // Once Power Performance Tuning Configuration Mode = 1, Use input from ENERGY_PERF_BIAS_CONFIG - MSR 0xA01 [6:3] = MSR 0x1B0 [6:3]
+      oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.AltEngPerfBIAS,
+        prompt      = STRING_TOKEN(STR_PWR_ENERGY_PERF),
+        help        = STRING_TOKEN(STR_PWR_ENERGY_PERF_HELP),
+#if MAX_PERFORMANCE_OPTION
+        option text = STRING_TOKEN(STR_ENERGY_PERF_MODE_5),   value = 0x3, flags = RESET_REQUIRED;
+#endif
+        option text = STRING_TOKEN(STR_ENERGY_PERF_MODE_1),    value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENERGY_PERF_MODE_2),   value = 0x7, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENERGY_PERF_MODE_3),   value = 0x8, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENERGY_PERF_MODE_4),   value = 0xf, flags = RESET_REQUIRED;
+#if SmcOptimize_SUPPORT
+#if SMC_OPTIMIZE_SPECPOWER
+	option text = STRING_TOKEN(STR_ENERGY_PERF_MODE_SPECPOWER),   value = SMC_OPTIMIZE_SPECPOWER , flags = RESET_REQUIRED;
+#endif
+#if SMC_OPTIMIZE_CPU2006
+	option text = STRING_TOKEN(STR_ENERGY_PERF_MODE_CPU2006),   value =  SMC_OPTIMIZE_CPU2006, flags = RESET_REQUIRED;
+#endif
+#endif
+      endoneof;
+      endif;
+#endif //(SMCPKG_SUPPORT == 1) && (SMC_SETUP_STYLE == 1)
+
+  //CPU P State Control
+  goto P_STATE_CONTROL_FORMID,
+  prompt  = STRING_TOKEN(STR_P_STATE_CONTROL_FORM_TITLE),
+  help    = STRING_TOKEN(STR_P_STATE_CONTROL_FORM_HELP);
+
+  //Hardware PM State Control
+  goto HWPM_STATE_CONTROL_FORMID,
+  prompt  = STRING_TOKEN(STR_HWPM_STATE_CONTROL_FORM_TITLE),
+  help    = STRING_TOKEN(STR_HWPM_STATE_CONTROL_FORM_HELP);
+  
+  suppressif SMC_SETUP_STYLE;  //SMCPKG_SUPPORT S
+  //Overclocking
+  goto XE_RATIO_LIMIT_FORMID,
+  prompt  = STRING_TOKEN(STR_XE_RATIO_LIMIT_FORM_TITLE),
+  help    = STRING_TOKEN(STR_XE_RATIO_LIMIT_FORM_HELP);
+  endif;        //SMCPKG_SUPPORT E
+
+  //CPU C State Control
+  goto CPU0_CSTATE_CONTROL_FORM_ID,
+  prompt  = STRING_TOKEN(STR_CPU_C_STATE_CONTROL_FORM_TITLE),
+  help    = STRING_TOKEN(STR_CPU_C_STATE_CONTROL_FORM_HELP);
+
+  //Package C State Control
+  goto PACKAGE_CSTATE_CONTROL_FORM_ID,
+  prompt  = STRING_TOKEN(STR_PACKAGE_C_STATE_CONTROL_FORM_TITLE),
+  help    = STRING_TOKEN(STR_PACKAGE_C_STATE_CONTROL_FORM_HELP);
+//SMCPKG_SUPPORT S
+  //T State Control Form Entry
+  goto CPU_TSTATE_CONTROL_FORM_ID,
+  prompt  = STRING_TOKEN(STR_CPU_T_STATE_CONTROL_FORM_TITLE),
+  help    = STRING_TOKEN(STR_CPU_T_STATE_CONTROL_FORM_HELP);
+endif;
+//SMCPKG_SUPPORT E
+  suppressif SMC_SETUP_STYLE;  //SMCPKG_SUPPORT S
+  //Cpu Thermal Management Form Entry
+  goto CPU_THERMMAL_MANAGE_FORM_ID,
+  prompt  = STRING_TOKEN(STR_CPU_THERMAL_MANAGE_FORM_TITLE),
+  help    = STRING_TOKEN(STR_CPU_THERMAL_MANAGE_FORM_HELP);
+
+  //Advanced PM Tuning Form
+  goto CPU_POWER_ADVANCED_CONFIG_FORM_ID,
+  prompt = STRING_TOKEN(STR_CPU_POWER_ADVANCED_CONFIG_TITLE),
+  help = STRING_TOKEN(STR_CPU_POWER_ADVANCED_CONFIG_HELP);
+
+  //Package Current Config
+  goto PROG_MSR_PP_CURT_CFG_CTRL_FORM_ID,
+  prompt  = STRING_TOKEN(STR_MSR_PP_CURT_CFG_CTRL_FORM),
+  help    = STRING_TOKEN(STR_MSR_PP_CURT_CFG_CTRL_FORM_HELP);
+
+  //EPB Override Control
+  goto PROG_CSR_DYNAMIC_PERF_POWER_CTL_FORM_ID,
+  prompt  = STRING_TOKEN(STR_CSR_DYNAMIC_PERF_POWER_CTL_FORM),
+  help    = STRING_TOKEN(STR_CSR_DYNAMIC_PERF_POWER_CTL_FORM_HELP);
+
+  //SOCKET RAPL Config
+  goto SOCKET_RAPL_FORMID,
+  prompt = STRING_TOKEN(STR_SOCKET_RAPL_FORM),
+  help = STRING_TOKEN(STR_SOCKET_RAPL_FORM_HELP);
+
+  //PMAX CONFIG Config
+  goto PROG_CSR_PMAX_CONFIG_FORM_ID,
+  prompt = STRING_TOKEN(STR_CSR_PMAX_CONFIG_FORM),
+  help = STRING_TOKEN(STR_CSR_PMAX_CONFIG_FORM_HELP);
+
+  //ACPI Sx State Control individually
+  goto ACPI_S_STATE_FORMID,
+  prompt = STRING_TOKEN(ACPI_S_STATE_CONTROLORM_TITLE),
+  help = STRING_TOKEN(ACPI_S_STATE_CONTROLORM_HELP);
+
+  // Memory Configuration
+  goto VFR_FORMID_MEM_PM_CFG_ID,
+  prompt  = STRING_TOKEN(STR_MEMORY_PM_CONFIG_FORM_TITLE),
+  help    = STRING_TOKEN(STR_MEMORY_PM_CONFIG_FORM_HELP);
+  endif;        //SMCPKG_SUPPORT E
+
+endform;    // end of VFR_FORMID_PWRMGT
+
+    //ACPI Sx State Form start
+    form formid = ACPI_S_STATE_FORMID,
+    title = STRING_TOKEN(ACPI_S_STATE_CONTROLORM_TITLE);
+    subtitle text = STRING_TOKEN(ACPI_S_STATE_CONTROLORM_TITLE);
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+      // ACPI S3 State
+      oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.AcpiS3Enable,
+          prompt      = STRING_TOKEN(STR_ACPI_S3_STATE_REPORT),
+          help        = STRING_TOKEN(STR_ACPI_S3_STATE_REPORT_HELP),
+          option text = STRING_TOKEN(STR_DISABLE),  value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        endoneof;
+
+      // ACPI S4 State
+      oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.AcpiS4Enable,
+          prompt      = STRING_TOKEN(STR_ACPI_S4_STATE_REPORT),
+          help        = STRING_TOKEN(STR_ACPI_S4_STATE_REPORT_HELP),
+          option text = STRING_TOKEN(STR_DISABLE),  value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        endoneof;
+    endform;  //end ACPI Sx State Form
+
+  //HWPM page starts
+  form formid = HWPM_STATE_CONTROL_FORMID,
+  title = STRING_TOKEN(STR_HWPM_STATE_CONTROL_FORM_TITLE);
+  subtitle text = STRING_TOKEN(STR_HWPM_STATE_CONTROL_FORM_TITLE);
+  subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+    //
+    // HWPM options setup option
+    //
+//SMCPKG_SUPPORT - Start
+    oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.ProcessorHWPMEnable,
+        prompt      = STRING_TOKEN(STR_PROCESSOR_HWPM_ENABLE),
+        help        = STRING_TOKEN(STR_PROCESSOR_HWPM_ENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE),   value = 0,  flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_NATIVE_MODE),   value = 1,  flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_HWPM_OOB),   value = 2,  flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_HWPM_NO_NATIVE),   value = 3,  flags = RESET_REQUIRED;
+    endoneof;
+//SMCPKG_SUPPORT - End
+      suppressif SMC_SETUP_STYLE;  //SMCPKG_SUPPORT S
+      grayoutif NOT ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.ProcessorHWPMEnable == 1;
+        oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.ProcessorHWPMInterrupt,
+          prompt      = STRING_TOKEN(STR_PROCESSOR_HWPM_INTERRUPT_ENABLE),
+          help        = STRING_TOKEN(STR_PROCESSOR_HWPM_INTERRUPT_ENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE),   value = 0,  flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE),    value = 1,  flags = RESET_REQUIRED;
+        endoneof;
+     endif;
+   
+     grayoutif ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.ProcessorHWPMEnable == 0;
+       //
+       // EPP Enable (Bit[12])
+       //
+       oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.ProcessorEPPEnable,
+          prompt      = STRING_TOKEN(STR_PROCESSOR_EPP_ENABLE),
+          help        = STRING_TOKEN(STR_PROCESSOR_EPP_ENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE),   value = 0,  flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),    value = 1,  flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        endoneof;
+    endif;
+
+    suppressif NOT ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.ProcessorHWPMEnable == 2;
+     grayoutif ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.ProcessorEPPEnable == 0;
+       oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.ProcessorEppProfile,
+          prompt      = STRING_TOKEN(STR_PROCESSOR_EPP_PROFILE),
+          help        = STRING_TOKEN(STR_PROCESSOR_EPP_PROFILE_HELP),
+          option text = STRING_TOKEN(STR_ENERGY_PERF_MODE_1),   value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENERGY_PERF_MODE_2),   value = 85, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENERGY_PERF_MODE_3),   value = 170, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENERGY_PERF_MODE_4),   value = 255, flags = RESET_REQUIRED;
+        endoneof;
+      endif;
+    endif;
+
+     grayoutif ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.ProcessorHWPMEnable == 0;
+       oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.ProcessorAPSrocketing,
+          prompt      = STRING_TOKEN(STR_PROCESSOR_APS_ROCKETING),
+          help        = STRING_TOKEN(STR_PROCESSOR_APS_ROCKETING_HELP),
+          option text = STRING_TOKEN(STR_ENABLE),    value = 0,  flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_DISABLE),   value = 1,  flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        endoneof;
+
+       oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.ProcessorScalability,
+          prompt      = STRING_TOKEN(STR_PROCESSOR_SCALABILITY),
+          help        = STRING_TOKEN(STR_PROCESSOR_SCALABILITY_HELP),
+          option text = STRING_TOKEN(STR_ENABLE),    value = 0,  flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_DISABLE),   value = 1,  flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        endoneof;
+
+       oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.ProcessorPPOBudget,
+          prompt      = STRING_TOKEN(STR_PROCESSOR_PPO_BUDGET),
+          help        = STRING_TOKEN(STR_PROCESSOR_PPO_BUDGET_HELP),
+          option text = STRING_TOKEN(STR_ENABLE),    value = 0,  flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_DISABLE),   value = 1,  flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        endoneof;
+    endif;
+      endif;    //SMCPKG_SUPPORT E
+
+  endform;  //end HWPM State Control Form
+  //
+  //HWPM page ends
+  //
+  
+  //P State Control Form start
+  form formid = P_STATE_CONTROL_FORMID,
+  title = STRING_TOKEN(STR_P_STATE_CONTROL_FORM_TITLE);
+  subtitle text = STRING_TOKEN(STR_P_STATE_CONTROL_FORM_TITLE);
+  subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+      suppressif SMC_SETUP_STYLE;  //SMCPKG_SUPPORT S
+      oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.WFRWAEnable,
+        prompt      = STRING_TOKEN(STR_WFR_SOCKET_WA),
+        help        = STRING_TOKEN(STR_WFR_SOCKET_WA_HELP),
+        option text = STRING_TOKEN(STR_DISABLE),  value = 0,  flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1,  flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_AUTO),   value = 2,  flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+      endoneof;
+
+      oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.UFSDisable,
+          prompt      = STRING_TOKEN(STR_UFS_DISABLE_PROMPT),
+          help        = STRING_TOKEN(STR_UFS_DISABLE_HELP),
+          option text = STRING_TOKEN(STR_ENABLED), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_DISABLED),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      endif;    //SMCPKG_SUPPORT E
+
+      oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.ProcessorEistEnable,
+        prompt      = STRING_TOKEN(STR_PROCESSOR_EIST),
+        help        = STRING_TOKEN(STR_PROCESSOR_EIST_HELP),
+        option text = STRING_TOKEN(STR_DISABLE),  value = 0,  flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLE),   value = 1,  flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+      endoneof;
+
+      suppressif SMC_SETUP_STYLE;  //SMCPKG_SUPPORT S
+      // Config TDP
+      suppressif ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.ProcessorEistEnable == 0;
+        oneof varid  = SOCKET_POWERMANAGEMENT_CONFIGURATION.ConfigTDPLevel,
+            prompt   = STRING_TOKEN (STR_CONFIG_TDP_ENABLE),
+            help     = STRING_TOKEN (STR_CONFIG_TDP_ENABLE_HELP),
+            option text = STRING_TOKEN(STR_NOMINAL),  value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+            option text = STRING_TOKEN(LEVEL_1),  value = 1, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(LEVEL_2),  value = 2, flags = RESET_REQUIRED;
+          endoneof;
+      endif;
+
+    // Pstate Doamin
+    oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.PStateDomain,
+        prompt      = STRING_TOKEN(STR_P_STATE_DOMAIN_REPORT),
+        help        = STRING_TOKEN(STR_P_STATE_DOMAIN_REPORT_HELP),
+        option text = STRING_TOKEN(STR_ALL),   value = 0,  flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ONE),   value = 1,  flags = RESET_REQUIRED;
+      endoneof;
+      endif;    //SMCPKG_SUPPORT E
+
+    // EIST/GV3 PSD Function Control
+    //
+    grayoutif ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.ProcessorEistEnable == 0x00;
+        oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.ProcessorEistPsdFunc,
+            prompt      = STRING_TOKEN(STR_PROCESSOR_PSD_FUNC),
+            help        = STRING_TOKEN(STR_PROCESSOR_PSD_FUNC_HELP),
+            option text = STRING_TOKEN(STR_HW_ALL),   value = 0,  flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+            option text = STRING_TOKEN(STR_SW_ALL),   value = 1,  flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_SW_ANY),   value = 2,  flags = RESET_REQUIRED;
+      endoneof;
+      endif;
+
+      suppressif SMC_SETUP_STYLE;  //SMCPKG_SUPPORT S
+    // PCPS - SINGLE_PCTL
+    oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.ProcessorSinglePCTLEn,
+          prompt      = STRING_TOKEN(STR_PROCESSOR_SINGLE_PCTL),
+          help        = STRING_TOKEN(STR_PROCESSOR_SINGLE_PCTL_HELP),
+          option text = STRING_TOKEN(STR_DISABLE),  value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+
+    // PCPS - SPD
+    oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.ProcessorSPD,
+          prompt      = STRING_TOKEN(STR_PROCESSOR_SPD_FUNC),
+          help        = STRING_TOKEN(STR_PROCESSOR_SPD_FUNC_HELP),
+          option text = STRING_TOKEN(STR_DISABLE),  value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+
+    grayoutif  ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.ProcessorEistEnable == 0;
+      oneof varid = SOCKET_POWERMANAGEMENT_CONFIGURATION.BootPState,
+        prompt  = STRING_TOKEN (STR_BOOT_P_STATE),
+        help    = STRING_TOKEN (STR_BOOT_P_STATE_HELP),
+        option text = STRING_TOKEN (STR_BOOT_P_STATE_MAX), value = 0, flags = DEFAULT | MANUFACTURING;
+        option text = STRING_TOKEN (STR_BOOT_P_STATE_MIN), value = 1, flags = 0;
+#if SPS_SUPPORT
+        option text = STRING_TOKEN (STR_BOOT_P_STATE_SPS_NM), value = 2, flags = 0;
+#endif
+      endoneof;
+    endif;
+
+      // VIRTUAL_MSR_CR_POWER_CTL.EE_TURBO_DISABLE - MSR 0x1FC Bit[19]
+      oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.EETurboDisable,
+          prompt      = STRING_TOKEN(STR_EE_TURBO_DISABLE),
+          help        = STRING_TOKEN(STR_EE_TURBO_DISABLE_HELP),
+          option text = STRING_TOKEN(STR_ENABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_DISABLE),   value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      endif;    //SMCPKG_SUPPORT E
+
+    suppressif ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.ProcessorEistEnable == 0;
+      oneof varid  = SOCKET_POWERMANAGEMENT_CONFIGURATION.TurboMode,
+          prompt   = STRING_TOKEN (STR_TURBO_MODE_ENABLE),
+          help     = STRING_TOKEN (STR_TURBO_MODE_ENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE),  value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+      endoneof;
+    endif;
+
+      suppressif SMC_SETUP_STYLE;  //SMCPKG_SUPPORT S
+    //
+    // Flexible Ratio
+    //
+  suppressif  ideqval SOCKET_PROCESSORCORE_CONFIGURATION.AllowMixedPowerOnCpuRatio == 1; 
+    oneof varid     = SOCKET_PROCESSORCORE_CONFIGURATION.ProcessorFlexibleRatioOverrideEnable,
+          prompt      = STRING_TOKEN(STR_PROCESSOR_RATIO_OVERRIDE),
+          help        = STRING_TOKEN(STR_PROCESSOR_RATIO_OVERRIDE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE),  value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+    endoneof;
+
+
+    grayoutif ideqval SOCKET_PROCESSORCORE_CONFIGURATION.ProcessorFlexibleRatioOverrideEnable == 0;
+      numeric varid = SOCKET_PROCESSORCORE_CONFIGURATION.ProcessorFlexibleRatio,
+          prompt  = STRING_TOKEN(STR_PROCESSOR_CORE_RATIO),
+          help    = STRING_TOKEN(STR_PROCESSOR_CORE_RATIO_HELP),
+          flags   = 0 | RESET_REQUIRED,
+          minimum = 0,
+          maximum = MAX_PROCESSOR_CORE_RATIO,
+          step    = 1, // Stepping of 0 equates to a manual entering of a value, otherwise
+                       // it will auto-increment with a left/right arrow
+          default = DEFAULT_PROCESSOR_CORE_RATIO, defaultstore = MyStandardDefault,
+          default = DEFAULT_PROCESSOR_CORE_RATIO, defaultstore = MyManufactureDefault,
+      endnumeric;
+    endif;
+    endif;
+
+      goto PROG_CSR_PERF_P_LIMIT_FORM_ID,
+      prompt  = STRING_TOKEN(STR_CSR_PERF_P_LIMIT_FORM),
+      help    = STRING_TOKEN(STR_CSR_PERF_P_LIMIT_FORM_HELP);
+      endif;    //SMCPKG_SUPPORT E
+
+  endform;  //end P State Control Form
+
+  // XE Ratio Limit Setup Sub Form Start
+  form formid = XE_RATIO_LIMIT_FORMID,
+  title = STRING_TOKEN(STR_XE_RATIO_LIMIT_FORM_TITLE);
+
+  subtitle text = STRING_TOKEN(STR_XE_RATIO_LIMIT_FORM_TITLE);
+  subtitle text = STRING_TOKEN(STR_NULL_STRING);
+    //Enable Xe
+    suppressif ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.TurboMode == 0
+                       OR ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.ProcessorEistEnable == 0;
+
+      oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.EnableXe,
+        prompt      = STRING_TOKEN(STR_CPU_XE_PROMPT),
+        help        = STRING_TOKEN(STR_CPU_XE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE),  value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+      endoneof;
+
+      // Overclocking Lock
+      oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.OverclockingLock,
+        prompt      = STRING_TOKEN(STR_OVERCLOCKING_LOCK),
+        help        = STRING_TOKEN(STR_OVERCLOCKING_LOCK_HELP),
+        option text = STRING_TOKEN(STR_DISABLE),  value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+      endoneof;
+
+    endif;
+
+    suppressif ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.EnableXe == 0
+                    OR ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.TurboMode == 0
+                       OR ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.ProcessorEistEnable == 0;
+      numeric varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.TurboRatioLimitRatio[0],
+        prompt  = STRING_TOKEN(STR_TURBO_RATIO_LIMIT_RATIO_0),
+        help    = STRING_TOKEN(STR_TURBO_RATIO_LIMIT_RATIO_HELP),
+        flags   = 0 | RESET_REQUIRED,
+        minimum = 0,
+        maximum = 80,      //
+        step    = 0,        // Stepping of 0 equates to a manual entering of a value,
+                            // otherwise it will auto-increment with a left/right arrow
+        default = 0, defaultstore = MyStandardDefault,
+        default = 0, defaultstore = MyManufactureDefault,
+      endnumeric;
+    endif;
+
+    suppressif ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.EnableXe == 0
+                    OR ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.TurboMode == 0
+                       OR ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.ProcessorEistEnable == 0;
+      numeric varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.TurboRatioLimitCores[0],
+        prompt  = STRING_TOKEN(STR_TURBO_RATIO_LIMIT_CORES_0),
+        help    = STRING_TOKEN(STR_TURBO_RATIO_LIMIT_CORES_HELP),
+        flags   = 0 | RESET_REQUIRED | DISPLAY_UINT_HEX,
+        minimum = 0,
+        maximum = 0xFF,      //
+        step    = 0,        // Stepping of 0 equates to a manual entering of a value,
+                            // otherwise it will auto-increment with a left/right arrow
+        default = 0xFF, defaultstore = MyStandardDefault,
+        default = 0xFF, defaultstore = MyManufactureDefault,
+      endnumeric;
+    endif;
+
+      numeric varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.TurboRatioLimitRatio[1],
+        prompt  = STRING_TOKEN(STR_TURBO_RATIO_LIMIT_RATIO_1),
+        help    = STRING_TOKEN(STR_TURBO_RATIO_LIMIT_RATIO_HELP),
+        flags   = 0 | RESET_REQUIRED,
+        minimum = 0,
+        maximum = 80,      //
+        step    = 0,        // Stepping of 0 equates to a manual entering of a value,
+                            // otherwise it will auto-increment with a left/right arrow
+        default = 0, defaultstore = MyStandardDefault,
+        default = 0, defaultstore = MyManufactureDefault,
+      endnumeric;
+
+      numeric varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.TurboRatioLimitCores[1],
+        prompt  = STRING_TOKEN(STR_TURBO_RATIO_LIMIT_CORES_1),
+        help    = STRING_TOKEN(STR_TURBO_RATIO_LIMIT_CORES_HELP),
+        flags   = 0 | RESET_REQUIRED | DISPLAY_UINT_HEX,
+        minimum = 0,
+        maximum = 0xFF,      //
+        step    = 0,        // Stepping of 0 equates to a manual entering of a value,
+                            // otherwise it will auto-increment with a left/right arrow
+        default = 0xFF, defaultstore = MyStandardDefault,
+        default = 0xFF, defaultstore = MyManufactureDefault,
+      endnumeric;
+
+      numeric varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.TurboRatioLimitRatio[2],
+        prompt  = STRING_TOKEN(STR_TURBO_RATIO_LIMIT_RATIO_2),
+        help    = STRING_TOKEN(STR_TURBO_RATIO_LIMIT_RATIO_HELP),
+        flags   = 0 | RESET_REQUIRED,
+        minimum = 0,
+        maximum = 80,      //
+        step    = 0,        // Stepping of 0 equates to a manual entering of a value,
+                            // otherwise it will auto-increment with a left/right arrow
+        default = 0, defaultstore = MyStandardDefault,
+        default = 0, defaultstore = MyManufactureDefault,
+      endnumeric;
+
+      numeric varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.TurboRatioLimitCores[2],
+        prompt  = STRING_TOKEN(STR_TURBO_RATIO_LIMIT_CORES_2),
+        help    = STRING_TOKEN(STR_TURBO_RATIO_LIMIT_CORES_HELP),
+        flags   = 0 | RESET_REQUIRED | DISPLAY_UINT_HEX,
+        minimum = 0,
+        maximum = 0xFF,      //
+        step    = 0,        // Stepping of 0 equates to a manual entering of a value,
+                            // otherwise it will auto-increment with a left/right arrow
+        default = 0xFF, defaultstore = MyStandardDefault,
+        default = 0xFF, defaultstore = MyManufactureDefault,
+      endnumeric;
+
+      numeric varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.TurboRatioLimitRatio[3],
+        prompt  = STRING_TOKEN(STR_TURBO_RATIO_LIMIT_RATIO_3),
+        help    = STRING_TOKEN(STR_TURBO_RATIO_LIMIT_RATIO_HELP),
+        flags   = 0 | RESET_REQUIRED,
+        minimum = 0,
+        maximum = 80,      //
+        step    = 0,        // Stepping of 0 equates to a manual entering of a value,
+                            // otherwise it will auto-increment with a left/right arrow
+        default = 0, defaultstore = MyStandardDefault,
+        default = 0, defaultstore = MyManufactureDefault,
+      endnumeric;
+
+      numeric varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.TurboRatioLimitCores[3],
+        prompt  = STRING_TOKEN(STR_TURBO_RATIO_LIMIT_CORES_3),
+        help    = STRING_TOKEN(STR_TURBO_RATIO_LIMIT_CORES_HELP),
+        flags   = 0 | RESET_REQUIRED | DISPLAY_UINT_HEX,
+        minimum = 0,
+        maximum = 0xFF,      //
+        step    = 0,        // Stepping of 0 equates to a manual entering of a value,
+                            // otherwise it will auto-increment with a left/right arrow
+        default = 0xFF, defaultstore = MyStandardDefault,
+        default = 0xFF, defaultstore = MyManufactureDefault,
+      endnumeric;
+
+      numeric varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.TurboRatioLimitRatio[4],
+        prompt  = STRING_TOKEN(STR_TURBO_RATIO_LIMIT_RATIO_4),
+        help    = STRING_TOKEN(STR_TURBO_RATIO_LIMIT_RATIO_HELP),
+        flags   = 0 | RESET_REQUIRED,
+        minimum = 0,
+        maximum = 80,      //
+        step    = 0,        // Stepping of 0 equates to a manual entering of a value,
+                            // otherwise it will auto-increment with a left/right arrow
+        default = 0, defaultstore = MyStandardDefault,
+        default = 0, defaultstore = MyManufactureDefault,
+      endnumeric;
+
+      numeric varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.TurboRatioLimitCores[4],
+        prompt  = STRING_TOKEN(STR_TURBO_RATIO_LIMIT_CORES_4),
+        help    = STRING_TOKEN(STR_TURBO_RATIO_LIMIT_CORES_HELP),
+        flags   = 0 | RESET_REQUIRED | DISPLAY_UINT_HEX,
+        minimum = 0,
+        maximum = 0xFF,      //
+        step    = 0,        // Stepping of 0 equates to a manual entering of a value,
+                            // otherwise it will auto-increment with a left/right arrow
+        default = 0xFF, defaultstore = MyStandardDefault,
+        default = 0xFF, defaultstore = MyManufactureDefault,
+      endnumeric;
+
+      numeric varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.TurboRatioLimitRatio[5],
+        prompt  = STRING_TOKEN(STR_TURBO_RATIO_LIMIT_RATIO_5),
+        help    = STRING_TOKEN(STR_TURBO_RATIO_LIMIT_RATIO_HELP),
+        flags   = 0 | RESET_REQUIRED,
+        minimum = 0,
+        maximum = 80,      //
+        step    = 0,        // Stepping of 0 equates to a manual entering of a value,
+                            // otherwise it will auto-increment with a left/right arrow
+        default = 0, defaultstore = MyStandardDefault,
+        default = 0, defaultstore = MyManufactureDefault,
+      endnumeric;
+
+      numeric varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.TurboRatioLimitCores[5],
+        prompt  = STRING_TOKEN(STR_TURBO_RATIO_LIMIT_CORES_5),
+        help    = STRING_TOKEN(STR_TURBO_RATIO_LIMIT_CORES_HELP),
+        flags   = 0 | RESET_REQUIRED | DISPLAY_UINT_HEX,
+        minimum = 0,
+        maximum = 0xFF,      //
+        step    = 0,        // Stepping of 0 equates to a manual entering of a value,
+                            // otherwise it will auto-increment with a left/right arrow
+        default = 0xFF, defaultstore = MyStandardDefault,
+        default = 0xFF, defaultstore = MyManufactureDefault,
+      endnumeric;
+
+      numeric varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.TurboRatioLimitRatio[6],
+        prompt  = STRING_TOKEN(STR_TURBO_RATIO_LIMIT_RATIO_6),
+        help    = STRING_TOKEN(STR_TURBO_RATIO_LIMIT_RATIO_HELP),
+        flags   = 0 | RESET_REQUIRED,
+        minimum = 0,
+        maximum = 80,      //
+        step    = 0,        // Stepping of 0 equates to a manual entering of a value,
+                            // otherwise it will auto-increment with a left/right arrow
+        default = 0, defaultstore = MyStandardDefault,
+        default = 0, defaultstore = MyManufactureDefault,
+      endnumeric;
+
+      numeric varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.TurboRatioLimitCores[6],
+        prompt  = STRING_TOKEN(STR_TURBO_RATIO_LIMIT_CORES_6),
+        help    = STRING_TOKEN(STR_TURBO_RATIO_LIMIT_CORES_HELP),
+        flags   = 0 | RESET_REQUIRED | DISPLAY_UINT_HEX,
+        minimum = 0,
+        maximum = 0xFF,      //
+        step    = 0,        // Stepping of 0 equates to a manual entering of a value,
+                            // otherwise it will auto-increment with a left/right arrow
+        default = 0xFF, defaultstore = MyStandardDefault,
+        default = 0xFF, defaultstore = MyManufactureDefault,
+      endnumeric;
+
+      numeric varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.TurboRatioLimitRatio[7],
+        prompt  = STRING_TOKEN(STR_TURBO_RATIO_LIMIT_RATIO_7),
+        help    = STRING_TOKEN(STR_TURBO_RATIO_LIMIT_RATIO_HELP),
+        flags   = 0 | RESET_REQUIRED,
+        minimum = 0,
+        maximum = 80,      //
+        step    = 0,        // Stepping of 0 equates to a manual entering of a value,
+                            // otherwise it will auto-increment with a left/right arrow
+        default = 0, defaultstore = MyStandardDefault,
+        default = 0, defaultstore = MyManufactureDefault,
+      endnumeric;
+
+      numeric varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.TurboRatioLimitCores[7],
+        prompt  = STRING_TOKEN(STR_TURBO_RATIO_LIMIT_CORES_7),
+        help    = STRING_TOKEN(STR_TURBO_RATIO_LIMIT_CORES_HELP),
+        flags   = 0 | RESET_REQUIRED | DISPLAY_UINT_HEX,
+        minimum = 0,
+        maximum = 0xFF,      //
+        step    = 0,        // Stepping of 0 equates to a manual entering of a value,
+                            // otherwise it will auto-increment with a left/right arrow
+        default = 0xFF, defaultstore = MyStandardDefault,
+        default = 0xFF, defaultstore = MyManufactureDefault,
+      endnumeric;
+
+      oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.LOT26UnusedVrPowerDownEnable,
+          prompt      = STRING_TOKEN(STR_LOT26_ENABLE_PROMPT),
+          help        = STRING_TOKEN(STR_LOT26_ENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+      endoneof;
+  
+  endform;  //end of XE Ratio Limit Setup Sub Form
+  // end of XE Ratio Limit Setup Sub Form
+
+
+  //C State Control Form start
+  form formid = CPU0_CSTATE_CONTROL_FORM_ID,
+  title = STRING_TOKEN(STR_CPU_C_STATE_CONTROL_FORM_TITLE);
+
+  subtitle text = STRING_TOKEN(STR_CPU_C_STATE_CONTROL_FORM_TITLE);
+  subtitle text = STRING_TOKEN(STR_NULL_STRING);
+   
+     //
+     //processor Autonomous c-state setup option
+     //
+     oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.ProcessorAutonomousCstateEnable,
+        prompt      = STRING_TOKEN(STR_PROCESSOR_AUTO_CSTATE_ENABLE),
+        help        = STRING_TOKEN(STR_PROCESSOR_AUTO_CSTATE_ENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE),   value = 0,  flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),    value = 1,  flags = RESET_REQUIRED;
+      endoneof;
+
+    //
+    // Enable CPU C states of processor
+    //
+//    oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.ProcessorCcxEnable,
+//        prompt      = STRING_TOKEN(STR_PROCESSOR_CCX),
+//        help        = STRING_TOKEN(STR_PROCESSOR_CCX_HELP),
+//        option text = STRING_TOKEN(STR_DISABLE),  value = 0,  flags = RESET_REQUIRED;
+//        option text = STRING_TOKEN(STR_ENABLE),   value = 1,  flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+//    endoneof;
+
+        //
+        // Enable ACPI C1 Autodemotion - Removing Auto demotion and undemotion for IvyTown EX
+        //
+   //     oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.C1AutoDemotion,
+   //         prompt      = STRING_TOKEN(STR_C1_AUTO_DEMOTION),
+   //        help        = STRING_TOKEN(STR_C1_AUTO_DEMOTION_HELP),
+   //       option text = STRING_TOKEN(STR_DISABLE),  value = 0,  flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+   //         option text = STRING_TOKEN(STR_ENABLE),   value = 1,  flags = RESET_REQUIRED ;
+   //     endoneof;
+
+        //
+        // Enable ACPI C3 Autodemotion
+        //
+   //        oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.C3AutoDemotion,
+   //            prompt      = STRING_TOKEN(STR_C3_AUTO_DEMOTION),
+   //            help        = STRING_TOKEN(STR_C3_AUTO_DEMOTION_HELP),
+   //            option text = STRING_TOKEN(STR_DISABLE),  value = 0,  flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+   //            option text = STRING_TOKEN(STR_ENABLE),   value = 1,  flags = RESET_REQUIRED;
+   //        endoneof;
+
+    //
+    // Enable ACPI C3 report to OS
+    //
+    //
+    // Enable/Disable CPU C6(ACPI C3) report to OS
+    //
+    grayoutif ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.ProcessorAutonomousCstateEnable == 1;
+      oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.C6Enable,
+          prompt      = STRING_TOKEN(STR_C6_ENABLE),
+          help        = STRING_TOKEN(STR_C6_ENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE),  value = 0,  flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),   value = 1,  flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_AUTO), value = PPM_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    //
+    // Enable CPU C1E
+    //
+    grayoutif ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.ProcessorAutonomousCstateEnable == 1;
+      oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.ProcessorC1eEnable,
+          prompt      = STRING_TOKEN(STR_PROCESSOR_C1E),
+          help        = STRING_TOKEN(STR_PROCESSOR_C1E_HELP),
+          option text = STRING_TOKEN(STR_DISABLE),  value = 0,  flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),   value = 1,  flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+      endoneof;
+    endif;
+
+    suppressif SMC_SETUP_STYLE;  //SMCPKG_SUPPORT S
+    grayoutif ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.ProcessorAutonomousCstateEnable == 1;
+      oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.OSCx,
+          prompt      = STRING_TOKEN(STR_OSCX_REPORT),
+          help        = STRING_TOKEN(STR_OSCX_REPORT_HELP),
+          option text = STRING_TOKEN(STR_OSCX_C2),  value = 0, flags = DEFAULT |MANUFACTURING | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_OSCX_C3),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    //HLV SASV Control Form Entry
+    goto HLV_SASV_FORM_ID,
+    prompt  = STRING_TOKEN(STR_HLV_SASV_FORM_TITLE),
+    help    = STRING_TOKEN(STR_HLV_SASV_CONTROL_FORM_HELP);
+    endif;      //SMCPKG_SUPPORT E
+
+  endform; //end C State form
+
+
+  //PACKAGE C State Control Form start
+  form formid = PACKAGE_CSTATE_CONTROL_FORM_ID,
+  title = STRING_TOKEN(STR_PACKAGE_C_STATE_CONTROL_FORM_TITLE);
+
+  subtitle text = STRING_TOKEN(STR_PACKAGE_C_STATE_CONTROL_FORM_TITLE);
+  subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+    //
+    // Package C state limit option
+    //
+    oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.PackageCState,
+       prompt      = STRING_TOKEN(STR_PACKAGE_CSTATE_REPORT),
+       help        = STRING_TOKEN(STR_PACKAGE_CSTATE_REPORT_HELP),
+//
+// s4930310 "Machine Check on Windows boot with PM enabled"		
+// Package C State = C0/C1 for PPO (HSX interposed) config
+//
+       option text = STRING_TOKEN(STR_C0SUPPORT),      value = 0,  flags = RESET_REQUIRED;
+       option text = STRING_TOKEN(STR_C2SUPPORT),      value = 1,  flags = RESET_REQUIRED;
+       option text = STRING_TOKEN(STR_C6SUPPORT),      value = 2,  flags = RESET_REQUIRED;
+       option text = STRING_TOKEN(STR_C6_RETSUPPORT),  value = 3,  flags = RESET_REQUIRED;
+       option text = STRING_TOKEN(STR_NOLIMIT),        value = 7,  flags = RESET_REQUIRED;
+       option text = STRING_TOKEN(STR_AUTO), value = PPM_AUTO, flags = MANUFACTURING | DEFAULT | RESET_REQUIRED;
+    endoneof;
+
+    suppressif SMC_SETUP_STYLE;  //SMCPKG_SUPPORT S
+    //
+    // VCCSA/VCCIO disable during Package C6
+    //
+    suppressif TRUE;
+      oneof varid = SOCKET_POWERMANAGEMENT_CONFIGURATION.VccSAandVccIOdisable,
+        prompt      = STRING_TOKEN(STR_VCCSA_VCCIO_DISABLE_PROMPT),
+        help        = STRING_TOKEN(STR_VCCSA_VCCIO_DISABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    //
+    // C2C3TT - C2 to C3 Transition Timer
+    //
+    numeric varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.C2C3TT,
+        prompt      = STRING_TOKEN(STR_C2C3TT),
+        help        = STRING_TOKEN(STR_C2C3TT_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 0,
+        maximum = 255,
+        step    = 1,
+        default = 0,                          //0 = AUTO
+        endnumeric;
+
+      suppressif TRUE;
+        //
+        // Dynamic L1 - PCU_MISC_CONFIG Bit[21]
+        // Force disable for SKX, not supported.  Always set PCU_MISC_CONFIG[21].
+        //
+        oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.DynamicL1,
+            prompt      = STRING_TOKEN(STR_DYNNAMIC_L1),
+            help        = STRING_TOKEN(STR_DYNNAMIC_L1_HELP),
+            option text = STRING_TOKEN(STR_DISABLE),    value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_ENABLE),   value = 0, flags = RESET_REQUIRED;
+        endoneof;
+      endif;
+
+      // VIRTUAL_MSR_CR_POWER_CTL.PCH_NEG_DISABLE - MSR 0x1FC Bit[30]
+      oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.PkgCLatNeg,
+          prompt      = STRING_TOKEN(STR_PKG_C_LAT_NEG),
+          help        = STRING_TOKEN(STR_PKG_C_LAT_NEG_HELP),
+          option text = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),   value = 1, flags = RESET_REQUIRED;
+      endoneof;
+
+      // Suppressing to prevent user from altering the default values of Pkgc entry criteria masks
+      suppressif TRUE;
+        goto PROG_ENTRY_CRITERIA_FORM_ID,
+        prompt  = STRING_TOKEN(STR_ENTRY_CRITERIA_FORM),
+        help    = STRING_TOKEN(STR_ENTRY_CRITERIA_FORM_HELP);
+      endif;
+
+      // VIRTUAL_MSR_CR_POWER_CTL.LTR_IIO_DISABLE - MSR 0x1FC Bit[29]
+      oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.LTRSwInput,
+          prompt      = STRING_TOKEN(STR_LTR_IIO_INPUT),
+          help        = STRING_TOKEN(STR_LTR_IIO_INPUT_HELP),
+          option text = STRING_TOKEN(STR_TAKE_IIO_LTR),     value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_IGNORE_IIO_LTR),   value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+      endoneof;
+
+      goto PROG_CSR_SWLTROVRD_FORM_ID,
+      prompt  = STRING_TOKEN(STR_PROG_CSR_SWLTROVRD_FORM),
+      help    = STRING_TOKEN(STR_PROG_CSR_SWLTROVRD_FORM_HELP);
+
+      //Pkg C-state SA Power Management Control
+      goto PROG_CSR_SAPMCTL_FORM_ID,
+      prompt  = STRING_TOKEN(STR_PROG_CSR_SAPMCTL_FORM),
+      help    = STRING_TOKEN(STR_PROG_CSR_SAPMCTL_FORM_HELP);
+
+      oneof varid = SOCKET_MEMORY_CONFIGURATION.mdllSden,
+        prompt      = STRING_TOKEN(STR_MDLL_SDEN_PROMPT),
+        help        = STRING_TOKEN(STR_MDLL_SDEN_PROMPT_HELP),
+        option text = STRING_TOKEN(STR_AUTO),     value = MDLL_SDEN_AUTO, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_DISABLED), value = MDLL_SDEN_DIS, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED),  value = MDLL_SDEN_EN, flags = RESET_REQUIRED;
+      endoneof;
+    endif;    //SMCPKG_SUPPORT E
+
+  endform; //end PACKAGE C State form
+
+  //HLV SASV Control Form Entry Start
+  form formid = HLV_SASV_FORM_ID,
+  title = STRING_TOKEN(STR_HLV_SASV_FORM_TITLE);
+  subtitle text = STRING_TOKEN(STR_HLV_SASV_FORM_TITLE);
+  subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+  subtitle text = STRING_TOKEN(STR_C_STATE_LATENCY_CTRL_0);
+
+      oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.CStateLatencyCtrlValid[0],
+          prompt      = STRING_TOKEN(STR_LATENCY_CTRL_VALID_PROMPT),
+          help        = STRING_TOKEN(STR_LATENCY_CTRL_VALID_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+
+      suppressif ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.CStateLatencyCtrlValid[0] == 0;
+        numeric varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.CStateLatencyCtrlMultiplier[0],
+          prompt  = STRING_TOKEN(STR_LATENCY_CTRL_MULTIPLIER_PROMPT),
+          help    = STRING_TOKEN(STR_LATENCY_CTRL_MULTIPLIER_HELP),
+            flags   = RESET_REQUIRED | DISPLAY_UINT_HEX,
+            minimum = 0,
+            maximum = 0x7,
+            step    = 0,
+            default = 0, defaultstore = MyStandardDefault,
+            default = 0, defaultstore = MyManufactureDefault,
+          endnumeric;
+
+        numeric varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.CStateLatencyCtrlValue[0],
+          prompt  = STRING_TOKEN(STR_LATENCY_CTRL_VALUE_PROMPT),
+          help    = STRING_TOKEN(STR_LATENCY_CTRL_VALUE_HELP),
+            flags   = RESET_REQUIRED | DISPLAY_UINT_HEX,
+            minimum = 0,
+            maximum = 0x1023,
+            step    = 0,
+            default = 0, defaultstore = MyStandardDefault,
+            default = 0, defaultstore = MyManufactureDefault,
+          endnumeric;
+      endif;
+
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+    subtitle text = STRING_TOKEN(STR_C_STATE_LATENCY_CTRL_1);
+
+      oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.CStateLatencyCtrlValid[1],
+          prompt      = STRING_TOKEN(STR_LATENCY_CTRL_VALID1_PROMPT),
+          help        = STRING_TOKEN(STR_LATENCY_CTRL_VALID1_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+
+      suppressif ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.CStateLatencyCtrlValid[1] == 0;
+        numeric varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.CStateLatencyCtrlMultiplier[1],
+          prompt  = STRING_TOKEN(STR_LATENCY_CTRL_MULTIPLIER1_PROMPT),
+          help    = STRING_TOKEN(STR_LATENCY_CTRL_MULTIPLIER1_HELP),
+            flags   = RESET_REQUIRED | DISPLAY_UINT_HEX,
+            minimum = 0,
+            maximum = 0x7,
+            step    = 0,
+            default = 0, defaultstore = MyStandardDefault,
+            default = 0, defaultstore = MyManufactureDefault,
+          endnumeric;
+
+        numeric varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.CStateLatencyCtrlValue[1],
+          prompt  = STRING_TOKEN(STR_LATENCY_CTRL_VALUE1_PROMPT),
+          help    = STRING_TOKEN(STR_LATENCY_CTRL_VALUE1_HELP),
+            flags   = RESET_REQUIRED | DISPLAY_UINT_HEX,
+            minimum = 0,
+            maximum = 0x1023,
+            step    = 0,
+            default = 0, defaultstore = MyStandardDefault,
+            default = 0, defaultstore = MyManufactureDefault,
+          endnumeric;
+      endif;
+
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+    subtitle text = STRING_TOKEN(STR_C_STATE_LATENCY_CTRL_2);
+
+      oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.CStateLatencyCtrlValid[2],
+          prompt      = STRING_TOKEN(STR_LATENCY_CTRL_VALID2_PROMPT),
+          help        = STRING_TOKEN(STR_LATENCY_CTRL_VALID2_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+
+      suppressif ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.CStateLatencyCtrlValid[2] == 0;
+        numeric varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.CStateLatencyCtrlMultiplier[2],
+          prompt  = STRING_TOKEN(STR_LATENCY_CTRL_MULTIPLIER2_PROMPT),
+          help    = STRING_TOKEN(STR_LATENCY_CTRL_MULTIPLIER2_HELP),
+            flags   = RESET_REQUIRED | DISPLAY_UINT_HEX,
+            minimum = 0,
+            maximum = 0x7,
+            step    = 0,
+            default = 0, defaultstore = MyStandardDefault,
+            default = 0, defaultstore = MyManufactureDefault,
+          endnumeric;
+
+        numeric varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.CStateLatencyCtrlValue[2],
+          prompt  = STRING_TOKEN(STR_LATENCY_CTRL_VALUE2_PROMPT),
+          help    = STRING_TOKEN(STR_LATENCY_CTRL_VALUE2_HELP),
+            flags   = RESET_REQUIRED | DISPLAY_UINT_HEX,
+            minimum = 0,
+            maximum = 0x1023,
+            step    = 0,
+            default = 0, defaultstore = MyStandardDefault,
+            default = 0, defaultstore = MyManufactureDefault,
+          endnumeric;
+      endif;
+
+  endform; //end HLV SASV Control Form
+
+  //T State Control Form start
+  form formid = CPU_TSTATE_CONTROL_FORM_ID,
+  title = STRING_TOKEN(STR_CPU_T_STATE_CONTROL_FORM_TITLE);
+
+  subtitle text = STRING_TOKEN(STR_CPU_T_STATE_CONTROL_FORM_TITLE);
+  subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+    //
+    // T state
+    //
+    oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.TStateEnable,
+        prompt      = STRING_TOKEN(STR_ACPI_TSTATES_ENABLE),
+        help        = STRING_TOKEN(STR_ACPI_TSTATES_ENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE),  value = 0, flags = RESET_REQUIRED  | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),   value = 1, flags = RESET_REQUIRED;
+    endoneof;
+suppressif SMC_SETUP_STYLE;  //SMCPKG_SUPPORT S
+    suppressif ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.TStateEnable == 0;
+      oneof varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.OnDieThermalThrottling,
+        prompt      = STRING_TOKEN(STR_TT_DUTY_CYCLE),
+        help        = STRING_TOKEN(STR_TT_DUTY_CYCLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE),  value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_TT_DUTY_CYCLE_1),  value = 1, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_TT_DUTY_CYCLE_2),  value = 2, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_TT_DUTY_CYCLE_3),  value = 3, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_TT_DUTY_CYCLE_4),  value = 4, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_TT_DUTY_CYCLE_5),  value = 5, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_TT_DUTY_CYCLE_6),  value = 6, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_TT_DUTY_CYCLE_7),  value = 7, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_TT_DUTY_CYCLE_8),  value = 8, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_TT_DUTY_CYCLE_9),  value = 9, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_TT_DUTY_CYCLE_10),  value = 10, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_TT_DUTY_CYCLE_11),  value = 11, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_TT_DUTY_CYCLE_12),  value = 12, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_TT_DUTY_CYCLE_13),  value = 13, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_TT_DUTY_CYCLE_14),  value = 14, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_TT_DUTY_CYCLE_15),  value = 15, flags = RESET_REQUIRED;
+      endoneof;
+
+  endif;
+endif;        //SMCPKG_SUPPORT E
+  endform; //end T State form
+
+  //CPU Thermal Management form Start
+  form formid = CPU_THERMMAL_MANAGE_FORM_ID,
+  title = STRING_TOKEN(STR_CPU_THERMAL_MANAGE_FORM_TITLE);
+
+  subtitle text = STRING_TOKEN(STR_CPU_THERMAL_MANAGE_FORM_TITLE);
+  subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+      //T State Control Form Entry
+//SMCPKG_SUPPORT      goto CPU_TSTATE_CONTROL_FORM_ID,
+//SMCPKG_SUPPORT      prompt  = STRING_TOKEN(STR_CPU_T_STATE_CONTROL_FORM_TITLE),
+//SMCPKG_SUPPORT      help    = STRING_TOKEN(STR_CPU_T_STATE_CONTROL_FORM_HELP);
+
+      oneof varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.ProchotLock,
+        prompt      = STRING_TOKEN(STR_PROCHOT_LOCK),
+        help        = STRING_TOKEN(STR_PROCHOT_LOCK_HELP),
+        option text = STRING_TOKEN(STR_DISABLE),  value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+      endoneof;
+
+      // 4168664: changes to EnableProcHot bios knob to allow selection of all prochot modes
+      // ENABLE_BIDIR_PROCHOT - MSR 0x1FC Bit[0]
+      // DIS_PROCHOT_OUT  - MSR 0x1FC Bit[21]
+      oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.EnableProcHot,
+          prompt      = STRING_TOKEN(STR_PROC_HOT_ENABLE),
+          help        = STRING_TOKEN(STR_PROC_HOT_ENABLE_HELP),
+#if SMCPKG_SUPPORT  //SMCPKG_SUPPORT S
+          option text = STRING_TOKEN(STR_OUTPUT_ONLY),     value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_DISABLE),         value = 1, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_BIDIRECTIONAL),   value = 2, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_INPUT_ONLY),      value = 3, flags = RESET_REQUIRED;
+#else
+          option text = STRING_TOKEN(STR_OUTPUT_ONLY),     value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_DISABLE),         value = 1, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_BIDIRECTIONAL),   value = 2, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_INPUT_ONLY),      value = 3, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+#endif  //SMCPKG_SUPPORT E
+      endoneof;
+
+      oneof varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.EnableThermalMonitor,
+        prompt      = STRING_TOKEN(STR_THERMAL_MONITOR_PROMPT),
+        help        = STRING_TOKEN(STR_THERMAL_MONITOR_PROMPT_HELP),
+        option text = STRING_TOKEN(STR_DISABLE),  value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+      endoneof;
+
+      // PROCHOT_RATIO - CSR PROCHOT_RESPONSE_RATIO_CFG 1:30:2:0xB0 Bit[7:0]
+      numeric varid = SOCKET_POWERMANAGEMENT_CONFIGURATION.ProchotResponseRatio,
+        prompt      = STRING_TOKEN(STR_PROC_HOT_RESPONSE_RATIO),
+        help        = STRING_TOKEN(STR_PROC_HOT_RESPONSE_RATIO_HELP),
+        flags       = RESET_REQUIRED | DISPLAY_UINT_HEX,
+        minimum     = 0,
+        maximum     = 0xFF,
+        step        = 0,
+        default     = 0, defaultstore = MyStandardDefault, 
+        default     = 0, defaultstore = MyManufactureDefault,
+      endnumeric;
+
+      numeric varid = SOCKET_POWERMANAGEMENT_CONFIGURATION.TCCActivationOffset,
+        prompt      = STRING_TOKEN(STR_TCC_ACTIVATION_OFFSET_PROMPT),
+        help        = STRING_TOKEN(STR_TCC_ACTIVATION_OFFSET_PROMPT_HELP),
+        flags       = RESET_REQUIRED | DISPLAY_UINT_HEX,
+        minimum     = 0,
+        maximum     = 0xF,
+        step        = 0,
+        default     = 0, defaultstore = MyStandardDefault, 
+        default     = 0, defaultstore = MyManufactureDefault,
+      endnumeric;
+
+  endform; //end Thermal management form
+
+  //Advanced PM Tuning Form Entry Start
+  form formid = CPU_POWER_ADVANCED_CONFIG_FORM_ID,
+  title = STRING_TOKEN(STR_CPU_POWER_ADVANCED_CONFIG_TITLE);
+  subtitle text = STRING_TOKEN(STR_CPU_POWER_ADVANCED_CONFIG_TITLE);
+  subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+      goto ENERGY_PERF_BIAS_FORM_ID,
+      prompt  = STRING_TOKEN(STR_ENERGY_PERF_BIAS_FORM),
+      help    = STRING_TOKEN(STR_ENERGY_PERF_BIAS_FORM_HELP);
+
+      // Dynamic Power/Perf Disable SAPM Control - MSR 0x1FC Bit[22]
+      oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.SAPMControl,
+          prompt      = STRING_TOKEN(STR_SAPM_CTRL),
+          help        = STRING_TOKEN(STR_SAPM_CTRL_HELP),
+          option text = STRING_TOKEN(STR_ENABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_DISABLE),   value = 1, flags = RESET_REQUIRED;
+      endoneof;
+
+  endform;  //Advanced PM Tuning Form Entry end
+
+  //----------- Advanced PM Tuning Form Start
+    //Energy_PERF_BIAS Form Start
+    form formid = ENERGY_PERF_BIAS_FORM_ID,
+    title = STRING_TOKEN(STR_ENERGY_PERF_BIAS_FORM);
+    subtitle text = STRING_TOKEN(STR_ENERGY_PERF_BIAS_FORM);
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+#if (SMCPKG_SUPPORT == 0) || (SMC_SETUP_STYLE == 0)
+      grayoutif ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.ProcessorHWPMEnable == 2;  //if HWPM = OOB Mode
+        // Power Performance Tuning Configuration Mode - MSR 0x1FC [25]
+        oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.PwrPerfTuning,
+            prompt      = STRING_TOKEN(STR_PWR_PERF_TUNING),
+            help        = STRING_TOKEN(STR_PWR_PERF_TUNING_HELP),
+            option text = STRING_TOKEN(STR_PWR_PERF_OS_EPB),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_PWR_PERF_BIOS_EPB),   value = 1, flags = RESET_REQUIRED;
+        endoneof;
+      endif;
+#endif
+
+      grayoutif ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.PwrPerfTuning == 1  OR
+                ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.ProcessorHWPMEnable == 2;  //if HWPM = OOB Mode
+        oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.ProcessorOutofBandAlternateEPB,
+          prompt      = STRING_TOKEN(STR_PROCESSOR_PECI_PCS_EPB),
+          help        = STRING_TOKEN(STR_PROCESSOR_PECI_PCS_EPB_HELP),
+          option text = STRING_TOKEN(STR_PROCESSOR_EPB_OS_CTRL),   value = 0,  flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_PROCESSOR_EPB_PECI_CTRL),    value = 1,  flags = RESET_REQUIRED;
+        endoneof;
+      endif;
+
+#if (SMCPKG_SUPPORT == 0) || (SMC_SETUP_STYLE == 0)
+      grayoutif ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.PwrPerfTuning == 0;
+      // Once Power Performance Tuning Configuration Mode = 1, Use input from ENERGY_PERF_BIAS_CONFIG - MSR 0xA01 [6:3] = MSR 0x1B0 [6:3]
+      oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.AltEngPerfBIAS,
+        prompt      = STRING_TOKEN(STR_PWR_ENERGY_PERF),
+        help        = STRING_TOKEN(STR_PWR_ENERGY_PERF_HELP),
+//SMCPKG_SUPPORT - Start
+#if MAX_PERFORMANCE_OPTION
+        option text = STRING_TOKEN(STR_ENERGY_PERF_MODE_5),   value = 0x3, flags = RESET_REQUIRED;
+#endif
+//SMCPKG_SUPPORT - End
+        option text = STRING_TOKEN(STR_ENERGY_PERF_MODE_1),    value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENERGY_PERF_MODE_2),   value = 0x7, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENERGY_PERF_MODE_3),   value = 0x8, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENERGY_PERF_MODE_4),   value = 0xf, flags = RESET_REQUIRED;
+#if SmcOptimize_SUPPORT
+#if SMC_OPTIMIZE_SPECPOWER
+	option text = STRING_TOKEN(STR_ENERGY_PERF_MODE_SPECPOWER),   value = SMC_OPTIMIZE_SPECPOWER , flags = RESET_REQUIRED;
+#endif
+#if SMC_OPTIMIZE_CPU2006
+	option text = STRING_TOKEN(STR_ENERGY_PERF_MODE_CPU2006),   value =  SMC_OPTIMIZE_CPU2006, flags = RESET_REQUIRED;
+#endif
+#endif
+      endoneof;
+      endif;
+#endif
+
+      // Enable Power/Perf Dynamic Switching - MSR 0x1FC [24]
+      oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.PwrPerfSwitch,
+          prompt      = STRING_TOKEN(STR_PWR_PERF_SWITCH),
+          help        = STRING_TOKEN(STR_PWR_PERF_SWITCH_HELP),
+          option text = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+      endoneof;
+
+      // ENERGY_PERF_BIAS_CONFIG.WORKLD_CONFIG - MSR 0xA01 [2:0]
+      oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.WorkLdConfig,
+          prompt      = STRING_TOKEN(STR_WORKLD_CONFIG),
+          help        = STRING_TOKEN(STR_WORKLD_CONFIG_HELP),
+          option text = STRING_TOKEN(STR_WORKLD_CONFIG_BALANCED), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_IOSENES),                value = 2, flags = RESET_REQUIRED;   
+      endoneof;
+
+      // ENERGY_PERF_BIAS_CONFIG.AVG_TIME_WINDOW
+      numeric varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.EngAvgTimeWdw1,
+        prompt  = STRING_TOKEN(STR_AVG_TIME_WINDOW),
+        help    = STRING_TOKEN(STR_AVG_TIME_WINDOW_HELP),
+          flags   = RESET_REQUIRED | DISPLAY_UINT_HEX,
+          minimum = 0,
+          maximum = 0xFF,
+          step    = 0,
+          default = 0x17, defaultstore = MyStandardDefault,
+          default = 0x17, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+      // ENERGY_PERF_BIAS_CONFIG.P0_total_time_threshold_low
+      numeric varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.P0TtlTimeLow1,
+        prompt  = STRING_TOKEN(STR_P0_TOTALTIME_THSHLD_LOW),
+        help    = STRING_TOKEN(STR_P0_TOTALTIME_THSHLD_LOW_HELP),
+          flags   = RESET_REQUIRED | DISPLAY_UINT_HEX,
+          minimum = 0,
+        maximum = 0x3F,
+          step    = 0,
+        default = 0x23, defaultstore = MyStandardDefault,
+        default = 0x23, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+      // ENERGY_PERF_BIAS_CONFIG.P0_total_time_threshold_high
+      numeric varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.P0TtlTimeHigh1,
+        prompt  = STRING_TOKEN(STR_P0_TOTALTIME_THSHLD_HIGH),
+        help    = STRING_TOKEN(STR_P0_TOTALTIME_THSHLD_HIGH_HELP),
+          flags   = RESET_REQUIRED | DISPLAY_UINT_HEX,
+          minimum = 0,
+        maximum = 0x3F,
+          step    = 0,
+        default = 0x3a, defaultstore = MyStandardDefault,
+        default = 0x3a, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+    endform;  //end of Energy_PERF_BIAS Form
+
+    //Program PP0 Current Config Control Msr Form Start
+    form formid = PROG_MSR_PP_CURT_CFG_CTRL_FORM_ID,
+    title = STRING_TOKEN(STR_MSR_PP_CURT_CFG_CTRL_FORM);
+    subtitle text = STRING_TOKEN(STR_MSR_PP_CURT_CFG_CTRL_FORM);
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+      // PRIMARY_PLANE_CURRENT_CONFIG_CONTROL.CURRENT_LIMIT
+      oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.CurrentConfig,
+          prompt      = STRING_TOKEN(STR_CURRENT_CONFIG),
+          help        = STRING_TOKEN(STR_CURRENT_CONFIG_HELP),
+          option text = STRING_TOKEN(STR_DISABLE),   value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),    value = 1, flags = RESET_REQUIRED;
+      endoneof;
+
+      suppressif ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.CurrentConfig == 0;
+      numeric varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.CurrentLimit,
+          prompt  = STRING_TOKEN (STR_CURRENT_LIMIT),
+          help    = STRING_TOKEN (STR_CURRENT_LIMIT_HELP),
+          flags   = RESET_REQUIRED | DISPLAY_UINT_HEX,
+          minimum = 0,
+          maximum = 0x7F8,
+          step    = 0,
+          default = 0x0438, defaultstore = MyStandardDefault,
+          default = 0x0438, defaultstore = MyManufactureDefault,
+      endnumeric;
+      endif;
+
+      // PRIMARY_PLANE_CURRENT_CONFIG_CONTROL.LOCK
+      oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.PpcccLock,
+          prompt      = STRING_TOKEN(STR_PPCCCLOCK),
+          help        = STRING_TOKEN(STR_PPCCCLOCK_HELP),
+          option text = STRING_TOKEN(STR_DISABLE),   value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),    value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+      endoneof;
+
+    endform;  //end of Program PP0 Current Config Control Msr Form
+
+    //PSI Config Sub Form Statrt
+    form formid = PROG_MSR_PP_CURT_PSI_CONFIG_FORM_ID,
+    title = STRING_TOKEN(STR_MSR_PP_CURT_PSI_CONFIG_FORM);
+    subtitle text = STRING_TOKEN(STR_MSR_PP_CURT_PSI_CONFIG_FORM);
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+    endform;  //end of PSI Config Sub Form
+
+    //Program Entry Criteria CSR Form Start
+    form formid = PROG_ENTRY_CRITERIA_FORM_ID,
+    title = STRING_TOKEN(STR_ENTRY_CRITERIA_FORM);
+    subtitle text = STRING_TOKEN(STR_ENTRY_CRITERIA_FORM);
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+      oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.PkgCstEntryValCtl,
+        prompt      = STRING_TOKEN(STR_PKGCENTRYOVRD_VALCTL),
+        help        = STRING_TOKEN(STR_PKGCENTRYOVRD_VALCTL_HELP),
+        option text = STRING_TOKEN(STR_SKIP),   value = 0, flags = MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_MANUAL),   value = 1, flags = DEFAULT | RESET_REQUIRED;
+      endoneof;
+
+      grayoutif ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.PkgCstEntryValCtl == 0;
+      goto SOCKET0_PKGCENTRY_FORMID,
+      prompt  = STRING_TOKEN(STR_SOCKET_PKGCENTRY_0_FORM),
+      help    = STRING_TOKEN(STR_SOCKET_PKGCENTRY_HELP);
+
+#if MAX_SOCKET > 1
+      goto SOCKET1_PKGCENTRY_FORMID,
+      prompt  = STRING_TOKEN(STR_SOCKET_PKGCENTRY_1_FORM),
+      help    = STRING_TOKEN(STR_SOCKET_PKGCENTRY_HELP);
+#endif 
+#if MAX_SOCKET > 2   
+      goto SOCKET2_PKGCENTRY_FORMID,
+      prompt  = STRING_TOKEN(STR_SOCKET_PKGCENTRY_2_FORM),
+      help    = STRING_TOKEN(STR_SOCKET_PKGCENTRY_HELP);
+#endif 
+#if MAX_SOCKET > 3
+      goto SOCKET3_PKGCENTRY_FORMID,
+      prompt  = STRING_TOKEN(STR_SOCKET_PKGCENTRY_3_FORM),
+      help    = STRING_TOKEN(STR_SOCKET_PKGCENTRY_HELP);
+#endif 
+#if MAX_SOCKET > 4
+      goto SOCKET4_PKGCENTRY_FORMID,
+      prompt  = STRING_TOKEN(STR_SOCKET_PKGCENTRY_4_FORM),
+      help    = STRING_TOKEN(STR_SOCKET_PKGCENTRY_HELP);
+#endif 
+#if MAX_SOCKET > 5
+      goto SOCKET5_PKGCENTRY_FORMID,
+      prompt  = STRING_TOKEN(STR_SOCKET_PKGCENTRY_5_FORM),
+      help    = STRING_TOKEN(STR_SOCKET_PKGCENTRY_HELP);
+#endif 
+#if MAX_SOCKET > 6 
+      goto SOCKET6_PKGCENTRY_FORMID,
+      prompt  = STRING_TOKEN(STR_SOCKET_PKGCENTRY_6_FORM),
+      help    = STRING_TOKEN(STR_SOCKET_PKGCENTRY_HELP);
+#endif 
+#if MAX_SOCKET > 7
+      goto SOCKET7_PKGCENTRY_FORMID,
+      prompt  = STRING_TOKEN(STR_SOCKET_PKGCENTRY_7_FORM),
+      help    = STRING_TOKEN(STR_SOCKET_PKGCENTRY_HELP);
+#endif   
+
+    endif;  
+    endform;    //end of Program Entry Criteria CSR Form
+
+
+    //Program SWLTR Override CSR Form Start
+    form formid = PROG_CSR_SWLTROVRD_FORM_ID,
+    title = STRING_TOKEN(STR_PROG_CSR_SWLTROVRD_FORM);
+    subtitle text = STRING_TOKEN(STR_PROG_CSR_SWLTROVRD_FORM);
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+      // CSR_PCIE_ILTR_OVRD  (CSR 1:30:1:78)
+      // SW_LTR_OVRD (MSR 0xa02) -- not used
+      oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.SnpLatVld,
+          prompt      = STRING_TOKEN(STR_SNOOP_LATVALID_PROMPT),
+          help        = STRING_TOKEN(STR_SNOOP_LATVALID_PROMPT_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags =  RESET_REQUIRED;
+      endoneof;
+
+      oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.SnpLatOvrd,
+          prompt      = STRING_TOKEN(STR_SNOOP_LATOVRD_PROMPT),
+          help        = STRING_TOKEN(STR_SNOOP_LATOVRD_PROMPT_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+
+      numeric varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.SnpLatMult,
+          prompt      = STRING_TOKEN(STR_SNOOP_LATMULT_PROMPT),
+          help        = STRING_TOKEN(STR_SNOOP_LATMULT_PROMPT_HELP),
+              flags   = RESET_REQUIRED,
+              minimum = 0,
+              maximum = 7,
+              step    = 0,
+              default = 0, defaultstore = MyStandardDefault,
+              default = 0, defaultstore = MyManufactureDefault,
+      endnumeric;
+
+       numeric varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.SnpLatVal,
+          prompt      = STRING_TOKEN(STR_SNOOP_LATVAL_PROMPT),
+          help        = STRING_TOKEN(STR_SNOOP_LATVAL_PROMPT_HELP),
+          flags   = RESET_REQUIRED | DISPLAY_UINT_HEX,
+          minimum = 0,
+              maximum = 0x3FF,
+          step    = 0,
+              default = 0, defaultstore = MyStandardDefault,
+              default = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+      oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.NonSnpLatVld,
+          prompt      = STRING_TOKEN(STR_NONSNOOP_LATVALID_PROMPT),
+          help        = STRING_TOKEN(STR_NONSNOOP_LATVALID_PROMPT_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags =  RESET_REQUIRED;
+          endoneof;
+
+      oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.NonSnpLatOvrd,
+          prompt      = STRING_TOKEN(STR_NONSNOOP_LATOVRD_PROMPT),
+          help        = STRING_TOKEN(STR_NONSNOOP_LATOVRD_PROMPT_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+      numeric varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.NonSnpLatMult,
+          prompt      = STRING_TOKEN(STR_NONSNOOP_LATMULT_PROMPT),
+          help        = STRING_TOKEN(STR_NONSNOOP_LATMULT_PROMPT_HELP),
+              flags   = RESET_REQUIRED,
+              minimum = 0,
+              maximum = 7,
+              step    = 1,
+              default = 0, defaultstore = MyStandardDefault,
+              default = 0, defaultstore = MyManufactureDefault,
+          endnumeric;
+
+      numeric varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.NonSnpLatVal,
+          prompt      = STRING_TOKEN(STR_NONSNOOP_LATVAL_PROMPT),
+          help        = STRING_TOKEN(STR_NONSNOOP_LATVAL_PROMPT_HELP),
+              flags   = RESET_REQUIRED | DISPLAY_UINT_HEX,
+              minimum = 0,
+              maximum = 0x3FF,
+              step    = 1,
+              default = 0, defaultstore = MyStandardDefault,
+              default = 0, defaultstore = MyManufactureDefault,
+          endnumeric;
+    endform;    //end of Program SWLTR Override CSR Form
+
+    //Power Management Override Start
+    form formid = PROG_CSR_DYNAMIC_PERF_POWER_CTL_FORM_ID,
+    title = STRING_TOKEN(STR_CSR_DYNAMIC_PERF_POWER_CTL_FORM);
+    subtitle text = STRING_TOKEN(STR_CSR_DYNAMIC_PERF_POWER_CTL_FORM);
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+      // DYNAMIC_PERF_POWER_CTL.Uncore_Perf_PLimit_Override_Enable - CSR 1:30:2:64 Bit[20]
+      oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.UncrPerfPlmtOvrdEn,
+          prompt      = STRING_TOKEN(STR_UNCORE_PERF_PLIMIT_OVRD_EN),
+          help        = STRING_TOKEN(STR_UNCORE_PERF_PLIMIT_OVRD_EN_HELP),
+          option text = STRING_TOKEN(STR_DISABLE),   value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),    value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+      endoneof;
+
+      // DYNAMIC_PERF_POWER_CTL.EET_Override_Enable - CSR 1:10:2:64 Bit[18]
+      oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.EetOverrideEn,
+          prompt      = STRING_TOKEN(STR_EET_OVERRIDE_ENABLE),
+          help        = STRING_TOKEN(STR_EET_OVERRIDE_ENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE),   value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),    value = 1, flags = RESET_REQUIRED;
+      endoneof;
+
+      // DYNAMIC_PERF_POWER_CTL.IO_BW_PLimit_Override_Enable - CSR 1:30:2:64 Bit[15]
+      oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.IoBwPlmtOvrdEn,
+          prompt      = STRING_TOKEN(STR_IO_BW_PLIMIT_OVRD_EN),
+          help        = STRING_TOKEN(STR_IO_BW_PLIMIT_OVRD_EN_HELP),
+          option text = STRING_TOKEN(STR_DISABLE),   value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),    value = 1, flags = RESET_REQUIRED;
+      endoneof;
+
+/*
+      // DYNAMIC_PERF_POWER_CTL.IMC_APM_Override_Enable - CSR 1:30:2:64 Bit[10]
+      oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.ImcApmOvrdEn,
+          prompt      = STRING_TOKEN(STR_IMC_APM_OVERRIDE_ENABLE),
+          help        = STRING_TOKEN(STR_IMC_APM_OVERRIDE_ENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE),   value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),    value = 1, flags = RESET_REQUIRED;
+      endoneof;
+*/
+      // DYNAMIC_PERF_POWER_CTL.IOM_APM_Override_Enable - CSR 1:30:2:64 Bit[5]
+      oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.IomApmOvrdEn,
+          prompt      = STRING_TOKEN(STR_IOM_APM_OVERRIDE_ENABLE),
+          help        = STRING_TOKEN(STR_IOM_APM_OVERRIDE_ENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE),   value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),    value = 1, flags = RESET_REQUIRED;
+      endoneof;
+
+      // DYNAMIC_PERF_POWER_CTL.KTI_APM_Override_Enable - CSR 1:30:2:64 Bit[0]
+      oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.QpiApmOvrdEn,
+          prompt      = STRING_TOKEN(STR_KTI_APM_OVERRIDE_ENABLE),
+          help        = STRING_TOKEN(STR_KTI_APM_OVERRIDE_ENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE),   value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),    value = 1, flags = RESET_REQUIRED;
+      endoneof;
+
+    endform;    //end of Power Management Override Form
+
+    //Program SAPMCTL CSR Form Start
+    form formid = PROG_CSR_SAPMCTL_FORM_ID,
+    title = STRING_TOKEN(STR_PROG_CSR_SAPMCTL_FORM);
+    subtitle text = STRING_TOKEN(STR_PROG_CSR_SAPMCTL_FORM);
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+      goto SOCKET0_PKGCSAPM_FORMID,
+      prompt  = STRING_TOKEN(STR_SOCKET_PKGCSAPM_0_FORM),
+      help    = STRING_TOKEN(STR_SOCKET_PKGCSAPM_HELP);
+
+#if MAX_SOCKET > 1
+      goto SOCKET1_PKGCSAPM_FORMID,
+      prompt  = STRING_TOKEN(STR_SOCKET_PKGCSAPM_1_FORM),
+      help    = STRING_TOKEN(STR_SOCKET_PKGCSAPM_HELP);
+#endif 
+#if MAX_SOCKET > 2   
+      goto SOCKET2_PKGCSAPM_FORMID,
+      prompt  = STRING_TOKEN(STR_SOCKET_PKGCSAPM_2_FORM),
+      help    = STRING_TOKEN(STR_SOCKET_PKGCSAPM_HELP);
+#endif 
+#if MAX_SOCKET > 3
+      goto SOCKET3_PKGCSAPM_FORMID,
+      prompt  = STRING_TOKEN(STR_SOCKET_PKGCSAPM_3_FORM),
+      help    = STRING_TOKEN(STR_SOCKET_PKGCSAPM_HELP);
+#endif 
+#if MAX_SOCKET > 4
+      goto SOCKET4_PKGCSAPM_FORMID,
+      prompt  = STRING_TOKEN(STR_SOCKET_PKGCSAPM_4_FORM),
+      help    = STRING_TOKEN(STR_SOCKET_PKGCSAPM_HELP);
+#endif 
+#if MAX_SOCKET > 5
+      goto SOCKET5_PKGCSAPM_FORMID,
+      prompt  = STRING_TOKEN(STR_SOCKET_PKGCSAPM_5_FORM),
+      help    = STRING_TOKEN(STR_SOCKET_PKGCSAPM_HELP);
+#endif 
+#if MAX_SOCKET > 6 
+      goto SOCKET6_PKGCSAPM_FORMID,
+      prompt  = STRING_TOKEN(STR_SOCKET_PKGCSAPM_6_FORM),
+      help    = STRING_TOKEN(STR_SOCKET_PKGCSAPM_HELP);
+#endif 
+#if MAX_SOCKET > 7
+      goto SOCKET7_PKGCSAPM_FORMID,
+      prompt  = STRING_TOKEN(STR_SOCKET_PKGCSAPM_7_FORM),
+      help    = STRING_TOKEN(STR_SOCKET_PKGCSAPM_HELP);
+#endif   
+
+    endform;  //end of Program SAPMCTL CSR Form
+
+    //Program Perf_P_Limit Control CSR Form Start
+    form formid = PROG_CSR_PERF_P_LIMIT_FORM_ID,
+    title = STRING_TOKEN(STR_CSR_PERF_P_LIMIT_FORM);
+    subtitle text = STRING_TOKEN(STR_CSR_PERF_P_LIMIT_FORM);
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+      // PERF_P_LIMIT_CONTROL.PERF_PLIMIT_DIFFERENTIAL
+      numeric varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.PerfPlimitDifferential, 
+        prompt  = STRING_TOKEN (STR_PERF_PLIMIT_DIFFERENTIAL),
+        help    = STRING_TOKEN (STR_PERF_PLIMIT_DIFFERENTIAL_HELP),
+        flags   = RESET_REQUIRED,
+        minimum = 0,
+        maximum = 0x7,
+        step    = 0,
+        default = 0x1, defaultstore = MyStandardDefault,
+        default = 0x1, defaultstore = MyManufactureDefault,
+      endnumeric;      
+
+
+      // PERF_P_LIMIT_CONTROL.PERF_P_LIMIT_CLIP
+      numeric varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.PerfPLimitClipC, 
+        prompt  = STRING_TOKEN (STR_PERF_P_LIMIT_CLIP),
+        help    = STRING_TOKEN (STR_PERF_P_LIMIT_CLIP_HELP),
+        flags   = RESET_REQUIRED,
+        minimum = 0,
+        maximum = 0x1F,
+        step    = 0,
+        default = 0x1F, defaultstore = MyStandardDefault,
+        default = 0x1F, defaultstore = MyManufactureDefault,
+      endnumeric;
+
+      // PERF_P_LIMIT_CONTROL.PERF_P_LIMIT_THRESHOLD
+      numeric varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.PerfPLmtThshld, 
+        prompt  = STRING_TOKEN (STR_PERF_P_LIMIT_THRESHOLD),
+        help    = STRING_TOKEN (STR_PERF_P_LIMIT_THRESHOLD_HELP),
+        flags   = RESET_REQUIRED,
+        minimum = 0,
+        maximum = 0x1F,
+        step    = 0,
+        default = 0x0F, defaultstore = MyStandardDefault,
+        default = 0x0F, defaultstore = MyManufactureDefault,
+      endnumeric;      
+
+      // PERF_P_LIMIT_CONTROL.PERF_P_LIMIT_EN
+      oneof varid     = SOCKET_POWERMANAGEMENT_CONFIGURATION.PerfPLimitEn,
+          prompt      = STRING_TOKEN(STR_PERFPLIMITEN),
+          help        = STRING_TOKEN(STR_PERFPLIMITEN_HELP),
+          option text = STRING_TOKEN(STR_DISABLE),   value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),    value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;          
+      endoneof;
+
+    endform;    //end of Program Perf P Limit Control Csr Form
+
+  //----------- Advanced PM Tuning Form End
+
+  //----------- DRAM RAPL Form Start
+    //Program Dram Rapl Form Start
+    form formid = DRAM_RAPL_FORMID,
+    title = STRING_TOKEN(STR_DRAM_RAPL_FORM);
+    subtitle text = STRING_TOKEN(STR_DRAM_RAPL_FORM);
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+        numeric varid   = SOCKET_MEMORY_CONFIGURATION.BwLimitTfOvrd,
+          prompt   = STRING_TOKEN (STR_OVRDDRAMRAPLBWLIMITTF),
+          help     = STRING_TOKEN (STR_OVRDDRAMRAPLBWLIMITTF_HELP),
+          flags    = 0 | RESET_REQUIRED,
+          minimum  = 0,
+          maximum  = 16,    //
+          step     = 1,    //
+          default = 0, defaultstore = MyStandardDefault,
+          default = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        oneof varid   = SOCKET_MEMORY_CONFIGURATION.DramRaplExtendedRange,
+          prompt      = STRING_TOKEN(STR_DRAM_RAPL_EXTENDED_RANGE_PROMPT),
+          help        = STRING_TOKEN(STR_DRAM_RAPL_EXTENDED_RANGE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE),  value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),   value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         endoneof;
+        oneof varid   = SOCKET_MEMORY_CONFIGURATION.CmsEnableDramPm,
+          prompt      = STRING_TOKEN(STR_CMS_DRAM_PM_ENABLE_PROMPT),
+          help        = STRING_TOKEN(STR_CMS_DRAM_PM_ENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE),  value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),   value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+         endoneof;
+
+    endform;  //end of Program Dram Rapl Form
+  //----------- DRAM RAPL Form End
+
+    //----------- SOCKET RAPL Form Start
+    //Program Socket Rapl Form Start
+    form formid = SOCKET_RAPL_FORMID,
+    title = STRING_TOKEN(STR_SOCKET_RAPL_FORM);
+    subtitle text = STRING_TOKEN(STR_SOCKET_RAPL_FORM);
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+
+      // FAST_RAPL_NSTRIKE_PL2_DUTY_CYCLE
+        numeric varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.FastRaplDutyCycle,
+          prompt   = STRING_TOKEN (STR_FAST_RAPL_DUTY_CYCLE),
+          help     = STRING_TOKEN (STR_FAST_RAPL_DUTY_CYCLE_HELP),
+          flags    = 0 | RESET_REQUIRED,
+          minimum  = 0,
+          maximum  = 255,
+          step     = 1,
+          default = 64, defaultstore = MyStandardDefault,
+          default = 64, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+      // MSR_TURBO_POWER_LIMIT  0x610
+      // CSR_TURBO_POWER_LIMIT  1:30:0:0xe8
+      suppressif ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.ProcessorEistEnable == 0
+                          OR ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.TurboMode == 0;
+        oneof varid  = SOCKET_POWERMANAGEMENT_CONFIGURATION.TurboPowerLimitLock,
+            prompt   = STRING_TOKEN (STR_TURBO_PWR_LIMIT_LOCK),
+            help     = STRING_TOKEN (STR_TURBO_PWR_LIMIT_LOCK_HELP),
+            option text = STRING_TOKEN(STR_DISABLE),  value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+        oneof varid  = SOCKET_POWERMANAGEMENT_CONFIGURATION.TurboPowerLimitCsrLock,
+            prompt   = STRING_TOKEN (STR_TURBO_PWR_LIMIT_CSR_LOCK),
+            help     = STRING_TOKEN (STR_TURBO_PWR_LIMIT_CSR_LOCK_HELP),
+            option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        endoneof;
+
+        oneof varid  = SOCKET_POWERMANAGEMENT_CONFIGURATION.PowerLimit1En,
+            prompt   = STRING_TOKEN (STR_LONG_DUR_PWR_LIMIT_OVERRIDE),
+            help     = STRING_TOKEN (STR_LONG_DUR_PWR_LIMIT_OVERRIDE_HELP),
+            option text = STRING_TOKEN(STR_DISABLE),  value = 0, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        endoneof;
+       endif;
+
+       suppressif ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.ProcessorEistEnable == 0
+                       OR ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.TurboMode == 0
+                       OR  ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.PowerLimit1En == 0;
+          numeric varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.PowerLimit1Power,
+              prompt   = STRING_TOKEN (STR_LONG_DUR_PWR_LIMIT),
+              help     = STRING_TOKEN (STR_LONG_DUR_PWR_LIMIT_HELP),
+              flags    = 0 | RESET_REQUIRED,
+              minimum  = 0,
+              maximum  = 32767,    //
+              step     = 1,        // Stepping of 0 equates to a manual entering of a value,
+                                   // otherwise it will auto-increment with a left/right arrow
+              default = 0, defaultstore = MyStandardDefault,
+              default = 0, defaultstore = MyManufactureDefault,
+          endnumeric;
+
+          numeric varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.PowerLimit1Time,
+              prompt   = STRING_TOKEN (STR_LONG_DUR_TIME_WINDOW),
+              help     = STRING_TOKEN (STR_LONG_DUR_TIME_WINDOW_HELP),
+              flags    = 0 | RESET_REQUIRED,
+              minimum  = 0,
+              maximum  = 56,       //
+              step     = 1,        // Stepping of 0 equates to a manual entering of a value,
+                                   // otherwise it will auto-increment with a left/right arrow
+              default = 56, defaultstore = MyStandardDefault,   //SMCPKG_SUPPORT
+              default = 56, defaultstore = MyManufactureDefault,//SMCPKG_SUPPORT
+          endnumeric;
+
+//          oneof varid  = SOCKET_POWERMANAGEMENT_CONFIGURATION.PkgClmpLim1,
+//             prompt   = STRING_TOKEN (STR_PKG_CLMP_LIM_1),
+//             help     = STRING_TOKEN (STR_PKG_CLMP_LIM_1_HELP),
+//            option text = STRING_TOKEN(STR_LIMITP1_P0),       value = 0, flags = MANUFACTURING | RESET_REQUIRED;
+//             option text = STRING_TOKEN(STR_LIMIT_BELOW_P1),  value = 1, flags = DEFAULT | RESET_REQUIRED;
+//          endoneof;
+
+
+          oneof varid  = SOCKET_POWERMANAGEMENT_CONFIGURATION.PowerLimit2En,
+             prompt   = STRING_TOKEN (STR_SHORT_DUR_PWR_LIMIT_1),
+             help     = STRING_TOKEN (STR_SHORT_DUR_PWR_LIMIT_1_ENABLE_HELP),
+            option text = STRING_TOKEN(STR_DISABLE),  value = 0, flags = RESET_REQUIRED;
+             option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        endoneof;
+
+      endif;
+
+      suppressif ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.ProcessorEistEnable == 0
+                        OR ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.TurboMode == 0
+                        OR ideqval SOCKET_POWERMANAGEMENT_CONFIGURATION.PowerLimit2En == 0;
+          numeric varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.PowerLimit2Power,
+              prompt   = STRING_TOKEN (STR_SHORT_DUR_PWR_LIMIT),
+              help     = STRING_TOKEN (STR_SHORT_DUR_PWR_LIMIT_HELP),
+              flags    = 0 | RESET_REQUIRED,
+              minimum  = 0,
+              maximum  = 32767,    //
+              step     = 1,        // Stepping of 0 equates to a manual entering of a value,
+                                   // otherwise it will auto-increment with a left/right arrow
+              default = 0, defaultstore = MyStandardDefault,
+              default = 0, defaultstore = MyManufactureDefault,
+          endnumeric;
+
+//          oneof varid  = SOCKET_POWERMANAGEMENT_CONFIGURATION.PkgClmpLim2,
+//             prompt   = STRING_TOKEN (STR_PKG_CLMP_LIM_2),
+//             help     = STRING_TOKEN (STR_PKG_CLMP_LIM_2_HELP),
+//            option text = STRING_TOKEN(STR_LIMITP1_P0),       value = 0, flags = MANUFACTURING | RESET_REQUIRED;
+//             option text = STRING_TOKEN(STR_LIMIT_BELOW_P1),  value = 1, flags = DEFAULT | RESET_REQUIRED;
+//          endoneof;
+
+
+          numeric varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.PowerLimit2Time,
+              prompt   = STRING_TOKEN (STR_SHORT_DUR_TIME_WINDOW),
+              help     = STRING_TOKEN (STR_SHORT_DUR_TIME_WINDOW_HELP),
+              flags    = 0 | RESET_REQUIRED,
+              minimum  = 0,
+              maximum  = 56,       //
+              step     = 1,        // Stepping of 0 equates to a manual entering of a value,
+                                   // otherwise it will auto-increment with a left/right arrow
+              default = 56, defaultstore = MyStandardDefault,   //SMCPKG_SUPPORT
+              default = 56, defaultstore = MyManufactureDefault,//SMCPKG_SUPPORT
+          endnumeric;
+       endif;
+
+    endform;  //end of Socket Rapl Form
+  //----------- SOCKET RAPL Form End
+
+    //Program PMAX_CONFIG CSR Form Start
+    form formid = PROG_CSR_PMAX_CONFIG_FORM_ID,
+    title = STRING_TOKEN(STR_CSR_PMAX_CONFIG_FORM);
+    subtitle text = STRING_TOKEN(STR_CSR_PMAX_CONFIG_FORM);
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+//  Commenting out PMAX Offset Table Setup question - Causes issue with GBT XML Tool, Customer may re-enable as needed
+//    Hardcoded to Enabled, value 1, in PlatformCpuPolicy.c
+//      oneof varid  = SOCKET_POWERMANAGEMENT_CONFIGURATION.UsePmaxOffsetTable,
+//        prompt   = STRING_TOKEN (STR_PMAX_OFFSET_TABLE),
+//        help     = STRING_TOKEN (STR_PMAX_OFFSET_TABLE_HELP),
+//        option text = STRING_TOKEN(STR_DISABLE),  value = 0, flags = RESET_REQUIRED;
+//        option text = STRING_TOKEN(STR_ENABLE),   value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+//      endoneof;
+
+      oneof varid  = SOCKET_POWERMANAGEMENT_CONFIGURATION.PmaxSign,
+        prompt   = STRING_TOKEN (STR_PMAX_SIGN),
+        help     = STRING_TOKEN (STR_PMAX_SIGN_HELP),
+        option text = STRING_TOKEN(STR_POSITIVE),  value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_NEGATIVE),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+
+      numeric varid   = SOCKET_POWERMANAGEMENT_CONFIGURATION.PmaxOffset,
+        prompt  = STRING_TOKEN(STR_PMAX_CONFIG),
+        help    = STRING_TOKEN (STR_PMAX_CONFIG_HELP),
+        flags   = 0 | RESET_REQUIRED,
+        minimum = 0,
+        maximum = 0xF,
+        step    = 1,
+        default = 0x0, defaultstore = MyStandardDefault,
+        default = 0x0, defaultstore = MyManufactureDefault,
+      endnumeric;
+
+    endform;    //end of Program PPMAX_CONFIG Csr Form
+
+  //
+  //  CPU Socket 0  Form
+  //
+  form formid = SOCKET0_PKGCENTRY_FORMID,
+    title = STRING_TOKEN(STR_SOCKET_PKGCENTRY_0_FORM);
+
+    subtitle text = STRING_TOKEN(STR_SOCKET_PKGCENTRY_0_FORM);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+    #undef  INDEX
+    #define INDEX   0
+    #include "CpuPMEntryCriteriaSocketSetup.hfr"
+
+  endform;
+
+#if (MAX_SOCKET > 1)
+  //
+  //  CPU Socket 1  Form
+  //
+  form formid = SOCKET1_PKGCENTRY_FORMID,
+    title = STRING_TOKEN(STR_SOCKET_PKGCENTRY_1_FORM);
+
+    subtitle text = STRING_TOKEN(STR_SOCKET_PKGCENTRY_1_FORM);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+    #undef  INDEX
+    #define INDEX   1
+    #include "CpuPMEntryCriteriaSocketSetup.hfr"
+
+  endform;
+#endif
+#if (MAX_SOCKET > 2)
+  //
+  //  CPU Socket 2  Form
+  //
+  form formid = SOCKET2_PKGCENTRY_FORMID,
+    title = STRING_TOKEN(STR_SOCKET_PKGCENTRY_2_FORM);
+
+    subtitle text = STRING_TOKEN(STR_SOCKET_PKGCENTRY_2_FORM);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+    #undef  INDEX
+    #define INDEX   2
+    #include "CpuPMEntryCriteriaSocketSetup.hfr"
+
+  endform;
+#endif
+#if (MAX_SOCKET > 3)
+  //
+  //  CPU Socket 3  Form
+  //
+  form formid = SOCKET3_PKGCENTRY_FORMID,
+    title = STRING_TOKEN(STR_SOCKET_PKGCENTRY_3_FORM);
+
+    subtitle text = STRING_TOKEN(STR_SOCKET_PKGCENTRY_3_FORM);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+    #undef  INDEX
+    #define INDEX   3
+    #include "CpuPMEntryCriteriaSocketSetup.hfr"
+
+  endform;
+#endif
+#if (MAX_SOCKET > 4)
+  //
+  //  CPU Socket 4  Form
+  //
+  form formid = SOCKET4_PKGCENTRY_FORMID,
+    title = STRING_TOKEN(STR_SOCKET_PKGCENTRY_4_FORM);
+
+    subtitle text = STRING_TOKEN(STR_SOCKET_PKGCENTRY_4_FORM);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+    #undef  INDEX
+    #define INDEX   4
+    #include "CpuPMEntryCriteriaSocketSetup.hfr"
+
+  endform;
+#endif
+#if (MAX_SOCKET > 5)
+  //
+  //  CPU Socket 5  Form
+  //
+  form formid = SOCKET5_PKGCENTRY_FORMID,
+    title = STRING_TOKEN(STR_SOCKET_PKGCENTRY_5_FORM);
+
+    subtitle text = STRING_TOKEN(STR_SOCKET_PKGCENTRY_5_FORM);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+    #undef  INDEX
+    #define INDEX   5
+    #include "CpuPMEntryCriteriaSocketSetup.hfr"
+
+  endform;
+#endif
+#if (MAX_SOCKET > 6)
+  //
+  //  CPU Socket 6  Form
+  //
+  form formid = SOCKET6_PKGCENTRY_FORMID,
+    title = STRING_TOKEN(STR_SOCKET_PKGCENTRY_6_FORM);
+
+    subtitle text = STRING_TOKEN(STR_SOCKET_PKGCENTRY_6_FORM);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+    #undef  INDEX
+    #define INDEX   6
+    #include "CpuPMEntryCriteriaSocketSetup.hfr"
+
+  endform;
+#endif
+#if (MAX_SOCKET > 7)
+  //
+  //  CPU Socket 7  Form
+  //
+  form formid = SOCKET7_PKGCENTRY_FORMID,
+    title = STRING_TOKEN(STR_SOCKET_PKGCENTRY_7_FORM);
+
+    subtitle text = STRING_TOKEN(STR_SOCKET_PKGCENTRY_7_FORM);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+    #undef  INDEX
+    #define INDEX   7
+    #include "CpuPMEntryCriteriaSocketSetup.hfr"
+
+  endform;
+#endif
+
+  //
+  // Socket Level Control for SAPMCTL_CFG
+  //
+  //  CPU Socket 0  Form
+  //
+  form formid = SOCKET0_PKGCSAPM_FORMID,
+    title = STRING_TOKEN(STR_SOCKET_PKGCSAPM_0_FORM);
+
+    subtitle text = STRING_TOKEN(STR_SOCKET_PKGCSAPM_0_FORM);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+    #undef  INDEX
+    #define INDEX   0
+    #include "CpuPMSAPMSocketSetup.hfr"
+
+  endform;
+
+#if (MAX_SOCKET > 1)
+  //
+  //  CPU Socket 1  Form
+  //
+  form formid = SOCKET1_PKGCSAPM_FORMID,
+    title = STRING_TOKEN(STR_SOCKET_PKGCSAPM_1_FORM);
+
+    subtitle text = STRING_TOKEN(STR_SOCKET_PKGCSAPM_1_FORM);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+    #undef  INDEX
+    #define INDEX   1
+    #include "CpuPMSAPMSocketSetup.hfr"
+
+  endform;
+#endif
+#if (MAX_SOCKET > 2)
+  //
+  //  CPU Socket 2  Form
+  //
+  form formid = SOCKET2_PKGCSAPM_FORMID,
+    title = STRING_TOKEN(STR_SOCKET_PKGCSAPM_2_FORM);
+
+    subtitle text = STRING_TOKEN(STR_SOCKET_PKGCSAPM_2_FORM);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+    #undef  INDEX
+    #define INDEX   2
+    #include "CpuPMSAPMSocketSetup.hfr"
+
+  endform;
+#endif
+#if (MAX_SOCKET > 3)
+  //
+  //  CPU Socket 3  Form
+  //
+  form formid = SOCKET3_PKGCSAPM_FORMID,
+    title = STRING_TOKEN(STR_SOCKET_PKGCSAPM_3_FORM);
+
+    subtitle text = STRING_TOKEN(STR_SOCKET_PKGCSAPM_3_FORM);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+    #undef  INDEX
+    #define INDEX   3
+    #include "CpuPMSAPMSocketSetup.hfr"
+
+  endform;
+#endif
+#if (MAX_SOCKET > 4)
+  //
+  //  CPU Socket 4  Form
+  //
+  form formid = SOCKET4_PKGCSAPM_FORMID,
+    title = STRING_TOKEN(STR_SOCKET_PKGCSAPM_4_FORM);
+
+    subtitle text = STRING_TOKEN(STR_SOCKET_PKGCSAPM_4_FORM);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+    #undef  INDEX
+    #define INDEX   4
+    #include "CpuPMSAPMSocketSetup.hfr"
+
+  endform;
+#endif
+#if (MAX_SOCKET > 5)
+  //
+  //  CPU Socket 5  Form
+  //
+  form formid = SOCKET5_PKGCSAPM_FORMID,
+    title = STRING_TOKEN(STR_SOCKET_PKGCSAPM_5_FORM);
+
+    subtitle text = STRING_TOKEN(STR_SOCKET_PKGCSAPM_5_FORM);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+    #undef  INDEX
+    #define INDEX   5
+    #include "CpuPMSAPMSocketSetup.hfr"
+
+  endform;
+#endif
+#if (MAX_SOCKET > 6)
+  //
+  //  CPU Socket 6  Form
+  //
+  form formid = SOCKET6_PKGCSAPM_FORMID,
+    title = STRING_TOKEN(STR_SOCKET_PKGCSAPM_6_FORM);
+
+    subtitle text = STRING_TOKEN(STR_SOCKET_PKGCSAPM_6_FORM);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+    #undef  INDEX
+    #define INDEX   6
+    #include "CpuPMSAPMSocketSetup.hfr"
+
+  endform;
+#endif
+#if (MAX_SOCKET > 7)
+  //
+  //  CPU Socket 7  Form
+  //
+  form formid = SOCKET7_PKGCSAPM_FORMID,
+    title = STRING_TOKEN(STR_SOCKET_PKGCSAPM_7_FORM);
+
+    subtitle text = STRING_TOKEN(STR_SOCKET_PKGCSAPM_7_FORM);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+    #undef  INDEX
+    #define INDEX   7
+    #include "CpuPMSAPMSocketSetup.hfr"
+
+  endform;
+#endif
+

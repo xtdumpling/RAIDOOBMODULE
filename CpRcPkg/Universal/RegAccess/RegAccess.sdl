@@ -1,0 +1,60 @@
+TOKEN
+	Name  = "RegAccess_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling RegAccess support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "RegAccessPeim_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable RegAccessPeim support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "RegAccessPeim"
+	File  = "Pei\RegAccess.inf"
+	Package  = "CpRcPkg"
+	ModuleTypes  = "PEIM"
+	Token = "RegAccessPeim_SUPPORT" "=" "1"
+End
+
+FFS_FILE 
+    Name  = "RegAccessPeim"
+    FD_AREA  = "FV_BB"
+    INFComponent  = "RegAccessPeim"
+    Apriori_Index  = "2"
+    Token = "RegAccessPeim_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "RegAccessDxe"
+	File  = "Dxe\RegAccess.inf"
+	Package  = "CpRcPkg"
+	ModuleTypes  = "DXE_RUNTIME_DRIVER"
+End
+
+INFComponent
+	Name  = "RegAccessSMM"
+	File  = "Smm\RegAccessSMM.inf"
+	Package  = "CpRcPkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+End
+
+FFS_FILE
+	Name  = "RegAccessDxe"
+	FD_AREA  = "FV_MAIN"
+	INFComponent  = "CpRcPkg.RegAccessDxe"
+	Apriori_Index  = "1"
+End
+
+FFS_FILE
+	Name  = "RegAccessSMM"
+	FD_AREA  = "FV_MAIN"
+	INFComponent  = "CpRcPkg.RegAccessSMM"
+	Apriori_Index  = "1"
+End
+
+

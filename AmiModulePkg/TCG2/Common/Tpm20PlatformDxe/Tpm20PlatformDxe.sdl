@@ -1,0 +1,101 @@
+TOKEN
+    Name  = "Tpm20PlatformSupport"
+    Value  = "1"
+    Help  = "Enable or Disable TCG_generic support"
+    TokenType = Boolean
+    TargetH = Yes
+    TargetMAK = Yes
+    Master    = Yes
+End
+
+TOKEN
+	Name  = "TPM20_Measure_PCI_Oproms"
+	Value  = "1"
+	Help  = "token to determine if PCI Oproms are measured"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+    Name  = "Measure_CA_For_External_EFI_DRIVERS"
+    Value  = "0"
+    Help  = "Secure boot PCR 7 support requires CA for EFI Drivers should be measured before launched. Some O.S. might not yet support this requirement."
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "TPM20_MEASURE_PLATFORM_CONFIG_FUNCTION"
+    Value  = "Tpm20PlatformHashConfig"
+    Help    = "Function to measure platform configuration"
+    TokenType = Expression
+    TargetH = Yes
+End
+
+ELINK
+    Name  = "TpmFunctionCallFiles"
+    InvokeOrder = ReplaceParent
+End
+
+
+PATH
+    Name  = "TPM_20_PLATFORM_DXE_DIR"
+End
+
+MODULE
+    Help  = "Includes Setup.mak to Project"
+    File  = "Tpm20PlatformDxe.mak"
+End
+
+
+ELINK
+    Name  = "TPM2SETUPFUNCTIONS"
+    InvokeOrder = ReplaceParent
+End
+
+ELINK
+    Name  = "TPM2PPIFUNCTIONS"
+    InvokeOrder = ReplaceParent
+End
+
+ELINK
+    Name  = "TPM2PHAUTHFUNCTIONS"
+    InvokeOrder = ReplaceParent
+End
+
+ELINK
+    Name  = "HandleTpm20Setup,"
+    Parent  = "TPM2SETUPFUNCTIONS"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "HandleTpm20Ppi,"
+    Parent  = "TPM2PPIFUNCTIONS"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "ChangePlatformAuth,"
+    Parent  = "TPM2PHAUTHFUNCTIONS"
+    InvokeOrder = AfterParent
+End
+
+PATH
+    Name  = "TPM_20_PLATFORM_DXE_DIR"
+End
+
+MODULE
+    Help  = "Includes Tpm20PlatformDxe.mak to Project"
+    File  = "Tpm20PlatformDxe.mak"
+End
+INFComponent
+    Name  = "Tpm20PlatformDxe"
+    File  = "../../../../Build/Tpm20PlatformDxe.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_DRIVER"
+End

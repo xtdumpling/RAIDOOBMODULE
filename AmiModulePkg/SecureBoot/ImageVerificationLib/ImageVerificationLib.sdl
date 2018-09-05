@@ -1,0 +1,81 @@
+TOKEN
+    Name  = "ImageVerification_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable ImageVerification library support in Project"
+    TokenType = Boolean
+    TargetMAK = Yes
+    TargetH = Yes
+    Master = Yes
+End
+
+TOKEN
+    Name  = "ENABLE_IMAGE_EXEC_POLICY_OVERRIDE"
+    Value  = "0"
+    Help  = "Enable user override of Image Execution policy"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "ENABLE_IMAGE_EXEC_POLICY_OVERRIDE"
+    Value  = "1"
+    TokenType = Boolean
+    TargetH = Yes
+    Token = "DEBUG_MODE" "=" "1"
+End
+
+TOKEN
+    Name  = "LOAD_FROM_FV"
+    Value  = "0"
+    Help  = "Load image from Internal FV. Possible options:\0-ALWAYS_EXECUTE; 1-NEVER_EXECUTE; 2-ALLOW_EXECUTE_ON_SECURITY_VIOLATION;\3-DEFER_EXECUTE_ON_SECURITY_VIOLATION; 4-DENY_EXECUTE_ON_SECURITY_VIOLATION; 5-QUERY_USER_ON_SECURITY_VIOLATION"
+    TokenType = Integer
+    TargetH = Yes
+    Lock = Yes
+    Range    = "Supported options: 0"
+End
+
+TOKEN
+    Name  = "LOAD_FROM_OROM"
+    Value  = "4"
+    Help  = "Load image from Option ROM"
+    TokenType = Integer
+    TargetH = Yes
+    Range    = "Supported options: 3,4,5"
+End
+
+TOKEN
+    Name  = "LOAD_FROM_REMOVABLE_MEDIA"
+    Value  = "4"
+    Help  = "Load image from Removable Media"
+    TokenType = Integer
+    TargetH = Yes
+    Range    = "Supported options: 3,4,5"
+End
+
+TOKEN
+    Name  = "LOAD_FROM_FIXED_MEDIA"
+    Value  = "4"
+    Help  = "Load image from Fixed Media"
+    TokenType = Integer
+    TargetH = Yes
+    Range    = "Supported options: 3,4,5"
+End
+
+PATH
+    Name  = "ImageVerificationLib_DIR"
+    Help  = "Path to Crypto library Module in Project"
+End
+
+INFComponent
+    Name  = "ImageVerificationLib"
+    File  = "ImageVerificationLib.inf"
+    Package  = "AmiModulePkg"
+    Path  = "ImageVerificationLib_DIR"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiModulePkg.ImageVerificationLib"
+    Override = "MdeModulePkg.SecurityStubDxe"
+    ModuleTypes  = "DXE_DRIVER"
+End

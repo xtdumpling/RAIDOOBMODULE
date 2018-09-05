@@ -1,0 +1,410 @@
+//**********************************************************************
+//**                                                                  **
+//**         (C)Copyright 1993-2016 Supermicro Computer, Inc.         **
+//**                                                                  **
+//**********************************************************************
+//  File History
+//
+//  Rev. 1.03
+//    Bug Fix:  1. Add Admin/User Password install or not status.
+//              2. Hide User Password when Admin Password not set.
+//    Reason:   
+//    Auditor:  Kasber Chen (refer Naples)
+//    Date:     Jun/05/2017
+//
+//  Rev. 1.02
+//    Bug Fix:  Draft template v0.1.
+//    Reason:
+//    Auditor:  Jimmy Chiu
+//    Date:     Jan/17/2017
+//
+//  Rev. 1.01
+//    Bug Fix:  Draft template.
+//    Reason:
+//    Auditor:  Kasber Chen
+//    Date:     Nov/04/2016
+//
+//  Rev. 1.00
+//    Bug Fix:  Add Password Check setup item.
+//    Reason:
+//    Auditor:  Jacker 
+//    Date:     Oct/18/2016
+//
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
+
+/** @file
+ *   Setup data file that contains control that are dependent on the AMITSE emodule.
+ */
+#ifdef CONTROL_DEFINITION
+    #ifndef SEPERATOR
+    #define SEPERATOR\
+        subtitle\
+            text = STRING_TOKEN(STR_EMPTY);
+    #endif
+
+    #define LANGUAGE_SELECT\
+        suppressif ideqval LANGUAGE_CODES.Value == 0xFFFF;\
+            oneof varid   = LANGUAGE.Value,\
+                prompt    = STRING_TOKEN(STR_LANGUAGE_PROMPT),\
+                help      = STRING_TOKEN(STR_LANGUAGE_HELP),\
+                flags = 0,\
+                option text  = STRING_TOKEN(STR_EMPTY), value = 0, flags = 0;\
+                option text  = STRING_TOKEN(STR_EMPTY), value = 1, flags = 0;\
+                default = 0,\
+                default = 0, defaultstore = AmiMfgDefault,\
+            endoneof;\
+        endif;
+
+    #define AMI_ADMINISTRATOR_PASSWORD\
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;\
+            password varid = AMITSESETUP.AdminPassword,\
+                prompt = STRING_TOKEN(STR_ADMIN_PASSWORD),\
+                help = STRING_TOKEN(STR_ADMIN_PASSWORD_HELP),\
+                flags = 0,\
+                minsize = PASSWORD_MIN_SIZE,\
+                maxsize = PASSWORD_MAX_SIZE,\
+                encoding = 1,\
+            endpassword;\
+        endif;
+
+#if SMCPKG_SUPPORT
+    #define AMI_USER_PASSWORD\
+        suppressif ideqval AMITSESETUP.AdminPassword == 0;\
+        password varid = AMITSESETUP.UserPassword,\
+            prompt = STRING_TOKEN(STR_USER_PASSWORD),\
+            help = STRING_TOKEN(STR_USER_PASSWORD_HELP),\
+            flags = 0,\
+            minsize = PASSWORD_MIN_SIZE,\
+            maxsize = PASSWORD_MAX_SIZE,\
+            encoding = 1,\
+        endpassword;\
+        endif;
+#else
+    #define AMI_USER_PASSWORD\
+        password varid = AMITSESETUP.UserPassword,\
+            prompt = STRING_TOKEN(STR_USER_PASSWORD),\
+            help = STRING_TOKEN(STR_USER_PASSWORD_HELP),\
+            flags = 0,\
+            minsize = PASSWORD_MIN_SIZE,\
+            maxsize = PASSWORD_MAX_SIZE,\
+            encoding = 1,\
+        endpassword;
+#endif
+
+    #define QUIET_BOOT\
+        checkbox varid = AMITSESETUP.AMISilentBoot,\
+            prompt = STRING_TOKEN(STR_QUIET_BOOT),\
+            help = STRING_TOKEN(STR_QUIET_BOOT_HELP),\
+            flags = 0,\
+            key = 0,\
+            default = DEFAULT_QUIET_BOOT,\
+            default = DEFAULT_QUIET_BOOT, defaultstore = AmiMfgDefault,\
+        endcheckbox;
+
+    #define AMI_TSE_GROUP_DYNAMIC_PAGES\
+        suppressif ideqvallist DYNAMIC_PAGE_COUNT.PageCount == 0xFFFF;\
+            goto ADVANCED_MAIN,\
+                prompt = STRING_TOKEN(STR_EMPTY),\
+                help = STRING_TOKEN(STR_EMPTY);\
+        endif;
+
+    #define AMI_TSE_DRIVER_HEALTH_GOTO\
+        suppressif ideqvallist DRIVER_HEALTH_ENABLE.Enable == 0xFFFF;\
+            goto DRIVER_HEALTH_FORM,\
+                prompt = STRING_TOKEN(STR_DRV_HEALTH),\
+                help = STRING_TOKEN(STR_DRV_HEALTH_HELP);\
+        endif;
+
+    #define AMI_TSE_SAVE_AND_EXIT\
+        suppressif ideqval AMI_CALLBACK.Value == SAVE_AND_EXIT_VALUE;\
+            goto EXIT_MAIN,\
+                prompt = STRING_TOKEN(STR_SAVE_EXIT),\
+                help = STRING_TOKEN(STR_SAVE_EXIT_HELP);\
+        endif;
+
+    #define AMI_TSE_DISCARD_AND_EXIT\
+        suppressif ideqval AMI_CALLBACK.Value == DISCARD_AND_EXIT_VALUE;\
+            goto EXIT_MAIN,\
+                prompt = STRING_TOKEN(STR_DISCARD_EXIT),\
+                help = STRING_TOKEN(STR_DISCARD_EXIT_HELP);\
+        endif;
+
+    #define AMI_TSE_SAVE_AND_RESET\
+        suppressif ideqval AMI_CALLBACK.Value == SAVE_AND_RESET_VALUE;\
+            goto EXIT_MAIN,\
+                prompt = STRING_TOKEN(STR_SAVE_RESET),\
+                help = STRING_TOKEN(STR_SAVE_RESET_HELP);\
+        endif;
+
+    #define AMI_TSE_DISCARD_AND_RESET\
+        suppressif ideqval AMI_CALLBACK.Value == DISCARD_AND_RESET_VALUE;\
+            goto EXIT_MAIN,\
+                prompt = STRING_TOKEN(STR_DISCARD_RESET),\
+                help = STRING_TOKEN(STR_DISCARD_RESET_HELP);\
+        endif;
+
+    #define AMI_TSE_SAVE_IMMEDIATE\
+        suppressif ideqval AMI_CALLBACK.Value == SAVE_VALUE;\
+            goto EXIT_MAIN,\
+                prompt = STRING_TOKEN(STR_SAVE),\
+                help = STRING_TOKEN(STR_SAVE_HELP);\
+        endif;
+
+    #define AMI_TSE_DISCARD_IMMEDIATE\
+        suppressif ideqval AMI_CALLBACK.Value == DISCARD_VALUE;\
+            goto EXIT_MAIN,\
+                prompt = STRING_TOKEN(STR_DISCARD),\
+                help = STRING_TOKEN(STR_DISCARD_HELP);\
+        endif;
+
+    #define AMI_TSE_RESTORE_DEFAULTS\
+        suppressif ideqval AMI_CALLBACK.Value == RESTORE_DEFAULTS_VALUE;\
+            goto EXIT_MAIN,\
+                prompt = STRING_TOKEN(STR_RESTORE_DEFAULTS),\
+                help = STRING_TOKEN(STR_RESTORE_DEFAULTS_HELP);\
+        endif;
+
+    #define AMI_TSE_SAVE_USER_DEFAULTS\
+        suppressif ideqval AMI_CALLBACK.Value == SAVE_USER_DEFAULTS_VALUE;\
+            goto EXIT_MAIN,\
+                prompt = STRING_TOKEN(STR_SAVE_USER_DEFAULTS),\
+                help = STRING_TOKEN(STR_SAVE_USER_DEFAULTS_HELP);\
+        endif;
+
+    #define AMI_TSE_RESTORE_USER_DEFAULTS\
+        suppressif ideqval AMI_CALLBACK.Value == RESTORE_USER_DEFAULTS_VALUE;\
+            goto EXIT_MAIN,\
+                prompt = STRING_TOKEN(STR_RESTORE_USER_DEFAULTS),\
+                help = STRING_TOKEN(STR_RESTORE_USER_DEFAULTS_HELP);\
+        endif;
+#if SMCPKG_SUPPORT
+    #define SMC_PASSWORD_CHECK\
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;\
+            oneof varid   = AMITSESETUP.CheckPassword,\
+                prompt    = STRING_TOKEN(STR_SMC_PASSWORD_CHECK_MODE),\
+                help      = STRING_TOKEN(STR_SMC_PASSWORD_CHECK_HELP),\
+                option text = STRING_TOKEN(STR_SMC_PASSWORD_CHECK_SETUP), value = 0, flags = DEFAULT | RESET_REQUIRED;\
+                option text = STRING_TOKEN(STR_SMC_PASSWORD_CHECK_ALWAYS), value = 1, flags = RESET_REQUIRED;\
+            endoneof;\
+        endif;
+#endif//SMCPKG_SUPPORT
+#endif //CONTROL_DEFINITION
+
+#ifdef MAIN_FORM_SET
+    #ifdef FORM_SET_ITEM
+        suppressif SMC_SETUP_STYLE;	//SMCPKG_SUPPORT S
+        suppressif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_ADMIN;
+            text
+                help   = STRING_TOKEN(STR_EMPTY),
+                text   = STRING_TOKEN(STR_ACCESS_LEVEL),
+                text   = STRING_TOKEN(STR_ACCESS_USER);
+        endif;
+        
+        suppressif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+            text
+                help   = STRING_TOKEN(STR_EMPTY),
+                text   = STRING_TOKEN(STR_ACCESS_LEVEL),
+                text   = STRING_TOKEN(STR_ACCESS_ADMIN);
+        endif;
+        endif;	//SMCPKG_SUPPORT E
+    #endif //FORM_SET_ITEM
+    #ifdef FORM_SET_GOTO
+        suppressif SMC_SETUP_STYLE;	//SMCPKG_SUPPORT S
+        SEPERATOR
+        LANGUAGE_SELECT
+        endif;	//SMCPKG_SUPPORT E
+    #endif // FORM_SET_GOTO
+#endif //MAIN_FORM_SET
+
+#ifdef ADVANCED_FORM_SET
+    #ifdef FORM_SET_VARSTORE
+        #if SETUP_GROUP_DYNAMIC_PAGES
+            varstore DYNAMIC_PAGE_COUNT, key = DYNAMIC_PAGE_COUNT_KEY_ID,  
+                name = DynamicPageCount, guid = DYNAMIC_PAGE_COUNT_GUID;
+        #endif
+        
+        #if DRIVER_HEALTH_SUPPORT
+            varstore DRIVER_HEALTH_ENABLE, key = DRIVER_HEALTH_ENB_KEY_ID,
+                name = DriverHlthEnable, guid = AMITSE_DRIVER_HEALTH_ENB_GUID;
+
+            varstore DRIVER_HEALTH, key = DRIVER_HEALTH_KEY_ID,
+                name = DriverHealthCount, guid = AMITSE_DRIVER_HEALTH_GUID;
+
+            varstore DRIVER_HEALTH_CTRL_COUNT, key = DRIVER_HEALTH_CTRL_KEY_ID,
+                name = DrvHealthCtrlCnt, guid = AMITSE_DRIVER_HEALTH_CTRL_GUID;
+        #endif
+    #endif //FORM_SET_VARSTORE
+
+    #ifdef FORM_SET_GOTO
+        #if SETUP_GROUP_DYNAMIC_PAGES
+            AMI_TSE_GROUP_DYNAMIC_PAGES
+        #endif
+        #if DRIVER_HEALTH_SUPPORT
+            suppressif SMC_SETUP_STYLE;	//SMCPKG_SUPPORT S
+            AMI_TSE_DRIVER_HEALTH_GOTO
+            endif;	//SMCPKG_SUPPORT E
+        #endif //DRIVER_HEALTH_SUPPORT
+    #endif //FORM_SET_GOTO
+
+
+    #ifdef FORM_SET_FORM
+        #if DRIVER_HEALTH_SUPPORT
+            form formid = AUTO_ID (DRIVER_HEALTH_FORM),
+                title = STRING_TOKEN(STR_DRV_HEALTH);
+                
+                suppressif ideqvallist DRIVER_HEALTH.DrvHandleCount == 0xFFFF;
+                goto DRIVER_HEALTH_SUBFORM,
+                    prompt = STRING_TOKEN(STR_EMPTY),
+                    help = STRING_TOKEN(STR_DRV_HEALTH_HELP);
+                endif;
+            endform;
+
+            form formid = AUTO_ID (DRIVER_HEALTH_SUBFORM),
+                title = STRING_TOKEN(STR_DRV_HEALTH);
+
+                suppressif ideqvallist DRIVER_HEALTH_CTRL_COUNT.DrvHealthCtrlCnt == 0xFFFF;
+                    goto DRIVER_HEALTH_SUBFORM,
+                        prompt = STRING_TOKEN(STR_EMPTY),
+                        help = STRING_TOKEN(STR_DRV_HEALTH_HELP);
+                endif;
+            endform;
+        #endif //DRIVER_HEALTH_SUPPORT
+    #endif //FORM_SET_FORM
+#endif //ADVANCED_FORM_SET
+
+#ifdef SECURITY_FORM_SET
+    #ifdef FORM_SET_ITEM
+#if SMCPKG_SUPPORT
+        suppressif NOT ideqval AMITSESETUP.AdminPassword == 0;
+        text
+            help   = STRING_TOKEN(STR_EMPTY),
+            text   = STRING_TOKEN(STR_ADMIN_PASSWORD),
+            text   = STRING_TOKEN(STR_NOT_INSTALL);
+        endif;
+        suppressif ideqval AMITSESETUP.AdminPassword == 0;
+        text
+            help   = STRING_TOKEN(STR_EMPTY),
+            text   = STRING_TOKEN(STR_ADMIN_PASSWORD),
+            text   = STRING_TOKEN(STR_INSTALL);
+        endif;
+
+        suppressif NOT ideqval AMITSESETUP.UserPassword == 0;
+        text
+            help   = STRING_TOKEN(STR_EMPTY),
+            text   = STRING_TOKEN(STR_USER_PASSWORD),
+            text   = STRING_TOKEN(STR_NOT_INSTALL);
+        endif;
+        suppressif ideqval AMITSESETUP.UserPassword == 0;
+        text
+            help   = STRING_TOKEN(STR_EMPTY),
+            text   = STRING_TOKEN(STR_USER_PASSWORD),
+            text   = STRING_TOKEN(STR_INSTALL);
+        endif;
+        SEPERATOR
+#endif
+        subtitle
+            text = STRING_TOKEN(STR_SECURITY_BANNER_ONE);
+        SEPERATOR
+        subtitle
+            text = STRING_TOKEN(STR_SECURITY_BANNER_TWO);
+        subtitle
+            text = STRING_TOKEN(STR_SECURITY_BANNER_THREE);
+        subtitle
+            text = STRING_TOKEN(STR_SECURITY_BANNER_FOUR);
+        subtitle
+            text = STRING_TOKEN(STR_SECURITY_BANNER_FIVE);
+        subtitle
+            text = STRING_TOKEN(STR_SECURITY_BANNER_SIX);
+        subtitle
+            text = STRING_TOKEN(STR_SECURITY_BANNER_SEVEN);
+        subtitle
+            text = STRING_TOKEN(STR_SECURITY_BANNER_EIGHT);
+        subtitle
+            text = STRING_TOKEN(STR_SECURITY_BANNER_NINE);
+        subtitle
+            text = STRING_TOKEN(STR_SECURITY_BANNER_TEN);
+        text
+            help   = STRING_TOKEN(STR_EMPTY),
+            text   = STRING_TOKEN(STR_MIN_PASSWORD_LENGTH_NAME),
+            text   = STRING_TOKEN(STR_MIN_PASSWORD_LENGTH__VALUE);
+        text
+            help   = STRING_TOKEN(STR_EMPTY),
+            text   = STRING_TOKEN(STR_MAX_PASSWORD_LENGTH_NAME),
+            text   = STRING_TOKEN(STR_MAX_PASSWORD_LENGTH__VALUE);
+
+        SEPERATOR
+
+        AMI_ADMINISTRATOR_PASSWORD
+        AMI_USER_PASSWORD
+#if SMCPKG_SUPPORT        
+        SMC_PASSWORD_CHECK
+#endif        
+    #endif //FORM_SET_ITEM
+#endif //SECURITY_FORM_SET
+
+//SMCPKG_SUPPORT#ifdef BOOT_FORM_SET
+//SMCPKG_SUPPORT    #ifdef FORM_SET_ITEM
+//SMCPKG_SUPPORT        QUIET_BOOT
+//SMCPKG_SUPPORT    #endif
+//SMCPKG_SUPPORT#endif
+
+
+#ifdef EXIT_FORM_SET
+    #ifdef FORM_SET_ITEM
+        subtitle
+            text = STRING_TOKEN(STR_SAVE_TITLE);
+        
+#if SMCPKG_SUPPORT && SMC_SETUP_STYLE
+        AMI_TSE_DISCARD_AND_EXIT
+        AMI_TSE_SAVE_AND_RESET
+        AMI_TSE_SAVE_IMMEDIATE
+        AMI_TSE_DISCARD_IMMEDIATE
+#else
+        AMI_TSE_SAVE_AND_EXIT
+        AMI_TSE_DISCARD_AND_EXIT
+
+        SEPARATOR
+        
+        AMI_TSE_SAVE_AND_RESET
+        AMI_TSE_DISCARD_AND_RESET
+        
+        SEPARATOR
+
+        AMI_TSE_SAVE_IMMEDIATE
+        AMI_TSE_DISCARD_IMMEDIATE
+#endif
+
+        SEPARATOR
+
+        subtitle
+            text = STRING_TOKEN(STR_DEFAULTS_TITLE);
+        AMI_TSE_RESTORE_DEFAULTS
+        AMI_TSE_SAVE_USER_DEFAULTS
+        AMI_TSE_RESTORE_USER_DEFAULTS
+    #endif // FORM_SET_ITEM
+#endif //EXIT_FORM_SET
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************

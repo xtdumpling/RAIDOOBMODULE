@@ -1,0 +1,45 @@
+PATH
+	Name  = "DbgRxDebugSupportLib_DIR"
+	Path  = "AMIDebugRxPkg\AMIDebugRx\DbgRxDebugSupportLib"
+End
+
+INFComponent
+	Name  = "CommonDebugSupportLib"
+	File  = "CommonDebugSupportLib.inf"
+	Package  = "AMIDebugRx"
+	Arch  = "common"
+	Path  = "DbgRxDebugSupportLib_DIR"
+End
+
+INFComponent
+	Name  = "DbgRxDebugSupportLib"
+	File  = "DbgRxDebugSupportLib.inf"
+	Package  = "AMIDebugRx"
+	Arch  = "common"
+	Path  = "DbgRxDebugSupportLib_DIR"
+End
+
+LibraryMapping
+	Class  = "CommonDebugSupportLib"
+	Instance  = "AMIDebugRx.CommonDebugSupportLib"
+End
+
+LibraryMapping
+	Class  = "DbgRxDebugSupportLib"
+	Instance  = "AMIDebugRx.DbgRxDebugSupportLib"
+End
+
+INFComponent
+	Name  = "DbgRxEndOfPeiLib"
+	File  = "DbgRxEndOfPeiLib.inf"
+	Package  = "AMIDebugRx"
+	Arch  = "common"
+	Path  = "DbgRxDebugSupportLib_DIR"
+	Token = "DBG_ENDOFPEI_CALLBACK_SUPPORT" "=" "0"
+End
+
+LibraryMapping
+	Class  = "DbgRxEndOfPeiLib"
+	Instance  = "AMIDebugRx.DbgRxEndOfPeiLib"
+	Token = "DBG_ENDOFPEI_CALLBACK_SUPPORT" "=" "0"
+End

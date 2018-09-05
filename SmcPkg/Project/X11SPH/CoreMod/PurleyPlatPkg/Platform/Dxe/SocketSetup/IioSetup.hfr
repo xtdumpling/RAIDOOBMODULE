@@ -1,0 +1,3444 @@
+//***************************************************************************
+//**                                                                       **
+//**       (C)Copyright 1993-2016 Supermicro Computer, Inc.                **
+//**                                                                       **
+//**                                                                       **
+//***************************************************************************
+//***************************************************************************
+//
+//  Rev. 1.03
+//    Bug Fix:  Draft template v0.1.
+//    Reason:   
+//    Auditor:  Jimmy Chiu
+//    Date:     Jan/18/2017
+//
+//  Rev. 1.02
+//    Bug Fix:  Enable Intel(R) VT for Directed I/O (VT-d) by default.
+//    Reason:   
+//    Auditor:  Isaac Hsu
+//    Date:     Dec/23/2016
+//
+//  Rev. 1.01
+//    Bug Fix:  Draft template.
+//    Reason:   
+//    Auditor:  Kasber Chen
+//    Date:     Dec/16/2016
+//
+//  Rev. 1.00
+//    Bug Fix:  Set PCIE ASPM default to disable.
+//    Reason:   intel sighting 313
+//    Auditor:  Kasber Chen
+//    Date:     Nov/21/2016
+//
+//***************************************************************************
+//
+// This file contains an 'Intel Peripheral Driver' and is
+// licensed for Intel CPUs and chipsets under the terms of your
+// license agreement with Intel or your vendor.  This file may
+// be modified by the user, subject to additional terms of the
+// license agreement
+//
+// *++
+//
+// Copyright (c) 1999 - 2016 Intel Corporation. All rights reserved
+// This software and associated documentation (if any) is furnished
+// under a license and may only be used or copied in accordance
+// with the terms of the license. Except as permitted by such
+// license, no part of this software or documentation may be
+// reproduced, stored in a retrieval system, or transmitted in any
+// form or by any means without the express written consent of
+// Intel Corporation.
+//
+//
+// Module Name:
+//
+//   IioSetup.hfr
+//
+// Abstract:
+//
+//   Iio Setup formset.
+//
+// Revision History:
+//
+// --*/
+
+#include <IioSetupDefinitions.h>
+
+// APTIOV_SERVER_OVERRIDE_RC_START : Set default value based on AMI PCI 4G decode SDL options.
+#include "Token.h"
+// APTIOV_SERVER_OVERRIDE_RC_END : Set default value based on AMI PCI 4G decode SDL options.
+  form formid = VFR_FORMID_IIO,
+      title   = STRING_TOKEN(STR_IIO_TITLE);
+
+    subtitle text = STRING_TOKEN(STR_IIO_CONFIG_FORM_TITLE);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+//SMCPKG_SUPPORT S
+    oneof varid = SOCKET_IIO_CONFIGURATION.DFXEnable,
+        prompt  = STRING_TOKEN(STR_DFX_ENABLE_PROMPT),
+        help    = STRING_TOKEN(STR_DFX_ENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE),     value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),      value = 1, flags = RESET_REQUIRED;
+    endoneof;
+//SMCPKG_SUPPORT E
+    //
+    // Jump to IIO Configuration Form
+    //
+    suppressif TRUE;
+    checkbox varid    = SOCKET_IIO_CONFIGURATION.IioPresent[0],
+             prompt   = STRING_TOKEN(STR_NULL_IIO0PRES_STRING),
+             help     = STRING_TOKEN(STR_NULL_STRING),
+             // Flags behavior for checkbox is overloaded so that it equals
+             // a DEFAULT value.  1 = ON, 0 = off
+             flags    = CHECKBOX_DEFAULT | CHECKBOX_DEFAULT_MFG,
+    endcheckbox;
+    endif;
+
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.IioPresent[0] == 0;
+    goto VFR_FORMID_IIO0,
+        prompt  = STRING_TOKEN(STR_IIO0_CONFIG_FORM_TITLE),
+        help    = STRING_TOKEN(STR_NULL_STRING);
+     endif;
+
+#if NUMBER_CPU_SOCKETS > 1 //#if MAX_SOCKET > 1 //SMCPKG_SUPPORT
+    suppressif TRUE;
+    checkbox varid    = SOCKET_IIO_CONFIGURATION.IioPresent[1],
+             prompt   = STRING_TOKEN(STR_NULL_IIO1PRES_STRING),
+             help     = STRING_TOKEN(STR_NULL_STRING),
+             // Flags behavior for checkbox is overloaded so that it equals
+             // a DEFAULT value.  1 = ON, 0 = off
+             flags    = CHECKBOX_DEFAULT | CHECKBOX_DEFAULT_MFG,
+    endcheckbox;
+    endif;
+
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.IioPresent[1] == 0;
+      goto VFR_FORMID_IIO1,
+          prompt  = STRING_TOKEN(STR_IIO1_CONFIG_FORM_TITLE),
+          help    = STRING_TOKEN(STR_NULL_STRING);
+     endif;
+
+#endif
+#if NUMBER_CPU_SOCKETS > 2 //#if MAX_SOCKET > 2 //SMCPKG_SUPPORT
+    suppressif TRUE;
+    checkbox varid    = SOCKET_IIO_CONFIGURATION.IioPresent[2],
+             prompt   = STRING_TOKEN(STR_NULL_IIO2PRES_STRING),
+             help     = STRING_TOKEN(STR_NULL_STRING),
+             // Flags behavior for checkbox is overloaded so that it equals
+             // a DEFAULT value.  1 = ON, 0 = off
+             flags    = CHECKBOX_DEFAULT | CHECKBOX_DEFAULT_MFG,
+    endcheckbox;
+    endif;
+
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.IioPresent[2] == 0;
+      goto VFR_FORMID_IIO2,
+          prompt  = STRING_TOKEN(STR_IIO2_CONFIG_FORM_TITLE),
+          help    = STRING_TOKEN(STR_NULL_STRING);
+     endif;
+
+#endif
+#if NUMBER_CPU_SOCKETS > 3 //#if MAX_SOCKET > 3 //SMCPKG_SUPPORT
+    suppressif TRUE;
+    checkbox varid    = SOCKET_IIO_CONFIGURATION.IioPresent[3],
+             prompt   = STRING_TOKEN(STR_NULL_IIO3PRES_STRING),
+             help     = STRING_TOKEN(STR_NULL_STRING),
+             // Flags behavior for checkbox is overloaded so that it equals
+             // a DEFAULT value.  1 = ON, 0 = off
+             flags    = CHECKBOX_DEFAULT | CHECKBOX_DEFAULT_MFG,
+    endcheckbox;
+    endif;
+
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.IioPresent[3] == 0;
+      goto VFR_FORMID_IIO3,
+          prompt  = STRING_TOKEN(STR_IIO3_CONFIG_FORM_TITLE),
+          help    = STRING_TOKEN(STR_NULL_STRING);
+     endif;
+#endif
+
+    //
+    // Jump to IOAT Configuration From
+    goto VFR_FORMID_IOAT_CONFIG,
+        prompt  = STRING_TOKEN(STR_IIO_IOAT_FORM),
+        help    = STRING_TOKEN(STR_IIO_IOAT_FORM_HELP);
+
+    suppressif SMC_SETUP_STYLE;  //SMCPKG_SUPPORT S
+    //
+    // Jump to IIO Configuration Form
+    //
+    goto VFR_FORMID_IIO_CONFIG,
+        prompt  = STRING_TOKEN(STR_IIO_GENERAL_CONFIG_FORM_TITLE),
+        help    = STRING_TOKEN(STR_IIO_GENERAL_CONFIG_FORM_HELP);
+
+    endif;      //SMCPKG_SUPPORT E
+    //
+    // Jump to each PCI-E slot oprom Form
+    //
+    // APTIOV_SERVER_OVERRIDE_RC_START : Suppress unwanted setup form
+    suppressif TRUE;
+    goto VFR_FORMID_IIO_PCIE_SLOT,
+        prompt  = STRING_TOKEN(STR_IIO_PCIE_SLOT_FORM_TITLE),
+        help    = STRING_TOKEN(STR_IIO_PCIE_SLOT_FORM_HELP);
+    endif;
+    // APTIOV_SERVER_OVERRIDE_RC_END : Suppress unwanted setup form
+    //
+    // Jump to VT-d Form
+    //
+    suppressif TRUE;
+
+    checkbox varid    = SOCKET_IIO_CONFIGURATION.VtdAcsWa,
+             prompt   = STRING_TOKEN(STR_NULL_VTDACS_STRING),
+             help     = STRING_TOKEN(STR_NULL_STRING),
+             // Flags behavior for checkbox is overloaded so that it equals
+             // a DEFAULT value.  1 = ON, 0 = off
+             flags    = CHECKBOX_DEFAULT | CHECKBOX_DEFAULT_MFG,
+    endcheckbox;
+
+    endif;
+
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.VtdAcsWa == 0x0;
+    goto VFR_FORMID_VTD,
+        prompt  = STRING_TOKEN(STR_IIO_VTD_CFG_FORM_TITLE),
+        help    = STRING_TOKEN(STR_IIO_VTD_CFG_FORM_HELP);
+     endif;
+
+    goto VFR_FORMID_VMD,
+        prompt  = STRING_TOKEN(STR_IIO_VMD_CFG_FORM_TITLE),
+        help    = STRING_TOKEN(STR_IIO_VMD_CFG_FORM_HELP);
+    
+    suppressif SMC_SETUP_STYLE;  //SMCPKG_SUPPORT S
+    goto VFR_FORMID_PCIEAIC,
+        prompt  = STRING_TOKEN(STR_IIO_PCIEAIC_CFG_FORM_TITLE),
+        help    = STRING_TOKEN(STR_IIO_PCIEAIC_CFG_FORM_HELP);
+ 
+    goto VFR_FORMID_IIO_DFX_CONFIG,
+        prompt  = STRING_TOKEN(STR_IIO_DFX_CFG_FORM_TITLE),
+        help    = STRING_TOKEN(STR_IIO_DFX_CFG_FORM_HELP);
+    endif;      //SMCPKG_SUPPORT E
+    
+    //PCI Express Global Options start
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+    subtitle text = STRING_TOKEN(STR_PCIE_GLOBAL_OPTIONS);
+    subtitle text = STRING_TOKEN(STR_DOUBLE_LINE);
+
+      //
+      // PCI 64-Bit Resource Allocation Support
+      //
+      // APTIOV_SERVER_OVERRIDE_RC_START : Suppress control to use Above4GDecode from AMI PCI bus driver
+      suppressif TRUE;
+      oneof varid     = SOCKET_IIO_CONFIGURATION.Pci64BitResourceAllocation,
+          prompt      = STRING_TOKEN(STR_PCI_64BIT_RESOURCE_ALLOCATION_PROMPT),
+          help        = STRING_TOKEN(STR_PCI_64BIT_RESOURCE_ALLOCATION_HELP),
+// APTIOV_SERVER_OVERRIDE_RC_START : Set default value based on AMI PCI 4G decode SDL options.
+#if (ABOVE_4G_PCI_DECODE & ABOVE_4G_PCI_DECODE_DEFAULT_VALUE)
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+#else
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+#endif
+// APTIOV_SERVER_OVERRIDE_RC_END : Set default value based on AMI PCI 4G decode SDL options.
+      endoneof;
+      endif;
+      // APTIOV_SERVER_OVERRIDE_RC_END : Suppress control to use Above4GDecode from AMI PCI bus driver
+
+      suppressif SMC_SETUP_STYLE;  //SMCPKG_SUPPORT S
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieBiosTrainEnable,
+          prompt  = STRING_TOKEN(STR_PCIE_BIOS_TRAIN_PCIE),
+          help    = STRING_TOKEN(STR_PCIE_BIOS_TRAIN_PCIE_HELP),
+          option text = STRING_TOKEN(STR_NO),       value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_YES),      value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+      endoneof;
+
+
+    oneof varid     = SOCKET_IIO_CONFIGURATION.PcieHotPlugEnable,
+            prompt          = STRING_TOKEN(STR_PCIE_HOTPLUG_ENABLE_PROMPT),
+            help            = STRING_TOKEN(STR_PCIE_HOTPLUG_ENABLE_HELP),
+            option text     = STRING_TOKEN(STR_DISABLE),             value = 0x00, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+            option text     = STRING_TOKEN(STR_ENABLE),              value = 0x01, flags = RESET_REQUIRED;
+            option text     = STRING_TOKEN(STR_AUTO),                value = 0x02, flags = RESET_REQUIRED;
+            option text     = STRING_TOKEN(STR_MANUAL),              value = 0x03, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid = SOCKET_IIO_CONFIGURATION.PcieAcpiHotPlugEnable,
+      prompt      = STRING_TOKEN(STR_PCIE_ACPI_HOTPLUG_ENABLE_PROMPT),
+      help        = STRING_TOKEN(STR_PCIE_ACPI_HOTPLUG_ENABLE_HELP),
+      option text = STRING_TOKEN(STR_DISABLE),  value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+      option text = STRING_TOKEN(STR_ENABLE),   value = 1, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_PER_PORT), value = 2, flags = RESET_REQUIRED;
+    endoneof;
+
+    //
+    // MultiCast Configuration
+    //
+    oneof varid = SOCKET_IIO_CONFIGURATION.MultiCastEnable,
+        prompt  = STRING_TOKEN(STR_MULTICAST_ENABLE_PROMPT),
+        help    = STRING_TOKEN(STR_MULTICAST_ENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE),     value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),      value = 1, flags = RESET_REQUIRED;
+    endoneof;
+
+
+    //
+    // MultiCast Base Address Selection
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.MultiCastEnable == 0;
+      //
+      // MC_BASE_ADDRESS range selection choice: above 4G or below
+      //
+      oneof varid = SOCKET_IIO_CONFIGURATION.McastBaseAddrRegion,
+          prompt  = STRING_TOKEN(STR_MCAST_BASEADDRESS_REGION),
+          help    = STRING_TOKEN(STR_MCAST_BASEADDRESS_REGION_HELP),
+          option text = STRING_TOKEN(STR_AUTO), value = 0,  flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_LOW_4G),  value = 1,  flags = RESET_REQUIRED;
+      //option text = STRING_TOKEN(STR_ABOVE_4G), value = 2,  flags = RESET_REQUIRED;
+     endoneof;
+
+     //
+     // MC_INDEX_POSITION selection choice
+     //
+     oneof varid = SOCKET_IIO_CONFIGURATION.McastIndexPosition,
+          prompt  = STRING_TOKEN(STR_MC_INDEX_POSITION),
+          help    = STRING_TOKEN(STR_MC_INDEX_POSITION_HELP),
+          option text = STRING_TOKEN(STR_MC_INDEX_POS_12), value = 0xC,  flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_MC_INDEX_POS_20), value = 0x14,  flags = RESET_REQUIRED;
+     endoneof;
+
+     //
+     // MC_NUM_GROUP selection. Actual programmed value in register is (Num_Group-1)
+     //
+     oneof varid = SOCKET_IIO_CONFIGURATION.McastNumGroup,
+          prompt  = STRING_TOKEN(STR_MCAST_NUM_GROUP),
+          help    = STRING_TOKEN(STR_MCAST_NUM_GROUP_HELP),
+          option text = STRING_TOKEN(STR_MC_NUM_GROUP_1), value = 0x1,  flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_MC_NUM_GROUP_8), value = 0x8,  flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_MC_NUM_GROUP_32),value = 0x20, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_MC_NUM_GROUP_64),value = 0x40, flags = RESET_REQUIRED;
+     endoneof;
+
+    endif;
+
+
+  //
+  // 4927752: PERFCTRLSTS_0_IIO_PCIE_EG.nosnoopoprden=0.
+  //
+    oneof varid    = SOCKET_IIO_CONFIGURATION.NoSnoopRdCfg,
+            prompt   = STRING_TOKEN(STR_NOSNOOP_RD_PROMPT),
+            help     = STRING_TOKEN(STR_NOSNOOP_RD_HELP),
+            option text = STRING_TOKEN(STR_DISABLE),      value = 0,  flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+            option text = STRING_TOKEN(STR_ENABLE),       value = 1,  flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid    = SOCKET_IIO_CONFIGURATION.NoSnoopWrCfg,
+            prompt   = STRING_TOKEN(STR_NOSNOOP_WR_PROMPT),
+            help     = STRING_TOKEN(STR_NOSNOOP_WR_HELP),
+            option text = STRING_TOKEN(STR_DISABLE),      value = 0,  flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_ENABLE),       value = 1,  flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+    endoneof;
+    oneof varid    = SOCKET_IIO_CONFIGURATION.MaxReadCompCombSize,
+            prompt   = STRING_TOKEN(STR_MAXREADCOMPCOMBSIZE_PROMPT),
+            help     = STRING_TOKEN(STR_MAXREADCOMPCOMBSIZE_HELP),
+            option text     = STRING_TOKEN(STR_MAXREADCOMPCOMBSIZE_MINIMUM),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+            option text     = STRING_TOKEN(STR_MAXREADCOMPCOMBSIZE_MAXIMUM),    value = 1, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid     = SOCKET_IIO_CONFIGURATION.ProblematicPort,
+            prompt          = STRING_TOKEN(STR_PCIE_PROBLEMATIC_PORT_PROMPT),
+            help            = STRING_TOKEN(STR_PCIE_PROBLEMATIC_PORT_HELP),
+            option text     = STRING_TOKEN(STR_DISABLE),            value = 0x0000, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+            option text     = STRING_TOKEN(STR_NP_PROBLEMATIC),     value = 0x0001, flags = RESET_REQUIRED;
+            option text     = STRING_TOKEN(STR_P_PROBLEMATIC),      value = 0x0002, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid     = SOCKET_IIO_CONFIGURATION.DmiAllocatingFlow,
+            prompt          = STRING_TOKEN(STR_DMI_ALLOC_FLOW_PROMPT),
+            help            = STRING_TOKEN(STR_DMI_ALLOC_FLOW_HELP),
+            option text     = STRING_TOKEN(STR_NON_ALLOCATING_WRITES),      value = 0x0000, flags = RESET_REQUIRED;
+            option text     = STRING_TOKEN(STR_ALLOCATING_WRITES),          value = 0x0001, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+    endoneof;
+
+    oneof varid     = SOCKET_IIO_CONFIGURATION.PcieAllocatingFlow,
+            prompt          = STRING_TOKEN(STR_PCIE_ALLOC_FLOW_PROMPT),
+            help            = STRING_TOKEN(STR_PCIE_ALLOC_FLOW_HELP),
+            option text     = STRING_TOKEN(STR_NON_ALLOCATING_WRITES),      value = 0x0000, flags = RESET_REQUIRED;
+            option text     = STRING_TOKEN(STR_ALLOCATING_WRITES),          value = 0x0001, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+    endoneof;
+
+
+    oneof varid    = SOCKET_IIO_CONFIGURATION.HaltOnDmiDegraded,
+            prompt   = STRING_TOKEN(STR_HALT_ON_DMI),
+            help     = STRING_TOKEN(STR_HALT_ON_DMI_HELP),
+            option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
+            option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid     = SOCKET_IIO_CONFIGURATION.RxClockWA,
+          prompt          = STRING_TOKEN(STR_RXCLK_WA_EN),
+          help            = STRING_TOKEN(STR_RXCLK_WA_EN_HELP),
+          option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
+          option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+    endoneof;
+
+
+    oneof varid     = SOCKET_IIO_CONFIGURATION.GlobalPme2AckTOCtrl,
+          prompt          = STRING_TOKEN(STR_IIO_PME2ACK_TIMEOUT_PROMPT),
+          help            = STRING_TOKEN(STR_IIO_PME2ACK_TIMEOUT_PROMPT_HELP),
+          option text = STRING_TOKEN(STR_IIO_1MS),        value = 0,  flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_IIO_10MS),       value = 1,  flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_IIO_50MS),       value = 2,  flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_IIO_TEST_MODE),  value = 3,  flags = RESET_REQUIRED;
+    endoneof;
+    oneof varid = SOCKET_IIO_CONFIGURATION.MctpEn,
+        prompt  = STRING_TOKEN(STR_IIO_MCTP_EN),
+        help    = STRING_TOKEN(STR_IIO_MCTP_EN_HELP),
+        option text = STRING_TOKEN(STR_DISABLE),      value = 0,  flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLE),       value = 1,  flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+    endoneof;
+
+    oneof varid     = SOCKET_IIO_CONFIGURATION.PCUF6Hide,
+        prompt      = STRING_TOKEN(STR_PCUF6HIDE),
+        help        = STRING_TOKEN(STR_PCUF6HIDE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE),  value = 0,  flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLE),   value = 1,  flags = RESET_REQUIRED;
+    endoneof;
+    oneof varid     = SOCKET_IIO_CONFIGURATION.EN1K,
+        prompt      = STRING_TOKEN(STR_EN1K),
+        help        = STRING_TOKEN(STR_EN1K_HELP),
+        option text = STRING_TOKEN(STR_DISABLE),  value = 0,  flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLE),   value = 1,  flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid     = SOCKET_IIO_CONFIGURATION.DualCvIoFlow,
+        prompt      = STRING_TOKEN(STR_DUAL_CV_IO_FLOW),
+        help        = STRING_TOKEN(STR_DUAL_CV_IO_FLOW_HELP),
+        option text = STRING_TOKEN(STR_DISABLE),  value = 0,  flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLE),   value = 1,  flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+    endoneof;
+
+    oneof varid     = SOCKET_IIO_CONFIGURATION.CoherentReadPart,
+        prompt      = STRING_TOKEN(STR_COHERENTRDPART),
+        help        = STRING_TOKEN(STR_COHERENTRD_HELP),
+        option text = STRING_TOKEN(STR_RDCURR),    value = 0,  flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_PRD),       value = 1,  flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid     = SOCKET_IIO_CONFIGURATION.CoherentReadFull,
+        prompt      = STRING_TOKEN(STR_COHERENTRDFULL),
+        help        = STRING_TOKEN(STR_COHERENTRD_HELP),
+        option text = STRING_TOKEN(STR_RDCURR),    value = 0,  flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_PRD),       value = 1,  flags = RESET_REQUIRED;
+    endoneof;
+    endif;      //SMCPKG_SUPPORT E
+
+      //
+      // HSD 4165823: Completion Timeout Global
+      //
+      oneof varid = SOCKET_IIO_CONFIGURATION.CompletionTimeoutGlobal,
+          prompt  = STRING_TOKEN(STR_IIO_COMPLETION_TIMEOUT_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_COMPLETION_TIMEOUT_HELP),
+          option text = STRING_TOKEN(STR_YES),  value = 1, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_NO),   value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_PER_PORT), value = 2, flags = RESET_REQUIRED;
+      endoneof;
+
+    //
+    // Completion Timeout Value
+    //
+    suppressif SMC_SETUP_STYLE;  //SMCPKG_SUPPORT S
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.CompletionTimeoutGlobal == 1 OR ideqval SOCKET_IIO_CONFIGURATION.CompletionTimeoutGlobal == 2 ;
+      oneof varid = SOCKET_IIO_CONFIGURATION.CompletionTimeoutGlobalValue,
+          prompt  = STRING_TOKEN(STR_IIO_COMPLETION_TIMEOUT_VALUE_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_COMPLETION_TIMEOUT_VALUE_HELP),
+          option text = STRING_TOKEN(STR_50US_10MS),    value = 0,  flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_16MS_55MS),    value = 5,  flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_65MS_210MS),   value = 6,  flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_260MS_900MS),  value = 9,  flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_1S_3_5S),      value = 10, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_4S_13S),       value = 13, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_17S_64S),      value = 14, flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    //
+    // HSD 4165822: PCI-E Global ASPM Support
+    //
+    oneof varid = SOCKET_IIO_CONFIGURATION.PcieGlobalAspm,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_ASPM_PROMPT_G),
+        help    = STRING_TOKEN(STR_PCIE_GLOBAL_ASPM_HELP),
+#if SMCPKG_SUPPORT
+        option text = STRING_TOKEN(STR_DISABLE),      value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_PER_PORT),     value = 1, flags = RESET_REQUIRED;
+#else
+        option text = STRING_TOKEN(STR_DISABLE),      value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_PER_PORT),     value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+#endif
+        option text = STRING_TOKEN(STR_L1_ONLY),      value = 2, flags = RESET_REQUIRED;
+    endoneof;
+    
+      oneof varid = SOCKET_IIO_CONFIGURATION.StopAndScream,
+          prompt  = STRING_TOKEN(STR_PCIE_STOP_AND_SCREAM_PROMPT),
+          help    = STRING_TOKEN(STR_PCIE_STOP_AND_SCREAM_HELP),
+          option text = STRING_TOKEN(STR_DISABLE),      value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_ENABLE),       value = 1, flags = RESET_REQUIRED;
+      endoneof;
+
+    numeric varid = SOCKET_IIO_CONFIGURATION.SnoopResponseHoldOff,
+      prompt       = STRING_TOKEN(STR_SNOOP_RESP_PROMT),
+      help         = STRING_TOKEN(STR_SNOOP_RESP_HELP),
+      flags        = RESET_REQUIRED | DISPLAY_UINT_HEX,
+      minimum      = 0,
+      maximum      = 0xF,
+      step         = 0, 
+      default      = 0x9, defaultstore = MyStandardDefault,
+      default      = 0x9, defaultstore = MyManufactureDefault,
+    endnumeric;
+    
+      oneof varid     = SOCKET_IIO_CONFIGURATION.PCIe_LTR,
+          prompt      = STRING_TOKEN(STR_PCI_LTR_PROMPT),
+          help        = STRING_TOKEN(STR_PCI_LTR_HELP),
+          option text = STRING_TOKEN(STR_DISABLE),        value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),         value = 1, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_AUTO),           value = 2, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+      endoneof;
+           
+      oneof varid   = SOCKET_IIO_CONFIGURATION.PcieExtendedTagField,
+          prompt      = STRING_TOKEN(STR_PCIE_EXTENDED_TAG_PROMPT),
+          help        = STRING_TOKEN(STR_EXTENDED_TAG_HELP),
+          option text = STRING_TOKEN(STR_AUTO),           value = 2, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_DISABLE),        value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),         value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+      endoneof;
+
+      oneof varid   = SOCKET_IIO_CONFIGURATION.PCIe_AtomicOpReq,
+          prompt        = STRING_TOKEN(STR_PCI_ATOMICOP_PROMPT),
+          help          = STRING_TOKEN(STR_PCI_ATOMICOP_HELP),
+          option text   = STRING_TOKEN(STR_DISABLE),        value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text   = STRING_TOKEN(STR_ENABLE),         value = 1, flags = RESET_REQUIRED;
+      endoneof;
+
+     //
+     // PCIe Max Read Request Size
+     //
+      oneof varid     = SOCKET_IIO_CONFIGURATION.PcieMaxReadRequestSize,
+            prompt      = STRING_TOKEN(STR_PCIE_PORT_MAX_READ_REQUEST_SIZE_PROMPT),
+            help        = STRING_TOKEN(STR_PCIE_PORT_MAX_READ_REQUEST_HELP),
+            option text = STRING_TOKEN(STR_PCIE_MRRS_AUTO),    value = 7, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+            option text = STRING_TOKEN(STR_PCIE_MRRS_128B),    value = 0, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_PCIE_MRRS_256B),    value = 1, flags = RESET_REQUIRED; 
+            option text = STRING_TOKEN(STR_PCIE_MRRS_512B),    value = 2, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_PCIE_MRRS_1024B),   value = 3, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_PCIE_MRRS_2048B),   value = 4, flags = RESET_REQUIRED;
+            option text = STRING_TOKEN(STR_PCIE_MRRS_4096B),   value = 5, flags = RESET_REQUIRED;
+     endoneof;
+
+    oneof varid     = SOCKET_IIO_CONFIGURATION.PcieRelaxedOrdering,
+      prompt          = STRING_TOKEN(STR_PCIE_RELAXED_ORDERING_PROMPT),
+      help            = STRING_TOKEN(STR_PCIE_RELAXED_ORDERING_HELP),
+      option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+      option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+    endoneof;
+    
+    oneof varid     = SOCKET_IIO_CONFIGURATION.PciePhyTestMode,
+      prompt          = STRING_TOKEN(STR_PCIE_PHY_TEST_MODE_PROMPT),
+      help            = STRING_TOKEN(STR_PCIE_PHY_TEST_MODE_HELP),
+      option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+      option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+    endoneof;
+    endif;      //SMCPKG_SUPPORT E
+    
+  endform;
+
+
+  form formid = VFR_FORMID_IIO0,
+      title   = STRING_TOKEN(STR_IIO0_TITLE);
+      suppressif  ideqval SOCKET_IIO_CONFIGURATION.PcieBiosTrainEnable == 0x00;
+
+      oneof varid = SOCKET_IIO_CONFIGURATION.ConfigIOU0[0],
+          prompt  = STRING_TOKEN(STR_PCIE_IOU0_PROMPT_0),
+          help    = STRING_TOKEN(STR_PCIE_IOUX_HELP_PROMPT),
+          option text = STRING_TOKEN(STR_X4X4X4X4), value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X4X4X8),   value = 1, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X8X4X4),   value = 2, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X8X8),     value = 3, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X16),      value = 4, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_AUTO),     value = 0xFF, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+      endoneof;
+
+      oneof varid = SOCKET_IIO_CONFIGURATION.ConfigIOU1[0],
+          prompt  = STRING_TOKEN(STR_PCIE_IOU1_PROMPT_0),
+          help    = STRING_TOKEN(STR_PCIE_IOUX_HELP_PROMPT),
+          option text = STRING_TOKEN(STR_X4X4X4X4), value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X4X4X8),   value = 1, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X8X4X4),   value = 2, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X8X8),     value = 3, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X16),      value = 4, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_AUTO),     value = 0xFF, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+      endoneof;
+
+      oneof varid = SOCKET_IIO_CONFIGURATION.ConfigIOU2[0],
+          prompt  = STRING_TOKEN(STR_PCIE_IOU2_PROMPT_0),
+          help    = STRING_TOKEN(STR_PCIE_IOUX_HELP_PROMPT),
+          option text = STRING_TOKEN(STR_X4X4X4X4), value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X4X4X8),   value = 1, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X8X4X4),   value = 2, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X8X8),     value = 3, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X16),      value = 4, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_AUTO),     value = 0xFF, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;          
+      endoneof;
+
+      suppressif X11SPH_SUPPORT;	//X11SPH_SUPPORT S
+      oneof varid = SOCKET_IIO_CONFIGURATION.ConfigMCP0[0],
+          prompt  = STRING_TOKEN(STR_PCIE_MCP0_PROMPT_0),
+          help    = STRING_TOKEN(STR_PCIE_IOUX_HELP_PROMPT),
+          option text = STRING_TOKEN(STR_X16),      value = 4, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_AUTO),     value = 0xFF, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.ConfigMCP1[0],
+          prompt  = STRING_TOKEN(STR_PCIE_MCP1_PROMPT_0),
+          help    = STRING_TOKEN(STR_PCIE_IOUX_HELP_PROMPT),
+          option text = STRING_TOKEN(STR_X16),      value = 4, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_AUTO),     value = 0xFF, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+      endoneof;
+      endif;	//X11SPH_SUPPORT E
+    endif;
+      //
+      // Completion Timeout
+      //
+      suppressif SMC_SETUP_STYLE;  //SMCPKG_SUPPORT S
+      oneof varid = SOCKET_IIO_CONFIGURATION.CompletionTimeout[0],
+          prompt  = STRING_TOKEN(STR_IIO_COMPLETION_TIMEOUT_PROMPT_0),
+          help    = STRING_TOKEN(STR_IIO_COMPLETION_TIMEOUT_HELP),
+          option text = STRING_TOKEN(STR_NO),   value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_YES),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+
+    //
+    // Completion Timeout Value
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.CompletionTimeout[0] == 1;
+      oneof varid = SOCKET_IIO_CONFIGURATION.CompletionTimeoutValue[0],
+          prompt  = STRING_TOKEN(STR_IIO_COMPLETION_TIMEOUT_VALUE_PROMPT_0),
+          help    = STRING_TOKEN(STR_IIO_COMPLETION_TIMEOUT_VALUE_HELP),
+          option text = STRING_TOKEN(STR_50US_10MS),    value = 0,  flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_16MS_55MS),    value = 5,  flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_65MS_210MS),   value = 6,  flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_260MS_900MS),  value = 9,  flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_1S_3_5S),      value = 10, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_4S_13S),       value = 13, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_17S_64S),      value = 14, flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+   oneof varid     = SOCKET_IIO_CONFIGURATION.RpCorrectableErrorEsc[0],
+          prompt          = STRING_TOKEN(STR_RP_CORRECTABLE_ERR),
+          help            = STRING_TOKEN(STR_RP_CORRECTABLE_ERR_HELP),
+          option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid     = SOCKET_IIO_CONFIGURATION.RpUncorrectableNonFatalErrorEsc[0],
+          prompt          = STRING_TOKEN(STR_RP_UNCORRECTABLE_ERR_NONFATAL),
+          help            = STRING_TOKEN(STR_RP_UNCORRECTABLE_ERR_NONFATAL_HELP),
+          option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid     = SOCKET_IIO_CONFIGURATION.RpUncorrectableFatalErrorEsc[0],
+          prompt          = STRING_TOKEN(STR_RP_UNCORRECTABLE_ERR_FATAL),
+          help            = STRING_TOKEN(STR_RP_UNCORRECTABLE_ERR_FATAL_HELP),
+          option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+    endoneof;
+    endif;      //SMCPKG_SUPPORT E
+
+    //
+    // Jump to PCI Express Port0 Configuration Form
+    //
+    suppressif TRUE;
+      checkbox varid    = SOCKET_IIO_CONFIGURATION.HidePEXPMenu[0],
+          prompt   = STRING_TOKEN(STR_PCIE_PORT_0_NULL_PROMPT),
+          help     = STRING_TOKEN(STR_NULL_STRING),
+          // Flags behavior for checkbox is overloaded so that it equals
+          // a DEFAULT value.  1 = ON, 0 = off
+          flags    = 0,
+      endcheckbox;
+    endif;
+
+    suppressif X11SPH_SUPPORT;	//X11SPH_SUPPORT S
+    goto VFR_FORMID_PCIE_IIO0P0,
+      prompt  = STRING_TOKEN(STR_PCIE_PORT_0_PROMPT),
+      help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;	//X11SPH_SUPPORT E
+
+    //
+    // Jump to PCI Express Port1 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[1]==1;
+      goto VFR_FORMID_PCIE_IIO0P1,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_1_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port2 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[2]==1;
+      goto VFR_FORMID_PCIE_IIO0P2,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_2_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port3 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[3]==1;
+      goto VFR_FORMID_PCIE_IIO0P3,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_3_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    suppressif X11SPH_SUPPORT;	//X11SPH_SUPPORT S
+    //
+    // Jump to PCI Express Port4 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[4]==1;
+      goto VFR_FORMID_PCIE_IIO0P4,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_4_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+    endif;	//X11SPH_SUPPORT E
+
+    suppressif X11SPH_SUPPORT;	//X11SPH_SUPPORT S
+    //
+    // Jump to PCI Express Port5 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[5]==1;
+      goto VFR_FORMID_PCIE_IIO0P5,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_5_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+    endif;	//X11SPH_SUPPORT E
+    //
+    // Jump to PCI Express Port6 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[6]==1;
+      goto VFR_FORMID_PCIE_IIO0P6,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_6_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port7 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[7]==1;
+      goto VFR_FORMID_PCIE_IIO0P7,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_7_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port8 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[8]==1;
+      goto VFR_FORMID_PCIE_IIO0P8,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_8_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+    //
+    // Jump to PCI Express Port9 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[9]==1;
+      goto VFR_FORMID_PCIE_IIO0P9,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_9_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port10 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[10]==1;
+      goto VFR_FORMID_PCIE_IIO0P10,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_10_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+    //
+    // Jump to PCI Express Port11 Configuration Form
+    //
+//X11SPH_SUPPORT    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[11]==1;
+      goto VFR_FORMID_PCIE_IIO0P11,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_11_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+//X11SPH_SUPPORT    endif;
+    
+    //
+    // Jump to PCI Express Port12 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[12]==1;
+      goto VFR_FORMID_PCIE_IIO0P12,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_12_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+    
+    suppressif X11SPH_SUPPORT;	//X11SPH_SUPPORT S
+    //
+    // Jump to PCI Express Port13 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[13]==1;
+      goto VFR_FORMID_PCIE_IIO0P13,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_13_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+    
+    //
+    // Jump to PCI Express Port14 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[14]==1;
+      goto VFR_FORMID_PCIE_IIO0P14,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_14_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+    
+    //
+    // Jump to PCI Express Port15 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[15]==1;
+      goto VFR_FORMID_PCIE_IIO0P15,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_14_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port16 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[16]==1;
+      goto VFR_FORMID_PCIE_IIO0P16,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_16_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;     
+
+    //
+    // Jump to PCI Express Port17 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[17]==1;
+      goto VFR_FORMID_PCIE_IIO0P17,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_17_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port18 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[18]==1;
+      goto VFR_FORMID_PCIE_IIO0P18,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_18_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port19 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[19]==1;
+      goto VFR_FORMID_PCIE_IIO0P19,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_19_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port20 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[20]==1;
+      goto VFR_FORMID_PCIE_IIO0P20,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_20_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+    endif;	//X11SPH_SUPPORT E
+  endform;
+
+
+ //------------- Second IIO ---------------------------------------------------------------------------------------//
+
+  form formid = VFR_FORMID_IIO1,
+      title   = STRING_TOKEN(STR_IIO1_TITLE);
+
+#if (MAX_SOCKET > 1)
+      suppressif  ideqval SOCKET_IIO_CONFIGURATION.PcieBiosTrainEnable == 0x00;
+
+      oneof varid = SOCKET_IIO_CONFIGURATION.ConfigIOU0[1],
+          prompt  = STRING_TOKEN(STR_PCIE_IOU0_PROMPT_1),
+          help    = STRING_TOKEN(STR_PCIE_IOUX_HELP_PROMPT),
+          option text = STRING_TOKEN(STR_X4X4X4X4), value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X4X4X8),   value = 1, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X8X4X4),   value = 2, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X8X8),     value = 3, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X16),      value = 4, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_AUTO),     value = 0xFF, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+      endoneof;
+
+      oneof varid = SOCKET_IIO_CONFIGURATION.ConfigIOU1[1],
+          prompt  = STRING_TOKEN(STR_PCIE_IOU1_PROMPT_1),
+          help    = STRING_TOKEN(STR_PCIE_IOUX_HELP_PROMPT),
+          option text = STRING_TOKEN(STR_X4X4X4X4), value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X4X4X8),   value = 1, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X8X4X4),   value = 2, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X8X8),     value = 3, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X16),      value = 4, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_AUTO),     value = 0xFF, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+      endoneof;
+      
+      oneof varid = SOCKET_IIO_CONFIGURATION.ConfigIOU2[1],
+          prompt  = STRING_TOKEN(STR_PCIE_IOU2_PROMPT_1),
+          help    = STRING_TOKEN(STR_PCIE_IOUX_HELP_PROMPT),
+          option text = STRING_TOKEN(STR_X4X4X4X4), value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X4X4X8),   value = 1, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X8X4X4),   value = 2, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X8X8),     value = 3, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X16),      value = 4, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_AUTO),     value = 0xFF, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;          
+      endoneof;
+      
+      oneof varid = SOCKET_IIO_CONFIGURATION.ConfigMCP0[1],
+          prompt  = STRING_TOKEN(STR_PCIE_MCP0_PROMPT_1),
+          help    = STRING_TOKEN(STR_PCIE_IOUX_HELP_PROMPT),
+          option text = STRING_TOKEN(STR_X16),      value = 4, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_AUTO),     value = 0xFF, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.ConfigMCP1[1],
+          prompt  = STRING_TOKEN(STR_PCIE_MCP1_PROMPT_1),
+          help    = STRING_TOKEN(STR_PCIE_IOUX_HELP_PROMPT),
+          option text = STRING_TOKEN(STR_X16),      value = 4, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_AUTO),     value = 0xFF, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+      endoneof;
+    endif;
+      //
+      // Completion Timeout
+      //
+      suppressif SMC_SETUP_STYLE;  //SMCPKG_SUPPORT S
+      oneof varid = SOCKET_IIO_CONFIGURATION.CompletionTimeout[1],
+          prompt  = STRING_TOKEN(STR_IIO_COMPLETION_TIMEOUT_PROMPT_1),
+          help    = STRING_TOKEN(STR_IIO_COMPLETION_TIMEOUT_HELP),
+          option text = STRING_TOKEN(STR_ENABLE),   value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_DISABLE),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+
+    //
+    // Completion Timeout Value
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.CompletionTimeout[1] == 1;
+      oneof varid = SOCKET_IIO_CONFIGURATION.CompletionTimeoutValue[1],
+          prompt  = STRING_TOKEN(STR_IIO_COMPLETION_TIMEOUT_VALUE_PROMPT_1),
+          help    = STRING_TOKEN(STR_IIO_COMPLETION_TIMEOUT_VALUE_HELP),
+          option text = STRING_TOKEN(STR_50US_10MS),    value = 0,  flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_16MS_55MS),    value = 5,  flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_65MS_210MS),   value = 6,  flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_260MS_900MS),  value = 9,  flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_1S_3_5S),      value = 10, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_4S_13S),       value = 13, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_17S_64S),      value = 14, flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    oneof varid     = SOCKET_IIO_CONFIGURATION.RpCorrectableErrorEsc[1],
+          prompt          = STRING_TOKEN(STR_RP_CORRECTABLE_ERR_1),
+          help            = STRING_TOKEN(STR_RP_CORRECTABLE_ERR_HELP),
+          option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid     = SOCKET_IIO_CONFIGURATION.RpUncorrectableNonFatalErrorEsc[1],
+          prompt          = STRING_TOKEN(STR_RP_UNCORRECTABLE_ERR_NONFATAL_1),
+          help            = STRING_TOKEN(STR_RP_UNCORRECTABLE_ERR_NONFATAL_HELP),
+          option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid     = SOCKET_IIO_CONFIGURATION.RpUncorrectableFatalErrorEsc[1],
+          prompt          = STRING_TOKEN(STR_RP_UNCORRECTABLE_ERR_FATAL_1),
+          help            = STRING_TOKEN(STR_RP_UNCORRECTABLE_ERR_FATAL_HELP),
+          option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+    endoneof;
+    endif;      //SMCPKG_SUPPORT E
+
+#endif
+
+    //
+    // Jump to PCI Express Port0 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[21]==1;
+      goto VFR_FORMID_PCIE_IIO1P0,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_21_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port1 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[22]==1;
+      goto VFR_FORMID_PCIE_IIO1P1,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_22_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port2 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[23]==1;
+      goto VFR_FORMID_PCIE_IIO1P2,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_23_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port3 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[24]==1;
+      goto VFR_FORMID_PCIE_IIO1P3,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_24_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port4 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[25]==1;
+      goto VFR_FORMID_PCIE_IIO1P4,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_25_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+    //
+    // Jump to PCI Express Port5 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[26]==1;
+      goto VFR_FORMID_PCIE_IIO1P5,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_26_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port6 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[27]==1;
+      goto VFR_FORMID_PCIE_IIO1P6,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_27_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port7 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[28]==1;
+      goto VFR_FORMID_PCIE_IIO1P7,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_28_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port8 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[29]==1;
+      goto VFR_FORMID_PCIE_IIO1P8,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_29_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port9 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[30]==1;
+      goto VFR_FORMID_PCIE_IIO1P9,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_30_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port10 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[31]==1;
+      goto VFR_FORMID_PCIE_IIO1P10,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_31_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port11 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[32]==1;
+      goto VFR_FORMID_PCIE_IIO1P11,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_32_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port12 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[33]==1;
+      goto VFR_FORMID_PCIE_IIO1P12,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_33_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+     
+    //
+    // Jump to PCI Express Port13 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[34]==1;
+      goto VFR_FORMID_PCIE_IIO1P13,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_34_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port14 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[35]==1;
+      goto VFR_FORMID_PCIE_IIO1P14,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_35_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+      
+    //
+    // Jump to PCI Express Port15 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[36]==1;
+      goto VFR_FORMID_PCIE_IIO1P15,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_36_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port16 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[37]==1;
+      goto VFR_FORMID_PCIE_IIO1P16,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_37_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;     
+
+    //
+    // Jump to PCI Express Port17 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[38]==1;
+      goto VFR_FORMID_PCIE_IIO1P17,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_38_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port18 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[39]==1;
+      goto VFR_FORMID_PCIE_IIO1P18,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_39_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port19 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[40]==1;
+      goto VFR_FORMID_PCIE_IIO1P19,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_40_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port20 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[41]==1;
+      goto VFR_FORMID_PCIE_IIO1P20,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_41_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+
+  endform;
+//--------------------------- THIRD IIO -------------------------------------//
+
+  form formid = VFR_FORMID_IIO2,
+      title   = STRING_TOKEN(STR_IIO2_TITLE);
+#if (MAX_SOCKET > 2)
+      suppressif  ideqval SOCKET_IIO_CONFIGURATION.PcieBiosTrainEnable == 0x00;
+
+      oneof varid = SOCKET_IIO_CONFIGURATION.ConfigIOU0[2],
+          prompt  = STRING_TOKEN(STR_PCIE_IOU0_PROMPT_2),
+          help    = STRING_TOKEN(STR_PCIE_IOUX_HELP_PROMPT),
+          option text = STRING_TOKEN(STR_X4X4X4X4), value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X4X4X8),   value = 1, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X8X4X4),   value = 2, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X8X8),     value = 3, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X16),      value = 4, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_AUTO),     value = 0xFF, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+      endoneof;
+
+      oneof varid = SOCKET_IIO_CONFIGURATION.ConfigIOU1[2],
+          prompt  = STRING_TOKEN(STR_PCIE_IOU1_PROMPT_2),
+          help    = STRING_TOKEN(STR_PCIE_IOUX_HELP_PROMPT),
+          option text = STRING_TOKEN(STR_X4X4X4X4), value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X4X4X8),   value = 1, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X8X4X4),   value = 2, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X8X8),     value = 3, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X16),      value = 4, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_AUTO),     value = 0xFF, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+      endoneof;
+      
+      oneof varid = SOCKET_IIO_CONFIGURATION.ConfigIOU2[2],
+          prompt  = STRING_TOKEN(STR_PCIE_IOU2_PROMPT_2),
+          help    = STRING_TOKEN(STR_PCIE_IOUX_HELP_PROMPT),
+          option text = STRING_TOKEN(STR_X4X4X4X4), value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X4X4X8),   value = 1, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X8X4X4),   value = 2, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X8X8),     value = 3, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X16),      value = 4, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_AUTO),     value = 0xFF, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+      endoneof;
+      
+      oneof varid = SOCKET_IIO_CONFIGURATION.ConfigMCP0[2],
+          prompt  = STRING_TOKEN(STR_PCIE_MCP0_PROMPT_2),
+          help    = STRING_TOKEN(STR_PCIE_IOUX_HELP_PROMPT),
+          option text = STRING_TOKEN(STR_X16),      value = 4, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_AUTO),     value = 0xFF, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.ConfigMCP1[2],
+          prompt  = STRING_TOKEN(STR_PCIE_MCP1_PROMPT_2),
+          help    = STRING_TOKEN(STR_PCIE_IOUX_HELP_PROMPT),
+          option text = STRING_TOKEN(STR_X16),      value = 4, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_AUTO),     value = 0xFF, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+      endoneof;
+      
+    endif;
+      //
+      // Completion Timeout
+      //
+      oneof varid = SOCKET_IIO_CONFIGURATION.CompletionTimeout[2],
+          prompt  = STRING_TOKEN(STR_IIO_COMPLETION_TIMEOUT_PROMPT_2),
+          help    = STRING_TOKEN(STR_IIO_COMPLETION_TIMEOUT_HELP),
+          option text = STRING_TOKEN(STR_ENABLE),   value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_DISABLE),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+
+    //
+    // Completion Timeout Value
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.CompletionTimeout[2] == 1;
+      oneof varid = SOCKET_IIO_CONFIGURATION.CompletionTimeoutValue[2],
+          prompt  = STRING_TOKEN(STR_IIO_COMPLETION_TIMEOUT_VALUE_PROMPT_2),
+          help    = STRING_TOKEN(STR_IIO_COMPLETION_TIMEOUT_VALUE_HELP),
+          option text = STRING_TOKEN(STR_50US_10MS),    value = 0,  flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_16MS_55MS),    value = 5,  flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_65MS_210MS),   value = 6,  flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_260MS_900MS),  value = 9,  flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_1S_3_5S),      value = 10, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_4S_13S),       value = 13, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_17S_64S),      value = 14, flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    oneof varid     = SOCKET_IIO_CONFIGURATION.RpCorrectableErrorEsc[2],
+          prompt          = STRING_TOKEN(STR_RP_CORRECTABLE_ERR_2),
+          help            = STRING_TOKEN(STR_RP_CORRECTABLE_ERR_HELP),
+          option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid     = SOCKET_IIO_CONFIGURATION.RpUncorrectableNonFatalErrorEsc[2],
+          prompt          = STRING_TOKEN(STR_RP_UNCORRECTABLE_ERR_NONFATAL_2),
+          help            = STRING_TOKEN(STR_RP_UNCORRECTABLE_ERR_NONFATAL_HELP),
+          option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid     = SOCKET_IIO_CONFIGURATION.RpUncorrectableFatalErrorEsc[2],
+          prompt          = STRING_TOKEN(STR_RP_UNCORRECTABLE_ERR_FATAL_2),
+          help            = STRING_TOKEN(STR_RP_UNCORRECTABLE_ERR_FATAL_HELP),
+          option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+    endoneof;
+
+#endif
+
+    //
+    // Jump to PCI Express Port0 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[42]==1;
+      goto VFR_FORMID_PCIE_IIO2P0,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_42_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port1 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[43]==1;
+      goto VFR_FORMID_PCIE_IIO2P1,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_43_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port2 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[44]==1;
+      goto VFR_FORMID_PCIE_IIO2P2,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_44_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port3 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[45]==1;
+      goto VFR_FORMID_PCIE_IIO2P3,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_45_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port4 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[46]==1;
+      goto VFR_FORMID_PCIE_IIO2P4,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_46_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port5 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[47]==1;
+      goto VFR_FORMID_PCIE_IIO2P5,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_47_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port6 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[48]==1;
+      goto VFR_FORMID_PCIE_IIO2P6,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_48_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port7 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[49]==1;
+      goto VFR_FORMID_PCIE_IIO2P7,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_49_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port8 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[50]==1;
+      goto VFR_FORMID_PCIE_IIO2P8,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_50_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+    //
+    // Jump to PCI Express Port9 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[51]==1;
+      goto VFR_FORMID_PCIE_IIO2P9,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_51_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port10 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[52]==1;
+      goto VFR_FORMID_PCIE_IIO2P10,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_52_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+    
+    //
+    // Jump to PCI Express Port11 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[53]==1;
+      goto VFR_FORMID_PCIE_IIO2P11,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_53_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+    
+    //
+    // Jump to PCI Express Port12 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[54]==1;
+      goto VFR_FORMID_PCIE_IIO2P12,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_54_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+    
+    //
+    // Jump to PCI Express Port13 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[55]==1;
+      goto VFR_FORMID_PCIE_IIO2P13,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_55_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+    
+    //
+    // Jump to PCI Express Port14 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[56]==1;
+      goto VFR_FORMID_PCIE_IIO2P14,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_56_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port15 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[57]==1;
+      goto VFR_FORMID_PCIE_IIO2P15,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_57_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port16 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[58]==1;
+      goto VFR_FORMID_PCIE_IIO2P16,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_58_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;     
+
+    //
+    // Jump to PCI Express Port17 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[59]==1;
+      goto VFR_FORMID_PCIE_IIO2P17,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_59_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port18 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[60]==1;
+      goto VFR_FORMID_PCIE_IIO2P18,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_60_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port19 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[61]==1;
+      goto VFR_FORMID_PCIE_IIO2P19,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_61_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port20 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[62]==1;
+      goto VFR_FORMID_PCIE_IIO2P20,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_62_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+    
+
+  endform;
+
+//--------------------------- Fourth IIO -------------------------------------//
+
+  form formid = VFR_FORMID_IIO3,
+      title   = STRING_TOKEN(STR_IIO3_TITLE);
+#if (MAX_SOCKET > 3)
+      suppressif  ideqval SOCKET_IIO_CONFIGURATION.PcieBiosTrainEnable == 0x00;
+
+      oneof varid = SOCKET_IIO_CONFIGURATION.ConfigIOU0[3],
+          prompt  = STRING_TOKEN(STR_PCIE_IOU0_PROMPT_3),
+          help    = STRING_TOKEN(STR_PCIE_IOUX_HELP_PROMPT),
+          option text = STRING_TOKEN(STR_X4X4X4X4), value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X4X4X8),   value = 1, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X8X4X4),   value = 2, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X8X8),     value = 3, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X16),      value = 4, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_AUTO),     value = 0xFF, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+      endoneof;
+
+      oneof varid = SOCKET_IIO_CONFIGURATION.ConfigIOU1[3],
+          prompt  = STRING_TOKEN(STR_PCIE_IOU1_PROMPT_3),
+          help    = STRING_TOKEN(STR_PCIE_IOUX_HELP_PROMPT),
+          option text = STRING_TOKEN(STR_X4X4X4X4), value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X4X4X8),   value = 1, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X8X4X4),   value = 2, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X8X8),     value = 3, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X16),      value = 4, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_AUTO),     value = 0xFF, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+      endoneof;
+      
+      oneof varid = SOCKET_IIO_CONFIGURATION.ConfigIOU2[3],
+          prompt  = STRING_TOKEN(STR_PCIE_IOU2_PROMPT_3),
+          help    = STRING_TOKEN(STR_PCIE_IOUX_HELP_PROMPT),
+          option text = STRING_TOKEN(STR_X4X4X4X4), value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X4X4X8),   value = 1, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X8X4X4),   value = 2, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X8X8),     value = 3, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_X16),      value = 4, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_AUTO),     value = 0xFF, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;          
+      endoneof;
+      
+      oneof varid = SOCKET_IIO_CONFIGURATION.ConfigMCP0[3],
+          prompt  = STRING_TOKEN(STR_PCIE_MCP0_PROMPT_3),
+          help    = STRING_TOKEN(STR_PCIE_IOUX_HELP_PROMPT),
+          option text = STRING_TOKEN(STR_X16),      value = 4, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_AUTO),     value = 0xFF, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.ConfigMCP1[3],
+          prompt  = STRING_TOKEN(STR_PCIE_MCP1_PROMPT_3),
+          help    = STRING_TOKEN(STR_PCIE_IOUX_HELP_PROMPT),
+          option text = STRING_TOKEN(STR_X16),      value = 4, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_AUTO),     value = 0xFF, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+      endoneof;
+      
+    endif;
+      //
+      // Completion Timeout
+      //
+      oneof varid = SOCKET_IIO_CONFIGURATION.CompletionTimeout[3],
+          prompt  = STRING_TOKEN(STR_IIO_COMPLETION_TIMEOUT_PROMPT_3),
+          help    = STRING_TOKEN(STR_IIO_COMPLETION_TIMEOUT_HELP),
+          option text = STRING_TOKEN(STR_ENABLE),   value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_DISABLE),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+
+    //
+    // Completion Timeout Value
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.CompletionTimeout[3] == 1;
+      oneof varid = SOCKET_IIO_CONFIGURATION.CompletionTimeoutValue[3],
+          prompt  = STRING_TOKEN(STR_IIO_COMPLETION_TIMEOUT_VALUE_PROMPT_3),
+          help    = STRING_TOKEN(STR_IIO_COMPLETION_TIMEOUT_VALUE_HELP),
+          option text = STRING_TOKEN(STR_50US_10MS),    value = 0,  flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_16MS_55MS),    value = 5,  flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_65MS_210MS),   value = 6,  flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_260MS_900MS),  value = 9,  flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_1S_3_5S),      value = 10, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_4S_13S),       value = 13, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_17S_64S),      value = 14, flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+
+    oneof varid     = SOCKET_IIO_CONFIGURATION.RpCorrectableErrorEsc[3],
+          prompt          = STRING_TOKEN(STR_RP_CORRECTABLE_ERR_3),
+          help            = STRING_TOKEN(STR_RP_CORRECTABLE_ERR_HELP),
+          option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid     = SOCKET_IIO_CONFIGURATION.RpUncorrectableNonFatalErrorEsc[3],
+          prompt          = STRING_TOKEN(STR_RP_UNCORRECTABLE_ERR_NONFATAL_3),
+          help            = STRING_TOKEN(STR_RP_UNCORRECTABLE_ERR_NONFATAL_HELP),
+          option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid     = SOCKET_IIO_CONFIGURATION.RpUncorrectableFatalErrorEsc[3],
+          prompt          = STRING_TOKEN(STR_RP_UNCORRECTABLE_ERR_FATAL_3),
+          help            = STRING_TOKEN(STR_RP_UNCORRECTABLE_ERR_FATAL_HELP),
+          option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+    endoneof;
+
+
+#endif
+
+    //
+    // Jump to PCI Express Port0 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[63]==1;
+      goto VFR_FORMID_PCIE_IIO3P0,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_63_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port1 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[64]==1;
+      goto VFR_FORMID_PCIE_IIO3P1,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_64_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port2 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[65]==1;
+      goto VFR_FORMID_PCIE_IIO3P2,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_65_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port3 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[66]==1;
+      goto VFR_FORMID_PCIE_IIO3P3,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_66_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port4 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[67]==1;
+      goto VFR_FORMID_PCIE_IIO3P4,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_67_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+    //
+    // Jump to PCI Express Port5 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[68]==1;
+      goto VFR_FORMID_PCIE_IIO3P5,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_68_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port6 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[69]==1;
+      goto VFR_FORMID_PCIE_IIO3P6,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_69_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+    //
+    // Jump to PCI Express Port7 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[70]==1;
+      goto VFR_FORMID_PCIE_IIO3P7,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_70_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port8 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[71]==1;
+      goto VFR_FORMID_PCIE_IIO3P8,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_71_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port9 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[72]==1;
+      goto VFR_FORMID_PCIE_IIO3P9,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_72_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port10 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[73]==1;
+      goto VFR_FORMID_PCIE_IIO3P10,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_73_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port11 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[74]==1;
+      goto VFR_FORMID_PCIE_IIO3P11,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_74_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+     
+    //
+    // Jump to PCI Express Port12 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[75]==1;
+      goto VFR_FORMID_PCIE_IIO3P12,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_75_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+     
+    //
+    // Jump to PCI Express Port13 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[76]==1;
+      goto VFR_FORMID_PCIE_IIO3P13,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_76_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+     
+    //
+    // Jump to PCI Express Port14 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[77]==1;
+      goto VFR_FORMID_PCIE_IIO3P14,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_77_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port15 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[78]==1;
+      goto VFR_FORMID_PCIE_IIO3P15,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_78_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port16 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[79]==1;
+      goto VFR_FORMID_PCIE_IIO3P16,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_79_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+
+    //
+    // Jump to PCI Express Port17 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[80]==1;
+      goto VFR_FORMID_PCIE_IIO3P17,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_80_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+     
+    //
+    // Jump to PCI Express Port18 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[81]==1;
+      goto VFR_FORMID_PCIE_IIO3P18,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_81_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+     
+    //
+    // Jump to PCI Express Port19 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[82]==1;
+      goto VFR_FORMID_PCIE_IIO3P19,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_82_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+     
+    //
+    // Jump to PCI Express Port20 Configuration Form
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.HidePEXPMenu[83]==1;
+      goto VFR_FORMID_PCIE_IIO3P20,
+        prompt  = STRING_TOKEN(STR_PCIE_PORT_83_PROMPT),
+        help    = STRING_TOKEN(STR_PCIE_PORT_PROMPT_HELP);
+    endif;
+     
+
+  endform;
+
+//--------------------------------------------------------------------------//
+  //
+  // IIO Configuration
+  //
+  form formid = VFR_FORMID_IIO_CONFIG,
+
+    title  = STRING_TOKEN(STR_IIO_CONFIG_FORM_TITLE);
+
+    //
+    // IIO0 IOAPIC Enable
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.IioPresent[0] == 0;
+      subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+      subtitle text = STRING_TOKEN(STR_IIO0_TITLE);
+      subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+
+      oneof varid = SOCKET_IIO_CONFIGURATION.DevPresIoApicIio[0],
+        prompt  = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_PROMPT_STACK0),
+        help    = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.DevPresIoApicIio[1],
+        prompt  = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_PROMPT_STACK1),
+        help    = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.DevPresIoApicIio[2],
+        prompt  = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_PROMPT_STACK2),
+        help    = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.DevPresIoApicIio[3],
+        prompt  = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_PROMPT_STACK3),
+        help    = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.DevPresIoApicIio[4],
+        prompt  = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_PROMPT_STACK4),
+        help    = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.DevPresIoApicIio[5],
+        prompt  = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_PROMPT_STACK5),
+        help    = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+      endoneof;
+    endif;
+
+#if MAX_SOCKET > 1
+    //
+    // IIO1 IOAPIC Enable
+    //
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.IioPresent[1] == 0;
+      subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+      subtitle text = STRING_TOKEN(STR_IIO1_TITLE);
+      subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+
+      oneof varid = SOCKET_IIO_CONFIGURATION.DevPresIoApicIio[6],
+        prompt  = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_PROMPT_STACK0),
+        help    = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.DevPresIoApicIio[7],
+        prompt  = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_PROMPT_STACK1),
+        help    = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.DevPresIoApicIio[8],
+        prompt  = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_PROMPT_STACK2),
+        help    = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.DevPresIoApicIio[9],
+        prompt  = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_PROMPT_STACK3),
+        help    = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.DevPresIoApicIio[10],
+        prompt  = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_PROMPT_STACK4),
+        help    = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.DevPresIoApicIio[11],
+        prompt  = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_PROMPT_STACK5),
+        help    = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+      endoneof;
+    endif;
+#endif
+
+#if MAX_SOCKET > 2
+      //
+      // IIO2 IOAPIC Enable
+      //
+      suppressif ideqval SOCKET_IIO_CONFIGURATION.IioPresent[2] == 0;
+        subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+        subtitle text = STRING_TOKEN(STR_IIO2_TITLE);
+        subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+
+        oneof varid = SOCKET_IIO_CONFIGURATION.DevPresIoApicIio[12],
+          prompt  = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_PROMPT_STACK0),
+          help    = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.DevPresIoApicIio[13],
+          prompt  = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_PROMPT_STACK1),
+          help    = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.DevPresIoApicIio[14],
+          prompt  = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_PROMPT_STACK2),
+          help    = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.DevPresIoApicIio[15],
+          prompt  = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_PROMPT_STACK3),
+          help    = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.DevPresIoApicIio[16],
+          prompt  = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_PROMPT_STACK4),
+          help    = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.DevPresIoApicIio[17],
+          prompt  = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_PROMPT_STACK5),
+          help    = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        endoneof;
+      endif;
+#endif
+
+#if MAX_SOCKET > 3
+      //
+      // IIO3 IOAPIC Enable
+      //
+      suppressif ideqval SOCKET_IIO_CONFIGURATION.IioPresent[3] == 0;
+        subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+        subtitle text = STRING_TOKEN(STR_IIO3_TITLE);
+        subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+
+        oneof varid = SOCKET_IIO_CONFIGURATION.DevPresIoApicIio[18],
+          prompt  = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_PROMPT_STACK0),
+          help    = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.DevPresIoApicIio[19],
+          prompt  = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_PROMPT_STACK1),
+          help    = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.DevPresIoApicIio[20],
+          prompt  = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_PROMPT_STACK2),
+          help    = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.DevPresIoApicIio[21],
+          prompt  = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_PROMPT_STACK3),
+          help    = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.DevPresIoApicIio[22],
+          prompt  = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_PROMPT_STACK4),
+          help    = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        endoneof;
+        oneof varid = SOCKET_IIO_CONFIGURATION.DevPresIoApicIio[23],
+          prompt  = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_PROMPT_STACK5),
+          help    = STRING_TOKEN(STR_IIO_IOAPIC_ENABLE_HELP),
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        endoneof;
+      endif;
+#endif    
+
+  subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+
+  endform;
+
+  //
+  // Intel+ VT for Directed I/O (VT-d) Configuration
+  //
+  form formid = VFR_FORMID_VTD,
+
+    title  = STRING_TOKEN(STR_IIO_VTD_CFG_FORM_TITLE);
+
+    subtitle text = STRING_TOKEN(STR_IIO_VTD_CFG_FORM_TITLE);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+    oneof varid = SOCKET_IIO_CONFIGURATION.VTdSupport,
+        prompt  = STRING_TOKEN(STR_IIO_VTD_SUPPORT_PROMPT),
+        help    = STRING_TOKEN(STR_IIO_VTD_SUPPORT_HELP),
+#if SMCPKG_SUPPORT
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+#else
+#if (MAX_SOCKET > 4)
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+#else
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+#endif
+#endif //SMCPKG_SUPPORT
+    endoneof;
+
+    suppressif  ideqval SOCKET_IIO_CONFIGURATION.VTdSupport == 0x00;
+      oneof varid = SOCKET_IIO_CONFIGURATION.InterruptRemap,
+          prompt  = STRING_TOKEN(STR_IIO_VTD_INT_REMAP_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VTD_INT_REMAP_HELP),
+          option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED| MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+      endoneof;
+
+      oneof varid = SOCKET_IIO_CONFIGURATION.PassThroughDma,
+          prompt  = STRING_TOKEN(STR_IIO_VTD_PASSTHROUGH_DMA_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VTD_PASSTHROUGH_DMA_HELP),
+          option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+      endoneof;
+
+      oneof varid = SOCKET_IIO_CONFIGURATION.ATS,
+          prompt  = STRING_TOKEN(STR_IIO_VTD_ATS_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VTD_ATS_HELP),
+          option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED ;
+      endoneof;
+
+      oneof varid = SOCKET_IIO_CONFIGURATION.PostedInterrupt,
+          prompt  = STRING_TOKEN(STR_IIO_VTD_POSTEDINTERRUPT_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VTD_POSTEDINTERRUPT_HELP),
+          option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+      endoneof;
+
+      oneof varid = SOCKET_IIO_CONFIGURATION.CoherencySupport,
+          prompt  = STRING_TOKEN(STR_IIO_VTD_COHERENCY_PROMPT),
+          help    = STRING_TOKEN(STR_IIO_VTD_COHERENCY_HELP),
+          option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+          option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+
+  endform;
+  
+  //
+  // VMD general Configuration
+  //
+  form formid = VFR_FORMID_VMD,
+
+    title  = STRING_TOKEN(STR_IIO_VMD_CFG_FORM_TITLE);
+
+    subtitle text = STRING_TOKEN(STR_IIO_VMD_CFG_FORM_TITLE);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.IioPresent[0] == 0;
+        goto VFR_FORMID_VMD_IIO0,
+        prompt  = STRING_TOKEN(STR_IIO_VMD_IIO0_FORM_TITLE),
+        help    = STRING_TOKEN(STR_NULL_STRING);
+     endif;
+#if NUMBER_CPU_SOCKETS > 1 //#if MAX_SOCKET > 1 //SMCPKG_SUPPORT
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.IioPresent[1] == 0;
+        goto VFR_FORMID_VMD_IIO1,
+        prompt  = STRING_TOKEN(STR_IIO_VMD_IIO1_FORM_TITLE),
+        help    = STRING_TOKEN(STR_NULL_STRING);
+     endif;
+#endif
+
+#if NUMBER_CPU_SOCKETS > 2 //#if MAX_SOCKET > 2 //SMCPKG_SUPPORT
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.IioPresent[2] == 0;
+        goto VFR_FORMID_VMD_IIO2,
+        prompt  = STRING_TOKEN(STR_IIO_VMD_IIO2_FORM_TITLE),
+        help    = STRING_TOKEN(STR_NULL_STRING);
+     endif;
+#endif
+
+#if NUMBER_CPU_SOCKETS > 3 //#if MAX_SOCKET > 3 //SMCPKG_SUPPORT
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.IioPresent[3] == 0;
+        goto VFR_FORMID_VMD_IIO3,
+        prompt  = STRING_TOKEN(STR_IIO_VMD_IIO3_FORM_TITLE),
+        help    = STRING_TOKEN(STR_NULL_STRING);
+     endif;
+#endif
+
+  endform;
+
+  //
+  // VMD form menu on IIO0
+  //
+  form formid = VFR_FORMID_VMD_IIO0,
+    title  = STRING_TOKEN(STR_IIO_VMD_IIO0_FORM_TITLE);
+
+    #undef  STACK
+    #define STACK   0
+    #include "IioVmdCfgBarSetup.hfr"
+
+    #undef  STACK
+    #define STACK   1
+    #include "IioVmdCfgBarSetup.hfr"
+
+    #undef  STACK
+    #define STACK   2
+    #include "IioVmdCfgBarSetup.hfr"
+
+  endform;    // End of VMD form menu on IIO0
+
+
+  //
+  // VMD form menu on IIO1
+  //
+  form formid = VFR_FORMID_VMD_IIO1,
+    title  = STRING_TOKEN(STR_IIO_VMD_IIO1_FORM_TITLE);
+
+    #undef  STACK
+    #define STACK   3
+    #include "IioVmdCfgBarSetup.hfr"
+
+    #undef  STACK
+    #define STACK   4
+    #include "IioVmdCfgBarSetup.hfr"
+
+    #undef  STACK
+    #define STACK   5
+    #include "IioVmdCfgBarSetup.hfr"
+
+  endform;    // End of VMD form menu on IIO1
+
+
+  //
+  // VMD form menu on IIO2
+  //
+  form formid = VFR_FORMID_VMD_IIO2,
+    title  = STRING_TOKEN(STR_IIO_VMD_IIO2_FORM_TITLE);
+
+    #undef  STACK
+    #define STACK   6
+    #include "IioVmdCfgBarSetup.hfr"
+
+    #undef  STACK
+    #define STACK   7
+    #include "IioVmdCfgBarSetup.hfr"
+
+    #undef  STACK
+    #define STACK   8
+    #include "IioVmdCfgBarSetup.hfr"
+
+  endform;    // End of VMD form menu on IIO2
+
+
+  //
+  // VMD form menu on IIO3
+  //
+  form formid = VFR_FORMID_VMD_IIO3,
+    title  = STRING_TOKEN(STR_IIO_VMD_IIO3_FORM_TITLE);
+
+    #undef  STACK
+    #define STACK   9
+    #include "IioVmdCfgBarSetup.hfr"
+
+    #undef  STACK
+    #define STACK   10
+    #include "IioVmdCfgBarSetup.hfr"
+
+    #undef  STACK
+    #define STACK   11
+    #include "IioVmdCfgBarSetup.hfr"
+
+  endform;    // End of VMD form menu on IIO3
+
+  //
+  // PCIE SSD general Configuration
+  //
+  form formid = VFR_FORMID_PCIEAIC,
+
+    title  = STRING_TOKEN(STR_IIO_PCIEAIC_CFG_FORM_TITLE);
+
+    subtitle text = STRING_TOKEN(STR_IIO_PCIEAIC_CFG_FORM_TITLE);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.IioPresent[0] == 0;
+        goto VFR_FORMID_PCIEAIC_IIO0,
+        prompt  = STRING_TOKEN(STR_IIO_PCIEAIC_IIO0_FORM_TITLE),
+        help    = STRING_TOKEN(STR_NULL_STRING);
+     endif;
+#if MAX_SOCKET > 1
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.IioPresent[1] == 0;
+        goto VFR_FORMID_PCIEAIC_IIO1,
+        prompt  = STRING_TOKEN(STR_IIO_PCIEAIC_IIO1_FORM_TITLE),
+        help    = STRING_TOKEN(STR_NULL_STRING);
+     endif;
+#endif
+
+#if MAX_SOCKET > 2
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.IioPresent[2] == 0;
+        goto VFR_FORMID_PCIEAIC_IIO2,
+        prompt  = STRING_TOKEN(STR_IIO_PCIEAIC_IIO2_FORM_TITLE),
+        help    = STRING_TOKEN(STR_NULL_STRING);
+     endif;
+#endif
+
+#if MAX_SOCKET > 3
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.IioPresent[3] == 0;
+        goto VFR_FORMID_PCIEAIC_IIO3,
+        prompt  = STRING_TOKEN(STR_IIO_PCIEAIC_IIO3_FORM_TITLE),
+        help    = STRING_TOKEN(STR_NULL_STRING);
+     endif;
+#endif
+
+  endform;
+
+  //
+  // PCIEAIC form menu on IIO0
+  //
+  form formid = VFR_FORMID_PCIEAIC_IIO0,
+    title  = STRING_TOKEN(STR_IIO_PCIEAIC_IIO0_FORM_TITLE);
+
+    oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICEnabled[0],
+        prompt  = STRING_TOKEN(STR_IIO_PCIEAIC_SUPPORT_PROMPT_0),
+        help    = STRING_TOKEN(STR_IIO_PCIEAIC_SUPPORT_HELP_0),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+    endoneof;
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.PcieAICEnabled[0] == 0;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[0],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_0),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[1],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_1),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[2],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_2),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[3],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_3),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICHotPlugEnable[0],
+        prompt  = STRING_TOKEN(STR_IIO_PCIEAIC_HOTPLUG_PROMPT_0),
+        help    = STRING_TOKEN(STR_IIO_PCIEAIC_HOTPLUG_HELP_0),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+    oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICEnabled[1],
+        prompt  = STRING_TOKEN(STR_IIO_PCIEAIC_SUPPORT_PROMPT_1),
+        help    = STRING_TOKEN(STR_IIO_PCIEAIC_SUPPORT_HELP_1),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+    endoneof;
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.PcieAICEnabled[1] == 0;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[4],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_4),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[5],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_5),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[6],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_6),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[7],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_7),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;    
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICHotPlugEnable[1],
+        prompt  = STRING_TOKEN(STR_IIO_PCIEAIC_HOTPLUG_PROMPT_1),
+        help    = STRING_TOKEN(STR_IIO_PCIEAIC_HOTPLUG_HELP_1),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+    oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICEnabled[2],
+        prompt  = STRING_TOKEN(STR_IIO_PCIEAIC_SUPPORT_PROMPT_2),
+        help    = STRING_TOKEN(STR_IIO_PCIEAIC_SUPPORT_HELP_2),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+    endoneof;
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.PcieAICEnabled[2] == 0;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[8],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_8),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[9],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_9),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[10],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_10),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[11],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_11),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;    
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICHotPlugEnable[2],
+        prompt  = STRING_TOKEN(STR_IIO_PCIEAIC_HOTPLUG_PROMPT_2),
+        help    = STRING_TOKEN(STR_IIO_PCIEAIC_HOTPLUG_HELP_2),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+  endform;    // End of PCIEAIC form menu on IIO0
+
+
+  //
+  // PCIEAIC form menu on IIO1
+  //
+  form formid = VFR_FORMID_PCIEAIC_IIO1,
+    title  = STRING_TOKEN(STR_IIO_PCIEAIC_IIO1_FORM_TITLE);
+
+    oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICEnabled[3],
+        prompt  = STRING_TOKEN(STR_IIO_PCIEAIC_SUPPORT_PROMPT_3),
+        help    = STRING_TOKEN(STR_IIO_PCIEAIC_SUPPORT_HELP_0),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+    endoneof;
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.PcieAICEnabled[3] == 0;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[12],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_12),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[13],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_13),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[14],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_14),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[15],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_15),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICHotPlugEnable[3],
+        prompt  = STRING_TOKEN(STR_IIO_PCIEAIC_HOTPLUG_PROMPT_3),
+        help    = STRING_TOKEN(STR_IIO_PCIEAIC_HOTPLUG_HELP_0),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+    oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICEnabled[4],
+        prompt  = STRING_TOKEN(STR_IIO_PCIEAIC_SUPPORT_PROMPT_4),
+        help    = STRING_TOKEN(STR_IIO_PCIEAIC_SUPPORT_HELP_1),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+    endoneof;
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.PcieAICEnabled[4] == 0;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[16],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_16),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[17],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_17),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[18],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_18),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[19],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_19),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;    
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICHotPlugEnable[4],
+        prompt  = STRING_TOKEN(STR_IIO_PCIEAIC_HOTPLUG_PROMPT_4),
+        help    = STRING_TOKEN(STR_IIO_PCIEAIC_HOTPLUG_HELP_1),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+    oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICEnabled[5],
+        prompt  = STRING_TOKEN(STR_IIO_PCIEAIC_SUPPORT_PROMPT_5),
+        help    = STRING_TOKEN(STR_IIO_PCIEAIC_SUPPORT_HELP_2),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+    endoneof;
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.PcieAICEnabled[5] == 0;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[20],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_20),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[21],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_21),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[22],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_22),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[23],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_23),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;    
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICHotPlugEnable[5],
+        prompt  = STRING_TOKEN(STR_IIO_PCIEAIC_HOTPLUG_PROMPT_5),
+        help    = STRING_TOKEN(STR_IIO_PCIEAIC_HOTPLUG_HELP_2),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+  endform;    // End of PCIEAIC form menu on IIO1
+
+
+  //
+  // PCIEAIC form menu on IIO2
+  //
+  form formid = VFR_FORMID_PCIEAIC_IIO2,
+    title  = STRING_TOKEN(STR_IIO_PCIEAIC_IIO2_FORM_TITLE);
+
+    oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICEnabled[6],
+        prompt  = STRING_TOKEN(STR_IIO_PCIEAIC_SUPPORT_PROMPT_6),
+        help    = STRING_TOKEN(STR_IIO_PCIEAIC_SUPPORT_HELP_0),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+    endoneof;
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.PcieAICEnabled[6] == 0;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[24],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_24),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[25],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_25),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[26],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_26),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[27],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_27),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;    
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICHotPlugEnable[6],
+        prompt  = STRING_TOKEN(STR_IIO_PCIEAIC_HOTPLUG_PROMPT_6),
+        help    = STRING_TOKEN(STR_IIO_PCIEAIC_HOTPLUG_HELP_0),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+    oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICEnabled[7],
+        prompt  = STRING_TOKEN(STR_IIO_PCIEAIC_SUPPORT_PROMPT_7),
+        help    = STRING_TOKEN(STR_IIO_PCIEAIC_SUPPORT_HELP_1),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+    endoneof;
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.PcieAICEnabled[7] == 0;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[28],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_28),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[29],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_29),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[30],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_30),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[31],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_31),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICHotPlugEnable[7],
+        prompt  = STRING_TOKEN(STR_IIO_PCIEAIC_HOTPLUG_PROMPT_7),
+        help    = STRING_TOKEN(STR_IIO_PCIEAIC_HOTPLUG_HELP_1),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+    oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICEnabled[8],
+        prompt  = STRING_TOKEN(STR_IIO_PCIEAIC_SUPPORT_PROMPT_8),
+        help    = STRING_TOKEN(STR_IIO_PCIEAIC_SUPPORT_HELP_2),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+    endoneof;
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.PcieAICEnabled[8] == 0;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[32],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_32),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[33],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_33),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[34],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_34),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[35],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_35),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICHotPlugEnable[8],
+        prompt  = STRING_TOKEN(STR_IIO_PCIEAIC_HOTPLUG_PROMPT_8),
+        help    = STRING_TOKEN(STR_IIO_PCIEAIC_HOTPLUG_HELP_2),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+    endif;
+  endform;    // End of PCIEAIC form menu on IIO2
+
+
+  //
+  // PCIEAIC form menu on IIO3
+  //
+  form formid = VFR_FORMID_PCIEAIC_IIO3,
+    title  = STRING_TOKEN(STR_IIO_PCIEAIC_IIO3_FORM_TITLE);
+
+    oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICEnabled[9],
+        prompt  = STRING_TOKEN(STR_IIO_PCIEAIC_SUPPORT_PROMPT_9),
+        help    = STRING_TOKEN(STR_IIO_PCIEAIC_SUPPORT_HELP_0),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+    endoneof;
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.PcieAICEnabled[9] == 0;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[36],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_36),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[37],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_37),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[38],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_38),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[39],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_39),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICHotPlugEnable[9],
+        prompt  = STRING_TOKEN(STR_IIO_PCIEAIC_HOTPLUG_PROMPT_9),
+        help    = STRING_TOKEN(STR_IIO_PCIEAIC_HOTPLUG_HELP_0),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+    endif;   
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE); 
+    oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICEnabled[10],
+        prompt  = STRING_TOKEN(STR_IIO_PCIEAIC_SUPPORT_PROMPT_10),
+        help    = STRING_TOKEN(STR_IIO_PCIEAIC_SUPPORT_HELP_1),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+    endoneof;
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.PcieAICEnabled[10] == 0;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[40],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_40),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[41],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_41),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[42],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_42),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[43],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_43),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICHotPlugEnable[10],
+        prompt  = STRING_TOKEN(STR_IIO_PCIEAIC_HOTPLUG_PROMPT_10),
+        help    = STRING_TOKEN(STR_IIO_PCIEAIC_HOTPLUG_HELP_1),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+    endif; 
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);   
+    oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICEnabled[11],
+        prompt  = STRING_TOKEN(STR_IIO_PCIEAIC_SUPPORT_PROMPT_11),
+        help    = STRING_TOKEN(STR_IIO_PCIEAIC_SUPPORT_HELP_2),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+    endoneof;
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.PcieAICEnabled[11] == 0;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[44],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_44),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[45],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_45),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[46],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_46),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICPortEnable[47],
+        prompt  = STRING_TOKEN(STR_PCIEAICPORTENABLE_PROMPT_47),
+        help    = STRING_TOKEN(STR_PCIEAICPORTENABLE_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+      oneof varid = SOCKET_IIO_CONFIGURATION.PcieAICHotPlugEnable[11],
+        prompt  = STRING_TOKEN(STR_IIO_PCIEAIC_HOTPLUG_PROMPT_11),
+        help    = STRING_TOKEN(STR_IIO_PCIEAIC_HOTPLUG_HELP_2),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = RESET_REQUIRED | MANUFACTURING | DEFAULT;
+        option text = STRING_TOKEN(STR_ENABLE),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+    endif;    
+  endform;    // End of PCIEAIC form menu on IIO3
+
+  
+//--------------------------------------------------------------------------//
+  //
+  // Option for each PCI-E slot Oprom
+  //
+  form formid = VFR_FORMID_IIO_PCIE_SLOT,
+    title = STRING_TOKEN(STR_IIO_PCIE_SLOT_FORM_TITLE);
+
+    oneof varid    = SOCKET_IIO_CONFIGURATION.PcieSlotOprom1,
+            prompt   = STRING_TOKEN(STR_PCIE_SLOT1_OPROM_PROMPT),
+            help     = STRING_TOKEN(STR_PCIE_SLOT1_OPROM_HELP),
+            option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+            option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+    endoneof;
+
+    oneof varid    = SOCKET_IIO_CONFIGURATION.PcieSlotOprom2,
+            prompt   = STRING_TOKEN(STR_PCIE_SLOT2_OPROM_PROMPT),
+            help     = STRING_TOKEN(STR_PCIE_SLOT2_OPROM_HELP),
+            option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+            option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+    endoneof;
+
+    oneof varid    = SOCKET_IIO_CONFIGURATION.PcieSlotOprom3,
+            prompt   = STRING_TOKEN(STR_PCIE_SLOT3_OPROM_PROMPT),
+            help     = STRING_TOKEN(STR_PCIE_SLOT3_OPROM_HELP),
+            option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+            option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+    endoneof;
+
+    oneof varid    = SOCKET_IIO_CONFIGURATION.PcieSlotOprom4,
+            prompt   = STRING_TOKEN(STR_PCIE_SLOT4_OPROM_PROMPT),
+            help     = STRING_TOKEN(STR_PCIE_SLOT4_OPROM_HELP),
+            option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+            option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+    endoneof;
+
+    oneof varid    = SOCKET_IIO_CONFIGURATION.PcieSlotOprom5,
+            prompt   = STRING_TOKEN(STR_PCIE_SLOT5_OPROM_PROMPT),
+            help     = STRING_TOKEN(STR_PCIE_SLOT5_OPROM_HELP),
+            option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+            option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+    endoneof;
+
+    oneof varid    = SOCKET_IIO_CONFIGURATION.PcieSlotOprom6,
+            prompt   = STRING_TOKEN(STR_PCIE_SLOT6_OPROM_PROMPT),
+            help     = STRING_TOKEN(STR_PCIE_SLOT6_OPROM_HELP),
+            option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+            option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+    endoneof;
+
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.PcieSlotItemCtrl < 1;
+      oneof varid    = SOCKET_IIO_CONFIGURATION.PcieSlotOprom7,
+              prompt   = STRING_TOKEN(STR_PCIE_SLOT7_OPROM_PROMPT),
+              help     = STRING_TOKEN(STR_PCIE_SLOT7_OPROM_HELP),
+              option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+              option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.PcieSlotItemCtrl < 2;
+      oneof varid    = SOCKET_IIO_CONFIGURATION.PcieSlotOprom8,
+              prompt   = STRING_TOKEN(STR_PCIE_SLOT8_OPROM_PROMPT),
+              help     = STRING_TOKEN(STR_PCIE_SLOT8_OPROM_HELP),
+              option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+              option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+      endoneof;
+    endif;
+
+endform;
+  //
+  // Intel IOAT Configuration
+  //
+  form formid = VFR_FORMID_IOAT_CONFIG,
+    title = STRING_TOKEN(STR_IIO_IOAT_FORM);
+
+    suppressif SMC_SETUP_STYLE;  //SMCPKG_SUPPORT S
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.IioPresent[0] == 0;
+      goto VFR_FORMID_IIO0IOAT,
+          prompt = STRING_TOKEN(STR_IIO_IOAT0_FORM),
+          help = STRING_TOKEN(STR_NULL_STRING);
+      endif;
+
+#if MAX_SOCKET > 1
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.IioPresent[1] == 0;
+      goto VFR_FORMID_IIO1IOAT,
+          prompt = STRING_TOKEN(STR_IIO_IOAT1_FORM),
+          help = STRING_TOKEN(STR_NULL_STRING);
+    endif;
+#endif
+
+#if MAX_SOCKET > 2
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.IioPresent[2] == 0;
+      goto VFR_FORMID_IIO2IOAT,
+          prompt = STRING_TOKEN(STR_IIO_IOAT2_FORM),
+          help = STRING_TOKEN(STR_NULL_STRING);
+    endif;
+#endif
+
+#if MAX_SOCKET > 3
+    suppressif ideqval SOCKET_IIO_CONFIGURATION.IioPresent[3] == 0;
+      goto VFR_FORMID_IIO3IOAT,
+        prompt = STRING_TOKEN(STR_IIO_IOAT3_FORM),
+        help = STRING_TOKEN(STR_NULL_STRING);
+    endif;
+#endif
+    endif;      //SMCPKG_SUPPORT E
+
+    oneof varid     = SOCKET_IIO_CONFIGURATION.DisableTPH,
+      prompt          = STRING_TOKEN(STR_DISABLE_TPH_PROMPT),
+      help            = STRING_TOKEN(STR_DISABLE_TPH_HELP),
+      option text     = STRING_TOKEN(STR_NO),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+      option text     = STRING_TOKEN(STR_YES),   value = 1, flags = RESET_REQUIRED;
+    endoneof;
+ 
+    suppressif  ideqval SOCKET_IIO_CONFIGURATION.DisableTPH == 1;
+      oneof varid     = SOCKET_IIO_CONFIGURATION.PrioritizeTPH,
+        prompt          = STRING_TOKEN(STR_PRIORITIZE_TPH),
+        help            = STRING_TOKEN(STR_PRIORITIZE_TPH),
+        option text     = STRING_TOKEN(STR_ENABLE),    value = 1, flags = RESET_REQUIRED;
+        option text     = STRING_TOKEN(STR_DISABLE),   value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+      endoneof;
+    endif;
+
+    oneof varid     = SOCKET_IIO_CONFIGURATION.CbRelaxedOrdering,
+      prompt          = STRING_TOKEN(STR_CB_RELAXED_ORDERING_PROMPT),
+      help            = STRING_TOKEN(STR_CB_RELAXED_ORDERING_HELP),
+      option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+      option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+    endoneof;
+
+    endform; // VFR_FORMID_IOAT_CONFIG
+
+
+  //IOAT0 configuration
+  form formid = VFR_FORMID_IIO0IOAT,
+    title = STRING_TOKEN(STR_IIO_IOAT0_FORM);
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3DcaEn[0],
+                prompt          = STRING_TOKEN(STR_CB3_0_DCA_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_DCA_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+        subtitle text = STRING_TOKEN(STR_IOAT0_OPTIONS);
+        subtitle text = STRING_TOKEN(STR_DOUBLE_LINE);
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3DmaEn[0],
+                prompt          = STRING_TOKEN(STR_CB3_00_DMA_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_DMA_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;             
+        endoneof;
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3NoSnoopEn[0],
+                prompt          = STRING_TOKEN(STR_CB3_00_NO_SNOOP_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_NO_SNOOP_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+        subtitle text = STRING_TOKEN(STR_IOAT1_OPTIONS);
+        subtitle text = STRING_TOKEN(STR_DOUBLE_LINE);
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3DmaEn[1],
+                prompt          = STRING_TOKEN(STR_CB3_01_DMA_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_DMA_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;                
+        endoneof;
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3NoSnoopEn[1],
+                prompt          = STRING_TOKEN(STR_CB3_01_NO_SNOOP_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_NO_SNOOP_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+        subtitle text = STRING_TOKEN(STR_IOAT2_OPTIONS);
+        subtitle text = STRING_TOKEN(STR_DOUBLE_LINE);
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3DmaEn[2],
+                prompt          = STRING_TOKEN(STR_CB3_02_DMA_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_DMA_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        endoneof;
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3NoSnoopEn[2],
+                prompt          = STRING_TOKEN(STR_CB3_02_NO_SNOOP_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_NO_SNOOP_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+        subtitle text = STRING_TOKEN(STR_IOAT3_OPTIONS);
+        subtitle text = STRING_TOKEN(STR_DOUBLE_LINE);
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3DmaEn[3],
+                prompt          = STRING_TOKEN(STR_CB3_03_DMA_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_DMA_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;                
+        endoneof;
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3NoSnoopEn[3],
+                prompt          = STRING_TOKEN(STR_CB3_03_NO_SNOOP_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_NO_SNOOP_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+        subtitle text = STRING_TOKEN(STR_IOAT4_OPTIONS);
+        subtitle text = STRING_TOKEN(STR_DOUBLE_LINE);
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3DmaEn[4],
+                prompt          = STRING_TOKEN(STR_CB3_04_DMA_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_DMA_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;                
+        endoneof;
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3NoSnoopEn[4],
+                prompt          = STRING_TOKEN(STR_CB3_04_NO_SNOOP_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_NO_SNOOP_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+        endoneof;
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+        subtitle text = STRING_TOKEN(STR_IOAT5_OPTIONS);
+        subtitle text = STRING_TOKEN(STR_DOUBLE_LINE);
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3DmaEn[5],
+                prompt          = STRING_TOKEN(STR_CB3_05_DMA_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_DMA_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;                
+        endoneof;
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3NoSnoopEn[5],
+                prompt          = STRING_TOKEN(STR_CB3_05_NO_SNOOP_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_NO_SNOOP_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+        subtitle text = STRING_TOKEN(STR_IOAT6_OPTIONS);
+        subtitle text = STRING_TOKEN(STR_DOUBLE_LINE);
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3DmaEn[6],
+                prompt          = STRING_TOKEN(STR_CB3_06_DMA_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_DMA_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED; 
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;                
+        endoneof;
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3NoSnoopEn[6],
+                prompt          = STRING_TOKEN(STR_CB3_06_NO_SNOOP_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_NO_SNOOP_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+        subtitle text = STRING_TOKEN(STR_IOAT7_OPTIONS);
+        subtitle text = STRING_TOKEN(STR_DOUBLE_LINE);
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3DmaEn[7],
+                prompt          = STRING_TOKEN(STR_CB3_07_DMA_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_DMA_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;          
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;                
+        endoneof;
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3NoSnoopEn[7],
+                prompt          = STRING_TOKEN(STR_CB3_07_NO_SNOOP_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_NO_SNOOP_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+    endform; // IIO_IOAT0_FORM
+
+  //IOAT1 configuration
+  form formid = VFR_FORMID_IIO1IOAT,
+      title = STRING_TOKEN(STR_IIO_IOAT1_FORM);
+
+#if (MAX_SOCKET > 1)
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3DcaEn[1],
+                prompt          = STRING_TOKEN(STR_CB3_1_DCA_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_DCA_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+        subtitle text = STRING_TOKEN(STR_IOAT0_OPTIONS);
+        subtitle text = STRING_TOKEN(STR_DOUBLE_LINE);
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3DmaEn[8],
+                prompt          = STRING_TOKEN(STR_CB3_10_DMA_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_DMA_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;                
+        endoneof;
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3NoSnoopEn[8],
+                prompt          = STRING_TOKEN(STR_CB3_10_NO_SNOOP_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_NO_SNOOP_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+        subtitle text = STRING_TOKEN(STR_IOAT1_OPTIONS);
+        subtitle text = STRING_TOKEN(STR_DOUBLE_LINE);
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3DmaEn[9],
+                prompt          = STRING_TOKEN(STR_CB3_11_DMA_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_DMA_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;                
+        endoneof;
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3NoSnoopEn[9],
+                prompt          = STRING_TOKEN(STR_CB3_11_NO_SNOOP_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_NO_SNOOP_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+        subtitle text = STRING_TOKEN(STR_IOAT2_OPTIONS);
+        subtitle text = STRING_TOKEN(STR_DOUBLE_LINE);
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3DmaEn[10],
+                prompt          = STRING_TOKEN(STR_CB3_12_DMA_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_DMA_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;                                
+        endoneof;
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3NoSnoopEn[10],
+                prompt          = STRING_TOKEN(STR_CB3_12_NO_SNOOP_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_NO_SNOOP_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+        subtitle text = STRING_TOKEN(STR_IOAT3_OPTIONS);
+        subtitle text = STRING_TOKEN(STR_DOUBLE_LINE);
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3DmaEn[11],
+                prompt          = STRING_TOKEN(STR_CB3_13_DMA_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_DMA_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        endoneof;
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3NoSnoopEn[11],
+                prompt          = STRING_TOKEN(STR_CB3_13_NO_SNOOP_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_NO_SNOOP_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+        subtitle text = STRING_TOKEN(STR_IOAT4_OPTIONS);
+        subtitle text = STRING_TOKEN(STR_DOUBLE_LINE);
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3DmaEn[12],
+                prompt          = STRING_TOKEN(STR_CB3_14_DMA_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_DMA_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;                
+        endoneof;
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3NoSnoopEn[12],
+                prompt          = STRING_TOKEN(STR_CB3_14_NO_SNOOP_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_NO_SNOOP_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+        subtitle text = STRING_TOKEN(STR_IOAT5_OPTIONS);
+        subtitle text = STRING_TOKEN(STR_DOUBLE_LINE);
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3DmaEn[13],
+                prompt          = STRING_TOKEN(STR_CB3_15_DMA_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_DMA_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;                
+        endoneof;
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3NoSnoopEn[13],
+                prompt          = STRING_TOKEN(STR_CB3_15_NO_SNOOP_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_NO_SNOOP_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+        subtitle text = STRING_TOKEN(STR_IOAT6_OPTIONS);
+        subtitle text = STRING_TOKEN(STR_DOUBLE_LINE);
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3DmaEn[14],
+                prompt          = STRING_TOKEN(STR_CB3_16_DMA_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_DMA_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;                
+        endoneof;
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3NoSnoopEn[14],
+                prompt          = STRING_TOKEN(STR_CB3_16_NO_SNOOP_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_NO_SNOOP_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+        subtitle text = STRING_TOKEN(STR_IOAT7_OPTIONS);
+        subtitle text = STRING_TOKEN(STR_DOUBLE_LINE);
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3DmaEn[15],
+                prompt          = STRING_TOKEN(STR_CB3_17_DMA_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_DMA_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;                
+        endoneof;
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3NoSnoopEn[15],
+                prompt          = STRING_TOKEN(STR_CB3_17_NO_SNOOP_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_NO_SNOOP_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+#endif
+  endform;  //end IIO1 IOAT
+
+  //IOAT2 configuration
+  form formid = VFR_FORMID_IIO2IOAT,
+    title = STRING_TOKEN(STR_IIO_IOAT2_FORM);
+#if (MAX_SOCKET > 2)
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3DcaEn[2],
+                prompt          = STRING_TOKEN(STR_CB3_2_DCA_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_DCA_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+        subtitle text = STRING_TOKEN(STR_IOAT0_OPTIONS);
+        subtitle text = STRING_TOKEN(STR_DOUBLE_LINE);
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3DmaEn[16],
+                prompt          = STRING_TOKEN(STR_CB3_20_DMA_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_DMA_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;                
+        endoneof;
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3NoSnoopEn[16],
+                prompt          = STRING_TOKEN(STR_CB3_20_NO_SNOOP_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_NO_SNOOP_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+        subtitle text = STRING_TOKEN(STR_IOAT1_OPTIONS);
+        subtitle text = STRING_TOKEN(STR_DOUBLE_LINE);
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3DmaEn[17],
+                prompt          = STRING_TOKEN(STR_CB3_21_DMA_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_DMA_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;                
+        endoneof;
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3NoSnoopEn[17],
+                prompt          = STRING_TOKEN(STR_CB3_21_NO_SNOOP_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_NO_SNOOP_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+        subtitle text = STRING_TOKEN(STR_IOAT2_OPTIONS);
+        subtitle text = STRING_TOKEN(STR_DOUBLE_LINE);
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3DmaEn[18],
+                prompt          = STRING_TOKEN(STR_CB3_22_DMA_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_DMA_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;                
+        endoneof;
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3NoSnoopEn[18],
+                prompt          = STRING_TOKEN(STR_CB3_22_NO_SNOOP_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_NO_SNOOP_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+        subtitle text = STRING_TOKEN(STR_IOAT3_OPTIONS);
+        subtitle text = STRING_TOKEN(STR_DOUBLE_LINE);
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3DmaEn[19],
+                prompt          = STRING_TOKEN(STR_CB3_23_DMA_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_DMA_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;                
+        endoneof;
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3NoSnoopEn[19],
+                prompt          = STRING_TOKEN(STR_CB3_23_NO_SNOOP_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_NO_SNOOP_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+        subtitle text = STRING_TOKEN(STR_IOAT4_OPTIONS);
+        subtitle text = STRING_TOKEN(STR_DOUBLE_LINE);
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3DmaEn[20],
+                prompt          = STRING_TOKEN(STR_CB3_24_DMA_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_DMA_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;                
+        endoneof;
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3NoSnoopEn[20],
+                prompt          = STRING_TOKEN(STR_CB3_24_NO_SNOOP_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_NO_SNOOP_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+        subtitle text = STRING_TOKEN(STR_IOAT5_OPTIONS);
+        subtitle text = STRING_TOKEN(STR_DOUBLE_LINE);
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3DmaEn[21],
+                prompt          = STRING_TOKEN(STR_CB3_25_DMA_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_DMA_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;                
+        endoneof;
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3NoSnoopEn[21],
+                prompt          = STRING_TOKEN(STR_CB3_25_NO_SNOOP_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_NO_SNOOP_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+        subtitle text = STRING_TOKEN(STR_IOAT6_OPTIONS);
+        subtitle text = STRING_TOKEN(STR_DOUBLE_LINE);
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3DmaEn[22],
+                prompt          = STRING_TOKEN(STR_CB3_26_DMA_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_DMA_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;                
+        endoneof;
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3NoSnoopEn[22],
+                prompt          = STRING_TOKEN(STR_CB3_26_NO_SNOOP_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_NO_SNOOP_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+        subtitle text = STRING_TOKEN(STR_IOAT7_OPTIONS);
+        subtitle text = STRING_TOKEN(STR_DOUBLE_LINE);
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3DmaEn[23],
+                prompt          = STRING_TOKEN(STR_CB3_27_DMA_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_DMA_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;                
+        endoneof;
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3NoSnoopEn[23],
+                prompt          = STRING_TOKEN(STR_CB3_27_NO_SNOOP_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_NO_SNOOP_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+        endoneof;
+#endif
+    endform; // end FORMID_IIO2IOAT,
+
+
+   //IOAT3 configuration
+   form formid = VFR_FORMID_IIO3IOAT,
+      title = STRING_TOKEN(STR_IIO_IOAT3_FORM);
+
+#if (MAX_SOCKET > 3)
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3DcaEn[3],
+                prompt          = STRING_TOKEN(STR_CB3_3_DCA_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_DCA_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED | DEFAULT | MANUFACTURING;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+        subtitle text = STRING_TOKEN(STR_IOAT0_OPTIONS);
+        subtitle text = STRING_TOKEN(STR_DOUBLE_LINE);
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3DmaEn[24],
+                prompt          = STRING_TOKEN(STR_CB3_30_DMA_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_DMA_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;                
+        endoneof;
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3NoSnoopEn[24],
+                prompt          = STRING_TOKEN(STR_CB3_30_NO_SNOOP_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_NO_SNOOP_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+        subtitle text = STRING_TOKEN(STR_IOAT1_OPTIONS);
+        subtitle text = STRING_TOKEN(STR_DOUBLE_LINE);
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3DmaEn[25],
+                prompt          = STRING_TOKEN(STR_CB3_31_DMA_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_DMA_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;                
+        endoneof;
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3NoSnoopEn[25],
+                prompt          = STRING_TOKEN(STR_CB3_31_NO_SNOOP_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_NO_SNOOP_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+        subtitle text = STRING_TOKEN(STR_IOAT2_OPTIONS);
+        subtitle text = STRING_TOKEN(STR_DOUBLE_LINE);
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3DmaEn[26],
+                prompt          = STRING_TOKEN(STR_CB3_32_DMA_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_DMA_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;                
+        endoneof;
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3NoSnoopEn[26],
+                prompt          = STRING_TOKEN(STR_CB3_32_NO_SNOOP_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_NO_SNOOP_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+        subtitle text = STRING_TOKEN(STR_IOAT3_OPTIONS);
+        subtitle text = STRING_TOKEN(STR_DOUBLE_LINE);
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3DmaEn[27],
+                prompt          = STRING_TOKEN(STR_CB3_33_DMA_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_DMA_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;                
+        endoneof;
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3NoSnoopEn[27],
+                prompt          = STRING_TOKEN(STR_CB3_33_NO_SNOOP_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_NO_SNOOP_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+        subtitle text = STRING_TOKEN(STR_IOAT4_OPTIONS);
+        subtitle text = STRING_TOKEN(STR_DOUBLE_LINE);
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3DmaEn[28],
+                prompt          = STRING_TOKEN(STR_CB3_34_DMA_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_DMA_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;                
+        endoneof;
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3NoSnoopEn[28],
+                prompt          = STRING_TOKEN(STR_CB3_34_NO_SNOOP_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_NO_SNOOP_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+        subtitle text = STRING_TOKEN(STR_IOAT5_OPTIONS);
+        subtitle text = STRING_TOKEN(STR_DOUBLE_LINE);
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3DmaEn[29],
+                prompt          = STRING_TOKEN(STR_CB3_35_DMA_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_DMA_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;                
+        endoneof;
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3NoSnoopEn[29],
+                prompt          = STRING_TOKEN(STR_CB3_35_NO_SNOOP_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_NO_SNOOP_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+        subtitle text = STRING_TOKEN(STR_IOAT6_OPTIONS);
+        subtitle text = STRING_TOKEN(STR_DOUBLE_LINE);
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3DmaEn[30],
+                prompt          = STRING_TOKEN(STR_CB3_36_DMA_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_DMA_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;                
+        endoneof;
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3NoSnoopEn[30],
+                prompt          = STRING_TOKEN(STR_CB3_36_NO_SNOOP_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_NO_SNOOP_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+        subtitle text = STRING_TOKEN(STR_NULL_STRING);
+        subtitle text = STRING_TOKEN(STR_IOAT7_OPTIONS);
+        subtitle text = STRING_TOKEN(STR_DOUBLE_LINE);
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3DmaEn[31],
+                prompt          = STRING_TOKEN(STR_CB3_37_DMA_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_DMA_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;                
+        endoneof;
+
+        oneof varid     = SOCKET_IIO_CONFIGURATION.Cb3NoSnoopEn[31],
+                prompt          = STRING_TOKEN(STR_CB3_37_NO_SNOOP_ENABLE_PROMPT),
+                help            = STRING_TOKEN(STR_CB3_NO_SNOOP_ENABLE_HELP),
+                option text     = STRING_TOKEN(STR_DISABLE),    value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+                option text     = STRING_TOKEN(STR_ENABLE),     value = 1, flags = RESET_REQUIRED;
+        endoneof;
+#endif
+  endform;  //end IIO3 IOAT
+
+#include "IioDfxSetup.hfr"
+#include "IioPcieSetup.hfr"
+

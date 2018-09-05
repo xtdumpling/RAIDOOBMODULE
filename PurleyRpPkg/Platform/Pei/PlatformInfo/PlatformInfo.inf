@@ -1,0 +1,96 @@
+## @file
+#  PlatformInfo PEIM
+#
+#  Copyright (c) 2009 - 2016, Intel Corporation. All rights reserved.<BR>
+#
+#  This program and the accompanying materials
+#  are licensed and made available under the terms and conditions of the BSD License
+#  which accompanies this distribution. The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.php
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = PlatformInfo
+  FILE_GUID                      = 34CC6167-7AE7-403e-8AB2-23837F398A30
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = PlatformInfoInit
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32
+#
+
+[Sources]
+  PlatformInfo.c
+  PlatformInfo.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  CpPlatPkg/CpPlatPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  PurleyRpPkg/PlatformPkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+# APTIOV_SERVER_OVERRIDE_RC_START
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec    #Setting value of Pci64BitResourceAllocation based on Above4gDecode setup control from PCI bus driver
+  AmiCRBPkg/AmiCRBPkg.dec     #Added to use AmiPlatformHooksLib.
+# APTIOV_SERVER_OVERRIDE_RC_END
+
+[LibraryClasses]
+  PeimEntryPoint
+  PcdLib
+  DebugLib
+  HobLib
+  IoLib
+  PlatformHooksLib
+  PchPlatformLib
+  ReportStatusCodeLib
+  GpioLib
+  GpioPrivateLib
+  SetupLib
+  PchGbeLib
+# APTIOV_SERVER_OVERRIDE_RC_START : Added to use AmiPlatformHooksLib.
+  AmiPlatformHooksLib
+# APTIOV_SERVER_OVERRIDE_RC_END : Added to use AmiPlatformHooksLib.
+
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+  gOemSkuTokenSpaceGuid.PcdOemSkuSubBoardID
+
+[FixedPcd]
+  gCpPlatFlashTokenSpaceGuid.PcdFlashSize
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[Guids]
+  gEfiPlatformInfoGuid
+  gEfiSetupVariableGuid
+  gEfiSocketMpLinkVariableGuid
+  gEfiSocketMemoryVariableGuid
+  gEfiSocketIioVariableGuid
+  gEfiSocketCommonRcVariableGuid
+  gEfiSocketProcessorCoreVarGuid
+
+[Ppis]
+  gPeiSpiPpiGuid
+  gEfiPeiReadOnlyVariable2PpiGuid
+  gPeiSpiSoftStrapsPpiGuid
+
+[Depex]
+    gPeiSpiPpiGuid AND
+    gEfiPciCfg2PpiGuid AND
+    gEfiPeiReadOnlyVariable2PpiGuid
+
+
+

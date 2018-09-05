@@ -1,0 +1,32 @@
+TOKEN
+	Name  = "CpuIo_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable CpuIo support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+INFComponent
+	Name  = "CpuIoPei"
+	File  = "CpuIoPei/CpuIoPei.inf"
+	Package  = "UefiCpuPkg"
+	ModuleTypes  = "PEIM"
+End
+
+INFComponent
+	Name  = "CpuIo2Dxe"
+	File  = "CpuIo2Dxe/CpuIo2Dxe.inf"
+	Package  = "UefiCpuPkg"
+	ModuleTypes  = "DXE_DRIVER"
+End
+
+INFComponent
+	Name  = "CpuIo2Smm"
+	File  = "CpuIo2Smm/CpuIo2Smm.inf"
+	Package  = "UefiCpuPkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "SMM_SUPPORT" "=" "1"
+End
+

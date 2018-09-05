@@ -1,0 +1,488 @@
+TOKEN
+	Name  = "LibraryInstances_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable LibraryInstances support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "AMI_SMM_CORE_PLATFORM_HOOK_LIB_COMMA"
+	Value  = ","
+	Help  = "This strange token is used by the SDL template expression in AmiSmmCorePlatformHooksTemplate.h.\DO NOT CHANGE!"
+	TokenType = Expression
+	Lock = Yes
+End
+
+ELINK
+	Name  = "PLATFORMHOOK_BEFORE_AFTER_SMMDISPATCH"
+	Help  = "The child eLinks are hook functions that will be called before and after SMI processing.\Function interface is defined by AMI_SMM_CORE_PLATFORM_HOOK_BEFORE_AFTER_SMMDISPATCH type in AmiSmmCorePlatformHooks.h."
+	InvokeOrder = ReplaceParent
+End
+
+OUTPUTREGISTER
+	Name  = "AMI_SMM_CORE_PLATFORM_HOOKS"
+	Path  = "Build"
+	File  = "AmiSmmCorePlatformHooks.h"
+	Template  = "SmmCorePlatformHookLib/AmiSmmCorePlatformHooksTemplate.h"
+	Token = "SMM_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "DriverNameLib"
+	File  = "DriverNameLib/DriverNameLib.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "DXE_CORE"
+End
+
+INFComponent
+	Name  = "ResetNotAvailableYetLib"
+	File  = "ResetNotAvailableYetLib/ResetNotAvailableYetLib.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "DXE_CORE"
+End
+
+INFComponent
+	Name  = "AmiSdlLib"
+	File  = "AmiSdlLib/AmiSdlLib.inf"
+	Package  = "AmiModulePkg"
+End
+
+INFComponent
+	Name  = "AmiHiiUpdateLib"
+	File  = "AmiHiiUpdateLib/AmiHiiUpdateLib.inf"
+	Package  = "AmiModulePkg"
+End
+
+INFComponent
+	Name  = "AmiAcpiCpuLib"
+	File  = "AmiAcpiCpuLib/AmiAcpiCpuLib.inf"
+	Package  = "AmiModulePkg"
+End
+
+INFComponent
+	Name  = "AmiPciAccessCspBaseLib"
+	File  = "AmiPciAccessCspBaseLib/AmiPciAccessCspBaseLib.inf"
+	Package  = "AmiModulePkg"
+End
+
+INFComponent
+	Name  = "DxeCapsuleLib"
+	File  = "CapsuleLib/DxeCapsuleLib.inf"
+	Package  = "AmiModulePkg"
+End
+
+INFComponent
+	Name  = "PeiCapsuleLib"
+	File  = "CapsuleLib/PeiCapsuleLib.inf"
+	Package  = "AmiModulePkg"
+End
+
+INFComponent
+	Name  = "PeiAmiRomLayoutLib"
+	File  = "AmiRomLayout/PeiAmiRomLayoutLib.inf"
+	Package  = "AmiModulePkg"
+End
+
+INFComponent
+	Name  = "DxeAmiRomLayoutLib"
+	File  = "AmiRomLayout/DxeAmiRomLayoutLib.inf"
+	Package  = "AmiModulePkg"
+End
+
+INFComponent
+	Name  = "RuntimeAmiRomLayoutLib"
+	File  = "AmiRomLayout/RuntimeAmiRomLayoutLib.inf"
+	Package  = "AmiModulePkg"
+End
+
+INFComponent
+	Name  = "SmmAmiRomLayoutLib"
+	File  = "AmiRomLayout/SmmAmiRomLayoutLib.inf"
+	Package  = "AmiModulePkg"
+End
+
+INFComponent
+	Name  = "DxeCoreAmiPerformanceProfilingLib"
+	File  = "DxeCoreAmiPerformanceProfilingLib/DxeCoreAmiPerformanceProfilingLib.inf"
+	Package  = "AmiModulePkg"
+End
+
+INFComponent
+	Name  = "SmmCoreAmiPerformanceProfilingLib"
+	File  = "SmmCoreAmiPerformanceProfilingLib/SmmCoreAmiPerformanceProfilingLib.inf"
+	Package  = "AmiModulePkg"
+End
+
+INFComponent
+	Name  = "DxeAmiPerformanceProfilingLib"
+	File  = "DxeAmiPerformanceProfilingLib/DxeAmiPerformanceProfilingLib.inf"
+	Package  = "AmiModulePkg"
+End
+
+INFComponent
+	Name  = "PeiAmiPerformanceProfilingLib"
+	File  = "PeiAmiPerformanceProfilingLib/PeiAmiPerformanceProfilingLib.inf"
+	Package  = "AmiModulePkg"
+End
+
+INFComponent
+	Name  = "SmmAmiPerformanceProfilingLib"
+	File  = "SmmAmiPerformanceProfilingLib/SmmAmiPerformanceProfilingLib.inf"
+	Package  = "AmiModulePkg"
+End
+
+INFComponent
+	Name  = "DxeAmiDebugLib"
+	File  = "DxeAmiDebugLib/DxeAmiDebugLib.inf"
+	Package  = "AmiModulePkg"
+End
+
+INFComponent
+	Name  = "PeiAmiDebugLib"
+	File  = "PeiAmiDebugLib/PeiAmiDebugLib.inf"
+	Package  = "AmiModulePkg"
+End
+
+INFComponent
+	Name  = "SmmAmiDebugLib"
+	File  = "SmmAmiDebugLib/SmmAmiDebugLib.inf"
+	Package  = "AmiModulePkg"
+End
+
+INFComponent
+	Name  = "RuntimeAmiDebugLib"
+	File  = "RuntimeAmiDebugLib/RuntimeAmiDebugLib.inf"
+	Package  = "AmiModulePkg"
+End
+
+INFComponent
+	Name  = "DxeCoreAmiDebugLib"
+	File  = "DxeCoreAmiDebugLib/DxeCoreAmiDebugLib.inf"
+	Package  = "AmiModulePkg"
+End
+
+INFComponent
+	Name  = "PeiCoreAmiDebugLib"
+	File  = "PeiCoreAmiDebugLib/PeiCoreAmiDebugLib.inf"
+	Package  = "AmiModulePkg"
+End
+
+INFComponent
+	Name  = "SmmCoreAmiDebugLib"
+	File  = "SmmCoreAmiDebugLib/SmmCoreAmiDebugLib.inf"
+	Package  = "AmiModulePkg"
+End
+
+INFComponent
+	Name  = "SmmAmiBufferValidationLib"
+	File  = "SmmAmiBufferValidationLib/SmmAmiBufferValidationLib.inf"
+	Package  = "AmiModulePkg"
+	Token = "SMM_SUPPORT" "=" "1"
+End
+
+INFComponent
+    Name  = "SmmCoreAmiBufferValidationLib"
+    File  = "SmmCoreAmiBufferValidationLib/SmmCoreAmiBufferValidationLib.inf"
+    Package  = "AmiModulePkg"
+    Token = "SMM_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "DxeAmiFlashLibCompat"
+	File  = "AmiFlashLib/DxeAmiFlashLibCompat.inf"
+	Package  = "AmiModulePkg"
+End
+
+INFComponent
+	Name  = "RuntimeAmiFlashLibCompat"
+	File  = "AmiFlashLib/RuntimeAmiFlashLibCompat.inf"
+	Package  = "AmiModulePkg"
+End
+
+INFComponent
+	Name  = "DxeAmiImageTypeLib"
+	File  = "DxeAmiImageTypeLib/DxeAmiImageTypeLib.inf"
+	Package  = "AmiModulePkg"
+End
+
+INFComponent
+	Name  = "BaseAmiBeepLibNull"
+	File  = "BaseAmiBeepLibNull/BaseAmiBeepLibNull.inf"
+	Package  = "AmiModulePkg"
+End
+
+INFComponent
+	Name  = "DxeS3BootScriptLibS3SaveStateProtocol"
+	File  = "S3BootScriptLibS3SaveStateProtocol/DxeS3BootScriptLibS3SaveStateProtocol.inf"
+	Package  = "AmiModulePkg"
+End
+
+INFComponent
+	Name  = "SmmCorePlatformHookLib"
+	File  = "SmmCorePlatformHookLib/SmmCorePlatformHookLib.inf"
+	Package  = "AmiModulePkg"
+	Token = "SMM_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "SmmS3BootScriptLibS3SmmSaveStateProtocol"
+	File  = "S3BootScriptLibS3SaveStateProtocol/SmmS3BootScriptLibS3SmmSaveStateProtocol.inf"
+	Package  = "AmiModulePkg"
+	Token = "SMM_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "AmiSmmCapsuleLib"
+	File  = "AmiSmmCapsuleLib/AmiSmmCapsuleLib.inf"
+	Package  = "AmiModulePkg"
+End
+
+INFComponent
+	Name  = "DxeAmiConnectPolicyLib"
+	File  = "DxeAmiConnectPolicyLib/DxeAmiConnectPolicyLib.inf"
+	Package  = "AmiModulePkg"
+End
+
+INFComponent
+    Name  = "SmmMemLibAmiBufferValidation"
+    File  = "SmmMemLibAmiBufferValidation/SmmMemLibAmiBufferValidation.inf"
+    Package  = "AmiModulePkg"
+    Token = "SMM_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "DriverNameLib"
+	Instance  = "AmiModulePkg.DriverNameLib"
+	ModuleTypes  = "DXE_CORE"
+End
+
+LibraryMapping
+	Class  = "ResetNotAvailableYetLib"
+	Instance  = "AmiModulePkg.ResetNotAvailableYetLib"
+	ModuleTypes  = "DXE_CORE"
+End
+
+LibraryMapping
+	Class  = "AmiSdlLib"
+	Instance  = "AmiModulePkg.AmiSdlLib"
+	ModuleTypes  = "DXE_DRIVER UEFI_DRIVER DXE_SMM_DRIVER"
+End
+
+LibraryMapping
+	Class  = "AmiHiiUpdateLib"
+	Instance  = "AmiModulePkg.AmiHiiUpdateLib"
+	ModuleTypes  = "DXE_DRIVER UEFI_DRIVER"
+End
+
+LibraryMapping
+	Class  = "PciAccessCspLib"
+	Instance  = "AmiModulePkg.AmiPciAccessCspBaseLib"
+	ModuleTypes  = "DXE_DRIVER UEFI_DRIVER DXE_SMM_DRIVER"
+End
+
+LibraryMapping
+	Class  = "AmiAcpiCpuLib"
+	Instance  = "AmiModulePkg.AmiAcpiCpuLib"
+	ModuleTypes  = "DXE_DRIVER"
+End
+
+LibraryMapping
+	Class  = "CapsuleLib"
+	Instance  = "AmiModulePkg.DxeCapsuleLib"
+	ModuleTypes  = "DXE_DRIVER DXE_RUNTIME_DRIVER"
+End
+
+LibraryMapping
+	Class  = "CapsuleLib"
+	Instance  = "AmiModulePkg.PeiCapsuleLib"
+	ModuleTypes  = "PEIM"
+End
+
+LibraryMapping
+	Class  = "AmiRomLayoutLib"
+	Instance  = "AmiModulePkg.PeiAmiRomLayoutLib"
+	ModuleTypes  = "PEI_CORE PEIM"
+End
+
+LibraryMapping
+	Class  = "AmiRomLayoutLib"
+	Instance  = "AmiModulePkg.DxeAmiRomLayoutLib"
+	ModuleTypes  = "DXE_CORE DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER"
+End
+
+LibraryMapping
+	Class  = "AmiRomLayoutLib"
+	Instance  = "AmiModulePkg.RuntimeAmiRomLayoutLib"
+	ModuleTypes  = "DXE_RUNTIME_DRIVER"
+End
+
+LibraryMapping
+	Class  = "AmiRomLayoutLib"
+	Instance  = "AmiModulePkg.SmmAmiRomLayoutLib"
+	ModuleTypes  = "SMM_CORE DXE_SMM_DRIVER"
+End
+
+LibraryMapping
+	Class  = "AmiPerformanceProfilingLib"
+	Instance  = "AmiModulePkg.DxeCoreAmiPerformanceProfilingLib"
+	ModuleTypes  = "DXE_CORE"
+End
+
+LibraryMapping
+	Class  = "AmiPerformanceProfilingLib"
+	Instance  = "AmiModulePkg.SmmCoreAmiPerformanceProfilingLib"
+	ModuleTypes  = "SMM_CORE"
+End
+
+LibraryMapping
+	Class  = "AmiPerformanceProfilingLib"
+	Instance  = "AmiModulePkg.DxeAmiPerformanceProfilingLib"
+	ModuleTypes  = "DXE_DRIVER DXE_RUNTIME_DRIVER DXE_SAL_DRIVER UEFI_APPLICATION UEFI_DRIVER"
+End
+
+LibraryMapping
+	Class  = "AmiPerformanceProfilingLib"
+	Instance  = "AmiModulePkg.PeiAmiPerformanceProfilingLib"
+	ModuleTypes  = "PEIM PEI_CORE SEC"
+End
+
+LibraryMapping
+	Class  = "AmiPerformanceProfilingLib"
+	Instance  = "AmiModulePkg.SmmAmiPerformanceProfilingLib"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "AmiModulePkg.SmmCoreAmiPerformanceProfilingLib"
+	Override  = "MdeModulePkg.PiSmmCore"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "AmiModulePkg.DxeCoreAmiPerformanceProfilingLib"
+	Override  = "MdeModulePkg.DxeMain"
+End
+
+LibraryMapping
+	Class  = "DebugLib"
+	Instance  = "AmiModulePkg.DxeAmiDebugLib"
+	ModuleTypes  = "DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER"
+	Token = "STATUS_CODE_VERSION" ">" "17"
+End
+
+LibraryMapping
+	Class  = "DebugLib"
+	Instance  = "AmiModulePkg.PeiAmiDebugLib"
+	ModuleTypes  = "PEIM"
+	Token = "STATUS_CODE_VERSION" ">" "17"
+End
+
+LibraryMapping
+	Class  = "DebugLib"
+	Instance  = "AmiModulePkg.SmmAmiDebugLib"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "STATUS_CODE_VERSION" ">" "17"
+End
+
+LibraryMapping
+	Class  = "DebugLib"
+	Instance  = "AmiModulePkg.RuntimeAmiDebugLib"
+	ModuleTypes  = "DXE_RUNTIME_DRIVER"
+	Token = "STATUS_CODE_VERSION" ">" "17"
+End
+
+LibraryMapping
+	Class  = "DebugLib"
+	Instance  = "AmiModulePkg.DxeCoreAmiDebugLib"
+	ModuleTypes  = "DXE_CORE"
+	Token = "STATUS_CODE_VERSION" ">" "17"
+End
+
+LibraryMapping
+	Class  = "DebugLib"
+	Instance  = "AmiModulePkg.PeiCoreAmiDebugLib"
+	ModuleTypes  = "PEI_CORE"
+	Token = "STATUS_CODE_VERSION" ">" "17"
+End
+
+LibraryMapping
+	Class  = "DebugLib"
+	Instance  = "AmiModulePkg.SmmCoreAmiDebugLib"
+	ModuleTypes  = "SMM_CORE"
+	Token = "STATUS_CODE_VERSION" ">" "17"
+End
+
+LibraryMapping
+	Class  = "AmiBufferValidationLib"
+	Instance  = "AmiModulePkg.SmmAmiBufferValidationLib"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "SMM_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+    Class  = "AmiBufferValidationLib"
+    Instance  = "AmiModulePkg.SmmCoreAmiBufferValidationLib"
+    ModuleTypes  = "SMM_CORE"
+    Token = "SMM_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "AmiFlashLib"
+	Instance  = "AmiModulePkg.DxeAmiFlashLibCompat"
+	ModuleTypes  = "DXE_DRIVER UEFI_DRIVER DXE_SMM_DRIVER DXE_CORE SMM_CORE UEFI_APPLICATION"
+End
+
+LibraryMapping
+	Class  = "AmiFlashLib"
+	Instance  = "AmiModulePkg.RuntimeAmiFlashLibCompat"
+	ModuleTypes  = "DXE_RUNTIME_DRIVER"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "AmiModulePkg.DxeAmiImageTypeLib"
+	Override  = "MdeModulePkg.SecurityStubDxe"
+End
+
+LibraryMapping
+	Class  = "AmiBeepLib"
+	Instance  = "AmiModulePkg.BaseAmiBeepLibNull"
+End
+
+LibraryMapping
+	Class  = "S3BootScriptLib"
+	Instance  = "AmiModulePkg.DxeS3BootScriptLibS3SaveStateProtocol"
+	ModuleTypes  = "DXE_CORE DXE_DRIVER DXE_RUNTIME_DRIVER UEFI_APPLICATION UEFI_DRIVER"
+	Token = "ACPI_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "S3BootScriptLib"
+	Instance  = "AmiModulePkg.SmmS3BootScriptLibS3SmmSaveStateProtocol"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "ACPI_SUPPORT" "=" "1"
+	Token = "SMM_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "SmmCorePlatformHookLib"
+	Instance  = "AmiModulePkg.SmmCorePlatformHookLib"
+	ModuleTypes  = "SMM_CORE"
+	Token = "SMM_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "AmiSmmCapsuleLib"
+	Instance  = "AmiModulePkg.AmiSmmCapsuleLib"
+	Token = "SMM_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "NULL"
+	Instance  = "AmiModulePkg.DxeAmiConnectPolicyLib"
+	Override  = "MdeModulePkg.SecurityStubDxe"
+End

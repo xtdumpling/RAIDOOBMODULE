@@ -1,0 +1,49 @@
+## @file
+#  PCI Dynamic Setup Driver implementation
+#
+## CONSUMES
+
+[Defines]
+  INF_VERSION = 0x00010005
+  VERSION_STRING = 1.0
+  BASE_NAME = PciDynamicSetup
+  MODULE_TYPE = DXE_DRIVER
+  FILE_GUID = 2CE5604F-A982-4d2e-8FD0-D1600C2E1515
+  ENTRY_POINT = PciSetupEntryPoint
+  UEFI_HII_RESOURCE_SECTION = TRUE
+
+[Sources]
+  PciDynamicSetup.c
+  PciDynamicSetupPrivate.h
+  PciDynamicSetup.uni
+  PciDynamicSetup.vfr
+
+[LibraryClasses]
+  AmiDxeLib
+  UefiDriverEntryPoint
+  HiiLib
+  AmiSdlLib
+  AmiPciBusLib
+  AmiHiiUpdateLib
+  
+[Protocols]
+  gAmiBoardInfo2ProtocolGuid  
+  gAmiBoardPciInitProtocolGuid
+  gEfiPciIoProtocolGuid
+  gEfiPciIoProtocolGuid
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+
+[Depex]
+  gAmiBoardInfo2ProtocolGuid AND
+  gEfiHiiDatabaseProtocolGuid AND
+  gEfiPciIoProtocolGuid
+
+[BuildOptions]
+*_*_*_BUILD_FLAGS=-s
+
+

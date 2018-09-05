@@ -1,0 +1,80 @@
+;**********************************************************************
+;**********************************************************************
+;**                                                                  **
+;**        (C)Copyright 1985-2013, American Megatrends, Inc.         **
+;**                                                                  **
+;**                       All Rights Reserved.                       **
+;**                                                                  **
+;**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+;**                                                                  **
+;**                       Phone: (770)-246-8600                      **
+;**                                                                  **
+;**********************************************************************
+;**********************************************************************
+; $Header: /Alaska/SOURCE/Modules/CSM/Generic/RT32/mac32.mac 1     12/12/07 12:44p Olegi $
+;
+; $Revision: 1 $
+;
+; $Date: 12/12/07 12:44p $
+;*****************************************************************;
+;*****************************************************************;
+
+defproc	macro procname
+ifndef RT32
+	&procname&_far proc far public
+	call	&procname
+	ret
+	&procname&_far endp
+
+	&procname proc near public
+else
+	&procname&_32 proc near public
+endif
+endm
+
+endproc	macro procname
+ifndef RT32
+	&procname endp
+else
+	&procname&_32 endp
+endif
+endm
+
+
+extproc macro procname
+ifndef RT32
+	EXTERN &procname : near
+else
+	EXTERN &procname&_32 : near32
+endif
+endm
+
+extwproc macro procname, dproc
+ifndef RT32
+	EXTERN &procname(&dproc) : near
+else
+	EXTERN &procname&_32(&dproc) : near32
+endif
+endm
+
+callproc macro procname
+ifndef RT32
+	call &procname
+else
+	call &procname&_32
+endif
+endm
+
+;**********************************************************************
+;**********************************************************************
+;**                                                                  **
+;**        (C)Copyright 1985-2013, American Megatrends, Inc.         **
+;**                                                                  **
+;**                       All Rights Reserved.                       **
+;**                                                                  **
+;**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+;**                                                                  **
+;**                       Phone: (770)-246-8600                      **
+;**                                                                  **
+;**********************************************************************
+;**********************************************************************

@@ -1,0 +1,34 @@
+
+
+[Defines]
+INF_VERSION = 0x00010015
+VERSION_STRING = 1.0
+BASE_NAME = EzportPlus
+MODULE_TYPE = BASE
+LIBRARY_CLASS = EzportPlus
+
+[Sources]
+ezportplus.c
+ezportplus.h
+stylecommon.c
+style.h
+style.c
+
+[Packages]
+  AmiTsePkg/AmiTsePkg.dec
+  AmiTsePkg/AmiTsePrivatePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  MdePkg/MdePkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+
+  
+[LibraryClasses]
+
+  
+[BuildOptions]
+MSFT:*_*_*_CC_FLAGS = /DTSE_FOR_APTIO_4_50
+GCC:*_*_*_CC_FLAGS = -DTSE_FOR_APTIO_4_50  
+  

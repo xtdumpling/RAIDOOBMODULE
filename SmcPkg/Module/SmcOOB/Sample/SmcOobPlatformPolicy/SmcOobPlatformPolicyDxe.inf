@@ -1,0 +1,93 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.03
+#    Bug Fix:  Add a interface to hook updatevariable before.
+#    Reason:
+#    Auditor:  Durant Lin
+#    Date:     Jan/17/2018
+#
+#  Rev. 1.02
+#    Bug Fix : N/A
+#    Reason  : Isolate PciLib from OOB to OobLibraryProtocol, since different
+#              platform will cause hang up issue.
+#    Auditor : Durant Lin
+#    Date    : Jun/02/2018
+#
+#  Rev. 1.01
+#    Bug Fix : N/A
+#    Reason  : Implement a SmcOobProtocol Interface for InBand and OutBand to
+#                access Build time OobLibrary not OBJ OobLobrary. 
+#    Auditor : Durant Lin
+#    Date    : Dec/27/2017
+#
+#  Rev. 1.00
+#    Bug fixed: Initial SMC_OOB_PLATFORM_POLICY for SMC OOB module binary release.
+#    Reason   : 
+#    Auditor  : Jason Hsu
+#    Date     : Jun/09/07
+#
+#*****************************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010017
+  BASE_NAME                      = SmcOobPlatformPolicyDxe
+  FILE_GUID                      = 085DDD80-CE41-4FA8-B298-6071E8F62BC5
+  VERSION_STRING                 = 1.0
+  MODULE_TYPE                    = DXE_DRIVER
+  ENTRY_POINT                    = SmcOobPlatformPolicyDxeEntry
+
+[Sources]
+  SmcOobPlatformPolicyDxe.c
+  SmcOobPlatformPolicyDxe.h
+  SmcOobLibraryProtocol.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  SmcPkg/SmcPkg.dec
+  AmiIpmiPkg/AmiIpmiPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  SmcPkg/Module/SmcOOB/SmcOOB.dec
+  
+[LibraryClasses]
+  UefiDriverEntryPoint
+  DxeServicesTableLib
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  UefiLib
+  DebugLib
+  MemoryAllocationLib
+  BaseMemoryLib
+  PcdLib
+  SmcLib
+  SmcRomHoleLib
+  OobLibrary
+  PciLib
+  PlatformSpecificFuncLib
+
+[Protocols]
+  gSmcIpmiOemCommandSetProtocolGuid
+  gSmcRomHoleProtocolGuid
+  gOobSignalEventAfterBdsConnect
+  gSmcOobLibraryProtocolGuid
+  
+[Guids]
+  gSmcOobPlatformPolicyGuid
+  gEfiServerMgmtSetupVariableGuid
+  gSmcOobPlatformPolicyCallbackGuid
+  
+[Pcd]
+  gSmcPkgTokenSpaceGuid.PcdGetOobFileStatus0
+  gSmcPkgTokenSpaceGuid.PcdGetOobFileStatus1
+  gSmcPkgTokenSpaceGuid.PcdGetOobFileStatus2
+  gSmcPkgTokenSpaceGuid.PcdGetOobFileStatus3
+
+[Depex]
+  TRUE
+

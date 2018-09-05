@@ -1,0 +1,91 @@
+## @file
+# Module Information file for PEI DxeMePolicyUpdateLib Library
+#
+# @copyright
+# Copyright (c) 2011 - 2016, Intel Corporation. All rights reserved
+# This software and associated documentation (if any) is furnished
+# under a license and may only be used or copied in accordance
+# with the terms of the license. Except as permitted by the
+# license, no part of this software or documentation may be
+# reproduced, stored in a retrieval system, or transmitted in any
+# form or by any means without the express written consent of
+# Intel Corporation.
+# This file contains a 'Sample Driver' and is licensed as such
+# under the terms of your license agreement with Intel or your
+# vendor. This file may be modified by the user, subject to
+# the additional terms of the license agreement.
+# 
+# @par Specification Reference:
+#
+##
+
+
+[Defines]
+INF_VERSION = 0x00010017
+BASE_NAME = PeiMePolicyUpdateLib
+FILE_GUID = 6EA9585C-3C15-47da-9FFC-25E9E4EA4D0C
+VERSION_STRING = 1.0
+MODULE_TYPE = PEIM
+LIBRARY_CLASS = PeiMePolicyUpdateLib|PEIM PEI_CORE SEC
+
+
+[LibraryClasses]
+# HobLib                                  SERVER_BIOS_FLAG
+# BaseCryptLib                            SERVER_BIOS_FLAG
+# PeiPlatformHookLib                      SERVER_BIOS_FLAG
+# MmPciLib                                SERVER_BIOS_FLAG
+# CpuPlatformLib                          SERVER_BIOS_FLAG
+# IoLib                                   SERVER_BIOS_FLAG
+# EcMiscLib                               SERVER_BIOS_FLAG
+# PeiSaPolicyLib                          SERVER_BIOS_FLAG
+# ConfigBlockLib                          SERVER_BIOS_FLAG
+# PchGbeLib                               SERVER_BIOS_FLAG
+# PchInfoLib                              SERVER_BIOS_FLAG
+# PchHsioLib                              SERVER_BIOS_FLAG
+# PchPcieRpLib                            SERVER_BIOS_FLAG
+# MemoryAllocationLib                     SERVER_BIOS_FLAG
+# SerialPortParameterLib                  SERVER_BIOS_FLAG
+# PcdLib                                  SERVER_BIOS_FLAG
+# Tpm2CommandLib                          SERVER_BIOS_FLAG
+# Tpm12CommandLib                         SERVER_BIOS_FLAG
+# Tpm2DeviceLib                           SERVER_BIOS_FLAG
+# Tpm12DeviceLib                          SERVER_BIOS_FLAG
+#SetupLib                               #  SERVER_BIOS_FLAG
+MeTypeLib                              #  SERVER_BIOS_FLAG
+MeConfigLib                            #  SERVER_BIOS_FLAG
+
+[Packages]
+MdePkg/MdePkg.dec
+MdeModulePkg/MdeModulePkg.dec
+PurleySktPkg/SocketPkg.dec             #  SERVER_BIOS_FLAG
+PurleySktPkg/SouthClusterLbg/PchRcPkg.dec              #  SERVER_BIOS_FLAG
+PurleyPlatPkg/PlatPkg.dec              #  SERVER_BIOS_FLAG
+CpRcPkg/RcPlatPurley.dec               #  SERVER_BIOS_FLAG
+PurleySktPkg/Me/MePkg.dec              #  SERVER_BIOS_FLAG
+#SkylakePlatSamplePkg/PlatformPkg.dec     SERVER_BIOS_FLAG
+#ClientCommonPkg/ClientCommonPkg.dec      SERVER_BIOS_FLAG
+#SkylakeSiPkg/SiPkg.dec                   SERVER_BIOS_FLAG
+#SecurityPkg/SecurityPkg.dec              SERVER_BIOS_FLAG
+CpRcPkg/CpRcPkg.dec
+
+[Sources]
+PeiMePolicyUpdate.c
+PeiAmtPolicyUpdate.c
+# APTIOV_SERVER_OVERRIDE_RC_START
+PeiAmtPolicyUpdate.h
+PeiMePolicyUpdate.h
+# APTIOV_SERVER_OVERRIDE_RC_END
+
+[Ppis]
+gEfiPeiReadOnlyVariable2PpiGuid ## CONSUMES
+# gWdtPpiGuid ## CONSUMES  SERVER_BIOS_FLAG
+
+[Guids]
+gMeBiosExtensionSetupGuid
+gAmtForcePushPetPolicyGuid
+gEfiMeRcVariableGuid                    # SERVER_BIOS_FLAG
+#gEfiGlobalVariableGuid                   SERVER_BIOS_FLAG
+#gSetupVariableGuid                       SERVER_BIOS_FLAG
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount

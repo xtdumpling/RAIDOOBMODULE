@@ -1,0 +1,98 @@
+TOKEN
+    Name  = "TcgDxeSupport"
+    Value  = "1"
+    Help  = "Enable or Diasble TcgPeiSupport"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes
+    TargetMAK = Yes
+    Master = Yes
+    Token = "TCG2Support" "=" "1"
+End
+
+TOKEN
+    Name = "TREE_PROTOCOL_MAJOR"
+    Value = "1"
+    Help  = "Set to 0 for Intel PTT and 1 for AMD PSP device"
+    TokenType = BOOLEAN
+    TargetMAK = Yes
+    TargetH   = Yes
+End
+
+TOKEN
+    Name = "TREE_PROTOCOL_MINOR"
+    Value = "1"
+    Help  = "Set to 0 for Intel PTT and 1 for AMD PSP device"
+    TokenType = BOOLEAN
+    TargetMAK = Yes
+    TargetH   = Yes
+End
+
+TOKEN
+    Name = "TREE_STRUCTURE_VER_MAJOR"
+    Value = "1"
+    Help  = "Set to 0 for Intel PTT and 1 for AMD PSP device"
+    TokenType = BOOLEAN
+    TargetMAK = Yes
+    TargetH   = Yes
+End
+
+TOKEN
+    Name = "TREE_STRUCTURE_VER_MINOR"
+    Value = "1"
+    Help  = "Set to 0 for Intel PTT and 1 for AMD PSP device"
+    TokenType = BOOLEAN
+    TargetMAK = Yes
+    TargetH   = Yes
+End
+
+PATH
+    Name  = "TPM_20_TCG_DXE_DIR"
+End
+
+INFComponent
+    Name  = "TcgDxe"
+    File  = "TcgDxe.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_DRIVER"
+End
+
+
+MODULE
+    Help  = "Includes Tcg2Dxe.mak to Project"
+    File  = "Tcg2Dxe.mak"
+End
+
+INFComponent
+    Name  = "Tcg2Dxe"
+    File  = "../../../../Build/Tcg2Dxe.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_DRIVER"
+End
+
+FFS_FILE
+    Name  = "TcgDxe"
+    FD_AREA  = "FV_MAIN"
+    INFComponent  = "AmiModulePkg.TcgDxe"
+#    Apriori_Index  = "7"
+End
+
+FFS_FILE
+    Name  = "Tcg2Dxe"
+    FD_AREA  = "FV_MAIN"
+    INFComponent  = "AmiModulePkg.Tcg2Dxe"
+#    Apriori_Index  = "8"
+End
+
+
+INFComponent
+    Name  = "DxeTpmMeasureBootLib"
+    File  = "..\DxeTpmMeasureBootLib\DxeTpmMeasureBootLib.inf"
+    Package = "AmiModulePkg"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiModulePkg.DxeTpmMeasureBootLib"
+    Override = "MdeModulePkg.SecurityStubDxe"
+End

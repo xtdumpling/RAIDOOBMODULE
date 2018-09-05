@@ -1,0 +1,57 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+## @file
+#   This driver istalls callback notification on Flash Lock event and 
+#   cleare Capsule Upd event
+##
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+#**********************************************************************
+[Defines]
+INF_VERSION                    = 0x00010015
+BASE_NAME                      = SecFlashUpdDXE
+FILE_GUID                      = AD3D267D-50E1-4B94-95D3-1025EF5B8391
+MODULE_TYPE                    = DXE_RUNTIME_DRIVER 
+VERSION_STRING                 = 1.0
+PI_SPECIFICATION_VERSION       = 0x0001000A
+ENTRY_POINT                    = SecFlashUpdDxe_Init
+
+[Sources]
+ SecFlashUpdDxe.c
+
+[Packages]
+ MdePkg/MdePkg.dec
+ AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+ MdeModulePkg/MdeModulePkg.dec
+ AmiCryptoPkg/AmiCryptoPkg.dec # temp until gBdcConnect...Guid moved to AmiComp...pkg.dec
+
+[LibraryClasses]
+ AmiDxeLib
+ PciLib
+ UefiDriverEntryPoint
+ DebugLib
+
+[Guids]
+ gBdsConnectDriversProtocolGuid
+ gEfiCapsuleVendorGuid
+
+[Protocols]
+ gBdsAllDriversConnectedProtocolGuid
+
+[Depex]
+ TRUE
+

@@ -1,0 +1,79 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+## @file
+#
+##
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF EBC
+#
+#produced#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+
+
+[Defines]
+INF_VERSION = 0x00010005
+VERSION_STRING = 1.0
+BASE_NAME = TcgPlatformSetupPeiPolicy
+MODULE_TYPE = PEIM
+FILE_GUID = 0FE9DA53-043D-4265-A94D-FD77FEDE2EB4
+ENTRY_POINT = TcgPlatformSetupPeiPolicyEntryPoint
+
+[Sources]
+ TcgPlatformSetupPeiPolicy.c
+
+[LibraryClasses]
+ PeimEntryPoint
+ BaseLib
+ DebugLib
+ IoLib
+ HobLib
+ PeiServicesLib
+
+[Ppis]
+ gTcgPeiPolicyGuid
+ gEfiPeiReadOnlyVariable2PpiGuid
+
+[Guids]
+ gSetupVariableGuid
+ gTcgInternalflagGuid
+ gTcgPpiSyncFlagGuid
+ TcgPeiPolicyHobGuid
+
+[Packages]
+ AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+ AmiModulePkg/AmiModulePkg.dec
+ MdePkg\MdePkg.dec
+ AmiTcgPkg/AmiTcgPkg.dec
+ $(AdditionalTcgSetupPeiPolicyPackages)
+
+[Depex]
+ gEfiPeiReadOnlyVariable2PpiGuid
+ $(AdditionalTcgSetupPeiPolicyDepex)
+
+
+[BuildOptions.IA32]
+ *_*_IA32_CC_FLAGS = -DPEI_COMPILE 
+

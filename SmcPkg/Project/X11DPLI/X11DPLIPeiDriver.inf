@@ -1,0 +1,65 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.00
+#       Bug fixed:   Initialize revision
+#       Reason:      Clone from Sample folder.
+#       Auditor:     YuLin Yang
+#       Date:        Nov/21/2016
+#
+#****************************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = X11DPLIPeiDriver
+  FILE_GUID                      = 44cdfa70-2c7c-4791-9aa3-eae8777f0a8b
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = X11DPLIPeiDriverInit
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+#
+
+[Sources]
+  X11DPLIPeiDriver.c
+  X11DPLIPeiDriver.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  SmcPkg/SmcPkg.dec
+  PurleySktPkg/SocketPkg.dec
+
+[LibraryClasses]
+  AmiPeiLib
+  AmiCspLib
+  PeimEntryPoint
+  SmcCspLib
+  PciLib
+
+[Guids]
+  gProjectOwnPeiProtocolGuid
+
+[Ppis]
+  gEfiPeiReadOnlyVariable2PpiGuid
+  gEfiPeiSmbusPpiGuid	
+  gEfiPeiStallPpiGuid
+  
+[Pcd]
+  gSmcPkgTokenSpaceGuid.PcdSmcAOCLocation
+
+[Depex]
+  TRUE
+
+#**********************************************************************

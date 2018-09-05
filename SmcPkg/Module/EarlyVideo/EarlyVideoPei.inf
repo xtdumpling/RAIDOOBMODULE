@@ -1,0 +1,85 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.04
+#       Bug Fix: Fix POST hang up when set MMCFG Base to 3G.
+#       Reason : 
+#       Auditor: Isaac Hsu
+#       Date   : May/17/2017
+#
+#  Rev. 1.03
+#       Bug Fix: Set Foreground color to white and Background color to black
+#                when Changed Logo by AMI utility ChangeLogo.
+#       Reason : 
+#       Auditor: Isaac Hsu
+#       Date   : Mar/14/2017
+#
+#  Rev. 1.02
+#       Bug Fix: Early Graphic Logo Support.
+#       Reason : 
+#       Auditor: Isaac Hsu
+#       Date   : Mar/14/2017
+#
+#  Rev. 1.01
+#       Bug Fix: Implement SMC_SIMPLETEXTOUT_PROTOCOL.
+#       Reason : Use the protocol instead of the previous lib.
+#       Auditor: Yenhsin Cho
+#       Date   : May/27/2016
+#
+#  Rev. 1.00
+#       Bug fixed:   Initialize revision
+#       Reason:      Get base code from Grantley
+#       Auditor:     Salmon Chen
+#       Date:        Dec/04/2014
+#****************************************************************************
+#****************************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = EarlyVideoPei
+  FILE_GUID                      = 8bbe7de7-6ffb-4128-8c33-23852ebc7920
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = EarlyVideoPeiInit
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF EBC
+#
+
+[Sources]
+  EarlyVideoPei.c
+  EarlyVideoStatusCodePei.c
+
+[Packages]
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  MdePkg/MdePkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  SmcPkg/SmcPkg.dec
+
+[LibraryClasses]
+  PeimEntryPoint
+  VbiosPeiLib
+#  VbiosPrintLib
+  PcdLib
+
+[Guids]
+
+
+[Ppis]
+  gEfiPeiRscHandlerPpiGuid
+  gEfiEvPpiGuid
+
+[Pcd]
+  gSmcPkgTokenSpaceGuid.PcdSmcColor
+  gSmcPkgTokenSpaceGuid.PcdSmcBdsColor
+  gSmcPkgTokenSpaceGuid.PcdSmcVgaBar
+
+[Depex]
+TRUE

@@ -1,0 +1,86 @@
+#/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#
+# This file contains an 'Intel Peripheral Driver' and is
+# licensed for Intel CPUs and chipsets under the terms of your
+# license agreement with Intel or your vendor.  This file may
+# be modified by the user, subject to additional terms of the
+# license agreement
+#
+#
+# Copyright (c) 2009 - 2016, Intel Corporation. All rights reserved
+# This software and associated documentation (if any) is furnished
+# under a license and may only be used or copied in accordance
+# with the terms of the license. Except as permitted by such
+# license, no part of this software or documentation may be
+# reproduced, stored in a retrieval system, or transmitted in any
+# form or by any means without the express written consent of
+# Intel Corporation.
+
+#
+#  Module Name:
+#
+#   mpsyncdatalib.inf
+#
+#  Abstract:
+#
+#    Library for Ras module
+#
+#--------------------------------------------------------------------*/
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = BPMpsyncdataLib
+  FILE_GUID                      = A7D5980C-7A02-4b6d-8332-F7972DFAE0A5
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = MpSyncDataLib  | DXE_SMM_DRIVER
+  CONSTRUCTOR                    = MpsyncDataLibConstructor
+
+[Sources]
+  mpsyncdatalib.c
+ 
+[Packages]
+  MdePkg/MdePkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  PurleySktPkg/Override/IA32FamilyCpuPkg/IA32FamilyCpuPkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  UefiCpuPkg/UefiCpuPkg.dec
+
+  
+[LibraryClasses]
+  BaseLib
+  UefiRuntimeServicesTableLib
+  UefiBootServicesTableLib
+  DebugLib
+  UefiLib
+  BaseMemoryLib
+  SynchronizationLib
+  PcdLib
+  PrintLib
+  SerialPortLib
+    
+[Guids]
+
+[Protocols]
+  gEfiIioUdsProtocolGuid
+  gEfiMpServiceProtocolGuid
+  gEfiSmmBase2ProtocolGuid
+  gEfiCpuCsrAccessGuid
+  gEfiSmmCpuServiceProtocolGuid
+  
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[Depex]
+  gEfiSmmBase2ProtocolGuid AND  
+  gEfiIioUdsProtocolGuid AND
+  gEfiSmmCpuServiceProtocolGuid AND
+  gEfiCpuCsrAccessGuid
+    
+[BuildOptions]
+  MSFT:*_*_*_CC_FLAGS     = 
+  GCC:*_*_*_CC_FLAGS     = 
+

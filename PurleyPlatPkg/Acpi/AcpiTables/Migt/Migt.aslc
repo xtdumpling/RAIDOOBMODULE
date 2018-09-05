@@ -1,0 +1,89 @@
+/*++
+  This file contains 'Framework Code' and is licensed as such
+  under the terms of your license agreement with Intel or your
+  vendor.  This file may not be modified, except as allowed by
+  additional terms of your license agreement.
+--*/
+/*++
+
+Copyright (c) 2005 - 2012 Intel Corporation. All rights reserved
+This software and associated documentation (if any) is furnished
+under a license and may only be used or copied in accordance
+with the terms of the license. Except as permitted by such
+license, no part of this software or documentation may be
+reproduced, stored in a retrieval system, or transmitted in any
+form or by any means without the express written consent of
+Intel Corporation.
+
+
+Module Name:
+
+  Migt.c
+
+Abstract:
+
+  This file contains a structure definition for the Migration Action Interface Table (MIGT).
+
+--*/
+
+//
+// Statements that include other files
+//
+#include <Acpi/Migt.h>
+
+//
+// Please modify all values in Migt.h only.
+//
+EFI_MIGT_ACPI_DESCRIPTION_TABLE  Migt = {
+  EFI_MIGT_ACPI_TABLE_SIGNATURE,              // Signature
+  sizeof (EFI_MIGT_ACPI_DESCRIPTION_TABLE),   // Length
+  EFI_MIGT_ACPI_DESCRIPTION_TABLE_REVISION,   // Revision
+  //
+  // Checksum will be updated at runtime
+  //
+  0x00, // Checksum
+  //
+  // It is expected that these values will be updated at runtime
+  //
+  ' ',
+  ' ',
+  ' ',
+  ' ',
+  ' ',
+  ' ',
+  0,
+  EFI_MIGT_ACPI_OEM_REVISION,                   // OEM Revision
+  0,                                            // Creator ID
+  0,                                            // Creator Revision
+  //
+  // MIGT Speicific Entries
+  // Control Register GAS structure
+  //
+  EFI_MIGT_CR_ACPI_ADDRESS_SPACE_ID,            // IO Type ID.
+  EFI_MIGT_CR_ACPI_REGISTER_BIT_WIDTH,
+  EFI_MIGT_CR_ACPI_REGISTER_BIT_OFFSET,
+  EFI_ACPI_RESERVED_BYTE,
+  EFI_MIGT_CR_ACPI_SMI_ADDRESS,
+
+  MIGT_SMI_SERVICE_ID,                          // SMI Door Bell
+
+  //
+  // Action Region GAS structure
+  //
+  EFI_MIGT_AR_ACPI_ADDRESS_SPACE_ID,            // Memory Type ID
+  EFI_MIGT_AR_ACPI_REGISTER_BIT_WIDTH,
+  EFI_MIGT_AR_ACPI_REGISTER_BIT_OFFSET,
+  EFI_ACPI_RESERVED_BYTE,
+  // update during boot
+  EFI_MIGT_AR_ACPI_MEMORY_ADDRESS
+};
+
+VOID*
+ReferenceAcpiTable (
+  VOID
+  )
+
+{
+  return (VOID*)&Migt;
+}
+

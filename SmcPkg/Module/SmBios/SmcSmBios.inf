@@ -1,0 +1,86 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2015 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.01
+#    Bug Fix:  Add type 17 memory manufacturer strings override function.
+#    Reason:   
+#    Auditor:  Wayne Chen
+#    Date:     Oct/17/2014
+#
+#  Rev. 1.00
+#    Bug Fix:  Initialize revision
+#    Reason:   Get base code from Grantley
+#    Auditor:  Salmon Chen
+#    Date:     Dec/08/2014
+#
+#****************************************************************************
+#****************************************************************************
+
+[Defines]
+  INF_VERSION                   = 0x00010005
+  BASE_NAME       		= SmcSmBios
+  FILE_GUID       		= fb85101d-f422-4c8c-82c4-ef4dcd05e1bf
+  MODULE_TYPE                   = DXE_DRIVER
+  VERSION_STRING                = 1.0
+  ENTRY_POINT                   = SmcSmBiosEntryPoint
+  
+[Sources]
+  SmcSmBios.c
+  SmcSmBios.h
+  PlatformSmBios.c
+  PlatformSmBios.h
+  SmcVPD.c
+  SmcVPD.h
+  SmcSlotStatus.c
+  SmcSlotStatus.h
+  
+[Packages]  
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  IA32FamilyCpuPkg/IA32FamilyCpuPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  AmiIpmiPkg/AmiIpmiPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpPlatPkg/CpPlatPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  SmcPkg/SmcPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec  
+
+[LibraryClasses]
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  UefiDriverEntryPoint
+  UefiLib
+  PcdLib
+  DebugLib
+  AmiCspLib
+  HobLib
+  SmcLib
+  SmcCspLib
+
+[Protocols]
+  gAmiSmbiosProtocolGuid
+  gBdsAllDriversConnectedProtocolGuid
+  gEfiDxeIpmiTransportProtocolGuid
+  
+[Guids]
+  gAmiSmbiosNvramGuid
+  gSuperMDriverProtocolGuid
+  gEfiMemoryMapGuid
+
+[Pcd]
+  gSmcPkgTokenSpaceGuid.PcdSmcOBLan1BDF
+  gSmcPkgTokenSpaceGuid.PcdSmcMultiFuncLanChip1
+  gSmcPkgTokenSpaceGuid.PcdSmcAOCLocation
+  gSmcPkgTokenSpaceGuid.PcdSmcAOCExtendFlag
+
+[Depex]
+  TRUE

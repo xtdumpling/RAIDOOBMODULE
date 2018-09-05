@@ -1,0 +1,95 @@
+TOKEN
+	Name  = "OEMROMID_SUPPORT"
+	Value  = "0"
+	Help  = "Switch for Enabling OEM ROM ID Checking support in the project"
+	TokenType = Boolean
+	Master = Yes
+	Token = "OFBD_FOR_ARM_SUPPORT" "=" "0"
+End
+
+TOKEN
+	Name  = "[OEM ROM ID Sample Code Section]"
+	Help  = "See detail description in each token's help box."
+	TokenType = Expression
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "OEM_ROM_ID_SAMPLE_TEST"
+	Value  = "1"
+	Help  = "Test OEM ROM ID Function"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "OEM_ROM_ID_Address"
+	Value  = "083000h"
+	Help  = "OEM ROM ID Address."
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "OEM_ROM_ID_SAMPLE_TEST" "=" "1"
+End
+
+TOKEN
+	Name  = "OEM_ROM_ID_MAJOR"
+	Value  = "ORI_AAAA"
+	TokenType = Expression
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "OEM_ROM_ID_SAMPLE_TEST" "=" "1"
+End
+
+TOKEN
+	Name  = "OEM_ROM_ID_MINOR"
+	Value  = "K101"
+	TokenType = Expression
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "OEM_ROM_ID_SAMPLE_TEST" "=" "1"
+End
+
+TOKEN
+	Name  = "OEM_ROM_ID_SUB"
+	Value  = "00001h"
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "OEM_ROM_ID_SAMPLE_TEST" "=" "1"
+End
+
+TOKEN
+	Name  = "OEM_ROM_ID_SIZE"
+	Value  = "10h"
+	Help  = "OEM ROM ID Length depends on size of Major, Minor, Sub version IDs."
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "OEM_ROM_ID_SAMPLE_TEST" "=" "1"
+End
+
+PATH
+	Name  = "OFBD_OEMROMID_DIR"
+End
+
+ELINK
+	Name  = "$(OFBD_OEMROMID_DIR)/OemRomId.h"
+	Parent  = "OFBD_FUNC_INCLUDE_FILES"
+	InvokeOrder = BeforeParent
+End
+
+ELINK
+	Name  = "$(OFBD_OEMROMID_DIR)/OemRomId.c"
+	Parent  = "OFBD_FUNC_SOURCES_FILES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "OEMROMIDEntry,"
+	Parent  = "OFBD_INIT_FUNC_LIST"
+	Token = "OEMROMID_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+

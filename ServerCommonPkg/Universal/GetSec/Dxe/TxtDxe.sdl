@@ -1,0 +1,39 @@
+TOKEN
+	Name  = "TxtDxe_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable TxtDxe support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "TxtDxe"
+	File  = "TxtDxe.inf"
+	Package  = "ServerCommonPkg"
+	ModuleTypes  = "DXE_DRIVER"
+End
+
+LibraryMapping
+	Class  = "LocalApicLib"
+	Instance  = "UefiCpuPkg.BaseXApicX2ApicLib"
+	Override  = "ServerCommonPkg.TxtDxe"
+End
+
+LibraryMapping
+	Class  = "PlatformLtDxeLib"
+	Instance  = "PurleyPlatPkg.PlatformLtDxeLibNull"
+	Override  = "ServerCommonPkg.TxtDxe"
+End
+
+LibraryMapping
+    Class  = "LtDxeLib"
+    Instance  = "PurleyPlatPkg.LtDxeLib"
+    Override  = "ServerCommonPkg.TxtDxe"
+End
+
+RSVCHIPSET
+	Name  = "TXT_PUBLIC_PRIVATE_BASE"
+	BASEADDR  = "0xFED20000"
+	LENGTH  = "0x25000"
+	TYPE  = "EfiGcdMemoryTypeMemoryMappedIo"
+	ATTRIBUTES  = "0x8000000000000001"
+End

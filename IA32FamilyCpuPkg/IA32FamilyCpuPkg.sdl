@@ -1,0 +1,90 @@
+TOKEN
+	Name  = "IA32FamilyCpuPkg_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling IA32FamilyCpuPkg support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+INFComponent
+	Name  = "CpuConfigLib"
+	File  = "Library/CpuConfigLib/CpuConfigLib.inf"
+	Package  = "IA32FamilyCpuPkg"
+End
+
+LibraryMapping
+    Class  = "CpuConfigLib"
+    Instance  = "IA32FamilyCpuPkg.CpuConfigLib"
+End
+
+PcdMapping
+	Name  = "PcdCpuIEDEnabled"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "TRUE"
+	Arch  = "X64"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+	Token = "X64_SUPPORT" "=" "1"
+End
+
+PcdMapping
+	Name  = "PcdCpuIEDRamSize"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0x400000"
+	Arch  = "X64"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+	Token = "X64_SUPPORT" "=" "1"
+End
+
+PcdMapping
+	Name  = "PcdCpuIEDEnabled"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "TRUE"
+	Arch  = "IA32"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+	Token = "X64_SUPPORT" "=" "0"	
+End
+
+PcdMapping
+	Name  = "PcdCpuIEDRamSize"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0x400000"
+	Arch  = "IA32"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+	Token = "X64_SUPPORT" "=" "0"	
+End
+
+PcdMapping
+	Name  = "PcdCpuSmmStackSize"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0x4000"
+	Arch  = "X64"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+	Token = "X64_SUPPORT" "=" "1"
+End
+
+PcdMapping
+	Name  = "PcdCpuSmmStackSize"
+	GuidSpace  = "gEfiCpuTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0x4000"
+	Arch  = "IA32"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+	Token = "X64_SUPPORT" "=" "0"
+End

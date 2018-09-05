@@ -1,0 +1,61 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+
+## @file DxeVideoTextOut.inf
+#  DXE Driver that Produces the Protocol for the Video device 
+##
+
+[defines]
+  INF_VERSION          = 0x00010005
+  BASE_NAME            = DxeVideoTextOut
+  FILE_GUID            = 24E9A512-3A25-4cba-A0AE-67C053BDF3B6
+  MODULE_TYPE          = DXE_DRIVER
+  VERSION_STRING       = 1.0
+  ENTRY_POINT          = VideoTextOutDxeEntryPoint
+  
+[Sources]
+  DxeVideoTextOut.c
+  
+[Protocols]
+  gAmiDxeTextOutProtocolGuid 
+  gEfiGraphicsOutputProtocolGuid
+
+[Packages]  
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec 
+  AmiModulePkg/EarlyConsoleOut/AmiEarlyConsoleOutPkg.dec 
+  
+[LibraryClasses]
+  UefiDriverEntryPoint
+  AmiDxeLib  
+  MemoryAllocationLib
+  
+[Depex]
+  TRUE
+ 
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************

@@ -1,0 +1,80 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+
+TOKEN
+    Name  = "AmiPcieSegBusLib_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable AMI PCIe Segment and Bus library code support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+    Master = Yes
+End
+
+INFComponent
+    Name  = "AmiPcieSegBusNullLib"
+    File  = "AmiPcieSegBusNullLib.inf"
+    Package  = "AmiCRBPkg"
+    ModuleTypes  = "BASE"
+End
+
+LibraryMapping
+    Class  = "AmiPcieSegBusLib"
+    Instance  = "AmiCRBPkg.AmiPcieSegBusNullLib"
+End
+
+TOKEN
+    Name  = "AmiPcieSegBusPeiLib_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable AmiPcieSegBusPeiLib support in Project"
+    TokenType = Boolean
+End
+
+INFComponent
+    Name  = "AmiPcieSegBusPeiLib"
+    File  = "AmiPcieSegBusPeiLib.inf"
+    Package  = "AmiCRBPkg"
+    ModuleTypes  = "PEIM"
+    Token = "AmiPcieSegBusPeiLib_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+    Class  = "AmiPcieSegBusLib"
+    Instance  = "AmiCRBPkg.AmiPcieSegBusPeiLib"
+    ModuleTypes  = "PEIM"
+    Token = "AmiPcieSegBusPeiLib_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "AmiPcieSegBusDxeSmmLib_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable AmiPcieSegBusDxeSmmLib support in Project"
+    TokenType = Boolean
+End
+
+INFComponent
+    Name  = "AmiPcieSegBusDxeSmmLib"
+    File  = "AmiPcieSegBusDxeSmmLib.inf"
+    Package  = "AmiCRBPkg"
+    ModuleTypes  = "DXE_DRIVER DXE_RUNTIME_DRIVER SMM_CORE DXE_SMM_DRIVER UEFI_DRIVER"
+    Token = "AmiPcieSegBusDxeSmmLib_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+    Class  = "AmiPcieSegBusLib"
+    Instance  = "AmiCRBPkg.AmiPcieSegBusDxeSmmLib"
+    ModuleTypes  = "DXE_DRIVER DXE_RUNTIME_DRIVER SMM_CORE DXE_SMM_DRIVER UEFI_DRIVER"
+    Token = "AmiPcieSegBusDxeSmmLib_SUPPORT" "=" "1"
+End

@@ -1,0 +1,160 @@
+//
+//	TITLE	TEMPLATE.SSP -- SETUP UTILITY CORE TEMPLATE
+//
+//*************************************************************************
+//*************************************************************************
+//**                                                                     **
+//**        (C)Copyright 1985-2012, American Megatrends, Inc.            **
+//**                                                                     **
+//**                       All Rights Reserved.                          **
+//**                                                                     **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+//**                                                                     **
+//**                       Phone: (770)-246-8600                         **
+//**                                                                     **
+//*************************************************************************
+//*************************************************************************
+// $Header: $
+//
+// $Revision: $
+//
+// $Date: $
+//***************************************************************************
+
+//***************************************************************************
+
+EquInclude "Build\\token_win.equ"
+TokenInclude ""
+
+//---------------------------------------------------------------------------
+// General Language Elements
+//---------------------------------------------------------------------------
+
+Description = "Setup Engine Template Definitions"
+LanguageVersion = 2
+
+
+// Largest supported address is 0xFF, which is 0x100 locations
+NvramSize = MKF_MAX_MANAGED_CMOS_ADDRESS
+
+// First register that CMOS Manager will manage
+// (If not specified, the FirstRegister default value is 0x10)
+FirstRegister = MKF_FIRST_MANAGED_CMOS_ADDRESS
+
+//---------------------------------------------------------------------------
+// Setup Engine Template Language Elements
+//---------------------------------------------------------------------------
+
+
+//---------------------------------------------------------------------------
+// Control Database Language Elements
+//---------------------------------------------------------------------------
+
+// FIRST LEVEL (will contain only menuitems)
+ControlGroup (G_ROOT)
+	// EMPTY (Controls Filled in by respective SSP files in fixed order)
+EndControlGroup
+
+
+//---------------------------------------------------------------------------
+// Control Database Language Elements
+//---------------------------------------------------------------------------
+
+
+
+//---------------------------------------------------------------------------
+// Other Sections
+//---------------------------------------------------------------------------
+
+StartSourceCode ("SETUPDB.ASM")
+" "
+"	TITLE	SETUPDB.ASM -- Setup Database"
+" "
+";----------------------------------------------------------------------------"
+";	INCLUDE FILES"
+";----------------------------------------------------------------------------"
+" "
+"	INCLUDE SETUPEXT.INC"
+"	INCLUDE TOKENEQU.EQU"
+" "
+";----------------------------------------------------------------------------"
+";	SETSVR_CSEG  S E G M E N T  STARTS"
+";----------------------------------------------------------------------------"
+"SETSVR_CSEG SEGMENT PARA PUBLIC 'CODE'"
+"	ASSUME	CS:SETSVR_CSEG"
+";----------------------------------------------------------------------------"
+"	PUBLIC  _SETUPDB_SETSVR_CSEG_STARTS"
+"_SETUPDB_SETSVR_CSEG_STARTS LABEL BYTE"
+";----------------------------------------------------------------------------"
+" "
+"	BYTE '$MPT'			; Signature for the Setup Master"
+"					; Pointer Table"
+"	dw offset _SETUPDB_SETSVR_CSEG_STARTS	;Refernce point."
+" "
+";----------------------------------------------------------------------------"
+" "
+EndSourceCode
+
+StartSourceCode ("TOKENEQU.ASM")
+" "
+"	TITLE	TOKENEQU.ASM -- NVRAM TOKEN VALUES"
+" "
+";----------------------------------------------------------------------------"
+" "
+"	PUBLIC	STR_RESERVED"
+"STR_RESERVED	EQU	0FFFFh"
+" "
+";----------------------------------------------------------------------------"
+";	RUN_CSEG  S E G M E N T  STARTS"
+";----------------------------------------------------------------------------"
+"RUN_CSEG SEGMENT PARA PUBLIC 'CODE'"
+"	ASSUME	CS:RUN_CSEG"
+";----------------------------------------------------------------------------"
+"	PUBLIC  _TOKENEQU_RUN_CSEG_STARTS"
+"_TOKENEQU_RUN_CSEG_STARTS LABEL BYTE"
+";----------------------------------------------------------------------------"
+" "
+EndSourceCode
+
+
+//---------------------------------------------------------------------------
+// Internal CMOS Manager non-volatile status
+//
+//---------------------------------------------------------------------------
+
+NvramField ( CMOS_MGR_BATTERY_BAD )
+	OptionBits  = 1
+	Managed     = NO
+EndNvramField
+
+NvramField ( CMOS_MGR_CHECKSUM_BAD )
+	OptionBits  = 1
+	Managed     = NO
+EndNvramField
+
+NvramField ( CMOS_MGR_DEFAULTS_LOADED )
+	OptionBits  = 1
+	Managed     = NO
+EndNvramField
+
+NvramField ( CMOS_MGR_FIRST_BOOT_DETECTED )
+	OptionBits  = 1
+	Managed     = NO
+EndNvramField
+
+
+
+//---------------------------------------------------------------------------
+//*************************************************************************
+//*************************************************************************
+//**                                                                     **
+//**        (C)Copyright 1985-2012, American Megatrends, Inc.            **
+//**                                                                     **
+//**                       All Rights Reserved.                          **
+//**                                                                     **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+//**                                                                     **
+//**                       Phone: (770)-246-8600                         **
+//**                                                                     **
+//*************************************************************************
+//*************************************************************************

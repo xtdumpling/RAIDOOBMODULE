@@ -1,0 +1,86 @@
+## @file
+#  Component description file for the Silicon Init Post Memory module.
+#
+#@copyright
+# Copyright (c) 2013 - 2016 Intel Corporation. All rights reserved
+# This software and associated documentation (if any) is furnished
+# under a license and may only be used or copied in accordance
+# with the terms of the license. Except as permitted by the
+# license, no part of this software or documentation may be
+# reproduced, stored in a retrieval system, or transmitted in any
+# form or by any means without the express written consent of
+# Intel Corporation.
+# This file contains an 'Intel Peripheral Driver' and is uniquely
+# identified as "Intel Reference Module" and is licensed for Intel
+# CPUs and chipsets under the terms of your license agreement with
+# Intel or your vendor. This file may be modified by the user, subject
+# to additional terms of the license agreement.
+#
+#@par Specification
+#
+##
+
+
+[Defines]
+INF_VERSION = 0x00010017
+  BASE_NAME            = SiInit
+  FILE_GUID            = 299D6F8B-2EC9-4E40-9EC6-DDAA7EBF5FD9
+VERSION_STRING = 1.0
+  MODULE_TYPE          = PEIM
+  ENTRY_POINT          = SiInit
+
+
+[LibraryClasses]
+  PeimEntryPoint
+  DebugLib
+  PeiServicesLib
+  #SERVER_BIOS  SaInitLib
+  PchInitLib
+  #SERVER_BIOS  MpServiceLib
+  #SERVER_BIOS  CpuPowerOnConfigLib
+  #SERVER_BIOS  CpuInitLib
+  #SERVER_BIOS  MpServiceLib
+  #SERVER_BIOS  CpuPowerMgmtLib
+  #SERVER_BIOS  MeInitLib
+  #SERVER_BIOS  CpuS3Lib
+  #SERVER_BIOS  BiosGuardLib
+  AmtLibPei           #SERVER_BIOS
+  MeLibPei            #SERVER_BIOS
+  ActiveManagementLib #SERVER_BIOS
+
+[Packages]
+  MdePkg/MdePkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  #SERVER_BIOS SkylakeSiPkg/SkylakeSiPrivate.dec
+  PurleySktPkg/Me/MePkg.dec
+[Sources]
+SiInit.c
+# APTIOV_SERVER_OVERRIDE_RC_START : Add missing file
+SiInit.h
+# APTIOV_SERVER_OVERRIDE_RC_END : Add missing file
+
+[Ppis]
+  gEfiEndOfPeiSignalPpiGuid             ## CONSUMES
+  #SERVER_BIOS gSiPolicyPpiGuid         ## CONSUMES
+  gMePolicyPpiGuid                      ## CONSUMES #SERVER_BIOS
+
+[Guids]
+gSiPolicyHobGuid          ## CONSUMES
+
+##
+## Performance GUIDs
+##
+#SERVER_BIOS gPerfPchPostMemGuid       ## CONSUMES
+#SERVER_BIOS gPerfSaPostMemGuid        ## CONSUMES
+#SERVER_BIOS gPerfS3CpuInitPostMemGuid ## CONSUMES
+#SERVER_BIOS gPerfSaSecLockPostMemGuid ## CONSUMES
+#SERVER_BIOS gPerfCpuStrapPostMemGuid  ## CONSUMES
+#SERVER_BIOS gPerfMpPostMemGuid        ## CONSUMES
+#SERVER_BIOS gPerfCpuPostMemGuid       ## CONSUMES
+#SERVER_BIOS gPerfSaResetPostMemGuid   ## CONSUMES
+#SERVER_BIOS gPerfCpuPowerMgmtGuid     ## CONSUMES
+#SERVER_BIOS gPerfMePostMemGuid        ## CONSUMES
+#SERVER_BIOS gPerfAmtPostMemGuid       ## CONSUMES
+
+[Depex]
+  gEfiPeiMemoryDiscoveredPpiGuid

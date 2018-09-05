@@ -1,0 +1,60 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2015 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.00
+#    Bug Fix:  Initial revision.
+#    Reason:   Get base code from Grantley
+#    Auditor:  Salmon Chen
+#    Date:     Dec/01/2014
+#
+#****************************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SmcCspLib
+  FILE_GUID                      = 83ecf304-14a2-4ff7-9bd3-c827e7542a8a
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = SmcCspLib
+
+[Packages]
+  MdePkg/MdePkg.dec
+#  MdeModulePkg/MdeModulePkg.dec
+   AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+#  AmiModulePkg/AmiModulePkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  PurleySktPkg/SocketPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  AmiIpmiPkg/AmiIpmiPkg.dec
+  SmcPkg/SmcPkg.dec
+
+[LibraryClasses]
+  IoLib
+  PlatformHookLib
+  PcdLib
+  GpioLib
+  SmcLib
+  
+[Sources]
+  SmcCspLib.h
+  SmcCspLibMemory.c
+  SmcCspLibMemory.h
+  SmcCspLibSb.c
+  SmcCspLibSb.h
+  SmcCspLibBmc.c
+  SmcCspLibBmc.h
+  
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+  gSmcPkgTokenSpaceGuid.PcdSmcOBLan1BDF
+
+[Protocols]
+#  gMemInfoProtocolGuid
+
+[Guids]
+  gEfiMemoryMapGuid

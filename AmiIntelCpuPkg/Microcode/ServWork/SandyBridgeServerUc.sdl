@@ -1,0 +1,55 @@
+TOKEN
+    Name  = "SERVWORK_206DX"
+    Value  = "0"
+    Help  = "Intel(R) SandyBridge-EN -EP and -EX processors"
+    TokenType = Boolean
+    Master = Yes
+End
+
+TOKEN
+    Name  = "SERVWORK_M6D206D5"
+    Value  = "1"
+    Help  = "Intel(R) SandyBridge-EP Processor C-0 Stepping"
+    TokenType = Boolean
+    Token = "NON_PRODUCTION_MICROCODE" "=" "1"
+End
+
+TOKEN
+    Name  = "SERVWORK_M6D206D6"
+    Value  = "1"
+    Help  = "Intel(R) SandyBridge-EP Processor C-1 and M-0 Stepping"
+    TokenType = Boolean
+End
+
+TOKEN
+    Name  = "SERVWORK_M6D206D7"
+    Value  = "1"
+    Help  = "Intel(R) SandyBridge-EN -EP Processor C-2 and M-1 Stepping"
+    TokenType = Boolean
+End
+
+ELINK
+    Name  = "$(MICROCODE_SERVWORK_DIR)/M6D206D5_00000513.mcb"
+    Parent  = "MICROCODE_FILES"
+    Help  = "Intel(R) SandyBridge-EP Processor C-0 Stepping"
+    Token = "SERVWORK_M6D206D5" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(MICROCODE_SERVWORK_DIR)/M6D206D6_00000619.mcb"
+    Parent  = "MICROCODE_FILES"
+    Help  = "Intel(R) SandyBridge-EP Processor C-1 and M-0 Stepping"
+    Token = "SERVWORK_M6D206D6" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(MICROCODE_SERVWORK_DIR)/M6D206D7_00000710.mcb"
+    Parent  = "MICROCODE_FILES"
+    Help  = "Intel(R) SandyBridge-EN -EP Processor C-2 and M-1 Stepping"
+    Token = "SERVWORK_M6D206D7" "=" "1" 
+    InvokeOrder = AfterParent
+End
+
+

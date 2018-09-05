@@ -1,0 +1,62 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+
+[Defines]
+  INF_VERSION           = 0x00010005
+  VERSION_STRING        = 1.0
+  BASE_NAME             = SmcPeiSerialTextOut
+  MODULE_TYPE           = PEIM
+  FILE_GUID             = 8AF1FE4F-DB8D-43a4-AA5D-4ADE632A0FE9
+  ENTRY_POINT           = SmcPeiSerialTextOutEntry
+
+[Sources]
+  SmcPeiSerialTextOut.c
+
+[LibraryClasses]
+  PeimEntryPoint
+  PcdLib
+  AmiPeiLib
+
+[Ppis]
+  gAmiPeiTextOutPpiGuid
+  gEfiPeiReadOnlyVariable2PpiGuid         
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/EarlyConsoleOut/AmiEarlyConsoleOutPkg.dec 
+  SmcPkg/SmcPkg.dec
+   
+[Pcd]
+  gEfiMdeModulePkgTokenSpaceGuid.PcdSerialClockRate  
+  
+[Depex]
+  TRUE
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+  

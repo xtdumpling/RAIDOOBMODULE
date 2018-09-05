@@ -1,0 +1,38 @@
+TOKEN
+    Name  = "DESKTOP_406FX"
+    Value = "0"
+    Help  = "Intel(R) Broadwell-E"
+    TokenType = Boolean
+    Master = Yes
+End
+
+TOKEN
+    Name  = "DESKTOP_MEF406F0"
+    Value  = "1"
+    Help  = "Intel(R) Broadwell-E Processor L-0 stepping"
+    Token = "NON_PRODUCTION_MICROCODE" "=" "1"
+    TokenType = Boolean
+End
+
+TOKEN
+    Name  = "DESKTOP_MEF406F1"
+    Value  = "1"
+    Help  = "Intel(R) Broadwell-E Processor R-0 stepping"
+    TokenType = Boolean
+End
+
+ELINK
+    Name  = "$(MICROCODE_DESKTOP_DIR)/MEF406F0_00000010.mcb"
+    Parent  = "MICROCODE_FILES"
+    Help  = "Intel(R) Broadwell-E Processor L-0 stepping"
+    Token = "DESKTOP_MEF406F0" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(MICROCODE_DESKTOP_DIR)/MEF406F1_0B000021.mcb"
+    Parent  = "MICROCODE_FILES"
+    Help  = "Intel(R) Broadwell-E Processor R-0 stepping"
+    Token = "DESKTOP_MEF406F1" "=" "1"
+    InvokeOrder = AfterParent
+End

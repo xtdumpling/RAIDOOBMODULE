@@ -1,0 +1,114 @@
+;**********************************************************************
+;**********************************************************************
+;**                                                                  **
+;**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+;**                                                                  **
+;**                       All Rights Reserved.                       **
+;**                                                                  **
+;**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+;**                                                                  **
+;**                       Phone: (770)-246-8600                      **
+;**                                                                  **
+;**********************************************************************
+;**********************************************************************
+
+;**********************************************************************
+;<AMI_FHDR_START>
+;
+; Name: SerialBootCall.asm
+;
+; Description:  Call Back function registered for 
+;               CSM16_OEM_BEFORE_CALL_BOOT_VECTOR 
+;
+;<AMI_FHDR_END>
+;**********************************************************************
+
+
+;----------------------------------------------------------------------------
+;       INCLUDE FILES
+;----------------------------------------------------------------------------
+
+        include token.equ
+       
+;----------------------------------------------------------------------------
+;       EXTERNS USED
+;----------------------------------------------------------------------------
+
+.586p
+OEM16_CSEG SEGMENT PARA PUBLIC 'CODE' USE16
+        ASSUME cs:OEM16_CSEG, ds:OEM16_CSEG
+;-------------------------------------------------------------------------
+        PUBLIC LegcaySredirModuleStart
+LegcaySredirModuleStart LABEL BYTE
+        jmp     SHORT LegcaySredirCsm16Api
+        db      '$','S','B','C'
+        
+SreDirBin_Base_Segadd       dw      0000h ;SreDirBin Segment Address
+SreDirBin_Base_Offadd       dw      0000h ;SreDirbin offset Address
+Flag                        dw      0000h
+
+;----------------------------------------------------------------------------
+; IMPORTANT: Do not put any OEM/CHIPSET code above this, the above code and
+;            and data are at fixed locations.
+;----------------------------------------------------------------------------
+
+;-------------------------------------------------------------------------
+;                       LEGACYSREDIR_CSM16_API_Start
+;----------------------------------------------------------------------------
+; This routine is implementation of the CSM16 API #8.
+;         
+; Input:        BX - SreDirBin Segment add
+;               BX - SreDirBin  Offset add
+;               AX - Flag offset value
+;
+; Output:       None
+;
+; Register Usage: Do not destroy any register 
+;
+;----------------------------------------------------------------------------
+
+LegcaySredirCsm16Api  PROC FAR PUBLIC
+        push    bx
+        push    si
+        push    ax
+        push    es
+        push    0
+        pop     es
+        mov     si, offset SreDirBin_Base_Segadd
+        mov     bx, word ptr cs:[si]
+        mov     es, bx
+        mov     si, offset SreDirBin_Base_Offadd
+        mov     bx, word ptr cs:[si]
+        mov     si, offset Flag
+        mov     ax, word ptr cs:[si]
+        mov     si, ax
+        add     si, bx
+        mov     al, 01h
+        mov     byte ptr es:[si], al 
+
+        pop     es
+        pop     ax
+        pop     si
+        pop     bx
+
+        retf
+
+LegcaySredirCsm16Api  ENDP
+
+OEM16_CSEG ENDS
+
+END
+
+;**********************************************************************
+;**********************************************************************
+;**                                                                  **
+;**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+;**                                                                  **
+;**                       All Rights Reserved.                       **
+;**                                                                  **
+;**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+;**                                                                  **
+;**                       Phone: (770)-246-8600                      **
+;**                                                                  **
+;**********************************************************************
+;**********************************************************************

@@ -1,0 +1,93 @@
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
+
+/** @file
+ *   Setup data file that contains the boot order and boot immediate menu items
+ */
+#ifdef CONTROL_DEFINITION
+    #ifndef SEPERATOR
+    #define SEPERATOR\
+        subtitle\
+            text = STRING_TOKEN(STR_EMPTY);
+    #endif
+
+    #if EFI64
+        #define EXTERNAL_SHELL\
+            suppressif ideqvallist EFI_SHELL.Value == 1;\
+                goto EXIT_MAIN,\
+                    prompt = STRING_TOKEN(STR_EFI_SHELL),\
+                    help = STRING_TOKEN(STR_EFI_SHELL_HELP_IPF);\
+            endif;
+    #elif EFIx64
+        #define EXTERNAL_SHELL\
+            suppressif ideqvallist EFI_SHELL.Value == 1;\
+                goto EXIT_MAIN,\
+                    prompt = STRING_TOKEN(STR_EFI_SHELL),\
+                    help = STRING_TOKEN(STR_EFI_SHELL_HELP_X64);\
+            endif;
+    #else
+        #define EXTERNAL_SHELL\
+            suppressif ideqvallist EFI_SHELL.Value == 1;\
+                goto EXIT_MAIN,\
+                    prompt = STRING_TOKEN(STR_EFI_SHELL),\
+                    help = STRING_TOKEN(STR_EFI_SHELL_HELP);\
+            endif;
+    #endif
+
+    #define BOOT_NOW_LIST\
+        suppressif ideqvallist BOOT_NOW_COUNT.BootCount == 0xFFFF;\
+            goto EXIT_MAIN,\
+                prompt = STRING_TOKEN(STR_EMPTY),\
+                help = STRING_TOKEN(STR_EMPTY);\
+        endif;
+
+    #define BOOT_MANAGER_LIST\
+        suppressif ideqvallist BOOT_MANAGER.BootCount == 0xFFFF;\
+            goto EXIT_MAIN,\
+                prompt = STRING_TOKEN(STR_EMPTY),\
+                help = STRING_TOKEN(STR_EMPTY);\
+        endif;
+
+#endif // CONTROL_DEFINITION
+
+#ifdef EXIT_FORM_SET
+    #ifdef FORM_SET_ITEM
+        SEPARATOR
+        subtitle
+            text = STRING_TOKEN(STR_BOOT_OPTIONS);
+
+        #if SETUP_SHOW_ALL_BBS_DEVICES
+            BOOT_NOW_LIST
+        #else
+            BOOT_MANAGER_LIST
+        #endif
+
+        #if !Shell_SUPPORT
+            EXTERNAL_SHELL
+        #endif
+    #endif // FORM_SET_ITEM
+#endif //EXIT_FORM_SET
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************

@@ -1,0 +1,37 @@
+TOKEN
+	Name  = Pcd_SUPPORT
+	Value  = 1
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+	Help  = "Main switch to enable Pcd support in Project"
+End
+
+INFComponent
+    Name  = "PcdPei"
+    File  = "Pei/Pcd.inf"
+    Package  = "MdeModulePkg"
+    ModuleTypes  = "PEIM"
+End
+
+INFComponent
+    Name  = "PcdDxe"
+    File  = "Dxe/Pcd.inf"
+    Package  = "MdeModulePkg"
+    ModuleTypes  = "DXE_DRIVER"
+End
+
+FFS_FILE
+	Name  = "PcdPei"
+	FD_AREA  = "FV_BB"
+	INFComponent  = "MdeModulePkg.PcdPei"
+	Apriori_Index  = "1"
+End
+
+FFS_FILE
+	Name  = "PcdDxe"
+	FD_AREA  = "FV_MAIN"
+	INFComponent  = "MdeModulePkg.PcdDxe"
+	Apriori_Index  = "1"
+End

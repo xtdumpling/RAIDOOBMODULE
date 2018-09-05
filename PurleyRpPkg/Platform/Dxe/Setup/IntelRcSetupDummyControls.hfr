@@ -1,0 +1,117 @@
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2017, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
+
+//
+// @file  IntelRcSetupDummyControls.hfr 
+//
+//   Defines dummy controls in Intel RC setup form set.
+//
+
+form formid = 0xFFFF,
+    title   = STRING_TOKEN(STR_NULL_STRING);
+    suppressif TRUE;
+        oneof varid  = SOCKET_COMMONRC_CONFIGURATION.SystemRasType,
+            questionid = 0xDFF1,
+            prompt = STRING_TOKEN(STR_NULL_STRING),
+            help   = STRING_TOKEN(STR_NULL_STRING),
+            option text = STRING_TOKEN(STR_NULL_STRING),          value = 0x00,       flags = INTERACTIVE;
+        endoneof;
+        oneof varid  = SYSTEM_CONFIGURATION.PlatformOCSupport,
+            questionid = 0xDFF2,
+            prompt = STRING_TOKEN(STR_NULL_STRING),
+            help   = STRING_TOKEN(STR_NULL_STRING),
+            option text = STRING_TOKEN(STR_NULL_STRING), value = 0x00, flags = INTERACTIVE;
+        endoneof;
+        oneof varid  = SYSTEM_CONFIGURATION.BiosGuardPlatformSupported,
+            questionid = 0xDFF3,
+            prompt = STRING_TOKEN(STR_NULL_STRING),
+            help   = STRING_TOKEN(STR_NULL_STRING),
+            option text = STRING_TOKEN(STR_NULL_STRING), value = 0x00, flags = INTERACTIVE;
+        endoneof;
+        oneof varid  = SYSTEM_CONFIGURATION.AntiFlashWearoutSupported,
+            questionid = 0xDFF4,
+            prompt = STRING_TOKEN(STR_NULL_STRING),
+            help   = STRING_TOKEN(STR_NULL_STRING),
+            option text = STRING_TOKEN(STR_NULL_STRING), value = 0x00, flags = INTERACTIVE;
+        endoneof;
+        oneof varid  = SYSTEM_CONFIGURATION.FpkPortPresent[0],
+            questionid = 0xDFF5,
+            prompt = STRING_TOKEN(STR_NULL_STRING),
+            help   = STRING_TOKEN(STR_NULL_STRING),
+            option text = STRING_TOKEN(STR_NULL_STRING), value = 0x00, flags = INTERACTIVE;
+        endoneof;
+        oneof varid  = SYSTEM_CONFIGURATION.FpkPortPresent[1],
+            questionid = 0xDFF6,
+            prompt = STRING_TOKEN(STR_NULL_STRING),
+            help   = STRING_TOKEN(STR_NULL_STRING),
+            option text = STRING_TOKEN(STR_NULL_STRING), value = 0x00, flags = INTERACTIVE;
+        endoneof;
+        oneof varid  = SYSTEM_CONFIGURATION.FpkPortPresent[2],
+            questionid = 0xDFF7,
+            prompt = STRING_TOKEN(STR_NULL_STRING),
+            help   = STRING_TOKEN(STR_NULL_STRING),
+            option text = STRING_TOKEN(STR_NULL_STRING), value = 0x00, flags = INTERACTIVE;
+        endoneof;
+        oneof varid  = SYSTEM_CONFIGURATION.FpkPortPresent[3],
+            questionid = 0xDFF8,
+            prompt = STRING_TOKEN(STR_NULL_STRING),
+            help   = STRING_TOKEN(STR_NULL_STRING),
+            option text = STRING_TOKEN(STR_NULL_STRING), value = 0x00, flags = INTERACTIVE;
+        endoneof;
+#if defined(ME_SUPPORT_FLAG) && ME_SUPPORT_FLAG
+        oneof varid  = ME_RC_CONFIGURATION.MeFirmwareMode,
+            questionid = 0xDFF9,
+            prompt = STRING_TOKEN(STR_NULL_STRING),
+            help   = STRING_TOKEN(STR_NULL_STRING),
+            option text = STRING_TOKEN(STR_NULL_STRING), value = 0x00, flags = INTERACTIVE;
+        endoneof;
+#if defined(AMT_SUPPORT) && AMT_SUPPORT
+        oneof varid  = ME_RC_CONFIGURATION.MeImageType,
+            questionid = 0xDFFA,
+            prompt = STRING_TOKEN(STR_NULL_STRING),
+            help   = STRING_TOKEN(STR_NULL_STRING),
+            option text = STRING_TOKEN(STR_NULL_STRING), value = 0x00, flags = INTERACTIVE;
+        endoneof;
+        oneof varid  = ME_RC_CONFIGURATION.RemoteSessionActive,
+            questionid = 0xDFFB,
+            prompt = STRING_TOKEN(STR_NULL_STRING),
+            help   = STRING_TOKEN(STR_NULL_STRING),
+            option text = STRING_TOKEN(STR_NULL_STRING), value = 0x00, flags = INTERACTIVE;
+        endoneof;
+#endif // AMT_SUPPORT
+#if SPS_SUPPORT
+        oneof varid  = ME_RC_CONFIGURATION.MePttSupported,
+            questionid = 0xDFFC,
+            prompt = STRING_TOKEN(STR_NULL_STRING),
+            help   = STRING_TOKEN(STR_NULL_STRING),
+            option text = STRING_TOKEN(STR_NULL_STRING), value = 0x00, flags = INTERACTIVE;
+        endoneof;
+#endif // SPS_SUPPORT
+#endif // ME_SUPPORT_FLAG
+    endif;
+endform;
+
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2017, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**         5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093     **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************

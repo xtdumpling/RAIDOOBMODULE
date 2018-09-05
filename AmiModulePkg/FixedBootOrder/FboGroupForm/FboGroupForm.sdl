@@ -1,0 +1,35 @@
+TOKEN
+    Name  = "FboGroupForm_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable module part support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+    Master = Yes
+End
+
+PATH
+	Name  = "FboGroupForm_DIR"
+End
+
+ELINK
+    Name  = "$(ABS_BUILD_DIR)$(PATH_SLASH)$(PLATFORM_NAME)$(PATH_SLASH)$(TARGET)_$(TOOL_CHAIN_TAG)\X64\Build\FboGroupForm\OUTPUT"
+    Parent  = "IFR_DIR_LIST"
+    Token = "X64_SUPPORT" "=" "1"
+    InvokeOrder = BeforeParent
+End
+
+ELINK
+    Name  = "$(ABS_BUILD_DIR)$(PATH_SLASH)$(PLATFORM_NAME)$(PATH_SLASH)$(TARGET)_$(TOOL_CHAIN_TAG)\IA32\Build\FboGroupForm\OUTPUT"
+    Parent  = "IFR_DIR_LIST"
+    Token = "X64_SUPPORT" "=" "0"
+    InvokeOrder = BeforeParent
+End
+
+INFComponent
+	Name  = "FboGroupForm"
+	File  = "../../../Build/FboGroupForm.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "DXE_DRIVER"
+End

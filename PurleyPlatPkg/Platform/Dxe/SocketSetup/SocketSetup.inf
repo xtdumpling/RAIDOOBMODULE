@@ -1,0 +1,158 @@
+#
+# This file contains an 'Intel Peripheral Driver' and is
+# licensed for Intel CPUs and chipsets under the terms of your
+# license agreement with Intel or your vendor.  This file may
+# be modified by the user, subject to additional terms of the
+# license agreement
+##
+## @file
+#
+#  Copyright (c) 2012 - 2016, Intel Corporation. All rights reserved.<BR>
+#  This software and associated documentation (if any) is furnished
+#  under a license and may only be used or copied in accordance
+#  with the terms of the license. Except as permitted by such
+#  license, no part of this software or documentation may be
+#  reproduced, stored in a retrieval system, or transmitted in any
+#  form or by any means without the express written consent of
+#  Intel Corporation.
+#
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SocketSetup
+  FILE_GUID                      = 6B6FD380-2C55-42C6-98BF-CBBC5A9AA666
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = InstallSocketSetupScreen
+# APTIOV_SERVER_OVERRIDE_RC_START : change done to add SocketSetup to defaults.bin during build  
+  UEFI_HII_RESOURCE_SECTION      = TRUE
+# APTIOV_SERVER_OVERRIDE_RC_END : change done to add SocketSetup to defaults.bin during build  
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+
+[Sources]
+  SocketSetupStrings.uni
+  KtiSetupStrings.uni
+  KtiSvSetupStrings.uni
+  KtiDfxSetupStrings.uni
+  IioSetupStrings.uni
+  IioDfxSetupStrings.uni
+  MemorySetupStrings.uni
+  MemoryDfxSetupStrings.uni
+  CommonRefCodeStrings.uni
+  ProcessorSetupStrings.uni
+  # APTIOV_SERVER_OVERRIDE_RC_START : Comment out inclusion of redundant UNI file
+  #IioSetupStrings.uni
+  # APTIOV_SERVER_OVERRIDE_RC_END : Comment out inclusion of redundant UNI file
+  PowerManagmentSetupStrings.uni
+  # APTIOV_SERVER_OVERRIDE_RC_START : Include x-AMI mapping language UNI file
+  SocketSetupXAmiStringIncludes.uni
+  # APTIOV_SERVER_OVERRIDE_RC_END : Include x-AMI mapping language UNI file
+  SocketSetup.c
+  SocketSetupForms.vfr
+  CommonRefCode.hfr
+  KtiSetup.hfr
+  KtiDfxSetup.hfr
+  KtiPerLinkDfxSetup.hfr
+  KtiSvSystemConfig.hfr
+  KtiPerSocketConfig.hfr
+  KtiPerLinkSetup.hfr
+  IioSetup.hfr
+  IioDfxSetup.hfr
+  IioDfxPcieSetup.hfr
+  IioDfxPciePortSetup.hfr
+  IioPcieSetup.hfr
+  IioPciePortSetup.hfr
+  IioVmdCfgBarSetup.hfr
+  # APTIOV_SERVER_OVERRIDE_RC_START : Resolve unknown // token error
+  IioPciePortGen3Setup.hfr #// for HSX only 
+  # APTIOV_SERVER_OVERRIDE_RC_END : Resolve unknown // token error
+  MemorySetup.hfr
+  MemorySetupRas.hfr
+  MemoryDfxSetup.hfr
+  ProcessorSetup.hfr
+  ProcessorSocketSetup.hfr
+  PowerManagementSetup.hfr
+  CpuPMSAPMSocketSetup.hfr
+  CpuPMEntryCriteriaSocketSetup.hfr
+  # APTIOV_SERVER_OVERRIDE_RC_START: Defines dummy control and update value from NVRAM or HOB in order to avoid load defaults issue.
+  SocketSetupDummyControls.hfr
+  # APTIOV_SERVER_OVERRIDE_RC_END: Defines dummy control and update value from NVRAM or HOB in order to avoid load defaults issue.
+
+[Packages]
+  MdePkg/MdePkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  MdeModulePkg/MdeModulePkg.dec
+# APTIOV_SERVER_OVERRIDE_RC_START
+  #BpCommonPkg/BpCommonPkg.dec
+# APTIOV_SERVER_OVERRIDE_RC_END
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec	#SMCPKG_SUPPORT
+
+[Protocols]
+  gEfiHiiProtocolGuid                     ## CONSUMES
+  gEfiHiiConfigAccessProtocolGuid
+  gEfiSmbiosProtocolGuid
+  gEfiIioSystemProtocolGuid
+  gEfiMpServiceProtocolGuid
+  gEfiIioUdsProtocolGuid
+  # APTIOV_SERVER_OVERRIDE_RC_START : Adding HiiPackageListProtocol, HiiDatabaseProtocol guids
+  gEfiHiiPackageListProtocolGuid          ## CONSUMES
+  gEfiHiiDatabaseProtocolGuid             ## CONSUMES
+  # APTIOV_SERVER_OVERRIDE_RC_END : Adding HiiPackageListProtocol, HiiDatabaseProtocol guids
+  
+[LibraryClasses]
+  UefiDriverEntryPoint
+  BaseLib
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  DebugLib
+  UefiLib
+  PcdLib
+  PrintLib
+  HiiLib
+  UefiHiiServicesLib
+  HobLib
+  PchAlternateAccessModeLib
+  PchPlatformLib
+
+[Guids]
+  gEfiGlobalVariableGuid
+  gEfiSetupEnterGuid
+  gEfiIfrTianoGuid
+  gEfiMiscSubClassGuid
+  gEfiMemorySubClassGuid
+  gEfiSocketIioVariableGuid
+  gEfiSocketCommonRcVariableGuid
+  gEfiSocketMpLinkVariableGuid
+  gEfiSocketMemoryVariableGuid
+  gEfiMemoryMapGuid
+  gSocketPkgListGuid
+# APTIOV_SERVER_OVERRIDE_RC_START : Commenting the GUID as it is not signalled in AMI BIOS.
+#  gSignalBeforeEnterSetupGuid
+# APTIOV_SERVER_OVERRIDE_RC_END : Commenting the GUID as it is not signalled in AMI BIOS.
+  gEfiSocketPowermanagementVarGuid
+  gEfiSocketProcessorCoreVarGuid
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[Depex]
+  gEfiVariableArchProtocolGuid      AND
+  gEfiVariableWriteArchProtocolGuid AND
+  gEfiMpServiceProtocolGuid         AND
+  gEfiIioSystemProtocolGuid
+
+

@@ -1,0 +1,36 @@
+[Defines]
+INF_VERSION       = 0x00010015
+BASE_NAME         = SecureBootDXE
+FILE_GUID         = 4551F2F5-C684-4F27-936F-C7B04A5C5FF1
+MODULE_TYPE                    = DXE_RUNTIME_DRIVER 
+VERSION_STRING                 = 1.0
+PI_SPECIFICATION_VERSION       = 0x0001000A
+ENTRY_POINT                    = SecureBootMod_Init
+
+[Sources]
+SecureBoot.c
+SecureBoot.h
+
+[Packages]
+ MdePkg/MdePkg.dec
+ AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+ AmiCryptoPkg/AmiCryptoPkg.dec
+
+[LibraryClasses]
+ AmiDxeLib
+ UefiDriverEntryPoint
+
+[Guids]  
+ gEfiImageSecurityDatabaseGuid
+ gEfiGlobalVariableGuid
+ gEfiCertPkcs7Guid
+
+[Protocols]
+ gEfiFirmwareVolume2ProtocolGuid
+
+[Depex]
+TRUE
+
+[BuildOptions]
+*_*_*_CC_FLAGS = -DNO_SETUP_COMPILE
+

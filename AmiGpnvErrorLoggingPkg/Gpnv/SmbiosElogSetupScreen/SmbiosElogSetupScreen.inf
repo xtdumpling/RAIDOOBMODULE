@@ -1,0 +1,83 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+
+
+## @file SmbiosElogSetupScreen.inf
+#    INF description file for SmbiosElogSetupScreen
+##
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SmbiosElogSetupScreen
+  FILE_GUID                      = 2DDFEDFE-C2D5-43e3-9E10-46DB2C7C1F26
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = InstallErrorSetupScreen
+  UEFI_HII_RESOURCE_SECTION      = TRUE
+
+[Sources]
+  SmbiosElogSetupScreen.c
+  SmbiosElogSetupScreen.h
+ 
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiGpnvErrorLoggingPkg/AmiGpnvErrorLoggingPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint 
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  MemoryAllocationLib
+  DebugLib
+  AmiDxeLib
+  MemoryAllocationLib
+  UefiLib
+  HiiLib
+  
+[Protocols]
+  gEfiHiiStringProtocolGuid
+  gEfiHiiDatabaseProtocolGuid
+  gAmiSmbiosProtocolGuid
+  gAmiSmbiosElogSupportGuid
+  gEfiRedirElogProtocolGuid
+  gAmiEventLogsDynamicGuid
+  gAmiEventLogsHiiHandleGuid
+
+[Guids]
+ 
+[Pcd]
+ 
+[Depex]
+  gEfiHiiStringProtocolGuid AND
+  gEfiHiiDatabaseProtocolGuid AND
+  gAmiSmbiosProtocolGuid 
+  
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**         5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093     **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+  
+ 

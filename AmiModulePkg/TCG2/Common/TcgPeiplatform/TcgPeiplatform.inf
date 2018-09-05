@@ -1,0 +1,70 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+## @file
+#
+##
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = TcgPeiplatform
+  FILE_GUID                      = 6B844C5B-6B75-42ca-8E8E-1CB94412B59B
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0  
+  ENTRY_POINT                    = TcgPeiplatformEntry
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 IPF EBC
+#
+
+[Sources]
+TcgPeiplatform.c
+TcgPeiplatform.h
+  
+[Packages]
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+ AmiModulePkg/AmiModulePkg.dec
+  MdePkg/MdePkg.dec
+
+[LibraryClasses]
+  PeimEntryPoint
+  DebugLib
+  IoLib
+  AmiTcgLibPei
+  PeiServicesLib
+  TpmReportStatusCodeWrapperLibPei
+ 
+[Ppis]
+  gAmiTcgPlatformPpiAfterMem
+  gAmiTcgPlatformPpiBeforeMem
+  gEfiPeiMemoryDiscoveredPpiGuid
+  
+[Depex]
+  gAmiTcgPlatformPpiBeforeMem 
+
+
+
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************

@@ -1,0 +1,45 @@
+#*_*_IA32_CC_FLAGS              =  /GL- /Od /wd4002 /wd4267 /wd4090 /wd4334  -DPEI_BUILD -DDEBUG_TRACE
+
+
+[Defines]
+INF_VERSION = 0x00010015
+VERSION_STRING = 1.0
+BASE_NAME = ShaLib
+MODULE_TYPE = BASE
+LIBRARY_CLASS = ShaLib
+FILE_GUID = A646AB01-E90D-4da1-A2FA-9B0264287004
+
+[Sources]
+sha1.c
+sha1.h
+sha256.c
+sha256.h
+sha384.c
+sha384.h
+sha512.c
+sha512.h
+commonheader.h
+
+[Sources.IA32]
+ IA32math.c    | MSFT
+
+[LibraryClasses]
+BaseLib
+BaseMemoryLib
+DebugLib
+TcgHashIntrinsicLib
+
+[Packages]
+MdePkg/MdePkg.dec
+AmiModulePkg/AmiModulePkg.dec
+MdeModulePkg/MdeModulePkg.dec
+
+[BuildOptions.IA32]
+MSFT:DEBUG_*_IA32_CC_FLAGS   =  /GL- /Od /wd4002 /wd4267 /wd4090 /wd4334 -DDEBUG_TRACE
+MSFT:RELEASE_*_IA32_CC_FLAGS =  /GL- /Od /wd4002 /wd4267 /wd4090 /wd4334 
+
+[BuildOptions.AARCH64]
+DEBUG_GCC_AARCH64_CC_FLAGS   = -DDEBUG_TRACE=1 -D_MSC_VER -D LTM_FAST
+RELEASE_GCC_AARCH64_CC_FLAGS = -D_MSC_VER  -D LTM_FAST
+
+

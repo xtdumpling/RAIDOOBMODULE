@@ -1,0 +1,240 @@
+#****************************************************************************
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.01
+#      Bug Fixed:  Support SMC Memory map-out function.
+#      Reason:     
+#      Auditor:    Ivern Yeh
+#      Date:       Jul/07/2016
+#
+#  Rev. 1.00
+#      Bug Fixed:  add RC error log to BMC and report error DIMM To screen(refer to Grantley)
+#      Reason:     
+#      Auditor:    Timmy Wang
+#      Date:       May/26/2016
+#
+#*****************************************************************************
+
+## @file
+#  ProcMemInit LIBRARY
+#
+#  Copyright (c) 2009 - 2016, Intel Corporation. All rights reserved.<BR>
+#
+#  This program and the accompanying materials
+#  are licensed and made available under the terms and conditions of the BSD License
+#  which accompanies this distribution. The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.php
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = BaseMemoryCoreLib
+  FILE_GUID                      = 2991BCE0-F5FA-4104-BFE8-35773C05AC4E
+  MODULE_TYPE                    = BASE
+  LIBRARY_CLASS                  = BaseMemoryCoreLib | PEIM DXE_DRIVER DXE_SMM_DRIVER
+
+[Sources.Ia32]
+## //SKX_TODO: Move for 64 bit build
+  Core/Mem/MemoryInit.c
+
+[Sources]
+## //SKX_TODO: Move for 64 bit build
+## Chip/Common
+## Chip/Skx/Include
+  Chip/Skx/Include/BiosSsaChipFunc.h
+  Chip/Skx/Include/KtiDisc.h
+  Chip/Skx/Include/KtiHost.h
+  Chip/Skx/Include/KtiApi.h
+  Chip/Skx/Include/KtiSi.h
+  Chip/Skx/Include/MemApiSkx.h
+  Core/Include/pecoff.h
+  Core/Include/uart16550.h
+  Chip/Skx/Include/Protocol/CpuCsrAccess.h
+  # APTIOV_SERVER_OVERRIDE_RC_START : Added missing files
+  Chip/Skx/Include/Setup/IioUniversalData.h
+  Chip/Skx/Include/Cpu/CpuDataStruct.h
+  Chip/Skx/Include/Iio/IioConfig.h
+  Chip/Skx/Include/Iio/IioPlatformData.h
+  Chip/Skx/Include/Iio/IioRegs.h
+  Chip/Skx/Include/Iio/IioSetupDefinitions.h
+  # APTIOV_SERVER_OVERRIDE_RC_END : Added missing files
+## Core/Common
+  Core/Common/BiosSsaCommonConfig.c
+  Core/Common/BiosSsaResultsConfig.c
+  Core/Common/Checkpoint.c
+  Core/Common/Compress.c
+  Core/Common/CpuAccess.c
+  Core/Common/CpuTimer.c
+  Core/Common/Crc32.c
+  Core/Common/Decompress.c
+  Core/Common/Error.c
+  Core/Common/EvItpDownloadAgent.c
+  Core/Common/ExecuteTargetOnly.c
+  Core/Common/Gpio.c
+  Core/Common/IoAccess.c
+  Core/Common/Malloc.c
+  Core/Common/Math.c
+  Core/Common/MemUtil.c
+  Core/Common/PeLoader.c
+  Core/Common/PerfTracker.c
+  Core/Common/Pipe.c
+  Core/Common/PipeDataSync.c
+  Core/Common/PmTimer.c
+  Core/Common/Printf.c
+  Core/Common/SerialPort.c
+  Core/Common/String.c
+  Core/Common/UsbDebugPort.c
+  Core/Common/MrcHooksServicesPpiInstall.c
+## Core/Include
+  Core/Include/bdat.h
+  Core/Include/bios2yam.h
+  Core/Include/BiosSsaCommonConfig.h
+  Core/Include/BiosSsaResultsConfig.h
+  Core/Include/BiosSsaMemoryConfig.h
+  Core/Include/BiosSsaMemoryServerConfig.h
+  Core/Include/BiosSsaMemoryDdrtConfig.h
+  Core/Include/BssaDebug.h
+  Core/Include/ChipApi.h
+  Core/Include/CommonAccessApi.h
+  Core/Include/CommonAccessLib.h
+  Core/Include/Compression.h
+  Core/Include/Cpgc.h
+  Core/Include/CpuHost.h
+  Core/Include/DataTypes.h
+  Core/Include/DmtMain.h
+  Core/Include/EnhancedWarningLog.h
+  Core/Include/EvItpDownloadAgent.h
+  Core/Include/EvLoaderPeim.h
+  Core/Include/ExecuteTargetOnly.h
+  Core/Include/FnvOpcode.h
+  Core/Include/MemFunc.h
+  Core/Include/MemFuncChipCommon.h
+  Core/Include/MemHost.h
+  Core/Include/MemPlatformCommon.h
+  Core/Include/MemRegs.h
+  Core/Include/MemSpdSimInit.h
+  Core/Include/MrcCommonTypes.h
+  Core/Include/MrcSsaServices.h
+  Core/Include/NGNDimmPlatformCfgData.h
+  Core/Include/PcieAddress.h
+  Core/Include/Pipe.h
+  Core/Include/PlatformFuncCommon.h
+  Core/Include/Printf.h
+  Core/Include/SsaCallbackPeim.h
+  Core/Include/SsaMemoryClientConfig.h
+  Core/Include/SsaMemoryConfig.h
+  Core/Include/SsaMemoryDdrtConfig.h
+  Core/Include/SsaMemoryServerConfig.h
+  Core/Include/SsaResultsConfig.h
+  Core/Include/SysFunc.h
+  Core/Include/SysFuncChipCommon.h
+  Core/Include/SysHost.h
+  Core/Include/SysRegs.h
+  Core/Include/UsbDebugPort.h
+# APTIOV_SERVER_OVERRIDE_RC_START : Added missing files
+  Core/Include/PlatformApi.h
+  Core/Include/CoreApi.h
+  Core/Include/SsaCommonConfig.h
+  Core/Include/BiosSsaFunc.h
+  Core/Include/MemHostChipCommon.h
+  Core/Include/SysHostChipCommon.h
+# APTIOV_SERVER_OVERRIDE_RC_END : Added missing files	
+## Core/Mem
+  Core/Mem/BiosSsaMemoryConfig.c
+  Core/Mem/BiosSsaMemoryServerConfig.c
+  Core/Mem/BiosSsaMemoryDdrtConfig.c
+  Core/Mem/FnvPayload.c
+  Core/Mem/InitMem.c
+  Core/Mem/MemBdat.c
+  Core/Mem/MemCmdClk.c
+  Core/Mem/MemDdr4Lrdimm.c
+  Core/Mem/MemDisplay.c
+  Core/Mem/MemEarlyRid.c
+  Core/Mem/MemJedec.c
+  Core/Mem/MemMain.c
+  Core/Mem/MemMargins.c
+  Core/Mem/MemODT.c
+  Core/Mem/MemoryInit.c
+  Core/Mem/MemPowerTraining.c
+  Core/Mem/MemPPR.c
+  Core/Mem/MemRdDqDqs.c
+  Core/Mem/MemRecEnable.c
+  Core/Mem/MemSPD.c
+  Core/Mem/MemSPDAep.c
+  Core/Mem/MemSPDDDR4.c
+  Core/Mem/MemSpdSimInit.c
+  Core/Mem/MemStart.c
+  Core/Mem/MemTiming.c
+  Core/Mem/MemTraining.c
+  Core/Mem/MemWDB.c
+  Core/Mem/MemWrDqDqs.c
+  Core/Mem/MemWrLeveling.c
+  Core/Mem/MemXMP.c
+  Core/Mem/MrcSsaServices.c
+  Core/Mem/NVDIMM.c
+## Platform/Include
+  Platform/Purley/Include/PlatformHost.h
+  Platform/Purley/Include/MemDefaults.h
+  Platform/Purley/Include/MemPlatform.h
+  Platform/Purley/Include/UsbDebugPortConfig.h
+
+[Packages]
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  MdePkg/MdePkg.dec
+  PurleySktPkg/SocketPkg.dec		#SMCPKG_SUPPORT++
+  SmcPkg/SmcPkg.dec			#SMCPKG_SUPPORT++
+  PurleyPlatPkg/PlatPkg.dec		#SMCPKG_SUPPORT++
+
+[LibraryClasses.Ia32]
+  PeimEntryPoint
+  PcdLib
+
+[LibraryClasses]
+  DebugLib
+  HobLib
+  IoLib
+  PciLib
+  OemProcMemInitLib
+  SiliconAccessLib
+  MemoryEvContentLib
+  SmcLib			#SMCPKG_SUPPORT++
+
+[LibraryClasses.X64]
+  UefiLib
+
+[Pcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdRcRevision
+
+[Guids]
+  gSmcMemMapOutGuid #SMCPKG_SUPPORT
+
+[Ppis]
+  gEfiPeiReadOnlyVariable2PpiGuid    ## CONSUMES
+  gMrcHooksServicesPpiGuid           ## PRODUCES
+
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[BuildOptions.Ia32]
+  MSFT:*_*_*_CC_FLAGS     = /W4 /Gs1310720 /GF /GL- /wd4214 /wd4334 /wd4142 /wd4819 /URAS_SUPPORT /DIA32 /DSSA_OEM_HOOK /DSKX_HOST
+  GCC:*_*_*_CC_FLAGS     = -URAS_SUPPORT -DIA32 -DSSA_OEM_HOOK -DSKX_HOST
+
+[BuildOptions.X64]
+  MSFT:*_*_X64_CC_FLAGS   = /W2 /Gs1310720 /GL- /wd4142 /wd4819 /DRAS_SUPPORT /UIA32
+  GCC:*_*_X64_CC_FLAGS   = -DRAS_SUPPORT -UIA32
+
+

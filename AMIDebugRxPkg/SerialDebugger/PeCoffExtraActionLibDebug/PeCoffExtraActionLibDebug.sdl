@@ -1,0 +1,67 @@
+TOKEN
+	Name  = "PeCoffExtraActionLib_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable PeCoffExtraActionLib support in Project"
+	TokenType = Boolean
+	Master = Yes
+	Token = "REDIRECTION_ONLY_MODE" "=" "0"
+End
+
+PATH
+	Name  = "COMPeCoffExtraActionLibDbg_DIR"
+	Path  = "AMIDebugRxPkg\SerialDebugger\PeCoffExtraActionLibDebug"
+	Token = "REDIRECTION_ONLY_MODE" "=" "0"
+End
+
+INFComponent
+	Name  = "CommonPeCoffLib"
+	File  = "CommonPeCoffLib.inf"
+	Package  = "SerialDebugger"
+	Arch  = "common"
+	Path  = "COMPeCoffExtraActionLibDbg_DIR"
+	ModuleTypes  = "PEIM PEI_CORE DXE_CORE DXE_DRIVER DXE_RUNTIME_DRIVER SMM_CORE DXE_SMM_DRIVER UEFI_DRIVER UEFI_APPLICATION"
+	Token = "REDIRECTION_ONLY_MODE" "=" "0"
+End
+
+INFComponent
+	Name  = "PeCoffExtraActionLib"
+	File  = "PeCoffExtraActionLibDebug.inf"
+	Package  = "SerialDebugger"
+	Arch  = "common"
+	Path  = "COMPeCoffExtraActionLibDbg_DIR"
+	ModuleTypes  = "PEIM PEI_CORE DXE_CORE DXE_DRIVER DXE_RUNTIME_DRIVER UEFI_DRIVER UEFI_APPLICATION"
+	Token = "REDIRECTION_ONLY_MODE" "=" "0"
+End
+
+INFComponent
+	Name  = "PeCoffExtraActionLibSmm"
+	File  = "PeCoffExtraActionLibDebugSmm.inf"
+	Package  = "SerialDebugger"
+	Arch  = "common"
+	Path  = "COMPeCoffExtraActionLibDbg_DIR"
+	ModuleTypes  = "SMM_CORE DXE_SMM_DRIVER"
+	Token = "REDIRECTION_ONLY_MODE" "=" "0"
+	Token = "SMM_DEBUG_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "CommonPeCoffLib"
+	Instance  = "SerialDebugger.CommonPeCoffLib"
+	ModuleTypes  = "PEIM PEI_CORE DXE_CORE DXE_DRIVER DXE_RUNTIME_DRIVER SMM_CORE DXE_SMM_DRIVER UEFI_DRIVER UEFI_APPLICATION"
+	Token = "REDIRECTION_ONLY_MODE" "=" "0"
+End
+
+LibraryMapping
+	Class  = "PeCoffExtraActionLib"
+	Instance  = "SerialDebugger.PeCoffExtraActionLib"
+	ModuleTypes  = "PEIM PEI_CORE DXE_CORE DXE_DRIVER DXE_RUNTIME_DRIVER UEFI_DRIVER UEFI_APPLICATION"
+	Token = "REDIRECTION_ONLY_MODE" "=" "0"
+End
+
+LibraryMapping
+	Class  = "PeCoffExtraActionLib"
+	Instance  = "SerialDebugger.PeCoffExtraActionLibSmm"
+	ModuleTypes  = "SMM_CORE DXE_SMM_DRIVER"
+	Token = "REDIRECTION_ONLY_MODE" "=" "0"
+	Token = "SMM_DEBUG_SUPPORT" "=" "1"
+End

@@ -1,0 +1,63 @@
+## @file
+#  Package for AMI cryptography modules.
+#
+#  This Package provides cryptographic-related libraries for UEFI
+#  security modules.
+#
+
+[Defines]
+  DEC_SPECIFICATION              = 0x00010005
+  PACKAGE_NAME                   = AmiCryptoPkg
+  PACKAGE_GUID                   = 18698C70-5956-4C26-97B6-53550DE5C24D
+  PACKAGE_VERSION                = 0.92
+
+[Includes]
+Include
+Include/Protocol
+Include/PPI
+Include/Library
+ 
+[LibraryClasses]
+  ##  @libraryclass  Provides basic library functions for cryptographic primitives.
+  ##
+  AmiCryptLib|/Include/Library/CryptLib.h
+  RuntimeAmiCryptLib|/Include/Library/CryptLib.h
+  PeiCryptLib|/Include/Library/CryptLib.h
+  BaseCryptLib|/Include/Library/BaseCryptLib.h
+
+[Guids]  
+  gAmiCryptoPkgTokenSpaceGuid = { 0x7abec993, 0x53d6, 0x464f, { 0x83, 0x71, 0xff, 0xaf, 0xd9, 0x7f, 0x39, 0x28 }}
+# Key format: Raw 256 byte N-Modulus of RSA2048 Key
+# 3FEEC852-F14C-4E7F-97FD-4C3A8C5BBECC
+  gPKeyFileRsa2048Guid = { 0x3FEEC852, 0xF14C, 0x4E7F, { 0x97, 0xFD, 0x4C, 0x3A, 0x8C, 0x5B, 0xBE, 0xCC }}
+# Key format: SHA256 hash of 256 byte N-Modulus of RSA2048 Key
+# 5B85965C-455D-4CC6-9C4C-7F086967D2B0
+  gPKeyFileSha256Guid = { 0x05B85965C, 0x455D, 0x4CC6, { 0x9C, 0x4C, 0x7F, 0x08, 0x69, 0x67, 0xD2, 0xB0 }}
+# Key format: x509 ASN.1 DER containing RSA2048 Public Key
+# 3A666558-43E3-4D25-9169-DB81F5DB42E1
+  gPKeyFileX509Guid = { 0x3A666558, 0x43E3, 0x4D25, { 0x91, 0x69, 0xdb, 0x81, 0xf5, 0xdb, 0x42, 0xe1 }}
+# APTIO Platform Fw Root Signing key identifier
+# 4E0F9BD4-E338-4B26-843E-BD3AD9B2837B
+  gPRKeyGuid = { 0x4E0F9BD4, 0xE338, 0x4B26, { 0x84, 0x3E, 0xBD, 0x3A, 0xD9, 0xB2, 0x83, 0x7B }}
+#temp###should be defined in AmiCompatibilityPkg.dec
+  gBdsConnectDriversProtocolGuid  =  { 0x3aa83745, 0x9454, 0x4f7a, { 0xa7, 0xc0, 0x90, 0xdb, 0xd0, 0x2f, 0xab, 0x8e }}
+#temp###should be defined in MdePkd.dec lbl10
+  gEfiCertX509Sha256Guid    ={ 0x3bd2a492, 0x96c0, 0x4079, {0xb4, 0x20, 0xfc, 0xf9, 0x8e, 0xf1, 0x03, 0xed }}
+  gEfiCertX509Sha384Guid    ={ 0x7076876e, 0x80c2, 0x4ee6, {0xaa, 0xd2, 0x28, 0xb3, 0x49, 0xa6, 0x86, 0x5b }} 
+  gEfiCertX509Sha512Guid    ={ 0x446dbf63, 0x2502, 0x4cda, {0xbc, 0xfa, 0x24, 0x65, 0xd2, 0xb0, 0xfe, 0x9d }}
+
+[Ppis]
+  gAmiDigitalSignaturePPIGuid = { 0x86c29aa5, 0xdb0, 0x4343, { 0xbd, 0x52, 0x7a, 0x72, 0x9f, 0x37, 0xc9, 0x6d }}
+  # should be defined as [PPIs] in AmiCompatibilityPkg.dec
+  gFlashUpdBootModePpiGuid =  { 0x2A6E902B, 0xF1F3, 0x4275, { 0xBC, 0x7B, 0x40, 0xFD, 0x4B, 0x54, 0x81, 0xE7 }}
+
+[Protocols]
+  ## Include/Protocol/RuntimeCrypt.h
+  gAmiDigitalSignatureProtocolGuid    = { 0x5f87ba17, 0x957d, 0x433d, {0x9e, 0x15, 0xc0, 0xe7, 0xc8, 0x79, 0x88, 0x99 }}
+  gAmiSmmDigitalSignatureProtocolGuid = { 0x91ABC830, 0x16FC, 0x4D9E, {0xA1, 0x89, 0x5F, 0xC8, 0xBB, 0x41, 0x14, 0x02 }}
+  # defined in AmiCompatibilityPkg.dec lbl15
+  # gSecureSMIFlashProtocolGuid = { 0x3bf4af16, 0xab7c, 0x4b43, { 0x89, 0x8d, 0xab, 0x26, 0xac, 0x5d, 0xdc, 0x6c }}
+
+[PcdsFixedAtBuild, PcdsPatchableInModule, PcdsDynamic, PcdsDynamicEx]
+  gAmiCryptoPkgTokenSpaceGuid.AmiPcdCpMaxHeapSize|0x00010000|UINT32|0x00000000
+  

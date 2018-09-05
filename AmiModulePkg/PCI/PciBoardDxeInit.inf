@@ -1,0 +1,91 @@
+#
+# This file contains 'Framework Code' and is licensed as such
+# under the terms of your license agreement with Intel or your
+# vendor.  This file may not be modified, except as allowed by
+# additional terms of your license agreement.
+#
+## @file
+#
+#  Component description file for Fintek81866 DXE Init Module
+#
+#  This is the main routine for initializing the Graphics Console support routines.
+#
+#  Copyright (c) 2006 - 2010, Intel Corporation. All rights reserved.<BR>
+#  This program and the accompanying materials
+#  are licensed and made available under the terms and conditions of the BSD License
+#  which accompanies this distribution. The full text of the license may be found at
+#  http://opensource.org/licenses/bsd-license.php
+#  THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+#
+##
+
+[Defines]
+  INF_VERSION 			= 0x00010005
+  VERSION_STRING 		= 1.0
+  BASE_NAME 			= PciBoardDxeInit
+  FILE_GUID 			= 7EB88C46-22FF-4CBD-8FE7-495383FAB1E4
+  MODULE_TYPE 			= DXE_DRIVER
+  LIBRARY_CLASS     	        = NULL
+  
+  CONSTRUCTOR                    = PciBoardDxeInitInitialize
+
+[Sources]
+  PciBoardDxeInit.c
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  AmiDxeLib
+  AmiSdlLib
+  AmiPciBusLib
+  # APTIOV_SERVER_OVERRIDE_START
+#  PciAccessCspLib
+  AmiPciBusSetupOverrideLib
+  PcdLib
+  # APTIOV_SERVER_OVERRIDE_END
+  FpgaConfigurationLib
+  SetupLib
+  S3PciLib
+  PciLib
+
+[Protocols]
+  gEfiDevicePathProtocolGuid
+  gEfiSimpleTextOutProtocolGuid
+  gEfiGraphicsOutputProtocolGuid
+  gEfiUgaDrawProtocolGuid
+  gEfiHiiFontProtocolGuid
+  gEfiHiiDatabaseProtocolGuid
+  gEfiDriverBindingProtocolGuid
+  gAmiBoardPciInitProtocolGuid
+  gEfiIioUdsProtocolGuid
+  # APTIOV_SERVER_OVERRIDE_START : To program the RAID devices
+  gAmiOnboardRaidControllerGuid
+  gAmiAhciPlatformPolicyProtocolGuid
+  gEfiDxeSmmReadyToLockProtocolGuid
+  # APTIOV_SERVER_OVERRIDE_END : To program the RAID devices
+  gEfiIioSystemProtocolGuid
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  # APTIOV_SERVER_OVERRIDE_START
+  PurleySktPkg/SocketPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  AmiCRBPkg/AmiCRBPkg.dec
+
+[Guids]
+  gEfiSetupVariableGuid
+  gEfiSocketMpLinkVariableGuid
+  gEfiSocketCommonRcVariableGuid
+  gEfiPchRcVariableGuid		# To program the RAID devices
+
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+  gAmiModulePkgTokenSpaceGuid.AmiPcdPcieBaseAddressBuffer
+  gAmiModulePkgTokenSpaceGuid.AmiPcdMaxSegmentSupported
+# APTIOV_SERVER_OVERRIDE_END

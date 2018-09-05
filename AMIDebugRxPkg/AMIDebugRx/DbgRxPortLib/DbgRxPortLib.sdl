@@ -1,0 +1,64 @@
+TOKEN
+	Name  = "DbgRxPortLib_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling DbgRxPortLib support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "DbgRxPortX64Lib_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable DbgRxXportX64Lib support in Project"
+	TokenType = Boolean
+	Token = "X64_SUPPORT" "=" "1"
+End
+
+PATH
+	Name  = "DbgRxPortLib_DIR"
+	Path  = "AMIDebugRxPkg\AMIDebugRx\DbgRxPortLib"
+End
+
+INFComponent
+	Name  = "DbgRxPortLib"
+	File  = "DbgRxPortLib.inf"
+	Package  = "AMIDebugRx"
+	Arch  = "common Ia32 X64"
+	Path  = "DbgRxPortLib_DIR"
+End
+
+INFComponent
+	Name  = "DbgRxPortX64Lib"
+	File  = "DbgRxPortx64Lib.inf"
+	Package  = "AMIDebugRx"
+	Arch  = "common Ia32 X64"
+	Path  = "DbgRxPortLib_DIR"
+	Token = "DbgRxPortX64Lib_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "PeiDebugPortLib"
+	Instance  = "AMIDebugRx.DbgRxPortLib"
+End
+
+LibraryMapping
+	Class  = "DxeDebugPortLib"
+	Instance  = "AMIDebugRx.DbgRxPortLib"
+	Token = "X64_SUPPORT" "=" "0"
+End
+
+LibraryMapping
+	Class  = "DxeDebugPortLib"
+	Instance  = "AMIDebugRx.DbgRxPortX64Lib"
+	Token = "DbgRxPortX64Lib_SUPPORT" "=" "1"
+End
+
+MODULE
+    Help  = "Includes DbgRxPortLib.mak to Project"
+    File  = "DbgRxPortLib.mak"
+End
+
+ELINK
+    Name  = "PeiDebugInitialize"
+    InvokeOrder = ReplaceParent
+End

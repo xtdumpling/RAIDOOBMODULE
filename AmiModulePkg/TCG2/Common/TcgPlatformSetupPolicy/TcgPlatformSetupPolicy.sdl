@@ -1,0 +1,45 @@
+TOKEN
+    Name  = "TcgPlatformSetupPolicy_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable TcgPlatformSetupPolicy support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    Master = Yes
+End
+
+PATH
+    Name  = "TcgPlatformSetupPolicy_DIR"
+End
+
+ELINK
+	Name  = "AdditionalTcgSetupPolicyPackages"
+	InvokeOrder = ReplaceParent
+End
+
+
+ELINK
+	Name  = "AdditionalTcgSetupPolicyDepex"
+	Help  = "postpone TCG drivers during DXE phase."
+	InvokeOrder = ReplaceParent
+End
+
+
+
+
+INFComponent
+    Name  = "TcgPlatformSetupPolicy"
+    File  = "TcgPlatformSetupPolicy.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_DRIVER"
+    PreProcess = Yes
+End
+
+
+FFS_FILE
+    Name  = "TcgPlatformSetupPolicy"
+    FD_AREA  = "FV_MAIN"
+    INFComponent  = "AmiModulePkg.TcgPlatformSetupPolicy"
+#    Apriori_Index  = "6"
+End
+

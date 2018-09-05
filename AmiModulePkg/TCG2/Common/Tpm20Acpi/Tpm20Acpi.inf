@@ -1,0 +1,110 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2010, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+# $Header: /Alaska/SOURCE/Modules/TcgNext/Common/Tpm20PlatformDxe/Tpm20PlatformDxe.mak 1     10/08/13 12:06p Fredericko $
+#
+# $Revision: 1 $
+#
+# $Date: 10/08/13 12:06p $
+#*************************************************************************
+# Revision History
+# ----------------
+# $Log: /Alaska/SOURCE/Modules/TcgNext/Common/Tpm20PlatformDxe/Tpm20PlatformDxe.mak $
+# 
+# 1     10/08/13 12:06p Fredericko
+# Initial Check-In for Tpm-Next module
+# 
+# 2     7/11/13 6:16p Fredericko
+# [TAG]         EIP120969
+# [Category]    New Feature
+# [Description]     TCG (TPM20).
+# 
+# 1     7/10/13 5:57p Fredericko
+# [TAG]         EIP120969
+# [Category]    New Feature
+# [Description]     TCG (TPM20)
+# 
+#*************************************************************************
+#<AMI_FHDR_START>
+#
+# Name: 
+#
+# Description:  
+#
+#<AMI_FHDR_END>
+#************************************************************************
+[Defines]
+INF_VERSION = 0x00010005
+VERSION_STRING = 1.0
+BASE_NAME = Tpm20Acpi
+MODULE_TYPE = DXE_DRIVER
+FILE_GUID   = 4C8BDF60-2085-4577-8A46-96CB180967BC
+ENTRY_POINT = Tpm20AcpiInitEntry
+
+[Sources]
+Tpm20Acpi.c
+Tpm20Acpi.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiTcgPkg/AmiTcgPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  BaseCrbLibDxe
+  TcgAslLib
+  UefiLib
+  HobLib
+  PcdLib
+  AmiTcgLibDxe
+  
+[Protocols]
+ gEfiFirmwareVolume2ProtocolGuid
+ gEfiBlockIoProtocolGuid
+ gEfiAcpiTableProtocolGuid
+ gEfiFirmwareVolume2ProtocolGuid
+ gEfiAcpiSupportGuid
+ gEfiTrEEProtocolGuid
+ gEdkiiVariableLockProtocolGuid
+ gBdsAllDriversConnectedProtocolGuid
+ 
+ [Guids]
+ gEfiImageSecurityDatabaseGuid
+ gEfiHobListGuid
+ FlagsStatusguid
+ gPttSsdtAcpiTableGuid
+ 
+ [Pcd]
+  gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemId             ## CONSUMES
+  gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemTableId        ## CONSUMES
+ 
+[Depex]
+ gEfiTrEEProtocolGuid AND
+ gEfiAcpiTableProtocolGuid
+   
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2010, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************

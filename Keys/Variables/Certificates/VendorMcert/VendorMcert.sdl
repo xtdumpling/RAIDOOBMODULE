@@ -1,0 +1,65 @@
+TOKEN
+	Name  = "MsftCert_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable Msft support in Project"
+	TokenType = Boolean
+	TargetH = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+PATH
+	Name  = "MsftCert_DIR"
+	Help  = "Path to Msft Module in Project"
+End
+
+ELINK
+	Name  = "$(MsftCert_DIR)$(PATH_SLASH)db_MSFTpreReleaseCandidateWindowsSigningCA.cer"
+	Parent  = "CertList_db"
+	InvokeOrder = AfterParent
+	Disable = Yes
+End
+
+ELINK
+	Name  = "$(MsftCert_DIR)$(PATH_SLASH)db_MSFTproductionWindowsSigningCA2011.cer"
+	Parent  = "CertList_db"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(MsftCert_DIR)$(PATH_SLASH)db_MSFTproductionUEFIsigningCA.cer"
+	Parent  = "CertList_db"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(MsftCert_DIR)$(PATH_SLASH)KEK_MSFTproductionKekCA.cer"
+	Parent  = "CertList_KEK"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(MsftCert_DIR)$(PATH_SLASH)MsRootCA2010.cer"
+	Parent  = "CertList_dbt"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(MsftCert_DIR)$(PATH_SLASH)CertSHA256$(PATH_SLASH)dbx_MSFTrevocationHashList.bin"
+	Parent = "CertList_dbx"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(MsftCert_DIR)$(PATH_SLASH)CertX509$(PATH_SLASH)dbx_MSFTproductionWindowsSigningCA2011.bin"
+	Parent  = "CertList_dbx"
+	Disable = Yes
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(MsftCert_DIR)$(PATH_SLASH)CertX509$(PATH_SLASH)dbx_MSFTpreReleaseCandidateWindowsSigningCA2010_time.bin"
+	Parent  = "CertList_dbx"
+	Disable = Yes
+	InvokeOrder = AfterParent
+End

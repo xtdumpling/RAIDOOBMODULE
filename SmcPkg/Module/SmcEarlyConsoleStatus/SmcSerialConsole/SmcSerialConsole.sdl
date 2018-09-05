@@ -1,0 +1,70 @@
+TOKEN
+    Name  = "SmcSerialConsole_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable Serial Console device for the early display and status report in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes        
+    Master = Yes
+End
+
+INFComponent
+    Name  = "SmcPeiSerialTextOutLib"
+    File  = "SmcSerialTextOutLib.inf"
+    Package  = "SmcPkg"
+    ModuleTypes  = "PEIM"
+End
+
+INFComponent
+    Name  = "SmcDxeSerialTextOutLib"
+    File  = "SmcSerialTextOutLib.inf"
+    Package  = "SmcPkg"
+    ModuleTypes  = "DXE_DRIVER"
+End
+
+LibraryMapping
+    Class  = "SmcPeiSerialTextOutLib"
+    Instance  = "SmcPkg.SmcPeiSerialTextOutLib"
+    ModuleTypes  = "PEIM"
+End
+
+LibraryMapping
+    Class  = "SmcDxeSerialTextOutLib"
+    Instance  = "SmcPkg.SmcDxeSerialTextOutLib"
+    ModuleTypes  = "DXE_DRIVER"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "SmcPkg.SmcPeiSerialTextOutLib"
+    ModuleTypes  = "PEIM"
+    Override  = "SmcPkg.SmcPeiSerialTextOut"
+End
+
+FFS_FILE
+	Name  = "SmcPeiSerialTextOut"
+	FD_AREA  = "FV_BB"
+	INFComponent  = "SmcPkg.SmcPeiSerialTextOut"
+	Apriori_Index  = "1"
+End
+
+INFComponent
+    Name  = "SmcPeiSerialTextOut"
+    File  = "SmcPeiSerialTextOut.inf"
+    Package  = "SmcPkg"
+    ModuleTypes  = "PEIM"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "SmcPkg.SmcDxeSerialTextOutLib"
+    ModuleTypes  = "DXE_DRIVER"
+    Override  = "SmcPkg.SmcDxeSerialTextOut"
+End
+
+INFComponent
+    Name  = "SmcDxeSerialTextOut"
+    File  = "SmcDxeSerialTextOut.inf"
+    Package  = "SmcPkg"
+    ModuleTypes  = "DXE_DRIVER"
+End

@@ -1,0 +1,69 @@
+TOKEN
+	Name  = "OEMSETUP_SUPPORT"
+	Value  = "0"
+	Help  = "Switch for Enabling OEM SETUP Preserve support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "[OFBD OEM SETUP Preserve]"
+	Help  = "See detail description in each token's help box."
+	TokenType = Expression
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "OEM_SETUP_SAMPLE_TEST"
+	Value  = "1"
+	Help  = "Test BIOS Setting preserve Function"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "[OFBD OEM DMI Data Preserve]"
+	Help  = "See detail description in each token's help box."
+	TokenType = Expression
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "OEM_DMI_SAMPLE_TEST"
+	Value  = "1"
+	Help  = "Test BIOS DMI Data preserve Function"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+PATH
+	Name  = "OFBD_OEMSETUP_DIR"
+End
+
+ELINK
+    Name  = "gAmiSmbiosNvramGuid"
+    Parent  = "AMI_OFBD_GUIDS"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(OFBD_OEMSETUP_DIR)/OemSetup.h"
+	Parent  = "OFBD_FUNC_INCLUDE_FILES"
+	InvokeOrder = BeforeParent
+End
+
+ELINK
+	Name  = "$(OFBD_OEMSETUP_DIR)/OemSetup.c"
+	Parent  = "OFBD_FUNC_SOURCES_FILES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "OEMSETUPEntry,"
+	Parent  = "OFBD_INIT_FUNC_LIST"
+	Token = "OEMSETUP_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+

@@ -1,0 +1,91 @@
+## @file
+#  Component description file for PeiPolicyInit library.
+#
+#@copyright
+# Copyright (c) 2014 Intel Corporation. All rights reserved
+# This software and associated documentation (if any) is furnished
+# under a license and may only be used or copied in accordance
+# with the terms of the license. Except as permitted by the
+# license, no part of this software or documentation may be
+# reproduced, stored in a retrieval system, or transmitted in any
+# form or by any means without the express written consent of
+# Intel Corporation.
+# This file contains a 'Sample Driver' and is licensed as such
+# under the terms of your license agreement with Intel or your
+# vendor. This file may be modified by the user, subject to
+# the additional terms of the license agreement.
+#
+#@par Specification Reference:
+##
+[Defines]
+  INF_VERSION          = 0x00010005
+  BASE_NAME            = PeiPolicyInit
+  FILE_GUID            = B494DF39-A5F8-48A1-B2D0-EF523AD91C55
+  MODULE_TYPE          = PEIM
+  VERSION_STRING       = 1.0
+  LIBRARY_CLASS        = PeiPolicyInit
+
+[Sources]
+  PeiPolicyInitPreMem.c
+  PeiPolicyInit.c
+  PeiPolicyInit.h
+  # SERVER_BIOS PeiAmtPolicyInit.c
+  # SERVER_BIOS PeiAmtPolicyInit.h
+  # SERVER_BIOS PeiCpuPolicyInit.c
+  # SERVER_BIOS PeiCpuPolicyInit.h
+  # SERVER_BIOS PeiMePolicyInit.c
+  # SERVER_BIOS PeiMePolicyInit.h
+  # SERVER_BIOS MrcOemPlatform.c
+  # SERVER_BIOS MrcOemPlatform.h
+
+  PeiPchPolicyInit.c
+  PeiPchPolicyInit.h
+  # SERVER_BIOS PeiSaPolicyInit.c
+  # SERVER_BIOS PeiSaPolicyInit.h
+  # SERVER_BIOS PeiSiPolicyInit.c
+
+################################################################################
+#
+# Package Dependency Section - list of Package files that are required for
+#                              this module.
+#
+################################################################################
+[Packages]
+  MdePkg/MdePkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SocketPkg.dec
+
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+  # SERVER_BIOS gClientCommonModuleTokenSpaceGuid.PcdFlashMicrocodeFvBase
+  # SERVER_BIOS gClientCommonModuleTokenSpaceGuid.PcdFlashMicrocodeFvSize
+
+[LibraryClasses]
+  BaseMemoryLib
+  BaseLib
+  #SERVER_BIOS PeiDxeSmmCpuPlatformLib
+  DebugLib
+  DebugPrintErrorLevelLib
+  HobLib
+  IoLib
+  MemoryAllocationLib
+  MmPciLib
+  PeiServicesLib
+  PeiPolicyUpdateLib
+  PostCodeLib
+  SmbusLib
+  PchPolicyLib
+  #SERVER_BIOS PeiSaPolicyLib
+  #SERVER_BIOS BaseConfigBlockLib
+  #SERVER_BIOS PeiCpuPolicyLib
+  #SERVER_BIOS PeiSiPolicyLib
+
+[Ppis]
+  # SERVER_BIOS gAmtPolicyPpiGuid                             ## PRODUCES
+  # SERVER_BIOS gSiCpuPolicyPpiGuid                           ## PRODUCES
+  gEfiPeiReadOnlyVariable2PpiGuid               ## CONSUMES
+  # SERVER_BIOS gMePolicyPpiGuid                              ## CONSUMES
+  gPchPcieDeviceTablePpiGuid
+  gPchPlatformPolicyPpiGuid                             # PPI ALWAYS_CONSUMED # SERVER_BIOS
+  # SERVER_BIOS gSiSaPolicyPpiGuid

@@ -1,0 +1,108 @@
+TOKEN
+    Name  = "ViewSelLog_SUPPORT"
+    Value  = "1"
+    Help  = "Switch for Enabling ViewSelLog support in the project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    Master = Yes
+End
+
+TOKEN
+    Name  = "SEL_MAX_ERROR_MANAGER_SIZE"
+    Value  = "0xD000"
+    TokenType = Integer
+    TargetH = Yes
+    Help  = "To avoid corruption of NVRAM memory and also to ensure other drivers should have enough free Nvram space to use, size of the variable is defined. Based on the NVRAM_SIZE, the variable size can be changed. Now it is set to 52KB"
+End
+
+PATH
+    Name  = "ViewSelLog_DIR"
+    Path  = "AmiIpmiPkg/Ipmi/ViewSelLog"
+    Help = "Path to ViewSelLog sub module in project."
+End
+
+MODULE
+    Help  = "Includes ViewSelLog.mak to Project"
+    File  = "ViewSelLog.mak"
+End
+
+ELINK
+    Name  = "VIEW_SEL_LOG_OEM_FILE"
+    Help  = "This is a list of IPMI SEL files added by OEM to include the strings."
+    InvokeOrder = ReplaceParent
+End
+
+ELINK
+    Name  = "OEM_IPMI_SEL_SENSOR_NUMBER_LIST"
+    Help  = "This is a list of IPMI SEL Sensor Number description added by OEM."
+    InvokeOrder = ReplaceParent
+End
+
+ELINK
+    Name  = "OEM_IPMI_SEL_SENSOR_TYPE_LIST"
+    Help  = "This is a list of IPMI SEL Sensor Type description added by OEM."
+    InvokeOrder = ReplaceParent
+End
+
+ELINK
+    Name  = "OEM_IPMI_SEL_SENSOR_TYPE_OFFSET_LIST"
+    Help  = "This is a list of IPMI SEL Sensor Type offset strings description added by OEM."
+    InvokeOrder = ReplaceParent
+End
+
+ELINK
+    Name  = "$(ViewSelLog_DIR)/ViewSelLog.sd"
+    Parent  = "SERVER_MGMT_SETUP_DEFINITIONS"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include ViewSelLog.sd file in ServerMgmtSetup definitions files list."
+End
+
+ELINK
+    Name  = "$(ViewSelLog_DIR)/ViewSelLog.uni"
+    Parent  = "ServerMgmtSetupStringFiles"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include ViewSelLog.uni file in ServerMgmtSetup string files list."
+End
+
+ELINK
+    Name  = "$(ViewSelLog_DIR)/ViewSelLog.c"
+    Parent  = "ServerMgmtSetupCallbackFiles"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include ViewSelLog.c file in ServerMgmtSetup callback files list."
+End
+
+ELINK
+    Name  = "$(ViewSelLog_DIR)/ViewSelLog.h"
+    Parent  = "ServerMgmtSetupCallbackFiles"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include ViewSelLog.h file in ServerMgmtSetup callback files list."
+End
+
+ELINK
+    Name  = "IpmiInterfaceLib"
+    Parent  = "AdditionalServerMgmtSetupLibraryClasses"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include IpmiInterfaceLib in Additional ServerMgmt Setup Library Classes."
+End
+
+ELINK
+    Name  = "PrintLib"
+    Parent  = "AdditionalServerMgmtSetupLibraryClasses"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include PrintLib in Additional ServerMgmt Setup Library Classes."
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SERVER_MGMT_CLASS_ID,SERVER_MGMT_SUBCLASS_ID,VIEW_SEL_LOG_FORM_KEY,ViewSelLogCallbackFunction),"
+    parent  ="ServerMgmtSetupItemCallbacks"
+    InvokeOrder  = AfterParent
+    Help  = "Elink to include ViewSelLogCallbackFunction in ServerMgmt Setup Item Callbacks list for View Sel Log Form key."
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SERVER_MGMT_CLASS_ID,SERVER_MGMT_SUBCLASS_ID,VIEW_MORE_SEL_LOG_KEY,ViewSelLogCallbackFunction),"
+    parent  ="ServerMgmtSetupItemCallbacks"
+    InvokeOrder  = AfterParent
+    Help  = "Elink to include ViewSelLogCallbackFunction in ServerMgmt Setup Item Callbacks list for View More Sel Log Form key."
+End

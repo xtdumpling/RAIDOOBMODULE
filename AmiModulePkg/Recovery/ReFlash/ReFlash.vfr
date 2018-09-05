@@ -1,0 +1,177 @@
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2009, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
+
+/** @file
+  Definition of module setup controls
+
+**/
+#include "ReFlash.h"
+
+formset guid = RECOVERY_FORM_SET_GUID,
+	title = STRING_TOKEN(STR_RECOVERY),
+	help = STRING_TOKEN(STR_EMPTY),
+	class = RECOVERY_FORM_SET_CLASS, subclass = 0,
+
+    varstore AUTOFLASH,
+        name  = Setup,
+        guid  = RECOVERY_FORM_SET_GUID;
+
+    AMI_CALLBACK_VARSTORE
+    SYSTEM_ACCESS_VARSTORE
+
+
+#if REFLASH_INTERACTIVE
+
+
+	form formid = RECOVERY_MAIN,
+		title = STRING_TOKEN(STR_RECOVERY);
+
+suppressif ideqval AUTOFLASH.UserOverride == 0;
+
+		    SUBTITLE(STRING_TOKEN(STR_SUBTITLE1))
+		    SUBTITLE(STRING_TOKEN(STR_SUBTITLE2))
+
+        suppressif NOT ideqval AUTOFLASH.VerificationStatus == 0;
+    		goto RECOVERY_MAIN,
+    			prompt  = STRING_TOKEN(STR_FLASH_ENABLE),
+    			help    = STRING_TOKEN(STR_EMPTY),
+                flags   = INTERACTIVE, key = FLASH_ENABLE_KEY;
+        endif;
+
+endif;
+
+suppressif NOT ideqval AUTOFLASH.UserOverride == 0;
+
+	suppressif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_ADMIN;
+            text
+                help  = STRING_TOKEN(STR_EMPTY),
+                text  = STRING_TOKEN(STR_ACCESS_DENIED),
+                text  = STRING_TOKEN(STR_ACCESS_DENIED2),
+                flags = 0, key   = 0;
+            text
+                help  = STRING_TOKEN(STR_EMPTY),
+                text  = STRING_TOKEN(STR_ACCESS_DENIED3),
+                text  = STRING_TOKEN(STR_ACCESS_DENIED4),
+                flags = 0, key   = 0;
+        endif;  
+
+		SUBTITLE(STRING_TOKEN(STR_OPTIONS))
+
+        grayoutif NOT ideqval AUTOFLASH.VerificationStatus == 0 OR ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+
+#if REFLASH_UPDATE_NVRAM_CONTROL
+            checkbox varid = AUTOFLASH.UpdateNv,
+    			prompt    = STRING_TOKEN(STR_UPDATE_NVRAM),
+    			help      = STRING_TOKEN(STR_UPDATE_NVRAM_HELP),
+    			default   = REFLASH_UPDATE_NVRAM, // Flags behavior for checkbox is overloaded so that it equals a DEFAULT value.  1 = ON, 0 = off
+    		endcheckbox;
+#endif
+#if REFLASH_UPDATE_BOOT_BLOCK_CONTROL
+            checkbox varid = AUTOFLASH.UpdateBb,
+    			prompt    = STRING_TOKEN(STR_UPDATE_BB),
+    			help      = STRING_TOKEN(STR_UPDATE_BB_HELP),
+    			default   = REFLASH_UPDATE_BOOT_BLOCK, // Flags behavior for checkbox is overloaded so that it equals a DEFAULT value.  1 = ON, 0 = off
+    		endcheckbox;
+#endif
+
+/*
+
+            checkbox varid = AUTOFLASH.UpdateMain,
+    			prompt    = STRING_TOKEN(STR_UPDATE_MAIN),
+    			help      = STRING_TOKEN(STR_UPDATE_MAIN_HELP),
+    			default   = REFLASH_UPDATE_MAIN_BLOCK, // Flags behavior for checkbox is overloaded so that it equals a DEFAULT value.  1 = ON, 0 = off
+#if FtRecovery_SUPPORT
+                inconsistentif prompt = STRING_TOKEN(STR_FLASH_SELECTION_ERROR_POPUP),
+                    ideqval AUTOFLASH.UpdateBb == 1
+                    AND
+                    ideqval AUTOFLASH.UpdateMain == 0
+                endif
+#endif
+    		endcheckbox;
+*/
+
+#if REFLASH_UPDATE_EC_FIRMWARE_CONTROL
+            checkbox varid = AUTOFLASH.UpdateEC,
+    			prompt    = STRING_TOKEN(STR_UPDATE_EC),
+    			help      = STRING_TOKEN(STR_UPDATE_EC_HELP),
+    			default   = REFLASH_UPDATE_EC_FIRMWARE, // Flags behavior for checkbox is overloaded so that it equals a DEFAULT value.  1 = ON, 0 = off
+    		endcheckbox;
+#endif
+
+#define REFLASH_CONTROL
+#include <ReflashDefinitions.h>
+#undef REFLASH_CONTROL
+
+		    //Can't use 'SEPARATOR' because it's not allowed in the grayoutif scope
+            INVENTORY(STRING_TOKEN(STR_EMPTY),STRING_TOKEN(STR_EMPTY))
+
+        endif;//grayoutif
+
+        suppressif NOT ideqval AUTOFLASH.VerificationStatus == 0 OR ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+    		goto RECOVERY_FLASH,
+    			prompt  = STRING_TOKEN(STR_FLASH),
+    			help    = STRING_TOKEN(STR_FLASH_HELP),
+                flags   = INTERACTIVE, key = FLASH_START_KEY;
+        endif;
+
+endif;
+
+	endform;
+#endif //#if REFLASH_INTERACTIVE
+
+	form formid = RECOVERY_FLASH,
+		title = STRING_TOKEN(STR_RECOVERY_FLASH);
+
+    suppressif NOT ideqval AUTOFLASH.VerificationStatus == 0;
+		SUBTITLE(STRING_TOKEN(STR_UPDATE_WARNING1))
+		SUBTITLE(STRING_TOKEN(STR_UPDATE_WARNING2))
+		SUBTITLE(STRING_TOKEN(STR_UPDATE_WARNING3))
+		SUBTITLE(STRING_TOKEN(STR_UPDATE_WARNING_RESET))
+#if REFLASH_INTERACTIVE
+		SUBTITLE(STRING_TOKEN(STR_UPDATE_WARNING_RESET_USER))
+#else
+		SUBTITLE(STRING_TOKEN(STR_UPDATE_WARNING_RESET_AUTO))
+#endif
+    endif;
+
+    suppressif ideqval AUTOFLASH.VerificationStatus == 0;
+		SUBTITLE(STRING_TOKEN(STR_UPDATE_ERROR1))
+		SUBTITLE(STRING_TOKEN(STR_UPDATE_ERROR2))
+		SUBTITLE(STRING_TOKEN(STR_UPDATE_ERROR3))
+    endif;
+
+		SEPARATOR
+
+        INTERACTIVE_TEXT(STRING_TOKEN(STR_FLASH_PROGRESS_HELP), STRING_TOKEN(STR_EMPTY), STRING_TOKEN(STR_EMPTY), FLASH_PROGRESS_KEY)
+/*
+#define REFLASH_PROGRESS
+#include <ReflashDefinitions.h>
+#undef REFLASH_PROGRESS
+*/
+
+	endform;
+endformset;
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2009, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************

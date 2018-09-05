@@ -1,0 +1,103 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+## @file
+#
+##
+[Defines]
+INF_VERSION     = 0x00010005
+VERSION_STRING  = 1.0
+BASE_NAME       = TcgDxe
+MODULE_TYPE     = DXE_DRIVER
+FILE_GUID       = 5E9CABA3-F2B1-497a-ADAC-24F575E9CDE9
+ENTRY_POINT     = CommonTcgDxEntryPoint
+
+[Sources]
+TpmDxe.c
+TcgDxe.c
+xTcgDxe.c
+EMpTcmDxe.c
+
+[Sources.ia32]
+EMpCallBin32.asm
+[Sources.x64]
+EMpCallBin.asm
+
+[LibraryClasses]
+UefiDriverEntryPoint
+BaseLib
+BaseTisLib12
+ShaLib
+BaseCrbLibDxe
+MemoryAllocationLib
+UefiLib
+TcgAslLib
+BaseAmiTcmlib
+TpmReportStatusCodeWrapperLibDxe
+PcdLib
+
+[Protocols]
+gEfiTpmDeviceProtocolGuid
+gEfiTcgProtocolGuid
+gTcgPlatformSetupPolicyGuid
+gAmiTpmSupportTypeProtocolguid
+gEfiBlockIoProtocolGuid
+gEfiFirmwareVolume2ProtocolGuid
+gEfiAcpiSupportGuid
+gEfiDiskIoProtocolGuid
+gEfiTcgPlatformProtocolGuid
+gAmiTpmSupportTypeProtocolguid
+
+[Guids]
+gEfiImageSecurityDatabaseGuid
+gEfiSmbiosTableGuid
+gEfiTcgMpDriverHobGuid
+AmiValidBootImageCertTblGuid
+ExtendedDataGuid
+gEfiPartTypeUnusedGuid
+AmiTcgResetVarHobGuid
+gTpm20HobGuid
+gEfiPeiTcgLogHobGuid
+gEfiTcgMpDriverHobGuid
+
+[Protocols]
+gTcgPlatformSetupPolicyGuid
+
+[Packages]
+ MdePkg/MdePkg.dec
+ UefiCpuPkg/UefiCpuPkg.dec
+ AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+ AmiModulePkg/AmiModulePkg.dec
+ AmiTcgPkg/AmiTcgPkg.dec
+ MdeModulePkg/MdeModulePkg.dec
+ 
+ [Pcd]
+  gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemId             ## CONSUMES
+  gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemTableId        ## CONSUMES
+
+[Depex]
+  gTcgPlatformSetupPolicyGuid
+
+
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************

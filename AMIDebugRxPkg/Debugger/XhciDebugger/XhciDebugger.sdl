@@ -1,0 +1,74 @@
+TOKEN
+	Name  = "XhciDebugger_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enable XHCI Debugger support in the project"
+	TokenType = Boolean
+	Master = Yes
+	Token = "USB_3_DEBUG_SUPPORT" "=" "1"
+End
+
+PATH
+	Name  = "XhciDebugger_DIR"
+	Path  = "AMIDebugRxPkg\Debugger\XhciDebugger"
+End
+
+INFComponent
+	Name  = "XhciDebugger"
+	File  = "XhciDebugger.inf"
+	Package  = "Debugger"
+	ModuleTypes  = "PEIM"
+	Path  = "XhciDebugger_DIR"
+End
+
+TOKEN
+	Name  = "DEBUG_INIT_HC"
+	Value  = "0"
+	Help  = "Token switch to Let Debugger init the XHCIHc. For internal use only, do not use this"
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "USB_3_DEBUG_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "DBG_PEI_XHCI_MMIOBASE"
+	Value  = "0xFE400000"
+	Help  = "MMIO Base Address for first XHCI Controller during PEI phase"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "DBG_PEI_XHCI_CONTROLLER_PCI_ADDRESS"
+	Value  = "{0x0, 0x14, 0x0},"
+	Help  = "Default value if XHCI controllers are not supported, Set Pcd value of PcdUsbXhciPciAddress based on the values here"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "DBG_PEI_XHCI_CONTROLLER_PCI_REGISTER_VALUES"
+	Value = "{0,0,0,0,0,0,0},"
+	Help  = "Enable PCIe slot by programming bridge with the secondary/subordinate bus number and memory window.\Information format (AccessWidth is decimal), with a comma at the end:\   {Bus, Device, Function, Register, AccessWidth, BitsToSet, BitsToClear},"
+	TokenType = Expression
+	TargetH = Yes
+End
+
+PcdMapping
+	Name  = "PcdUsbXhciMemorySpaceBase"
+	GuidSpace  = "gEfiAMIDebugRxPkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "$(DBG_PEI_XHCI_MMIOBASE)"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End
+
+PcdMapping
+	Name  = "PcdUsbXhciPciAddress"
+	GuidSpace  = "gEfiAMIDebugRxPkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0x000A0000"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End

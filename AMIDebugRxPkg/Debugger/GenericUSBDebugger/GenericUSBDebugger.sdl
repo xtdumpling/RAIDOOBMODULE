@@ -1,0 +1,176 @@
+TOKEN
+	Name  = "GenericUSBDebugger_SUPPORT"
+	Value  = "1"
+	Help  = "Master SDL token of the Module depends on GENERIC_USB_CABLE_SUPPORT SDL token"
+	TokenType = Boolean
+	TargetMAK = Yes
+	Lock = Yes
+	Master = Yes
+	Token = "GENERIC_USB_CABLE_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "USB_CABLE_VENDORID"
+	Value  = "0x0525"
+	Help  = "VendorId of the cable. Enables Usbdbgport, if vendor id and product id matchs and it will not check for class code of cable. Otherwise it checks for class code."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0x0-0xffff"
+End
+
+TOKEN
+	Name  = "USB_CABLE_PRODUCTID"
+	Value  = "0x127a"
+	Help  = "ProductId of the cable. Enables Usbdbgport, if vendor id and product id matchs and it will not check for class code of cable. Otherwise it checks for class code."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0x0-0xffff"
+End
+
+TOKEN
+	Name  = "USB_KNOWN_CLASSES"
+	Value  = "{1,3,5,6,7,8,9,0xb,0xd,0xe,0xDC,0xe0,0xEF,0xFE}"
+	Help  = "List of known class to Ignore checking the UsbDbgPort support. USBdbgport will not be support for the Device classes listed. Please Enter known classes from 1-0xff."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "DbgGenUsbPortX64Lib_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable DbgGenUsbXportX64Lib support in Project"
+	TokenType = Boolean
+	Token = "X64_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "DbgGenUsbXportX64Lib_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable DbgRxXportX64Lib support in Project"
+	TokenType = Boolean
+	Token = "X64_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "USB_DEBUG_TRANSPORT"
+	Value  = "0"
+	Help  = "Default value for Generic USB Debugger - Do not change"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PeiDebugger_SUPPORT"
+	Value  = "0"
+	Help  = "Default value for Generic USB Debugger - Do not change"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+PATH
+	Name  = "GenericUSBDebugger_DIR"
+	Path  = "AMIDebugRxPkg\Debugger\GenericUSBDebugger"
+End
+
+ELINK
+	Name  = "$(BUILD_DIR)\GenericUSBDebugger.ffs"
+	Parent  = "FV_MAIN"
+	Token = "GENERIC_USB_CABLE_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+INFComponent
+	Name  = "GenericUSBDebugger"
+	File  = "GenericUSBDebugger.inf"
+	Package  = "Debugger"
+	ModuleTypes  = "DXE_DRIVER"
+End
+
+INFComponent
+	Name  = "DbgGenUsbPortLib"
+	File  = "DbgGenUsbPortLib.inf"
+	Package  = "Debugger"
+	Arch  = "common Ia32 X64"
+	Path  = "DbgGenUsbPortLib_DIR"
+End
+
+INFComponent
+	Name  = "DbgGenUsbPortX64Lib"
+	File  = "DbgGenUsbPortx64Lib.inf"
+	Package  = "Debugger"
+	Path  = "DbgGenUsbPortLib_DIR"
+	Token = "DbgGenUsbPortX64Lib_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "DbgGenUsbXportLib"
+	File  = "DbgGenUsbXportLib.inf"
+	Package  = "Debugger"
+	Path  = "DbgGenUsbXportLib_DIR"
+End
+
+INFComponent
+	Name  = "DbgGenUsbXportX64Lib"
+	File  = "DbgGenUsbXportX64Lib.inf"
+	Package  = "Debugger"
+	Arch  = "common"
+	Path  = "DbgGenUsbXportLib_DIR"
+	Token = "DbgGenUsbXportX64Lib_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "CommonGenUsbLib"
+	File  = "CommonGenUsbLib.inf"
+	Package  = "Debugger"
+	Arch  = "common"
+End
+
+LibraryMapping
+	Class  = "PeiDebugPortLib"
+	Instance  = "Debugger.DbgGenUsbPortLib"
+End
+
+LibraryMapping
+	Class  = "DxeDebugPortLib"
+	Instance  = "Debugger.DbgGenUsbPortLib"
+	Token = "X64_SUPPORT" "=" "0"
+End
+
+LibraryMapping
+	Class  = "DxeDebugPortLib"
+	Instance  = "Debugger.DbgGenUsbPortX64Lib"
+	Token = "DbgGenUsbPortX64Lib_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "PeiDebugXportLib"
+	Instance  = "Debugger.DbgGenUsbXportLib"
+	Arch  = "IA32"	
+End
+
+LibraryMapping
+	Class  = "PeiDebugXportLib"
+	Instance  = "Debugger.DbgGenUsbXportX64Lib"
+	Arch  = "X64"
+	Token = "DbgGenUsbXportX64Lib_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "DxeDebugXportLib"
+	Instance  = "Debugger.DbgGenUsbXportLib"
+	Token = "X64_SUPPORT" "=" "0"
+End
+
+LibraryMapping
+	Class  = "DxeDebugXportLib"
+	Instance  = "Debugger.DbgGenUsbXportX64Lib"
+	Token = "DbgGenUsbXportX64Lib_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "CommonGenUsbLib"
+	Instance  = "Debugger.CommonGenUsbLib"
+End
+

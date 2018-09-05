@@ -1,0 +1,54 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = CmosPei
+  FILE_GUID                      = 654FE61A-2EDA-4749-A76A-56ED7ADE1CBE  
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = CmosManagerPeiEntry
+
+[Sources]
+  CmosManagerPei.c
+  CmosManagerPei.h
+  CmosManager.c
+  CmosManager.h
+  CmosAccess.c
+  CmosTables.c
+  CmosManagerHob.h
+  CmosTypes.h
+
+
+[Packages]
+  MdePkg/MdePkg.dec   
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  
+[Ppis]
+  gEfiPeiReadOnlyVariable2PpiGuid  
+  gEfiPeiMemoryDiscoveredPpiGuid
+  gAmiCmosAccessPpiGuid
+  
+[Guids]
+
+[LibraryClasses]
+  AmiPeiLib
+  AmiCspLib
+  PeimEntryPoint
+
+[Depex]
+  gEfiPeiReadOnlyVariable2PpiGuid
+  

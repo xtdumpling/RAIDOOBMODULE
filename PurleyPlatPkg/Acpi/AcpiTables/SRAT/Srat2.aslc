@@ -1,0 +1,1271 @@
+/*++
+  This file contains an 'Intel Peripheral Driver' and is        
+  licensed for Intel CPUs and chipsets under the terms of your  
+  license agreement with Intel or your vendor.  This file may   
+  be modified by the user, subject to additional terms of the   
+  license agreement                                             
+--*/
+/*++
+
+Copyright (c)  1999 - 2014 Intel Corporation. All rights reserved
+This software and associated documentation (if any) is furnished
+under a license and may only be used or copied in accordance
+with the terms of the license. Except as permitted by such
+license, no part of this software or documentation may be
+reproduced, stored in a retrieval system, or transmitted in any
+form or by any means without the express written consent of
+Intel Corporation.
+
+
+Module Name:
+
+  Srat2.0.c
+
+Abstract:
+
+  This file contains a structure definition for the ACPI Static Resource 
+  Affinity Table (SRAT) Rev 2.0. Any changes to the SRAT table require updating the
+  respective structure count in Srat.h and then adding the structure to the 
+  SRAT defined in this file.  The table layout is defined in Srat.h and the 
+  table contents are defined in StaticResourceAffinityTable.h and Srat.h.
+
+--*/
+
+//
+// Statements that include other files
+//
+
+#include <Acpi/Srat.h>
+
+#define PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, thread)         \
+  EFI_ACPI_4_0_PROCESSOR_LOCAL_X2APIC_AFFINITY,          \
+  sizeof (EFI_ACPI_4_0_PROCESSOR_LOCAL_X2APIC_AFFINITY_STRUCTURE), \
+  EFI_ACPI_RESERVED_BYTE,                                \
+  EFI_ACPI_RESERVED_BYTE,                                \
+  0x00000000,                                            \
+  0xFFFFFFFF,                                            \
+  0x00000000,                                            \
+  0x00000000,                                            \
+  EFI_ACPI_RESERVED_BYTE,                                \
+  EFI_ACPI_RESERVED_BYTE,                                \
+  EFI_ACPI_RESERVED_BYTE,                                \
+  EFI_ACPI_RESERVED_BYTE,                                \
+
+#define PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, thread)         \
+  EFI_ACPI_PROCESSOR_LOCAL_APIC_SAPIC_AFFINITY,   \
+  sizeof (EFI_ACPI_PROCESSOR_LOCAL_APIC_SAPIC_AFFINITY_STRUCTURE),  \
+  0x00,                                           \
+  0xFF,                                            \
+  0x00000000,                                     \
+  0x00,                                           \
+  EFI_ACPI_RESERVED_BYTE,                         \
+  EFI_ACPI_RESERVED_BYTE,                         \
+  EFI_ACPI_RESERVED_BYTE,                         \
+  EFI_ACPI_RESERVED_BYTE,                         \
+  EFI_ACPI_RESERVED_BYTE,                         \
+  EFI_ACPI_RESERVED_BYTE,                         \
+  EFI_ACPI_RESERVED_BYTE,                         \
+
+#define PROC_LOCAL_X2APIC_AFFINITY_ENTRY_SKT(socket)  \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x00)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x01)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x02)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x03)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x04)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x05)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x06)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x07)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x08)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x09)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x0A)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x0B)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x0C)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x0D)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x0E)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x0F)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x10)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x11)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x12)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x13)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x14)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x15)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x16)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x17)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x18)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x19)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x1A)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x1B)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x1C)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x1D)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x1E)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x1F)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x20)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x21)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x22)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x23)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x24)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x25)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x26)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x27)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x28)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x29)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x2A)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x2B)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x2C)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x2D)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x2E)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x2F)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x30)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x31)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x32)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x33)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x34)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x35)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x36)    \
+    PROC_LOCAL_X2APIC_AFFINITY_ENTRY(socket, 0x37) \
+
+#define PROC_LOCAL_SAPIC_AFFINITY_ENTRY_SKT(socket) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x00) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x01) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x02) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x03) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x04) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x05) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x06) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x07) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x08) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x09) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x0A) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x0B) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x0C) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x0D) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x0E) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x0F) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x10) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x11) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x12) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x13) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x14) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x15) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x16) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x17) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x18) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x19) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x1A) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x1B) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x1C) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x1D) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x1E) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x1F) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x20) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x21) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x22) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x23) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x24) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x25) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x26) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x27) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x28) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x29) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x2A) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x2B) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x2C) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x2D) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x2E) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x2F) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x30) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x31) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x32) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x33) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x34) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x35) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x36) \
+    PROC_LOCAL_SAPIC_AFFINITY_ENTRY(socket, 0x37) \
+//
+// Static Resource Affinity Table definition
+//
+EFI_ACPI_4_0_STATIC_RESOURCE_AFFINITY_TABLE Srat40 = {
+  EFI_ACPI_4_0_SYSTEM_RESOURCE_AFFINITY_TABLE_SIGNATURE,
+  sizeof (EFI_ACPI_4_0_STATIC_RESOURCE_AFFINITY_TABLE),
+  EFI_ACPI_4_0_SYSTEM_RESOURCE_AFFINITY_TABLE_REVISION,
+  //
+  // Checksum will be updated at runtime
+  //
+  0x00,
+  //
+  // It is expected that these values will be programmed at runtime
+  //
+  ' ',
+  ' ',
+  ' ',
+  ' ',
+  ' ',
+  ' ',
+  0,
+  EFI_ACPI_OEM_SRAT_4_0_REVISION,
+  0,
+  0,
+  //
+  // Beginning of SRAT specific fields
+  //
+  EFI_ACPI_SRAT_RESERVED_FOR_BACKWARD_COMPATIBILITY,
+  EFI_ACPI_RESERVED_QWORD,
+PROC_LOCAL_SAPIC_AFFINITY_ENTRY_SKT(0)
+
+#if MAX_SOCKET > 1
+PROC_LOCAL_SAPIC_AFFINITY_ENTRY_SKT(1)
+#endif
+
+#if MAX_SOCKET > 2
+PROC_LOCAL_SAPIC_AFFINITY_ENTRY_SKT(2)
+#endif
+
+#if MAX_SOCKET > 3
+PROC_LOCAL_SAPIC_AFFINITY_ENTRY_SKT(3)
+#endif
+
+#if MAX_SOCKET > 4
+PROC_LOCAL_SAPIC_AFFINITY_ENTRY_SKT(4)
+#endif
+
+#if MAX_SOCKET > 5
+PROC_LOCAL_SAPIC_AFFINITY_ENTRY_SKT(5)
+#endif
+
+#if MAX_SOCKET > 6
+PROC_LOCAL_SAPIC_AFFINITY_ENTRY_SKT(6)
+#endif
+
+#if MAX_SOCKET > 7
+PROC_LOCAL_SAPIC_AFFINITY_ENTRY_SKT(7)
+#endif
+
+  //
+  // If Hotplug needs to be implemented we must mark the memory ranges below 4GB
+  // as pinned memory, since it contains BIOS structures. Not supported in Thurley
+  //
+  //
+  // Memory Affinity Structure 1
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 2
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 3
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 4
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 5
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 6
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 7
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 8
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+
+#if MAX_SOCKET > 1
+  //
+  // Memory Affinity Structure 9
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 10
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 11
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 12
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 13
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 14
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 15
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 16
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+#endif
+
+#if MAX_SOCKET > 2
+  //
+  // Memory Affinity Structure 17
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 18
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 19
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 20
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 21
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 22
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 23
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 24
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+#endif
+
+#if MAX_SOCKET > 3
+  //
+  // Memory Affinity Structure 25
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 26
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 27
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 28
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 29
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 30
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 31
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 32
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+#endif
+
+#if MAX_SOCKET > 4
+  //
+  // Memory Affinity Structure 33
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 34
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 35
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 36
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 37
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 38
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 39
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 40
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+#endif
+
+#if MAX_SOCKET > 5
+  //
+  // Memory Affinity Structure 41
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 42
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 43
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 44
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 45
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 46
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 47
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 48
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+#endif
+
+#if MAX_SOCKET > 6
+  //
+  // Memory Affinity Structure 49
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 50
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 51
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 52
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 53
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 54
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 55
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 56
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+#endif
+
+#if MAX_SOCKET > 7
+  //
+  // Memory Affinity Structure 57
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 58
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 59
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 60
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 61
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 62
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 63
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+  //
+  // Memory Affinity Structure 64
+  //
+  EFI_ACPI_MEMORY_AFFINITY,                       // Type
+  sizeof (EFI_ACPI_MEMORY_AFFINITY_STRUCTURE),    // Length
+  0x00,                                           // Proximity Domain
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  EFI_ACPI_RESERVED_BYTE,                         // Reserved
+  0x00000000,                                     // Address Base Low
+  0x00000000,                                     // Address Base High
+  0x00000000,                                     // Length Low
+  0x00000000,                                     // Length High
+  EFI_ACPI_RESERVED_DWORD,                        // Reserved
+  0x00000000,                                     // Flags disabled, until enabled by Platform driver
+  EFI_ACPI_RESERVED_QWORD,                        // Reserved
+#endif
+
+PROC_LOCAL_X2APIC_AFFINITY_ENTRY_SKT(0)
+
+#if MAX_SOCKET > 1
+PROC_LOCAL_X2APIC_AFFINITY_ENTRY_SKT(1)
+#endif
+
+#if MAX_SOCKET > 2
+PROC_LOCAL_X2APIC_AFFINITY_ENTRY_SKT(2)
+#endif
+
+#if MAX_SOCKET > 3
+PROC_LOCAL_X2APIC_AFFINITY_ENTRY_SKT(3)
+#endif
+
+#if MAX_SOCKET > 4
+PROC_LOCAL_X2APIC_AFFINITY_ENTRY_SKT(4)
+#endif
+
+#if MAX_SOCKET > 5
+PROC_LOCAL_X2APIC_AFFINITY_ENTRY_SKT(5)
+#endif
+
+#if MAX_SOCKET > 6
+PROC_LOCAL_X2APIC_AFFINITY_ENTRY_SKT(6)
+#endif
+
+#if MAX_SOCKET > 7
+PROC_LOCAL_X2APIC_AFFINITY_ENTRY_SKT(7)
+#endif   
+};
+
+VOID*
+ReferenceAcpiTable (
+  VOID
+  )
+
+{
+  //
+  // Reference the table being generated to prevent the optimizer from removing the 
+  // data structure from the exeutable
+  //
+  return (VOID*)&Srat40;
+}

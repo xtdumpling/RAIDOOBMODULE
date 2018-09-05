@@ -1,0 +1,193 @@
+TOKEN
+    Name  = "BmcUserSettings_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable BmcUserSettings support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    Master = Yes
+End
+
+PATH
+    Name  = "BmcUserSettings_DIR"
+    Path  = "AmiIpmiPkg/Ipmi/BmcUserSettings"
+    Help = "Path to BmcUserSettings sub module in project."
+End
+
+TOKEN
+    Name  = "BMC_USER_PASSWORD_MIN_SIZE"
+    Value  = "1"
+    Help  = "BMC User Password Minimum Size"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "BMC_USER_PASSWORD_MAX_SIZE"
+    Value  = "20"
+    Help  = "Maximum BMC User Password Size. For BMC which is following IPMI Spec v2.0, 20 bytes is the maximum password size"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+TOKEN
+    Name = "IPMI_BMC_DELETE_USER_DATA"
+    Value = "0xFF"
+    Help = "Allows to use BMC vendor default value to delete a user"
+    TokenType = Integer
+    TargetH = Yes
+End
+
+ELINK
+    Name  = "$(BmcUserSettings_DIR)/BmcUserSettings.sd"
+    Parent  = "SERVER_MGMT_SETUP_DEFINITIONS"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include BmcUserSettings.sd file in ServerMgmtSetup definitions files list."
+End
+
+ELINK
+    Name  = "gEfiDxeIpmiTransportProtocolGuid"
+    Parent  = "AdditionalServerMgmtSetupProtocols"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include Efi Dxe Ipmi Transport Protocol Guid in Additional ServerMgmt Setup Protocols list."
+End
+
+ELINK
+    Name  = "gAmiPostManagerProtocolGuid"
+    Parent  = "AdditionalServerMgmtSetupProtocols"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include Ami Post Manager Protocol Guid in Additional ServerMgmt Setup Protocols list."
+End
+
+ELINK
+    Name  = "$(BmcUserSettings_DIR)/BmcUserSettings.uni"
+    Parent  = "ServerMgmtSetupStringFiles"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include BmcUserSettings.uni file in ServerMgmtSetup string files list."
+End
+
+ELINK
+    Name  = "$(BmcUserSettings_DIR)/BmcUserSettings.c"
+    Parent  = "ServerMgmtSetupCallbackFiles"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include BmcUserSettings.c in ServerMgmt Setup Callback files."
+End
+
+ELINK
+    Name  = "$(BmcUserSettings_DIR)/BmcUserSettings.h"
+    Parent  = "ServerMgmtSetupCallbackFiles"
+    InvokeOrder = AfterParent
+    Help  = "Elink to include BmcUserSettings.h in ServerMgmt Setup Callback files."
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SERVER_MGMT_CLASS_ID,SERVER_MGMT_SUBCLASS_ID,BMC_USER_SETTINGS_KEY,BmcUserSettingsCallbackFunction),"
+    parent  ="ServerMgmtSetupItemCallbacks"
+    InvokeOrder  = AfterParent
+    Help  = "Elink to include BmcUserSettingsCallbackFunction in ServerMgmt Setup Item Callbacks list for BMC User Settings key."
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SERVER_MGMT_CLASS_ID,SERVER_MGMT_SUBCLASS_ID,ADD_BMC_USER_KEY,BmcUserSettingsAddUserCallbackFunction),"
+    parent  ="ServerMgmtSetupItemCallbacks"
+    InvokeOrder  = AfterParent
+    Help  = "Elink to include BmcUserSettingsAddUserCallbackFunction in ServerMgmt Setup Item Callbacks list for Add BMC User key."
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SERVER_MGMT_CLASS_ID,SERVER_MGMT_SUBCLASS_ID,ADD_BMC_USER_NAME_KEY,BmcAddUserNameCallbackFunction),"
+    parent  ="ServerMgmtSetupItemCallbacks"
+    InvokeOrder  = AfterParent
+    Help  = "Elink to include BmcAddUserNameCallbackFunction in ServerMgmt Setup Item Callbacks list for Add BMC User Name key."
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SERVER_MGMT_CLASS_ID,SERVER_MGMT_SUBCLASS_ID,ADD_BMC_USER_PASSWORD_KEY,BmcAddUserPasswordCallbackFunction),"
+    parent  ="ServerMgmtSetupItemCallbacks"
+    InvokeOrder  = AfterParent
+    Help  = "Elink to include BmcAddUserPasswordCallbackFunction in ServerMgmt Setup Item Callbacks list for Add BMC User Password key."
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SERVER_MGMT_CLASS_ID,SERVER_MGMT_SUBCLASS_ID,ADD_BMC_USER_CHANNEL_NO_KEY,BmcAddUserChannelCallbackFunction),"
+    parent  ="ServerMgmtSetupItemCallbacks"
+    InvokeOrder  = AfterParent
+    Help  = "Elink to include BmcAddUserChannelCallbackFunction in ServerMgmt Setup Item Callbacks list for Add BMC User Channel Number key."
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SERVER_MGMT_CLASS_ID,SERVER_MGMT_SUBCLASS_ID,ADD_BMC_USER_PRIVILEGE_LIMIT_KEY,BmcAddUserChannelPrivilegeLimitCallbackFunction),"
+    parent  ="ServerMgmtSetupItemCallbacks"
+    InvokeOrder  = AfterParent
+    Help  = "Elink to include BmcAddUserChannelPrivilegeLimitCallbackFunction in ServerMgmt Setup Item Callbacks list for Add BMC User Privilege Limit key."
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SERVER_MGMT_CLASS_ID,SERVER_MGMT_SUBCLASS_ID,DELETE_BMC_USER_KEY,BmcDeleteUserCallbackFunction),"
+    parent  ="ServerMgmtSetupItemCallbacks"
+    InvokeOrder  = AfterParent
+    Help  = "Elink to include BmcDeleteUserCallbackFunction in ServerMgmt Setup Item Callbacks list for Delete BMC User key."
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SERVER_MGMT_CLASS_ID,SERVER_MGMT_SUBCLASS_ID,DELETE_BMC_USER_NAME_KEY,BmcDeleteUserNameCallbackFunction),"
+    parent  ="ServerMgmtSetupItemCallbacks"
+    InvokeOrder  = AfterParent
+    Help  = "Elink to include BmcDeleteUserNameCallbackFunction in ServerMgmt Setup Item Callbacks list for Delete BMC User Name key."
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SERVER_MGMT_CLASS_ID,SERVER_MGMT_SUBCLASS_ID,DELETE_BMC_USER_PASSWORD_KEY,BmcDeleteUserPasswordCallbackFunction),"
+    parent  ="ServerMgmtSetupItemCallbacks"
+    InvokeOrder  = AfterParent
+    Help  = "Elink to include BmcDeleteUserPasswordCallbackFunction in ServerMgmt Setup Item Callbacks list for Delete BMC User Password key."
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SERVER_MGMT_CLASS_ID,SERVER_MGMT_SUBCLASS_ID,CHANGE_BMC_USER_SETTINGS_KEY,ChangeUserSettingsCallbackFunction),"
+    parent  ="ServerMgmtSetupItemCallbacks"
+    InvokeOrder  = AfterParent
+    Help  = "Elink to include ChangeUserSettingsCallbackFunction in ServerMgmt Setup Item Callbacks list for Change BMC User Settings key."
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SERVER_MGMT_CLASS_ID,SERVER_MGMT_SUBCLASS_ID,CHANGE_USER_SETTINGS_BMC_CURRENT_USER_NAME_KEY,ChangeUserSettingsCurrentBmcUserNameCallbackFunction),"
+    parent  ="ServerMgmtSetupItemCallbacks"
+    InvokeOrder  = AfterParent
+    Help  = "Elink to include ChangeUserSettingsCurrentBmcUserNameCallbackFunction in ServerMgmt Setup Item Callbacks list for Change User Settings-BMC Current User Name key."
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SERVER_MGMT_CLASS_ID,SERVER_MGMT_SUBCLASS_ID,CHANGE_USER_SETTINGS_BMC_USER_CURRENT_PASSWORD_KEY,ChangeUserSettingsCurrentBmcUserPasswordCallbackFunction),"
+    parent  ="ServerMgmtSetupItemCallbacks"
+    InvokeOrder  = AfterParent
+    Help  = "Elink to include ChangeUserSettingsCurrentBmcUserPasswordCallbackFunction in ServerMgmt Setup Item Callbacks list for Change User Settings-BMC User Current Password key."
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SERVER_MGMT_CLASS_ID,SERVER_MGMT_SUBCLASS_ID,CHANGE_USER_SETTINGS_BMC_USER_KEY,ChangeUserSettingsEnableOrDisableBmcUserCallbackFunction),"
+    parent  ="ServerMgmtSetupItemCallbacks"
+    InvokeOrder  = AfterParent
+    Help  = "Elink to include ChangeUserSettingsEnableOrDisableBmcUserCallbackFunction in ServerMgmt Setup Item Callbacks list for Change User Settings-BMC User key."
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SERVER_MGMT_CLASS_ID,SERVER_MGMT_SUBCLASS_ID,CHANGE_USER_SETTINGS_BMC_USER_PASSWORD_KEY,ChangeUserSettingsBmcUserPasswordCallbackFunction),"
+    parent  ="ServerMgmtSetupItemCallbacks"
+    InvokeOrder  = AfterParent
+    Help  = "Elink to include ChangeUserSettingsBmcUserPasswordCallbackFunction in ServerMgmt Setup Item Callbacks list for Change User Settings-BMC User Password key."
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SERVER_MGMT_CLASS_ID,SERVER_MGMT_SUBCLASS_ID,CHANGE_USER_SETTINGS_BMC_USER_CHANNEL_NO_KEY,ChangeUserSettingsBmcUserChannelCallbackFunction),"
+    parent  ="ServerMgmtSetupItemCallbacks"
+    InvokeOrder  = AfterParent
+    Help  = "Elink to include ChangeUserSettingsBmcUserChannelCallbackFunction in ServerMgmt Setup Item Callbacks list for Change User Settings-BMC User Channel Number key."
+End
+
+ELINK
+    Name  = "ITEM_CALLBACK(SERVER_MGMT_CLASS_ID,SERVER_MGMT_SUBCLASS_ID,CHANGE_USER_SETTINGS_BMC_USER_PRIVILEGE_LIMIT_KEY,ChangeUserSettingsBmcUserChannelPrivilegeLimitCallbackFunction),"
+    parent  ="ServerMgmtSetupItemCallbacks"
+    InvokeOrder  = AfterParent
+    Help  = "Elink to include ChangeUserSettingsBmcUserChannelPrivilegeLimitCallbackFunction in ServerMgmt Setup Item Callbacks list for Change User Settings-BMC User Privilege Limit key."
+End

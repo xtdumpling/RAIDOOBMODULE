@@ -1,0 +1,91 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.03
+#       Bug fixed:   Fix POST hang up when set MMCFG Base to 3G.
+#       Reason:      
+#       Auditor:     Isaac Hsu
+#       Date:        May/17/2017
+#
+#  Rev. 1.02
+#       Bug fixed:   Early Graphic Logo Support.
+#       Reason:      
+#       Auditor:     Isaac Hsu
+#       Date:        Mar/14/2017
+#
+#  Rev. 1.01
+#       Bug fixed:   Disable onboard VGA during POST when VGA Priority set to offboard.
+#       Reason:      
+#       Auditor:     Kasber Chen
+#       Date:        Sep/12/2016
+#
+#  Rev. 1.00
+#       Bug fixed:   Initialize revision
+#       Reason:      Get base code from Grantley
+#       Auditor:     Salmon Chen
+#       Date:        Dec/04/2014
+#****************************************************************************
+#***************************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = BaseVbiosPeiLib
+  FILE_GUID                      = d60e76db-548e-4a6a-9f5e-d565705f926f
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = VbiosPeiLib
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  AmiIpmiPkg/AmiIpmiPkg.dec
+  SmcPkg/SmcPkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+
+[LibraryClasses]
+  IoLib
+  PciLib 
+  PlatformHookLib
+  TimerLib
+  SmcLib
+  MemoryAllocationLib
+  UefiDecompressLib
+
+[Sources]
+  AstVbiosPciBusEmu.h
+  AstVbiosPeiLib.c
+  AstVbiosPeiLib.h
+  devlib.c
+  devlib.h
+  IOLIB.C
+  iolib.h
+  pcilib.c
+  pcilib.h
+  typedef.h
+  vgahw.c
+  vgahw.h
+  vgamode.c
+  vgamode.h
+  MEMLIB.H
+
+[Ppis]
+  gEfiPeiReadOnlyVariable2PpiGuid
+
+[Guids]
+  gEfiSetupVariableGuid
+
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+  gEfiMdeModulePkgTokenSpaceGuid.PcdDxeIplSupportUefiDecompress
+  gSmcPkgTokenSpaceGuid.PcdSmcVgaBar
+
+

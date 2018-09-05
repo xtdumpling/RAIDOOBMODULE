@@ -1,0 +1,55 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2013, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+## @file AMTLockKBD.inf
+#   This driver is AmtWrapper DXE driver
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = AMTLockUsbKBD
+  FILE_GUID                      = 9173C39B-08DA-429A-BE15-0F7481CF72CE
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  VERSION_STRING                 = 1.0
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  ENTRY_POINT                    = AMTLockUsbKBDEntryPoint
+
+[Sources]
+  AmtLockUsbKBD.c
+
+[Packages]
+  MdePkg/MdePkg.dec  
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  PurleySktPkg/Me/MePkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+
+[LibraryClasses]
+  AmiDxeLib
+  UefiDriverEntryPoint
+  
+[Guids]
+  gEfiEventLegacyBootGuid
+  
+[Protocols]
+  gEfiUsbProtocolGuid
+  gAmiUsbSmmProtocolGuid 
+  gEfiSmmBase2ProtocolGuid
+  gAlertStandardFormatProtocolGuid
+
+[Depex]
+  gEfiSmmBase2ProtocolGuid AND
+  gEfiUsbProtocolGuid AND
+  gAlertStandardFormatProtocolGuid

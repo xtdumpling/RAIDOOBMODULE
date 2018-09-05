@@ -1,0 +1,33 @@
+TOKEN
+	Name  = "Library_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling Library support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+INFComponent
+	Name  = "BPEmcaLib"
+	File  = "emcalib\emcalib.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "BASE"
+End
+
+INFComponent
+	Name  = "BPMpsyncdataLib"
+	File  = "mpsyncdatalib\mpsyncdatalib.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+End
+
+LibraryMapping
+	Class  = "EmcaLib"
+	Instance  = "PurleyPlatPkg.BPEmcaLib"
+End
+
+LibraryMapping
+	Class  = "MpSyncDataLib"
+	Instance  = "PurleyPlatPkg.BPMpsyncdataLib"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+End
+

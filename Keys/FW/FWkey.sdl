@@ -1,0 +1,140 @@
+TOKEN
+     Name  = "FwKey_framework_SUPPORT"
+     Value  = "1"
+     Help  = "Enable FW Key framework"
+     TokenType = Boolean
+     Master = Yes
+     Token = "CREATE_FWCAPSULE" "!=" "0"
+End
+
+TOKEN
+     Name  = "FWpub"
+     Value  = "$(FWKey_DIR)$(PATH_SLASH)pubKey"
+     Help  = "Root of trust Key for signed BIOS verification.\Public portion of the Key is inserted as ffs file inside BIOS RTU (FV_BB)\RSA Key formatted as PKCS#1v2.1 ASN.1 or X.509 DER file."
+     TokenType = Expression
+     TargetMAK = Yes
+     Token = "FWCAPSULE_CERT_FORMAT" "=" "0"
+End
+
+TOKEN
+     Name  = "FWpriv"
+     Value  = "$(FWKey_DIR)$(PATH_SLASH)priKey"
+     Help  = "A Signer Certificate Key in the FwCapsule Hdr.\Used as upgrade(new) key in 2-key signing model\RSA Key formatted as PKCS#1v2.1 ASN.1 or X.509 DER file."
+     TokenType = Expression
+     TargetMAK = Yes
+     Token = "FWCAPSULE_CERT_FORMAT" "=" "0"
+End
+
+TOKEN
+     Name  = "FWrootKey"
+     Value  = "$(FWpriv)"
+     Help  = "A Root Certificate key in the FwCapsule Hdr.\Used as back-up(old) key in a dual-key signing model(only for FWCAPSULE_CERT_FORMAT=0)"
+     TokenType = Expression
+     TargetMAK = Yes
+     Token = "FWCAPSULE_CERT_FORMAT" "=" "0"
+End
+
+TOKEN
+     Name  = "FWpub"
+     Value  = "$(FWKey_DIR)$(PATH_SLASH)FW_pubKey.cer"
+     Help  = "X.509 Certificate with Public key"
+     TokenType = Expression
+     TargetMAK = Yes
+     Token = "FWCAPSULE_CERT_FORMAT" "=" "1"
+End
+
+TOKEN
+     Name  = "FWpriv"
+     Value  = "$(FWKey_DIR)$(PATH_SLASH)FW_priKey.pfx"
+     Help  = "File name(.pfx) of Pkcs#12 key container with the private key used for signing of FwCapsule package"
+     TokenType = Expression
+     TargetMAK = Yes
+     Token = "FWCAPSULE_CERT_FORMAT" "=" "1"
+End
+
+TOKEN
+     Name  = "FW_PFX_Password"
+     Value  = " "
+     Help  = "Specifies the optional password to unlock PFX - PKCS#12 Private Key container file."
+     TokenType = Expression
+     TargetMAK = Yes
+End
+
+TOKEN
+     Name  = "FWKEY_FILE_SIZE"
+     Value  = "256"
+     Help  = "Key file size for RSA2048 Key. Don't change the value."
+     TokenType = Integer
+     TargetMAK = Yes
+     TargetH = Yes
+     Lock = Yes
+     Token = "FWKEY_FILE_FORMAT" "=" "0"
+End
+
+TOKEN
+     Name  = "FWKEY_FILE_SIZE"
+     Value  = "32"
+     Help  = "Key file size for SHA256 Hash. Don't change the value."
+     TokenType = Integer
+     TargetMAK = Yes
+     TargetH = Yes
+     Lock = Yes
+     Token = "FWKEY_FILE_FORMAT" "=" "1"
+End
+
+TOKEN
+     Name  = "FWKEY_FILE_SIZE"
+     Value  = "1536"
+     Help  = "Default size (1.5k) for x509 DER Public key certificate."
+     TokenType = Integer
+     TargetMAK = Yes
+     TargetH = Yes
+     Token = "FWKEY_FILE_FORMAT" "=" "2"
+End
+
+TOKEN
+     Name  = "FWKEY_FILE_GUID"
+     Value  = "3FEEC852-F14C-4E7F-97FD-4C3A8C5BBECC"
+     TokenType = Expression
+     TargetMAK = Yes
+     Token = "FWKEY_FILE_FORMAT" "=" "0"
+End
+
+TOKEN
+     Name  = "FWKEY_FILE_GUID"
+     Value  = "5B85965C-455D-4CC6-9C4C-7F086967D2B0"
+     TokenType = Expression
+     TargetMAK = Yes
+     Token = "FWKEY_FILE_FORMAT" "=" "1"
+End
+
+TOKEN
+     Name  = "FWKEY_FILE_GUID"
+     Value  = "3A666558-43E3-4D25-9169-DB81F5DB42E1"
+     TokenType = Expression
+     TargetMAK = Yes
+     Token = "FWKEY_FILE_FORMAT" "=" "2"
+End
+
+PATH
+     Name  = "FWKey_DIR"
+     Help  = "Path to default Platform FW Signing Key.\User may change this path to point to another location of FW Key."
+End
+
+MODULE
+     File  = "FWKey.mak"
+End
+
+INFComponent
+    Name  = "FWKey"
+    File  = "../../Build/FWKey.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "USER_DEFINED"
+End
+
+FFS_FILE
+    Name  = "FWKey"
+    FD_AREA  = "FV_BB"
+    INFComponent  = "AmiModulePkg.FWKey"
+    Rule_Override  = "Uncompressed"
+End

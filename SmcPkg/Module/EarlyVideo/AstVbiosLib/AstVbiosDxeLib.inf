@@ -1,0 +1,48 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.01
+#       Bug Fix: Implement SMC_SIMPLETEXTOUT_PROTOCOL.
+#       Reason : Use the protocol instead of the previous lib.
+#       Auditor: Yenhsin Cho
+#       Date   : May/27/2016
+#
+#  Rev. 1.00
+#       Bug fixed:   Initialize revision
+#       Reason:      Get base code from Grantley
+#       Auditor:     Salmon Chen
+#       Date:        Dec/04/2014
+#****************************************************************************
+#***************************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = BaseVbiosDxeLib
+  FILE_GUID                      = d60e76db-548e-4a6a-9f5e-d565705e9260
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = VbiosDxeLib
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  SmcPkg/SmcPkg.dec
+
+[LibraryClasses]
+  AmiCspLib
+  AmiDxeLib
+  UefiDriverEntryPoint
+#  VbiosPrintLib
+  SmcLib
+
+[Sources]
+  AstVbiosDxeLib.c
+

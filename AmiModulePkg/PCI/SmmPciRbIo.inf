@@ -1,0 +1,48 @@
+## @file
+#  SMM RbIo and Save S3 Boot Script Driver
+#
+##
+
+
+[Defines]
+  INF_VERSION       = 0x00010015
+  VERSION_STRING    = 1.0
+  BASE_NAME         = SmmPciRbIo
+  MODULE_TYPE       = DXE_SMM_DRIVER
+  FILE_GUID         = 37A01080-2346-4a54-9900-D22B7B687C22
+  ENTRY_POINT       = SmmPciRootBridgeInit
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  	
+[Sources]
+SmmPciRbIo.c
+SmmPciRbIo.h
+  
+[LibraryClasses]
+IoLib
+AmiSdlLib
+AmiPciBusLib
+BaseLib
+DebugLib
+BaseMemoryLib
+SmmServicesTableLib
+MemoryAllocationLib
+UefiBootServicesTableLib
+UefiDriverEntryPoint
+DevicePathLib
+PciAccessCspLib
+
+[Protocols]
+gEfiPciRootBridgeIoProtocolGuid               
+gEfiSmmPciRootBridgeIoProtocolGuid               
+gAmiPciSmmHandoffProtocolGuid
+gEfiAcpiTableProtocolGuid
+
+[Packages]
+MdePkg/MdePkg.dec
+AmiModulePkg/AmiModulePkg.dec
+AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+
+ 
+[Depex]
+gEfiPciRootBridgeIoProtocolGuid AND
+gAmiPciSmmHandoffProtocolGuid

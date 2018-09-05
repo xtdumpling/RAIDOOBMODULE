@@ -1,0 +1,50 @@
+#****************************************************************************
+#****************************************************************************
+#**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#  Rev. 1.00
+#    Bug Fix:  Compress and encipher HII data for sum.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Jul/25/2016
+#
+#****************************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = PlatformSpecificFuncLib
+  FILE_GUID                      = 107b2fa5-9abf-a13a-c1ab-a1a69a3b1a16
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = PlatformSpecificFuncLib
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  CryptoPkg/CryptoPkg.dec
+  SmcPkg/SmcPkg.dec
+  SmcPkg/Module/SmcOOB/SmcOOB.dec
+
+[LibraryClasses]
+  IoLib
+  BaseCryptLib
+  UefiBootServicesTableLib
+  BaseMemoryLib
+  DebugLib
+  AmiDxeLib
+  RngLib
+
+[Sources]
+PlatformSpecificFuncLib.c
+PlatformSpecificFuncLib.h
+
+[Protocols]
+
+[Guids]
+
+[Pcd]
+

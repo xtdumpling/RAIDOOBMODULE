@@ -1,0 +1,80 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+## @file
+#   
+##
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = Smbios
+  FILE_GUID                      = B13EDD38-684C-41ed-A305-D7B7E32497DF
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = SmbiosDriverEntryPoint
+
+[Sources]  
+  Smbios.c
+
+[Packages]
+  AmiModulePkg/AmiModulePkg.dec
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+#APTIOV_SERVER_OVERRIDE_START: Security fix
+  MdeModulePkg/MdeModulePkg.dec
+#APTIOV_SERVER_OVERRIDE_END: Security fix
+
+[LibraryClasses]
+  AmiCspLib                             # WakeUpType
+  AmiDxeLib
+  UefiDriverEntryPoint
+
+[Guids]
+  gAmiSmbiosStaticDataGuid
+  gAmiSmbiosNvramGuid
+  gAmiSmbiosDynamicDataGuid
+  gAmiSmbrunGuid
+  gEfiGlobalVariableGuid
+  gEfiEndOfDxeEventGroupGuid
+  
+[Protocols]
+  gEfiPciIoProtocolGuid
+  gEfiDriverBindingProtocolGuid
+  gEfiLegacyRegion2ProtocolGuid
+  gEfiLegacyBiosProtocolGuid
+  gEfiLegacyBiosExtProtocolGuid
+  gEfiFirmwareVolume2ProtocolGuid
+  gEfiSmbiosProtocolGuid
+  gAmiSmbiosBoardProtocolGuid
+  gAmiSmbiosProtocolGuid
+#APTIOV_SERVER_OVERRIDE_START: Security fix
+  gEdkiiVariableLockProtocolGuid
+#APTIOV_SERVER_OVERRIDE_END: Security fix
+
+[Depex]
+  gAmiSmbiosBoardProtocolGuid AND
+  gEfiFirmwareVolume2ProtocolGuid
+
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************

@@ -1,0 +1,87 @@
+## @file
+#  Module Infomation file for PEI DxePolicyUpdateLib Library
+#
+#@copyright
+# Copyright (c) 2011 - 2016, Intel Corporation. All rights reserved
+# This software and associated documentation (if any) is furnished
+# under a license and may only be used or copied in accordance
+# with the terms of the license. Except as permitted by the
+# license, no part of this software or documentation may be
+# reproduced, stored in a retrieval system, or transmitted in any
+# form or by any means without the express written consent of
+# Intel Corporation.
+# This file contains a 'Sample Driver' and is licensed as such
+# under the terms of your license agreement with Intel or your
+# vendor. This file may be modified by the user, subject to
+# the additional terms of the license agreement.
+#
+#@par Specification Reference:
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = PeiPolicyUpdateLib
+  FILE_GUID                      = 6EA9585C-3C15-47da-9FFC-25E9E4EA4D0C
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = PeiPolicyUpdateLib|PEIM PEI_CORE SEC
+
+[Sources]
+  PeiPchPolicyUpdate.c
+  PchPolicyUpdateUsb.c
+  PchHdaVerbTables.c
+  # APTIOV_SERVER_OVERRIDE_RC_START : Adding Missing Files
+  PchHdaVerbTables.h
+  PeiPchPolicyUpdate.h
+  # APTIOV_SERVER_OVERRIDE_RC_END : Adding Missing Files
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  PurleySktPkg/Me/MePkg.dec
+  PurleySktPkg/SocketPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  PurleyPlatPkg/PlatPkg.dec
+  CpPlatPkg/CpPlatPkg.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+  # APTIOV_SERVER_OVERRIDE_RC_START : Added to use AmiPlatformHooksLib.
+  AmiCRBPkg/AmiCRBPkg.dec
+  # APTIOV_SERVER_OVERRIDE_RC_END : Added to use AmiPlatformHooksLib.
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec   #SMCPKG_SUPPORT
+
+[LibraryClasses]
+  HobLib
+  BaseCryptLib
+  MmPciLib
+  IoLib
+  SetupLib
+  PchHsioLib
+  # APTIOV_SERVER_OVERRIDE_RC_START : Added for Oem Hook to Override PchPolicy and to use AmiPlatformHooksLib.
+  AmiPlatformHooksLib
+  # APTIOV_SERVER_OVERRIDE_RC_END : Added for Oem Hook to Override PchPolicy and to use AmiPlatformHooksLib.
+
+[Pcd]
+  gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+
+  gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemId
+  gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemTableId
+  gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultOemRevision
+  gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultCreatorId
+  gEfiMdeModulePkgTokenSpaceGuid.PcdAcpiDefaultCreatorRevision
+  gPlatformTokenSpaceGuid.PcdDfxAdvDebugJumper
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[Ppis]
+  gEfiPeiReadOnlyVariable2PpiGuid               ## CONSUMES
+  gWdtPpiGuid                                   ## CONSUMES
+  gPchHdaVerbTablePpiGuid
+
+[Guids]
+  gMeBiosExtensionSetupGuid                     #SERVER_BIOS
+  gAmtForcePushPetPolicyGuid
+  gEfiGlobalVariableGuid
+  gEfiAcpiVariableGuid

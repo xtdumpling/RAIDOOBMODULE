@@ -1,0 +1,412 @@
+TOKEN
+	Name  = "NVRAM_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable NVRAM support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "NVRAM_VERSION"
+	Value  = "9"
+	Help  = "NVRAM module version.\Do not change."
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "MANUFACTURING_MODE_SUPPORT"
+	Value  = "0"
+	Help  = "When enabled adds support for manufacturing mode.\NVRAM image generated during build process will contain manufacturing defaults for variables used in Setup."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "NV_SIMULATION"
+	Value  = "0"
+	Help  = "Debug Switch. Not intended for a production firmware.\When the switch is on, non-volatile storage is simulated using a regular memory.\All the variables are lost at power off."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "NV_SIMULATION_NO_FLASH_READS"
+	Value  = "0"
+	Help  = "Debug Switch. Not intended for a production firmware.\Controls NV_SIMULATION mode. When the switch is off(default), in-memory NVRAM region is initialized by copying content from the in-flash(ROM) NVRAM region.\When the switch is on, in-memory NVRAM area is initially blank."
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "NV_SIMULATION" "=" "1"
+End
+
+TOKEN
+	Name  = "NVRAM_HEADER_SIZE"
+	Value  = "144"
+	Help  = "Size of NVRAM header, which is number of bytes from\the NVRAM_ADDRESS to the first variable record.\Currently defined as:\72(FV Header Size) + 24 (FFS File Header Size) + 48 Extended header size."
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+	Lock = Yes
+	Range  = "0-NVRAM_SIZE-1"
+End
+
+TOKEN
+	Name  = "RAW_NVRAM_SIZE"
+	Value  = "$(NVRAM_SIZE)-$(NVRAM_HEADER_SIZE)"
+	TokenType = Integer
+	TargetMAK = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "FAULT_TOLERANT_NVRAM_UPDATE"
+	Value  = "1"
+	Help  = "Enables/disables fault tolerant NVRAM garbage collection.\If FAULT_TOLERANT_NVRAM_UPDATE is 1, the NVRAM driver uses redundant flash area of size NVRAM_SIZE to perform a failsafe garbage collection. \No data will be lost in case of a power failure.\If FAULT_TOLERANT_NVRAM_UPDATE is 0, the values of some or all NVRAM variables may be lost in case of a power failure during the garbage collection."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "NVRAM_MONOTONIC_COUNTER_SUPPORT"
+	Value  = "1"
+	Help  = "If ON includes in project CORE NVRAM-based implementation of \the monotonic counter services.\Set to OFF to use stand alone monotonic counter driver."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "NVRAM_RECORD_CHECKSUM_SUPPORT"
+	Value  = "0"
+	Help  = "When this token is enabled, every NVRAM record is checksummed."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "NO_MMIO_FLASH_ACCESS_DURING_UPDATE"
+	Value  = "0"
+	Help  = "This token should be set to 1 if flash part is not memory mapped while write enabled."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "NVRAM_SMM_SUPPORT"
+	Value  = "1"
+	Help  = "Enables/disable NVRAM SMM driver.\"
+	TokenType = Boolean
+	Token = "SMM_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "PEI_NVRAM_COMPATIBILITY_CHECKER"
+	Value  = "PeiNvramDataCompatiblityChecker"
+	Help  = "Name of the function that will be called to verify compatibility of the NVRAM image with the firmware.\The function is of type PEI_NVRAM_COMPATIBILITY_CHECKER_TYPE.\The function has to be linked with NvramPei.\NvramPei has a built-in default implementation."
+	TokenType = Expression
+End
+
+TOKEN
+	Name  = "DXE_NVRAM_COMPATIBILITY_CHECKER"
+	Value  = "DxeNvramDataCompatiblityChecker"
+	Help  = "Name of the function that will be called to verify compatibility of the NVRAM image with the firmware.\The function is of type DXE_NVRAM_COMPATIBILITY_CHECKER_TYPE.\The function has to be linked with NvramDxe.\NvramDxe has a built-in default implementation."
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "NVRAM_SDL_TEMPLATE_COMMA"
+	Value  = ","
+	Help  = "This token is used in the SDL template files to workaround limitation of the template grammar.\DO NOT CHANGE!"
+	TokenType = Expression
+	Lock = Yes
+End
+
+PATH
+	Name  = "NVRAM_DIR"
+End
+
+ELINK
+	Name  = "GetVariableHook"
+	Help  = "Called before GetVariable"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "GetNextVariableNameHook"
+	Help  = "Called before GetNextVariableName"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "SetVariableHook"
+	Help  = "Called before SetVariable"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "PeiGetVariableHook"
+	Help  = "Called before GetVariable in PEI"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "PeiGetNextVariableNameHook"
+	Help  = "Called before GetNextVariableName in PEI"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "IsMfgMode"
+	Help  = "When one of the child functions returns TRUE, NVRAM is switched to a manufacturing mode."
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "IsResetConfigMode"
+	Help  = "When one of the child functions returns TRUE, NVRAM reset if performed."
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "IsDefaultConfigMode"
+	Help  = "When one of the child functions returns TRUE, NVRAM is switched to a default mode."
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "NvramPersistentVariables"
+	Help  = "These variables are preserved across firmware updates."
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "NvramPreservedVariables"
+	Help  = "When NVRAM runs out of space, NVRAM driver performs NVRAM cleanup procedure. \It deletes all the variables except those listed under \this eLink and under NvramPersistentVariables eLink."
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "NvramCleanupFilters"
+	Help  = "These functions are invoked for each variable during NVRAM cleanup procedure. \If any function returns TRUE, the variable is preserved."
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "NvramCleanupHandlers"
+	Help  = "These functions are invoked during NVRAM cleanup procedure. \They can be used to perform a more advanced variable processing.\NvramCleanupFilters should be use when possible."
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "NvramUpdateFilters"
+	Help  = "These functions are invoked for each variable during NVRAM update processing. \If any function returns TRUE, the variable is preserved across NVRAM updates."
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "NvramUpdateHandlers"
+	Help  = "These functions are invoked during NVRAM update processing. \They can be used to perform a more advanced variable processing.\NvramUpdateFilters should be use when possible."
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "KeepVarsInPersistentList"
+	Parent  = "NvramUpdateFilters"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "KeepVarsInPersistentList"
+	Parent  = "NvramCleanupFilters"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "KeepVarsInPreservedList"
+	Parent  = "NvramCleanupFilters"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "KeepVarsWithDefaults"
+	Parent  = "NvramCleanupFilters"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "CopyBootOptions"
+	Parent  = "NvramUpdateHandlers"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "CopyBootOptions"
+	Parent  = "NvramCleanupHandlers"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = '{L"KEK",EFI_GLOBAL_VARIABLE},'
+	Parent  = "NvramPersistentVariables"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = '{L"PK",EFI_GLOBAL_VARIABLE},'
+	Parent  = "NvramPersistentVariables"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = '{L"*",EFI_IMAGE_SECURITY_DATABASE_GUID},'
+	Parent  = "NvramPersistentVariables"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = '{L"SecureBootSetup",{0x7B59104A, 0xC00D, 0x4158, {0x87, 0xFF, 0xF0, 0x4D, 0x63, 0x96, 0xA9, 0x15} } },'
+	Parent  = "NvramPersistentVariables"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = '{L"*",{ 0x77FA9ABD, 0x0359, 0x4D32, {0xBD, 0x60, 0x28, 0xF4, 0xE7, 0x8F, 0x78, 0x4B} } },'
+	Parent  = "NvramPersistentVariables"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = '{L"ConIn",EFI_GLOBAL_VARIABLE},'
+	Parent  = "NvramPersistentVariables"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = '{L"ConOut",EFI_GLOBAL_VARIABLE},'
+	Parent  = "NvramPersistentVariables"
+	InvokeOrder = AfterParent
+End
+
+OUTPUTREGISTER
+	Name  = "NVRAM_PEI_ELINKS_H"
+	Path  = "Build"
+	File  = "AmiNvramPeiPlatformHooks.h"
+	Template  = "AmiNvramPeiPlatformHooksTemplate.h"
+End
+
+OUTPUTREGISTER
+	Name  = "NVRAM_DXE_ELINKS_H"
+	Path  = "Build"
+	File  = "AmiNvramDxePlatformHooks.h"
+	Template  = "AmiNvramDxePlatformHooksTemplate.h"
+End
+
+INFComponent
+	Name  = "NvramPei"
+	File  = "NvramPei.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "PEIM"
+End
+
+INFComponent
+	Name  = "NvramDxe"
+	File  = "NvramDxe.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "DXE_RUNTIME_DRIVER"
+End
+
+INFComponent
+	Name  = "NvramSmm"
+	File  = "NvramSmm.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "NVRAM_SMM_SUPPORT" "=" "1"
+End
+
+PcdMapping
+	Name  = "AmiPcdNvramSmmSupport"
+	GuidSpace  = "gAmiModulePkgTokenSpaceGuid"
+	PcdType  = "PcdsFeatureFlag"
+	Value  = "TRUE"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+	Token = "NVRAM_SMM_SUPPORT" "=" "1"
+End
+
+PcdMapping
+	Name  = "AmiPcdNvramResetPropertyMask"
+	GuidSpace  = "gAmiModulePkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "0"
+	Offset  = 00h
+	Length  = 00h
+	Help  = "Bit mask that defines NVRAM reset behavior.\if Bit 0 is set - Preserve variables that have no default value during NVRAM reset\if Bit 1 is set - Preserve persistent variables during NVRAM reset\All other bits are reserved."
+	TargetDSC = Yes
+End
+
+FFS_FILE
+	Name  = "NvramPei"
+	FD_AREA  = "FV_BB"
+	INFComponent  = "AmiModulePkg.NvramPei"
+	Apriori_Index  = "1"
+End
+
+FFS_FILE
+	Name  = "NvramDxe"
+	FD_AREA  = "FV_MAIN"
+	INFComponent  = "AmiModulePkg.NvramDxe"
+	Apriori_Index  = "3"
+End
+
+FFS_FILE
+	Name  = "NvramFdfFileStatement"
+	FD_AREA  = "NVRAM"
+	FILE_Stmt  = "AmiModulePkg/NVRAM/NvramFdfFileStatement.txt"
+End
+
+FFS_FILE
+	Name  = "FvMainDefaultsFdfFileStatement"
+	FD_AREA  = "FV_MAIN"
+	FILE_Stmt  = "AmiModulePkg/NVRAM/FvMainDefaultsFdfFileStatement.txt"
+End
+
+FFS_FILE
+	Name  = "FvBbDefaultsFdfFileStatement"
+	FD_AREA  = "FV_BB"
+	FILE_Stmt  = "AmiModulePkg/NVRAM/FvBbDefaultsFdfFileStatement.txt"
+	Disable = Yes
+End
+
+FD_AREA
+	Name  = "NVRAM"
+	TYPE  = "FV"
+	FD_INFO  = "AMIROM"
+	Offset  = "$(NVRAM_OFFSET)"
+	Size  = "$(NVRAM_SIZE)"
+	Layout_Attribute  = "0xd00"
+	Attributes  = "0xffff"
+	Alignment  = "16"
+	Guid  = "FA4974FC-AF1D-4E5D-BDC5-DACD6D27BAEC"
+End
+
+FD_AREA
+	Name  = "NVRAM_BACKUP"
+	TYPE  = "RAW"
+	FD_INFO  = "AMIROM"
+	Offset  = "$(NVRAM_OFFSET)+$(NVRAM_SIZE)"
+	Size  = "$(NVRAM_SIZE)"
+	Layout_Attribute  = "0xd00"
+	Attributes  = "0x0"
+	Guid  = "A7EDEBD8-A8D7-48F8-81FB-837656B82077"
+	Token = "FAULT_TOLERANT_NVRAM_UPDATE" "=" "1"
+End
+

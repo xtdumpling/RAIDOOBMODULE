@@ -1,0 +1,305 @@
+
+	TITLE	RT32SB.ASMINC -- Porting Hooks for RT32 Southbridge
+
+;**********************************************************************
+;**********************************************************************
+;**                                                                  **
+;**        (C)Copyright 1985-2013, American Megatrends, Inc.         **
+;**                                                                  **
+;**                       All Rights Reserved.                       **
+;**                                                                  **
+;**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+;**                                                                  **
+;**                       Phone: (770)-246-8600                      **
+;**                                                                  **
+;**********************************************************************
+;**********************************************************************
+
+;****************************************************************************
+; $Header: /Alaska/SOURCE/Modules/CSM/Generic/RT32/rt32sb.asm 1     12/12/07 12:44p Olegi $
+;
+; $Revision: 1 $
+;
+; $Date: 12/12/07 12:44p $
+;
+;****************************************************************************
+
+;<AMI_PHDR_START>
+;----------------------------------------------------------------------------
+;
+; Procedure:	rth_chipset_route_pci_irq_32
+;
+; Description:	This hook must be ported to physically route the given IRQ
+;		by programming the IRQ number into the given IRQ routing
+;		register. Also, this hook must set the given IRQ to
+;		edge/level mode properly.
+;
+; Input:	AH	- IRQ number to route.
+;		AL	- IRQ routing register to program.
+;
+; Output:	None.
+;
+; Modified:	None.
+;
+; Referrals:	rth_pci_route_irq.
+;
+; Notes:	1. The IRQ routing registers being checked here, are same as
+;		   the IRQ routing registers mentioned in PCI IRQ routing
+;		   table.
+;
+;		2. This hook gets called from runtime PCI functions.
+;
+;----------------------------------------------------------------------------
+;<AMI_PHDR_END>
+
+rth_chipset_route_pci_irq_32 PROC NEAR PUBLIC
+
+; start - [[[[[[[ Porting may be Needed ]]]]]]]
+
+; Below is the example code for Intel ICHx southbridge for reference
+COMMENT !
+/*
+	pushf
+	or	al, al
+	jz	rcrpi_exit
+	pushad
+	push	ax	 		; Save Input parameters
+	movzx	di, al
+	mov	bx, sb_dev31_reg_cfg0
+	mov	cl, ah
+	call	rtpci_write_cfg_byte_32
+
+	pop	ax	 		; Recover input parameters
+	mov	bx, 1	 		; IRQ to set to level trigger
+	mov	cl, ah
+	shl	bx, cl
+
+        mov     dx, 04D0h              	; Program 4D0h IRQs to level trigger
+        in      al, dx
+
+	or	al, bl
+	out	dx, al
+
+	inc	dx			; DX = 4D1h
+	in	al, dx
+
+	or	al, bh
+	out	dx, al
+
+	popad
+
+rcrpi_exit:
+	popfz
+*/
+ENDOFCOMMENT !
+; end - [[[[[[[ Porting may be Needed ]]]]]]]
+
+	ret
+rth_chipset_route_pci_irq_32 ENDP
+
+
+;<AMI_PHDR_START>
+;----------------------------------------------------------------------------
+;
+; Procedure:	rth_pci_search_xlat_32
+;
+; Description:	This function translates a PCI device search index to a
+;		logical PCI device number.  In the core BIOS there are several
+;		loops that search for each device on the PCI bus.  In most
+;		systems it is acceptable to search from device 0 to device
+;		1F or from device 1F down to 0.  But in some systems the
+;		search order may need to be more complex than a simple
+;		first-to-last or last-to-first scheme.  This routine allows
+;		any type of search order to be implemented.  In general there
+;		are three possibilities:
+;
+;		1. Simple First-to-Last search order (0 - 1F)
+;		This is the easiest case.  To implement this type of search
+;		order, just do nothing since BL is already set properly on
+;		entry.
+;
+;		2. Simple Last-to-First search order (1F - 0) This is the most
+;		common search order because it gives priority to off board
+;		devices (usually higher device numbers) over on board devices
+;		(usually lower device numbers).  To implement this type of
+;		search order just do:   SUB  BL, 1Fh
+;        		NEG  BL
+;        		RET
+;
+;		3. Complex search order
+;		This type of search order may be needed if an on board
+;		device's number lies between two PCI expansion slots.  Another
+;		use for this complex order is to control the searching order
+;		with setup questions.  To implement a complex search order
+;		some sort of list must be used.
+;
+; Input:	BH = PCI bus number that is being searched
+;		BL = PCI device search index "n" (in the range 0 - 1F)
+;
+; Output:	BL = The "nth" PCI device number to search for (in the range
+;		     0 - 1F)
+;
+; Modified:	Nothing
+;
+; Referrals:
+;
+; Notes:	This function does not need to be modified for most platforms.
+;		This function is assembled twice, once for real mode code, and
+;		once for 32 bit protected mode code.  All calls must be made
+;		using the callproc macro.  Do not modify and segment
+;		registers.
+;
+;----------------------------------------------------------------------------
+;<AMI_PHDR_END>
+
+rth_pci_search_xlat_32 PROC NEAR PUBLIC
+
+; start - [[[[[[[ Porting may be Needed ]]]]]]]
+					;(CORE0061.1)>
+ifdef	MKF_OEM_PCI_DEVICE_SCAN 
+ife	MKF_OEM_PCI_DEVICE_SCAN	
+	sub	bl, 1Fh			;Default is search Last-to-First
+	neg	bl
+endif
+else
+	sub	bl, 1Fh			;Default is search Last-to-First
+	neg	bl			; 1F --> 0
+endif
+					;<(CORE0061.1)
+; end - [[[[[[[ Porting may be Needed ]]]]]]]
+
+	ret
+rth_pci_search_xlat_32 ENDP
+
+					;(CORE0061.1+)>
+;<AMI_PHDR_START>
+;----------------------------------------------------------------------------
+;
+; Procedure:	rth_pci_search_func_xlat_32
+;
+; Description:	This function translates a PCI funtion search index to a
+;		logical PCI function number.  In the core BIOS there are several
+;		loops that search for each device on the PCI bus.  In most
+;		systems it is acceptable to search from funtion 0 to function
+;		7 or from function 7 down to 0.  But in some systems the
+;		search order may need to be more complex than a simple
+;		first-to-last or last-to-first scheme.  This routine allows
+;		any type of search order to be implemented.  In general there
+;		are three possibilities:
+;
+;		1. Simple Last-to-First search order (7 - 0)
+;		This is the easiest case.  To implement this type of search
+;		order, just do nothing since DL is already set properly on
+;		entry.
+;
+;		2. Simple First-to-Last search order (0 - 7) This is the most
+;		common search order because it gives priority to first function
+;		over on last function.  To implement this type of search order
+;		just do:
+;			SUB  BL, 07h
+;        		NEG  BL
+;        		RET
+;
+; Input:	BL = PCI function search index "n" (in the range 7 - 0)     
+; Output:	BL = The "nth" PCI function number to search for (in the range
+;		     0 - 7)
+;
+; Modified:	Nothing
+;
+; Referrals:
+;
+;----------------------------------------------------------------------------
+;<AMI_PHDR_END>
+rth_pci_search_func_xlat_32 PROC NEAR PUBLIC
+; Default Last-to-First
+; 7 --> 0
+ifdef	MKF_OEM_PCI_FUNC_SCAN 
+if	MKF_OEM_PCI_FUNC_SCAN	
+	sub	bl, 07h			; search First-to-Last
+	neg	bl			; 0 --> 7
+endif
+endif
+	ret
+rth_pci_search_func_xlat_32 ENDP
+					;<(CORE0061.1)
+
+comment ~
+
+					;(BUG2581+)>
+if MKF_MULTI_HOST_BR
+;<AMI_PHDR_START>
+;----------------------------------------------------------------------------
+;
+; Procedure:	rth_chipset_get_last_bus_32
+;
+; Description:	This hook must be ported to return the last bus of system
+;
+; Input:	None.
+;
+; Output:	 CL = Bus number of last PCI bus                                      ;
+;
+; Modified:	None.
+;
+; Referrals:
+;
+; Notes:	1. This hook gets called from runtime PCI functions.
+;
+;----------------------------------------------------------------------------
+;<AMI_PHDR_END>
+
+rth_chipset_get_last_bus_32 PROC NEAR PUBLIC
+	push	ax
+	push	bx
+	push	dx
+	push	di
+	push	cx			;Keep this last on stack
+;KSB+>>>
+        xor     dl, dl                  ;Default Max Bus is 0
+        mov     bx, 00C1h               ;Bus 0 / Device 24 / Func 1
+        mov     di, 0E0h		;PCI Bus Range Register 0
+last_bus_next_dev:
+        call	rtpci_read_cfg_word_32
+        jc      last_bus_skip_dev       ;Br if error reading CFG space(Should never happen)
+        and     cl, 3			;Mask enable bits
+        cmp     cl, 3			;Is this range reg enabled?
+        jne     last_bus_skip_dev	;Br if disabled
+        add     di, 2			;DI = PCI address of assigned bus range
+        call	rtpci_read_cfg_word_32	;Returns Sec bus in CL, Sub bus # in CH
+        jc      @F ;last_bus_skip_dev   ;Br if error reading CFG space(Should never happen)
+
+        cmp     ch, dl			;Does this range contain a higher max?
+        jbe     @F ;last_bus_skip_dev   ;Br if <= current Max Bus #
+        mov     dl, ch                  ;Update Max Bus #
+@@:
+        sub     di, 2			;Adjust DI
+last_bus_skip_dev:
+        add     di, 4                   ;Next PCI Bus Range Register
+        cmp     di, 0F0h		;Any left(Only 4)
+        jb      last_bus_next_dev	;Br if not finished
+;KSB<<<
+	pop	cx
+	mov	cl, dl
+	pop	di
+	pop	dx
+	pop	bx
+	pop	ax
+	ret
+
+rth_chipset_get_last_bus_32 ENDP
+endif
+					;<(BUG2581)
+end of comment ~
+
+;**********************************************************************
+;**********************************************************************
+;**                                                                  **
+;**        (C)Copyright 1985-2013, American Megatrends, Inc.         **
+;**                                                                  **
+;**                       All Rights Reserved.                       **
+;**                                                                  **
+;**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+;**                                                                  **
+;**                       Phone: (770)-246-8600                      **
+;**                                                                  **
+;**********************************************************************
+;**********************************************************************

@@ -1,0 +1,38 @@
+TOKEN
+	Name  = "CfgDb_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling CfgDb support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "UbaConfigDatabaseDxe_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable UbaConfigDatabaseDxe support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "UbaConfigDatabasePei_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable UbaConfigDatabasePei support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "UbaConfigDatabaseDxe"
+	File  = "Dxe\CfgDbDxe.inf"
+	Package  = "CpPlatPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "UbaConfigDatabaseDxe_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "UbaConfigDatabasePei"
+	File  = "Pei\CfgDbPei.inf"
+	Package  = "CpPlatPkg"
+	ModuleTypes  = "PEIM"
+	Token = "UbaConfigDatabasePei_SUPPORT" "=" "1"
+End
+

@@ -1,0 +1,234 @@
+/*++
+  This file contains 'Framework Code' and is licensed as such
+  under the terms of your license agreement with Intel or your
+  vendor.  This file may not be modified, except as allowed by
+  additional terms of your license agreement.
+--*/
+/*++
+
+  Copyright (c)  2007 - 2016 Intel Corporation.  All rights reserved.
+
+  This software and associated documentation (if any) is furnished under
+  a license and may only be used or copied in accordance with the terms
+  of the license.  Except as permitted by such license, no part of this
+  software or documentation may be reproduced, stored in a retrieval system,
+  or transmitted in any form or by any means without the express written
+  consent of Intel Corporation.
+
+  Module Name:
+
+    Whea.asi
+
+  Abstract:
+
+    WHEA ASL device, objects and data.
+
+--*/
+
+    //
+    // Platform capability, bit 16=1 for WHEA. This has to be patched
+    // by WHEA driver
+    //
+    #include <PchAccess.h>
+// APTIOV_SERVER_OVERRIDE_RC_START : Added the scope for Container object support.
+Scope(\_SB) {
+// APTIOV_SERVER_OVERRIDE_RC_END : Added the scope for Container object support.
+    Name (\PCAP, 0x00010000)
+    Name (\PSSW, 0x9b)
+    Name (\HWPS, 0)   // CPC capability from platform _OSC 
+
+    External (WSIC)
+    External (WSIS)
+    External (WSIB)
+    External (WSID)
+    External (WSIF)
+    External (WSTS)
+
+    //
+    // WHEA Operational region for extended CMOS access
+    //
+    OperationRegion (CMOS, SystemIO, 0x70, 4)
+    Field (CMOS, ByteAcc, NoLock, Preserve)
+    {
+        IDX0, 7,
+        , 1,
+        DAT0, 8,
+        IDX1, 7,
+        , 1,
+        DAT1, 8
+    }
+
+    IndexField (IDX1, DAT1, ByteAcc, NoLock, Preserve)
+    {
+        Offset (0x1B),    // Must Match Platform.h CMOS_WHEA_OS_ENABLE
+        WIWH, 8,          // The updated value in CMOS determines the OS that supports _OSC method with WHEA GUID.(Windows supports WHEA GUID)
+    }
+
+    //
+    //This method is used to turn on/off Whea support for BIOS
+    //
+    Method (SWWE,1)   //SW SMI Whea Enable
+    {
+        Store(0, \_SB.SMIS)         //Save SMIS
+        Store(Arg0, \_SB.SMIC)      //Set parameter into SMIC 0x9E enable whea
+                                    // 0x9D disable whea
+    } //end SWWE
+
+    //
+    // Define WHEA device object with PNP0C33 (as per Whea platform guide 1.0) that will be
+    // used by OS to install WHEA driver.
+    //
+    Device (WERR) {
+        Name(_HID, EISAID("PNP0C33"))   // WHEA Error device
+
+        Name (_UID, 0)
+
+        Method(_STA){
+            // If ( (Windows Server 2008 R2 || Windows 7) || (Windows Server 2012 || Windows 8) )
+            If (LGreaterEqual (\_SB.OSYS, 12)) {                                
+                If(LAnd(And(\PCAP,0x00010000),LEqual(WHEA,0x1))) {
+                    Return(0x0F)
+                }
+            }
+            Return(0x00)
+        }
+    }
+
+    //
+    // Our platform will generate SCI (on PCH GPIO0) to indicate
+    // all Correctable/recovered errors. This GPE event will have to notify OS via WHEA device
+    // about the error.
+    // Note: BIOS Error handler must build error data info before triggering SCI.
+    //
+    Scope(\_GPE)
+    {
+        
+        OperationRegion(GPIS, SystemMemory, Add(0xfdaf0000, R_PCH_PCR_GPIO_GPP_A_GPI_GPE_STS) , 4)
+        Field(GPIS, AnyAcc, NoLock, Preserve) {
+          Offset(0x0),
+            STSX,32,
+        }
+        
+        Method(_L6F) // 2-tier GPE event handler
+        {
+            Store (0x4A, IO80)
+            Store (STSX,Local0)
+            //Sleep(200)
+            If(LEqual(And(0x00001000,Local0), 0x00001000)) { 
+              //GPP_A12
+              Store (0x4B, IO80) 
+              Notify (\_SB.WERR, 0x80)
+              Store(0x00001000,STSX)
+            }    
+        }
+    }
+
+    //
+    // _OSC method will used by the OS the check platform capability for WHEA supprot. Also
+    // OS will use to indicate BIOS to enable WHEA support. BIOS will also can deny OS's request
+    // to enable WHEA if it's disable by platform or SKU policy (for e.g. WHEA siabled in Setup).
+    //
+    Method(_OSC , 4) {
+        // Now it is OSC for WHEA
+        // Make a copy of the capabilities buffer
+        // This prevents a Linux ASL interpreter error
+        Store(Arg3,Local0)
+
+        // Create DWORD Args from the Capabilities Buffer
+        CreateDWordField(Local0,0,CPB1)
+        CreateDWordField(Local0,4,CPB2)
+        // CreateDWordField(Local0,8,CPB3)
+
+        // Check for WHEA GUID
+        If(LEqual(Arg0, ToUUID("ed855e0c-6c90-47bf-a62a-26de0fc5ad5c"))) {
+              // If ( (Windows Server 2008 R2 || Windows 7) || (Windows Server 2012 || Windows 8) )
+// APTIOV_SERVER_OVERRIDE_RC_START : _SB.OSYS is not intialized based on OS
+//              If (LGreaterEqual (\_SB.OSYS, 12)) {
+// APTIOV_SERVER_OVERRIDE_RC_END : _SB.OSYS is not intialized based on OS
+                If(And(CPB2, 0x01)) { //Whea requested
+                    //Check WHEA is enabled/supported by platform.
+                    If(LAnd(And(\PCAP,0x00010000),LEqual(WHEA,0x1)))
+                    {
+                        // If OS not querying, enable WHEA in platform
+                        If(Not(And(CPB1,1))) {   //Query Flag Clear?
+                            SWWE(0x9E) //enable WHEA signals
+                        }
+                    } else {
+                        And(CPB2, 0xfffffffe,CPB2)
+                        Or(CPB1, 0x10, CPB1)        //Capabilities bits were masked
+                        If(Not(And(CPB1,1))) {   //Query Flag Clear?
+                            //SWWE(0x9d) disable WHEA
+                        }
+                    }
+                }
+// APTIOV_SERVER_OVERRIDE_RC_START : _SB.OSYS is not intialized based on OS
+        //    } 
+// APTIOV_SERVER_OVERRIDE_RC_END : _SB.OSYS is not intialized based on OS
+            Return (Local0)
+      } Else {
+
+        // Check for APEI GUID
+        If(LEqual(Arg0, ToUUID("0811B06E-4A27-44F9-8D60-3CBBC22E7B48"))) {
+            //Save Platform OSC HWPM capabilities
+            If(LEqual(And(CPB2, 0x00000040), 0x00000040)) {
+              Store(1,HWPS)				
+            }
+
+            If(And(CPB2,0x10)) { //OS is requesting whea support
+                //Check WHEA enabled/supported by platform
+                If(LAnd(And(\PCAP,0x00010000),LEqual(WHEA,0x1))) {
+                    // This CMOS value is used to determine the OS based on UUID value.
+                    // This value 0x1b is used in PFA module to follow firmware first model or cmci/PFA mechanism
+                    // The value 0x1b should match with Platform.h file
+                    Store(0x1b, WIWH)
+
+                    // If OS not querying, enable WHEA in platform
+                    If(Not(And(CPB1,1))) {   //Query Flag Clear?
+                        SWWE(0x9E) //enable whea signals
+                    }
+              } Else {
+                    And(CPB2, 0xffffffef, CPB2)
+                    Or(CPB1, 0x10, CPB1)        //Capabilities bits were masked
+                    If(Not(And(CPB1,1))) {   //Query Flag Clear?
+                        //SWWE(0x9d) disable WHEA
+                    }
+                }
+            }
+            Return (Local0)
+          } Else {
+
+          //
+          // If _OSC not being called for WHEA, and not for APEI,
+          //  call _OSC under PC00 and see if GUID is handled there instead
+          // (SysBus.asi)
+          //
+          Return (\_SB.PC00._OSC (Arg0, Arg1, Arg2, Arg3))
+        }
+      }
+    }
+
+    Device(SRIO) {
+        //
+        // pnp0c14 is the ID assigned by Microsoft to the WMI to ACPI mapper
+        Name(_HID, "PNP0C14")
+        Name(_UID, 0x0)
+        //
+        // _WDG evaluates to a data structure that specifies the data blocks supported
+        // by the ACPI device.
+
+        Name(_WDG, Buffer() {
+            //ToUUID("0E7AF9F2-44A1-4C6F-A4B0-A7678480DA61"),
+            0xf2, 0xf9, 0x7a, 0x0e, 0xa1, 0x44, 0x6f, 0x4c,0xA4,0xB0,0xA7,0x67,0x84,0x80,0xDA,0x61,
+            0x41, 0x41,                   //AA as Object ID
+            0x01,                         //Instance Count
+            0x02,                         // Flags (WMIACPI_REGFLAG_METHOD)
+            }
+        )
+
+        Method (_STA) {
+            Return (0xf)
+        }
+    }
+// APTIOV_SERVER_OVERRIDE_RC_START : Added the scope for Container object support.
+} // End Scope (_SB)
+// APTIOV_SERVER_OVERRIDE_RC_END : Added the scope for Container object support.

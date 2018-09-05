@@ -1,0 +1,19 @@
+TOKEN
+    Name  = "DMIEDIT_SSI_SUPPORT"
+    Value  = "0"
+    Help  = "Support for DmiEdit with SMM Substitute Interface (SSI). \0 = SSI Not supported \1 = SSI (SMM Communicate Protocol) supported\NOTE: THIS SUPPORT IS CURRENTLY AVAILABLE FOR ARM PLATFORM ONLY"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+PATH
+    Name  = "SMBIOS_DMIEDIT_SSI_DIR"
+End
+
+INFComponent
+    Name  = "SmbiosDmiEditSsi"
+    File  = "SmbiosDmiEditSsi.inf"
+    Package  = "AmiCompatibilityPkg"
+    ModuleTypes  = "DXE_SMM_DRIVER"
+    Token = "DMIEDIT_SSI_SUPPORT" "=" "1"
+End

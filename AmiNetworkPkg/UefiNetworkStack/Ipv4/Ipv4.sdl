@@ -1,0 +1,102 @@
+TOKEN
+	Name  = "Ipv4_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable Ipv4 stack support in Project"
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "Dhcp4Dxe_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable Dhcp4Dxe support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "Ip4ConfigDxe_SUPPORT"
+	Value  = "0"
+	Help  = "OBSELETE: This module has been removed as per the UEFI 2.5 update"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "Ip4Dxe_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable Ip4Dxe support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "Mtftp4Dxe_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable Mtftp4Dxe support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "Tcp4Dxe_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable Tcp4Dxe support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "Udp4Dxe_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable Udp4Dxe support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "Dhcp4Dxe"
+	File  = "Dhcp4Dxe/Dhcp4Dxe.inf"
+	Package  = "AmiNetworkPkg"
+	ModuleTypes  = "UEFI_DRIVER"
+	Token = "Dhcp4Dxe_SUPPORT" "=" "1"
+End
+
+
+INFComponent
+	Name  = "Ip4ConfigDxe"
+	File  = "Ip4ConfigDxe/Ip4ConfigDxe.inf"
+	Package  = "AmiNetworkPkg"
+	ModuleTypes  = "UEFI_DRIVER"
+	Token = "Ip4ConfigDxe_SUPPORT" "=" "1"
+End
+
+
+INFComponent
+	Name  = "Ip4Dxe"
+	File  = "Ip4Dxe/Ip4Dxe.inf"
+	Package  = "AmiNetworkPkg"
+	ModuleTypes  = "UEFI_DRIVER"
+	Token = "Ip4Dxe_SUPPORT" "=" "1"
+End
+
+
+INFComponent
+	Name  = "Mtftp4Dxe"
+	File  = "Mtftp4Dxe/Mtftp4Dxe.inf"
+	Package  = "AmiNetworkPkg"
+	ModuleTypes  = "UEFI_DRIVER"
+	Token = "Mtftp4Dxe_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "Tcp4Dxe"
+	File  = "Tcp4Dxe/Tcp4Dxe.inf"
+	Package  = "AmiNetworkPkg"
+	ModuleTypes  = "UEFI_DRIVER"
+	Token = "Tcp4Dxe_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "Udp4Dxe"
+	File  = "Udp4Dxe/Udp4Dxe.inf"
+	Package  = "AmiNetworkPkg"
+	ModuleTypes  = "UEFI_DRIVER"
+	Token = "Udp4Dxe_SUPPORT" "=" "1"
+End

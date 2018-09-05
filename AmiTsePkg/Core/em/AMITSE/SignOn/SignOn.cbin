@@ -1,0 +1,114 @@
+//*************************************************************************
+//*************************************************************************
+//**                                                                     **
+//**        (C)Copyright 1985-2012, American Megatrends, Inc.            **
+//**                                                                     **
+//**                       All Rights Reserved.                          **
+//**                                                                     **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+//**                                                                     **
+//**                       Phone: (770)-246-8600                         **
+//**                                                                     **
+//*************************************************************************
+//*************************************************************************
+
+//**********************************************************************
+//
+// $Header: $
+//
+// $Revision:  $
+//
+// $Date: $
+//
+//*****************************************************************************
+
+//<AMI_FHDR_START>
+//----------------------------------------------------------------------------
+//
+// Name:        Sign.cbin
+//
+// Description: 
+//  This file the Signon Data Structure definition
+//
+//----------------------------------------------------------------------------
+//<AMI_FHDR_END>
+
+
+// Module specific Includes
+#include <Token.h>
+#include <AmiLib.h>
+#include <AMITSEElinks.h>
+#include <SignOn.h>
+//#include <TimeStamp.h> 
+
+#if SETUP_BMP_LOGO_SUPPORT
+#define BMP_SUPPORT 1
+#else
+#define BMP_SUPPORT 0
+#endif
+
+#if SETUP_JPEG_LOGO_SUPPORT
+#define JPEG_SUPPORT 2
+#else
+#define JPEG_SUPPORT 0
+#endif
+
+#if SETUP_GIF_LOGO_SUPPORT
+#define GIF_SUPPORT 4
+#else
+#define GIF_SUPPORT 0
+#endif
+
+#if SETUP_PCX_LOGO_SUPPORT
+#define PCX_SUPPORT 8
+#else
+#define PCX_SUPPORT 0
+#endif
+
+#if SETUP_PNG_LOGO_SUPPORT
+#define PNG_SUPPORT 16
+#else
+#define PNG_SUPPORT 0
+#endif
+
+typedef struct _SIGNON
+{
+    UINT8 Sig[5];
+    UINT8 Ver;
+    UINT16 Reserved;
+    CHAR8  SgnMsg1[];
+}AMI_SIGN_ON;
+
+AMI_SIGN_ON Signon= {
+		(UINT8)0x24, (UINT8)'S', (UINT8)'G', (UINT8)'N', (UINT8)0x24,
+		(UINT8)0x2,
+		(UINT16)0x0,
+		CONVERT_TO_STRING(AMITSE_VERSION) " Copyright (C) %04x American Megatrends, Inc. \0" CONVERT_TO_STRING(BIOS_SIGNON_MESSAGE2_STRING) 
+		};
+		
+	
+UINT8 Logo3[] = {
+		(UINT8)0x24,(UINT8)'L',(UINT8)'G',(UINT8)'O',(UINT8)0x24,
+		(UINT8)0x1,
+		(UINT8)BMP_SUPPORT+JPEG_SUPPORT+GIF_SUPPORT+PCX_SUPPORT+PNG_SUPPORT, (UINT8)0, (UINT8)0, (UINT8)0,
+		(UINT8)(TSE_MAX_POST_Y_RES&0xff),(UINT8)(TSE_MAX_POST_Y_RES>>8),
+		(UINT8)(TSE_MAX_POST_X_RES&0xff),(UINT8)(TSE_MAX_POST_X_RES>>8),
+		};
+		
+		
+
+		
+
+//*************************************************************************
+//*************************************************************************
+//**                                                                     **
+//**        (C)Copyright 1985-2012, American Megatrends, Inc.            **
+//**                                                                     **
+//**                       All Rights Reserved.                          **
+//**                                                                     **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+//**                                                                     **
+//**                       Phone: (770)-246-8600                         **
+//**                                                                     **
+//*************************************************************************
+//*************************************************************************

@@ -1,0 +1,59 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = FlashDriver
+  FILE_GUID                      = CBC59C4A-383A-41eb-A8EE-4498AEA567E4
+  MODULE_TYPE                    = DXE_RUNTIME_DRIVER
+  ENTRY_POINT                    = FlashDriverInit
+
+[Sources]
+  FlashDxe.c  
+  Flash.c
+  FlashCommon.h
+
+[Packages]
+  MdePkg/MdePkg.dec   
+  AmiModulePkg/AmiModulePkg.dec
+  
+[LibraryClasses]
+  AmiFlashLib
+  AmiRomLayoutLib
+  UefiBootServicesTableLib
+  DebugLib
+  UefiRuntimeServicesTableLib
+  UefiDriverEntryPoint
+  AmiCriticalSectionLib
+  BaseMemoryLib
+	
+[Protocols]
+  gAmiFlashProtocolGuid          ## PRODUCES
+
+[Depex]
+  TRUE
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************  

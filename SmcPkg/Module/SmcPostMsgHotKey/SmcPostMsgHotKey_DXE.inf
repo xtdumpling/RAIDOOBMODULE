@@ -1,0 +1,112 @@
+#***************************************************************************
+#***************************************************************************
+#**                                                                       **
+#**       (C)Copyright 1993-2017 Supermicro Computer, Inc.                **
+#**                                                                       **
+#**                                                                       **
+#***************************************************************************
+#***************************************************************************
+#
+#  File History
+#
+#  Rev. 1.06
+#    Bug Fix:  Fix POST hang up when set MMCFG Base to 3G.
+#    Reason:   
+#    Auditor:  Isaac Hsu
+#    Date:     May/17/2017
+#
+#  Rev. 1.05
+#    Bug Fix:  For EarlyGraphic, Change Font Style from 8x16 to 8x19.
+#    Reason:   
+#    Auditor:  Isaac Hsu
+#    Date:     Apr/07/2017
+#
+#  Rev. 1.04
+#    Bug Fix:  Fix Intel P2P has yellow mark when booting with Offboard VGA
+#              and EarlyVideo enabled.
+#    Reason:   
+#    Auditor:  Isaac Hsu
+#    Date:     Apr/05/2017
+#
+#  Rev. 1.03
+#    Bug Fix:  Set Foreground color to white and Background color to black
+#              when Changed Logo by AMI utility ChangeLogo.
+#    Reason:   
+#    Auditor:  Isaac Hsu
+#    Date:     Mar/16/2017
+#
+#  Rev. 1.02
+#    Bug Fix:  Early Graphic Logo Support.
+#    Reason:   
+#    Auditor:  Isaac Hsu
+#    Date:     Mar/14/2017
+#
+#  Rev. 1.01
+#    Bug Fix:
+#    Reason:   Add "PcdSmcPS2AlwaysInstall"
+#    Auditor:  Sunny Yang
+#    Date:     Sep/07/2016
+#
+#  Rev. 1.00
+#    Bug Fix:  Use AMIBCP to disable boot procedure messages displaying.
+#    Reason:   
+#    Auditor:  Hartmann Hsieh
+#    Date:     Jun/21/2016
+#
+#***************************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SmcPostMsgHotKey_DXE
+  FILE_GUID                      = 6b1efa14-06b8-4127-975a-5b2dcf5392e2
+  MODULE_TYPE                    = DXE_RUNTIME_DRIVER
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = SmcPostMsgHotKey_DXE_Init
+
+[Sources]
+  SmcPostMsgHotKey_DXE.c
+  font8x19.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec 
+  SmcPkg/SmcPkg.dec
+
+[LibraryClasses]
+  IoLib
+  UefiDriverEntryPoint
+  AmiDxeLib
+  PciLib
+  HobLib
+  PcdLib
+  
+[Protocols]
+  gEfiRscHandlerProtocolGuid
+  
+[Guids]
+  gEfiEventExitBootServicesGuid
+
+[Pcd]
+  gSmcPkgTokenSpaceGuid.PcdSmcPS2AlwaysInstall
+  gSmcPkgTokenSpaceGuid.PcdSmcColor
+  gSmcPkgTokenSpaceGuid.PcdSmcBdsColor
+  gSmcPkgTokenSpaceGuid.PcdSmcVgaBar
+
+[Depex]
+  TRUE
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2012, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**         5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

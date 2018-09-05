@@ -1,0 +1,192 @@
+TOKEN
+    Name  = "AMI_TSE_HDD_SECURITY_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable Hdd password Screen in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetH = Yes
+    Master = Yes
+    Token = "SECURITY_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "SETUP_ASK_MASTER_PASSWORD"
+    Value  = "0"
+    Help  = "Enable / Disable IDE Master password support"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "SETUP_SAME_SYS_HDD_PW"
+    Value  = "0"
+    Help  = "Enable to have User password as IDE password"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "USER_PASSWORD_RETRY_ATTEMPTS"
+    Value  = "3"
+    Help  = "Maximum number of attempts allowed to the HDD User Password. This token value should be less than or equal to MAXIMUM_HDD_UNLOCK_ATTEMPTS token. If all the attempts by user password failed then (MAXIMUM_HDD_UNLOCK_ATTEMPTS - USER_PASSWORD_RETRY_ATTEMPTS) attempts will be given to Master password"
+    TokenType = Integer
+    TargetH = Yes
+    Range  = "1 - MAXIMUM_HDD_UNLOCK_ATTEMPTS"
+End
+
+TOKEN
+    Name  = "MAXIMUM_HDD_UNLOCK_ATTEMPTS"
+    Value  = "5"
+    Help  = "Maximum number of attempts in POST in which the user has to enter the HDD User Password/Master Password to unlock the HDD.This token value should not exceed 5 times because the ATA SECURITY UNLOCK command fails even if the correct User/Master password is entered on the sixth time because the ATA Security Expire Count is 5"
+    TokenType = Integer
+    TargetH = Yes
+    Range  = "1 - 5"
+End
+
+TOKEN
+    Name  = "ALL_HDD_SAME_PW"
+    Value  = "0"
+    Help  = "1-Enable to have one password for all HDD drives,0-Different HDD could have different password"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+PATH
+    Name  = "AMITSE_HDD_SECURITY_DIR"
+End
+
+ELINK
+    Name  = "RegisterHddNotification,"
+    Parent  = "ProcessConInAvailability,"
+    InvokeOrder = AfterParent
+End
+
+
+ELINK
+    Name  = "DisableSoftwarePreservation,"
+    Parent  = "PreSystemResetHookHook,"
+    Token = "FORCE_HDD_PASSWORD_PROMPT" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "AmiTseHddPasswordLib"
+    Parent  = "ADDITIONAL_AMITSE_LibraryClasses"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(AMITSE_HDD_SECURITY_DIR)/AmiTSEHDDSecurityFakeTokens.c"
+    Parent  = "TSE_STRING_CONSUMERS_LIST"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(AMITSE_HDD_SECURITY_DIR)/AmiTSEHDDSecurity.uni"
+    Parent  = "TSE_STRING_FILES"
+    InvokeOrder = AfterParent
+End
+
+INFComponent
+    Name  = "AmiTseHddSecurity"
+    File  = "AmiTseHddSecurity.inf"
+    Package  = "AmiModulePkg"
+    ModuleTypes  = "DXE_DRIVER"
+End
+
+LibraryMapping
+    Class  = "AmiTseHddPasswordLib"
+    Instance  = "AmiModulePkg.AmiTseHddSecurity"
+End
+
+TOKEN
+    Name  = "OVERRIDE_FramePwdCallbackIdePasswordUpdate"
+    Value  = "1"
+    Help  = "set to 1 if OEM wants to override the FramePwdCallbackIdePasswordUpdate function from Board module."
+    TokenType = Boolean
+    Token = "SECURITY_SETUP_ON_SAME_PAGE" "=" "1"
+    Token = "SETUP_IDE_SECURITY_SUPPORT" "=" "1"
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "OVERRIDE_PopupPwdAuthenticateIDEPwd"
+    Value  = "1"
+    Help  = "set to 1 if OEM wants to override the PopupPwdAuthenticateIDEPwd function from Board module."
+    TokenType = Boolean
+    Token = "SECURITY_SETUP_ON_SAME_PAGE" "=" "1"
+    Token = "SETUP_IDE_SECURITY_SUPPORT" "=" "1"
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "OVERRIDE_PopupPwdUpdateIDEPwd"
+    Value  = "1"
+    Help  = "set to 1 if OEM wants to override the PopupPwdUpdateIDEPwd function from Board module."
+    TokenType = Boolean
+    Token = "SECURITY_SETUP_ON_SAME_PAGE" "=" "1"
+    Token = "SETUP_IDE_SECURITY_SUPPORT" "=" "1"
+    TargetH = Yes
+End
+
+TOKEN
+    Name  = "OVERRIDE_CheckForIDEPasswordInstalled"
+    Value  = "1"
+    Help  = "set to 1 if oem wants to override the CheckForIDEPasswordInstalled function from Board module."
+    Token = "SECURITY_SETUP_ON_SAME_PAGE" "=" "1"
+    Token = "SETUP_IDE_SECURITY_SUPPORT" "=" "1"
+    TokenType = Boolean
+    TargetH = Yes
+End
+
+ELINK
+    Name  = "HddSecurityLoadSetupDefaults,"
+    Parent  = "LoadSetupDefaults,"
+    InvokeOrder = AfterParent
+    Token = "SETUP_IDE_SECURITY_SUPPORT" "=" "0"
+End
+
+ELINK
+    Name  = "HddSecurityLoadSetupDefaults,"
+    Parent  = "LoadedPreviousValues,"
+    InvokeOrder = AfterParent
+    Token = "SETUP_IDE_SECURITY_SUPPORT" "=" "0"
+End
+
+ELINK
+    Name  = "HddSecurityLoadSetupDefaults,"
+    Parent  = "LoadedBuildDefaults,"
+    InvokeOrder = AfterParent
+    Token = "SETUP_IDE_SECURITY_SUPPORT" "=" "0"
+End
+
+ELINK
+    Name  = "HddSecurityLoadSetupDefaults,"
+    Parent  = "LoadedUserDefaults,"
+    InvokeOrder = AfterParent
+    Token = "SETUP_IDE_SECURITY_SUPPORT" "=" "0"
+End
+
+ELINK
+    Name  = "IDEPasswordCheck,"
+    Parent  = "IdePasswordCheckHookList"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "IDEPasswordFreezeDevices,"
+    Parent  = "IdePasswordFreezeHookList"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "SetHDDPassword,"
+    Parent  = "SetHDDPasswordHookList"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "UnlockHDD,"
+    Parent  = "UnlockHDDHookList"
+    InvokeOrder = AfterParent
+End

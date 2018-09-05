@@ -1,0 +1,45 @@
+TOKEN
+	Name  = "ChipsetErrorHandler_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling ChipsetErrorHandler support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "PcieErrorHandler_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable PcieErrorHandler support in Project"
+	TokenType = Boolean
+End
+
+TOKEN
+	Name  = "PcieErrorEnable_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable PcieErrorEnable support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "PcieErrorHandler"
+	File  = "PcieErrorHandlerSpt.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "PcieErrorHandler_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "PcieErrorEnable"
+	File  = "PcieErrorEnable.inf"
+	Package  = "PurleyPlatPkg"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+	Token = "PcieErrorEnable_SUPPORT" "=" "1"
+End
+
+TOKEN
+    Name  = "PCIE_ELOG_SWSMI"
+    Value  = "0xD5"
+    Help  = "This is the value of the SW SMI to use for PCIe Error Logging Configuration."
+    TokenType = Integer
+    TargetH = Yes
+End

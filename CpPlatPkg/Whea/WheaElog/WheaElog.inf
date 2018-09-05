@@ -1,0 +1,73 @@
+# 
+#  This file contains 'Framework Code' and is licensed as such
+#  under the terms of your license agreement with Intel or your
+#  vendor.  This file may not be modified, except as allowed by
+#  additional terms of your license agreement.
+#                                     
+#
+## @file
+#
+#   Component description file for WheaElog handler module.
+#
+#  Copyright (c) 2009 - 2015, Intel Corporation. All rights reserved.<BR>
+#  This software and associated documentation (if any) is furnished
+#  under a license and may only be used or copied in accordance
+#  with the terms of the license. Except as permitted by such
+#  license, no part of this software or documentation may be
+#  reproduced, stored in a retrieval system, or transmitted in any
+#  form or by any means without the express written consent of
+#  Intel Corporation.
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = WheaElog
+  FILE_GUID                      = 20B181E2-33E8-4211-B9D7-9B8696764E66
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  VERSION_STRING                 = 1.0
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+# APTIOV_SERVER_OVERRIDE_RC_START : Using our ERST implementation as fatal error was not working with Intel WHEA
+  ENTRY_POINT                    = WheaErstInit 
+# APTIOV_SERVER_OVERRIDE_RC_END : Using our ERST implementation as fatal error was not working with Intel WHEA
+
+[Sources]
+   WheaElog.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  CpPlatPkg/CpPlatPkg.dec
+# APTIOV_SERVER_OVERRIDE_RC_START : Whea Flash Block Porting
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec 
+# APTIOV_SERVER_OVERRIDE_RC_END : Whea Flash Block Porting
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  BaseMemoryLib
+  DebugLib
+  IoLib
+  SmmServicesTableLib
+  BaseLib
+  
+[Guids]
+ gEfiWheaElogFvGuid
+
+[Protocols]
+ gEfiSmmBase2ProtocolGuid
+ gEfiWheaSupportProtocolGuid 
+ gEfiSmmSwDispatch2ProtocolGuid
+ gEfiSmmFirmwareVolumeBlockProtocolGuid
+# APTIOV_SERVER_OVERRIDE_RC_START : Using our ERST implementation as fatal error was not working with Intel WHEA
+ gFlashSmmProtocolGuid 
+ gFlashProtocolGuid 
+# APTIOV_SERVER_OVERRIDE_RC_END : Using our ERST implementation as fatal error was not working with Intel WHEA
+
+[Depex]
+  gEfiAcpiTableProtocolGuid AND
+  gEfiWheaSupportProtocolGuid AND
+  gEfiSmmBase2ProtocolGuid     AND
+  gEfiFirmwareVolumeBlockProtocolGuid AND
+# APTIOV_SERVER_OVERRIDE_RC_START : Using our ERST implementation as fatal error was not working with Intel WHEA
+  gEfiSmmSwDispatch2ProtocolGuid AND
+  gFlashSmmProtocolGuid 
+# APTIOV_SERVER_OVERRIDE_RC_END : Using our ERST implementation as fatal error was not working with Intel WHEA
+

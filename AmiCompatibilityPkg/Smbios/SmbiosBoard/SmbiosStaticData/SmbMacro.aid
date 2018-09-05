@@ -1,0 +1,1241 @@
+	ECHO	--Including: SMBMACRO.AID
+
+;----------------------------------------------------------------------------
+;	DO NOT CHANGE ANY THING UNLESS OTHERWISE SPECIFIED
+;----------------------------------------------------------------------------
+
+;****************************************************************************
+;****************************************************************************
+;**                                                                        **
+;**           (C)Copyright 1985-2017, American Megatrends, Inc.            **
+;**                                                                        **
+;**                          All Rights Reserved.                          **
+;**                                                                        **
+;**            5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093           **
+;**                                                                        **
+;**                          Phone: (770)-246-8600                         **
+;**                                                                        **
+;****************************************************************************
+;****************************************************************************
+;****************************************************************************
+; $Header: $
+;
+; $Revision: $
+;
+; $Date: $
+;
+;****************************************************************************
+
+;----------------------------------------------------------------------------
+;	Structure Type 0 : BIOS INFORMATION
+;----------------------------------------------------------------------------
+
+BIOS_CHAR	macro
+
+	LOCAL	BIOSCHARACTER
+	BIOSCHARACTER	=	0
+
+IF	MKF_BI_UNKNOWN_CHAR
+	BIOSCHARACTER	=	BIOSCHARACTER OR (1 shl 2)
+ENDIF
+
+IF	MKF_BI_BIOS_CHAR_NOT_SUPPORTED
+	BIOSCHARACTER	=	BIOSCHARACTER OR (1 shl 3)
+ENDIF
+
+IF	MKF_INC_ISA
+	BIOSCHARACTER	=	BIOSCHARACTER OR (1 shl 4)
+ENDIF
+
+IF	MKF_BI_MCA
+	BIOSCHARACTER	=	BIOSCHARACTER OR (1 shl 5)
+ENDIF
+
+IF	MKF_BI_EISA
+	BIOSCHARACTER	=	BIOSCHARACTER OR (1 shl 6)
+ENDIF
+
+IF	MKF_INC_PCI
+	BIOSCHARACTER	=	BIOSCHARACTER OR (1 shl 7)
+ENDIF
+
+IF	MKF_BI_PCMCIA
+	BIOSCHARACTER	=	BIOSCHARACTER OR (1 shl 8)
+ENDIF
+
+IF	MKF_INC_PnP
+	BIOSCHARACTER	=	BIOSCHARACTER OR (1 shl 9)
+ENDIF
+
+IFDEF	MKF_APM_SUPPORT
+	IF	MKF_APM_SUPPORT
+		BIOSCHARACTER    =       BIOSCHARACTER OR (1 shl 10)
+	ENDIF
+ENDIF
+
+IF	MKF_BI_BIOS_Flash
+	BIOSCHARACTER	=	BIOSCHARACTER OR (1 shl 11)
+ENDIF
+
+IF	MKF_BI_BIOS_Shadow
+	BIOSCHARACTER	=	BIOSCHARACTER OR (1 shl 12)
+ENDIF
+
+IF	MKF_BI_VL_VESA
+	BIOSCHARACTER	=	BIOSCHARACTER OR (1 shl 13)
+ENDIF
+
+IF	MKF_BI_ESCD
+	BIOSCHARACTER	=	BIOSCHARACTER OR (1 shl 14)
+ENDIF
+
+IF	MKF_BI_CDROM_BOOT
+	BIOSCHARACTER	=	BIOSCHARACTER OR (1 shl 15)
+ENDIF
+
+IF	MKF_BI_SELECTABLE_BOOT
+	BIOSCHARACTER	=	BIOSCHARACTER OR (1 shl 16)
+ENDIF
+
+IF	MKF_BI_BIOS_ROM_SOCKET
+	BIOSCHARACTER	=	BIOSCHARACTER OR (1 shl 17)
+ENDIF
+
+IF	MKF_BI_PCMCIA_BOOT
+	BIOSCHARACTER	=	BIOSCHARACTER OR (1 shl 18)
+ENDIF
+
+IF	MKF_BI_EDD
+	BIOSCHARACTER	=	BIOSCHARACTER OR (1 shl 19)
+ENDIF
+
+IF	MKF_BI_INT13_NEC9800
+	BIOSCHARACTER	=	BIOSCHARACTER OR (1 shl 20)
+ENDIF
+
+IF	MKF_BI_INT13_TOSHIBA
+	BIOSCHARACTER	=	BIOSCHARACTER OR (1 shl 21)
+ENDIF
+
+IF	MKF_BI_INT13_5_25_360
+	BIOSCHARACTER	=	BIOSCHARACTER OR (1 shl 22)
+ENDIF
+
+IF	MKF_BI_INT13_5_25_1_2
+	BIOSCHARACTER	=	BIOSCHARACTER OR (1 shl 23)
+ENDIF
+
+IF	MKF_BI_INT13_3_5_720
+	BIOSCHARACTER	=	BIOSCHARACTER OR (1 shl 24)
+ENDIF
+
+IF	MKF_BI_INT13_3_5_2_88
+	BIOSCHARACTER	=	BIOSCHARACTER OR (1 shl 25)
+ENDIF
+
+IF	MKF_BI_INT5_PRINT_SCRN
+	BIOSCHARACTER	=	BIOSCHARACTER OR (1 shl 26)
+ENDIF
+
+IFDEF MKF_KBC_SUPPORT
+IF	MKF_KBC_SUPPORT
+	BIOSCHARACTER	=	BIOSCHARACTER OR (1 shl 27)
+ENDIF
+ENDIF
+
+IF	MKF_BI_INT14_SERIAL_SVC
+	BIOSCHARACTER	=	BIOSCHARACTER OR (1 shl 28)
+ENDIF
+
+IF	MKF_BI_INT17_PRN_SVC
+	BIOSCHARACTER	=	BIOSCHARACTER OR (1 shl 29)
+ENDIF
+
+IF	MKF_BI_INT10_CGA_MONO
+	BIOSCHARACTER	=	BIOSCHARACTER OR (1 shl 30)
+ENDIF
+
+IF	MKF_BI_NEC_PC_98
+	BIOSCHARACTER	=	BIOSCHARACTER OR (1 shl 31)
+ENDIF
+	EXITM	%BIOSCHARACTER
+ENDM
+
+;----------------------------------------------------------------------------
+; Use this Macro to set bits 32:63 of BIOS Characteristics
+
+BIOS_CHAR1	macro
+	LOCAL	BIOSCHARACTER1
+	BIOSCHARACTER1	=	0
+
+	BIOSCHARACTER1	=	BIOSCHARACTER1 OR (1 shl 0)
+
+;BIT 32 (bit 0 in this section) is used to indicate the this BIOS is capable
+; of updating strings with variable length
+
+	EXITM	%BIOSCHARACTER1
+ENDM
+
+;----------------------------------------------------------------------------
+
+EXT_CHAR	macro
+
+	LOCAL	BIOSEXTCHARACTER
+        BIOSEXTCHARACTER	=	0
+
+IFDEF	MKF_ACPI_SUPPORT
+	IF	MKF_ACPI_SUPPORT
+		BIOSEXTCHARACTER	=	BIOSEXTCHARACTER OR (1 shl 0)
+	ENDIF
+ENDIF
+
+IFDEF	MKF_AMIUSB_SUPPORT
+	IF	MKF_AMIUSB_SUPPORT
+		BIOSEXTCHARACTER	=	BIOSEXTCHARACTER OR (1 shl 1)
+	ENDIF
+ENDIF
+
+IF	MKF_BI_AGP_SUPPORT
+	BIOSEXTCHARACTER	=	BIOSEXTCHARACTER OR (1 shl 2)
+ENDIF
+
+IF	MKF_BI_I2O_BOOT_SUP
+	BIOSEXTCHARACTER	=	BIOSEXTCHARACTER OR (1 shl 3)
+ENDIF
+
+IF	MKF_BI_LS120_BOOT_SUP
+	BIOSEXTCHARACTER	=	BIOSEXTCHARACTER OR (1 shl 4)
+ENDIF
+
+IF	MKF_BI_ATAPI_ZIP_SUP
+	BIOSEXTCHARACTER	=	BIOSEXTCHARACTER OR (1 shl 5)
+ENDIF
+
+IF	MKF_BI_IEEE_1394_SUP
+	BIOSEXTCHARACTER	=	BIOSEXTCHARACTER OR (1 shl 6)
+ENDIF
+
+IF	MKF_BI_SMART_BAT_SUP
+	BIOSEXTCHARACTER	=	BIOSEXTCHARACTER OR (1 shl 7)
+ENDIF
+
+	EXITM	%BIOSEXTCHARACTER
+ENDM
+
+;----------------------------------------------------------------------------
+
+EXT_CHAR2		macro
+
+	LOCAL	BIOSEXTCHARACTER2
+	BIOSEXTCHARACTER2	=	0                   ;Note: Targeted Content Distribution bit
+                                                ;must be set per Microsoft "SMBIOS
+                                                ;Support in Windows" document
+
+IF      MKF_BBS_SUPPORT
+	BIOSEXTCHARACTER2	=	BIOSEXTCHARACTER2 OR (1 shl 0)
+ENDIF
+
+IF      MKF_NETBOOT_SUPPORT
+		BIOSEXTCHARACTER2	=	BIOSEXTCHARACTER2 OR (1 shl 1)
+ENDIF
+
+IF      MKF_BI_ETCD
+	BIOSEXTCHARACTER2	=	BIOSEXTCHARACTER2 OR (1 shl 2)
+ENDIF
+
+IF      MKF_UEFI_SUPPORT
+	BIOSEXTCHARACTER2	=	BIOSEXTCHARACTER2 OR (1 shl 3)
+ENDIF
+
+IF      MKF_VIRTUAL_MACHINE
+	BIOSEXTCHARACTER2	=	BIOSEXTCHARACTER2 OR (1 shl 4)
+ENDIF
+
+	EXITM	%BIOSEXTCHARACTER2
+ENDM
+
+;----------------------------------------------------------------------------
+;	Structure Type 1 : SYSTEM INFORMATION
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;	Structure Type 2 : BASEBOARD INFORMATION
+;----------------------------------------------------------------------------
+
+BASE_BOARD_FEATURE_FLAGS	MACRO
+
+	LOCAL	FEATUREFLAGS
+	FEATUREFLAGS	=	0
+
+	        IF	MKF_BB_HOSTING_BOARD
+			FEATUREFLAGS	=	FEATUREFLAGS OR 01h
+		ENDIF
+
+	        IF	MKF_BB_REQUIRE_AUX_BOARD
+			FEATUREFLAGS	=	FEATUREFLAGS OR 02h
+		ENDIF
+
+	        IF	MKF_BB_REMOVABLE
+			FEATUREFLAGS	=	FEATUREFLAGS OR 04h
+		ENDIF
+
+	        IF	MKF_BB_REPLACEABLE
+			FEATUREFLAGS	=	FEATUREFLAGS OR 08h
+		ENDIF
+
+	        IF	MKF_BB_HOT_SWAPPABLE
+			FEATUREFLAGS	=	FEATUREFLAGS OR 10h
+		ENDIF
+
+	EXITM	%FEATUREFLAGS
+ENDM
+
+;----------------------------------------------------------------------------
+;	Structure Type 3 : SYSTEM ENCLOSURE OR CHASSIS
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;	Structure Type 4 : PROCESSOR INFORMATION
+;----------------------------------------------------------------------------
+
+@PROC_VOLT	MACRO	arglist:VARARG
+
+	LOCAL	xV, xC, xM
+	xC = 1
+	xV = 0
+	FOR arg, <arglist>
+		IF xC EQ 1
+			xM = arg
+		ENDIF
+
+		IF xC GT 1
+			IF xM EQ 0
+				xV = xV OR arg
+			ENDIF
+			IF xM GT 0
+				xV = arg OR 80h
+			ENDIF
+		ENDIF
+		xC = xC+1
+
+	ENDM
+	EXITM	%xV
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 5 : MEMORY CONTROLLER INFORMATION
+;----------------------------------------------------------------------------
+
+MEM_CTRL_ECC           MACRO
+
+        LOCAL   MEMCONTROLLERECC
+                MEMCONTROLLERECC    =     0
+
+IF	MKF_MCE_OTHER
+	MEMCONTROLLERECC            =       MEMCONTROLLERECC OR (1 shl 0)
+ENDIF
+
+IF	MKF_MCE_UNKNOWN
+	MEMCONTROLLERECC            =       MEMCONTROLLERECC OR (1 shl 1)
+ENDIF
+
+IF	MKF_MCE_NONE
+	MEMCONTROLLERECC            =       MEMCONTROLLERECC OR (1 shl 2)
+ENDIF
+
+IF	MKF_MCE_SINGLE_BIT_ECC
+	MEMCONTROLLERECC            =       MEMCONTROLLERECC OR (1 shl 3)
+ENDIF
+
+IF	MKF_MCE_DOUBLE_BIT_ECC
+	MEMCONTROLLERECC            =       MEMCONTROLLERECC OR (1 shl 4)
+ENDIF
+
+IF	MKF_MCE_ERROR_SCRUBBING
+	MEMCONTROLLERECC            =       MEMCONTROLLERECC OR (1 shl 5)
+ENDIF
+
+        EXITM   %MEMCONTROLLERECC
+
+ENDM
+
+;----------------------------------------------------------------------------
+
+MEM_CTRL_SPEED       MACRO
+
+        LOCAL   MEMCONTSUPSPEED
+                MEMCONTSUPSPEED  =  0
+
+IF	MKF_SS_OTHER
+	MEMCONTSUPSPEED             =       MEMCONTSUPSPEED OR (1 shl 0)
+ENDIF
+
+IF	MKF_SS_UNKNOWN
+	MEMCONTSUPSPEED             =       MEMCONTSUPSPEED OR (1 shl 1)
+ENDIF
+
+IF	MKF_SS_70ns
+	MEMCONTSUPSPEED             =       MEMCONTSUPSPEED OR (1 shl 2)
+ENDIF
+
+IF	MKF_SS_60ns
+	MEMCONTSUPSPEED             =       MEMCONTSUPSPEED OR (1 shl 3)
+ENDIF
+
+IF	MKF_SS_50ns
+	MEMCONTSUPSPEED             =       MEMCONTSUPSPEED OR (1 shl 4)
+ENDIF
+
+        EXITM   %MEMCONTSUPSPEED
+
+ENDM
+
+;----------------------------------------------------------------------------
+;	Following macro is defined for Memory Type
+;----------------------------------------------------------------------------
+
+@MEMORY_TYPE	MACRO	arglist:VARARG
+
+	LOCAL	xMt
+		xMt = 0
+		FOR arg, <arglist>
+			xMt = xMt OR arg
+		ENDM
+	WORD	xMt
+ENDM
+
+;----------------------------------------------------------------------------
+
+@MEMORY_INFO	MACRO	arglist:VARARG
+
+	LOCAL	xB, xMs, xIs, xEs, xC
+	xC = 0
+	xB = 0
+	FOR arg, <arglist>
+		xC = xC + 1
+		IF xC EQ 1
+			xB = xB OR (arg shl 4)
+		ENDIF
+		IF xC EQ 2
+			xB = xB OR arg
+		ENDIF
+		IF xC EQ 3
+			xMs = arg
+		ENDIF
+		IF xC EQ 4
+			xIs = MEM_SIZE_IN_MB(arg)
+		ENDIF
+		IF xC EQ 5
+			xEs = MEM_SIZE_IN_MB(arg)
+		ENDIF
+		IF xC EQ 6
+			xIs = xIs OR arg
+			xEs = xEs OR arg
+		ENDIF
+	ENDM
+	BYTE	xB
+	BYTE	xMs
+	xEs = xEs*256
+	xEs = xEs OR xIs
+	EXITM	%xEs
+ENDM
+
+;----------------------------------------------------------------------------
+
+@MEMORY_ERR_STATUS	MACRO	arglist:VARARG
+	LOCAL	xErr
+	FOR arg, <arglist>
+		xErr = 0
+	ENDM
+	BYTE	xErr
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 6 : MEMORY MODULE INFORMATION STRUCTURE
+;----------------------------------------------------------------------------
+
+MEM_MOD_VOLTAGE		MACRO
+
+	LOCAL	memVolt
+	memVolt = 0
+
+IF	MKF_MM_VOLTAGE_5V
+	memVolt = memVolt OR 1
+ENDIF
+
+IF	MKF_MM_VOLTAGE_33V
+	memVolt = memVolt OR (1 shl 1)
+ENDIF
+
+IF	MKF_MM_VOLTAGE_29V
+	memVolt = memVolt OR (1 shl 2)
+ENDIF
+
+	EXITM	%memVolt
+ENDM
+
+;----------------------------------------------------------------------------
+
+SUPPORTED_MEM_TYPE    MACRO
+
+        LOCAL   MEMMODSUPTYPE
+                MEMMODSUPTYPE   =   0
+
+IF      MKF_TYPE_OTHER
+	MEMMODSUPTYPE     =        MEMMODSUPTYPE OR (1 shl 0)
+ENDIF
+
+IF      MKF_TYPE_UNKNOWN
+	MEMMODSUPTYPE     =        MEMMODSUPTYPE OR (1 shl 1)
+ENDIF
+
+IF      MKF_TYPE_STANDARD
+	MEMMODSUPTYPE     =        MEMMODSUPTYPE OR (1 shl 2)
+ENDIF
+
+IF      MKF_TYPE_FAST_PAGE_MODE
+	MEMMODSUPTYPE     =        MEMMODSUPTYPE OR (1 shl 3)
+ENDIF
+
+IF      MKF_TYPE_EDO
+	MEMMODSUPTYPE     =        MEMMODSUPTYPE OR (1 shl 4)
+ENDIF
+
+IF      MKF_TYPE_PARITY
+	MEMMODSUPTYPE     =        MEMMODSUPTYPE OR (1 shl 5)
+ENDIF
+
+IF      MKF_TYPE_ECC
+	MEMMODSUPTYPE     =        MEMMODSUPTYPE OR (1 shl 6)
+ENDIF
+
+IF      MKF_TYPE_SIMM
+	MEMMODSUPTYPE     =        MEMMODSUPTYPE OR (1 shl 7)
+ENDIF
+
+IF      MKF_TYPE_DIMM
+	MEMMODSUPTYPE     =        MEMMODSUPTYPE OR (1 shl 8)
+ENDIF
+
+IF      MKF_TYPE_BURST_EDO
+	MEMMODSUPTYPE     =        MEMMODSUPTYPE OR (1 shl 9)
+ENDIF
+
+IF      MKF_TYPE_SDRAM
+	MEMMODSUPTYPE     =        MEMMODSUPTYPE OR (1 shl 10)
+ENDIF
+
+        EXITM   %MEMMODSUPTYPE
+
+ENDM
+
+;----------------------------------------------------------------------------
+; Following Macro calculates the Memory size in unit of MegaByte,
+; Porting engineer has to give value in SMB.EQU files only, and this
+; macro will calculate the correct size in MB
+;----------------------------------------------------------------------------
+;	aa = xSize/(1024*1024)
+
+MEM_SIZE_IN_MB	macro	xSize:REQ
+
+	LOCAL	aa, bb
+	bb = 0
+	aa = xSize
+	WHILE	aa GT 0
+		aa = aa SHR 1
+		bb = bb + 1
+	ENDM
+        IF bb GT 0
+		bb = bb - 1
+        ENDIF
+	EXITM %bb
+ENDM
+
+;----------------------------------------------------------------------------
+; Following macro will calculate the BIOS size in unit of KB Porting
+; Engineer has to give value in SMB.EQU, and this macro will
+; calculate the BIOS size in KB
+;----------------------------------------------------------------------------
+
+BIOS_SIZE_IN_KB		MACRO	xSize:REQ
+	LOCAL	aa
+
+	aa = xSize
+    IF aa LE (256*64*1024)
+		aa = (aa/(64*1024)) - 1
+	else
+		aa = 255
+    ENDIF
+	EXITM	%aa
+ENDM
+
+;----------------------------------------------------------------------------
+; Following macro will calculate the BIOS size in unit of MB
+;----------------------------------------------------------------------------
+
+BIOS_SIZE_IN_MB     MACRO   xSize:REQ
+    LOCAL   aa, bb
+
+    aa = xSize SHR 20
+
+; Round up
+    bb = xSize SHR 16
+    bb = bb AND 0Fh
+    IF bb GE 8
+        aa = aa + 1
+    ENDIF
+    EXITM   %aa
+ENDM
+
+;----------------------------------------------------------------------------
+; Following String defines the Memory module Information Structure
+;----------------------------------------------------------------------------
+
+
+;----------------------------------------------------------------------------
+;       Structure Type 7 : CACHE INFORMATION STRUCTURE
+;----------------------------------------------------------------------------
+
+CACHE_SIZE	MACRO	xSize:REQ
+	LOCAL	cSize
+        IF xSize GT (64*1024)
+		cSize = (xSize/(64*1024)) OR 8000h
+	ELSE
+		cSize = xSize/(1024)
+        ENDIF
+	EXITM	%cSize
+ENDM
+
+;----------------------------------------------------------------------------
+; Following macro defines the Cache Speed
+;----------------------------------------------------------------------------
+
+CACHE_SPEED	MACRO	xSize:REQ
+	LOCAL	cSize
+		cSize = xSize
+	EXITM	%cSize
+ENDM
+
+;----------------------------------------------------------------------------
+; Following Macro is defined for Cache Information
+;----------------------------------------------------------------------------
+
+@CACHE_INFO	MACRO	arglist:VARARG
+
+	LOCAL	xCs, xIs, xTyp, xC
+	xC = 0
+	xTyp = 0
+	FOR arg, <arglist>
+		xC = xC+1
+		IF xC EQ 1
+			xCs = CACHE_SIZE(arg)
+		ENDIF
+		IF xC EQ 2
+			xIs = CACHE_SIZE(arg)
+		ENDIF
+		IF xC GT 2
+			xTyp = xTyp OR arg
+		ENDIF
+	ENDM
+	WORD	xCs
+	WORD	xIs
+	WORD	xTyp
+	WORD	xTyp
+ENDM
+
+;----------------------------------------------------------------------------
+; Following Macro is defined for Cache Operational Mode
+;----------------------------------------------------------------------------
+
+@CACHE_CFG		MACRO	arglist:VARARG
+
+	LOCAL	xCfg
+	xCfg = 0
+	FOR	arg, <arglist>
+		xCfg = xCfg OR arg
+	ENDM
+	WORD xCfg
+ENDM
+
+;----------------------------------------------------------------------------
+
+@EXT_CACHE_CFG		MACRO	arglist:VARARG
+
+	LOCAL	xCfg
+	xCfg = 0
+	FOR	arg, <arglist>
+		xCfg = xCfg OR arg OR CCL_EXTERNAL
+	ENDM
+	WORD xCfg
+ENDM
+
+;----------------------------------------------------------------------------
+; Following macro is defined for Cache Characteristics
+;----------------------------------------------------------------------------
+
+@CACHE_CHAR	MACRO	arglist:VARARG
+
+	LOCAL	xCspeed, xErrCorrType, xSysCacheType, xAssoc, xC
+	xC = 0
+	FOR arg, <arglist>
+		xC = xC+1
+		IF xC EQ 1
+			xCspeed = CACHE_SPEED(arg)
+		ENDIF
+		IF xC EQ 2
+			xErrCorrType = arg
+		ENDIF
+		IF xC EQ 3
+			xSysCacheType = arg
+		ENDIF
+		IF xC EQ 4
+			xAssoc = arg
+		ENDIF
+	ENDM
+	BYTE	xCspeed
+	BYTE	xErrCorrType
+	BYTE	xSysCacheType
+	BYTE	xAssoc
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 8 : PORT CONNECTOR INFORMATION STRUCTURE
+;----------------------------------------------------------------------------
+
+DEFINE_EXT_CONNECTOR macro	IntRefStr:REQ, IntConTyp:REQ, ExtRefStr:REQ, ExtConTyp:REQ, PortTyp:REQ
+
+	PORT_DEFINE_STRUC	{\
+				1,
+				IntConTyp,
+				2,
+				ExtConTyp,
+				PortTyp\
+				}
+		PUT_STR IntRefStr
+		PUT_STR ExtRefStr
+ENDM
+
+;----------------------------------------------------------------------------
+
+DEFINE_INT_CONNECTOR macro	IntRefStr:REQ, IntConTyp:REQ, PortTyp:REQ
+
+	PORT_DEFINE_STRUC       {\
+				1,
+				IntConTyp,
+				0,
+				0,
+				PortTyp\
+				}
+		PUT_STR IntRefStr
+
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 9 : SYSTEM SLOTS INFORMATION STRUCTURE
+;----------------------------------------------------------------------------
+
+SYSTEM_SLOT_CHAR1	             MACRO
+
+	LOCAL   SLOTCHAR1TYPE
+
+	SLOTCHAR1TYPE  =   0
+
+
+IF      SLC_CHAR_UNKNOWN
+	SLOTCHAR1TYPE   =       SLOTCHAR1TYPE OR (1 shl 0)
+ENDIF
+
+IF      SLC_CHAR_5VOLT
+	SLOTCHAR1TYPE   =       SLOTCHAR1TYPE OR (1 shl 1)
+ENDIF
+
+IF      SLC_CHAR_3_POINT_3VOLT
+	SLOTCHAR1TYPE   =       SLOTCHAR1TYPE OR (1 shl 2)
+ENDIF
+
+IF      SLC_CHAR_SHARE_SLOT
+	SLOTCHAR1TYPE   =       SLOTCHAR1TYPE OR (1 shl 3)
+ENDIF
+
+IF      SLC_CHAR_PCCARD16
+	SLOTCHAR1TYPE   =       SLOTCHAR1TYPE OR (1 shl 4)
+ENDIF
+
+IF      SLC_CHAR_CARDBUS
+	SLOTCHAR1TYPE   =       SLOTCHAR1TYPE OR (1 shl 5)
+ENDIF
+
+IF      SLC_CHAR_ZOOM_VIDEO
+	SLOTCHAR1TYPE   =       SLOTCHAR1TYPE OR (1 shl 6)
+ENDIF
+
+IF      SLC_CHAR_MODEM_RING_RESUME
+	SLOTCHAR1TYPE	=	SLOTCHAR1TYPE OR (1 SHL 7)
+ENDIF
+
+        EXITM   %SLOTCHAR1TYPE
+
+ENDM
+
+;----------------------------------------------------------------------------
+
+SYSTEM_SLOT_CHAR2	MACRO
+
+	LOCAL	SLOTCHAR2TYPE
+	SLOTCHARTYPE2 =	1
+
+        IF SLOT_CHAR2_PME
+		SLOTCHAR2TYPE =	SLTCHAR2TYPE OR (1 shl 0)
+        ENDIF
+
+	EXITM	%SLOTCHAR2TYPE
+ENDM
+
+;----------------------------------------------------------------------------
+
+SYS_SLOT_CHAR	MACRO	arglist:VARARG
+
+	LOCAL	xRet
+        xRet = 0
+        ;xRet = 1
+	FOR arg, <arglist>
+		xRet = xRet OR arg
+	ENDM
+
+	EXITM	%xRet
+ENDM
+
+;----------------------------------------------------------------------------
+
+SYS_SLOT_INFO	MACRO	type, len, hndl, str, stype, busw, usage, slen, id, schar, seggrp, busn, devfn
+
+	SYSTEM_SLOT_INFO_STRUC	{\
+        {type, len, hndl},
+        1,
+        stype,
+        busw,
+        usage,
+        slen,
+        id,
+        LOW SYS_SLOT_CHAR(%schar),
+        HIGH SYS_SLOT_CHAR(%schar),
+        seggrp, busn, devfn\
+        }
+        PUT_STR %str
+
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 10 : ON-BOARD DEVICES INFORMATION STRUCTURE
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;       Structure Type 11 : OEM STRINGS INFORMATION STRUCTURE
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;       Structure Type 12 : SYSTEM CONFIGURATION INFORMATION STRUCTURE
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;       Structure Type 13 : BIOS LANGUAGE INFORMATION STRUCTURE
+;----------------------------------------------------------------------------
+
+BIOS_LANGUAGE_FLAG	MACRO
+	LOCAL	BIOSLANGFLAG
+	BIOSLANGFLAG= 0
+	BIOSLANGFLAG= BIOSLANGFLAG OR (ABBRIVIATED_FORMAT shl 1)
+
+	EXITM	%BIOSLANGFLAG
+
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 14: GROUP ASSOCIATION INFORMATION
+;----------------------------------------------------------------------------
+
+SUB_GROUP_ASSOCIATION	MACRO	xHandle, xNum, xTyp, xSh, xAttrib
+
+	LOCAL	length, xIh, hndl
+	length = (3*xNum)+5
+	xIh = xSh
+	hndl = xHandle
+	DMIHDR_STRUC	{14h, length, hndl}
+	BYTE	1
+	REPEAT	xNum
+		BYTE	xTyp
+		WORD	xIh
+		xIh = xIh+1
+	ENDM
+	SCAN_PUT_STR	%xAttrib
+	TERMINATOR
+	hndl = hndl+1
+	EXITM	%hndl
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 15: EVENT LOG INFORMATION
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;       Structure Type 16: PHYSICAL MEMORY ARRAY INFORMATION
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;       Structure Type 17:  MEMORY DEVICE INFORMATION
+;----------------------------------------------------------------------------
+
+MEM_DEVICE_TYPE_DETAIL	macro
+
+        LOCAL   DEVICETYPEDETAIL, i
+        i = 55
+        DEVICETYPEDETAIL    =       0
+
+IF	MKF_MDT_OTHER
+        DEVICETYPEDETAIL =       DEVICETYPEDETAIL OR (1 shl 1)
+ENDIF
+
+IF	MKF_MDT_UNKNOWN
+        DEVICETYPEDETAIL =       DEVICETYPEDETAIL OR (1 shl 2)
+ENDIF
+
+IF	MKF_MDT_FASTPAGED
+        DEVICETYPEDETAIL =       DEVICETYPEDETAIL OR (1 shl 3)
+ENDIF
+
+IF	MKF_MDT_STATIC_COLUMN
+        DEVICETYPEDETAIL =       DEVICETYPEDETAIL OR (1 shl 4)
+ENDIF
+
+IF	MKF_MDT_PSEUDO_STATIC
+        DEVICETYPEDETAIL =       DEVICETYPEDETAIL OR (1 shl 5)
+ENDIF
+
+IF	MKF_MDT_RAMBUS
+        DEVICETYPEDETAIL =       DEVICETYPEDETAIL OR (1 shl 6)
+ENDIF
+
+IF	MKF_MDT_SYNCHRONOUS
+        DEVICETYPEDETAIL =       DEVICETYPEDETAIL OR (1 shl 7)
+ENDIF
+
+IF	MKF_MDT_CMOS
+        DEVICETYPEDETAIL =       DEVICETYPEDETAIL OR (1 shl 8)
+ENDIF
+
+IF	MKF_MDT_EDO
+        DEVICETYPEDETAIL =       DEVICETYPEDETAIL OR (1 shl 9)
+ENDIF
+
+IF	MKF_MDT_WINDOWDRAM
+        DEVICETYPEDETAIL =       DEVICETYPEDETAIL OR (1 shl 10)
+ENDIF
+
+IF	MKF_MDT_CACHEDRAM
+        DEVICETYPEDETAIL =       DEVICETYPEDETAIL OR (1 shl 11)
+ENDIF
+
+IF	MKF_MDT_NONVOLATILE
+        DEVICETYPEDETAIL =       DEVICETYPEDETAIL OR (1 shl 12)
+ENDIF
+
+        EXITM   %DEVICETYPEDETAIL
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 18:  MEMORY ERROR INFORMATION
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;       Structure Type 19:  MEMORY ARRAY MAPPED ADDRESS INFORMATION
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;       Structure Type 20:  MEMORY DEVICE MAPPED ADDRESS INFORMATION
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;       Structure Type 21:  BUILT-IN POINTING DEVICE INFORMATION
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;       Structure Type 22: PORTABLE BATTERY INFORMATION
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;       Structure Type 23: SYSTEM RESET INFORMATION
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;       Structure Type 24: HARDWARE SECURITY INFORMATION
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;       Structure Type 25: SYSTEM POWER CONTROLS INFORMATION
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;       Structure Type 26:  VOLTAGE PROBE INFORMATION
+;----------------------------------------------------------------------------
+
+VOLTAGE_PRO_INFO	MACRO	type, leng,hndl, str,LocationStatus, MaximumValue, MinimumValue, Resolution, Tolerance, Accuracy, OemDefined, NominalValue
+
+	VOLTAGE_PROBE_STRUC {\
+			{type, leng, hndl},
+			1,
+			LocationStatus,
+			MaximumValue,
+			MinimumValue,
+			Resolution,
+			Tolerance,
+			Accuracy,
+			OemDefined,
+			NominalValue\
+			}
+		PUT_STR %str
+
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 27:  COOLING DEVICE INFORMATION
+;----------------------------------------------------------------------------
+
+COOLING_DEV_INFO	MACRO	type, leng,hndl,Tphndl, DeviceTypeandStatus, CoolingUnitGroup, OemDefined, NominalSpeed, Description
+
+	COOLING_DEVICE_STRUC {\
+			{type, leng, hndl},
+			Tphndl,
+			DeviceTypeandStatus,
+			CoolingUnitGroup,
+			OemDefined,
+			NominalSpeed,
+            Description\
+			}
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 28:  TEMPERATURE PROBE INFORMATION
+;----------------------------------------------------------------------------
+
+TEMPERATURE_PRO_INFO	MACRO	type,leng,hndl,str,LS,MaxV,MinV,Rs,Tl,Acr,OD,NV
+
+	TEMPERATURE_PROBE_STRUC {\
+			{type, leng, hndl},
+			01h,
+			LS,
+			MaxV,
+			MinV,
+			Rs,
+			Tl,
+			Acr,
+			OD,
+			NV\
+			}
+		PUT_STR %str
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 29:  ELECTRICAL PROBE INFORMATION
+;----------------------------------------------------------------------------
+
+ELECTRICAL_PRO_INFO	MACRO	type, leng,hndl, str,LocationStatus, MaximumValue, MinimumValue, Resolution, Tolerance, Accuracy, OemDefined, NominalValue
+
+	ELECTRICAL_CURRENT_PROBE_STRUC {\
+			{type, leng, hndl},
+			1,
+			LocationStatus,
+			MaximumValue,
+			MinimumValue,
+			Resolution,
+			Tolerance,
+			Accuracy,
+			OemDefined,
+			NominalValue\
+			}
+
+		PUT_STR %str
+
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 30:  OUT-OF-BAND REMOTE ACCESS INFORMATION
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;       Structure Type 31:  BOOT INTEGRITY SERVICES ENTRY POINT INFORMATION
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;       Structure Type 32:  SYSTEM BOOT INFORMATION
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;       Structure Type 33:  64-BIT MEMORY ERROR INFORMATION
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;       Structure Type 34:  MANAGEMENT DEVICE INFORMATION
+;----------------------------------------------------------------------------
+
+MANAGEMENT_DEV_INFO	MACRO	type,leng,hndl,str,mtype,ma,mat
+
+	MANAGEMENT_DEVICE_STRUC	{\
+			{type, leng, hndl},
+			01h,
+			mtype,
+			ma,
+			mat\
+			}
+		PUT_STR %str
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 35:  MANAGEMENT DEVICE COMPONENT INFORMATION
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;       Structure Type 36:  MANAGEMENT DEVICE THRESHOLD DATA INFORMATION
+;----------------------------------------------------------------------------
+
+MANAGEMENT_DEV_THRESHOLD_INFO  MACRO	type,leng,hndl,lthnc,uthnc,lthc,uthc,lthnr,uthnr
+
+	MANAGEMENT_DEVICE_THRESHOLD_DATA_STRUC {\
+			{type,leng,hndl},
+			lthnc,
+			uthnc,
+			lthc,
+			uthc,
+			lthnr,
+			uthnr\
+			}
+ENDM
+
+;----------------------------------------------------------------------------
+;       Structure Type 37: MEMORY CHANNEL INFORMATION
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;       Structure Type 38 : IPMI DEVICE INFORMATION
+;----------------------------------------------------------------------------
+
+;----------------------------------------------------------------------------
+;       Structure Type 39: SYSTEM POWER SUPPLY
+;----------------------------------------------------------------------------
+
+SYSTEM_POWER_SUPPLY_INFO  MACRO    type,leng,hndl,pug,str1,str2,str3,str4,str5,str6,str7,mpc,psc,ivph,cdh,icph
+
+	SYSTEM_POWER_SUPPLY_STRUC {\
+			{type,leng,hndl},
+			pug,
+			01h,
+			02h,
+			03h,
+			04h,
+			05h,
+			06h,
+			07h,
+			mpc,
+			psc,
+			ivph,
+			cdh,
+			icph\
+			}
+		PUT_STR %str1
+		PUT_STR %str2
+		PUT_STR %str3
+		PUT_STR %str4
+		PUT_STR %str5
+		PUT_STR %str6
+		PUT_STR %str7
+ENDM
+
+;----------------------------------------------------------------------------
+;	Following Macros defines Macros used in General
+;----------------------------------------------------------------------------
+
+TERMINATOR	MACRO
+	db	0
+ENDM
+
+;----------------------------------------------------------------------------
+
+PUT_STR		MACRO	str
+	BYTE	"&str",0
+ENDM
+
+;----------------------------------------------------------------------------
+
+@GET_VAL	MACRO	xVal
+	LOCAL	xV
+	xV = xVal
+	EXITM %xV
+ENDM
+
+;----------------------------------------------------------------------------
+;	Following Macro is defined for Scanning the string and remove
+;	the null character and tabulation in a string
+;----------------------------------------------------------------------------
+
+SCAN_STR	MACRO	str
+
+	LOCAL	xS, xOs, xTs
+	LOCAL	xL, xT, xN, xW, xSsl
+
+	xOs TEXTEQU <str>
+	xS TEXTEQU <>
+	xL = @SIZESTR (%xOs)
+	xN = 1
+	xW = 0
+
+	WHILE xW EQ 0
+		xT = @INSTR (<%xN>, %xOs, <	>)
+		IF xT EQ 0
+			xSsl = xL - xN + 1
+			xTs TEXTEQU  @SUBSTR (%xOs, <%xN>, <%xSsl>)
+			xS TEXTEQU @CATSTR (%xS, %xTs)
+
+			xW = 1
+		ELSE
+			xS TEXTEQU @CATSTR (%xS, <        >)
+			xN = xT + 1
+		ENDIF
+	ENDM
+	EXITM <xS>
+ENDM
+
+;----------------------------------------------------------------------------
+;	This macro is defined for scaning and putting string
+;----------------------------------------------------------------------------
+
+SCAN_PUT_STR	MACRO	str
+
+	LOCAL	xS
+	xS TEXTEQU <str>
+	xS TEXTEQU SCAN_STR(%xS)
+	PUT_STR %xS
+ENDM
+
+;----------------------------------------------------------------------------
+
+SCAN_PUT_STR1	MACRO	str
+
+	LOCAL	xS
+	xS TEXTEQU <str>
+	xS TEXTEQU (%xS)
+	PUT_STR %xS
+ENDM
+
+;----------------------------------------------------------------------------
+;****************************************************************************
+;****************************************************************************
+;**                                                                        **
+;**           (C)Copyright 1985-2017, American Megatrends, Inc.            **
+;**                                                                        **
+;**                          All Rights Reserved.                          **
+;**                                                                        **
+;**            5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093           **
+;**                                                                        **
+;**                          Phone: (770)-246-8600                         **
+;**                                                                        **
+;****************************************************************************
+;****************************************************************************

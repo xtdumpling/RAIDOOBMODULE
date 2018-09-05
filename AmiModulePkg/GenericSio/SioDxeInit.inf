@@ -1,0 +1,37 @@
+## @file
+#  PciBusSrcLib library implementation
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  VERSION_STRING                 = 1.0
+  BASE_NAME                      = SioDxeInit
+  FILE_GUID                      = 4E82091E-32A1-4689-8A00-CDE41ED63CDD
+  MODULE_TYPE                    = DXE_DRIVER
+  ENTRY_POINT                    = SioDxeInitEntryPoint
+
+[Sources]
+  SioDxeInit.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec 
+  AmiModulePkg/AmiModulePkg.dec
+
+[Protocols]
+  gEfiComponentName2ProtocolGuid
+  gAmiBoardInfo2ProtocolGuid
+  gAmiBoardSioInitProtocolGuid
+  gEfiS3SaveStateProtocolGuid
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  AmiDxeLib
+  AmiCspLib
+  AmiSioDxeLib
+  AmiSdlLib	
+
+[Depex]
+  TRUE

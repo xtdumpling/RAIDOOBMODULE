@@ -1,0 +1,47 @@
+TOKEN
+	Name  = "SecurityPkg_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable MdeModulePkg support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+PATH
+	Name  = "SECURITYPKG_DIR"
+End
+
+INFComponent
+	Name  = "Tpm2DeviceLibTrEE"
+	File  = "Library/Tpm2DeviceLibTrEE/Tpm2DeviceLibTrEE.inf"
+	Package  = "SecurityPkg"
+End
+
+INFComponent
+	Name  = "Tpm12DeviceLibDTpm"
+	File  = "Library/Tpm12DeviceLibDTpm/Tpm12DeviceLibDTpm.inf"
+	Package  = "SecurityPkg"
+End
+
+INFComponent
+	Name  = "Tpm2CommandLib"
+	File  = "Library/Tpm2CommandLib/Tpm2CommandLib.inf"
+	Package  = "SecurityPkg"
+End
+
+LibraryMapping
+	Class  = "Tpm2DeviceLib"
+	Instance  = "SecurityPkg.Tpm2DeviceLibTrEE"
+End
+
+LibraryMapping
+	Class  = "Tpm12DeviceLib"
+	Instance  = "SecurityPkg.Tpm12DeviceLibDTpm"
+End
+
+LibraryMapping
+	Class  = "Tpm2CommandLib"
+	Instance  = "SecurityPkg.Tpm2CommandLib"
+End
+

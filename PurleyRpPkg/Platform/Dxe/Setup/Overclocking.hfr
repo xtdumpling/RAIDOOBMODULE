@@ -1,0 +1,814 @@
+//
+// This file contains an 'Intel Peripheral Driver' and is
+// licensed for Intel CPUs and chipsets under the terms of your
+// license agreement with Intel or your vendor.  This file may
+// be modified by the user, subject to additional terms of the
+// license agreement
+//
+// *++
+//
+// Copyright (c)  1999 - 2015 Intel Corporation. All rights reserved
+// This software and associated documentation (if any) is furnished
+// under a license and may only be used or copied in accordance
+// with the terms of the license. Except as permitted by such
+// license, no part of this software or documentation may be
+// reproduced, stored in a retrieval system, or transmitted in any
+// form or by any means without the express written consent of
+// Intel Corporation.
+//
+//
+// Module Name:
+//
+//   Overclocking.hfr
+//
+// Abstract:
+//
+//   Setup Overclocking formset.
+//
+// Revision History:
+//
+// --*/
+
+  form formid = VFR_FORMID_OVERCLOCKING,
+
+    title = STRING_TOKEN(STR_OVERCLOCKING_TITLE);
+    subtitle text = STRING_TOKEN(STR_OVERCLOCKING_TITLE);
+    subtitle text = STRING_TOKEN(STR_HORIZONTAL_LINE);
+
+
+     oneof varid   = SYSTEM_CONFIGURATION.OverclockingSupport,
+        prompt      = STRING_TOKEN(STR_OVERCLOCKING_MENU_CONFIGURATION),
+        help        = STRING_TOKEN(STR_OVERCLOCKING_CONFIGURATION_HELP),
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = DEFAULT | MANUFACTURING |RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =  RESET_REQUIRED;
+      endoneof;
+
+    suppressif ideqval SYSTEM_CONFIGURATION.OverclockingSupport == 0;
+
+//cal       goto MEMORY_CONFIG_FORM_ID,
+//cal       prompt  = STRING_TOKEN(STR_MEMORY_CONFIGURATION),
+//cal       help    = STRING_TOKEN(STR_MEMORY_CONFIGURATION_HELP);
+//cal
+
+      oneof varid   = SYSTEM_CONFIGURATION.FilterPll,
+        prompt      = STRING_TOKEN(STR_FILTER_PLL),
+        help        = STRING_TOKEN(STR_FILTER_PLL_HELP),
+        option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+
+      goto PROCESSOR_CONFIG_FORM_ID,
+      prompt  = STRING_TOKEN(STR_PROCESSOR_CONFIGURATION),
+      help    = STRING_TOKEN(STR_PROCESSOR_CONFIGURATION_HELP);
+
+      goto CLR_CONFIG_FORM_ID,
+      prompt  = STRING_TOKEN(STR_CLR_CONFIGURATION),
+      help    = STRING_TOKEN(STR_CLR_CONFIGURATION_HELP);
+
+      goto UNCORE_CONFIG_FORM_ID,
+      prompt  = STRING_TOKEN(STR_UNCORE_CONFIGURATION),
+      help    = STRING_TOKEN(STR_UNCORE_CONFIGURATION_HELP);
+
+      goto SVID_FIVR_CONFIG_FORM_ID,
+      prompt  = STRING_TOKEN(STR_SVID_FIVR_CONFIGURATION),
+      help    = STRING_TOKEN(STR_SVID_FIVR_CONFIGURATION_HELP);
+
+    endif;
+
+    endform;
+
+    form formid = PROCESSOR_CONFIG_FORM_ID,
+    title = STRING_TOKEN(STR_PROCESSOR_CONFIGURATION);
+
+      numeric varid = SYSTEM_CONFIGURATION.CoreMaxOcRatio,
+        prompt  = STRING_TOKEN (STR_CORE_MAX_OC_RATIO),
+        help    = STRING_TOKEN (STR_CORE_MAX_OC_RATIO_HELP),
+        flags   = RESET_REQUIRED,
+        minimum = 0,
+        maximum = 80,
+        step    = 1,
+        default = 0, defaultstore = MyStandardDefault,
+        default = 0, defaultstore = MyManufactureDefault,
+      endnumeric;
+
+      oneof varid   = SYSTEM_CONFIGURATION.CoreVoltageMode,
+        prompt      = STRING_TOKEN(STR_CORE_VOLTAGE_MODE),
+        help        = STRING_TOKEN(STR_CORE_VOLTAGE_MODE_HELP),
+        option text = STRING_TOKEN(STR_VOLTAGE_ADAPTIVE), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_VOLTAGE_OVERRIDE), value = 1, flags = RESET_REQUIRED;
+      endoneof;
+
+      suppressif ideqval SYSTEM_CONFIGURATION.CoreVoltageMode == 0x0;
+        numeric varid = SYSTEM_CONFIGURATION.CoreVoltageOverride,
+          prompt  = STRING_TOKEN (STR_CORE_VOLTAGE_OVERRIDE),
+          help    = STRING_TOKEN (STR_CORE_VOLTAGE_OVERRIDE_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 0,
+          maximum = 2000,
+          step    = 1,
+          default = 0, defaultstore = MyStandardDefault,
+          default = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+      endif;
+
+      suppressif ideqval SYSTEM_CONFIGURATION.CoreVoltageMode == 0x1;
+        numeric varid = SYSTEM_CONFIGURATION.CoreExtraTurboVoltage,
+          prompt  = STRING_TOKEN (STR_CORE_EXTRA_TURBO_VOLTAGE),
+          help    = STRING_TOKEN (STR_CORE_EXTRA_TURBO_VOLTAGE_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 0,
+          maximum = 2000,
+          step    = 1,
+          default = 0, defaultstore = MyStandardDefault,
+          default = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+      endif;
+
+      numeric varid = SYSTEM_CONFIGURATION.CoreVoltageOffset,
+        prompt  = STRING_TOKEN (STR_CORE_VOLTAGE_OFFSET),
+        help    = STRING_TOKEN (STR_CORE_VOLTAGE_OFFSET_HELP),
+        flags   = RESET_REQUIRED,
+        minimum = 0,
+        maximum = 1000,
+        step    = 1,
+        default = 0, defaultstore = MyStandardDefault,
+        default = 0, defaultstore = MyManufactureDefault,
+      endnumeric;
+
+      oneof varid   = SYSTEM_CONFIGURATION.CoreVoltageOffsetPrefix,
+        prompt      = STRING_TOKEN(STR_VOLTAGE_OFFSET_PREFIX),
+        help        = STRING_TOKEN(STR_VOLTAGE_OFFSET_PREFIX_HELP),
+        option text = STRING_TOKEN(STR_POSITIVE_SIGN),  value = 0, flags =  DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_NEGATIVE_SIGN),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+    endform;
+
+
+     form formid = CLR_CONFIG_FORM_ID,
+       title = STRING_TOKEN(STR_CLR_CONFIGURATION);
+
+       numeric varid = SYSTEM_CONFIGURATION.ClrMaxOcRatio,
+         prompt  = STRING_TOKEN (STR_CLR_MAX_OC_RATIO),
+         help    = STRING_TOKEN (STR_CLR_MAX_OC_RATIO_HELP),
+         flags   = RESET_REQUIRED,
+         minimum = 0,
+         maximum = 80,
+         step    = 1,
+         default = 0, defaultstore = MyStandardDefault,
+         default = 0, defaultstore = MyManufactureDefault,
+       endnumeric;
+
+        oneof varid   = SYSTEM_CONFIGURATION.ClrVoltageMode,
+          prompt      = STRING_TOKEN(STR_CLR_VOLTAGE_MODE),
+          help        = STRING_TOKEN(STR_CLR_VOLTAGE_MODE_HELP),
+          option text = STRING_TOKEN(STR_VOLTAGE_ADAPTIVE), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_VOLTAGE_OVERRIDE), value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+        suppressif ideqval SYSTEM_CONFIGURATION.ClrVoltageMode == 0;
+          numeric varid = SYSTEM_CONFIGURATION.ClrVoltageOverride,
+            prompt  = STRING_TOKEN (STR_CLR_VOLTAGE_OVERRIDE),
+            help    = STRING_TOKEN (STR_CLR_VOLTAGE_OVERRIDE_HELP),
+            flags   = RESET_REQUIRED,
+            minimum = 0,
+            maximum = 2000,
+            step    = 1,
+            default = 0, defaultstore = MyStandardDefault,
+            default = 0, defaultstore = MyManufactureDefault,
+          endnumeric;
+        endif;
+
+        suppressif ideqval SYSTEM_CONFIGURATION.ClrVoltageMode == 1;
+          numeric varid = SYSTEM_CONFIGURATION.ClrExtraTurboVoltage,
+            prompt  = STRING_TOKEN (STR_CLR_EXTRA_TURBO_VOLTAGE),
+            help    = STRING_TOKEN (STR_CLR_EXTRA_TURBO_VOLTAGE_HELP),
+            flags   = RESET_REQUIRED,
+            minimum = 0,
+            maximum = 2000,
+            step    = 1,
+            default = 0, defaultstore = MyStandardDefault,
+            default = 0, defaultstore = MyManufactureDefault,
+          endnumeric;
+        endif;
+
+        numeric varid = SYSTEM_CONFIGURATION.ClrVoltageOffset,
+          prompt  = STRING_TOKEN (STR_CLR_VOLTAGE_OFFSET),
+          help    = STRING_TOKEN (STR_CLR_VOLTAGE_OFFSET_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 0,
+          maximum = 1000,
+          step    = 1,
+          default = 0, defaultstore = MyStandardDefault,
+          default = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+
+        oneof varid   = SYSTEM_CONFIGURATION.ClrVoltageOffsetPrefix,
+          prompt      = STRING_TOKEN(STR_VOLTAGE_CLR_OFFSET_PREFIX),
+          help        = STRING_TOKEN(STR_VOLTAGE_CLR_OFFSET_PREFIX_HELP),
+          option text = STRING_TOKEN(STR_POSITIVE_SIGN),  value = 0, flags =  DEFAULT | MANUFACTURING | RESET_REQUIRED;
+          option text = STRING_TOKEN(STR_NEGATIVE_SIGN),  value = 1, flags = RESET_REQUIRED;
+        endoneof;
+
+    endform;
+
+    form formid = UNCORE_CONFIG_FORM_ID,
+      title = STRING_TOKEN(STR_UNCORE_CONFIGURATION);
+
+       numeric varid = SYSTEM_CONFIGURATION.UncoreVoltageOffset,
+         prompt  = STRING_TOKEN (STR_UNCORE_VOLTAGE_OFFSET),
+         help    = STRING_TOKEN (STR_UNCORE_VOLTAGE_OFFSET_HELP),
+         flags   = RESET_REQUIRED,
+         minimum = 0,
+         maximum = 1000,
+         step    = 1,
+         default = 0, defaultstore = MyStandardDefault,
+         default = 0, defaultstore = MyManufactureDefault,
+       endnumeric;
+
+      oneof varid   = SYSTEM_CONFIGURATION.UncoreVoltageOffsetPrefix,
+        prompt      = STRING_TOKEN(STR_VOLTAGE_UNCORE_OFFSET_PREFIX),
+        help        = STRING_TOKEN(STR_VOLTAGE_UNCORE_OFFSET_PREFIX_HELP),
+        option text = STRING_TOKEN(STR_POSITIVE_SIGN),  value = 0, flags =  DEFAULT | MANUFACTURING | RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_NEGATIVE_SIGN),  value = 1, flags = RESET_REQUIRED;
+      endoneof;
+
+     numeric varid = SYSTEM_CONFIGURATION.IoaVoltageOffset,
+       prompt  = STRING_TOKEN (STR_IOA_VOLTAGE_OFFSET),
+       help    = STRING_TOKEN (STR_IOA_VOLTAGE_OFFSET_HELP),
+       flags   = RESET_REQUIRED,
+       minimum = 0,
+       maximum = 1000,
+       step    = 1,
+       default = 0, defaultstore = MyStandardDefault,
+       default = 0, defaultstore = MyManufactureDefault,
+     endnumeric;
+
+    oneof varid   = SYSTEM_CONFIGURATION.IoaVoltageOffsetPrefix,
+      prompt      = STRING_TOKEN(STR_VOLTAGE_IOA_OFFSET_PREFIX),
+      help        = STRING_TOKEN(STR_VOLTAGE_IOA_OFFSET_PREFIX_HELP),
+      option text = STRING_TOKEN(STR_POSITIVE_SIGN),  value = 0, flags =  DEFAULT | MANUFACTURING | RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_NEGATIVE_SIGN),  value = 1, flags = RESET_REQUIRED;
+    endoneof;
+
+     numeric varid = SYSTEM_CONFIGURATION.IodVoltageOffset,
+       prompt  = STRING_TOKEN (STR_IOD_VOLTAGE_OFFSET),
+       help    = STRING_TOKEN (STR_IOD_VOLTAGE_OFFSET_HELP),
+       flags   = RESET_REQUIRED,
+       minimum = 0,
+       maximum = 1000,
+       step    = 1,
+       default = 0, defaultstore = MyStandardDefault,
+       default = 0, defaultstore = MyManufactureDefault,
+     endnumeric;
+
+    oneof varid   = SYSTEM_CONFIGURATION.IodVoltageOffsetPrefix,
+      prompt      = STRING_TOKEN(STR_VOLTAGE_IOD_OFFSET_PREFIX),
+      help        = STRING_TOKEN(STR_VOLTAGE_IOD_OFFSET_PREFIX_HELP),
+      option text = STRING_TOKEN(STR_POSITIVE_SIGN),  value = 0, flags =  DEFAULT | MANUFACTURING | RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_NEGATIVE_SIGN),  value = 1, flags = RESET_REQUIRED;
+    endoneof;
+
+    oneof varid   = SYSTEM_CONFIGURATION.VccIoVoltage,
+      prompt      = STRING_TOKEN(STR_VOLTAGE_VCCIO),
+      help        = STRING_TOKEN(STR_VOLTAGE_VCCIO_HELP),
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P0590),  value = 0x00, flags =  DEFAULT | MANUFACTURING | RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P0697),  value = 0x01, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P0801),  value = 0x02, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P0905),  value = 0x03, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P1005),  value = 0x04, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P1110),  value = 0x05, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P1216),  value = 0x06, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P1322),  value = 0x07, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P1421),  value = 0x08, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P1527),  value = 0x09, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P1633),  value = 0x0A, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P1737),  value = 0x0B, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P1838),  value = 0x0C, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P1938),  value = 0x0D, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P2046),  value = 0x0E, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P2149),  value = 0x0F, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P2254),  value = 0x10, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P2360),  value = 0x11, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P2464),  value = 0x12, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P2569),  value = 0x13, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P2672),  value = 0x14, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P2775),  value = 0x15, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P2879),  value = 0x16, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P2984),  value = 0x17, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P3083),  value = 0x18, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P3190),  value = 0x19, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P3296),  value = 0x1A, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P3398),  value = 0x1B, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P3502),  value = 0x1C, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P3605),  value = 0x1D, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P3710),  value = 0x1E, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P3813),  value = 0x1F, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P3917),  value = 0x20, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P4021),  value = 0x21, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P4126),  value = 0x22, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P4218),  value = 0x23, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P4322),  value = 0x24, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P4427),  value = 0x25, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P4530),  value = 0x26, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P4645),  value = 0x27, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P4736),  value = 0x28, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P4843),  value = 0x29, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P4947),  value = 0x2A, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P5052),  value = 0x2B, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P5154),  value = 0x2C, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P5259),  value = 0x2D, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P5363),  value = 0x2E, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P5468),  value = 0x2F, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P5572),  value = 0x30, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P5678),  value = 0x31, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P5783),  value = 0x32, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P5886),  value = 0x33, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P5988),  value = 0x34, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P6093),  value = 0x35, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P6200),  value = 0x36, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P6302),  value = 0x37, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P6390),  value = 0x38, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P6496),  value = 0x39, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P6601),  value = 0x3A, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P6706),  value = 0x3B, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P6808),  value = 0x3C, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P6912),  value = 0x3D, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P7019),  value = 0x3E, flags = RESET_REQUIRED;
+      option text = STRING_TOKEN(STR_VOLTAGE_VCCIO_1P7125),  value = 0x3F, flags = RESET_REQUIRED;
+    endoneof;
+
+    endform;
+
+    form formid = SVID_FIVR_CONFIG_FORM_ID,
+      title = STRING_TOKEN(STR_SVID_FIVR_CONFIGURATION);
+
+      oneof varid   = SYSTEM_CONFIGURATION.SvidEnable,
+        prompt      = STRING_TOKEN(STR_SVID_ENABLE_PROMPT),
+        help        = STRING_TOKEN(STR_SVID_ENABLE_PROMPT_HELP),
+        option text = STRING_TOKEN(STR_DISABLED),  value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+      endoneof;
+
+      suppressif ideqval SYSTEM_CONFIGURATION.SvidEnable == 0;
+        numeric varid = SYSTEM_CONFIGURATION.SvidVoltageOverride,
+          prompt  = STRING_TOKEN (STR_SVID_VOLTAGE_OVERRIDE),
+          help    = STRING_TOKEN (STR_SVID_VOLTAGE_OVERRIDE_HELP),
+          flags   = RESET_REQUIRED,
+          minimum = 0,
+          maximum = 2500,
+          step    = 1,
+          default = 0, defaultstore = MyStandardDefault,
+          default = 0, defaultstore = MyManufactureDefault,
+        endnumeric;
+      endif;
+
+      numeric   varid   = SYSTEM_CONFIGURATION.CpuVccInVoltage,
+        prompt  = STRING_TOKEN(STR_VCCIN_VOLTAGE_PROMPT),
+        help    = STRING_TOKEN(STR_VCCIN_VOLTAGE_HELP),
+          flags     = RESET_REQUIRED,
+          minimum   = 358,
+          maximum   = 459,
+          step      = 1,       // Stepping of 0 equates to a manual entering of a value,
+                               // otherwise it will auto-increment with a left/right arrow
+          default = 359, defaultstore = MyStandardDefault,
+          default = 359, defaultstore = MyManufactureDefault,
+      endnumeric;
+
+      oneof varid   = SYSTEM_CONFIGURATION.FivrFaultsEnable,
+        prompt      = STRING_TOKEN(STR_FIVR_FAULTS_ENABLE_PROMPT),
+        help        = STRING_TOKEN(STR_FIVR_FAULTS_ENABLE_PROMPT_HELP),
+        option text = STRING_TOKEN(STR_DISABLED),  value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+      endoneof;
+
+      oneof varid   = SYSTEM_CONFIGURATION.FivrEfficiencyEnable,
+        prompt      = STRING_TOKEN(STR_FIVR_EFFICIENCY_ENABLE_PROMPT),
+        help        = STRING_TOKEN(STR_FIVR_EFFICIENCY_ENABLE_PROMPT_HELP),
+        option text = STRING_TOKEN(STR_DISABLED),  value = 0, flags = RESET_REQUIRED;
+        option text = STRING_TOKEN(STR_ENABLED),  value = 1, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+      endoneof;
+    endform;
+
+//cal     form formid = MEMORY_CONFIG_FORM_ID,
+//cal     title = STRING_TOKEN(STR_MEMORY_CONFIGURATION);
+//cal
+//cal     suppressif ideqval SETUP_VOLATILE_DATA.PlatformFlavor == SETUP_VOLATILE_DATA.PlatformFlavor;
+//cal       text
+//cal         help   = STRING_TOKEN(STR_MEMORY_TIMING_HEADER_HELP),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TIMING_HEADER_NAME),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TIMING_HEADER_VALUE),
+//cal         flags  = 0,
+//cal         key    = 0;
+//cal
+//cal       text
+//cal         help   = STRING_TOKEN(STR_MEMORY_TIMING_TCK_HELP),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TIMING_TCK_NAME),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TIMING_TCK_VALUE),
+//cal         flags  = 0,
+//cal         key    = 0;
+//cal
+//cal       text
+//cal         help   = STRING_TOKEN(STR_MEMORY_TIMING_TCL_HELP),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TIMING_TCL_NAME),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TIMING_TCL_VALUE),
+//cal         flags  = 0,
+//cal         key    = 0;
+//cal
+//cal       text
+//cal         help   = STRING_TOKEN(STR_MEMORY_TIMING_TRCD_HELP),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TIMING_TRCD_NAME),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TIMING_TRCD_VALUE),
+//cal         flags  = 0,
+//cal         key    = 0;
+//cal
+//cal       text
+//cal         help   = STRING_TOKEN(STR_MEMORY_TIMING_TRP_HELP),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TIMING_TRP_NAME),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TIMING_TRP_VALUE),
+//cal         flags  = 0,
+//cal         key    = 0;
+//cal
+//cal       text
+//cal         help   = STRING_TOKEN(STR_MEMORY_TIMING_TRAS_HELP),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TIMING_TRAS_NAME),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TIMING_TRAS_VALUE),
+//cal         flags  = 0,
+//cal         key    = 0;
+//cal
+//cal       text
+//cal         help   = STRING_TOKEN(STR_MEMORY_TIMING_TCWL_HELP),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TIMING_TCWL_NAME),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TIMING_TCWL_VALUE),
+//cal         flags  = 0,
+//cal         key    = 0;
+//cal
+//cal       text
+//cal         help   = STRING_TOKEN(STR_MEMORY_TIMING_TFAW_HELP),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TIMING_TFAW_NAME),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TIMING_TFAW_VALUE),
+//cal         flags  = 0,
+//cal         key    = 0;
+//cal
+//cal       text
+//cal         help   = STRING_TOKEN(STR_MEMORY_TIMING_TRC_HELP),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TIMING_TRC_NAME),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TIMING_TRC_VALUE),
+//cal         flags  = 0,
+//cal         key    = 0;
+//cal
+//cal       text
+//cal         help   = STRING_TOKEN(STR_MEMORY_TIMING_TREFI_HELP),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TIMING_TREFI_NAME),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TIMING_TREFI_VALUE),
+//cal         flags  = 0,
+//cal         key    = 0;
+//cal
+//cal       text
+//cal         help   = STRING_TOKEN(STR_MEMORY_TIMING_TRFC_HELP),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TIMING_TRFC_NAME),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TIMING_TRFC_VALUE),
+//cal         flags  = 0,
+//cal         key    = 0;
+//cal
+//cal       text
+//cal         help   = STRING_TOKEN(STR_MEMORY_TIMING_TRPAB_HELP),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TIMING_TRPAB_NAME),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TIMING_TRPAB_VALUE),
+//cal         flags  = 0,
+//cal         key    = 0;
+//cal
+//cal       text
+//cal         help   = STRING_TOKEN(STR_MEMORY_TIMING_TRRD_HELP),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TIMING_TRRD_NAME),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TIMING_TRRD_VALUE),
+//cal         flags  = 0,
+//cal         key    = 0;
+//cal
+//cal       text
+//cal         help   = STRING_TOKEN(STR_MEMORY_TIMING_TRTP_HELP),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TIMING_TRTP_NAME),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TIMING_TRTP_VALUE),
+//cal         flags  = 0,
+//cal         key    = 0;
+//cal
+//cal       text
+//cal         help   = STRING_TOKEN(STR_MEMORY_TIMING_TWR_HELP),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TIMING_TWR_NAME),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TIMING_TWR_VALUE),
+//cal         flags  = 0,
+//cal         key    = 0;
+//cal
+//cal       text
+//cal         help   = STRING_TOKEN(STR_MEMORY_TIMING_TWTR_HELP),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TIMING_TWTR_NAME),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TIMING_TWTR_VALUE),
+//cal         flags  = 0,
+//cal         key    = 0;
+//cal
+//cal       text
+//cal         help   = STRING_TOKEN(STR_MEMORY_TIMING_NMODE_HELP),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TIMING_NMODE_NAME),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TIMING_NMODE_VALUE),
+//cal         flags  = 0,
+//cal         key    = 0;
+//cal
+//cal       text
+//cal         help   = STRING_TOKEN(STR_MEMORY_VOLTAGE_VDD_HELP),
+//cal         text   = STRING_TOKEN(STR_MEMORY_VOLTAGE_VDD_NAME),
+//cal         text   = STRING_TOKEN(STR_MEMORY_VOLTAGE_VDD_VALUE),
+//cal         flags  = 0,
+//cal         key    = 0;
+//cal
+//cal       oneof varid = SYSTEM_CONFIGURATION.SpdProfileSelected,
+//cal         prompt  = STRING_TOKEN(STR_XMP_PROFILE_PROMPT),
+//cal         help    = STRING_TOKEN(STR_XMP_PROFILE_PROMPT_HELP),
+//cal           option text = STRING_TOKEN (STR_DEFAULT_SPD_PROFILE), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+//cal           option text = STRING_TOKEN (STR_CUSTOM_PROFILE),      value = 1, flags = RESET_REQUIRED;
+//cal       endoneof;
+//cal     endif;
+//cal
+//cal     grayoutif NOT ideqval SYSTEM_CONFIGURATION.SpdProfileSelected == 0x1;
+//cal
+//cal         numeric varid = SYSTEM_CONFIGURATION.tCL,
+//cal           prompt  = STRING_TOKEN (STR_TCL_VALUE),
+//cal           help    = STRING_TOKEN (STR_TCL_VALUE_HELP),
+//cal           flags   = 0 | RESET_REQUIRED | INTERACTIVE,
+//cal           key     = KEY_MEMINFO,
+//cal           minimum = 0,
+//cal           maximum = 18,
+//cal           step    = 1,
+//cal           default = 0,
+//cal         endnumeric;
+//cal
+//cal         numeric varid = SYSTEM_CONFIGURATION.tRCD,
+//cal           prompt  = STRING_TOKEN (STR_TRCD_VALUE),
+//cal           help    = STRING_TOKEN (STR_TRCD_VALUE_HELP),
+//cal           flags   = 0 | RESET_REQUIRED | INTERACTIVE,
+//cal           key     = KEY_MEMINFO1,
+//cal           minimum = 0,
+//cal           maximum = 31,
+//cal           step    = 1,
+//cal           default = 0,
+//cal         endnumeric;
+//cal
+//cal         numeric varid = SYSTEM_CONFIGURATION.tRP,
+//cal           prompt  = STRING_TOKEN (STR_TRP_VALUE),
+//cal           help    = STRING_TOKEN (STR_TRP_VALUE_HELP),
+//cal           flags   = 0 | RESET_REQUIRED | INTERACTIVE,
+//cal           key     = KEY_MEMINFO2,
+//cal           minimum = 0,
+//cal           maximum = 31,
+//cal           step    = 1,
+//cal           default = 0,
+//cal         endnumeric;
+//cal
+//cal         numeric varid = SYSTEM_CONFIGURATION.tRAS,
+//cal           prompt  = STRING_TOKEN (STR_TRAS_VALUE),
+//cal           help    = STRING_TOKEN (STR_TRAS_VALUE_HELP),
+//cal           flags   = 0 | RESET_REQUIRED | INTERACTIVE,
+//cal           key     = KEY_MEMINFO3,
+//cal           minimum = 0,
+//cal           maximum = 63,
+//cal           step    = 1,
+//cal           default = 0,
+//cal         endnumeric;
+//cal
+//cal         numeric varid = SYSTEM_CONFIGURATION.tCWL,
+//cal           prompt  = STRING_TOKEN (STR_TCWL_VALUE),
+//cal           help    = STRING_TOKEN (STR_TCWL_VALUE_HELP),
+//cal           flags   = 0 | RESET_REQUIRED | INTERACTIVE,
+//cal           key     = KEY_MEMINFO11,
+//cal           minimum = 0,
+//cal           maximum = 31,
+//cal           step    = 1,
+//cal           default = 0,
+//cal         endnumeric;
+//cal
+//cal         numeric varid = SYSTEM_CONFIGURATION.tFAW,
+//cal           prompt  = STRING_TOKEN (STR_TFAW_VALUE),
+//cal           help    = STRING_TOKEN (STR_TFAW_VALUE_HELP),
+//cal           flags   = 0 | RESET_REQUIRED | INTERACTIVE,
+//cal           key     = KEY_MEMINFO10,
+//cal           minimum = 0,
+//cal           maximum = 255,
+//cal           step    = 1,
+//cal           default = 0,
+//cal         endnumeric;
+//cal
+//cal         numeric varid = SYSTEM_CONFIGURATION.tRC,
+//cal           prompt  = STRING_TOKEN (STR_TRC_VALUE),
+//cal           help    = STRING_TOKEN (STR_TRC_VALUE_HELP),
+//cal           flags   = 0 | RESET_REQUIRED | INTERACTIVE,
+//cal           key     = KEY_MEMINFO9,
+//cal           minimum = 0,
+//cal           maximum = 586,
+//cal           step    = 1,
+//cal           default = 0,
+//cal         endnumeric;
+//cal
+//cal         numeric varid = SYSTEM_CONFIGURATION.tREFI,
+//cal           prompt  = STRING_TOKEN (STR_TREFI_VALUE),
+//cal           help    = STRING_TOKEN (STR_TREFI_VALUE_HELP),
+//cal           flags   = 0 | RESET_REQUIRED | INTERACTIVE,
+//cal           key     = KEY_MEMINFO13,
+//cal           minimum = 0,
+//cal           maximum = 65535,
+//cal           step    = 1,
+//cal           default = 0,
+//cal         endnumeric;
+//cal
+//cal         numeric varid = SYSTEM_CONFIGURATION.tRFC,
+//cal           prompt  = STRING_TOKEN (STR_TRFC_VALUE),
+//cal           help    = STRING_TOKEN (STR_TRFC_VALUE_HELP),
+//cal           flags   = 0 | RESET_REQUIRED | INTERACTIVE,
+//cal           key     = KEY_MEMINFO5,
+//cal           minimum = 0,
+//cal           maximum = 511,
+//cal           step    = 1,
+//cal           default = 0,
+//cal         endnumeric;
+//cal
+//cal         numeric varid = SYSTEM_CONFIGURATION.tRRD,
+//cal           prompt  = STRING_TOKEN (STR_TRRD_VALUE),
+//cal           help    = STRING_TOKEN (STR_TRRD_VALUE_HELP),
+//cal           flags   = 0 | RESET_REQUIRED | INTERACTIVE,
+//cal           key     = KEY_MEMINFO6,
+//cal           minimum = 0,
+//cal           maximum = 15,
+//cal           step    = 1,
+//cal           default = 0,
+//cal         endnumeric;
+//cal
+//cal         numeric varid = SYSTEM_CONFIGURATION.tRTP,
+//cal           prompt  = STRING_TOKEN (STR_TRTP_VALUE),
+//cal           help    = STRING_TOKEN (STR_TRTP_VALUE_HELP),
+//cal           flags   = 0 | RESET_REQUIRED | INTERACTIVE,
+//cal           key     = KEY_MEMINFO8,
+//cal           minimum = 0,
+//cal           maximum = 15,
+//cal           step    = 1,
+//cal           default = 0,
+//cal         endnumeric;
+//cal
+//cal         oneof varid = SYSTEM_CONFIGURATION.tWR,
+//cal           prompt      = STRING_TOKEN (STR_TWR_VALUE),
+//cal           help        = STRING_TOKEN (STR_TWR_VALUE_HELP),
+//cal           option text = STRING_TOKEN(STR_AUTO_STRING), value = 0,  flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+//cal           option text = STRING_TOKEN(STR_5),           value = 5,  flags = RESET_REQUIRED;
+//cal           option text = STRING_TOKEN(STR_6),           value = 6,  flags = RESET_REQUIRED;
+//cal           option text = STRING_TOKEN(STR_7),           value = 7,  flags = RESET_REQUIRED;
+//cal           option text = STRING_TOKEN(STR_8),           value = 8,  flags = RESET_REQUIRED;
+//cal           option text = STRING_TOKEN(STR_10),          value = 10, flags = RESET_REQUIRED;
+//cal           option text = STRING_TOKEN(STR_12),          value = 12, flags = RESET_REQUIRED;
+//cal           option text = STRING_TOKEN(STR_14),          value = 14, flags = RESET_REQUIRED;
+//cal           option text = STRING_TOKEN(STR_16),          value = 16, flags = RESET_REQUIRED;
+//cal         endoneof;
+//cal
+//cal         numeric varid = SYSTEM_CONFIGURATION.tWTR,
+//cal           prompt  = STRING_TOKEN (STR_TWTR_VALUE),
+//cal           help    = STRING_TOKEN (STR_TWTR_VALUE_HELP),
+//cal           flags   = 0 | RESET_REQUIRED | INTERACTIVE,
+//cal           key     = KEY_MEMINFO7,
+//cal           minimum = 0,
+//cal           maximum = 8,
+//cal           step    = 1,
+//cal           default = 0,
+//cal         endnumeric;
+//cal
+//cal         grayoutif ideqval SETUP_VOLATILE_DATA.PlatId == BoardIdTumaloFallsDt  OR
+//cal                    ideqval SETUP_VOLATILE_DATA.PlatId == BoardIdTumaloFallsMb;
+//cal             oneof varid = SYSTEM_CONFIGURATION.MemoryVoltage,
+//cal             prompt  = STRING_TOKEN (STR_MEMORY_VOLTAGE_VALUE),
+//cal             help    = STRING_TOKEN (STR_MEMORY_VOLTAGE_VALUE_HELP),
+//cal             default value=cond(ideqvallist SETUP_VOLATILE_DATA.PlatId == BoardIdFlatheadCreekEV BoardIdFlatheadCreekPpv BoardIdFlatheadCreekCpv  BoardIdFlatheadCreekCrb BoardIdHaddockCreek BoardIdHaddockCreek2 BoardIdCrbOc BoardIdFlatheadCreekDoe1 BoardIdFlatheadCreekDoe2 BoardIdSteelCliff
+//cal                              ? 0x0:0x4), defaultstore = MyStandardDefault,
+//cal             default value=cond(ideqvallist SETUP_VOLATILE_DATA.PlatId == BoardIdFlatheadCreekEV BoardIdFlatheadCreekPpv BoardIdFlatheadCreekCpv  BoardIdFlatheadCreekCrb BoardIdHaddockCreek BoardIdHaddockCreek2 BoardIdCrbOc BoardIdFlatheadCreekDoe1 BoardIdFlatheadCreekDoe2 BoardIdSteelCliff
+//cal                              ? 0x0:0x4), defaultstore = MyManufactureDefault,
+//cal             option text = STRING_TOKEN (STR_VOLTAGE_1350), value = 0, flags = DEFAULT | MANUFACTURING | RESET_REQUIRED;
+//cal             option text = STRING_TOKEN (STR_VOLTAGE_1401), value = 1, flags = RESET_REQUIRED;
+//cal             option text = STRING_TOKEN (STR_VOLTAGE_1449), value = 2, flags = RESET_REQUIRED;
+//cal             option text = STRING_TOKEN (STR_VOLTAGE_1500), value = 3, flags = RESET_REQUIRED;
+//cal             option text = STRING_TOKEN (STR_VOLTAGE_1503), value = 4, flags = RESET_REQUIRED;
+//cal             option text = STRING_TOKEN (STR_VOLTAGE_1553), value = 5, flags = RESET_REQUIRED;
+//cal             option text = STRING_TOKEN (STR_VOLTAGE_1602), value = 6, flags = RESET_REQUIRED;
+//cal             option text = STRING_TOKEN (STR_VOLTAGE_1652), value = 7, flags = RESET_REQUIRED;
+//cal           endoneof;
+//cal         endif;
+//cal
+//cal     endif;
+//cal
+//cal
+//cal     SEPARATOR
+//cal     SUBTITLE(STRING_TOKEN(STR_MEMORY_OVERCLOCKING_OPTIONS_CONFIGURATION))
+//cal     SEPARATOR
+//cal
+//cal       text
+//cal         help   = STRING_TOKEN(STR_MEMORY_VDD_HELP),
+//cal         text   = STRING_TOKEN(STR_MEMORY_VDD_NAME),
+//cal         text   = STRING_TOKEN(STR_MEMORY_VDD_VALUE),
+//cal         flags  = 0,
+//cal         key    = 0;
+//cal
+//cal       text
+//cal         help   = STRING_TOKEN(STR_MEMORY_CL_HELP),
+//cal         text   = STRING_TOKEN(STR_MEMORY_CL_NAME),
+//cal         text   = STRING_TOKEN(STR_MEMORY_CL_VALUE),
+//cal         flags  = 0,
+//cal         key    = 0;
+//cal
+//cal       SUBTITLE(STRING_TOKEN(STR_MEMORY_DELAY_TIME))
+//cal
+//cal       text
+//cal         help   = STRING_TOKEN(STR_MEMORY_TRCD_HELP),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TRCD_NAME),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TRCD_VALUE),
+//cal         flags  = 0,
+//cal         key    = 0;
+//cal
+//cal       text
+//cal         help   = STRING_TOKEN(STR_MEMORY_TRP_HELP),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TRP_NAME),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TRP_VALUE),
+//cal         flags  = 0,
+//cal         key    = 0;
+//cal
+//cal       text
+//cal         help   = STRING_TOKEN(STR_MEMORY_TRAS_HELP),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TRAS_NAME),
+//cal         text   = STRING_TOKEN(STR_MEMORY_TRAS_VALUE),
+//cal         flags  = 0,
+//cal         key    = 0;
+//cal
+//cal       SEPARATOR
+//cal       text
+//cal         help   = STRING_TOKEN(STR_DIMM_CH_SLT_SUBTITLE_HELP),
+//cal         text   = STRING_TOKEN(STR_DIMM_CH0_SLT0_FORM_SUBTITLE),
+//cal         text   = STRING_TOKEN(STR_DIMM_CH0_SLT0_STATUS),
+//cal         flags  = 0,
+//cal         key    = 0;
+//cal
+//cal       suppressif ideqval SETUP_VOLATILE_DATA.DimmPresent[OFFSET_0] == 0x0;
+//cal         text
+//cal           help   = STRING_TOKEN(STR_SPD_INFO_HELP),
+//cal           text   = STRING_TOKEN(STR_SPD_INFO),
+//cal           text   = STRING_TOKEN(STR_CH0_SLT0_SPD_INFO),
+//cal           flags  = 0,
+//cal           key    = 0;
+//cal       endif;
+//cal
+//cal       suppressif NOT ideqval SETUP_VOLATILE_DATA.PlatId == BoardIdTumaloFallsDt   AND
+//cal                  NOT ideqval SETUP_VOLATILE_DATA.PlatId == BoardIdTumaloFallsMb;
+//cal         text
+//cal           help   = STRING_TOKEN(STR_DIMM_CH_SLT_SUBTITLE_HELP),
+//cal           text   = STRING_TOKEN(STR_DIMM_CH0_SLT1_FORM_SUBTITLE),
+//cal           text   = STRING_TOKEN(STR_DIMM_CH0_SLT1_STATUS),
+//cal           flags  = 0,
+//cal           key    = 0;
+//cal       endif;
+//cal       suppressif ideqval SETUP_VOLATILE_DATA.DimmPresent[OFFSET_1] == 0x0;
+//cal         text
+//cal           help   = STRING_TOKEN(STR_SPD_INFO_HELP),
+//cal           text   = STRING_TOKEN(STR_SPD_INFO),
+//cal           text   = STRING_TOKEN(STR_CH0_SLT1_SPD_INFO),
+//cal           flags  = 0,
+//cal           key    = 0;
+//cal       endif;
+//cal
+//cal       text
+//cal         help   = STRING_TOKEN(STR_DIMM_CH_SLT_SUBTITLE_HELP),
+//cal         text   = STRING_TOKEN(STR_DIMM_CH1_SLT0_FORM_SUBTITLE),
+//cal         text   = STRING_TOKEN(STR_DIMM_CH1_SLT0_STATUS),
+//cal         flags  = 0,
+//cal         key    = 0;
+//cal       suppressif ideqval SETUP_VOLATILE_DATA.DimmPresent[OFFSET_2] == 0x0;
+//cal         text
+//cal           help   = STRING_TOKEN(STR_SPD_INFO_HELP),
+//cal           text   = STRING_TOKEN(STR_SPD_INFO),
+//cal           text   = STRING_TOKEN(STR_CH1_SLT0_SPD_INFO),
+//cal           flags  = 0,
+//cal           key    = 0;
+//cal       endif;
+//cal
+//cal       suppressif NOT ideqval SETUP_VOLATILE_DATA.PlatId == BoardIdTumaloFallsDt   AND
+//cal                  NOT ideqval SETUP_VOLATILE_DATA.PlatId == BoardIdTumaloFallsMb;
+//cal         text
+//cal           help   = STRING_TOKEN(STR_DIMM_CH_SLT_SUBTITLE_HELP),
+//cal           text   = STRING_TOKEN(STR_DIMM_CH1_SLT1_FORM_SUBTITLE),
+//cal           text   = STRING_TOKEN(STR_DIMM_CH1_SLT1_STATUS),
+//cal           flags  = 0,
+//cal           key    = 0;
+//cal       endif;
+//cal       suppressif ideqval SETUP_VOLATILE_DATA.DimmPresent[OFFSET_3] == 0x0;
+//cal         text
+//cal           help   = STRING_TOKEN(STR_SPD_INFO_HELP),
+//cal           text   = STRING_TOKEN(STR_SPD_INFO),
+//cal           text   = STRING_TOKEN(STR_CH1_SLT1_SPD_INFO),
+//cal           flags  = 0,
+//cal           key    = 0;
+//cal       endif;
+//cal
+//cal       SEPARATOR
+//cal       SUBTITLE(STRING_TOKEN(STR_SPD_INFO_LEGEND))
+//cal       SEPARATOR
+//cal
+//cal   endform;

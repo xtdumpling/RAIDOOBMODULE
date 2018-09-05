@@ -1,0 +1,31 @@
+TOKEN
+	Name  = "AmtInt16_SUPPORT"
+	Value  = "1"
+	Help  = "Switch for Enabling AmtInt16 support in the project"
+	TokenType = Boolean
+	Master = Yes
+End
+
+TOKEN
+	Name  = "AmtInt16Csm_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable AmtInt16Csm support in Project"
+	TokenType = Boolean
+End
+
+INFComponent
+	Name  = "AmtInt16"
+	File  = "AmtInt16.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "AmtInt16_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "AmtInt16_csm"
+	File  = "AmtInt16Csm.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "USER_DEFINED"
+	Token = "AmtInt16Csm_SUPPORT" "=" "1"
+End
+

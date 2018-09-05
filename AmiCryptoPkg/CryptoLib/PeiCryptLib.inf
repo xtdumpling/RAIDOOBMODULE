@@ -1,0 +1,106 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2013, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#** 5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093             **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+## @file
+#  CryptoLib library implementation
+#
+##
+
+[Defines]
+  INF_VERSION            = 0x00010005
+  BASE_NAME              = PeiCryptLib
+  FILE_GUID              = 9ECD2C5A-90F2-471B-8419-1DB62BD9CC27
+  MODULE_TYPE            = PEIM
+  VERSION_STRING         = 1.0
+  LIBRARY_CLASS          = PeiCryptLib|BASE PEIM PEI_CORE
+  CONSTRUCTOR            = PeiAmiCryptLibConstructor
+
+#
+#  VALID_ARCHITECTURES   = IA32 ARM
+#
+
+[Sources]
+ PeiCryptLibInit.c
+ BaseCryptLib.c
+ RSAKeyImport.c
+ Pkcs1_sigDecode.c
+ Memalloc.c
+ Scrtlib.c
+ TimeWrapper.c
+ wpa_debug.c
+ wpa_debug.h
+ Pkcs7.c
+ Pkcs7.h
+ includes.h
+ build_config.h
+ common.h
+ os.h
+ crypto.h
+ libtommath.h
+ bignum.c
+ bignum.h
+ asn1.c
+ asn1.h
+ rsa.c
+ rsa.h
+ md5.h
+ md5.c
+ sha1.h
+ sha1.c
+ sha256.c
+ sha256.h
+ sha384.c
+ sha512.c
+ x509v3.c
+ x509v3.h
+
+[Sources.IA32]
+ IA32math.c     | MSFT
+# IA32math.S     | GCC
+ 
+#[Sources.ARM]
+# ARMmath.S     | GCC
+
+[LibraryClasses]
+ PeiServicesLib
+ BaseLib
+ DebugLib
+ PrintLib
+
+[Packages]
+ MdePkg/MdePkg.dec
+ AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+ AmiCryptoPkg/AmiCryptoPkg.dec
+  
+[Pcd]
+  gAmiCryptoPkgTokenSpaceGuid.AmiPcdCpMaxHeapSize
+
+[BuildOptions.IA32]
+#*_*_IA32_CC_FLAGS              =  /GL- /Od /wd4002 /wd4267 /wd4090 /wd4334  -DPEI_BUILD -DDEBUG_TRACE
+#DEBUG_MYTOOLS_IA32_CC_FLAGS   =  /GL- /Od /wd4267 /wd4090 /wd4334 -DPEI_BUILD -DDEBUG_TRACE
+#RELEASE_MYTOOLS_IA32_CC_FLAGS =  /GL- /Od /wd4267 /wd4090 /wd4334 -DPEI_BUILD
+MSFT:DEBUG_*_IA32_CC_FLAGS   =  /GL- /Od /wd4267 /wd4090 /wd4334 -DPEI_BUILD -DDEBUG_TRACE
+MSFT:RELEASE_*_IA32_CC_FLAGS =  /GL- /Od /wd4267 /wd4090 /wd4334 -DPEI_BUILD
+GCC:DEBUG_*_IA32_CC_FLAGS    =  -DPEI_BUILD -DDEBUG_TRACE
+GCC:RELEASE_*_IA32_CC_FLAGS  =  -DPEI_BUILD 
+
+#for ARM build option
+[BuildOptions.AARCH64]
+DEBUG_GCC_AARCH64_CC_FLAGS   = -DPEI_BUILD -DDEBUG_TRACE
+RELEASE_GCC_AARCH64_CC_FLAGS = -DPEI_BUILD
+
+[BuildOptions.ARM]
+DEBUG_ARMGCC_ARM_CC_FLAGS   = -DPEI_BUILD -DDEBUG_TRACE
+RELEASE_ARMGCC_ARM_CC_FLAGS = -DPEI_BUILD
+  
+ 

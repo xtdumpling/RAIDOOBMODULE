@@ -1,0 +1,50 @@
+#
+# This file contains an 'Intel Peripheral Driver' and is      
+# licensed for Intel CPUs and chipsets under the terms of your
+# license agreement with Intel or your vendor.  This file may 
+# be modified by the user, subject to additional terms of the 
+# license agreement                                           
+#
+#/** @file
+# Platform Package
+#
+# This package provides platform specific modules.
+# Copyright (c) 2014 - 2015, Intel Corporation. All rights reserved.<BR>
+#
+#    This software and associated documentation (if any) is furnished
+#    under a license and may only be used or copied in accordance
+#    with the terms of the license. Except as permitted by such
+#    license, no part of this software or documentation may be
+#    reproduced, stored in a retrieval system, or transmitted in any
+#    form or by any means without the express written consent of
+#    Intel Corporation.
+#
+#**/
+
+[Defines]
+  DEC_SPECIFICATION              = 0x00010001
+  PACKAGE_NAME                   = IePkg
+  PACKAGE_GUID                   = 5C99A0BB-07AA-4748-9CC8-8187F8D16727
+  PACKAGE_VERSION                = 0.1
+
+[Includes]              
+  Include
+  Policy/Include
+
+[Guids]
+  gEfiIeRcVariableGuid           = { 0xd8b85944, 0x13b2, 0x41f9, {0x85, 0xc6, 0xa0, 0xb1, 0x33, 0x78, 0x3e, 0x40 }}
+  gIeHobGuid                     = { 0x081077fa, 0x577d, 0x43b8, {0xa8, 0xac, 0x9e, 0x0d, 0x31, 0x65, 0xf4, 0xee }}
+
+[Protocols]
+  gIeHeciProtocolGuid            = { 0x94352eb2, 0x16f1, 0x4482, { 0xa6, 0x95, 0x53, 0x88, 0x8e, 0x53, 0xd3, 0xc4 }}
+
+[Ppis]
+  gPeiIeHeciPpiGuid              = { 0xbebfba1f, 0x965f, 0x4f87, { 0xad, 0x55, 0xa0, 0x0a, 0x54, 0x7b, 0xcf, 0x69 }} 
+  gPeiIePlatformPolicyPpiGuid    = { 0x8f685891, 0x4e6f, 0x445c, { 0xbb, 0x9e, 0xe5, 0x7a, 0x28, 0xfa, 0x53, 0xa0 }}
+
+[PcdsFixedAtBuild]
+
+[PcdsFeatureFlag]
+#APTIOV_SERVER_OVERRIDE_RC_START : To include PcdsDynamic in PcdsDynamicEx
+[PcdsDynamic,PcdsDynamicEx]
+#APTIOV_SERVER_OVERRIDE_RC_END : To include PcdsDynamic in PcdsDynamicEx

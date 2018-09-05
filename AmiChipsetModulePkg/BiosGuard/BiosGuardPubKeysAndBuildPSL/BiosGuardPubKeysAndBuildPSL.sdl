@@ -1,0 +1,620 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**     5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093            **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+TOKEN
+        Name = "BiosGuardPubKey_SUPPORT"
+        Value = "1"
+        TokenType = Boolean
+        TargetEQU = Yes
+        TargetMAK = Yes
+        Master = Yes
+End
+
+MODULE
+        File = "BiosGuardPubKeysAndBuildPSL.mak"
+End
+
+TOKEN
+        Name = "BIOS_GUARD_CRYPTOCON"
+        Value = "$(BIOS_GUARD_PUB_PATH)\BiosGuardCryptoCon.exe"
+        TokenType = Expression
+        TargetMAK = Yes
+End
+
+TOKEN
+        Name = "KEYGEN"
+        Value = "$(BIOS_GUARD_PUB_PATH)\Keygen.exe"
+        TokenType = Expression
+        TargetMAK = Yes
+End
+
+TOKEN
+        Name = "FULL_BIOS_IMAGE_SIZE"
+        Value = "0x2000000"
+        Help = "Size of full BIOS image, default is 32MB. If your full image is Not 32MB, please correct the token."
+        TokenType = Integer
+        TargetH = Yes
+End
+
+TOKEN
+        Name = "BIOS_GUARD_RESERVE_SIZE"
+        Value = "0x20000"
+        Help = "BIOS Guard reserve size for all Ami BIOS Guard header, BGUPs, BGUPCs"
+        TokenType = Integer
+        TargetH = Yes
+        Lock = Yes
+End
+
+TOKEN
+        Name = "BIOSGUARD_RECOVERY_IMAGE_SIZE"
+        Value = "$(FULL_BIOS_IMAGE_SIZE) + $(BIOS_GUARD_RESERVE_SIZE)"
+        Help = "ROM size for Bios Guard recovery"
+        TokenType = Integer
+        TargetMAK = Yes
+        TargetH = Yes
+End
+
+TOKEN
+        Name = "BiosGuardMaxSectionSize"
+        Help = "Mega Byte is a unit of section size"
+        Value = "0x100000"
+        TokenType = Integer
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+End
+
+TOKEN
+        Name = "BIOS_GUARD_FLASH_START_ADDRESS"
+        Value = "0xFFFFFFFF - $(FLASH_SIZE) + 1"
+        TokenType = Integer
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+        Lock = Yes
+End
+
+TOKEN
+        Name = "FV_NvRamStartingAddress"
+        Help = "ROM address"
+        Value = "$(NVRAM_ADDRESS) - $(BIOS_GUARD_FLASH_START_ADDRESS)"
+        TokenType = Integer
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+        Lock = Yes
+End
+
+TOKEN
+        Name = "FV_NvRamLength"
+        Help = "ROM address"
+        Value = "$(NVRAM_BLOCKS)*$(FLASH_BLOCK_SIZE)"
+        TokenType = Integer
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+        Lock = Yes
+End
+
+TOKEN
+        Name = "FV_NvRamBackupStartingAddress"
+        Help = "ROM address"
+        Value = "$(NVRAM_ADDRESS) - $(BIOS_GUARD_FLASH_START_ADDRESS) + $(FV_NvRamLength)"
+        TokenType = Integer
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+        Lock = Yes
+End
+
+TOKEN
+        Name  = "FV_OAStartingAddress"
+        Help  = "ROM address"
+        Value  = "$(OEM_ACTIVATION_TABLE_ADDRESS) - $(BIOS_GUARD_FLASH_START_ADDRESS)"
+        TokenType = Integer
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+        Lock = Yes
+        Token = "OEM_ACTIVATION_TABLE_LOCATION" "=" "1"
+End
+
+TOKEN
+        Name  = "FV_OA_Length"
+        Help  = "ROM address"
+        Value  = "$(OEM_ACTIVATION_TABLE_SIZE) + 0"
+        TokenType = Integer
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+        Lock = Yes
+        Token = "OEM_ACTIVATION_TABLE_LOCATION" "=" "1"
+End
+
+TOKEN
+	Name  = "FV_WHEA_Length"
+	Help  = "ROM address"
+	Value  = "$(FV_WHEA_SIZE) + 0"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+        Token = "WHEA_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "FV_WHEAStartingAddress"
+	Help  = "ROM address"
+	Value  = "$(FV_WHEA_BASE) - $(BIOS_GUARD_FLASH_START_ADDRESS)"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+        Token = "WHEA_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "FV_FITStartingAddress"
+        Help  = "ROM address"
+        Value  = "$(FV_FIT_BASE) - $(BIOS_GUARD_FLASH_START_ADDRESS)"
+        TokenType = Integer
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+        Lock = Yes
+        Token = "IntelLtsxFit_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "FV_FITLength"
+        Help  = "ROM address"
+        Value  = "$(FIT_TABLE_SIZE) + 0"
+        TokenType = Integer
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+        Lock = Yes
+        Token = "IntelLtsxFit_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "FV_ACMStartingAddress"
+	Help  = "ROM address"
+	Value  = "$(FV_ACM_BASE) - $(BIOS_GUARD_FLASH_START_ADDRESS)"
+	TokenType = Integer
+       TargetEQU = Yes
+       TargetMAK = Yes
+       TargetH = Yes
+	Token = "INTEL_TXT_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "FV_ACMLength"
+	Help  = "ROM address"
+	Value  = "$(BIOSACM_SIZE) + 0"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Token = "INTEL_TXT_SUPPORT" "=" "1"  	
+End
+
+TOKEN
+        Name  = "FV_MainStartingAddress"
+        Help  = "ROM address"
+        Value  = "$(FV_MAIN_BASE) - $(BIOS_GUARD_FLASH_START_ADDRESS)"
+        TokenType = Integer
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+        Lock = Yes
+End
+
+TOKEN
+        Name  = "FV_MainLength"
+        Help  = "ROM address"
+        Value  = "$(FV_MAIN_SIZE) + 0"
+        TokenType = Integer
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+        Lock = Yes
+End
+
+TOKEN
+        Name  = "FV_BBStartingAddress"
+        Help  = "ROM address"
+        Value  = "$(FV_BB_BASE) - $(BIOS_GUARD_FLASH_START_ADDRESS)"
+        TokenType = Integer
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+        Lock = Yes        
+End
+
+TOKEN
+        Name  = "FV_BBLength"
+        Help  = "ROM address"
+        Value  = "$(FV_BB_SIZE) + 0"
+        TokenType = Integer
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+        Lock = Yes
+End
+
+TOKEN
+        Name  = "BUILD_PSL_BATCH"
+        Value  = "call $(BIOS_GUARD_PUB_PATH)\\BuildPSL.bat"
+        TokenType = Expression
+        TargetMAK = Yes
+End
+
+TOKEN
+        Name = "BIOS_GUARD_SL2BIN"
+        Value = "BIOSGuardSL2BIN_Beta.2.0.20160106.exe"
+        TokenType = Expression
+        TargetMAK = Yes
+End
+
+TOKEN
+        Name = "BIOS_GUARD_PB"
+        Value = "BIOSGuardPB_Beta.2.0.20160106.exe"
+        TokenType = Expression
+        TargetMAK = Yes
+End
+
+TOKEN
+        Name  = "FITC_ME_MAP"
+        Value  = "$(OUTPUT_DIR)\ROM\BiosGuardMe.map"
+        TokenType = Expression
+        TargetMAK = Yes
+End
+
+TOKEN
+        Name  = "BUILD_BIOS_MAP"
+        Value  = "$(BUILD_DIR)\BiosMap.map"
+        TokenType = Expression
+        TargetMAK = Yes
+End
+
+TOKEN
+        Name  = "BIOS_GUARD_NAME"
+        Value  = "$(BUILD_DIR)\BiosGuardName.txt"
+        TokenType = Expression
+        TargetMAK = Yes
+End
+
+TOKEN
+        Name  = "BUILD_BIOS_GUARD_PSL"
+        Value  = "$(BUILD_DIR)\BuildBiosGuardPSL.bat"
+        TokenType = Expression
+        TargetMAK = Yes
+End
+
+TOKEN
+        Name  = "BIOS_GUARD_HEADER"
+        Value  = "$(BUILD_DIR)\BiosGuardHeader.ini"
+        TokenType = Expression
+        TargetMAK = Yes
+End
+
+TOKEN
+        Name  = "IS_BIOS_FLASH_SIZE_VALID"
+        Help  = "FLASH_SIZE must to align 1MB for Bios Guard, this is limitation of CPU RC in the BiosGuardService.c"
+        Value  = "($(FLASH_SIZE)&0x000FFFFF)"
+        TokenType = Integer
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+End
+
+TOKEN
+        Name  = "IS_BIOS_FLASH_SIZE_ALIGNMENT1MB"
+        Value  = "1"
+        TokenType = Boolean
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+        Token = "IS_BIOS_FLASH_SIZE_VALID" "=" "0"
+End
+
+TOKEN
+        Name  = "IS_BIOS_FLASH_SIZE_ALIGNMENT1MB"
+        Value  = "0"
+        TokenType = Boolean
+        TargetEQU = Yes
+        TargetMAK = Yes
+        TargetH = Yes
+        Token = "IS_BIOS_FLASH_SIZE_VALID" "!=" "0"
+End
+
+TOKEN
+        Name  = "BUILD_BIOS_FV_NVRAM"
+        Value = "echo BIOS_FV_NVRAM.bin /N $(FV_NvRamStartingAddress) $(FV_NvRamLength)>$(BUILD_BIOS_MAP)"
+        TokenType = Expression
+        TargetMAK = Yes
+End
+
+TOKEN
+        Name  = "BUILD_BIOS_FV_NVRAM_BACKUP"
+        Value = "echo BIOS_FV_NVRAM_BACKUP.bin /NB $(FV_NvRamBackupStartingAddress) $(FV_NvRamLength) >> $(BUILD_BIOS_MAP)"
+        TokenType = Expression
+        TargetMAK = Yes
+End
+
+TOKEN
+        Name  = "BUILD_BIOS_FV_WHEA"
+        Value = "echo BIOS_FV_WHEA.bin /WHEA $(FV_WHEAStartingAddress) $(FV_WHEA_Length)>>$(BUILD_BIOS_MAP)"
+        TokenType = Expression
+        TargetMAK = Yes
+        Token = "WHEA_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "BUILD_BIOS_FV_OA"
+        Value = "echo BIOS_FV_OA.bin /OA $(FV_OAStartingAddress) $(FV_OA_Length)>>$(BUILD_BIOS_MAP)"
+        TokenType = Expression
+        TargetMAK = Yes
+        Token = "OEM_ACTIVATION_TABLE_LOCATION" "=" "1"
+End
+
+TOKEN
+        Name  = "BUILD_BIOS_FV_FIT"
+        Value = "echo BIOS_FV_FIT.bin /FIT $(FV_FITStartingAddress) $(FV_FITLength)>>$(BUILD_BIOS_MAP)"
+        TokenType = Expression
+        TargetMAK = Yes
+        Token = "IntelLtsxFit_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "BUILD_BIOS_FV_ACM"
+        Value = "echo BIOS_FV_ACM.bin /ACM $(FV_ACMStartingAddress) $(FV_ACMLength)>>$(BUILD_BIOS_MAP)"
+        TokenType = Expression
+        TargetMAK = Yes
+        Token = "INTEL_TXT_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "BUILD_BIOS_FV_MAIN"
+        Value = "echo BIOS_FV_MAIN.bin /P $(FV_MainStartingAddress) $(FV_MainLength)>>$(BUILD_BIOS_MAP)"
+        TokenType = Expression
+        TargetMAK = Yes
+End
+
+TOKEN
+        Name  = "BUILD_BIOS_FV_BB"
+        Value = "echo BIOS_FV_BB.bin /B $(FV_BBStartingAddress) $(FV_BBLength)>>$(BUILD_BIOS_MAP)"
+        TokenType = Expression
+        TargetMAK = Yes
+End
+
+TOKEN
+        Name  = "BUILD_BIOS_MAP_SET"
+        Value  = "$(BUILD_BIOS_FV_NVRAM) $(EOL) $(BUILD_BIOS_FV_NVRAM_BACKUP) $(EOL) $(BUILD_BIOS_FV_WHEA) $(EOL) $(BUILD_BIOS_FV_MAIN) $(EOL) $(BUILD_BIOS_FV_FIT) $(EOL) $(BUILD_BIOS_FV_BB)"
+        TokenType = Expression
+        TargetMAK = Yes
+        Token = "WHEA_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "BUILD_BIOS_MAP_SET"
+        Value  = "$(BUILD_BIOS_FV_NVRAM) $(EOL) $(BUILD_BIOS_FV_NVRAM_BACKUP) $(EOL) $(BUILD_BIOS_FV_MAIN) $(EOL) $(BUILD_BIOS_FV_OA) $(EOL) $(BUILD_BIOS_FV_BB)"
+        TokenType = Expression
+        TargetMAK = Yes
+        Token = "OEM_ACTIVATION_TABLE_LOCATION" "=" "1"
+End
+
+TOKEN
+        Name  = "BUILD_BIOS_MAP_SET"
+        Value  = "$(BUILD_BIOS_FV_NVRAM) $(EOL) $(BUILD_BIOS_FV_NVRAM_BACKUP) $(EOL) $(BUILD_BIOS_FV_MAIN) $(EOL) $(BUILD_BIOS_FV_FIT) $(EOL) $(BUILD_BIOS_FV_BB)"
+        TokenType = Expression
+        TargetMAK = Yes
+        Token = "IntelLtsxFit_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "BUILD_BIOS_MAP_SET"
+        Value  = "$(BUILD_BIOS_FV_NVRAM) $(EOL) $(BUILD_BIOS_FV_NVRAM_BACKUP) $(EOL) $(BUILD_BIOS_FV_MAIN) $(EOL) $(BUILD_BIOS_FV_ACM) $(EOL) $(BUILD_BIOS_FV_BB)"
+        TokenType = Expression
+        TargetMAK = Yes
+        Token = "INTEL_TXT_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "BUILD_BIOS_MAP_SET"
+        Value  = "$(BUILD_BIOS_FV_NVRAM) $(EOL) $(BUILD_BIOS_FV_NVRAM_BACKUP) $(EOL) $(BUILD_BIOS_FV_WHEA) $(EOL) $(BUILD_BIOS_FV_MAIN) $(EOL) $(BUILD_BIOS_FV_OA) $(EOL) $(BUILD_BIOS_FV_BB)"
+        TokenType = Expression
+        TargetMAK = Yes
+        Token = "WHEA_SUPPORT" "=" "1"
+        Token = "OEM_ACTIVATION_TABLE_LOCATION" "=" "1"
+End
+
+TOKEN
+        Name  = "BUILD_BIOS_MAP_SET"
+        Value  = "$(BUILD_BIOS_FV_NVRAM) $(EOL) $(BUILD_BIOS_FV_NVRAM_BACKUP) $(EOL) $(BUILD_BIOS_FV_WHEA) $(EOL) $(BUILD_BIOS_FV_MAIN) $(EOL) $(BUILD_BIOS_FV_FIT) $(EOL) $(BUILD_BIOS_FV_BB)"
+        TokenType = Expression
+        TargetMAK = Yes
+        Token = "WHEA_SUPPORT" "=" "1"
+        Token = "IntelLtsxFit_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "BUILD_BIOS_MAP_SET"
+        Value  = "$(BUILD_BIOS_FV_NVRAM) $(EOL) $(BUILD_BIOS_FV_NVRAM_BACKUP) $(EOL) $(BUILD_BIOS_FV_WHEA) $(EOL) $(BUILD_BIOS_FV_MAIN) $(EOL) $(BUILD_BIOS_FV_ACM) $(EOL) $(BUILD_BIOS_FV_BB)"
+        TokenType = Expression
+        TargetMAK = Yes
+        Token = "WHEA_SUPPORT" "=" "1"
+        Token = "INTEL_TXT_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "BUILD_BIOS_MAP_SET"
+        Value  = "$(BUILD_BIOS_FV_NVRAM) $(EOL) $(BUILD_BIOS_FV_NVRAM_BACKUP) $(EOL) $(BUILD_BIOS_FV_MAIN) $(EOL) $(BUILD_BIOS_FV_OA) $(EOL) $(BUILD_BIOS_FV_FIT) $(EOL) $(BUILD_BIOS_FV_BB)"
+        TokenType = Expression
+        TargetMAK = Yes
+        Token = "OEM_ACTIVATION_TABLE_LOCATION" "=" "1"
+        Token = "IntelLtsxFit_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "BUILD_BIOS_MAP_SET"
+        Value  = "$(BUILD_BIOS_FV_NVRAM) $(EOL) $(BUILD_BIOS_FV_NVRAM_BACKUP) $(EOL) $(BUILD_BIOS_FV_MAIN) $(EOL) $(BUILD_BIOS_FV_OA) $(EOL) $(BUILD_BIOS_FV_ACM) $(EOL) $(BUILD_BIOS_FV_BB)"
+        TokenType = Expression
+        TargetMAK = Yes
+        Token = "OEM_ACTIVATION_TABLE_LOCATION" "=" "1"
+        Token = "INTEL_TXT_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "BUILD_BIOS_MAP_SET"
+        Value  = "$(BUILD_BIOS_FV_NVRAM) $(EOL) $(BUILD_BIOS_FV_NVRAM_BACKUP) $(EOL) $(BUILD_BIOS_FV_MAIN) $(EOL) $(BUILD_BIOS_FV_FIT) $(EOL) $(BUILD_BIOS_FV_ACM) $(EOL) $(BUILD_BIOS_FV_BB)"
+        TokenType = Expression
+        TargetMAK = Yes
+        Token = "IntelLtsxFit_SUPPORT" "=" "1"
+        Token = "INTEL_TXT_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "BUILD_BIOS_MAP_SET"
+        Value  = "$(BUILD_BIOS_FV_NVRAM) $(EOL) $(BUILD_BIOS_FV_NVRAM_BACKUP) $(EOL) $(BUILD_BIOS_FV_WHEA) $(EOL) $(BUILD_BIOS_FV_MAIN) $(EOL) $(BUILD_BIOS_FV_OA) $(EOL) $(BUILD_BIOS_FV_FIT) $(EOL) $(BUILD_BIOS_FV_BB)"
+        TokenType = Expression
+        TargetMAK = Yes
+        Token = "WHEA_SUPPORT" "=" "1"
+        Token = "OEM_ACTIVATION_TABLE_LOCATION" "=" "1"
+        Token = "IntelLtsxFit_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "BUILD_BIOS_MAP_SET"
+        Value  = "$(BUILD_BIOS_FV_NVRAM) $(EOL) $(BUILD_BIOS_FV_NVRAM_BACKUP) $(EOL) $(BUILD_BIOS_FV_WHEA) $(EOL) $(BUILD_BIOS_FV_MAIN) $(EOL) $(BUILD_BIOS_FV_OA) $(EOL) $(BUILD_BIOS_FV_ACM) $(EOL) $(BUILD_BIOS_FV_BB)"
+        TokenType = Expression
+        TargetMAK = Yes
+        Token = "WHEA_SUPPORT" "=" "1"
+        Token = "OEM_ACTIVATION_TABLE_LOCATION" "=" "1"
+        Token = "INTEL_TXT_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "BUILD_BIOS_MAP_SET"
+        Value  = "$(BUILD_BIOS_FV_NVRAM) $(EOL) $(BUILD_BIOS_FV_NVRAM_BACKUP) $(EOL) $(BUILD_BIOS_FV_WHEA) $(EOL) $(BUILD_BIOS_FV_MAIN) $(EOL) $(BUILD_BIOS_FV_FIT) $(EOL) $(BUILD_BIOS_FV_ACM) $(EOL) $(BUILD_BIOS_FV_BB)"
+        TokenType = Expression
+        TargetMAK = Yes
+        Token = "WHEA_SUPPORT" "=" "1"
+        Token = "IntelLtsxFit_SUPPORT" "=" "1"
+        Token = "INTEL_TXT_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "BUILD_BIOS_MAP_SET"
+        Value  = "$(BUILD_BIOS_FV_NVRAM) $(EOL) $(BUILD_BIOS_FV_NVRAM_BACKUP) $(EOL) $(BUILD_BIOS_FV_MAIN) $(EOL) $(BUILD_BIOS_FV_OA) $(EOL) $(BUILD_BIOS_FV_FIT) $(EOL) $(BUILD_BIOS_FV_ACM) $(EOL) $(BUILD_BIOS_FV_BB)"
+        TokenType = Expression
+        TargetMAK = Yes
+        Token = "OEM_ACTIVATION_TABLE_LOCATION" "=" "1"
+        Token = "IntelLtsxFit_SUPPORT" "=" "1"
+        Token = "INTEL_TXT_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "BUILD_BIOS_MAP_SET"
+        Value  = "$(BUILD_BIOS_FV_NVRAM) $(EOL) $(BUILD_BIOS_FV_NVRAM_BACKUP) $(EOL) $(BUILD_BIOS_FV_WHEA) $(EOL) $(BUILD_BIOS_FV_MAIN) $(EOL) $(BUILD_BIOS_FV_OA) $(EOL) $(BUILD_BIOS_FV_FIT) $(EOL) $(BUILD_BIOS_FV_ACM) $(EOL) $(BUILD_BIOS_FV_BB)"
+        TokenType = Expression
+        TargetMAK = Yes
+        Token = "WHEA_SUPPORT" "=" "1"
+        Token = "OEM_ACTIVATION_TABLE_LOCATION" "=" "1"
+        Token = "IntelLtsxFit_SUPPORT" "=" "1"
+        Token = "INTEL_TXT_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "BUILD_PSL_SET"
+        Value  = "echo $(BUILD_PSL_BATCH) $(FITC_ME_MAP) $(BUILD_BIOS_MAP) $(BIOS_GUARD_PUB_PATH) $(BIOS_SVN) $(BiosGuardMaxSectionSize) $(BIOS_GUARD_NAME) $(BIOS_GUARD_HEADER) $(BIOS_GUARD_SL2BIN) $(BIOS_GUARD_PB)> $(BUILD_BIOS_GUARD_PSL)"
+        TokenType = Expression
+        TargetMAK = Yes
+End
+
+TOKEN
+        Name  = "BUILD_BIOS_GARD_VARIABLE_TXT"
+        Value  = "$(BUILD_DIR)\BiosGuardVariable.txt"
+        TokenType = Expression
+        TargetMAK = Yes
+End
+
+TOKEN
+        Name  = "BIOSGUARD_PLATFORM_ID"
+        Value = "PURLEY"
+        TokenType = Expression
+        TargetMAK = Yes
+End
+
+TOKEN
+        Name  = "BUILD_PLATFORM_ID"
+        Value = "echo PlatformID $(BIOSGUARD_PLATFORM_ID)> $(BUILD_BIOS_GARD_VARIABLE_TXT)"
+        TokenType = Expression
+        TargetMAK = Yes
+End
+
+TOKEN
+        Name  = "BUILD_RECOVERY_IMAGE_SIZE"
+        Value = "echo RecoveryImageSize $(BIOSGUARD_RECOVERY_IMAGE_SIZE) >> $(BUILD_BIOS_GARD_VARIABLE_TXT)"
+        TokenType = Expression
+        TargetMAK = Yes        
+End
+
+TOKEN
+        Name  = "BUILD_MEUD_BIOS_SIZE"
+        Value = "echo MeudBiosSize $(BIOSGUARD_MEUD_BIOS_SIZE) >> $(BUILD_BIOS_GARD_VARIABLE_TXT)"
+        TokenType = Expression
+        TargetMAK = Yes
+        Token = "BIOS_GUARD_MEUD_SUPPORT" "=" "1"
+End
+
+TOKEN
+        Name  = "BUILD_BIOS_GUARD_VARIABLE_SET"
+        Value  = "$(BUILD_PLATFORM_ID) $(EOL) $(BUILD_RECOVERY_IMAGE_SIZE) $(EOL)"
+        TokenType = Expression
+        TargetMAK = Yes
+End
+
+TOKEN
+        Name  = "BUILD_BIOS_GUARD_VARIABLE_SET"
+        Value  = "$(BUILD_PLATFORM_ID) $(EOL) $(BUILD_RECOVERY_IMAGE_SIZE) $(EOL) $(BUILD_MEUD_BIOS_SIZE) $(EOL)"
+        TokenType = Expression
+        TargetMAK = Yes
+        Token = "BIOS_GUARD_MEUD_SUPPORT" "=" "1"
+End
+
+
+PATH
+        Name  = "BIOS_GUARD_PUB_PATH"
+End
+
+FFS_FILE
+        Name  = "BiosGuardPubKeyhash"
+        FD_AREA  = "FV_BB"
+        FILE_Stmt  = "Build/BiosGuardPubKeyhash_FdfFileStatement.txt"
+End
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**     5555 Oakbrook Pkwy, Suite 200, Norcross, GA 30093            **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************

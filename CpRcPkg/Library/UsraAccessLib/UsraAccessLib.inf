@@ -1,0 +1,82 @@
+# 
+#  This file contains 'Framework Code' and is licensed as such
+#  under the terms of your license agreement with Intel or your
+#  vendor.  This file may not be modified, except as allowed by
+#  additional terms of your license agreement.
+#                                     
+#
+## @file
+#
+#  Unified Silicon Register Access (USRA) Lib
+#
+#  Copyright (c) 2011 - 2016, Intel Corporation. All rights reserved.<BR>
+#  This software and associated documentation (if any) is furnished
+#  under a license and may only be used or copied in accordance
+#  with the terms of the license. Except as permitted by such
+#  license, no part of this software or documentation may be
+#  reproduced, stored in a retrieval system, or transmitted in any
+#  form or by any means without the express written consent of
+#  Intel Corporation.
+#
+#
+#
+################################################################################
+#
+# Defines Section - statements that will be processed to create a Makefile.
+#
+################################################################################
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SiliconAccessLib
+  FILE_GUID                      = 6CF9B31D-C5E9-4F5F-8030-78883D66CDF0
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = SiliconAccessLib
+
+## { 0x6cf9b31d, 0xc5e9, 0x4f5f, { 0x80, 0x30, 0x78, 0x88, 0x3d, 0x66, 0xcd, 0xf0 } };
+
+[Sources]
+  UsraAccessLib.c
+  CsrAccess.c
+  PcieAccess.c
+  # APTIOV_SERVER_OVERRIDE_RC_START
+  UsraAccessLib.h 
+  # APTIOV_SERVER_OVERRIDE_RC_END
+  
+################################################################################
+#
+# Package Dependency Section - list of Package files that are required for
+#                              this module.
+#
+################################################################################
+
+[Packages]
+  MdePkg/MdePkg.dec
+  CpRcPkg/CpRcPkg.dec
+
+
+################################################################################
+#
+# Library Class Section - list of Library Classes that are required for
+#                         this module.
+#
+################################################################################
+
+[LibraryClasses]
+  S3BootScriptLib
+  CsrToPcieLib
+  PcieAddrLib
+  HobLib
+  BaseLib
+  IoLib
+  USRATraceLib
+  UsraRegisterFilterLib
+  
+[Guids]
+
+[FeaturePcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdUsraSupportS3
+  gEfiCpRcPkgTokenSpaceGuid.PcdUsraTraceEnable
+
+
+

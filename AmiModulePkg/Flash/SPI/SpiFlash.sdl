@@ -1,0 +1,191 @@
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+
+#**********************************************************************
+# $Header: $
+#
+# $Revision: $
+#
+# $Date: $
+#**********************************************************************
+TOKEN
+	Name  = "SPIFlash_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable SPI Flash support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "SPI_SUPPORT"
+	Value  = "1"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "SST_25VFxxx"
+	Value  = "1"
+	Help  = "Support for SST 25VF series and ESMT SPI flash parts."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SST_25LFxxx"
+	Value  = "1"
+	Help  = "Support for SST 25LF040, 25LF080A SPI flash parts."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "STM_25PExx"
+	Value  = "1"
+	Help  = "Support for ST-Micro, SPANSION, Winbond, PMC, Eon, AMIC, MXIC, ESMT, ISSI, FIDELIX, Fudan, GigaDevice and Intel SPI flash parts."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "ATMEL_26DFxxx"
+	Value  = "1"
+	Help  = "Support for ATMEL SPI flash parts."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "Numonyx_M25P128"
+	Value  = "0"
+	Help  = "Support for Numonyx M25P128 SPI flash parts."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "NUMONYX_USE_BLOCK_ERASE"
+	Value  = "0"
+	Help  = "Use 64K block erase for Numonyx N25Q series SPI flash parts."
+	TokenType = Boolean
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FLASH_BLOCK_SIZE"
+	Value  = "0x40000"
+	Help  = "Size of the Flash Device Block"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Lock = Yes
+	Token = "Numonyx_M25P128" "=" "1"
+End
+
+TOKEN
+	Name  = "FAST_READ_SUPPORT"
+	Value  = "0"
+	Help  = "Fast Read Support(Need Hardware SPI Support). 0 - Read(03), 1 - Fast Read(0B), 2 - Dual Output Fast Read(3B)."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "BLOCK_PROTECT_ENABLE"
+	Value  = "0"
+	Help  = "Support for enabling the softwaft block protect mode. ON : set BP 0,1,2 of flash status register."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+PATH
+	Name  = "SPIFlash_DIR"
+End
+
+ELINK
+	Name  = "IdentifySst_25VF,"
+	Parent  = "FlashList"
+	Token = "SST_25VFxxx" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "IdentifyStm_25PExx,"
+	Parent  = "FlashList"
+	Token = "STM_25PExx" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "IdentifyAtmel_26DF,"
+	Parent  = "FlashList"
+	Token = "ATMEL_26DFxxx" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "IdentifySst_25LF,"
+	Parent  = "FlashList"
+	Token = "SST_25LFxxx" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+INFComponent
+        Name  = "SpiFlashLib"
+        File  = "SpiFlash.inf"
+        Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+        Class  = "SpiFlashLib"
+        Instance  = "AmiModulePkg.SpiFlashLib"
+        ModuleTypes  = "DXE_CORE DXE_DRIVER DXE_RUNTIME_DRIVER DXE_SAL_DRIVER DXE_SMM_DRIVER SMM_CORE UEFI_APPLICATION UEFI_DRIVER"
+End
+
+INFComponent
+        Name  = "SpiFlashPeiLib"
+        File  = "SpiFlashPei.inf"
+        Package  = "AmiModulePkg"
+End
+
+LibraryMapping
+        Class  = "SpiFlashLib"
+        Instance  = "AmiModulePkg.SpiFlashPeiLib"
+        ModuleTypes  = "PEIM"
+End
+
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2016, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************

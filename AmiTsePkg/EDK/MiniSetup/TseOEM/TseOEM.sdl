@@ -1,0 +1,32 @@
+TOKEN
+	Name  = "TseOEM_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable TseLite sources support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+PATH
+	Name  = "TSEOEMSRC_DIR"
+End
+
+
+ELINK
+	Name  = "TseOEM"
+	Parent  = "ADDITIONAL_AMITSE_LibraryClasses"
+	InvokeOrder = AfterParent
+End
+
+INFComponent
+	Name  = "TseOEM"
+	File  = "TseOEM.inf"
+	Package  = "AmiTsePkg"
+End
+
+LibraryMapping
+	Class  = "TseOEM"
+	Instance  = "AmiTsePkg.TseOEM"
+#	Arch  = "X64"
+End

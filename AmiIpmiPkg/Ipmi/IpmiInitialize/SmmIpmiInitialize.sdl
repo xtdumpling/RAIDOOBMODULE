@@ -1,0 +1,24 @@
+TOKEN
+    Name  = "SmmIpmiInitialize_SUPPORT"
+    Value  = "1"
+    Help  = "Switch for Enabling SmmIpmiInitialize support in the project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    Master = Yes
+End
+
+INFComponent
+    Name  = "SmmIpmiInitialize"
+    File  = "SmmIpmiBmcInitialize.inf"
+    Package  = "AmiIpmiPkg"
+    ModuleTypes  = "DXE_SMM_DRIVER"
+    Help  = "Includes SmmIpmiBmcInitialize.inf to Project."
+End
+
+ELINK
+    Name  = "IPMI_OEM_SMM_INIT_HOOK"
+    InvokeOrder = ReplaceParent
+    Token = "IPMI_DEFAULT_HOOK_SUPPORT" "=" "0"
+    Help  = "Elink to provide hooks for OEM SMM initialization when Default hook support is disabled."
+End

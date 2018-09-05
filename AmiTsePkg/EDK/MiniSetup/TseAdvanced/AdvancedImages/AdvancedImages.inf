@@ -1,0 +1,43 @@
+
+
+[Defines]
+INF_VERSION = 0x00010015
+VERSION_STRING = 1.0
+BASE_NAME = TseAdvancedImages
+MODULE_TYPE = BASE
+LIBRARY_CLASS = TseAdvancedImages
+
+[Sources]
+MyDefs.h
+iJpeg.c
+jpeg6.c
+Jpeg6.h
+jpeg.h
+Logo.c
+ipcx.c
+pcx.h
+pcxc.c
+dogifmgr.c
+dogif.c
+png.c
+png.h
+pnguncmp.c
+
+
+[Packages]
+  AmiTsePkg/AmiTsePkg.dec
+  AmiTsePkg/AmiTsePrivatePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+  MdePkg/MdePkg.dec
+  AmiModulePkg/AmiModulePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  
+  
+[LibraryClasses]
+
+  
+[BuildOptions]
+MSFT:*_*_*_CC_FLAGS = /DTSE_FOR_APTIO_4_50  
+GCC:*_*_*_CC_FLAGS = -DTSE_FOR_APTIO_4_50

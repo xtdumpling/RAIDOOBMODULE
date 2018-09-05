@@ -1,0 +1,101 @@
+TOKEN
+    Name  = "SERVWORK_306EX"
+    Value = "0"
+    Help  = "Intel(R) IvyBridge" 
+    TokenType = Boolean
+    Master = Yes
+End
+
+TOKEN
+    Name  = "SERVWORK_MED306E7"
+    Value  = "1"
+    Help  = "Intel(R) IvyBridge Processor -EX D-1"
+    TokenType = Boolean
+End
+
+TOKEN
+    Name  = "SERVWORK_MED306E6"
+    Value  = "1"
+    Help  = "Intel(R) IvyBridge Processor -EX D-0"
+    TokenType = Boolean
+    Token = "NON_PRODUCTION_MICROCODE" "=" "1"
+End
+
+TOKEN
+    Name  = "SERVWORK_MED306E4"
+    Value  = "1"
+    Help  = "Intel(R) IvyBridge Processor-EP -EX C-0"
+    TokenType = Boolean
+End
+
+TOKEN
+    Name  = "SERVWORK_MED306E3"
+    Value  = "1"
+    Help  = "Intel(R) IvyBridge Processor-EP -EX B-3"
+    TokenType = Boolean
+    Token = "NON_PRODUCTION_MICROCODE" "=" "1"
+End
+
+TOKEN
+    Name  = "SERVWORK_MED306E2"
+    Value  = "1"
+    Help  = "Intel(R) IvyBridge Processor-EP -EX -EN B-1, B-2, L-1, L-2, R-0, R-1 Stepping"
+    TokenType = Boolean
+    Token = "NON_PRODUCTION_MICROCODE" "=" "1"
+End
+
+TOKEN
+    Name  = "SERVWORK_MED306E0"
+    Value  = "1"
+    Help  = "Intel(R) IvyBridge Processor A-0 Stepping"
+    TokenType = Boolean
+    Token = "NON_PRODUCTION_MICROCODE" "=" "1"
+End
+
+ELINK
+    Name  = "$(MICROCODE_SERVWORK_DIR)/MED306E0_00000008.mcb"
+    Parent  = "MICROCODE_FILES"
+    Help  = "Intel(R) IvyBridge Processor A-0 Stepping"
+    Token = "SERVWORK_MED306E0" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(MICROCODE_SERVWORK_DIR)/MED306E2_0000020D.mcb"
+    Parent  = "MICROCODE_FILES"
+    Help  = "Intel(R) IvyBridge Processor-EP -EX -EN B-1, B-2, L-1, L-2, R-0, R-1 Stepping"
+    Token = "SERVWORK_MED306E2" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(MICROCODE_SERVWORK_DIR)/MED306E3_00000308.mcb"
+    Parent  = "MICROCODE_FILES"
+    Help  = "Intel(R) IvyBridge Processor-EP -EX B-3"
+    Token = "SERVWORK_MED306E3" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(MICROCODE_SERVWORK_DIR)/MED306E4_00000428.mcb"
+    Parent  = "MICROCODE_FILES"
+    Help  = "Intel(R) IvyBridge Processor-EP  C-0,C-1,M-0,M-1,S-0,S-1 |  -EX C-0 |  -EN M-1,S-1"
+    Token = "SERVWORK_MED306E4" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(MICROCODE_SERVWORK_DIR)/MED306E6_00000600.mcb"
+    Parent  = "MICROCODE_FILES"
+    Help  = "Intel(R) IvyBridge Processor-EX D-0"
+    Token = "SERVWORK_MED306E6" "=" "1"
+    InvokeOrder = AfterParent
+End
+
+ELINK
+    Name  = "$(MICROCODE_SERVWORK_DIR)/MED306E7_0000070D.mcb"
+    Parent  = "MICROCODE_FILES"
+    Help  = "Intel(R) IvyBridge Processor-EX D-1"
+    Token = "SERVWORK_MED306E7" "=" "1"
+    InvokeOrder = AfterParent
+End

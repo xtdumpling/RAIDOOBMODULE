@@ -1,0 +1,62 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+## @file HddSecurityBdsCall.inf
+#   The component file`s functionality is to connect the handle's of RAID 
+#   Controllers and the IDE/AHCI Devices( the handle whose DiskIo was not 
+#   opened by any one.)
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010015
+  BASE_NAME                      = HddSecurityBdsCall
+  FILE_GUID                      = D3300D09-B70F-4315-9785-FE37209EFDCB
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = HddSecurityBdsCallLib
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+#  
+#
+
+[Sources]
+  HddSecurityBdsCall.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+
+[Guids]
+  gEfiGlobalVariableGuid
+
+[Protocols]
+  gEfiIdeControllerInitProtocolGuid
+  gEfiDiskIoProtocolGuid
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2014, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

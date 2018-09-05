@@ -1,0 +1,109 @@
+TOKEN
+	Name  = "IScsi_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable IScsi support in Project"
+	TokenType = Boolean
+	TargetMAK = Yes
+	Master = Yes
+	Token = "UefiNetworkStack_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "TSE_SHOW_PROMPT_STRING_AS_TITLE"
+	Value  = "1"
+	Help  = "1 => To display control label string as Password Title. 0 => To display title string from AMITSEStr.uni file."
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "ENABLE_CHAP_SECRET_ENCRYPTION"
+	Value  = "0"
+	Help  = "Enabling this token will encrypt the CHAP/REVERSE CHAP secrets and Disabling this token will work with out encryption"
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "NET_PKG_AMI_PORTING_ENABLE" "=" "1"
+End
+
+TOKEN
+	Name  = "RSA_ISCSI_SUPPORT"
+	Value  = "0"
+	Help  = "Token to enable/disable RSA iSCSI support. 0 - Disable RSA iSCSI support. 1 - Enables RSA iSCSI support."
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "NET_PKG_AMI_PORTING_ENABLE" "=" "1"
+	Token = "DxeIpmiUsb_SUPPORT" "=" "1"
+End
+
+ELINK
+	Name  = "DefaultIscsiManageEncryptionHook,"
+	Parent  = "ChapSecretsEncryptionManagementHook"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "RsaIScsiSupportLib"
+	Parent  = "ADDITIONAL_iSCSI_LIB"
+	InvokeOrder = AfterParent
+	Token = "RSA_ISCSI_SUPPORT" "=" "1"
+End
+
+ELINK
+	Name  = "ChapSecretsEncryptionManagementHook"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "ADDITIONAL_iSCSI_SOURCE_FILES"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "ADDITIONAL_iSCSI_LIB"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "ADDITIONAL_iSCSI_PACKAGES"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "ADDITIONAL_iSCSI_PROTOCOLS"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "ADDITIONAL_iSCSI_GUIDS"
+	InvokeOrder = ReplaceParent
+End
+
+OUTPUTREGISTER
+	Name  = "AUTOGEN_CHAP_PASSWORD_HOOK_ELINKS"
+	Path  = "Build"
+	File  = "CHAPSecretEncryptionHookElinks.h"
+	Template  = "CHAPSecretEncryptionHookElinks.txt"
+End
+
+INFComponent
+	Name  = "IScsiDxe"
+	File  = "IScsiDxe.inf"
+	Package  = "AmiNetworkPkg"
+	PreProcess = Yes
+	ModuleTypes  = "UEFI_DRIVER"
+End
+
+INFComponent
+	Name  = "RsaIScsiSupport"
+	File  = "RsaIScsiSupport.inf"
+	Package  = "AmiNetworkPkg"
+	ModuleTypes  = "BASE"
+	Token = "RSA_ISCSI_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "RsaIScsiSupportLib"
+	Instance  = "AmiNetworkPkg.RsaIScsiSupport"
+	Token = "RSA_ISCSI_SUPPORT" "=" "1"
+End
+

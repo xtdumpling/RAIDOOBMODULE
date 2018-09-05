@@ -1,0 +1,40 @@
+TOKEN
+    Name  = "DxeIpmiUsb_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable IpmiUsb support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    Master = Yes
+    Token = "IPMI_USB_SUPPORT" "=" "1"
+End
+
+INFComponent
+    Name  = "DxeIpmiUsb"
+    File  = "DxeIpmiUsb.inf"
+    Package  = "AmiIpmiPkg"
+    ModuleTypes  = "DXE_DRIVER"
+    Help  = "Includes DxeIpmiUsb.inf to Project."
+End
+
+TOKEN
+    Name  = "VIRTUAL_BMC_USB_INTERFACE"
+    Value = "1"
+    Help  = "Enable and Disable BMC USB Interface at exit boot via IPMI command."
+    TokenType = Integer
+    TargetH   = Yes
+END
+
+ELINK
+    Name  = "BMC_USB_INTERFACE_HOOK"
+    InvokeOrder = ReplaceParent
+    Help  = "Elink to provide hooks to Enable and Disable BMC USB Interface."
+End
+
+ELINK
+    Name  = "BmcUsbInterface,"
+    Parent  = "BMC_USB_INTERFACE_HOOK"
+    InvokeOrder = AfterParent
+    Help  = "Elink to Enable and Disable BMC USB Interface."
+    Token = "VIRTUAL_BMC_USB_INTERFACE" "=" "1"
+End

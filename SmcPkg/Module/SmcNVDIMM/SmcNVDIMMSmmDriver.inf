@@ -1,0 +1,72 @@
+#****************************************************************************
+#**                                                                        **
+#**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+#**                                                                        **
+#****************************************************************************
+#****************************************************************************
+#  File History
+#
+#  Rev. 1.00
+#       Bug fixed:   Initialize revision
+#       Reason:      Get base code from Grantley
+#       Auditor:     Salmon Chen
+#       Date:        Dec/19/2014
+#
+#****************************************************************************
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  BASE_NAME                      = SmcNVDIMMSmmDriver
+  FILE_GUID                      = 6195F786-D7B1-45f1-9AC7-82EF976ADF4C
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = SmcNVDIMMSmmInit
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+#  
+
+[Sources]  
+  SmcNVDIMMSmmDriver.c
+
+[Packages]
+  MdePkg/MdePkg.dec   
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec 
+  AmiModulePkg/AmiModulePkg.dec
+  SmcPkg/SmcPkg.dec
+  AmiIpmiPkg/AmiIpmiPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  PurleySktPkg/Me/MePkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  PurleyRpPkg/PlatformPkg.dec
+  
+[LibraryClasses]
+  AmiDxeLib
+  SmmServicesTableLib  
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  SetupLib
+  SmcLib
+  
+[Protocols]
+  gEfiSmmPowerButtonDispatch2ProtocolGuid
+  gEfiSmmSxDispatch2ProtocolGuid
+  gSmcNVDIMMSmmProtocolGuid
+  gEfiSmmIpmiTransportProtocolGuid
+  gEfiSmmSwDispatch2ProtocolGuid
+  
+[Pcd]
+  gSmcPkgTokenSpaceGuid.PcdSmcNVDIMM
+  
+[Depex]
+  gEfiSmmPowerButtonDispatch2ProtocolGuid AND
+  gEfiSmmSxDispatch2ProtocolGuid
+

@@ -1,0 +1,75 @@
+## @file
+#  Component description file for the MrcOemHooksPeim.
+#
+#  This PEIM wraps the OemProcMemInitLib and OemIioInitLib and exposes their
+#  functions via the MRC_OEM_HOOKS_PPI.
+#
+#  This component produces the MRC_OEM_HOOKS_PPI for consumption
+#  by Intel silicon initialization code
+#
+#@copyright
+# Copyright (c) 2016 Intel Corporation. All rights reserved
+# This software and associated documentation (if any) is furnished
+# under a license and may only be used or copied in accordance
+# with the terms of the license. Except as permitted by the
+# license, no part of this software or documentation may be
+# reproduced, stored in a retrieval system, or transmitted in any
+# form or by any means without the express written consent of
+# Intel Corporation.
+# This file contains a 'Sample Driver' and is licensed as such
+# under the terms of your license agreement with Intel or your
+# vendor. This file may be modified by the user, subject to
+# the additional terms of the license agreement.
+#
+#@par Specification Reference:
+##
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = MrcOemHooksPeim
+  FILE_GUID                      = B894C949-A1F8-41C1-A7C0-DF523AD91C15
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = MrcOemHooksInitEntry
+  
+[Sources]
+  MrcOemHooksPeim.c
+  MrcOemHooksPeim.h
+
+################################################################################
+#
+# Package Dependency Section - list of Package files that are required for
+#                              this module.
+#
+################################################################################
+[Packages]
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  IntelFrameworkModulePkg/IntelFrameworkModulePkg.dec
+  MdePkg/MdePkg.dec
+  IA32FamilyCpuPkg/IA32FamilyCpuPkg.dec
+  CpPlatPkg/CpPlatPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  PurleySktPkg/SocketPkg.dec
+
+[LibraryClasses]
+  DebugLib
+  HobLib
+  BaseLib
+  MemoryAllocationLib
+  PeimEntryPoint
+  PeiServicesLib
+  OemProcMemInitLib
+  OemIioInitLib
+  UefiDecompressLib
+  MrcHooksServicesLib
+  ReportStatusCodeLib
+  PcdLib
+
+[Ppis]
+  gMrcOemHooksPpiGuid                           ## PRODUCES
+  
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[Depex]
+  TRUE

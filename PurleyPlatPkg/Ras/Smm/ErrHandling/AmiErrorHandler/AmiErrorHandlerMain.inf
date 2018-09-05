@@ -1,0 +1,92 @@
+#//**********************************************************************//
+#//**********************************************************************//
+#//**                                                                  **//
+#//**        (C)Copyright 1985-2016, American Megatrends, Inc.         **//
+#//**                                                                  **//
+#//**                       All Rights Reserved.                       **//
+#//**                                                                  **//
+#//**       5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093       **//
+#//**                                                                  **//
+#//**                       Phone: (770)-246-8600                      **//
+#//**                                                                  **//
+#//**********************************************************************//
+#//**********************************************************************//
+
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = AmiErrorHandlerMain
+  FILE_GUID                      = 39d1edc0-c9ed-4663-90db-7457ff0548c5
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  VERSION_STRING                 = 1.0
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  ENTRY_POINT                    = InitializeAmiErrorHandler
+
+[Sources]
+  AmiErrorHandlerMain.c
+  AmiErrorHandlerMain.h
+
+[Packages]
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SocketPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+  CpPlatPkg/CpPlatPkg.dec
+  IA32FamilyCpuPkg/IA32FamilyCpuPkg.dec
+  #BpCommonPkg/BpCommonPkg.dec
+  UefiCpuPkg/UefiCpuPkg.dec
+  PurleySktPkg/SouthClusterLbg/PchRcPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  DebugLib
+  BaseMemoryLib
+  BaseLib
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  SmmServicesTableLib
+  PcdLib
+  PrintLib
+  RtErrorLogBoardLib
+  OemRasLib
+
+[Protocols]
+  gEfiSmmBase2ProtocolGuid
+  gEfiPlatformErrorHandlingProtocolGuid
+  gEfiPlatformRasPolicyProtocolGuid
+
+[Guids]
+  gErrRecordPlatformMemErrGuid
+  gErrRecordPcieErrGuid
+  gErrRecordProcGenErrGuid
+
+[FixedPcd]
+ gEfiCpuTokenSpaceGuid.PcdCpuMaxLogicalProcessorNumber 
+
+[Depex]
+  gEfiSmmBase2ProtocolGuid AND
+  gEfiPlatformRasPolicyProtocolGuid AND
+  gEfiPlatformErrorHandlingProtocolGuid
+
+[BuildOptions]
+  MSFT:*_*_*_CC_FLAGS     = /wd4142 /wd4244 /Gs999999 /GL-
+  # Append new linker alignment option (= is Append, == is Replace)
+  MSFT:*_*_*_DLINK_FLAGS = /ALIGN:128
+
+
+#//**********************************************************************//
+#//**********************************************************************//
+#//**                                                                  **//
+#//**        (C)Copyright 1985-2016, American Megatrends, Inc.         **//
+#//**                                                                  **//
+#//**                       All Rights Reserved.                       **//
+#//**                                                                  **//
+#//**       5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093       **//
+#//**                                                                  **//
+#//**                       Phone: (770)-246-8600                      **//
+#//**                                                                  **//
+#//**********************************************************************//
+#//**********************************************************************//

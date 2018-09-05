@@ -1,0 +1,36 @@
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = SmiFlashLibs
+  FILE_GUID                      = 736D8886-6D2B-4684-ADDE-84BFAB0F2737
+  MODULE_TYPE                    = DXE_SMM_DRIVER
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = SmiFlashLibs|DXE_SMM_DRIVER
+
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64
+#
+#  
+#
+
+[Sources]
+  SmiFlashLinks.c
+
+[Packages]
+  AmiModulePkg/AmiModulePkg.dec
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec # For consuming PeiMain.h
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+
+[LibraryClasses]
+ 
+[Protocols]
+  gAmiUsbSmmProtocolGuid
+  gEmul6064TrapProtocolGuid
+ 
+[BuildOptions] 
+  MSFT:*_*_*_CC_FLAGS = /D _OUTSIDE_SMM_
+  GCC:*_*_*_CC_FLAGS = -D _OUTSIDE_SMM_
+

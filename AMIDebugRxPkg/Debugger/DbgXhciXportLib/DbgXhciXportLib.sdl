@@ -1,0 +1,78 @@
+TOKEN
+	Name  = "DbgXhciXportLib_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable DbgXhciXportLib support in Project"
+	TokenType = Boolean
+	Master = Yes
+	Token = "USB_3_DEBUG_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "DbgXhciXportX64Lib_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable DbgXhciXportX64Lib support in Project"
+	TokenType = Boolean
+	Token = "X64_SUPPORT" "=" "1"
+End
+
+PATH
+	Name  = "DbgXhciXportLib_DIR"
+	Path  = "AMIDebugRxPkg\Debugger\DbgXhciXportLib"
+End
+
+INFComponent
+	Name  = "CommonXhciXportLib"
+	File  = "CommonXhciXportLib.inf"
+	Package  = "Debugger"
+	Arch  = "common"
+	Path  = "DbgXhciXportLib_DIR"
+End
+
+INFComponent
+	Name  = "DbgXhciXportLib"
+	File  = "DbgXhciXportLib.inf"
+	Package  = "Debugger"
+	Arch  = "common"
+	Path  = "DbgXhciXportLib_DIR"
+End
+
+INFComponent
+	Name  = "DbgXhciXportX64Lib"
+	File  = "DbgXhciXportX64Lib.inf"
+	Package  = "Debugger"
+	Arch  = "common"
+	Path  = "DbgXhciXportLib_DIR"
+	Token = "DbgXhciXportX64Lib_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "CommonXhciXportLib"
+	Instance  = "Debugger.CommonXhciXportLib"
+End
+
+LibraryMapping
+	Class  = "PeiDebugXportLib"
+	Instance  = "Debugger.DbgXhciXportLib"
+	Arch  = "IA32"
+End
+
+LibraryMapping
+	Class  = "PeiDebugXportLib"
+	Instance  = "Debugger.DbgXhciXportX64Lib"
+	Arch  = "X64"
+	Token = "DbgXhciXportX64Lib_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "DxeDebugXportLib"
+	Instance  = "Debugger.DbgXhciXportLib"
+	Arch  = "IA32"
+	Token = "X64_SUPPORT" "=" "0"
+End
+
+LibraryMapping
+	Class  = "DxeDebugXportLib"
+	Instance  = "Debugger.DbgXhciXportX64Lib"
+	Arch  = "X64"
+	Token = "DbgXhciXportX64Lib_SUPPORT" "=" "1"
+End

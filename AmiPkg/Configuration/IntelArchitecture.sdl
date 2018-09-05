@@ -1,0 +1,95 @@
+TOKEN
+	Name  = "INTEL_ARCHITECTURE_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable Intel Architecture support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+TOKEN
+    Name  = "SMM_SUPPORT"
+    Value  = "1"
+    Help  = "Main switch to enable SMM support in Project"
+    TokenType = Boolean
+    TargetEQU = Yes
+    TargetMAK = Yes
+    TargetH = Yes
+End
+
+TOKEN
+	Name  = "X64_SUPPORT"
+	Value  = "1"
+	TokenType = Boolean
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "SUPPORTED_ARCHITECTURES"
+	Value  = "IA32"
+	TokenType = Expression
+	TargetMAK = Yes
+	TargetDSC = Yes
+	Token = "X64_SUPPORT" "=" "0"
+End
+
+TOKEN
+	Name  = "SUPPORTED_ARCHITECTURES"
+	Value  = "IA32 | X64"
+	TokenType = Expression
+	TargetMAK = Yes
+	TargetDSC = Yes
+	Token = "X64_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "PEI_ARCHITECTURE"
+	Value  = "IA32"
+	TokenType = Expression
+	TargetMAK = Yes
+	TargetFDF = Yes
+End
+
+TOKEN
+	Name  = "DXE_ARCHITECTURE"
+	Value  = "IA32"
+	TokenType = Expression
+	TargetMAK = Yes
+	TargetFDF = Yes
+	Token = "X64_SUPPORT" "=" "0"
+End
+
+TOKEN
+	Name  = "DXE_ARCHITECTURE"
+	Value  = "X64"
+	TokenType = Expression
+	TargetMAK = Yes
+	TargetFDF = Yes
+	Token = "X64_SUPPORT" "=" "1"
+End
+
+OUTPUTREGISTER
+	Name  = "PLATFORM_DSC"
+	Path  = "Build"
+	File  = "Platform.dsc"
+	Token = "X64_SUPPORT" "=" "0"
+End
+
+OUTPUTREGISTER
+	Name  = "X64_PLATFORM_DSC"
+	Path  = "Build"
+	File  = "Platform.dsc"
+	Token = "X64_SUPPORT" "=" "1"
+End
+
+PcdMapping
+	Name  = "PcdPeiCoreMaxPpiSupported"
+	GuidSpace  = "gEfiMdeModulePkgTokenSpaceGuid"
+	PcdType  = "PcdsFixedAtBuild"
+	Value  = "128"
+	Arch  = "IA32"
+	Offset  = 00h
+	Length  = 00h
+	TargetDSC = Yes
+End

@@ -1,0 +1,41 @@
+TOKEN
+	Name  = "PchAcpiTables_SUPPORT"
+	Value  = "0"
+	Help  = "Main switch to enable PchAcpiTables support in Project"
+	TokenType = Boolean
+	TargetH = Yes
+	TargetMak = Yes
+	Master = Yes
+End
+
+INFComponent
+	Name  = "PchAcpiTables"
+	File  = "Dsdt/PchAcpiTables.inf"
+	Package  = "PurleySktPkg"
+	ModuleTypes  = "USER_DEFINED"
+	Token = "PchAcpiTables_SUPPORT" "=" "1"
+End
+
+FFS_FILE
+	Name  = "PchAcpiTables"
+	FD_AREA  = "FV_MAIN"
+	INFComponent  = "PurleySktPkg.PchAcpiTables"
+	Rule_Override  = "ACPITABLE"
+	Token = "PchAcpiTables_SUPPORT" "=" "1"
+End
+
+PCIDEVICE
+	Title  = "PCH ASL Files"
+	Parent  = "PciHost (Virtual)"
+	Attribute  = "0x0"
+	Dev_type  = "Container"
+	Dev  = 00h
+	SleepNum  = 01h
+	ASLfile  = "'PurleySktPkg\SouthClusterLbg\AcpiTables\Dsdt\Pch.asl;After Pci Tree'"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	Virtual = Yes
+End
+
+

@@ -1,0 +1,89 @@
+ typedef void (PLATFORM_LOG_WARNING_ELINK)(PSYSHOST host,UINT8 majorCode,UINT8 minorCode,UINT32 logData);
+ extern PLATFORM_LOG_WARNING_ELINK @elink(OVERRIDE_PLATFORM_LOG_WARNING_HOOK, "@Child"," ", "" ) EndOfPlatformLogWarningParamList;
+ #ifndef OVERRIDE_PLATFORM_LOG_WARNING_HOOK
+ #define OVERRIDE_PLATFORM_LOG_WARNING_HOOK @elink(OVERRIDE_PLATFORM_LOG_WARNING_HOOK, "@Child"," ", "" )
+ #endif
+ 
+ typedef void (MODIFY_MRC_INPUT_PARAMETERS_ELINK)(PSYSHOST host,UINT8 socket);
+ extern MODIFY_MRC_INPUT_PARAMETERS_ELINK @elink(OVERRIDE_MRC_INPUT_PARAMETERS_HOOK, "@Child"," ", "" ) EndOfModifyMrcParametersParamList;
+ #ifndef OVERRIDE_MRC_INPUT_PARAMETERS_HOOK
+ #define OVERRIDE_MRC_INPUT_PARAMETERS_HOOK @elink(OVERRIDE_MRC_INPUT_PARAMETERS_HOOK, "@Child"," ", "" )
+ #endif
+
+ typedef void (UPDATE_PLATFORM_DATA_ELINK)(struct sysHost *host);
+ extern UPDATE_PLATFORM_DATA_ELINK @elink(OVERRIDE_PLATFORM_DATA_HOOK, "@Child"," ", "" ) EndOfUpdatePlatformDataParamList;
+ #ifndef OVERRIDE_PLATFORM_DATA_HOOK
+ #define OVERRIDE_PLATFORM_DATA_HOOK @elink(OVERRIDE_PLATFORM_DATA_HOOK, "@Child"," ", "" )
+ #endif
+  
+ typedef void (MODIFY_MRC_SPEED_ELINK)(PSYSHOST host, struct DimmPOREntryStruct **freqTablePtr, UINT16 *freqTableLength);
+ extern MODIFY_MRC_SPEED_ELINK @elink(OVERRIDE_MRC_SPEED_FREQUENCY_HOOK, "@Child"," ", "" ) EndOfModifyMrcSpeedParamList;
+ #ifndef OVERRIDE_MRC_SPEED_FREQUENCY_HOOK
+ #define OVERRIDE_MRC_SPEED_FREQUENCY_HOOK @elink(OVERRIDE_MRC_SPEED_FREQUENCY_HOOK, "@Child"," ", "" )
+ #endif
+ 
+ typedef void (MODIFY_KTI_PARAMETER_ELINK)(struct sysHost *host);
+ extern MODIFY_KTI_PARAMETER_ELINK @elink(OVERRIDE_KTI_PARAMETER_HOOK, "@Child"," ", "" ) EndOfModifyKtiParameterParamList;
+ #ifndef OVERRIDE_KTI_PARAMETER_HOOK
+ #define OVERRIDE_KTI_PARAMETER_HOOK @elink(OVERRIDE_KTI_PARAMETER_HOOK, "@Child"," ", "" )
+ #endif
+ 
+ typedef void (PLATFORM_LOG_FATAL_ERROR_ELINK)(PSYSHOST host,UINT8 majorCode,UINT8 minorCode,UINT8 *haltOnError);
+ extern PLATFORM_LOG_FATAL_ERROR_ELINK @elink(OVERRIDE_PLATFORM_LOG_FATAL_ERROR_HOOK, "@Child"," ", "" ) EndOfPlatformLogFatalErrorParamList;
+ #ifndef OVERRIDE_PLATFORM_LOG_FATAL_ERROR_HOOK
+ #define OVERRIDE_PLATFORM_LOG_FATAL_ERROR_HOOK @elink(OVERRIDE_PLATFORM_LOG_FATAL_ERROR_HOOK, "@Child"," ", "" )
+ #endif
+ 
+ typedef void (KTI_LOG_WARNING_ELINK)(struct sysHost *host,UINT8 SocId,UINT8 SocType,UINT8 KtiLink,UINT8 WarnCode);
+ extern KTI_LOG_WARNING_ELINK @elink(OVERRIDE_KTI_LOG_WARNING_HOOK, "@Child"," ", "" ) EndOfKtiLogWarningParamList;
+ #ifndef OVERRIDE_KTI_LOG_WARNING_HOOK
+ #define OVERRIDE_KTI_LOG_WARNING_HOOK @elink(OVERRIDE_KTI_LOG_WARNING_HOOK, "@Child"," ", "" )
+ #endif
+
+ typedef void (KTI_CHECKPOINT_ELINK)( UINT8  SocId, UINT8 SocType, UINT8 KtiLink, UINT8 MajorCode,UINT8 MinorCode,struct sysHost *host);
+ extern KTI_LOG_WARNING_ELINK @elink(OVERRIDE_KTI_CHECKPOINT_HOOK, "@Child"," ", "" ) EndOfKtiCheckpointParamList;
+ #ifndef OVERRIDE_KTI_CHECKPOINT_HOOK
+ #define OVERRIDE_KTI_CHECKPOINT_HOOK @elink(OVERRIDE_KTI_CHECKPOINT_HOOK, "@Child"," ", "" )
+ #endif
+ 
+typedef void (GET_BOARD_TYPE_ELINK)(struct sysHost *host, UINT32 *BoardTypeBitmask);
+ extern GET_BOARD_TYPE_ELINK @elink(OVERRIDE_GET_BOARD_TYPE_HOOK, "@Child"," ", "" ) EndOfGetBoardTypeParamList;
+ #ifndef OVERRIDE_GET_BOARD_TYPE_HOOK
+ #define OVERRIDE_GET_BOARD_TYPE_HOOK @elink(OVERRIDE_GET_BOARD_TYPE_HOOK, "@Child"," ", "" )
+ #endif
+ 
+ typedef void (KTI_GET_EPARAMS_ELINK)( struct sysHost  *host, ALL_LANES_EPARAM_LINK_INFO **Ptr, UINT32 *SizeOfTable);
+ extern KTI_GET_EPARAMS_ELINK @elink(OVERRIDE_KTI_GET_EPARAMS_HOOK, "@Child"," ", "" ) EndOfKtiGetEParamList;
+ #ifndef OVERRIDE_KTI_GET_EPARAMS_HOOK
+ #define OVERRIDE_KTI_GET_EPARAMS_HOOK @elink(OVERRIDE_KTI_GET_EPARAMS_HOOK, "@Child"," ", "" )
+ #endif
+ 
+ typedef void (PUBLISH_HOB_DATA_ELINK)( struct sysHost *host);
+ extern PUBLISH_HOB_DATA_ELINK @elink(OVERRIDE_PUBLISH_HOB_DATA_HOOK, "@Child"," ", "" ) EndOfPublishHobDataList;
+ #ifndef OVERRIDE_PUBLISH_HOB_DATA_HOOK
+ #define OVERRIDE_PUBLISH_HOB_DATA_HOOK @elink(OVERRIDE_PUBLISH_HOB_DATA_HOOK, "@Child"," ", "" )
+ #endif
+ 
+ typedef void (PLATFORM_OUTPUT_ERROR_ELINK)(PSYSHOST host, UINT8 ErrorCode, UINT8 minorErrorCode, UINT8 socket, UINT8 ch, UINT8 dimm, UINT8 rank);
+ extern PLATFORM_OUTPUT_ERROR_ELINK @elink(OVERRIDE_PLATFORM_OUTPUT_ERR_HOOK, "@Child"," ", "" ) EndOfPlatformOutputErrorList;
+ #ifndef OVERRIDE_PLATFORM_OUTPUT_ERR_HOOK
+ #define OVERRIDE_PLATFORM_OUTPUT_ERR_HOOK @elink(OVERRIDE_PLATFORM_OUTPUT_ERR_HOOK, "@Child"," ", "" )
+ #endif
+ 
+typedef void (PLATFORM_OUTPUT_WARNING_ELINK)(PSYSHOST host, UINT8 warningCode, UINT8 minorWarningCode, UINT8 socket, UINT8 ch, UINT8 dimm, UINT8 rank);
+ extern PLATFORM_OUTPUT_WARNING_ELINK @elink(OVERRIDE_PLATFORM_OUTPUT_WAR_HOOK, "@Child"," ", "" ) EndOfPlatformOutputWarningList;
+ #ifndef OVERRIDE_PLATFORM_OUTPUT_WAR_HOOK
+ #define OVERRIDE_PLATFORM_OUTPUT_WAR_HOOK @elink(OVERRIDE_PLATFORM_OUTPUT_WAR_HOOK, "@Child"," ", "" )
+ #endif
+
+ typedef void (GET_RESOURCEMAP_UPDATE_ELINK)(EFI_STATUS Status, struct sysHost *host, EFI_PEI_READ_ONLY_VARIABLE2_PPI *PeiVariable, KTI_CPU_RESOURCE *CpuRes, KTI_OEMCALLOUT SystemParams);
+ extern GET_RESOURCEMAP_UPDATE_ELINK @elink(OVERRIDE_GET_RESOURCEMAP_UPDATE_HOOK, "@Child"," ", "" ) EndOfGetResourceMapUpdateList;
+ #ifndef OVERRIDE_GET_RESOURCEMAP_UPDATE_HOOK
+ #define OVERRIDE_GET_RESOURCEMAP_UPDATE_HOOK @elink(OVERRIDE_GET_RESOURCEMAP_UPDATE_HOOK, "@Child"," ", "" )
+ #endif
+ 
+ typedef void (TURN_AROUND_TIMINGS_ELINK)(PSYSHOST host,UINT8 socket);
+ extern TURN_AROUND_TIMINGS_ELINK @elink(OVERRIDE_TURN_AROUND_TIMINGS_HOOK, "@Child"," ", "" ) EndOfTurnAroundTimingsWrapperList;
+ #ifndef OVERRIDE_TURN_AROUND_TIMINGS_HOOK
+ #define OVERRIDE_TURN_AROUND_TIMINGS_HOOK @elink(OVERRIDE_TURN_AROUND_TIMINGS_HOOK, "@Child"," ", "" )
+ #endif

@@ -1,0 +1,78 @@
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************
+
+#
+# @file PeiIpmiUsb.inf
+#
+#  INF description file for PeiIpmiUsb PEIM
+#
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = PeiIpmiUsb
+  FILE_GUID                      = 5EC9DF0F-9FB9-4cd5-9BAE-12872F032A6A
+  MODULE_TYPE                    = PEIM
+  PI_SPECIFICATION_VERSION       = 0x0001000A
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = InitializePeiIpmiUsb
+
+[Sources]
+  PeiIpmiUsb.c
+  PeiIpmiUsb.h
+  UsbBmc.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  AmiIpmiPkg/AmiIpmiPkg.dec
+  AmiCompatibilityPkg/AmiCompatibilityPkg.dec
+
+[LibraryClasses]
+  PeimEntryPoint
+  BaseLib
+  DebugLib
+  IoLib
+  PeiServicesLib
+  MemoryAllocationLib
+  BaseMemoryLib
+  TimerLib
+  ReportStatusCodeLib
+
+[Ppis]
+  gPeiUsbIoPpiGuid                     #CONSUMES
+  gEfiPeiVirtualBlockIoPpiGuid         #CONSUMES
+  gEfiPeiIpmiUsbTransportPpiGuid       #PRODUCES
+
+[Pcd]
+  gAmiIpmiPkgTokenSpaceGuid.BulkDataTransferTimeout
+
+[Depex]
+  gEfiPeiCpuIoPpiInstalledGuid AND
+  gEfiPeiMemoryDiscoveredPpiGuid AND
+  gPeiUsbIoPpiGuid AND
+  gEfiPeiVirtualBlockIoPpiGuid
+
+#**********************************************************************
+#**********************************************************************
+#**                                                                  **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.         **
+#**                                                                  **
+#**                       All Rights Reserved.                       **
+#**                                                                  **
+#**         5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093     **
+#**                                                                  **
+#**                       Phone: (770)-246-8600                      **
+#**                                                                  **
+#**********************************************************************
+#**********************************************************************

@@ -1,0 +1,106 @@
+#
+# This file contains an 'Intel Peripheral Driver' and is
+# licensed for Intel CPUs and chipsets under the terms of your
+# license agreement with Intel or your vendor.  This file may
+# be modified by the user, subject to additional terms of the
+# license agreement
+#
+# Copyright (c) 2015 - 2016, Intel Corporation. All rights reserved.<BR>
+# This software and associated documentation (if any) is furnished
+# under a license and may only be used or copied in accordance
+# with the terms of the license. Except as permitted by such
+# license, no part of this software or documentation may be
+# reproduced, stored in a retrieval system, or transmitted in any
+# form or by any means without the express written consent of
+# Intel Corporation.
+#
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = OemCrystalRidgeLib
+  FILE_GUID                      = 2772BBCD-77E2-4e45-B8F9-37052FE63DD3
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = OemCrystalRidgeLib | DXE_RUNTIME_DRIVER DXE_SMM_DRIVER
+
+[Sources.Common]
+  
+[Sources.Ia32]
+
+[Sources.x64]
+  OemCrystalRidgeHooks.c
+  OemCrystalRidgeHooks.h
+  
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  IntelFrameworkPkg/IntelFrameworkPkg.dec
+  ServerCommonPkg/ServerCommonPkg.dec
+  UefiCpuPkg/UefiCpuPkg.dec  
+  IA32FamilyCpuPkg/IA32FamilyCpuPkg.dec
+  CpRcPkg/CpRcPkg.dec
+  CpRcPkg/RcPlatPurley.dec
+  CpPlatPkg/CpPlatPkg.dec
+  PurleyPlatPkg/PlatPkg.dec
+  PurleySktPkg/SocketPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  DebugLib
+  HobLib
+  IoLib
+  BaseLib
+  TimerLib
+  PlatformHooksLib
+  LocalApicLib
+  PcdLib
+  OemCrystalRidgeLib
+  
+[LibraryClasses.X64]
+  IoLib
+  MemoryAllocationLib
+  UefiBootServicesTableLib
+  PlatformHooksLib
+  BaseMemoryLib
+  SetupLib
+
+[Protocols]
+  gEfiIioUdsProtocolGuid
+  gEfiDxeSystemBoardProtocolGuid
+  gEfiCrystalRidgeGuid
+  gEfiSmmBase2ProtocolGuid
+  gEfiMpServiceProtocolGuid
+  gEfiCpuCsrAccessGuid
+  gEfiSmbiosProtocolGuid
+  gEfiSmmSwDispatch2ProtocolGuid  
+  gEfiNgnAcpiSmmInterfaceProtocolGuid
+  gAcpiPcatProtocolGuid
+  gNfitBindingProtocolGuid
+
+[Guids]
+  gEfiPlatformInfoGuid
+  gEfiHobListGuid
+  gEfiSetupVariableGuid
+  gEfiMemoryMapGuid
+  gEfiVolatileMemModeVariableGuid  
+  gEfiNGNCfgOutGuid
+  gEfiNGNCfgCurGuid
+  gEfiPrevBootNGNDimmCfgVariableGuid
+
+[FixedPcd]
+  gEfiCpRcPkgTokenSpaceGuid.PcdMaxCpuSocketCount
+
+[Pcd]
+  gOemSkuTokenSpaceGuid.PcdOemSkuBoardSocketCount  
+  gOemSkuTokenSpaceGuid.PcdOemSkuMaxChannel
+  gOemSkuTokenSpaceGuid.PcdOemSkuMaxDimmPerChannel
+
+[BuildOptions.Ia32]
+  MSFT:*_*_*_CC_FLAGS     = /DIA32
+  GCC:*_*_*_CC_FLAGS     = -DIA32
+
+

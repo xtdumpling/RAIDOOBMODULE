@@ -1,0 +1,103 @@
+TOKEN
+    Name  = "AmiPlatformEarlyConsole"
+    Value  = "1"
+    Help  = "Main Switch for Enabling Platform Specific Early Video Code in the Project"
+    TokenType = Boolean
+    Master = Yes
+End
+
+#
+#Change Apriori of Early Video 
+#
+
+FFS_FILE
+    Name  = "PeiVideoTextOut"
+    FD_AREA  = "FV_BB"
+    INFComponent  = "AmiModulePkg.PeiVideoTextOut"
+ #   Apriori_Index  = "3"
+End
+
+#
+#Disable Template Video Init
+#
+
+TOKEN
+    Name  = "PeiVideoInit"
+    Value  = "0"
+    Help  = "Main Switch for Enabling Pei Video Init Code in the Project"
+    TokenType = Boolean
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiModulePkg.PeiVideoInitLib"
+    ModuleTypes  = "PEIM"
+    Override  = "AmiModulePkg.PeiVideoTextOut"
+    Disable = Yes
+End
+
+#
+#Disable Template Video Reset
+#
+
+TOKEN
+    Name  = "VideoCtrlReset"
+    Value  = "0"
+    Help  = "Main Switch for Enabling to VideoCtrlReset module that would disable/reset the Video device programming done in the PEI phase"
+    TokenType = Boolean
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiModulePkg.VideoCtrlResetLib"
+    ModuleTypes  = "DXE_DRIVER UEFI_DRIVER"
+    Override  = "AmiModulePkg.DxeVideoTextOut"
+    Disable = Yes
+End
+
+#
+#Map Platform Video Init Library
+#
+
+INFComponent
+    Name  = "PlatformVideoInitLib"
+    File  = "AmiPlatformEarlyVideoInit\PlatformVideoInit.inf"
+    Package  = "AmiCRBPkg"
+    ModuleTypes  = "PEIM"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiCRBPkg.PlatformVideoInitLib"
+    ModuleTypes  = "PEIM"
+    Override  = "AmiModulePkg.PeiVideoTextOut"
+End
+
+#
+#Map Platform Video Reset Library
+#
+
+INFComponent
+    Name  = "PlatformVideoCtrlResetLib"
+    File  = "AmiPlatformEarlyVideoReset\PlatformVideoCtrlReset.inf"
+    Package  = "AmiCRBPkg"
+    ModuleTypes  = "PEIM"
+End
+
+LibraryMapping
+    Class  = "NULL"
+    Instance  = "AmiCRBPkg.PlatformVideoCtrlResetLib"
+    ModuleTypes  = "DXE_DRIVER UEFI_DRIVER"
+    Override  = "AmiModulePkg.DxeVideoTextOut"
+End
+
+#
+#PEI System Information
+#
+
+INFComponent
+	Name  = "PlatformPeiSystemInformation"
+	File  = "AmiPlatformPeiSystemInfo\PlatformPeiSystemInformation.inf"
+	Package  = "AmiModulePkg"
+	ModuleTypes  = "PEIM"
+End

@@ -1,0 +1,63 @@
+TOKEN
+	Name  = "Capsule_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable Capsule support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+INFComponent
+	Name  = "CapsulePei"
+	File  = "CapsulePei/CapsulePei.inf"
+	Package  = "MdeModulePkg"
+	ModuleTypes  = "PEIM"
+End
+
+INFComponent
+	Name  = "CapsuleX64"
+	File  = "CapsulePei/CapsuleX64.inf"
+	Package  = "MdeModulePkg"
+	Arch  = "X64"
+	ModuleTypes  = "DXE_DRIVER"
+	Token = "X64_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "CapsuleRuntimeDxe"
+	File  = "CapsuleRuntimeDxe/CapsuleRuntimeDxe.inf"
+	Package  = "MdeModulePkg"
+	ModuleTypes  = "DXE_RUNTIME_DRIVER"
+End
+
+INFComponent
+	Name  = "BaseDebugLibSerialPort"
+	File  = "../../MdePkg/Library/BaseDebugLibSerialPort/BaseDebugLibSerialPort.inf"
+	Package  = "MdePkg"
+End
+
+LibraryMapping
+	Class  = "DebugLib"
+	Instance  = "MdePkg.BaseDebugLibSerialPort"
+	Override  = "MdeModulePkg.CapsuleX64"
+End
+
+PcdMapping
+	Name  = "PcdSupportUpdateCapsuleReset"
+	GuidSpace  = "gEfiMdeModulePkgTokenSpaceGuid"
+	PcdType  = "PcdsFeatureFlag"
+	DataType  = "Boolean"
+	Value  = "TRUE"
+	Offset  = 00h
+	Length  = 01h
+	TargetDSC = Yes
+End
+
+FFS_FILE
+	Name  = "CapsuleX64"
+	FD_AREA  = "FV_BB"
+	INFComponent  = "MdeModulePkg.CapsuleX64"
+	Token = "X64_SUPPORT" "=" "1"
+End
+

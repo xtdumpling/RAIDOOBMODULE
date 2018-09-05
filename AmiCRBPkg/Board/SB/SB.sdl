@@ -1,0 +1,2549 @@
+#PIRQ: PIRQ registers are changed in LBG PCH
+
+IRQLINK
+	Name  = "LNKA"
+	Reg  = 01h
+	IrqList  = 3,4,5,6,7,10,11,12,14,15
+	InterruptType = LevelLow
+End
+
+IRQLINK
+	Name  = "LNKB"
+	Reg  = 02h
+	IrqList  = 3,4,5,6,7,10,11,12,14,15
+	InterruptType = LevelLow
+End
+
+IRQLINK
+	Name  = "LNKC"
+	Reg  = 03h
+	IrqList  = 3,4,5,6,10,11,12,14,15
+	InterruptType = LevelLow
+End
+
+IRQLINK
+	Name  = "LNKD"
+	Reg  = 04h
+	IrqList  = 3,4,5,6,10,11,12,14,15
+	InterruptType = LevelLow
+End
+
+IRQLINK
+	Name  = "LNKE"
+	Reg  = 05h
+	IrqList  = 3,4,5,6,7,10,11,12,14,15
+	InterruptType = LevelLow
+End
+
+IRQLINK
+	Name  = "LNKF"
+	Reg  = 06h
+	IrqList  = 3,4,5,6,7,10,11,12,14,15
+	InterruptType = LevelLow
+End
+
+IRQLINK
+	Name  = "LNKG"
+	Reg  = 07h
+	IrqList  = 3,4,5,6,7,10,11,12,14,15
+	InterruptType = LevelLow
+End
+
+IRQLINK
+	Name  = "LNKH"
+	Reg  = 08h
+	IrqList  = 3,4,5,6,7,10,11,12,14,15
+	InterruptType = LevelLow
+End
+
+
+#*************************************************************************
+#*************************************************************************
+#**                                                                     **
+#**        (C)Copyright 1985-2015, American Megatrends, Inc.            **
+#**                                                                     **
+#**                       All Rights Reserved.                          **
+#**                                                                     **
+#**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093           **
+#**                                                                     **
+#**                       Phone: (770)-246-8600                         **
+#**                                                                     **
+#*************************************************************************
+#*************************************************************************
+# $Header: $
+#
+# $Revision: $
+#
+# $Date: $
+#*************************************************************************
+# Revision History
+# ----------------
+# $Log: $
+# 
+# 
+#*************************************************************************
+#<AMI_FHDR_START>
+#
+# Name:  <SB.SDL>
+#
+# Description:     
+#
+#<AMI_FHDR_END>
+#*************************************************************************
+
+
+PCIDEVICE
+	Title  = "High definition Audio Controller"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 0eh
+	Fun  = 00h
+	SleepNum  = 01h
+	ASLdeviceName  = "ALZA"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+End
+
+PCIDEVICE
+	Title  = "Display Controller"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 0fh
+	Fun  = 00h
+	SleepNum  = 01h
+	ASLdeviceName  = "DISP"
+	IntA = 	LNKA; 16
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+End
+
+PCIDEVICE
+	Title  = "HECI #1"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 010h
+	Fun  = 00h
+	SleepNum  = 01h
+	ASLdeviceName  = "IHC1"
+	IntA = 	LNKA; 16
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "HECI #2"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 010h
+	Fun  = 01h
+	SleepNum  = 01h
+	ASLdeviceName  = "IHC2"
+	IntB = 	LNKB; 17
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "IDE-Redirection (IDE-R)"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 010h
+	Fun  = 02h
+	SleepNum  = 01h
+	ASLdeviceName  = "IIDR"
+	IntC = 	LNKC; 18
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "Keyboard and Text (KT) Redirection"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 010h
+	Fun  = 03h
+	SleepNum  = 01h
+	ASLdeviceName  = "IMKT"
+	IntD = 	LNKD; 19
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "HECI #3"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 010h
+	Fun  = 04h
+	SleepNum  = 01h
+	ASLdeviceName  = "IHC3"
+	IntA = 	LNKA; 16
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "MROM 0 function function"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 011h
+	Fun  = 00h
+	SleepNum  = 01h
+	ASLdeviceName  = "MRO0"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "MROM 1 function function"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 011h
+	Fun  = 01h
+	SleepNum  = 01h
+	ASLdeviceName  = "MRO1"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "sSATA Host controller 2 on PCH"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 011h
+	Fun  = 05h
+	SleepNum  = 01h
+	ASLdeviceName  = "SAT2"
+	ROMFile  = "AmiCRBPkg\sSataOrom.bin"
+	IntA = 	LNKA; 16
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	OptionROM = Yes
+	ROMMain = No
+	LegacyRom = Yes
+	FFSFileName  = "ROM Storage"
+	ROMSectionGuid  = "e095affe-d4cd-4289-9b48-28f64e3d781d"
+	InitRoutine  = "SataDeviceInit"
+End
+
+PCIDEVICE
+	Title  = "UEFI sSATA RAID Controller"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "Container"
+	Dev  = 011h
+	Fun  = 05h
+	SleepNum  = 01h
+	ROMFile  = "AmiCRBPkg\sSataDriver.efi"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	OptionROM = Yes
+	ROMMain = No
+	Virtual = Yes
+	UefiRom = Yes
+	FFSFileName  = "ROM Storage"
+	ROMSectionGuid  = "224d6eb4-307f-45ba-9dc3-fe9fc6b38148"
+End
+
+PCIDEVICE
+	Title  = "xHCI controller 1 on PCH"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 014h
+	Fun  = 00h
+	SleepNum  = 03h
+	ASLdeviceName  = "XHCI"
+	IntA = 	LNKA; 16
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	InitRoutine  = "PciPortDegradeUsbBar"
+End
+
+PCIDEVICE
+	Title  = "USB Device Controller (OTG) on PCH"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 014h
+	Fun  = 01h
+	SleepNum  = 01h
+	ASLdeviceName  = "OTG0"
+	IntB = 	LNKB; 17
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "Thermal Subsystem on PCH"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 014h
+	Fun  = 02h
+	SleepNum  = 01h
+	ASLdeviceName  = "TERM"
+	IntC = 	LNKC; 18
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "Camera IO Host Controller on PCH"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 014h
+	Fun  = 03h
+	SleepNum  = 01h
+	ASLdeviceName  = "CAMR"
+	IntD = 	LNKD; 19
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "Northpeak Phantom (ACPI) Function on PCH"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 014h
+	Fun  = 04h
+	SleepNum  = 01h
+	ASLdeviceName  = "NTHP"
+	IntB = 	LNKB; 17
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "HECI #1 on PCH"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 016h
+	Fun  = 00h
+	SleepNum  = 00h
+	ASLdeviceName  = "HEC1"
+	IntA = 	LNKA; 16
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "HECI #2 on PCH"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 016h
+	Fun  = 01h
+	SleepNum  = 00h
+	ASLfile  = "'PurleyPlatPkg\Acpi\AcpiTables\Dsdt\Me.asi'"
+	ASLdeviceName  = "HEC2"
+	IntB = 	LNKB; 17
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "ME IDE redirect on PCH"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 016h
+	Fun  = 02h
+	SleepNum  = 00h
+	ASLdeviceName  = "IDER"
+	IntC = 	LNKC; 18
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "MEKT on PCH"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 016h
+	Fun  = 03h
+	SleepNum  = 00h
+	ASLdeviceName  = "MEKT"
+	IntD = 	LNKD; 19
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "HECI #3 on PCH"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 016h
+	Fun  = 04h
+	SleepNum  = 00h
+	ASLdeviceName  = "HEC3"
+	IntA = 	LNKA; 16
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "SATA controller 1 on PCH"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 017h
+	Fun  = 00h
+	SleepNum  = 00h
+	ASLdeviceName  = "SAT1"
+	ROMFile  = "AmiCRBPkg\SataOrom.bin"
+	IntA = LNKA; 16
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	OptionROM = Yes
+	ROMMain = No
+	LegacyRom = Yes
+	FFSFileName  = "ROM Storage"
+	ROMSectionGuid  = "20feebde-e739-420e-ae31-77e2876508c0"
+	InitRoutine  = "SataDeviceInit"
+End
+
+PCIDEVICE
+	Title  = "UEFI SATA RAID Controller"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "Container"
+	Dev  = 017h
+	Fun  = 00h
+	SleepNum  = 00h
+	ROMFile  = "AmiCRBPkg\SataDriver.efi"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	OptionROM = Yes
+	ROMMain = No
+	Virtual = Yes
+	UefiRom = Yes
+	FFSFileName  = "ROM Storage"
+	ROMSectionGuid  = "c9352cc3-a354-44e5-8776-b2ed8dd781ec"
+End
+
+PCIDEVICE
+	Title  = "NAND Cycle Router on PCH"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 018h
+	Fun  = 00h
+	SleepNum  = 00h
+	ASLdeviceName  = "NAN1"
+	IntA = 	LNKA; 16
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+End
+
+
+#RP IRQ routing begin:
+PCIDEVICE
+	Title  = "PCIE PCH Root Port #17"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "Pci2PciBridge"
+	Dev  = 01bh
+	Fun  = 00h
+	ASLdeviceName  = "RP17"
+	IntA = 	LNKA; 16
+	IntB = 	LNKB; 17
+	IntC = 	LNKC; 18
+	IntD = 	LNKD; 19
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "PCIE PCH Root Port #18"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "Pci2PciBridge"
+	Dev  = 01bh
+	Fun  = 01h
+	ASLdeviceName  = "RP18"
+	IntA = 	LNKA; 16
+	IntB = 	LNKB; 17
+	IntC = 	LNKC; 18
+	IntD = 	LNKD; 19
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "PCIE PCH Root Port #19"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "Pci2PciBridge"
+	Dev  = 01bh
+	Fun  = 02h
+	ASLdeviceName  = "RP19"
+	IntA = 	LNKA; 16
+	IntB = 	LNKB; 17
+	IntC = 	LNKC; 18
+	IntD = 	LNKD; 19
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "PCIE PCH Root Port #20"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "Pci2PciBridge"
+	Dev  = 01bh
+	Fun  = 03h
+	ASLdeviceName  = "RP20"
+	IntA = 	LNKA; 16
+	IntB = 	LNKB; 17
+	IntC = 	LNKC; 18
+	IntD = 	LNKD; 19
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "PCIE PCH Root Port #1"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "Pci2PciBridge"
+	Dev  = 01ch
+	Fun  = 00h
+	ASLdeviceName  = "RP01"
+	IntA = 	LNKA; 16
+	IntB = 	LNKB; 17
+	IntC = 	LNKC; 18
+	IntD = 	LNKD; 19
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "PCIE PCH Root Port #2"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "Pci2PciBridge"
+	Dev  = 01ch
+	Fun  = 01h
+	ASLdeviceName  = "RP02"
+	IntA = 	LNKA; 16
+	IntB = 	LNKB; 17
+	IntC = 	LNKC; 18
+	IntD = 	LNKD; 19
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "PCIE PCH Root Port #3"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "Pci2PciBridge"
+	Dev  = 01ch
+	Fun  = 02h
+	ASLdeviceName  = "RP03"
+	IntA = 	LNKA; 16
+	IntB = 	LNKB; 17
+	IntC = 	LNKC; 18
+	IntD = 	LNKD; 19
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "PCIE PCH Root Port #4"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "Pci2PciBridge"
+	Dev  = 01ch
+	Fun  = 03h
+	ASLdeviceName  = "RP04"
+	IntA = 	LNKA; 16
+	IntB = 	LNKB; 17
+	IntC = 	LNKC; 18
+	IntD = 	LNKD; 19
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "PCIE PCH Root Port #5"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "Pci2PciBridge"
+	Dev  = 01ch
+	Fun  = 04h
+	ASLdeviceName  = "RP05"
+	IntA = 	LNKA; 16
+	IntB = 	LNKB; 17
+	IntC = 	LNKC; 18
+	IntD = 	LNKD; 19
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "PCIE PCH Root Port #6"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "Pci2PciBridge"
+	Dev  = 01ch
+	Fun  = 05h
+	ASLdeviceName  = "RP06"
+	IntA = 	LNKA; 16
+	IntB = 	LNKB; 17
+	IntC = 	LNKC; 18
+	IntD = 	LNKD; 19
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "PCIE PCH Root Port #7"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "Pci2PciBridge"
+	Dev  = 01ch
+	Fun  = 06h
+	ASLdeviceName  = "RP07"
+	IntA = 	LNKA; 16
+	IntB = 	LNKB; 17
+	IntC = 	LNKC; 18
+	IntD = 	LNKD; 19
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "PCIE PCH Root Port #8"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "Pci2PciBridge"
+	Dev  = 01ch
+	Fun  = 07h
+	ASLdeviceName  = "RP08"
+	IntA = 	LNKA; 16
+	IntB = 	LNKB; 17
+	IntC = 	LNKC; 18
+	IntD = 	LNKD; 19
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "PCIE PCH Root Port #9"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "Pci2PciBridge"
+	Dev  = 01dh
+	Fun  = 00h
+	ASLdeviceName  = "RP09"
+	IntA = 	LNKA; 16
+	IntB = 	LNKB; 17
+	IntC = 	LNKC; 18
+	IntD = 	LNKD; 19
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "PCIE PCH Root Port #10"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "Pci2PciBridge"
+	Dev  = 01dh
+	Fun  = 01h
+	ASLdeviceName  = "RP10"
+	IntA = 	LNKA; 16
+	IntB = 	LNKB; 17
+	IntC = 	LNKC; 18
+	IntD = 	LNKD; 19
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "PCIE PCH Root Port #11"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "Pci2PciBridge"
+	Dev  = 01dh
+	Fun  = 02h
+	ASLdeviceName  = "RP11"
+	IntA = 	LNKA; 16
+	IntB = 	LNKB; 17
+	IntC = 	LNKC; 18
+	IntD = 	LNKD; 19
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "PCIE PCH Root Port #12"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "Pci2PciBridge"
+	Dev  = 01dh
+	Fun  = 03h
+	ASLdeviceName  = "RP12"
+	IntA = 	LNKA; 16
+	IntB = 	LNKB; 17
+	IntC = 	LNKC; 18
+	IntD = 	LNKD; 19
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "PCIE PCH Root Port #13"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "Pci2PciBridge"
+	Dev  = 01dh
+	Fun  = 04h
+	ASLdeviceName  = "RP13"
+	IntA = 	LNKA; 16
+	IntB = 	LNKB; 17
+	IntC = 	LNKC; 18
+	IntD = 	LNKD; 19
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "PCIE PCH Root Port #14"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "Pci2PciBridge"
+	Dev  = 01dh
+	Fun  = 05h
+	ASLdeviceName  = "RP14"
+	IntA = 	LNKA; 16
+	IntB = 	LNKB; 17
+	IntC = 	LNKC; 18
+	IntD = 	LNKD; 19
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "PCIE PCH Root Port #15"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "Pci2PciBridge"
+	Dev  = 01dh
+	Fun  = 06h
+	ASLdeviceName  = "RP15"
+	IntA = 	LNKA; 16
+	IntB = 	LNKB; 17
+	IntC = 	LNKC; 18
+	IntD = 	LNKD; 19
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+PCIDEVICE
+	Title  = "PCIE PCH Root Port #16"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "Pci2PciBridge"
+	Dev  = 01dh
+	Fun  = 07h
+	ASLdeviceName  = "RP16"
+	IntA = 	LNKA; 16
+	IntB = 	LNKB; 17
+	IntC = 	LNKC; 18
+	IntD = 	LNKD; 19
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+
+#RP IRQ routing begin:            
+#PCIDEVICE
+#	Title  = "UART #0 on PCH"
+#	Parent  = "Socket 0 Root bridge (Stack 0)"
+#	Attribute  = "0x0"
+#	Dev_type  = "PciDevice"
+#	Dev  = 01Eh
+#	Fun  = 00h
+#	SleepNum  = 00h
+#	ASLdeviceName  = "UAR0"
+#	IntA = LNKA; 20
+#	DeviceType = OnBoard
+#	PCIBusSize = 32bit
+#	ROMMain = No
+#End  
+#PCIDEVICE
+#	Title  = "UART #1 on PCH"
+#	Parent  = "Socket 0 Root bridge (Stack 0)"
+#	Attribute  = "0x0"
+#	Dev_type  = "PciDevice"
+#	Dev  = 01Eh
+#	Fun  = 01h
+#	SleepNum  = 00h
+#	ASLdeviceName  = "UAR1"
+#	IntB = LNKB; 21
+#	DeviceType = OnBoard
+#	PCIBusSize = 32bit
+#	ROMMain = No
+#End 
+PCIDEVICE
+	Title  = "SPI #0 on PCH"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 01eh
+	Fun  = 02h
+	SleepNum  = 00h
+	ASLdeviceName  = "SPI0"
+	IntC = 	LNKC; 22
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+End
+
+PCIDEVICE
+	Title  = "SPI #1 on PCH"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 01eh
+	Fun  = 03h
+	SleepNum  = 00h
+	ASLdeviceName  = "SPI1"
+	IntD = 	LNKD; 23
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+End
+
+PCIDEVICE
+	Title  = "LpcBridge"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x10003"
+	Dev_type  = "LpcBridge"
+	Dev  = 01fh
+	Fun  = 00h
+	SleepNum  = 01h
+	ASLfile  = "'PurleyPlatPkg\Acpi\AcpiTables\Dsdt\PchLpc.asi','AmiCRBPkg\Chipset\SB\SB_EXT.ASL'"
+	ASLdeviceName  = "LPC0"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	PCIExpress = Yes
+End
+
+
+#	IntA = LNKA; 16
+PCIDEVICE
+	Title  = "P2SB on PCH"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 01fh
+	Fun  = 01h
+	SleepNum  = 00h
+	ASLfile  = "'PurleyPlatPkg\Acpi\AcpiTables\Dsdt\PchP2sb.asi'"
+	ASLdeviceName  = "P2SB"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	InitRoutine  = "PciPortSkipDeviceInit"
+End
+
+PCIDEVICE
+	Title  = "Power Management Controller on PCH"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 01fh
+	Fun  = 02h
+	SleepNum  = 00h
+	ASLdeviceName  = "PMC1"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+End
+
+PCIDEVICE
+	Title  = "HD Audio Subsystem Controller on PCH"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 01fh
+	Fun  = 03h
+	SleepNum  = 00h
+	ASLdeviceName  = "CAVS"
+	IntA = 	LNKA; 16
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+End
+
+PCIDEVICE
+	Title  = "SMBus controller on PCH"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 01fh
+	Fun  = 04h
+	SleepNum  = 00h
+	ASLdeviceName  = "SMBS"
+	IntA = 	LNKA; 16
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	InitRoutine  = "PciPortSkipDeviceInit"
+End
+
+
+#	IntA = LNKA; 16
+PCIDEVICE
+	Title  = "SPI controller on PCH"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 01fh
+	Fun  = 05h
+	SleepNum  = 00h
+	ASLdeviceName  = "SPIC"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	InitRoutine  = "PciPortSkipDeviceInit"
+End
+
+PCIDEVICE
+    Title  = "GbE Controller on PCH"
+    Parent  = "Socket 0 Root bridge (Stack 0)"
+    Attribute  = "0x0"
+    Dev_type  = "PciDevice"
+    Dev  = 01fh
+    Fun  = 06h
+    SleepNum  = 00h
+    ASLdeviceName  = "GBE1"
+    ROMFile  = "AmiCRBPkg\15b903.LOM"   
+    IntA = 	LNKA; 16
+    DeviceType = OnBoard
+    PCIBusSize = 32bit
+    OptionROM = Yes
+    ROMMain = No
+    PCIExpress = Yes
+    LegacyRom = Yes
+    FFSFileName  = "ROM Storage"
+    ROMSectionGuid  = "cbe92913-f3da-4a2f-8428-5b5a1026651d"
+End
+
+PCIDEVICE
+    Title  = "GbE Controller on PCH(EFI)"
+    Parent  = "Socket 0 Root bridge (Stack 0)"
+    Attribute  = "0x0"
+    Dev_type  = "Container"
+    Dev  = 01fh
+    Fun  = 06h
+    SleepNum  = 00h
+    ROMFile  = "AmiCRBPkg\E0015X7.EFI"   
+    DeviceType = OnBoard
+    PCIBusSize = 32bit
+    OptionROM = Yes
+    ROMMain = No
+    Virtual = Yes
+    UefiRom = Yes
+    FFSFileName  = "ROM Storage"
+    ROMSectionGuid  = "f0e9d620-3e9f-4f6b-8f26-6214feab6690"
+End
+
+PCIDEVICE
+	Title  = "Intel Trace Hub"
+	Parent  = "Socket 0 Root bridge (Stack 0)"
+	Attribute  = "0x0"
+	Dev_type  = "PciDevice"
+	Dev  = 01fh
+	Fun  = 07h
+	SleepNum  = 00h
+	ASLdeviceName  = "ITHB"
+	IntA = 	LNKA; 16
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+End
+
+PCIDEVICE
+	Title  = "SB ASL Files"
+	Parent  = "PciHost (Virtual)"
+	Attribute  = "0x0"
+	Dev_type  = "Container"
+	Dev  = 00h
+	SleepNum  = 01h
+	ASLfile  = "'AmiCRBPkg\Chipset\SB\IRQLINK.ASL;After Pci Tree'"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	Virtual = Yes
+End
+
+PCIDEVICE
+	Title  = "PCH ASL Files"
+	Parent  = "PciHost (Virtual)"
+	Attribute  = "0x0"
+	Dev_type  = "Container"
+	Dev  = 00h
+	ASLfile  = "'PurleySktPkg/SouthClusterLbg/AcpiTables/Dsdt/Pch.asl;After Pci Tree'"
+	DeviceType = OnBoard
+	PCIBusSize = 32bit
+	ROMMain = No
+	Virtual = Yes
+End
+
+IOAPIC
+	Title  = "PCH IO APIC"
+	APICID  = 08h
+	VectorBase  = 00h
+	VectorRange  = 018h
+	AddressBase  = 0fec00000h
+End
+
+#
+# Port to slot mapping for PCH slots
+# Requires porting: Need to port based on board PCH slot information.
+#
+TOKEN
+	Name  = "PCH_PtoSMap"
+	Value  = "{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}"
+	Help  = " <Port1 to Port20> Value should be changed only if on board slot is implemented for PCH root port. "
+	TokenType = Expression
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SW_SMI_SB_ACPI_S3"
+	Value  = "0xB8"
+	Help  = "Value to write into SMI command register to generate software SMI for NB"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0xB8 - 0xBF"
+End
+
+TOKEN
+	Name  = "SB_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable Template - SouthBridge support in Project"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetMAK = Yes
+	Master = Yes
+End
+
+TOKEN
+	Name  = "SB_TEMPLATE_VER"
+	Value  = "0002"
+	Help  = "South Bridge Template Version Number.\ DO NOT CHANGE THIS VALUE"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetMAK = Yes
+	TargetH = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "CMOS_ADDR_PORT"
+	Value  = "0x70"
+	Help  = "CMOS Address port"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "CMOS_DATA_PORT"
+	Value  = "0x71"
+	Help  = "CMOS Data port"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "CMOS_IO_EXT_INDEX"
+	Value  = "0x72"
+	Help  = "CMOS location used to check for CMOS corruption"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "CMOS_IO_EXT_DATA"
+	Value  = "0x73"
+	Help  = "CMOS location used to check for CMOS corruption"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+	Lock = Yes
+End
+
+TOKEN
+	Name  = "CMOS_IO_STD_INDEX"
+	Value  = "0x74"
+	Help  = "CMOS standard index"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+	Lock = Yes
+End
+
+
+#
+#
+#TOKEN
+#	Name  = "CMOS_BAD_REG"
+#	Value  = "0x0E"
+#	Help  = "CMOS location used to check for CMOS corruption"
+#	TokenType = Integer
+#	TargetEQU = Yes
+#	TargetH = Yes
+#	Lock = Yes
+#End
+#
+#
+TOKEN
+	Name  = "RESERVED_PAGE_ROUTE"
+	Value  = "0"
+	Help  = "Off:Enable Port 80 decoding to LPC.\On:Enable Port 80 decoding to PCI."
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SB_IO_DECODE_IN_SEC"
+	Value  = "1"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+TOKEN
+	Name  = "SB_IO_DECODE_IN_DBG"
+	Value  = "0"
+	TokenType = Boolean
+	TargetEQU = Yes
+End
+
+
+#       Value = "$(SIO_PME_BASE_ADDRESS)"  <example>
+#       Value = "$(IT8720F_PME_BASE_ADDRESS)"  <example>
+TOKEN
+	Name  = "SB_GEN_DECODE_RANGE_1"
+	Value  = "0"
+	Help  = "The value of SIO_PME_BASE_ADDRESS, '0' means no function."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+	Range  = "00 - 0FFFFh"
+End
+
+
+#       Value = "$(SIO_PME_BASE_ADDRESS)"  <example>
+#       Value = "$(IT8720F_PME_BASE_ADDRESS)"  <example>
+TOKEN
+	Name  = "SB_GEN_DECODE_RANGE_2"
+	Value  = "0"
+	Help  = "The value of SIO_PME_BASE_ADDRESS, '0' means no function."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+	Range  = "00 - 0FFFFh"
+End
+
+
+#       Value = "$(SIO_PME_BASE_ADDRESS)"  <example>
+#       Value = "$(IT8720F_PME_BASE_ADDRESS)"  <example>
+TOKEN
+	Name  = "SB_GEN_DECODE_RANGE_3"
+	Value  = "0"
+	Help  = "The value of SIO_PME_BASE_ADDRESS, '0' means no function."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+	Range  = "00 - 0FFFFh"
+End
+
+
+#       Value = "$(SIO_PME_BASE_ADDRESS)"  <example>
+#       Value = "$(IT8720F_PME_BASE_ADDRESS)"  <example>
+TOKEN
+	Name  = "SB_GEN_DECODE_RANGE_4"
+	Value  = "0"
+	Help  = "The value of SIO_PME_BASE_ADDRESS, '0' means no function."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+	Range  = "00 - 0FFFFh"
+End
+
+TOKEN
+	Name  = "TCO_BASE_ADDRESS"
+	Value  = "0x400"
+	Help  = "TCO Base Address(TCOBAR), D31F4, Offset 50h"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "ACPI_BASE_ADDRESS"
+	Value  = "0x0500"
+	Help  = "ACPI Base Address(ABASE), D31F2, Offset 40h"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "ABASE_LENGTH"
+	Value  = "0x80"
+	Help  = "Power Management registers block length"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PM_BASE_ADDRESS"
+	Value  = "$(ACPI_BASE_ADDRESS)"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PMBA"
+	Value  = "$(PM_BASE_ADDRESS)"
+	Help  = "ASL alias for ACPI I/O base address."
+	TokenType = Integer
+	TargetASL = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PMLN"
+	Value  = "$(ABASE_LENGTH)"
+	Help  = "Power Management registers block length"
+	TokenType = Integer
+	TargetASL = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PBLK"
+	Value  = "$(PM_BASE_ADDRESS) + 10h"
+	Help  = "Boot-starp CPU Control Block register address. Use return value of PM_BASE_ADDRESS with proper offset.\Value can be returned by CPUx_PBLK tokens, x is the Processor index the PBLK is wired to.\Example : $(PM_BASE_ADDRESS) + 10h\"
+	TokenType = Integer
+	TargetH = Yes
+	Lock = Yes
+	Range  = "16-bit IO register"
+End
+
+TOKEN
+	Name  = "PMLN"
+	Value  = "0x80"
+	Help  = "Power Management registers block length"
+	TokenType = Integer
+	TargetASL = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SW_SMI_IO_ADDRESS"
+	Value  = "0xB2"
+	Help  = "PLEASE CHANGE THIS VALUE AS PER PM_BASE_ADDRESS"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SMIP"
+	Value  = "$(SW_SMI_IO_ADDRESS)"
+	Help  = "Token to go to ASL Name Definitions"
+	TokenType = Integer
+	TargetASL = Yes
+End
+
+TOKEN
+	Name  = "APCB"
+	Value  = "0xFEC00000"
+	Help  = "Default I/O APIC(s) memory start address, bytes\0x0FEC00000 - default, 0 - I/O APIC's disabled"
+	TokenType = Integer
+	TargetASL = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "APCL"
+	Value  = "0x100000"
+	Help  = "I/O APIC(s) memory decoded range, bytes\0x1000 - default,\0 - I/O APIC's not decoded "
+	TokenType = Integer
+	TargetASL = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PM30"
+	Value  = "$(PM_BASE_ADDRESS)+0x30"
+	Help  = "SMI Control Register"
+	TokenType = Integer
+	TargetASL = Yes
+End
+
+TOKEN
+	Name  = "ACPI_SCI_INT"
+	Value  = "9"
+	Help  = "SCI Interrupt number"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "3-15"
+End
+
+TOKEN
+	Name  = "PM_SCI_ENABLE"
+	Value  = "0x1"
+	Help  = "Value that needs to be written in PM1_CNT regirter \to Enable SCI generation on PM events"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "ACPI_ALARM_DAY_CMOS"
+	Value  = "00Dh"
+	Help  = "RTC Index of the Day-of-Month alarm"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0 - 0xff 0 = not supported"
+End
+
+TOKEN
+	Name  = "ACPI_ALARM_MONTH_CMOS"
+	Value  = "000h"
+	Help  = "RTC Index of the Month-of-year alarm\"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0-0xff 0 = not supported"
+End
+
+TOKEN
+	Name  = "ACPI_CENTURY_CMOS"
+	Value  = "032h"
+	Help  = "RTC Index of the Century-of-Data\"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0-0xff 0 = not supported"
+End
+
+TOKEN
+	Name  = "ACPI_RESET_REG_ADDRESS"
+	Value  = "0CF9h"
+	Help  = "Reset Register Address (Part of GAS Structure refer, to ACPI v2.0 spec for details)"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0 = not Supported other values depends on other GAS elements"
+End
+
+TOKEN
+	Name  = "ACPI_RESET_REG_TYPE"
+	Value  = "1"
+	Help  = "Reset Register Id (Part of GAS Structure, refer to ACPI v2.0 spec for details)"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0=System memory; 1=System I/O; 2=PCI Config Space; 3=Embeded Controller; 4=SMBus; 0x7F=Functional Fixed Hardware; All other values reserved"
+	Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+	Name  = "ACPI_RESET_REG_BITWIDTH"
+	Value  = "8"
+	Help  = "Reset Register Bit Width (Part of GAS Structure, refer to ACPI v2.0 spec for details)"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "value range depends on other GAS elements"
+	Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+	Name  = "ACPI_RESET_REG_BITOFFSET"
+	Value  = "0"
+	Help  = "Reset Register Bit Offset (Part of GAS Structure, refer to ACPI v2.0 spec for details)"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "value range depends on other GAS elements"
+	Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+	Name  = "ACPI_RESET_REG_VALUE"
+	Value  = "0x06"
+	Help  = "Value to write to the Reset Register to initiate System Reset"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "? - chipset specific"
+End
+
+TOKEN
+	Name  = "PM1A_EVT_BLK_ADDRESS"
+	Value  = "$(PM_BASE_ADDRESS)"
+	Help  = "PM1a_EVT BLK Base Address (Part of GAS Structure refer, to ACPI v2.0 spec for details)"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0 = not Supported other values depends on other GAS elements"
+End
+
+TOKEN
+	Name  = "PM1A_EVT_BLK_TYPE"
+	Value  = "1"
+	Help  = "PM1a_EVT BLK Registes Id (Part of GAS Structure, refer to ACPI v2.0 spec for details)"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0=System memory; 1=System I/O; 2=PCI Config Space; 3=Embeded Controller; 4=SMBus; 0x7F=Functional Fixed Hardware; All other values reserved"
+	Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+	Name  = "PM1A_EVT_BLK_BITWIDTH"
+	Value  = "32"
+	Help  = "PM1a_EVT BLK Registes Bit Width (Part of GAS Structure, refer to ACPI v2.0 spec for details)"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "value range depends on other GAS elements"
+	Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+	Name  = "PM1A_EVT_BLK_BITOFFSET"
+	Value  = "0"
+	Help  = "PM1a_EVT BLK Registes Bit Offset (Part of GAS Structure, refer to ACPI v2.0 spec for details)"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "value range depends on other GAS elements"
+	Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+	Name  = "PM1_EVT_LENGTH"
+	Value  = "4"
+	Help  = "PM1a_EVT BLK length in bytes"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "value range depends on other GAS elements"
+End
+
+TOKEN
+	Name  = "PM1A_CNT_BLK_ADDRESS"
+	Value  = "$(PM_BASE_ADDRESS)+0x04"
+	Help  = "PM1a_CNT BLK Base Address (Part of GAS Structure refer, to ACPI v2.0 spec for details)"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0 = not Supported other values depends on other GAS elements"
+End
+
+TOKEN
+	Name  = "PM1A_CNT_BLK_TYPE"
+	Value  = "1"
+	Help  = "PM1a_CNT BLK Registes Id (Part of GAS Structure, refer to ACPI v2.0 spec for details)"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0=System memory; 1=System I/O; 2=PCI Config Space; 3=Embeded Controller; 4=SMBus; 0x7F=Functional Fixed Hardware; All other values reserved"
+	Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+	Name  = "PM1A_CNT_BLK_BITWIDTH"
+	Value  = "16"
+	Help  = "PM1a_CNT BLK Registes Bit Width (Part of GAS Structure, refer to ACPI v2.0 spec for details)"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "value range depends on other GAS elements"
+	Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+	Name  = "PM1A_CNT_BLK_BITOFFSET"
+	Value  = "0"
+	Help  = "PM1a_CNTT BLK Registes Bit Offset (Part of GAS Structure, refer to ACPI v2.0 spec for details)"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "value range depends on other GAS elements"
+	Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+	Name  = "PM1_CNT_LENGTH"
+	Value  = "2"
+	Help  = "PM1a_CNT BLK length in bytes"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "value range depends on other GAS elements"
+End
+
+TOKEN
+	Name  = "PM1B_EVT_BLK_ADDRESS"
+	Value  = "0"
+	Help  = "PM1b_EVT BLK Base Address (Part of GAS Structure refer, to ACPI v2.0 spec for details)"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0 = not Supported other values depends on other GAS elements"
+End
+
+TOKEN
+	Name  = "PM1B_EVT_BLK_TYPE"
+	Value  = "0"
+	Help  = "PM1b_EVT BLK Registes Id (Part of GAS Structure, refer to ACPI v2.0 spec for details)"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0=System memory; 1=System I/O; 2=PCI Config Space; 3=Embeded Controller; 4=SMBus; 0x7F=Functional Fixed Hardware; All other values reserved"
+	Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+	Name  = "PM1B_EVT_BLK_BITWIDTH"
+	Value  = "0"
+	Help  = "PM1a_EVT BLK Registes Bit Width (Part of GAS Structure, refer to ACPI v2.0 spec for details)"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "value range depends on other GAS elements"
+	Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+	Name  = "PM1B_EVT_BLK_BITOFFSET"
+	Value  = "0"
+	Help  = "PM1a_EVT BLK Registes Bit Offset (Part of GAS Structure, refer to ACPI v2.0 spec for details)"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "value range depends on other GAS elements"
+	Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+	Name  = "PM1B_CNT_BLK_ADDRESS"
+	Value  = "0"
+	Help  = "PM1b_CNT BLK Base Address (Part of GAS Structure refer, to ACPI v2.0 spec for details)"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0 = not Supported other values depends on other GAS elements"
+End
+
+TOKEN
+	Name  = "PM1B_CNT_BLK_TYPE"
+	Value  = "0"
+	Help  = "PM1a_CNT BLK Registes Id (Part of GAS Structure, refer to ACPI v2.0 spec for details)"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0=System memory; 1=System I/O; 2=PCI Config Space; 3=Embeded Controller; 4=SMBus; 0x7F=Functional Fixed Hardware; All other values reserved"
+	Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+	Name  = "PM1B_CNT_BLK_BITWIDTH"
+	Value  = "0"
+	Help  = "PM1a_CNT BLK Registes Bit Width (Part of GAS Structure, refer to ACPI v2.0 spec for details)"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "value range depends on other GAS elements"
+	Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+	Name  = "PM1B_CNT_BLK_BITOFFSET"
+	Value  = "0"
+	Help  = "PM1a_CNTT BLK Registes Bit Offset (Part of GAS Structure, refer to ACPI v2.0 spec for details)"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "value range depends on other GAS elements"
+	Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+    Name  = "PM1B_EVT_BLK_ACCESS_SIZE"
+    Value  = "0"
+    Help  = "PM1b_EVT BLK Access size (Part of GAS Structure refer, to ACPI spec for details)"
+    TokenType = Integer
+    TargetH = Yes
+    Range  = "0 = Undefined (legacy reasons); 1 = Byte access; 2 = Word access; 3 = Dword access; 4 = Qword access"
+End
+
+TOKEN
+    Name  = "PM1B_CNT_BLK_ACCESS_SIZE"
+    Value  = "0"
+    Help  = "PM1b_CNT BLK Access size (Part of GAS Structure refer, to ACPI spec for details)"
+    TokenType = Integer
+    TargetH = Yes
+    Range  = "0 = Undefined (legacy reasons); 1 = Byte access; 2 = Word access; 3 = Dword access; 4 = Qword access"
+End
+
+TOKEN
+	Name  = "PM2_CNT_BLK_ADDRESS"
+	Value  = "$(PM_BASE_ADDRESS)+0x50"
+	Help  = "PM2_CNT BLK Base Address (Part of GAS Structure refer, to ACPI v2.0 spec for details)"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0 = not Supported other values depends on other GAS elements"
+End
+
+TOKEN
+	Name  = "PM2_CNT_BLK_TYPE"
+	Value  = "1"
+	Help  = "PM2_CNT BLK Registes Id (Part of GAS Structure, refer to ACPI v2.0 spec for details)"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0=System memory; 1=System I/O; 2=PCI Config Space; 3=Embeded Controller; 4=SMBus; 0x7F=Functional Fixed Hardware; All other values reserved"
+	Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+	Name  = "PM2_CNT_BLK_BITWIDTH"
+	Value  = "8"
+	Help  = "PM2_CNT BLK Registes Bit Width (Part of GAS Structure, refer to ACPI v2.0 spec for details)"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "value range depends on other GAS elements"
+	Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+	Name  = "PM2_CNT_BLK_BITOFFSET"
+	Value  = "0"
+	Help  = "PM2_CNT BLK Registes Bit Offset (Part of GAS Structure, refer to ACPI v2.0 spec for details)"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "value range depends on other GAS elements"
+	Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+	Name  = "PM2_CNT_LENGTH"
+	Value  = "1"
+	Help  = "PM2_CNT BLK length in bytes"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "value range depends on other GAS elements"
+End
+
+TOKEN
+	Name  = "PM_TMR_BLK_ADDRESS"
+	Value  = "$(PM_BASE_ADDRESS)+0x08"
+	Help  = "PM_TMR BLK Base Address (Part of GAS Structure refer, to ACPI v2.0 spec for details)"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0 = not Supported other values depends on other GAS elements"
+End
+
+TOKEN
+	Name  = "PM_TMR_BLK_TYPE"
+	Value  = "1"
+	Help  = "PM_TMR BLK Registes Id (Part of GAS Structure, refer to ACPI v2.0 spec for details)"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0=System memory; 1=System I/O; 2=PCI Config Space; 3=Embeded Controller; 4=SMBus; 0x7F=Functional Fixed Hardware; All other values reserved"
+	Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+	Name  = "PM_TMR_BLK_BITWIDTH"
+	Value  = "32"
+	Help  = "PM_TMR BLK Registes Bit Width (Part of GAS Structure, refer to ACPI v2.0 spec for details)"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "value range depends on other GAS elements"
+	Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+	Name  = "PM_TMR_BLK_BITOFFSET"
+	Value  = "0"
+	Help  = "PM_TMR BLK Registes Bit Offset (Part of GAS Structure, refer to ACPI v2.0 spec for details)"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "value range depends on other GAS elements"
+	Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+	Name  = "PM_TMR_LENGTH"
+	Value  = "4"
+	Help  = "PM_TMR BLK length in bytes"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "value range depends on other GAS elements"
+End
+
+TOKEN
+	Name  = "GPE0_BLK_ADDRESS"
+	Value  = "$(PM_BASE_ADDRESS)+0x80"
+	Help  = "GPE0 BLK Base Address (Part of GAS Structure refer, to ACPI v2.0 spec for details)"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0 = not Supported other values depends on other GAS elements"
+End
+
+TOKEN
+	Name  = "GPE0_BLK_TYPE"
+	Value  = "1"
+	Help  = "GPE0 BLK Registes Id (Part of GAS Structure, refer to ACPI v2.0 spec for details)"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0=System memory; 1=System I/O; 2=PCI Config Space; 3=Embeded Controller; 4=SMBus; 0x7F=Functional Fixed Hardware; All other values reserved"
+	Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+	Name  = "GPE0_BLK_BITWIDTH"
+	Value  = "255"
+	Help  = "GPE0 BLK Registes Bit Width (Part of GAS Structure, refer to ACPI v2.0 spec for details)"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "value range depends on other GAS elements"
+	Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+	Name  = "GPE0_BLK_BITOFFSET"
+	Value  = "0"
+	Help  = "GPE0 BLK Registes Bit Offset (Part of GAS Structure, refer to ACPI v2.0 spec for details)"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "value range depends on other GAS elements"
+	Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+	Name  = "GPE0_BLK_LENGTH"
+	Value  = "32"
+	Help  = "GPE0 BLK length in bytes"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "value range depends on other GAS elements"
+End
+
+TOKEN
+	Name  = "GPE1_BLK_ADDRESS"
+	Value  = "0"
+	Help  = "GPE1 BLK Base Address (Part of GAS Structure refer, to ACPI v2.0 spec for details)"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0 = not Supported other values depends on other GAS elements"
+End
+
+TOKEN
+	Name  = "GPE1_BLK_TYPE"
+	Value  = "0"
+	Help  = "GPE1 BLK Registes Id (Part of GAS Structure, refer to ACPI v2.0 spec for details)"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0=System memory; 1=System I/O; 2=PCI Config Space; 3=Embeded Controller; 4=SMBus; 0x7F=Functional Fixed Hardware; All other values reserved"
+	Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+	Name  = "GPE1_BLK_BITWIDTH"
+	Value  = "0"
+	Help  = "GPE1 BLK Registes Bit Width (Part of GAS Structure, refer to ACPI v2.0 spec for details)"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "value range depends on other GAS elements"
+	Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+	Name  = "GPE1_BLK_BITOFFSET"
+	Value  = "0"
+	Help  = "GPE1 BLK Registes Bit Offset (Part of GAS Structure, refer to ACPI v2.0 spec for details)"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "value range depends on other GAS elements"
+	Token = "ACPI_BUILD_TABLES_2_0" "=" "1"
+End
+
+TOKEN
+	Name  = "GPE1_BLK_LENGTH"
+	Value  = "0"
+	Help  = "GPE1 BLK length in bytes"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "value range depends on other GAS elements"
+End
+
+TOKEN
+	Name  = "GPE1_BASE_OFFSET"
+	Value  = "0x0"
+	Help  = "GPE1 Base offset within the ACPI general purpose event model (FADT byte 94)"
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0-0xff"
+End
+
+TOKEN
+    Name  = "GPE1_BLK_ACCESS_SIZE"
+    Value  = "0"
+    Help  = "GPE0 BLK Access size (Part of GAS Structure refer, to ACPI spec for details)"
+    TokenType = Integer
+    TargetH = Yes
+    Range  = "0 = Undefined (legacy reasons); 1 = Byte access; 2 = Word access; 3 = Dword access; 4 = Qword access"
+End
+
+TOKEN
+	Name  = "HDD_POWER_LOSS_IN_S3"
+	Value  = "1"
+	Help  = "Disable this feature if HDD doesn't lose power \during S3 resume. HDD need to be unlocked during \S3 resume if it loses power and \also HDD need to be put in Freeze state.\"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FACP_FLAG_USE_PLATFORM_CLOCK"
+	Value  = "0"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FACP_FLAG_S4_RTC_STS_VALID"
+	Value  = "0"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "FACP_FLAG_REMOTE_POWER_ON_CAPABLE"
+	Value  = "0"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SMBUS_BASE_ADDRESS"
+	Value  = "0x780"
+	Help  = "This token just effected before PCI Bus driver dispatched."
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SMBS"
+	Value  = "$(SMBUS_BASE_ADDRESS)"
+	Help  = "SMBus I/O Registes Base Address"
+	TokenType = Integer
+	TargetASL = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SMBL"
+	Value  = "0x20"
+	Help  = "SMBus I/O Registes Range"
+	TokenType = Integer
+	TargetASL = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "DISABLE_RMH_IN_RECOVERY"
+	Value  = "0"
+	Help  = "1:Disable RMH in Recovery.\0:Force RMH mode in Recovery(Only availible on 4.6.3_USB_RECOVERY_SRC_16 or newer)"
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PCH_USB_DEBUG_MODE"
+	Value  = "0"
+	Help  = "1:Enable USB debug mode.\0:Disable USB debug mode."
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PCH_USB_DEBUG_MODE"
+	Value  = "1"
+	Help  = "1:Enable USB debug mode.\0:Disable USB debug mode."
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+	Token = "AMIDEBUG_RX_SUPPORT" "=" "1"
+	Token = "USB_DEBUG_TRANSPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "H55_3420_USB_PORTS_WORKAROUND"
+	Value  = "0"
+	Help  = "Errata#13 of PCH BSY Rev002 Ver1.4 &\Sighting#3306612 of IBX_Sightings_Report_Rev20.pdf "
+	TokenType = Boolean
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SPI_BASE"
+	Value  = "0xFE010000"
+	Help  = "This defines the register or offset of the SPI registers in the system"
+	TokenType = Integer
+	TargetH = Yes
+	Token = "SPIFlash_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "SPI_USE_HARDWARE_SEQUENCE"
+	Value  = "2"
+	Help  = "Sets to use SPI Hardware Sequence.\0 - Use SPI Software Sequence, 1 - ICH/PCH Hardware Sequence, 2 - SKYLAKE-PCH Hardware Sequence or Later ."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+    Name  = "SPI_REGISTERS"
+    Value  = "{ 0xfd10, 4, 8, 0x10, 0x90, 0x91, 0x94, 0x96, 0x98, 0xB0, 0xB4, 0xC4, 0xC8, 0xCC, 0xD0 }"
+    Help  = "SPI Registers Configuration.\{ SPI Bus/Device/Function/Register, HwSeqStsCtl, FlashAddr, FlashData, SwSeqStatus, SwSeqCtrl, PrefixOp, OpType, OpMenu, FDOC, FDOD, LVSCC, UVSCC, PT Index, PT Data}"
+    TokenType = Expression
+    TargetH = Yes
+    Token = "SPI_USE_HARDWARE_SEQUENCE" "<=" "1"
+End
+
+TOKEN
+    Name  = "SPI_REGISTERS"
+    Value  = "{ 0xfd10 , 4, 8, 0x10, 0xA0, 0xA1, 0xA4, 0xA6, 0xA8, 0xB4, 0xB8, 0xC4, 0xC8, 0xCC, 0xD0 }"
+    Help  = "SPI Registers Configuration.\{ SPI Bus/Device/Function/Register, HwSeqStsCtl, FlashAddr, FlashData, SwSeqStatus, SwSeqCtrl, PrefixOp, OpType, OpMenu, FDOC, FDOD, LVSCC, UVSCC, PT Index, PT Data}"
+    TokenType = Expression
+    TargetH = Yes
+    Token = "SPI_USE_HARDWARE_SEQUENCE" ">=" "2"
+End
+
+TOKEN
+	Name  = "SPI_BASE_ADDRESS"
+	Value  = "$(SPI_BASE)"
+	TokenType = Integer
+	TargetH = Yes
+	Token = "SPIFlash_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "SPI_OPCODE_WRITE_INDEX "
+	Value  = "0"
+	Help  = "Write Opcode Menu slot command reference"
+	TokenType = Integer
+	TargetH = Yes
+	Token = "SPIFlash_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "SPI_OPCODE_READ_INDEX"
+	Value  = "1"
+	Help  = "Read Opcode menu slot reference"
+	TokenType = Integer
+	TargetH = Yes
+	Token = "SPIFlash_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "SPI_OPCODE_ERASE_INDEX"
+	Value  = "2"
+	Help  = "Erase Opcode menu slot reference"
+	TokenType = Integer
+	TargetH = Yes
+	Token = "SPIFlash_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "SPI_OPCODE_READ_S_INDEX"
+	Value  = "3"
+	Help  = "Read Status Opcode Menu Slot reference"
+	TokenType = Integer
+	TargetH = Yes
+	Token = "SPIFlash_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "SPI_OPCODE_READ_ID_INDEX"
+	Value  = "4"
+	Help  = "Read identification opcode menu slot reference"
+	TokenType = Integer
+	TargetH = Yes
+	Token = "SPIFlash_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "SPI_OPCODE_WRITE_S_INDEX"
+	Value  = "5"
+	Help  = "Write Status opcode menu slot reference"
+	TokenType = Integer
+	TargetH = Yes
+	Token = "SPIFlash_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "SPI_OPCODE_WRITE_E_INDEX"
+	Value  = "7"
+	Help  = "Write Enable opcode menu slot reference"
+	TokenType = Integer
+	TargetH = Yes
+	Token = "SPIFlash_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "SPI_OPCODE_WRITE_S_E_INDEX"
+	Value  = "6"
+	Help  = "Write Status enable opcode menu slot reference"
+	TokenType = Integer
+	TargetH = Yes
+	Token = "SPIFlash_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "SPI_OPCODE_TYPE_READ_NO_ADDRESS"
+	Value  = "0"
+	Help  = "Opcode type that indicates that the command is a read command that doesn't need an Address sent with it"
+	TokenType = Integer
+	TargetH = Yes
+	Token = "SPIFlash_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "SPI_OPCODE_TYPE_WRITE_NO_ADDRESS"
+	Value  = "1"
+	Help  = "Opcode type that indicates that the command is a write command that doesn't need an Address sent with it"
+	TokenType = Integer
+	TargetH = Yes
+	Token = "SPIFlash_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "SPI_OPCODE_TYPE_READ_WITH_ADDRESS"
+	Value  = "2"
+	Help  = "Opcode type that indicates that the command is a read command that needs an Address sent with it"
+	TokenType = Integer
+	TargetH = Yes
+	Token = "SPIFlash_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "SPI_OPCODE_TYPE_WRITE_WITH_ADDRESS"
+	Value  = "3"
+	Help  = "Opcode type that indicates that the command is a write command that needs an Address sent with it"
+	TokenType = Integer
+	TargetH = Yes
+	Token = "SPIFlash_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "SPI_MAX_TRANSFER"
+	Value  = "64"
+	TokenType = Integer
+	TargetH = Yes
+	Token = "SPIFlash_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "SB_PIRQ_ROUTER_VID"
+	Value  = "0x8086"
+	Help  = "IRQ Router Vendor ID. \PLEASE CHANGE THIS AS PER CHIPSET"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SB_PIRQ_ROUTER_DID"
+	Value  = "0x27B8"
+	Help  = "IRQ Router Device ID. \PLEASE CHANGE THIS AS PER CHIPSET"
+	TokenType = Integer
+	TargetEQU = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "MASTER_INTERRUPT_BASE"
+	Value  = "0x58"
+	Help  = "This value set the Interrupt Vector base for the master. Hardware IRQ0 = this base.\In legacy real mode this value is 8. It can not be 8 in protected mode.\This value must be a multiple of 8, and the this value must be different than SLAVE_INTERRUPT_BASE."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0-F8"
+End
+
+TOKEN
+	Name  = "SLAVE_INTERRUPT_BASE"
+	Value  = "0x70"
+	Help  = "This value set the Interrupt Vector base for the slave. Hardware IRQ8 = this base.\In legacy real mode this value is 0x70.\This value must be a multiple of 8, and the this value must be different than MASTER_INTERRUPT_BASE."
+	TokenType = Integer
+	TargetH = Yes
+	Range  = "0-F8"
+End
+
+TOKEN
+	Name  = "IDE_BASE_ADDRESS"
+	Value  = "0x0FFA0"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "Max_UDMA"
+	Value  = "5"
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PRIMARY_CHANNEL_ENABLE"
+	Value  = "1"
+	Help  = "Enable/Disable Primary Channel"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PRIMARY_MASTER_DRIVE_ENABLE"
+	Value  = "1"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "PRIMARY_SLAVE_DRIVE_ENABLE"
+	Value  = "1"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SECONDARY_CHANNEL_ENABLE"
+	Value  = "1"
+	Help  = "Enable/Disable Secondary Channel"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SECONDARY_MASTER_DRIVE_ENABLE"
+	Value  = "1"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "SECONDARY_SLAVE_DRIVE_ENABLE"
+	Value  = "1"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "BUSMASTER_ENABLE"
+	Value  = "1"
+	TokenType = Boolean
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "DEFAULT_IDE_MODE"
+	Value  = "4"
+	TokenType = Integer
+	TargetMAK = Yes
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "OEM_USB_PER_PORT_DISABLE_SUPPORT"
+	Value  = "0"
+	Help  = "USB per-port disable function will be executed at ready to boot. USB device can be used at setup when port is disabled but not at OS, DOS or Shell.\NOTE: If DCI is enabled, all USB ports will be enabled."
+	TokenType = Boolean
+	TargetH = Yes
+	TargetMAK = Yes
+End
+
+TOKEN
+	Name  = "SB_WAKEUP_TYPE_FN"
+	Value  = "1"
+	Help  = "Indicate the support for getWakeupTypeForSmbios function\0 = Not supported\1 = Supported"
+	TokenType = Boolean
+	TargetH = Yes
+	Token = "SMBIOS_SUPPORT" "=" "1"
+End
+
+TOKEN
+	Name  = "SbPciHotPlugLib_SUPPORT"
+	Value  = "1"
+	Help  = "Main switch to enable SbPciHotPlugLib support in Project"
+	TokenType = Boolean
+	Token = "HOTPLUG_SUPPORT" "=" "1"
+End
+
+PATH
+	Name  = "SB_CHIPSET_DIR"
+	Path  = "AmiCRBPkg\Chipset\SB"
+End
+
+PATH
+	Name  = "SB_BOARD_DIR"
+	Path  = "AmiCRBPkg\Board\SB"
+End
+
+MODULE
+	Help  = "Includes SB.mak to Project"
+	File  = "SB.mak"
+End
+
+ELINK
+	Name  = "$(SB_BOARD_DIR)/SBSECInit.asm"
+	Parent  = "SEC_STARTUP_SRC"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "SECSB_EarlyInit"
+	Parent  = "SecPlatformLibEntry"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(SB_CHIPSET_DIR)"
+	Parent  = "PLATFORM_DSC_INCLUDE_PATHS"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(SB_BOARD_DIR)"
+	Parent  = "PLATFORM_DSC_INCLUDE_PATHS"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(SB_CHIPSET_DIR)/SBGeneric.c"
+	Parent  = "AMI_CSP_PEI_SOURCES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "$(SB_CHIPSET_DIR)/SBGeneric.c"
+	Parent  = "AMI_CSP_DXE_SOURCES"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "{0, 0, 0x80, 0xff, ReadWriteCmosBank2},"
+	Parent  = "CMOS_PORT_MAPPING"
+	Help  = "Second bank CMOS access range (Registers in range: 0x80-0xff)"
+	Token = "CMOS_MANAGER_SUPPORT" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "IsPchRtcReset,"
+	Parent  = "IsResetConfigMode"
+	Token = "LOAD_DEFAULTS_ON_CMOS_CLEAR" "=" "1"
+	InvokeOrder = AfterParent
+End
+
+INFComponent
+	Name  = "SBPEI"
+	File  = "SBPei.inf"
+	Package  = "AmiCRBPkg"
+	ModuleTypes  = "PEIM"
+End
+
+INFComponent
+	Name  = "SBDXE"
+	File  = "SBDxe.inf"
+	Package  = "AmiCRBPkg"
+	ModuleTypes  = "DXE_DRIVER"
+End
+
+INFComponent
+	Name  = "SbPciHotPlugLib"
+	File  = "SbPciHotPlugLib\SbPciHotPlugLib.inf"
+	Package  = "AmiCRBPkg"
+	Path  = "SB_CHIPSET_DIR"
+	Token = "SbPciHotPlugLib_SUPPORT" "=" "1"
+End
+
+LibraryMapping
+	Class  = "AmiPciHotPlugLib"
+	Instance  = "AmiCRBPkg.SbPciHotPlugLib"
+	ModuleTypes  = "DXE_DRIVER UEFI_DRIVER"
+	Token = "SbPciHotPlugLib_SUPPORT" "=" "1"
+End
+
+INFComponent
+	Name  = "TcoSmi"
+	File  = "TcoSmi\TcoSmi.inf"
+	Package  = "AmiCRBPkg"
+	Path  = "SB_CHIPSET_DIR"
+	ModuleTypes  = "DXE_SMM_DRIVER"
+End
+
+#region added from PchInitPreMem.c
+RSVCHIPSET
+	Name  = "Pch Preserved MMIO Base Address"
+	BASEADDR  = "0xFD000000"
+	LENGTH  = "0x01800000"
+	TYPE  = "EfiGcdMemoryTypeMemoryMappedIo"
+	ATTRIBUTES  = "0x8000000000000001"
+End
+
+RSVCHIPSET
+	Name  = "IOAPIC Dedicated Space"
+	BASEADDR  = "$(APCB)"
+	LENGTH  = "$(APCL)"
+	TYPE  = "EfiGcdMemoryTypeMemoryMappedIo"
+	ATTRIBUTES  = "0x1"
+End
+
+RSVCHIPSET
+	Name  = "HPET Memory Mapped Space"
+	BASEADDR  = "0xFED00000"
+	LENGTH  = "0x4000"
+	TYPE  = "EfiGcdMemoryTypeMemoryMappedIo"
+	ATTRIBUTES  = "0x1"
+End
+
+RSVCHIPSET
+	Name  = "BIOS Flash resources Region"
+	BASEADDR  = "$(BIOS_AREA_BASE)"
+	LENGTH  = "$(BIOS_AREA_SIZE)"
+	TYPE  = "EfiGcdMemoryTypeMemoryMappedIo"
+	ATTRIBUTES  = "0x8000000000000001"
+End
+
+RSVCHIPSET
+	Name  = "ME Flash resources Region"
+	BASEADDR  = "0xFF000000"
+	LENGTH  = "0x800000"
+	TYPE  = "EfiGcdMemoryTypeMemoryMappedIo"
+	ATTRIBUTES  = "0x8000000000000001"
+End
+
+RSVCHIPSET
+	Name  = "IO Used by ACPI PM Registers"
+	BASEADDR  = "$(PMBA)"
+	LENGTH  = "$(PMLN)"
+	TYPE  = "EfiGcdIoTypeIo"
+	ATTRIBUTES  = "0xffffffffffffffff"
+End
+
+RSVCHIPSET
+	Name  = "SMBUS register block"
+	BASEADDR  = "$(SMBS)"
+	LENGTH  = "$(SMBL)"
+	TYPE  = "EfiGcdIoTypeIo"
+	ATTRIBUTES  = "0xffffffffffffffff"
+End
+
+TOKEN
+        Name = "A_S3_PKG"
+        Value = "0x5,0x0,0,0"
+        Help = "Intel ICH(x) example. Modify for a new Chipset"
+        TokenType = Expression
+        TargetMAK = Yes 
+        Range = "4 decimal or Hex (use '0x' prefix) values separated with ','"
+End
+
+TOKEN
+        Name = "A_S4_PKG"
+        Value = "0x6,0x0,0,0"
+        Help = "Intel ICH(x) example. Modify for a new Chipset"
+        TokenType = Expression
+        TargetMAK = Yes 
+        Range = "4 decimal or Hex (use '0x' prefix) values separated with ','"
+End
+
+TOKEN
+        Name  = "S3_BASE_MEMORY_SIZE"
+        Value  = "0x800000"
+        Help  = "Number of bytes for S3 resume base memory."
+        TokenType = Integer
+        TargetH = Yes
+        Range  = "0x40000 = 256K, increase/decrease it in units of 0x1000 = 4K"
+        Token = "A_S3" "=" "1"
+End
+
+# Purley Server does not support S1 and S3. They are not POR for Purley Server.
+TOKEN
+        Name  = "A_S1"
+        Value  = "0"
+        Help  = "S1 Sleep state enabled in BIOS"
+        TokenType = Boolean
+        TargetMAK = Yes
+End
+
+TOKEN
+        Name  = "A_S3"
+        Value  = "0"
+        Help  = "S3 supported"
+        TokenType = Boolean
+        TargetMAK = Yes
+        TargetH = Yes
+End
+
+TOKEN
+	Name  = "SataRaidBusOverrideMaxHandles"
+	Value  = "5"
+	Help  = "Maximum handles to search for in Bus Override GetDriver."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+TOKEN
+	Name  = "sSataRaidBusOverrideMaxHandles"
+	Value  = "5"
+	Help  = "Maximum handles to search for in Bus Override GetDriver."
+	TokenType = Integer
+	TargetH = Yes
+End
+
+OUTPUTREGISTER
+	Name  = "AUTOGEN_BUS_OVERRIDE_ELINKS"
+	Path  = "Build"
+	File  = "SataRaidOverrideInitElink.h"
+	Template  = "BusOverrideGuidsforUefiRaid.txt"
+End
+
+ELINK
+	Name  = "SataBusOverrideGuidsforUefiRaid"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "{0xBB65942B,0x521F,0x4EC3,0xBA,0xF9,0xA9,0x25,0x40,0xCF,0x60,0xD2},"
+	Parent  = "SataBusOverrideGuidsforUefiRaid"
+	Help  = "FFS Guid of Intel Sata controller Driver (SataController.inf)"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "{0x8F5A2E02,0x538C,0x4D59,0xB9,0x20,0xC4,0x78,0x6A,0xCB,0xC5,0x52},"
+	Parent  = "SataBusOverrideGuidsforUefiRaid"
+	Help  = "FFS Guid of AMI AHCI Driver (Ahci.inf)"
+	InvokeOrder = AfterParent
+End
+
+OUTPUTREGISTER
+	Name  = "AUTOGEN_BUS_OVERRIDE_ELINKS"
+	Path  = "Build"
+	File  = "SataRaidOverrideInitElink.h"
+	Template  = "BusOverrideGuidsforUefiRaid.txt"
+End
+
+ELINK
+	Name  = "sSataBusOverrideGuidsforUefiRaid"
+	InvokeOrder = ReplaceParent
+End
+
+ELINK
+	Name  = "{0xBB65942B,0x521F,0x4EC3,0xBA,0xF9,0xA9,0x25,0x40,0xCF,0x60,0xD2},"
+	Parent  = "sSataBusOverrideGuidsforUefiRaid"
+	Help  = "FFS Guid of Intel Sata controller Driver (SataController.inf)"
+	InvokeOrder = AfterParent
+End
+
+ELINK
+	Name  = "{0x8F5A2E02,0x538C,0x4D59,0xB9,0x20,0xC4,0x78,0x6A,0xCB,0xC5,0x52},"
+	Parent  = "sSataBusOverrideGuidsforUefiRaid"
+	Help  = "FFS Guid of AMI AHCI Driver (Ahci.inf)"
+	InvokeOrder = AfterParent
+End

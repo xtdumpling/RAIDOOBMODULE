@@ -1,0 +1,834 @@
+//****************************************************************************
+//****************************************************************************
+//**                                                                        **
+//**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+//**                                                                        **
+//****************************************************************************
+//****************************************************************************
+//
+//  File History
+//
+//  Rev. 1.02   1.Force IPV4 and IPV6 setup items become editable after setup item "Update IPMI LAN Configuration" set to "Yes".
+//              2.Set IPV6 "Configuration Address Source" default to "DHCP"
+//    Bug Fix : 
+//    Reason  : 
+//    Auditor : Jimmy Chiu
+//    Date    : Jun/15/2017
+//
+//  Rev. 1.01
+//    Bug Fix : N/A.
+//    Reason  : Based on Purley_Setup_Mapping_Language_Draft_20170301_Joe.xlsx 
+//              and Official_BIOS_SOP_Revised_Draft_20170301_Mapping_Language_Joe.xlsx 
+//              to implement HII mapping language for BIOS setting preservation.
+//    Auditor : Joe Jhang
+//    Date    : Mar/02/2017
+//
+//  Rev. 1.00
+//    Bug Fix:  Initialize revision
+//    Reason:   Get base code from Grantley
+//    Auditor:  Kasber Chen
+//    Date:     Jun/07/2016
+//
+//****************************************************************************
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**      5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093        **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
+
+//
+// @file  BmcLanConfig.sd
+//
+//  Contains the setup description for BMC Network Page
+//
+
+#ifdef SERVER_MGMT_CONFIGURATION_DATA_DEFINITION
+//***********************************************************
+// Put NVRAM data definitions here.
+// For example:    UINT8 Data1;
+// These definitions will be converted by the build process
+// to a definitions of SERVER_MGMT_CONFIGURATION_DATA fields.
+//***********************************************************
+#if SMCPKG_SUPPORT
+    UINT8         IPMILANSelection;
+    UINT8         SMCSetLan;
+    UINT8         SmcBmcVlan;
+    UINT16        SmcBmcVlanID;
+#endif
+    UINT8         BmcLan1;
+    CHAR16        StationIp1[15];
+    CHAR16        Subnet1[15];
+    CHAR16        RouterIp1[15];
+    CHAR16        RouterMac1[17];
+#if BMC_LAN_COUNT == 2
+    UINT8         BmcLan2;
+    CHAR16        StationIp2[15];
+    CHAR16        Subnet2[15];
+    CHAR16        RouterIp2[15];
+    CHAR16        RouterMac2[17];
+#endif //#if BMC_LAN_COUNT == 2
+    UINT8        Ip6Support1;
+    UINT8        PrefixLength1;
+    CHAR16       StaticIp6Lan1Router1Ip[40];
+    UINT8        Ip6BmcLan1;
+    CHAR16       StaticIp6Lan1[40];
+#if BMC_LAN_COUNT == 2
+    UINT8        Ip6Support2;
+    UINT8        PrefixLength2;
+    CHAR16       StaticIp6Lan2Router1Ip[40];
+    UINT8        Ip6BmcLan2;
+    CHAR16       StaticIp6Lan2[40];
+#endif //#if BMC_LAN_COUNT == 2
+#endif //#ifdef SERVER_MGMT_CONFIGURATION_DATA_DEFINITION
+
+#if defined(VFRCOMPILE) && !defined(CONTROLS_ARE_DEFINED)
+#define CONTROL_DEFINITION
+#endif
+
+#ifdef CONTROL_DEFINITION
+
+#if SMCPKG_SUPPORT
+#define BMCLANCONFIG_ONOF_SMCSetLan\
+    oneof varid = SERVER_MGMT_CONFIGURATION_DATA.SMCSetLan,\
+       prompt      = STRING_TOKEN(STR_SMC_BMCSETLAN),\
+       help        = STRING_TOKEN(STR_SMC_BMCSETLAN_HELP),\
+       option text = STRING_TOKEN(STR_SMC_BMCSETLAN_NO), value = 0, flags = DEFAULT | RESET_REQUIRED;\
+       option text = STRING_TOKEN(STR_SMC_BMCSETLAN_YES),  value = 1, flags = RESET_REQUIRED;\
+   endoneof;
+#endif
+
+#define BMCLANCONFIG_ONEOF_IPV6SUPPORT1\
+    oneof varid = SERVER_MGMT_CONFIGURATION_DATA.Ip6Support1,\
+    questionid = AUTO_ID(BMC_IPV6_SUPPORT_LAN1_KEY),\
+        prompt      = STRING_TOKEN(STR_IPV6_OPTION),\
+        help        = STRING_TOKEN(STR_IPV6_OPTION_HELP_LAN1),\
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =  INTERACTIVE;\
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = INTERACTIVE;\
+        default = 1,\
+        default = 1, defaultstore = AmiMfgDefault,\
+endoneof;
+
+#define BMCLANCONFIG_ONEOF_IPV6SUPPORT2\
+    oneof varid = SERVER_MGMT_CONFIGURATION_DATA.Ip6Support2,\
+    questionid = AUTO_ID(BMC_IPV6_SUPPORT_LAN2_KEY),\
+        prompt      = STRING_TOKEN(STR_IPV6_OPTION),\
+        help        = STRING_TOKEN(STR_IPV6_OPTION_HELP_LAN1),\
+        option text = STRING_TOKEN(STR_ENABLED), value = 1, flags =  INTERACTIVE;\
+        option text = STRING_TOKEN(STR_DISABLED), value = 0, flags = INTERACTIVE;\
+        default = 1,\
+        default = 1, defaultstore = AmiMfgDefault,\
+endoneof;
+
+#if SMCPKG_SUPPORT == 0
+#define BMCLANCONFIG_ONEOF_BMCLAN1\
+    oneof varid = SERVER_MGMT_CONFIGURATION_DATA.BmcLan1,\
+        prompt      = STRING_TOKEN(STR_LAN_OPTION),\
+        help        = STRING_TOKEN(STR_LAN_OPTION_HELP),\
+        option text = STRING_TOKEN(STR_UNSPECIFIED), value = 0, flags = RESET_REQUIRED;\
+        option text = STRING_TOKEN(STR_BIOS_STATIC), value = 1, flags = RESET_REQUIRED;\
+        option text = STRING_TOKEN(STR_BMC_DYNAMIC),  value = 2, flags = RESET_REQUIRED;\
+        option text = STRING_TOKEN(STR_BMC_ADDR_PROTOCOL), value = 4, flags = RESET_REQUIRED;\
+        default = 0,\
+        default = 0, defaultstore = AmiMfgDefault,\
+    endoneof;
+#else //SMCPKG_SUPPORT == 0
+#define BMCLANCONFIG_ONEOF_BMCLAN1\
+    oneof varid = SERVER_MGMT_CONFIGURATION_DATA.BmcLan1,\
+        prompt      = STRING_TOKEN(STR_LAN_OPTION),\
+        help        = STRING_TOKEN(STR_LAN_OPTION_HELP),\
+        option text = STRING_TOKEN(STR_BIOS_STATIC), value = 1, flags = RESET_REQUIRED;\
+        option text = STRING_TOKEN(STR_BMC_DYNAMIC),  value = 2, flags = RESET_REQUIRED;\
+        default = 2,\
+        default = 2, defaultstore = AmiMfgDefault,\
+    endoneof;
+#endif //SMCPKG_SUPPORT == 0
+
+#define BMCLANCONFIG_ONEOF_BMCLAN2\
+    oneof varid = SERVER_MGMT_CONFIGURATION_DATA.BmcLan2,\
+        prompt      = STRING_TOKEN(STR_LAN_OPTION),\
+        help        = STRING_TOKEN(STR_LAN_OPTION_HELP),\
+        option text = STRING_TOKEN(STR_UNSPECIFIED), value = 0, flags = RESET_REQUIRED;\
+        option text = STRING_TOKEN(STR_BIOS_STATIC), value = 1, flags = RESET_REQUIRED;\
+        option text = STRING_TOKEN(STR_BMC_DYNAMIC),  value = 2, flags = RESET_REQUIRED;\
+        option text = STRING_TOKEN(STR_BMC_ADDR_PROTOCOL), value = 4, flags = RESET_REQUIRED;\
+        default = 0,\
+        default = 0, defaultstore = AmiMfgDefault,\
+    endoneof;
+    
+#define BMCLANCONFIG_STRING_IPV6_PREFIXLENGTH1\
+    numeric varid = SERVER_MGMT_CONFIGURATION_DATA.PrefixLength1,\
+        prompt = STRING_TOKEN(STR_STATION_IP6_ADDRESS_PREFIX_LENGTH),\
+        help = STRING_TOKEN(STR_STATION_IP6_ADDRESS_PREFIX_LENGTH_HELP),\
+        minimum = 0,\
+        maximum = 128,\
+        default = 0,\
+        default = 0, defaultstore = AmiMfgDefault,\
+    endnumeric;
+    
+#define BMCLANCONFIG_STRING_IPV6_PREFIXLENGTH2\
+    numeric varid = SERVER_MGMT_CONFIGURATION_DATA.PrefixLength2,\
+        prompt = STRING_TOKEN(STR_STATION_IP6_ADDRESS_PREFIX_LENGTH),\
+        help = STRING_TOKEN(STR_STATION_IP6_ADDRESS_PREFIX_LENGTH_HELP),\
+        minimum = 0,\
+        maximum = 128,\
+        default = 0,\
+        default = 0, defaultstore = AmiMfgDefault,\
+    endnumeric;
+    
+#define IP6BMCLANCONFIG_IPV6_STATIC_ROUTER1_IP_ADDRESS1\
+    string varid = SERVER_MGMT_CONFIGURATION_DATA.StaticIp6Lan1Router1Ip,\
+        prompt = STRING_TOKEN(STR_STATION_IP6_ROUTER_ADDRESS),\
+        help = STRING_TOKEN(STR_STATION_IP6_ROUTER_ADDRESS_HELP),\
+        flags = INTERACTIVE,\
+        key = AUTO_ID(BMC_NETWORK_STATION_IP6_ROUTER1_LAN1_KEY),\
+        minsize = 6,\
+        maxsize = 39,\
+        default = STRING_TOKEN(STR_STATION_IP6_ADDRESS_DEFAULT),\
+        default = STRING_TOKEN(STR_STATION_IP6_ADDRESS_DEFAULT), defaultstore = AmiMfgDefault,\
+    endstring;
+    
+#define IP6BMCLANCONFIG_IPV6_STATIC_ROUTER1_IP_ADDRESS2\
+    string varid = SERVER_MGMT_CONFIGURATION_DATA.StaticIp6Lan2Router1Ip,\
+        prompt = STRING_TOKEN(STR_STATION_IP6_ROUTER_ADDRESS),\
+        help = STRING_TOKEN(STR_STATION_IP6_ROUTER_ADDRESS_HELP),\
+        flags = INTERACTIVE,\
+        key = AUTO_ID(BMC_NETWORK_STATION_IP6_ROUTER1_LAN2_KEY),\
+        minsize = 6,\
+        maxsize = 39,\
+        default = STRING_TOKEN(STR_STATION_IP6_ADDRESS_DEFAULT),\
+        default = STRING_TOKEN(STR_STATION_IP6_ADDRESS_DEFAULT), defaultstore = AmiMfgDefault,\
+    endstring;
+
+#if SMCPKG_SUPPORT == 0
+#define IP6BMCLANCONFIG_ONEOF_BMCLAN1\
+    oneof varid = SERVER_MGMT_CONFIGURATION_DATA.Ip6BmcLan1,\
+        prompt      = STRING_TOKEN(STR_IP6_LAN_OPTION),\
+        help        = STRING_TOKEN(STR_LAN_OPTION_HELP),\
+        option text = STRING_TOKEN(STR_UNSPECIFIED), value = 0, flags = RESET_REQUIRED;\
+        option text = STRING_TOKEN(STR_BIOS_STATIC), value = 1, flags = RESET_REQUIRED;\
+        option text = STRING_TOKEN(STR_BMC_DYNAMIC),  value = 2, flags = RESET_REQUIRED;\
+        default = 0,\
+        default = 0, defaultstore = AmiMfgDefault,\
+    endoneof;
+#else //SMCPKG_SUPPORT == 0
+#define IP6BMCLANCONFIG_ONEOF_BMCLAN1\
+    oneof varid = SERVER_MGMT_CONFIGURATION_DATA.Ip6BmcLan1,\
+        prompt      = STRING_TOKEN(STR_IP6_LAN_OPTION),\
+        help        = STRING_TOKEN(STR_LAN_OPTION_HELP),\
+        option text = STRING_TOKEN(STR_BIOS_STATIC), value = 1, flags = RESET_REQUIRED;\
+        option text = STRING_TOKEN(STR_BMC_DYNAMIC),  value = 2, flags = RESET_REQUIRED;\
+        default = 2,\
+        default = 2, defaultstore = AmiMfgDefault,\
+    endoneof;
+#endif //SMCPKG_SUPPORT == 0
+
+#define IP6BMCLANCONFIG_ONEOF_BMCLAN2\
+    oneof varid = SERVER_MGMT_CONFIGURATION_DATA.Ip6BmcLan2,\
+        prompt      = STRING_TOKEN(STR_LAN_OPTION),\
+        help        = STRING_TOKEN(STR_LAN_OPTION_HELP),\
+        option text = STRING_TOKEN(STR_UNSPECIFIED), value = 0, flags = RESET_REQUIRED;\
+        option text = STRING_TOKEN(STR_BIOS_STATIC), value = 1, flags = RESET_REQUIRED;\
+        option text = STRING_TOKEN(STR_BMC_DYNAMIC),  value = 2, flags = RESET_REQUIRED;\
+        default = 0,\
+        default = 0, defaultstore = AmiMfgDefault,\
+    endoneof;
+
+#define IP6BMCLANCONFIG_IPV6_ADDRESS_LAN1\
+    string varid = SERVER_MGMT_CONFIGURATION_DATA.StaticIp6Lan1,\
+        prompt = STRING_TOKEN(STR_STATION_IP6_ADDRESS),\
+        help = STRING_TOKEN(STR_STATION_IP6_HELP),\
+        flags = INTERACTIVE,\
+        key = AUTO_ID(BMC_NETWORK_STATION_IP6_LAN1_KEY),\
+        minsize = 6,\
+        maxsize = 39,\
+        default = STRING_TOKEN(STR_STATION_IP6_ADDRESS_DEFAULT),\
+        default = STRING_TOKEN(STR_STATION_IP6_ADDRESS_DEFAULT), defaultstore = AmiMfgDefault,\
+    endstring;
+
+#define IP6BMCLANCONFIG_IPV6_ADDRESS_LAN2\
+    string varid = SERVER_MGMT_CONFIGURATION_DATA.StaticIp6Lan2,\
+        prompt = STRING_TOKEN(STR_STATION_IP6_ADDRESS),\
+        help = STRING_TOKEN(STR_STATION_IP6_HELP),\
+        flags = INTERACTIVE,\
+        key = AUTO_ID(BMC_NETWORK_STATION_IP6_LAN2_KEY),\
+        minsize = 6,\
+        maxsize = 39,\
+        default = STRING_TOKEN(STR_STATION_IP6_ADDRESS_DEFAULT),\
+        default = STRING_TOKEN(STR_STATION_IP6_ADDRESS_DEFAULT), defaultstore = AmiMfgDefault,\
+    endstring;
+
+#define BMCLANCONFIG_STRING_STATIONIP1\
+    string varid = SERVER_MGMT_CONFIGURATION_DATA.StationIp1,\
+        prompt = STRING_TOKEN(STR_STATION_IP_ADDRESS),\
+        help = STRING_TOKEN(STR_STATION_IP_HELP),\
+        flags = INTERACTIVE,\
+        key = AUTO_ID(BMC_NETWORK_STATION_IP1_KEY),\
+        minsize = 7,\
+        maxsize = 15,\
+        default = STRING_TOKEN(STR_STATION_IP_ADDRESS_DEFAULT),\
+        default = STRING_TOKEN(STR_STATION_IP_ADDRESS_DEFAULT), defaultstore = AmiMfgDefault,\
+    endstring;
+
+#define BMCLANCONFIG_STRING_SUBNET1\
+    string varid = SERVER_MGMT_CONFIGURATION_DATA.Subnet1,\
+        prompt = STRING_TOKEN(STR_SUBNET_MASK),\
+        help = STRING_TOKEN(STR_SUBNET_MASK_HELP),\
+        flags = INTERACTIVE,\
+        key = AUTO_ID(BMC_NETWORK_SUBNET1_KEY),\
+        minsize = 7,\
+        maxsize = 15,\
+        default = STRING_TOKEN(STR_SUBNET_MASK_DEFAULT),\
+        default = STRING_TOKEN(STR_SUBNET_MASK_DEFAULT), defaultstore = AmiMfgDefault,\
+    endstring;
+
+#define BMCLANCONFIG_STRING_ROUTERIP1\
+    string varid = SERVER_MGMT_CONFIGURATION_DATA.RouterIp1,\
+        prompt = STRING_TOKEN(STR_ROUTER_IP_ADDRESS),\
+        help = STRING_TOKEN(STR_ROUTER_IP_HELP),\
+        flags = INTERACTIVE,\
+        key = AUTO_ID(BMC_NETWORK_ROUTER_IP1_KEY),\
+        minsize = 7,\
+        maxsize = 15,\
+        default = STRING_TOKEN(STR_ROUTER_IP_ADDRESS_DEFAULT),\
+        default = STRING_TOKEN(STR_ROUTER_IP_ADDRESS_DEFAULT), defaultstore = AmiMfgDefault,\
+    endstring;
+
+#define BMCLANCONFIG_STRING_ROUTERMAC1\
+    string varid = SERVER_MGMT_CONFIGURATION_DATA.RouterMac1,\
+        prompt = STRING_TOKEN(STR_ROUTER_MAC_ADDRESS),\
+        help = STRING_TOKEN(STR_ROUTER_MAC_HELP),\
+        flags = INTERACTIVE,\
+        key = AUTO_ID(BMC_NETWORK_ROUTER_MAC1_KEY),\
+        minsize = 17,\
+        maxsize = 17,\
+        default = STRING_TOKEN(STR_ROUTER_MAC_ADDRESS_DEFAULT),\
+        default = STRING_TOKEN(STR_ROUTER_MAC_ADDRESS_DEFAULT), defaultstore = AmiMfgDefault,\
+    endstring;
+
+#define BMCLANCONFIG_STRING_STATIONIP2\
+    string varid = SERVER_MGMT_CONFIGURATION_DATA.StationIp2,\
+        prompt = STRING_TOKEN(STR_STATION_IP_ADDRESS),\
+        help = STRING_TOKEN(STR_STATION_IP_HELP),\
+        flags = INTERACTIVE,\
+        key = AUTO_ID(BMC_NETWORK_STATION_IP2_KEY),\
+        minsize = 7,\
+        maxsize = 15,\
+        default = STRING_TOKEN(STR_STATION_IP_ADDRESS_DEFAULT),\
+        default = STRING_TOKEN(STR_STATION_IP_ADDRESS_DEFAULT), defaultstore = AmiMfgDefault,\
+    endstring;
+
+#define BMCLANCONFIG_STRING_SUBNET2\
+    string varid = SERVER_MGMT_CONFIGURATION_DATA.Subnet2,\
+        prompt = STRING_TOKEN(STR_SUBNET_MASK),\
+        help = STRING_TOKEN(STR_SUBNET_MASK_HELP),\
+        flags = INTERACTIVE,\
+        key = AUTO_ID(BMC_NETWORK_SUBNET2_KEY),\
+        minsize = 7,\
+        maxsize = 15,\
+        default = STRING_TOKEN(STR_SUBNET_MASK_DEFAULT),\
+        default = STRING_TOKEN(STR_SUBNET_MASK_DEFAULT), defaultstore = AmiMfgDefault,\
+    endstring;
+
+#define BMCLANCONFIG_STRING_ROUTERIP2\
+    string varid = SERVER_MGMT_CONFIGURATION_DATA.RouterIp2,\
+        prompt = STRING_TOKEN(STR_ROUTER_IP_ADDRESS),\
+        help = STRING_TOKEN(STR_ROUTER_IP_HELP),\
+        flags = INTERACTIVE,\
+        key = AUTO_ID(BMC_NETWORK_ROUTER_IP2_KEY),\
+        minsize = 7,\
+        maxsize = 15,\
+        default = STRING_TOKEN(STR_ROUTER_IP_ADDRESS_DEFAULT),\
+        default = STRING_TOKEN(STR_ROUTER_IP_ADDRESS_DEFAULT), defaultstore = AmiMfgDefault,\
+    endstring;
+
+#define BMCLANCONFIG_STRING_ROUTERMAC2\
+    string varid = SERVER_MGMT_CONFIGURATION_DATA.RouterMac2,\
+        prompt = STRING_TOKEN(STR_ROUTER_MAC_ADDRESS),\
+        help = STRING_TOKEN(STR_ROUTER_MAC_HELP),\
+        flags = INTERACTIVE,\
+        key = AUTO_ID(BMC_NETWORK_ROUTER_MAC2_KEY),\
+        minsize = 17,\
+        maxsize = 17,\
+        default = STRING_TOKEN(STR_ROUTER_MAC_ADDRESS_DEFAULT),\
+        default = STRING_TOKEN(STR_ROUTER_MAC_ADDRESS_DEFAULT), defaultstore = AmiMfgDefault,\
+    endstring;
+
+#endif //#ifdef CONTROL_DEFINITION
+
+#ifdef CONTROLS_WITH_DEFAULTS
+#if SMCPKG_SUPPORT
+    BMCLANCONFIG_ONOF_SMCSetLan	// SMCPKG_SUPPORT
+#endif
+    BMCLANCONFIG_ONEOF_IPV6SUPPORT1
+    BMCLANCONFIG_ONEOF_BMCLAN1
+    IP6BMCLANCONFIG_ONEOF_BMCLAN1
+    BMCLANCONFIG_STRING_IPV6_PREFIXLENGTH1
+    IP6BMCLANCONFIG_IPV6_STATIC_ROUTER1_IP_ADDRESS1
+    IP6BMCLANCONFIG_IPV6_ADDRESS_LAN1
+    BMCLANCONFIG_STRING_STATIONIP1
+    BMCLANCONFIG_STRING_SUBNET1
+    BMCLANCONFIG_STRING_ROUTERIP1
+    BMCLANCONFIG_STRING_ROUTERMAC1
+#if BMC_LAN_COUNT == 2
+    BMCLANCONFIG_ONEOF_IPV6SUPPORT2
+    BMCLANCONFIG_ONEOF_BMCLAN2
+    IP6BMCLANCONFIG_ONEOF_BMCLAN2
+    IP6BMCLANCONFIG_IPV6_ADDRESS_LAN2
+    BMCLANCONFIG_STRING_IPV6_PREFIXLENGTH2
+    IP6BMCLANCONFIG_IPV6_STATIC_ROUTER1_IP_ADDRESS2
+    BMCLANCONFIG_STRING_STATIONIP2
+    BMCLANCONFIG_STRING_SUBNET2
+    BMCLANCONFIG_STRING_ROUTERIP2
+    BMCLANCONFIG_STRING_ROUTERMAC2
+#endif //#if BMC_LAN_COUNT == 2
+#endif //#ifdef CONTROLS_WITH_DEFAULTS
+
+#ifdef SERVER_MGMT_FORM_SET
+
+    #ifdef FORM_SET_TYPEDEF
+    //
+    // If you need any additional type definitions add them here
+    //
+    #endif
+
+    #ifdef FORM_SET_VARSTORE
+    //
+    //If you need custom varstore's define them here
+    //
+    #endif
+
+    #ifdef FORM_SET_ITEM
+    //
+    // Define controls to be added to the main page of the formset
+    //
+    #endif
+
+    #ifdef FORM_SET_GOTO
+        suppressif  ideqval SERVER_MGMT_CONFIGURATION_DATA.BmcSupport == 0;
+        grayoutif ideqval SYSTEM_ACCESS.Access == SYSTEM_PASSWORD_USER;
+        goto BMC_NETWORK_FORM,
+            prompt  = STRING_TOKEN(STR_BMC_NETWORK_TITLE),
+            help    = STRING_TOKEN(STR_BMC_NETWORK_HELP),
+            flags   = INTERACTIVE,
+            key     = AUTO_ID(BMC_NETWORK_FORM_KEY);
+        SUPPRESS_GRAYOUT_ENDIF
+    #endif
+
+    #ifdef FORM_SET_FORM
+        #ifndef BMCLANCONFIG_FORM_SERVERMGMT
+        #define BMCLANCONFIG_FORM_SERVERMGMT
+        form formid = AUTO_ID(BMC_NETWORK_FORM),
+            title  = STRING_TOKEN(STR_BMC_NETWORK_TITLE);
+            subtitle text = STRING_TOKEN(STR_BMC_NETWORK_SUB_TITLE);
+#if SMCPKG_SUPPORT
+            SEPARATOR
+            BMCLANCONFIG_ONOF_SMCSetLan
+            SEPARATOR
+#endif
+            subtitle text = STRING_TOKEN(STR_IP_BMC_STAR_SEPARATOR);
+            subtitle text = STRING_TOKEN(STR_IP_BMC_NETWORK_SUB_TITLE);
+            subtitle text = STRING_TOKEN(STR_IP_BMC_STAR_SEPARATOR);
+#if SMCPKG_SUPPORT == 0
+            #if BMC_LAN_COUNT >= 1
+                subtitle text = STRING_TOKEN(STR_NULL_STRING);
+                subtitle text = STRING_TOKEN(STR_LAN_CHANNEL_1);
+                BMCLANCONFIG_ONEOF_BMCLAN1
+                suppressif NOT ideqval SERVER_MGMT_CONFIGURATION_DATA.BmcLan1 == 1;
+                    BMCLANCONFIG_STRING_STATIONIP1
+                    BMCLANCONFIG_STRING_SUBNET1
+
+                    text help  = STRING_TOKEN (STR_BMC_STATION_MAC_ADDRESS),
+                        text = STRING_TOKEN(STR_STATION_MAC_ADDRESS),
+                        text = STRING_TOKEN(STR_STATION_MAC1_VAL),
+                        flags = 0,
+                        key   = 0;
+
+                    BMCLANCONFIG_STRING_ROUTERIP1
+                    BMCLANCONFIG_STRING_ROUTERMAC1
+                endif;
+                suppressif ideqval SERVER_MGMT_CONFIGURATION_DATA.BmcLan1 == 1;
+
+                     text help  = STRING_TOKEN (STR_CURR_LAN_OPTION_HELP),
+                        text = STRING_TOKEN(STR_CURR_LAN_OPTION),
+                        text = STRING_TOKEN(STR_CURR_LANCAS1_VAL),
+                        flags = 0,
+                        key   = 0;
+                        
+                    text help  = STRING_TOKEN (STR_BMC_STATION_IP_HELP),
+                        text = STRING_TOKEN(STR_STATION_IP_ADDRESS),
+                        text = STRING_TOKEN(STR_STATION_IP1_VAL),
+                        flags = 0,
+                        key   = 0;
+
+                    text help  = STRING_TOKEN (STR_BMC_SUBNET_MASK_HELP),
+                        text = STRING_TOKEN(STR_SUBNET_MASK),
+                        text = STRING_TOKEN(STR_SUBNET_MASK1_VAL),
+                        flags = 0,
+                        key   = 0;
+
+                    text help  = STRING_TOKEN (STR_BMC_STATION_MAC_ADDRESS),
+                        text = STRING_TOKEN(STR_STATION_MAC_ADDRESS),
+                        text = STRING_TOKEN(STR_STATION_MAC1_VAL),
+                        flags = 0,
+                        key   = 0;
+
+                    text help  = STRING_TOKEN (STR_BMC_ROUTER_IP_HELP),
+                        text = STRING_TOKEN(STR_ROUTER_IP_ADDRESS),
+                        text = STRING_TOKEN(STR_ROUTER_IP1_VAL),
+                        flags = 0,
+                        key   = 0;
+
+                    text help  = STRING_TOKEN (STR_BMC_ROUTER_MAC_HELP),
+                        text = STRING_TOKEN(STR_ROUTER_MAC_ADDRESS),
+                        text = STRING_TOKEN(STR_ROUTER_MAC1_VAL),
+                        flags = 0,
+                        key   = 0;
+                endif;
+            #endif //#if BMC_LAN_COUNT >= 1
+#else //SMCPKG_SUPPORT == 0
+            #if BMC_LAN_COUNT >= 1
+                subtitle text = STRING_TOKEN(STR_NULL_STRING);
+  grayoutif 1;
+  oneof varid = SERVER_MGMT_CONFIGURATION_DATA.IPMILANSelection,
+	prompt      = STRING_TOKEN(STR_LAN_SELECTION),
+	help        = STRING_TOKEN(STR_LAN_SELECTION_HELP),
+	option text = STRING_TOKEN(STR_DEDICATED), value = 0, flags = RESET_REQUIRED;
+	option text = STRING_TOKEN(STR_SHARE), value = 1, flags = RESET_REQUIRED;
+	option text = STRING_TOKEN(STR_FAILOVER), value = 2, flags = DEFAULT | RESET_REQUIRED;
+  endoneof;
+
+  INVENTORY(STRING_TOKEN(STR_LAN_STATUS),STRING_TOKEN(STR_LAN_STATUS_VALUE))
+
+  endif;
+  SEPARATOR
+
+	//BMCLANCONFIG_ONOF_SMCSetLan
+
+               grayoutif ideqval SERVER_MGMT_CONFIGURATION_DATA.SMCSetLan == 0;
+                BMCLANCONFIG_ONEOF_BMCLAN1
+		 suppressif NOT ideqval SERVER_MGMT_CONFIGURATION_DATA.BmcLan1 == 1;
+                    text help  = STRING_TOKEN (STR_BMC_STATION_MAC_ADDRESS),
+                        text = STRING_TOKEN(STR_STATION_MAC_ADDRESS),
+                        text = STRING_TOKEN(STR_STATION_MAC1_VAL),
+                        flags = 0,
+                        key   = 0;
+
+                    BMCLANCONFIG_STRING_STATIONIP1
+                    BMCLANCONFIG_STRING_SUBNET1
+
+                    BMCLANCONFIG_STRING_ROUTERIP1
+                endif;
+                endif;               
+		suppressif  SMCPKG_SUPPORT;
+                    BMCLANCONFIG_STRING_ROUTERMAC1
+                endif;
+                suppressif ideqval SERVER_MGMT_CONFIGURATION_DATA.BmcLan1 == 1;
+                    text help  = STRING_TOKEN (STR_BMC_STATION_IP_HELP),
+                        text = STRING_TOKEN(STR_STATION_IP_ADDRESS),
+                        text = STRING_TOKEN(STR_STATION_IP1_VAL),
+                        flags = 0,
+                        key   = 0;
+
+                    text help  = STRING_TOKEN (STR_BMC_SUBNET_MASK_HELP),
+                        text = STRING_TOKEN(STR_SUBNET_MASK),
+                        text = STRING_TOKEN(STR_SUBNET_MASK1_VAL),
+                        flags = 0,
+                        key   = 0;
+
+                    text help  = STRING_TOKEN (STR_BMC_STATION_MAC_ADDRESS),
+                        text = STRING_TOKEN(STR_STATION_MAC_ADDRESS),
+                        text = STRING_TOKEN(STR_STATION_MAC1_VAL),
+                        flags = 0,
+                        key   = 0;
+
+                    text help  = STRING_TOKEN (STR_BMC_ROUTER_IP_HELP),
+                        text = STRING_TOKEN(STR_ROUTER_IP_ADDRESS),
+                        text = STRING_TOKEN(STR_ROUTER_IP1_VAL),
+                        flags = 0,
+                        key   = 0;
+
+		suppressif  SMCPKG_SUPPORT;
+                    text help  = STRING_TOKEN (STR_BMC_ROUTER_MAC_HELP),
+                        text = STRING_TOKEN(STR_ROUTER_MAC_ADDRESS),
+                        text = STRING_TOKEN(STR_ROUTER_MAC1_VAL),
+                        flags = 0,
+                        key   = 0;
+                endif; //
+                endif;
+            #endif //#if BMC_LAN_COUNT >= 1
+#endif //SMCPKG_SUPPORT == 0
+
+            #if BMC_LAN_COUNT == 2
+                subtitle text = STRING_TOKEN(STR_NULL_STRING);
+                subtitle text = STRING_TOKEN(STR_LAN_CHANNEL_2);
+                BMCLANCONFIG_ONEOF_BMCLAN2
+                suppressif NOT ideqval SERVER_MGMT_CONFIGURATION_DATA.BmcLan2 == 1;
+                    BMCLANCONFIG_STRING_STATIONIP2
+                    BMCLANCONFIG_STRING_SUBNET2
+
+                    text help  = STRING_TOKEN (STR_BMC_STATION_MAC_ADDRESS),
+                        text = STRING_TOKEN(STR_STATION_MAC_ADDRESS),
+                        text = STRING_TOKEN(STR_STATION_MAC2_VAL),
+                        flags = 0,
+                        key   = 0;
+
+                    BMCLANCONFIG_STRING_ROUTERIP2
+                    BMCLANCONFIG_STRING_ROUTERMAC2
+                endif;
+                suppressif ideqval SERVER_MGMT_CONFIGURATION_DATA.BmcLan2 == 1;
+#if SMCPKG_SUPPORT == 0
+                   text help  = STRING_TOKEN (STR_CURR_LAN_OPTION_HELP),
+                        text = STRING_TOKEN(STR_CURR_LAN_OPTION),
+                        text = STRING_TOKEN(STR_CURR_LANCAS2_VAL),
+                        flags = 0,
+                        key   = 0;
+#endif
+                    text help  = STRING_TOKEN (STR_BMC_STATION_IP_HELP),
+                        text = STRING_TOKEN(STR_STATION_IP_ADDRESS),
+                        text = STRING_TOKEN(STR_STATION_IP2_VAL),
+                        flags = 0,
+                        key   = 0;
+
+                    text help  = STRING_TOKEN (STR_BMC_SUBNET_MASK_HELP),
+                        text = STRING_TOKEN(STR_SUBNET_MASK),
+                        text = STRING_TOKEN(STR_SUBNET_MASK2_VAL),
+                        flags = 0,
+                        key   = 0;
+
+                    text help  = STRING_TOKEN (STR_BMC_STATION_MAC_ADDRESS),
+                        text = STRING_TOKEN(STR_STATION_MAC_ADDRESS),
+                        text = STRING_TOKEN(STR_STATION_MAC2_VAL),
+                        flags = 0,
+                        key   = 0;
+
+                    text help  = STRING_TOKEN (STR_BMC_ROUTER_IP_HELP),
+                        text = STRING_TOKEN(STR_ROUTER_IP_ADDRESS),
+                        text = STRING_TOKEN(STR_ROUTER_IP2_VAL),
+                        flags = 0,
+                        key   = 0;
+
+                    text help  = STRING_TOKEN (STR_BMC_ROUTER_MAC_HELP),
+                        text = STRING_TOKEN(STR_ROUTER_MAC_ADDRESS),
+                        text = STRING_TOKEN(STR_ROUTER_MAC2_VAL),
+                        flags = 0,
+                        key   = 0;
+                endif;
+            #endif //#if BMC_LAN_COUNT == 2
+#if SMCPKG_SUPPORT
+            grayoutif ideqval SERVER_MGMT_CONFIGURATION_DATA.SMCSetLan == 0;
+            oneof varid = SERVER_MGMT_CONFIGURATION_DATA.SmcBmcVlan,
+		prompt      = STRING_TOKEN(STR_SMC_BMC_VLAN),
+		help        = STRING_TOKEN(STR_SMC_BMC_VLAN_HELP),
+		option text = STRING_TOKEN(STR_DISABLE), value = 0, flags = DEFAULT | RESET_REQUIRED;
+		option text = STRING_TOKEN(STR_ENABLE), value = 1, flags = RESET_REQUIRED;
+	    endoneof;
+
+	    suppressif ideqval SERVER_MGMT_CONFIGURATION_DATA.SmcBmcVlan == 0;
+	    numeric varid = SERVER_MGMT_CONFIGURATION_DATA.SmcBmcVlanID,
+		prompt  = STRING_TOKEN(STR_SMC_BMC_VLAN_ID),
+		help    = STRING_TOKEN(STR_SMC_BMC_VLAN_ID_HELP),
+		flags   = RESET_REQUIRED,
+		minimum  = 0,
+		maximum = 4095,
+		step    = 0,
+		default = 0,
+	    endnumeric;
+	    endif;
+	    endif;
+#endif
+                subtitle text = STRING_TOKEN(STR_NULL_STRING);
+                subtitle text = STRING_TOKEN(STR_IP_BMC_STAR_SEPARATOR);
+                subtitle text = STRING_TOKEN(STR_IP6_BMC_NETWORK_SUB_TITLE);
+                subtitle text = STRING_TOKEN(STR_IP_BMC_STAR_SEPARATOR);
+#if SMCPKG_SUPPORT == 0
+            #if BMC_LAN_COUNT >= 1
+                subtitle text = STRING_TOKEN(STR_NULL_STRING);
+                subtitle text = STRING_TOKEN(STR_LAN_CHANNEL_1);
+                subtitle text = STRING_TOKEN(STR_NULL_STRING);
+                BMCLANCONFIG_ONEOF_IPV6SUPPORT1
+                suppressif ideqval SERVER_MGMT_CONFIGURATION_DATA.Ip6Support1 == 0;
+                subtitle text = STRING_TOKEN(STR_NULL_STRING);
+                IP6BMCLANCONFIG_ONEOF_BMCLAN1
+                suppressif NOT ideqval SERVER_MGMT_CONFIGURATION_DATA.Ip6BmcLan1 == 1;
+                     IP6BMCLANCONFIG_IPV6_ADDRESS_LAN1
+                     BMCLANCONFIG_STRING_IPV6_PREFIXLENGTH1
+                     IP6BMCLANCONFIG_IPV6_STATIC_ROUTER1_IP_ADDRESS1
+                endif;
+                suppressif NOT ideqval SERVER_MGMT_CONFIGURATION_DATA.Ip6BmcLan1 == 0;
+
+                     text help  = STRING_TOKEN (STR_IP6_CURR_LAN_OPTION_HELP),
+                        text = STRING_TOKEN(STR_IP6_CURR_LAN_OPTION),
+                        text = STRING_TOKEN(STR_IP6_CURR_LANCAS1_VAL),
+                        flags = 0,
+                        key   = 0;
+
+                    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+                    subtitle text = STRING_TOKEN(STR_STATION_IP6_ADDRESS);
+                    subtitle text = STRING_TOKEN(STR_STATION_IP6_LAN1_VAL);
+
+                    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+                    subtitle text = STRING_TOKEN(STR_STATION_IP6_ADDRESS_PREFIX_LENGTH);
+                    subtitle text = STRING_TOKEN(STR_STATION_IP6_LAN1_PREFIX_LENGTH_VAL);
+
+                    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+                    subtitle text = STRING_TOKEN(STR_STATION_IP6_ROUTER_ADDRESS);
+                    subtitle text = STRING_TOKEN(STR_STATION_IP6_ROUTER_ADDRESS1_VAL);
+                    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+                    text help  = STRING_TOKEN (STR_STATION_IP6_ADD_STATUS_HELP),
+                        text = STRING_TOKEN(STR_STATION_IP6_ADD_STATUS),
+                        text = STRING_TOKEN(STR_STATION_IP6_LAN1_ADD_STATUS),
+                        flags = 0,
+                        key   = 0;
+                     text help  = STRING_TOKEN (STR_STATION_IP6_DHCP_ALGO_HELP),
+                        text = STRING_TOKEN(STR_STATION_IP6_DHCP_ALGO),
+                        text = STRING_TOKEN(STR_STATION_IP6_LAN1_DHCP_ALGO),
+                        flags = 0,
+                        key   = 0;
+
+                endif;
+                endif;
+            suppressif NOT ideqval SERVER_MGMT_CONFIGURATION_DATA.Ip6Support1 == 0;
+            subtitle text = STRING_TOKEN(STR_NULL_STRING);
+            subtitle text = STRING_TOKEN(STR_IP6_BMC_NOT_SUPPORTED);
+            endif;
+
+          #endif //#if BMC_LAN_COUNT >= 1
+#else //SMCPKG_SUPPORT == 0
+            #if BMC_LAN_COUNT >= 1
+                grayoutif 1;
+                    text help  = STRING_TOKEN (STR_STATION_IP6_ADD_STATUS_HELP),
+                        text = STRING_TOKEN(STR_STATION_IP6_ADD_STATUS),
+                        text = STRING_TOKEN(STR_STATION_IP6_LAN1_ADD_STATUS),
+                        flags = 0,
+                        key   = 0;
+                endif;
+		
+                SEPARATOR
+                grayoutif ideqval SERVER_MGMT_CONFIGURATION_DATA.SMCSetLan == 0;
+                    BMCLANCONFIG_ONEOF_IPV6SUPPORT1
+		    
+                    suppressif ideqval SERVER_MGMT_CONFIGURATION_DATA.Ip6Support1 == 0;
+                        IP6BMCLANCONFIG_ONEOF_BMCLAN1
+		
+                        suppressif NOT ideqval SERVER_MGMT_CONFIGURATION_DATA.Ip6BmcLan1 == 1;
+                            IP6BMCLANCONFIG_IPV6_ADDRESS_LAN1
+                            BMCLANCONFIG_STRING_IPV6_PREFIXLENGTH1
+                            IP6BMCLANCONFIG_IPV6_STATIC_ROUTER1_IP_ADDRESS1
+                        endif;
+                
+                        suppressif ideqval SERVER_MGMT_CONFIGURATION_DATA.Ip6BmcLan1 == 1;	
+                            text help  = STRING_TOKEN (STR_STATION_IP6_ADDRESS_HELP),
+                                text = STRING_TOKEN(STR_STATION_IP6_ADDRESS),
+                                text = STRING_TOKEN(STR_STATION_IP6_LAN1_VAL),
+                                flags = 0,
+                                key   = 0;
+
+                            text help  = STRING_TOKEN (STR_STATION_IP6_ADDRESS_PREFIX_LENGTH_HELP),
+                                text = STRING_TOKEN(STR_STATION_IP6_ADDRESS_PREFIX_LENGTH),
+                                text = STRING_TOKEN(STR_STATION_IP6_LAN1_PREFIX_LENGTH_VAL),
+                                flags = 0,
+                                key   = 0;			
+
+                            text help  = STRING_TOKEN (STR_STATION_IP6_ROUTER_ADDRESS_HELP),
+                                text = STRING_TOKEN(STR_STATION_IP6_ROUTER_ADDRESS),
+                                text = STRING_TOKEN(STR_STATION_IP6_ROUTER_ADDRESS1_VAL),
+                                flags = 0,
+                                key   = 0;
+                        endif;
+                    endif;
+                endif; //SERVER_MGMT_CONFIGURATION_DATA.SMCSetLan == 0;
+
+                grayoutif 1;
+                    suppressif NOT ideqval SERVER_MGMT_CONFIGURATION_DATA.Ip6Support1 == 0;
+                        suppressif NOT ideqval SERVER_MGMT_CONFIGURATION_DATA.Ip6BmcLan1 == 1;
+                            text help  = STRING_TOKEN (STR_STATION_IP6_DHCP_ALGO_HELP),
+                                text = STRING_TOKEN(STR_STATION_IP6_DHCP_ALGO),
+                                text = STRING_TOKEN(STR_STATION_IP6_LAN1_DHCP_ALGO),
+                                flags = 0,
+                                key   = 0;
+                        endif;
+
+                        subtitle text = STRING_TOKEN(STR_IP6_BMC_NOT_SUPPORTED);
+                    endif;
+                endif;
+            #endif //#if BMC_LAN_COUNT >= 1
+#endif //SMCPKG_SUPPORT == 0
+
+          #if BMC_LAN_COUNT == 2
+                subtitle text = STRING_TOKEN(STR_NULL_STRING);
+                subtitle text = STRING_TOKEN(STR_LAN_CHANNEL_2);
+                subtitle text = STRING_TOKEN(STR_NULL_STRING);
+                BMCLANCONFIG_ONEOF_IPV6SUPPORT2
+                suppressif ideqval SERVER_MGMT_CONFIGURATION_DATA.Ip6Support2 == 0;
+                subtitle text = STRING_TOKEN(STR_NULL_STRING);
+                IP6BMCLANCONFIG_ONEOF_BMCLAN2
+                suppressif NOT ideqval SERVER_MGMT_CONFIGURATION_DATA.Ip6BmcLan2 == 1;
+                     IP6BMCLANCONFIG_IPV6_ADDRESS_LAN2
+                     BMCLANCONFIG_STRING_IPV6_PREFIXLENGTH2
+                     IP6BMCLANCONFIG_IPV6_STATIC_ROUTER1_IP_ADDRESS2
+                endif;
+                suppressif NOT ideqval SERVER_MGMT_CONFIGURATION_DATA.Ip6BmcLan2 == 0;
+#if SMCPKG_SUPPORT == 0
+                     text help  = STRING_TOKEN (STR_IP6_CURR_LAN_OPTION_HELP),
+                        text = STRING_TOKEN(STR_IP6_CURR_LAN_OPTION),
+                        text = STRING_TOKEN(STR_IP6_CURR_LANCAS2_VAL),
+                        flags = 0,
+                        key   = 0;
+#endif
+                    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+                    subtitle text = STRING_TOKEN(STR_STATION_IP6_ADDRESS);
+                    subtitle text = STRING_TOKEN(STR_STATION_IP6_LAN2_VAL);
+
+                    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+                    subtitle text = STRING_TOKEN(STR_STATION_IP6_ADDRESS_PREFIX_LENGTH);
+                    subtitle text = STRING_TOKEN(STR_STATION_IP6_LAN2_PREFIX_LENGTH_VAL);
+
+                    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+                    subtitle text = STRING_TOKEN(STR_STATION_IP6_ROUTER_ADDRESS);
+                    subtitle text = STRING_TOKEN(STR_STATION_IP6_ROUTER_ADDRESS2_VAL);
+                    subtitle text = STRING_TOKEN(STR_NULL_STRING);
+
+                    text help  = STRING_TOKEN (STR_STATION_IP6_ADD_STATUS_HELP),
+                        text = STRING_TOKEN(STR_STATION_IP6_ADD_STATUS),
+                        text = STRING_TOKEN(STR_STATION_IP6_LAN2_ADD_STATUS),
+                        flags = 0,
+                        key   = 0;
+                     text help  = STRING_TOKEN (STR_STATION_IP6_DHCP_ALGO_HELP),
+                        text = STRING_TOKEN(STR_STATION_IP6_DHCP_ALGO),
+                        text = STRING_TOKEN(STR_STATION_IP6_LAN2_DHCP_ALGO),
+                        flags = 0,
+                        key   = 0;
+                endif;
+                endif;
+            suppressif NOT ideqval SERVER_MGMT_CONFIGURATION_DATA.Ip6Support2 == 0;
+            subtitle text = STRING_TOKEN(STR_NULL_STRING);
+            subtitle text = STRING_TOKEN(STR_IP6_BMC_NOT_SUPPORTED);
+            endif;
+          #endif //#if BMC_LAN_COUNT == 2
+        endform;
+        #endif //#ifndef BMCLANCONFIG_FORM_SERVERMGMT
+    #endif //#ifdef FORM_SET_FORM
+#endif //#ifdef SERVER_MGMT_FORM_SET
+
+//**********************************************************************
+//**********************************************************************
+//**                                                                  **
+//**        (C)Copyright 1985-2016, American Megatrends, Inc.         **
+//**                                                                  **
+//**                       All Rights Reserved.                       **
+//**                                                                  **
+//**         5555 Oakbrook Parkway, Suite 200, Norcross, GA 30093     **
+//**                                                                  **
+//**                       Phone: (770)-246-8600                      **
+//**                                                                  **
+//**********************************************************************
+//**********************************************************************
