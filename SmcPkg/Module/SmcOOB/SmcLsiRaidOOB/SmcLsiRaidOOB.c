@@ -1080,6 +1080,13 @@ EFI_IFR_OP_HEADER*	SearchOpCodeInFormData(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProt
 		gBS->FreePool(ButtonBuffer);\
 	}while(FALSE)
 
+#define MARCO_CTE_BUFFER(pItems_x,tHiiItem)\
+	do{\
+		pItems_x->ItemsCopyBuffer 		= (UINT8*)tHiiItem;\
+		pItems_x->ItemsCopyBufferSize	= ((EFI_IFR_OP_HEADER*)tHiiItem)->Length;\
+		pItems_x = CopyAndExtMem(pItems_x);\
+	}while(FALSE)
+
 EFI_STATUS InsertRaidSetupFormItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 
 	MACRO_CAULBUFFER_ARGU(PACKAGE_BUFFER);
@@ -1119,9 +1126,7 @@ EFI_STATUS InsertRaidSetupFormItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 	FormOp.FormTitle = pProtocol->SmcLsiCurrHiiHandleTable->SmcFormTitleId;
 	FormOp.FormId	 = pProtocol->SmcLsiCurrHiiHandleTable->SmcFormId;
 
-	FormItemsBuffer->ItemsCopyBuffer = (UINT8*)&FormOp;
-	FormItemsBuffer->ItemsCopyBufferSize = FormOp.Header.Length;
-	FormItemsBuffer = CopyAndExtMem(FormItemsBuffer);
+	MARCO_CTE_BUFFER(FormItemsBuffer,&FormOp);
 
 	for(ItemIndex = 0;RaidItemsTable[ItemIndex].LsiRaidTypeIndex != RAID_NULL;++ItemIndex){
 	
@@ -1157,10 +1162,9 @@ EFI_STATUS InsertRaidSetupFormItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 					CopyString.Question.VarStoreId	  = pItemSet->SmcLsiVarId;
 
 					CopyString.Question.VarStoreInfo.VarOffset = OriString->Question.VarStoreInfo.VarOffset;
-					
-					FormItemsBuffer->ItemsCopyBuffer 		= (UINT8*)&CopyString;
-					FormItemsBuffer->ItemsCopyBufferSize	= CopyString.Header.Length;
-					FormItemsBuffer = CopyAndExtMem(FormItemsBuffer);
+				
+					MARCO_CTE_BUFFER(FormItemsBuffer,&CopyString);
+
 				}
 					break;
 				case EFI_IFR_ONE_OF_OP:
@@ -1200,16 +1204,13 @@ EFI_STATUS InsertRaidSetupFormItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 							CopyOneOf.data.u64.Step = 1;
 							break;
 					}
-
-					FormItemsBuffer->ItemsCopyBuffer 		= (UINT8*)&CopyOneOf;
-					FormItemsBuffer->ItemsCopyBufferSize	= CopyOneOf.Header.Length;
-					FormItemsBuffer = CopyAndExtMem(FormItemsBuffer);
+					MARCO_CTE_BUFFER(FormItemsBuffer,&CopyOneOf);
 
 					if(!!OriOneOf->Header.Scope){
-						
+						UINT8		FirstOption	= 0;
 						for(OriOneOfOption = (EFI_IFR_ONE_OF_OPTION*)((UINT8*)OriOneOf + OriOneOf->Header.Length);
 							OriOneOfOption->Header.OpCode != EFI_IFR_END_OP;
-							OriOneOfOption = (EFI_IFR_ONE_OF_OPTION*)((UINT8*)OriOneOfOption + OriOneOfOption->Header.Length)){
+							OriOneOfOption = (EFI_IFR_ONE_OF_OPTION*)((UINT8*)OriOneOfOption + OriOneOfOption->Header.Length), ++FirstOption){
 
 							CHAR16*	OptionString = NULL;
 							MemSet(&CopyOneOfOption,sizeof(EFI_IFR_ONE_OF_OPTION),0x00);
@@ -1218,7 +1219,7 @@ EFI_STATUS InsertRaidSetupFormItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 							OptionString = GetHiiString(pProtocol->SmcLsiCurrHiiHandleTable->RaidCardHiiHandle,OriOneOfOption->Option);
 							CopyOneOfOption.Option = NewHiiString(SmcLsiSetupHandle,OptionString);
 							
-							CopyOneOfOption.Flags = OriOneOfOption->Flags;
+							CopyOneOfOption.Flags = (FirstOption == 0 ? OriOneOfOption->Flags | EFI_IFR_OPTION_DEFAULT : OriOneOfOption->Flags);
 							CopyOneOfOption.Type  = OriOneOfOption->Type;
 							MemCpy(&CopyOneOfOption.Value,&OriOneOfOption->Value,sizeof(EFI_IFR_TYPE_VALUE));
 							
@@ -1227,9 +1228,7 @@ EFI_STATUS InsertRaidSetupFormItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 							FormItemsBuffer = CopyAndExtMem(FormItemsBuffer);
 						}
 						//The last should be EFI_IFR_END
-						FormItemsBuffer->ItemsCopyBuffer 		= (UINT8*)OriOneOfOption;
-						FormItemsBuffer->ItemsCopyBufferSize	= OriOneOfOption->Header.Length;
-						FormItemsBuffer = CopyAndExtMem(FormItemsBuffer);
+						MARCO_CTE_BUFFER(FormItemsBuffer,OriOneOfOption);
 					}
 				}
 					break;
@@ -1237,6 +1236,8 @@ EFI_STATUS InsertRaidSetupFormItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 				{
 					EFI_IFR_NUMERIC*	pNumer 		= NULL;
 					EFI_IFR_NUMERIC		CopyNumer;
+					EFI_IFR_DEFAULT		CopyDef;
+					EFI_IFR_TYPE_VALUE	MinVal;
 
 					pNumer	= (EFI_IFR_NUMERIC*)OpHeader;
 
@@ -1253,33 +1254,42 @@ EFI_STATUS InsertRaidSetupFormItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 					MemCpy(&CopyNumer.data,&pNumer->data,sizeof(MINMAXSTEP_DATA));
 					switch((CopyNumer.Flags & EFI_IFR_NUMERIC_SIZE)){
 						case EFI_IFR_NUMERIC_SIZE_1:
+							MinVal.u64 = CopyNumer.data.u8.MinValue;
 							CopyNumer.data.u8.Step = 1;
 							break;
 						case EFI_IFR_NUMERIC_SIZE_2:
+							MinVal.u64 = CopyNumer.data.u16.MinValue;
 							CopyNumer.data.u16.Step = 1;
 							break;
 						case EFI_IFR_NUMERIC_SIZE_4:
+							MinVal.u64 = CopyNumer.data.u32.MinValue;
 							CopyNumer.data.u32.Step = 1;
 							break;
 						case EFI_IFR_NUMERIC_SIZE_8:
+							MinVal.u64 = CopyNumer.data.u64.MinValue;
 							CopyNumer.data.u64.Step = 1;
 							break;
 					}
+					MARCO_CTE_BUFFER(FormItemsBuffer,&CopyNumer);
 
-					FormItemsBuffer->ItemsCopyBuffer 		= (UINT8*)(&CopyNumer);
-					FormItemsBuffer->ItemsCopyBufferSize	= CopyNumer.Header.Length;
-					FormItemsBuffer = CopyAndExtMem(FormItemsBuffer);
+					CopyDef.Header.OpCode					= EFI_IFR_DEFAULT_OP;
+					CopyDef.Header.Length					= sizeof(EFI_IFR_DEFAULT);
+					CopyDef.Header.Scope					= 0;
+					CopyDef.DefaultId						= EFI_HII_DEFAULT_CLASS_STANDARD;
+					CopyDef.Type							= (CopyNumer.Flags & EFI_IFR_NUMERIC_SIZE);
+					MemCpy(&(CopyDef.Value),&MinVal,sizeof(EFI_IFR_TYPE_VALUE));
+
+					MARCO_CTE_BUFFER(FormItemsBuffer,&CopyDef);
+
 					//Copy related OP? Now just copy the End Op.
 					if(!!pNumer->Header.OpCode){
-						EFI_IFR_END	EndOp;
+						EFI_IFR_END	nEndOp;
 
-						EndOp.Header.OpCode 	= EFI_IFR_END_OP;
-						EndOp.Header.Length 	= sizeof(EFI_IFR_END);
-						EndOp.Header.Scope		= 0;
-
-						FormItemsBuffer->ItemsCopyBuffer 		= (UINT8*)(&EndOp);
-						FormItemsBuffer->ItemsCopyBufferSize	= EndOp.Header.Length;
-						FormItemsBuffer = CopyAndExtMem(FormItemsBuffer);
+						nEndOp.Header.OpCode 	= EFI_IFR_END_OP;
+						nEndOp.Header.Length 	= sizeof(EFI_IFR_END);
+						nEndOp.Header.Scope		= 0;
+						
+						MARCO_CTE_BUFFER(FormItemsBuffer,&nEndOp);
 					}
 				}
 					break;
@@ -1293,9 +1303,7 @@ EFI_STATUS InsertRaidSetupFormItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 	EndOp.Header.Length = sizeof(EFI_IFR_END);
 	EndOp.Header.Scope	= 0;
 
-	FormItemsBuffer->ItemsCopyBuffer 		= (UINT8*)&EndOp;
-	FormItemsBuffer->ItemsCopyBufferSize	= EndOp.Header.Length;
-	FormItemsBuffer = CopyAndExtMem(FormItemsBuffer);
+	MARCO_CTE_BUFFER(FormItemsBuffer,&EndOp);
 
 	//Combine Upper + VarBuffer + button
 	MACRO_CAULBUFFER_REPLACE(FormItemsBuffer);
@@ -1382,10 +1390,13 @@ EFI_STATUS InsertRaidSetupFormGoto(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 	return EFI_SUCCESS;
 }
 
+
+
 EFI_STATUS	InsertRaidSetupVariable(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 	
 	MACRO_CAULBUFFER_ARGU(PACKAGE_BUFFER);
 
+	static BOOLEAN		InsertDefStore		= TRUE;	//Temporary Set to TRUE that use VFR auto gen defaultstore.
 	EFI_STATUS			Status				= EFI_SUCCESS;
 	UINTN				VarIndex			= 0;
 
@@ -1395,16 +1406,42 @@ EFI_STATUS	InsertRaidSetupVariable(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 	SMC_LSI_ITEMS_MEM*	ItemsBuffer			= NULL;
 	
 	SMC_LSI_VAR*		LocSmcLsiVarTable	= NULL;
+	EFI_HII_HANDLE		SmcLsiSetupHandle	= NULL;
 
 	FormSetOp = (EFI_IFR_FORM_SET*)SearchOpCodeInFormData(pProtocol,EFI_IFR_FORM_SET_OP,0);	
 	if(FormSetOp == NULL) return SettingErrorStatus(pProtocol,0x02,EFI_LOAD_ERROR);
 
 	LocSmcLsiVarTable = pProtocol->SmcLsiVarTable;
-	
+	SmcLsiSetupHandle = pProtocol->SmcLsiGetHiiHandle(pProtocol);
+
 	InsertStart 		= (UINT8*)((UINT8*)FormSetOp + FormSetOp->Header.Length);
 	MACRO_CAULBUFFER_INITIAL(PACKAGE_BUFFER);
 
 	ItemsBuffer = CopyAndExtMem(NULL);
+
+//DEFAULT Store. //Temporary put here.
+	if(! (!!InsertDefStore)){
+		EFI_IFR_DEFAULTSTORE DefStore;
+		
+		DefStore.Header.OpCode 	= EFI_IFR_DEFAULTSTORE_OP;
+		DefStore.Header.Length 	= sizeof(EFI_IFR_DEFAULTSTORE);
+		DefStore.Header.Scope	= 0;
+
+		DefStore.DefaultName	= NewHiiString(SmcLsiSetupHandle,L"STANDARD");
+		DefStore.DefaultId		= EFI_HII_DEFAULT_CLASS_STANDARD;
+		
+		ItemsBuffer->ItemsCopyBuffer		= (UINT8*)&DefStore;
+		ItemsBuffer->ItemsCopyBufferSize	= DefStore.Header.Length;
+		ItemsBuffer = CopyAndExtMem(ItemsBuffer);
+
+		DefStore.DefaultName	= NewHiiString(SmcLsiSetupHandle,L"MANUFACTURING");
+		DefStore.DefaultId		= EFI_HII_DEFAULT_CLASS_MANUFACTURING;
+
+		ItemsBuffer->ItemsCopyBuffer		= (UINT8*)&DefStore;
+		ItemsBuffer->ItemsCopyBufferSize	= DefStore.Header.Length;
+		ItemsBuffer = CopyAndExtMem(ItemsBuffer);
+		InsertDefStore = TRUE;
+	}
 	
 	for(VarIndex = 0; LocSmcLsiVarTable[VarIndex].LsiRaidTypeIndex != RAID_NULL;VarIndex++){
 		
@@ -1472,6 +1509,22 @@ VOID	DEBUG_ADDDYNAMICITEMS_PACKAGE(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 				DEBUG((-1,"%aFormSet[%s] :: \n",ScopeBuff,GetHiiString(SmcSetupHiiHandle,pFormSet->FormSetTitle)));
 			}
 				break;
+			case EFI_IFR_DEFAULTSTORE_OP:
+			{
+				EFI_IFR_DEFAULTSTORE*	DefStore = NULL;
+				DefStore = (EFI_IFR_DEFAULTSTORE*)IfrOpHeader;
+
+				DEBUG((-1,"%aDefStore[%s], DefId[%x]\n",ScopeBuff,GetHiiString(SmcSetupHiiHandle,DefStore->DefaultName),DefStore->DefaultId));
+			}
+				break;
+			case EFI_IFR_DEFAULT_OP:
+			{
+				EFI_IFR_DEFAULT*		DefVal 	= NULL;
+
+				DefVal = (EFI_IFR_DEFAULT*)IfrOpHeader;	
+				DEBUG((-1,"%aDefault DefId[%x], Type[%x], Value[%x]\n",ScopeBuff,DefVal->DefaultId,DefVal->Type,DefVal->Value.u64));
+			}
+				break;
 			case EFI_IFR_VARSTORE_OP:
 			{
 				EFI_IFR_VARSTORE*	pVar = NULL;
@@ -1528,7 +1581,7 @@ VOID	DEBUG_ADDDYNAMICITEMS_PACKAGE(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 				DEBUG((-1,"%aGuid[%g], ",ScopeBuff,GuidOp->Guid));
 				if(MemCmp(&GuidOp->Guid,&LabelGuid,sizeof(EFI_GUID)) == 0){
 					pIfrGuidLabel = (EFI_IFR_GUID_LABEL*)GuidOp;
-					DEBUG((-1,"ExtendOp[%x], Number[%x]",pIfrGuidLabel->ExtendOpCode,pIfrGuidLabel->Number));
+					DEBUG((-1,"Label ExtendOp[%x], Number[%x]",pIfrGuidLabel->ExtendOpCode,pIfrGuidLabel->Number));
 				}
 				DEBUG((-1,"\n"));
 			}
@@ -1549,8 +1602,9 @@ VOID	DEBUG_ADDDYNAMICITEMS_PACKAGE(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 				pNumer = (EFI_IFR_NUMERIC*)IfrOpHeader;
 				DEBUG((-1,"%a%s",ScopeBuff,(pNumer->Header.OpCode == EFI_IFR_NUMERIC_OP) ? L"Numeric" : L"OneOf"));
 
-				DEBUG((-1,"[%s], QId[%x], VId[%x], VOffset[%x], DataSize[%s]\n",
+				DEBUG((-1,"[%s], Flags[%x], QId[%x], VId[%x], VOffset[%x], DataSize[%s]\n",
 							GetHiiString(SmcSetupHiiHandle,pNumer->Question.Header.Prompt),
+							pNumer->Flags,
 							pNumer->Question.QuestionId,
 							pNumer->Question.VarStoreId,
 							pNumer->Question.VarStoreInfo.VarOffset,
@@ -1596,9 +1650,9 @@ VOID	DEBUG_ADDDYNAMICITEMS_PACKAGE(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 				EFI_IFR_ONE_OF_OPTION* pOneOfOption = NULL;
 				UINTN	Val = 0x0;
 				pOneOfOption = (EFI_IFR_ONE_OF_OPTION*)IfrOpHeader;
-				DEBUG((-1,"%aOption[%s], Type[%x], Val[%x]\n",ScopeBuff,
+				DEBUG((-1,"%aOption[%s], Flags[%x], Type[%x], Val[%x]\n",ScopeBuff,
 							GetHiiString(SmcSetupHiiHandle,pOneOfOption->Option),
-							pOneOfOption->Type,pOneOfOption->Value.u64));
+							pOneOfOption->Flags,pOneOfOption->Type,pOneOfOption->Value.u64));
 			}
 				break;
 			case EFI_IFR_CHECKBOX_OP:
