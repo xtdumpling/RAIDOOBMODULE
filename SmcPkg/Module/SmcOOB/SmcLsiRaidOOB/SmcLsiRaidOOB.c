@@ -39,6 +39,8 @@ SMC_LSI_INSIDE_LOAD_FUNC		mSmcLsiInsideLoadFunc[]		= {
 	{ L"InsertRaidSetupVariable"			, InsertRaidSetupVariable				},
 	{ L"InsertRaidSetupFormGoto"			, InsertRaidSetupFormGoto				},
 	{ L"InsertRaidSetupFormItems"			, InsertRaidSetupFormItems				},
+	{ L"InsertRaidSetupChangeItems"			, InsertRaidSetupChangeItems			},
+	{ L"InsertRaidSetupHDGItems"			, InsertRaidSetupHDGItems				},
 	{ L""									, NULL									}
 };
 
@@ -416,7 +418,7 @@ EFI_STATUS	RaidDownTheLastCleanFunc(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 			LocSmcLsiRaidFormRefSearchTable[index].Lsi_VId  	= LocSmcLsiRaidFormRefSearchTable[DefaultIndex].Lsi_VId;
 			LocSmcLsiRaidFormRefSearchTable[index].Lsi_Voff 	= LocSmcLsiRaidFormRefSearchTable[DefaultIndex].Lsi_Voff;
 			LocSmcLsiRaidFormRefSearchTable[index].Lsi_Flags	= LocSmcLsiRaidFormRefSearchTable[DefaultIndex].Lsi_Flags;
-			LocSmcLsiRaidFormRefSearchTable[index].BeUsed		= LocSmcLsiRaidFormRefSearchTable[DefaultIndex].BeUsed;	
+			LocSmcLsiRaidFormRefSearchTable[index].BeUsed		= LocSmcLsiRaidFormRefSearchTable[DefaultIndex].BeUsed;
 		}
 	}
 
@@ -568,11 +570,14 @@ EFI_STATUS SmcLsiRaidOOB_CollectInformation_Form(SMC_LSI_RAID_OOB_SETUP_PROTOCOL
 					MemSet(CurrentFormString,TEMP_FORM_STRING * sizeof(CHAR16),0x00);
 					TempString = GetHiiString(LsiHiiHandle,pFormOp->FormTitle);
 					StrCpy(CurrentFormString,TempString);
+
+					SMC_RAID_DETAIL_DEBUG((-1,"Current Form :: [%s]\n",CurrentFormString));
 				}
 					break;
 				case EFI_IFR_STRING_OP:
 				case EFI_IFR_ONE_OF_OP:
 				case EFI_IFR_NUMERIC_OP:
+				case EFI_IFR_CHECKBOX_OP:
 				{
 					CHAR16*	IfrString = NULL;
 					SMC_LSI_ITEMS_COMMON_HEADER*	ItemsComnHead = NULL;
@@ -580,18 +585,29 @@ EFI_STATUS SmcLsiRaidOOB_CollectInformation_Form(SMC_LSI_RAID_OOB_SETUP_PROTOCOL
 					ItemsComnHead = (SMC_LSI_ITEMS_COMMON_HEADER*)LsipEFI_IFR_OP_HEADER;
 					IfrString = GetHiiString(LsiHiiHandle,ItemsComnHead->Question.Header.Prompt);
 					if(! (!!IfrString)){
-						DEBUG((-1,"StringId[%x], cannot get string\n",ItemsComnHead->Question.Header.Prompt));
+						SMC_RAID_DETAIL_DEBUG((-1,"StringId[%x], OP[%x], QId[%x] cannot get string\n",
+													ItemsComnHead->Question.Header.Prompt,
+													ItemsComnHead->Header.OpCode,
+													ItemsComnHead->Question.QuestionId));
 						break;
 					}
-					SMC_RAID_DETAIL_DEBUG((-1,"IfrString[%s], VarStoreId[%x] OP[%x] >> ",IfrString,ItemsComnHead->Question.VarStoreId,LsipEFI_IFR_OP_HEADER->OpCode));
+					SMC_RAID_DETAIL_DEBUG((-1,"IfrString[%s], VarStoreId[%x] OP[%x] QId[%x] >> ",
+								IfrString,ItemsComnHead->Question.VarStoreId,LsipEFI_IFR_OP_HEADER->OpCode,
+								ItemsComnHead->Question.QuestionId));
 
 					for(ItemIndex=0;LocSmcLsiRaidItemsTable[ItemIndex].LsiRaidTypeIndex != RAID_NULL;++ItemIndex){
 						SMC_LSI_RAID_ITEM_SET*	pItemSet = NULL;
 					
 						if(LocSmcLsiRaidItemsTable[ItemIndex].LsiRaidTypeIndex != pProtocol->SmcLsiCurrHiiHandleTable->RaidCardType) continue;
 						if( !!StrCmp(LocSmcLsiRaidItemsTable[ItemIndex].LsiItemForm,CurrentFormString)) continue;
-						if( !!StrCmp(LocSmcLsiRaidItemsTable[ItemIndex].LsiItemName,IfrString)) continue;
-						
+						if( ItemsComnHead->Question.QuestionId < LocSmcLsiRaidItemsTable[ItemIndex].LsiItemId) continue;
+						if( !!StrCmp(LocSmcLsiRaidItemsTable[ItemIndex].LsiItemName,IfrString)){
+							//If RaidItemsTable not HDG items table, continue.
+							//If RaidItemsTable is HDG items table, it already pass the LsiItemId.
+							if(!!StrCmp(LocSmcLsiRaidItemsTable[ItemIndex].LsiItemName,pProtocol->SmcLsiGetHdgName(pProtocol))){
+								continue;
+							}
+						}
 						gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_LSI_RAID_ITEM_SET),&pItemSet);
 						MemSet(pItemSet,sizeof(SMC_LSI_RAID_ITEM_SET),0x00);
 						
@@ -607,12 +623,13 @@ EFI_STATUS SmcLsiRaidOOB_CollectInformation_Form(SMC_LSI_RAID_OOB_SETUP_PROTOCOL
 							for(pTempSet = LocSmcLsiRaidItemsTable[ItemIndex].pLsiItemSet;
 								pTempSet->pNext != NULL;
 								pTempSet = pTempSet->pNext);
-							pTempSet = pItemSet;
+							pTempSet->pNext = pItemSet;
 						}
 					}
 					SMC_RAID_DETAIL_DEBUG((-1,"\n"));
 				}
 					break;
+
 				default:
 					break;
 			}
@@ -774,7 +791,8 @@ EFI_STATUS EFIAPI SmcLsiHookBrower2Callback(
 	SMC_LSI_RAID_VAR*	LsiVar 				= NULL;
 	EFI_STRING			ConfigHdrTemp 		= NULL;
 	EFI_STRING			ConfigBufferString	= NULL;
-	EFI_STRING			Progress 			= NULL;
+	EFI_STRING			mConfig 			= NULL;
+	EFI_STRING			mProgress			= NULL;
 
 	SMC_RAID_DETAIL_DEBUG((-1,"SmcLsiHookBrower2Callback :: \n"));
 	SMC_RAID_DETAIL_DEBUG((-1,"    VariableName[%s], VariableGuid[%g], RetrieveData[%x]\n",
@@ -785,28 +803,40 @@ EFI_STATUS EFIAPI SmcLsiHookBrower2Callback(
 	if(! (!!RetrieveData))
 		DEBUG((-1,"From Driver Handle ResultsData = \n %s\n",ResultsData));
 */
-	if(VariableGuid == NULL || VariableName == NULL) return EFI_LOAD_ERROR;
+	if(VariableGuid == NULL || VariableName == NULL) return EFI_INVALID_PARAMETER;
 
 	if(ResultsDataSize == NULL || (*ResultsDataSize && ResultsData == NULL))
 		return EFI_INVALID_PARAMETER;
 
+	MemSet(aVariableName,NAME_LENGTH * sizeof(CHAR8),0x00);
+	UnicodeStrToAsciiStr(VariableName,aVariableName);
+	LsiVar = SearchLsiVarByName(aVariableName,VariableGuid);
+
+	if(LsiVar == NULL) {
+		DEBUG((-1,"Cannot find VarName[%a]\n",aVariableName));
+		return EFI_NOT_FOUND;
+	}
+	SMC_RAID_DETAIL_DEBUG((-1,"    Lsi_Name[%a], Lsi_VarId[%x], Lsi_Guid[%g], Lsi_Size[%x]\n",
+			   	LsiVar->Lsi_Name,LsiVar->Lsi_VarId,LsiVar->Lsi_Guid,LsiVar->Lsi_Size));
+
+/*
+ * <ConfigResp> 	::= <ConfigHdr><ConfigBody>
+ * <ConfigRequest> 	::= <ConfigHdr><RequestElement>
+ *
+ * <ConfigHdr> 		::= GUID=xxxx & NAME=xxxx & PATH=xxxx
+ * <ConfigBody>		::= & OFFSET=xxxx & WIDTH=xxxx & VALUE=xxxx | ...
+ * <RequestElement>	::= & OFFSET=xxxx & WIDTH=xxxx
+*/
+	//<ConfigHdr>
+	ConfigHdrTemp = HiiConstructConfigHdr(&LsiVar->Lsi_Guid,VariableName,LsiVar->Lsi_DrvHandle);
+	if(! (!!ConfigHdrTemp)) return EFI_OUT_OF_RESOURCES;
+
 	if(RetrieveData == 0){
-		MemSet(aVariableName,NAME_LENGTH * sizeof(CHAR8),0x00);
-		UnicodeStrToAsciiStr(VariableName,aVariableName);
-
-		LsiVar = SearchLsiVarByName(aVariableName,VariableGuid);
-
-		if(LsiVar == NULL) return EFI_OUT_OF_RESOURCES;
-		SMC_RAID_DETAIL_DEBUG((-1,"    Lsi_Name[%a], Lsi_VarId[%x], Lsi_Guid[%g], Lsi_Size[%x]\n",
-			   		LsiVar->Lsi_Name,LsiVar->Lsi_VarId,LsiVar->Lsi_Guid,LsiVar->Lsi_Size));
-
-		//GUID=xxxxx&NAME=xxxxx&PATH=xxxxx & OFFSET=xxxxx&WIDTH=xxxx
-		ConfigHdrTemp = HiiConstructConfigHdr(&LsiVar->Lsi_Guid,VariableName,LsiVar->Lsi_DrvHandle);
-		if(! (!!ConfigHdrTemp)) return EFI_OUT_OF_RESOURCES;
 
 		gBS->AllocatePool(EfiBootServicesData,(StrLen(ConfigHdrTemp) + 1 + StrLen(ResultsData) + 2) * sizeof(CHAR16),&ConfigBufferString);
 		if(! (!!ConfigBufferString)) return EFI_OUT_OF_RESOURCES;
 		
+		//<ConfigResp>
 		StrCpy(ConfigBufferString,ConfigHdrTemp);
 		StrCat(ConfigBufferString,L"&");
 		StrCat(ConfigBufferString,ResultsData);
@@ -818,9 +848,47 @@ EFI_STATUS EFIAPI SmcLsiHookBrower2Callback(
 		gBS->FreePool(ConfigBufferString);
 
 	}else{
-		//Temporary return Out of Resource
-		SMC_RAID_DETAIL_DEBUG((-1,"    Sent Buffer Back\n"));
-		return EFI_OUT_OF_RESOURCES;
+		EFI_STRING	mTempData		= NULL;
+		EFI_STATUS	Status			= EFI_SUCCESS;
+		UINTN		TempSize		= 0;
+
+		
+
+		if( !!(*ResultsDataSize) && !!StrStr(ResultsData,L"OFFSET=")){
+			SMC_RAID_DETAIL_DEBUG((-1,"Got ResultsData = %s\n",ResultsData));
+		}
+
+		//<ConfigRequest>
+		ConfigHdrTemp = AppendOffsetWidth(ConfigHdrTemp,0,LsiVar->Lsi_Size);
+		if(ConfigHdrTemp == NULL) return EFI_OUT_OF_RESOURCES;
+
+		//<ConfigResp>
+		Status = GetHiiConfigRoutingProtocol()->BlockToConfig(
+							GetHiiConfigRoutingProtocol(),
+							ConfigHdrTemp,
+							LsiVar->Lsi_Buffer,
+							LsiVar->Lsi_Size,
+							&mConfig,
+							&mProgress
+						);
+		SMC_RAID_DETAIL_DEBUG((-1,"HookBrowserCallback BlockToConfig Status[%r]\n",Status));
+		if(EFI_ERROR(Status)){
+			DEBUG((-1,"mProgress = %s\n",mProgress));
+			return Status;
+		}
+		// <ConfigBody> without &
+		mTempData = mConfig + (StrLen(ConfigHdrTemp) + 1);
+		TempSize = (StrLen(mTempData) + 1) * sizeof(CHAR16);
+
+		if(*ResultsDataSize < TempSize){
+			*ResultsDataSize = TempSize;
+			return EFI_BUFFER_TOO_SMALL;
+		}
+
+		StrCpy(ResultsData,mTempData);
+
+		gBS->FreePool(ConfigHdrTemp);
+		gBS->FreePool(mConfig);
 	}
 
 	return EFI_SUCCESS;
@@ -1004,7 +1072,7 @@ EFI_IFR_OP_HEADER*	SearchOpCodeInFormData(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProt
 
 						if(MemCmp(&GuidOp->Guid,&LabelGuid,sizeof(EFI_GUID)) == 0){
 							EFI_IFR_GUID_LABEL*	pIfrGuidLabel = (EFI_IFR_GUID_LABEL*)GuidOp;
-							if(pIfrGuidLabel->ExtendOpCode == EFI_IFR_EXTEND_OP_LABEL && Label == pIfrGuidLabel->Number){
+							if(pIfrGuidLabel->ExtendOpCode == EFI_IFR_EXTEND_OP_LABEL && pIfrGuidLabel->Number == Label){
 								SearchFind = TRUE;
 							}
 						}
@@ -1087,6 +1155,128 @@ EFI_IFR_OP_HEADER*	SearchOpCodeInFormData(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProt
 		pItems_x = CopyAndExtMem(pItems_x);\
 	}while(FALSE)
 
+EFI_IFR_GUID_LABEL*	CreateGuidLabel(UINT16 LabelId){
+	EFI_IFR_GUID_LABEL* GuidLabel = NULL;
+	EFI_GUID			LabelGuid = EFI_IFR_TIANO_GUID;
+
+	gBS->AllocatePool(EfiBootServicesData,sizeof(EFI_IFR_GUID_LABEL),&GuidLabel);
+
+	GuidLabel->Header.OpCode = EFI_IFR_GUID_OP;
+	GuidLabel->Header.Length = sizeof(EFI_IFR_GUID_LABEL);
+	GuidLabel->Header.Scope  = 0;
+	MemCpy(&GuidLabel->Guid,&LabelGuid,sizeof(EFI_GUID));
+	GuidLabel->ExtendOpCode 		= EFI_IFR_EXTEND_OP_LABEL;
+	GuidLabel->Number		  		= LabelId;
+
+	return GuidLabel;
+}
+
+EFI_STATUS InsertRaidSetupHDGItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
+
+	MACRO_CAULBUFFER_ARGU(PACKAGE_BUFFER);
+	
+	EFI_IFR_GUID* 			GuidOp 					= NULL;
+	SMC_LSI_ITEMS_MEM*		HDGItemsBuffer			= NULL;
+	SMC_LSI_ITEMS*			RaidItemsTable			= NULL;
+	EFI_HII_HANDLE			SmcLsiSetupHandle		= NULL;
+	UINTN					ItemIndex				= 0;
+	SMC_LSI_RAID_ITEM_SET*	pItemSet 				= NULL;
+	UINT8					HddCount				= 1;
+
+	if(pProtocol->SmcLsiCurrHiiHandleTable->SmcFormId 		== 0x0 ||
+	   pProtocol->SmcLsiCurrHiiHandleTable->SmcFormTitleId 	== 0x0){
+		return SettingErrorStatus(pProtocol,0x01,EFI_NOT_FOUND);
+	}
+
+	GuidOp = (EFI_IFR_GUID*)SearchOpCodeInFormData(pProtocol,EFI_IFR_GUID_OP,pProtocol->SmcLsiCurrHiiHandleTable->HDGLabel);
+	if(GuidOp == NULL) return SettingErrorStatus(pProtocol,0x12,EFI_NOT_FOUND);
+
+	InsertStart	= (UINT8*)((UINT8*)GuidOp + GuidOp->Header.Length);
+	SmcLsiSetupHandle 	= pProtocol->SmcLsiGetHiiHandle(pProtocol);
+	RaidItemsTable		= pProtocol->SmcLsiRaidItemsTable;
+	MACRO_CAULBUFFER_INITIAL(PACKAGE_BUFFER);
+
+	HDGItemsBuffer = CopyAndExtMem(NULL);
+
+	for(ItemIndex = 0;RaidItemsTable[ItemIndex].LsiRaidTypeIndex != RAID_NULL;++ItemIndex){
+
+		if(RaidItemsTable[ItemIndex].LsiRaidTypeIndex != pProtocol->SmcLsiCurrHiiHandleTable->RaidCardType) continue;
+		if(!!StrCmp(RaidItemsTable[ItemIndex].LsiItemName,pProtocol->SmcLsiGetHdgName(pProtocol))) continue;
+
+		for(pItemSet = RaidItemsTable[ItemIndex].pLsiItemSet;pItemSet != NULL; pItemSet = pItemSet->pNext){
+
+			EFI_IFR_OP_HEADER*	OpHeader = NULL;
+			if(pItemSet->LsiRaidCardIndex != pProtocol->SmcLsiCurrHiiHandleTable->RaidCardIndex) continue;
+			OpHeader = pItemSet->pLsiItemOp;
+			switch(OpHeader->OpCode){
+				case EFI_IFR_CHECKBOX_OP:
+				{
+					EFI_IFR_CHECKBOX*	OriCBox;
+					EFI_IFR_TEXT		CopyText;
+					CHAR16*				HddString = NULL;
+					CHAR16				HddString2[NAME_LENGTH];
+
+					OriCBox = (EFI_IFR_CHECKBOX*)OpHeader;
+					HddString = GetHiiString(pProtocol->SmcLsiCurrHiiHandleTable->RaidCardHiiHandle,OriCBox->Question.Header.Prompt);
+					CopyText.Header.OpCode = EFI_IFR_TEXT_OP;
+					CopyText.Header.Length = sizeof(EFI_IFR_TEXT);
+					CopyText.Header.Scope  = 0;
+
+					MemSet(HddString2,NAME_LENGTH * sizeof(CHAR16),0x00);
+					Swprintf(HddString2,L"Num[%d] :: %s",HddCount++,HddString);
+					CopyText.Statement.Prompt = NewHiiString(SmcLsiSetupHandle,HddString2);
+
+					CopyText.Statement.Help	  = NewHiiString(SmcLsiSetupHandle,L"");
+					CopyText.TextTwo		  =	CopyText.Statement.Help;
+
+					MARCO_CTE_BUFFER(HDGItemsBuffer,&CopyText);
+				}
+					break;
+				default:
+					break;
+			}
+		}
+	}
+
+	//Combine Upper + VarBuffer + button
+	MACRO_CAULBUFFER_REPLACE(HDGItemsBuffer);
+	return EFI_SUCCESS;
+}
+
+EFI_STATUS InsertRaidSetupChangeItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
+
+	MACRO_CAULBUFFER_ARGU(PACKAGE_BUFFER);
+	
+	EFI_IFR_GUID* 			GuidOp 					= NULL;
+	SMC_LSI_ITEMS_MEM*		ChangeItemsBuffer		= NULL;
+	EFI_IFR_GUID_LABEL*		GuidLabel				= NULL;
+
+	if(pProtocol->SmcLsiCurrHiiHandleTable->SmcFormId 		== 0x0 ||
+	   pProtocol->SmcLsiCurrHiiHandleTable->SmcFormTitleId 	== 0x0){
+		return SettingErrorStatus(pProtocol,0x01,EFI_NOT_FOUND);
+	}
+
+	GuidOp = (EFI_IFR_GUID*)SearchOpCodeInFormData(pProtocol,EFI_IFR_GUID_OP,pProtocol->SmcLsiCurrHiiHandleTable->ChangeItemsLabel);
+	if(GuidOp == NULL) return SettingErrorStatus(pProtocol,0x12,EFI_NOT_FOUND);
+
+	InsertStart	= (UINT8*)((UINT8*)GuidOp + GuidOp->Header.Length);
+	MACRO_CAULBUFFER_INITIAL(PACKAGE_BUFFER);
+
+	ChangeItemsBuffer = CopyAndExtMem(NULL);
+
+	/* This part should be insert changedable Items in here. */
+	
+	/* This part should be insert changedable Items in here. */
+
+	GuidLabel = CreateGuidLabel(pProtocol->SmcLsiGetOLabelStart(pProtocol));
+	pProtocol->SmcLsiCurrHiiHandleTable->HDGLabel = pProtocol->SmcLsiGetOLabelNow(pProtocol);
+	MARCO_CTE_BUFFER(ChangeItemsBuffer,GuidLabel);
+
+	//Combine Upper + VarBuffer + button
+	MACRO_CAULBUFFER_REPLACE(ChangeItemsBuffer);
+	return EFI_SUCCESS;
+}
+
 EFI_STATUS InsertRaidSetupFormItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 
 	MACRO_CAULBUFFER_ARGU(PACKAGE_BUFFER);
@@ -1100,6 +1290,8 @@ EFI_STATUS InsertRaidSetupFormItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 
 	EFI_IFR_FORM	FormOp;
 	EFI_IFR_END		EndOp;
+
+	UINT8				HddCount = 0;
 
 	pFormOp = (EFI_IFR_OP_HEADER*)SearchOpCodeInFormData(pProtocol,EFI_IFR_FORM_OP,pProtocol->SmcLsiGetFormLabel(pProtocol));	
 	if(pFormOp == NULL) return SettingErrorStatus(pProtocol,0x02,EFI_LOAD_ERROR);
@@ -1132,12 +1324,14 @@ EFI_STATUS InsertRaidSetupFormItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 	
 		SMC_LSI_RAID_ITEM_SET*	pItemSet = NULL;
 		if(RaidItemsTable[ItemIndex].LsiRaidTypeIndex != pProtocol->SmcLsiCurrHiiHandleTable->RaidCardType) continue;
+		if(! (!!StrCmp(RaidItemsTable[ItemIndex].LsiItemName,pProtocol->SmcLsiGetHdgName(pProtocol)))) continue;
+
 		for(pItemSet = RaidItemsTable[ItemIndex].pLsiItemSet;pItemSet != NULL; pItemSet = pItemSet->pNext){
 			
 			EFI_IFR_OP_HEADER*	OpHeader = NULL;
 			if(pItemSet->LsiRaidCardIndex != pProtocol->SmcLsiCurrHiiHandleTable->RaidCardIndex) continue;
-	
 			OpHeader = pItemSet->pLsiItemOp;
+
 			switch(OpHeader->OpCode){
 				case EFI_IFR_STRING_OP:
 				{
@@ -1298,7 +1492,18 @@ EFI_STATUS InsertRaidSetupFormItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 			}
 		}
 	}
-	
+/*
+ * Insert a Guid Label in this for next to Insert Change Items
+ *
+*/
+	{
+		EFI_IFR_GUID_LABEL*	GuidLabel = NULL;
+
+		GuidLabel = CreateGuidLabel(pProtocol->SmcLsiGetOLabelStart(pProtocol));
+		pProtocol->SmcLsiCurrHiiHandleTable->ChangeItemsLabel = pProtocol->SmcLsiGetOLabelNow(pProtocol);
+		MARCO_CTE_BUFFER(FormItemsBuffer,GuidLabel);
+	}
+
 	EndOp.Header.OpCode = EFI_IFR_END_OP;
 	EndOp.Header.Length = sizeof(EFI_IFR_END);
 	EndOp.Header.Scope	= 0;
@@ -1530,6 +1735,14 @@ VOID	DEBUG_ADDDYNAMICITEMS_PACKAGE(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 				EFI_IFR_VARSTORE*	pVar = NULL;
 				pVar = (EFI_IFR_VARSTORE*)IfrOpHeader;
 				DEBUG((-1,"%aVarStore[%a], Size[%x], VId[%x], Guid[%g]\n",ScopeBuff,pVar->Name,pVar->Size,pVar->VarStoreId,pVar->Guid));
+			}
+				break;
+			case EFI_IFR_TEXT_OP:
+			{
+				EFI_IFR_TEXT*	pText = NULL;
+				pText = (EFI_IFR_TEXT*)IfrOpHeader;
+
+				DEBUG((-1,"%aText Prompt[%s]\n",ScopeBuff,GetHiiString(SmcSetupHiiHandle,pText->Statement.Prompt)));
 			}
 				break;
 			case EFI_IFR_FORM_OP:

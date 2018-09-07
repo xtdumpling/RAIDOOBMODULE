@@ -62,6 +62,8 @@ struct _SMC_LSI_RAID_OOB_SETUP_PRIVATE_{
 	UINT16			FormIdStart;
 	EFI_GUID		VarGuid;
 	UINT16			VarIdStart;
+	UINT16			OtherLabelStart;
+	CHAR16			HardDriveGroupsName[NAME_LENGTH];
 
 	UINT8*			RaidSetupVfr;
 	UINT8*			RaidSetupString;

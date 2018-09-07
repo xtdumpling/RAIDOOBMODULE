@@ -35,7 +35,7 @@ extern "C" {
 #define SMC_LSI_OOB_FORM_START			0x2200
 #define	SMC_LSI_OOB_Q_ID_START			0x3000
 #define SMC_LSI_OOB_VAR_ID_START		0x4000
-
+#define SMC_LSI_OOB_OTHER_LABEL_START	0x6000
 #pragma pack(1)
 
 

@@ -16,6 +16,8 @@
 #include "SmcLsiRaidOOBSetupVfr.h"
 #include "SmcLsiRaidOOBSetup.h"
 
+
+
 SMC_LSI_RAID_NANE	RaidName[] = {
 	{ RAID_3108, L"AVAGO MegaRAID <AVAGO 3108 MegaRAID>" },
 	{ RAID_9260, L"AVAGO MegaRAID <AVAGO 9260 MegaRAID>" },
@@ -36,21 +38,23 @@ SMC_LSI_RAID_FORM		mSmcLsiRaidFormRefSearchTable[] = {
 
 SMC_LSI_ITEMS	mSmcLsiItemsTable[] = {
 	// 3108
-	{RAID_3108, L"Controller Management", L"Product Name", 			NULL },
-	{RAID_3108, L"Controller Management", L"Serial Number",			NULL },
-	{RAID_3108, L"Controller Management", L"Controller Status",		NULL },
-	{RAID_3108, L"Controller Management", L"PCI ID",				NULL },
-	{RAID_3108, L"Controller Management", L"PCI Slot Number",		NULL },
-	{RAID_3108, L"Controller Management", L"Package Version",		NULL },
-	{RAID_3108, L"Controller Management", L"Firmware Version",		NULL },
-	{RAID_3108, L"Controller Management", L"Connector Count",		NULL },
-	{RAID_3108, L"Controller Management", L"Drive Count",			NULL },
-	{RAID_3108, L"Controller Management", L"Virtual Drive Count",	NULL },
-	{RAID_NULL, L"", L"", NULL }
+	{RAID_3108, L"Controller Management", L"Product Name", 			0x0, NULL },
+	{RAID_3108, L"Controller Management", L"Serial Number",			0x0, NULL },
+	{RAID_3108, L"Controller Management", L"Controller Status",		0x0, NULL },
+	{RAID_3108, L"Controller Management", L"PCI ID",				0x0, NULL },
+	{RAID_3108, L"Controller Management", L"PCI Slot Number",		0x0, NULL },
+	{RAID_3108, L"Controller Management", L"Package Version",		0x0, NULL },
+	{RAID_3108, L"Controller Management", L"Firmware Version",		0x0, NULL },
+	{RAID_3108, L"Controller Management", L"Connector Count",		0x0, NULL },
+	{RAID_3108, L"Controller Management", L"Drive Count",			0x0, NULL },
+	{RAID_3108, L"Controller Management", L"Virtual Drive Count",	0x0, NULL },
+	{RAID_3108, L"Select Drives"		, HARD_DRIVES_GROUP,	 0xA700, NULL },
+	{RAID_NULL, L"", L"", 0x0, NULL }
 };
 
 SMC_LSI_VAR	mSmcLsiVarTable[] = {
 	{RAID_3108, NULL},
+	{RAID_9260, NULL},
 
 	//The last var line.
 	{RAID_NULL,	NULL}

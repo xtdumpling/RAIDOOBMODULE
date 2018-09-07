@@ -107,6 +107,20 @@ UINT16	GetFormLabel(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 
 	return pPrivate->FormLabel;
 }
+UINT16	GetOtherLableStart(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
+
+	SMC_LSI_RAID_OOB_SETUP_PRIVATE*	pPrivate = NULL;
+	pPrivate = STRUCT_START(SMC_LSI_RAID_OOB_SETUP_PRIVATE,SmcLsiRaidOOBSetupProtocol,pProtocol);
+
+	return ++pPrivate->OtherLabelStart;
+}
+UINT16	GetOtherLableNow(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
+
+	SMC_LSI_RAID_OOB_SETUP_PRIVATE*	pPrivate = NULL;
+	pPrivate = STRUCT_START(SMC_LSI_RAID_OOB_SETUP_PRIVATE,SmcLsiRaidOOBSetupProtocol,pProtocol);
+
+	return pPrivate->OtherLabelStart;
+}
 UINT8*	GetSetupData(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 
 	SMC_LSI_RAID_OOB_SETUP_PRIVATE*	pPrivate = NULL;
@@ -122,6 +136,16 @@ UINT8*	GetSetupString(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 
 	return pPrivate->RaidSetupString;
 }
+
+
+CHAR16*	GetHDGName(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
+
+	SMC_LSI_RAID_OOB_SETUP_PRIVATE*	pPrivate = NULL;
+	pPrivate = STRUCT_START(SMC_LSI_RAID_OOB_SETUP_PRIVATE,SmcLsiRaidOOBSetupProtocol,pProtocol);
+
+	return pPrivate->HardDriveGroupsName;
+}
+
 
 EFI_STATUS SmcLsiSetupDownDummyFunc(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 	return EFI_SUCCESS;
@@ -151,11 +175,11 @@ VOID	AddSmcLsiHiiHandle(SMC_LSI_RAID_TYPE RaidType,EFI_HII_HANDLE RaidHiiHandle)
 	SMC_LSI_HII_HANDLE*					pTemp 	= NULL;
 
 	gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_LSI_HII_HANDLE),&pTemp);
+	MemSet(pTemp,sizeof(SMC_LSI_HII_HANDLE),0x00);
+
 	pTemp->RaidCardType			= RaidType;
 	pTemp->RaidCardIndex		= GetRaidIndex(RaidType);
 	pTemp->RaidCardHiiHandle	= RaidHiiHandle;
-	pTemp->SmcFormId			= 0x0;
-	pTemp->SmcFormTitleId		= 0x0;
 	pTemp->pNext				= NULL;
 	
 	if(! (!!pLocal)){
@@ -260,9 +284,12 @@ EFI_STATUS SmcLsiOOBSetupDriverStart(SMC_LSI_RAID_OOB_SETUP_DRIVER*	pDriver){
 	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetFormIdNow				= GetFormIdNow;
 	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetVIdStart				= GetVIdStart;
 	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetVIdNow				= GetVIdNow;
+	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetOLabelStart			= GetOtherLableStart;
+	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetOLabelNow				= GetOtherLableNow;
 	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetVarGuid				= GetVarGuid;
 	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetSetupData				= GetSetupData;
 	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetSetupString			= GetSetupString;
+	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetHdgName				= GetHDGName;
 
 	pPrivate->HIIHandle 					= NULL;		//Will update after LoadResources
 	pPrivate->FormSetNameID					= STRING_TOKEN(STR_SMC_LSI_OOB_TITLE); 
@@ -272,9 +299,13 @@ EFI_STATUS SmcLsiOOBSetupDriverStart(SMC_LSI_RAID_OOB_SETUP_DRIVER*	pDriver){
 	pPrivate->VarIdStart					= SMC_LSI_OOB_VAR_ID_START;
 	pPrivate->FormGoToLabel					= SMC_LSI_OOB_FORM_GOTO_LABEL;
 	pPrivate->FormLabel						= SMC_LSI_OOB_FORM_LABEL;
+	pPrivate->OtherLabelStart				= SMC_LSI_OOB_OTHER_LABEL_START;
 	pPrivate->FormSetGuid					= lFormSetGuid;
 	pPrivate->VarGuid						= lVarGuid;
 	pPrivate->HaveRaidResource				= TRUE;
+
+	MemSet(pPrivate->HardDriveGroupsName,NAME_LENGTH * sizeof(CHAR16), 0x00);
+	StrCpy(pPrivate->HardDriveGroupsName,HARD_DRIVES_GROUP);
 
 	pPrivate->RaidSetupVfr					= NULL;
 	pPrivate->RaidSetupString				= NULL;

@@ -21,11 +21,13 @@
 #include <Protocol/HiiDatabase.h>
 #include <Protocol/HiiConfigAccess.h>
 
-#define NAME_LENGTH	      				0x48
+#define NAME_LENGTH	      				0x80
 #define VAR_UNUSED_SPACE  				0x100
 #define VAR_HASH_NUM	  				0x1F
 #define EFI_IFR_EXTEND_OP_LABEL       	0x0
 #define	ERROR_CODE_SIZE					32
+
+#define HARD_DRIVES_GROUP				L"HARD DRIVES GROUP"
 
 #define EFI_IFR_TIANO_GUID \
   { 0xf0b1735, 0x87a0, 0x4193, 0xb2, 0x66, 0x53, 0x8c, 0x38, 0xaf, 0x48, 0xce }
@@ -66,6 +68,7 @@ struct _SMC_LSI_ITEMS_ {
 	SMC_LSI_RAID_TYPE			LsiRaidTypeIndex;
 	CHAR16						LsiItemForm[NAME_LENGTH];
 	CHAR16						LsiItemName[NAME_LENGTH];
+	UINT16						LsiItemId;					//Temporary use this method to identifier HDD QId.
 	SMC_LSI_RAID_ITEM_SET*		pLsiItemSet;
 };
 
@@ -99,13 +102,18 @@ struct _SMC_LSI_VAR_ {
 };
 
 struct _SMC_LSI_HII_HANDLE_ {
+	//RaidOOBSetup Initial Below data.
 	SMC_LSI_RAID_TYPE			RaidCardType;
 	SMC_LSI_RAID_CARD_INDEX		RaidCardIndex;
 	EFI_HII_HANDLE				RaidCardHiiHandle;
-
+	SMC_LSI_HII_HANDLE*			pNext;
+	
+	//When Create Form for this Handle, Initial Below data.
 	UINT16						SmcFormId;
 	EFI_STRING_ID				SmcFormTitleId;
-	SMC_LSI_HII_HANDLE*	pNext;
+	UINT16						ChangeItemsLabel;
+	UINT16						HDGLabel;
+	UINT16						BuildCfgLabel;
 };
 
 typedef EFI_HII_HANDLE 	(*SMCLSI_GETHIIHANDLE) 		(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
@@ -120,10 +128,13 @@ typedef UINT16			(*SMCLSI_GETFORMIDSTART)	(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
 typedef UINT16			(*SMCLSI_GETFORMIDNOW)		(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
 typedef UINT16			(*SMCLSI_GETVIDSTART)		(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
 typedef UINT16			(*SMCLSI_GETVIDNOW)			(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
+typedef UINT16			(*SMCLSI_GETOLABSTART)		(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
+typedef UINT16			(*SMCLSI_GETOLABNOW)		(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
 typedef UINT8*			(*SMCLSI_GETSETUPDATA)		(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
 typedef UINT8*			(*SMCLSI_GETSETUPSTRING)	(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
 
 typedef EFI_GUID*		(*SMCLSI_GETVARGUID)		(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
+typedef CHAR16*			(*SMCLSI_GETHDGNAME)		(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
 
 typedef EFI_STATUS		(*SMCLSI_AFTERDOWNFUNC)		(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
 typedef EFI_STATUS		(*SMCLSI_AFTERLOADFUNC)		(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
@@ -170,6 +181,9 @@ struct _SMC_LSI_RAID_OOB_SETUP_PROTOCOL_ {
 	SMCLSI_GETFORMLABEL			SmcLsiGetFormLabel;
 	SMCLSI_GETSETUPDATA			SmcLsiGetSetupData;
 	SMCLSI_GETSETUPSTRING		SmcLsiGetSetupString;
+	SMCLSI_GETHDGNAME			SmcLsiGetHdgName;
+	SMCLSI_GETOLABSTART			SmcLsiGetOLabelStart;
+	SMCLSI_GETOLABNOW			SmcLsiGetOLabelNow;
 
 	//SMC LSI RAID OOB LIB Variables and functions
 	SMC_LSI_HII_HANDLE*					SmcLsiCurrHiiHandleTable;
