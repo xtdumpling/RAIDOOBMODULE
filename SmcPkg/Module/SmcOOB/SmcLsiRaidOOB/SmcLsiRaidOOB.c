@@ -18,13 +18,17 @@
 
 const CHAR8	CopyRightString[] = "SuperMicro RAID OOB Module, Durant.Lin";
 
-SMC_LSI_RAID_VAR*			LsiVarHashTableName	[VAR_HASH_NUM];
-SMC_LSI_RAID_VAR*			LsiVarHashTableVarId[VAR_HASH_NUM];
+SMC_RAID_VAR_HASH**			LsiVarHashTableName  = NULL;
+SMC_RAID_VAR_HASH**			LsiVarHashTableVarId = NULL;
+
+//Now for Debug use, MayBe will be used in other place.
+SMC_RAID_VAR_HASH*			LsiVarHashTableForSmcVar[VAR_HASH_NUM];
 
 BOOLEAN						mDetailedDebugMessage = FALSE;
 
 SMC_LSI_INSIDE_DOWN_FUNC		mSmcLsiInsideDownFunc[]		= {
 	{ L"InitialLsiVarHashTable"				, InitialLsiVarHashTable 				},
+	{ L"FreeLsiVarHashTable"				, FreeLsiVarHashTable					},
 	{ L"SmcLsiRaidOOB_InitialFunc"			, SmcLsiRaidOOB_InitialFunc				},
 	{ L"SmcLsiRaidOOB_CollectInformation"	, SmcLsiRaidOOB_CollectInformation		},
 	{ L"SmcLsiHookBrowser2Protocol"			, SmcLsiHookBrowser2Protocol			},
@@ -77,29 +81,22 @@ EFI_STATUS THROUGH_DEBUG_MESSAGE(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol, CHA
 }
 
 // ======== LSI VAR START ========
-VOID FreeLsiVarHashTable(){
+
+EFI_STATUS FreeLsiVarHashTable(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 	
 	UINTN	TableIndex = 0;
-	SMC_LSI_RAID_VAR*	pTemp = NULL;
-	SMC_LSI_RAID_VAR*	pNext = NULL;
+	SMC_RAID_VAR_HASH*	pTemp = NULL;
+	SMC_RAID_VAR_HASH*	pNext = NULL;
 
 	for(TableIndex = 0; TableIndex < VAR_HASH_NUM;++TableIndex){
 		pTemp = LsiVarHashTableName[TableIndex];
 		while(!!pTemp){
-			pNext = pTemp->Lsi_pNameNext;
-			gBS->FreePool(pTemp->Lsi_Buffer);
+			pNext = pTemp->pRaidpNameNext;
+			gBS->FreePool(pTemp->RaidVar.RaidVarBuffer);
 			gBS->FreePool(pTemp);
 			pTemp = pNext;
 		}
 	}
-}
-
-EFI_STATUS InitialLsiVarHashTable(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
-	
-	UINTN	TableIndex = 0;
-	if(pProtocol == NULL) return EFI_LOAD_ERROR;
-	FreeLsiVarHashTable();
-
 	for(TableIndex = 0; TableIndex < VAR_HASH_NUM;++TableIndex){
 		LsiVarHashTableName[TableIndex] = NULL;
 		LsiVarHashTableVarId[TableIndex] = NULL;
@@ -107,12 +104,23 @@ EFI_STATUS InitialLsiVarHashTable(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 	return EFI_SUCCESS;
 }
 
-SMC_LSI_RAID_VAR* AddLsiVarByName(SMC_LSI_RAID_VAR* Var){
+EFI_STATUS InitialLsiVarHashTable(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
+	
+	UINTN	TableIndex = 0;
+	if(pProtocol == NULL) return EFI_LOAD_ERROR;
+	if(pProtocol->SmcLsiCurrHiiHandleTable == NULL) return EFI_LOAD_ERROR;
+	LsiVarHashTableName 	= pProtocol->SmcLsiCurrHiiHandleTable->RaidLsiVarHashTableName;
+	LsiVarHashTableVarId 	= pProtocol->SmcLsiCurrHiiHandleTable->RaidLsiVarHashTableVarId;
 
-	SMC_LSI_RAID_VAR*	pTemp 			= NULL;
+	return EFI_SUCCESS;
+}
+
+SMC_RAID_VAR_HASH* AddLsiVarByName(SMC_RAID_VAR_HASH* Var){
+
+	SMC_RAID_VAR_HASH*	pTemp 			= NULL;
 	UINTN				VarNameIndex 	= 0;
 
-	VarNameIndex = VarHashByName(Var->Lsi_Name);
+	VarNameIndex = VarHashByName(Var->RaidVar.RaidVarName);
 
 	pTemp = LsiVarHashTableName[VarNameIndex];
 
@@ -120,22 +128,22 @@ SMC_LSI_RAID_VAR* AddLsiVarByName(SMC_LSI_RAID_VAR* Var){
 		LsiVarHashTableName[VarNameIndex] = Var;
 	}else{
 		do {
-			if(!(!!pTemp->Lsi_pNameNext)){
-				pTemp->Lsi_pNameNext = Var;
+			if(!(!!pTemp->pRaidpNameNext)){
+				pTemp->pRaidpNameNext = Var;
 				break;
 			}
-		}while(!!(pTemp = pTemp->Lsi_pNameNext));
+		}while(!!(pTemp = pTemp->pRaidpNameNext));
 	}
 	pTemp = Var;
 
 	return pTemp;
 }
-SMC_LSI_RAID_VAR* AddLsiVarByVId(SMC_LSI_RAID_VAR* Var){
+SMC_RAID_VAR_HASH* AddLsiVarByVId(SMC_RAID_VAR_HASH* Var){
 
-	SMC_LSI_RAID_VAR*	pTemp 			= NULL;
+	SMC_RAID_VAR_HASH*	pTemp 			= NULL;
 	UINTN				VarIdIndex 		= 0;
 
-	VarIdIndex = VarHashById(Var->Lsi_VarId);
+	VarIdIndex = VarHashById(Var->RaidVar.RaidVarId);
 
 	pTemp = LsiVarHashTableVarId[VarIdIndex];
 
@@ -143,19 +151,20 @@ SMC_LSI_RAID_VAR* AddLsiVarByVId(SMC_LSI_RAID_VAR* Var){
 		LsiVarHashTableVarId[VarIdIndex] = Var;
 	}else{
 		do {
-			if(!(!!pTemp->Lsi_pIdNext)){
-				pTemp->Lsi_pIdNext = Var;
+			if(!(!!pTemp->pRaidpIdNext)){
+				pTemp->pRaidpIdNext = Var;
 				break;
 			}
-		}while(!!(pTemp = pTemp->Lsi_pIdNext));
+		}while(!!(pTemp = pTemp->pRaidpIdNext));
 	}
 	pTemp = Var;
 
 	return pTemp;
 }
-SMC_LSI_RAID_VAR* AddLsiVarToTable(SMC_LSI_RAID_VAR* Var){
 
-	SMC_LSI_RAID_VAR*	pTemp 			= NULL;
+SMC_RAID_VAR_HASH* AddLsiVarToTable(SMC_RAID_VAR_HASH* Var){
+
+	SMC_RAID_VAR_HASH*	pTemp 			= NULL;
 
 	pTemp = AddLsiVarByName(Var);
 	pTemp = AddLsiVarByVId(Var);
@@ -163,24 +172,24 @@ SMC_LSI_RAID_VAR* AddLsiVarToTable(SMC_LSI_RAID_VAR* Var){
 	return pTemp;
 }
 
-SMC_LSI_RAID_VAR* 	SetLsiVarBuffer_byString(SMC_LSI_RAID_VAR* Var,EFI_STRING DataString){
+SMC_RAID_VAR* 	SetLsiVarBuffer_byString(SMC_RAID_VAR* pVar,EFI_STRING DataString){
 
 	EFI_STATUS	Status		  = EFI_SUCCESS;
-	UINTN		VarDataSize	  = (Var->Lsi_Size + VAR_UNUSED_SPACE);
+	UINTN		VarDataSize	  = (pVar->RaidVarSize + VAR_UNUSED_SPACE);
 	EFI_STRING	TempProgress  = NULL;
 
-	if(Var == NULL) return NULL;
+	if(pVar == NULL) return NULL;
 	if(DataString == NULL) return NULL;
 
-	if(Var->Lsi_Buffer == NULL)
-		gBS->AllocatePool(EfiBootServicesData,VarDataSize,&Var->Lsi_Buffer);
+	if(pVar->RaidVarBuffer == NULL)
+		gBS->AllocatePool(EfiBootServicesData,VarDataSize,&pVar->RaidVarBuffer);
 
-	MemSet(Var->Lsi_Buffer,VarDataSize,0x00);
+	MemSet(pVar->RaidVarBuffer,VarDataSize,0x00);
 
 	Status = GetHiiConfigRoutingProtocol()->ConfigToBlock(
 					GetHiiConfigRoutingProtocol(),
 					DataString,
-					Var->Lsi_Buffer,
+					pVar->RaidVarBuffer,
 					&VarDataSize,
 					&TempProgress			
 				);
@@ -188,38 +197,38 @@ SMC_LSI_RAID_VAR* 	SetLsiVarBuffer_byString(SMC_LSI_RAID_VAR* Var,EFI_STRING Dat
 	if(EFI_ERROR(Status)){
 		SMC_RAID_DETAIL_DEBUG((-1,"    TempProgress = \n"));
 		SMC_RAID_DETAIL_DEBUG((-1,"        %s\n",TempProgress));
-		MemSet(Var->Lsi_Buffer,VarDataSize,0x00);
+		MemSet(pVar->RaidVarBuffer,VarDataSize,0x00);
 		return NULL;
 	}
 
-	return Var;
+	return pVar;
 }
-EFI_STATUS	SetLsiVarBuffer(SMC_LSI_RAID_VAR *Var, UINT8*	Buffer){
+SMC_RAID_VAR*	SetLsiVarBuffer(SMC_RAID_VAR *pVar, UINT8*	Buffer){
 	EFI_STATUS	Status	= EFI_SUCCESS;
 	
-	if(Var == NULL) return EFI_INVALID_PARAMETER;
-	if(Buffer == NULL) return EFI_INVALID_PARAMETER;
+	if(pVar == NULL) return NULL;
+	if(Buffer == NULL) return NULL;
 
-	if(Var->Lsi_Buffer == NULL){
-		gBS->AllocatePool(EfiBootServicesData,Var->Lsi_Size,&Var->Lsi_Buffer);
-		MemSet(Var->Lsi_Buffer,Var->Lsi_Size,0x00);
+	if(pVar->RaidVarBuffer == NULL){
+		gBS->AllocatePool(EfiBootServicesData,pVar->RaidVarSize,&pVar->RaidVarBuffer);
+		MemSet(pVar->RaidVarBuffer,pVar->RaidVarSize,0x00);
 	}
 	//Value is same.
-	if(MemCmp(Var->Lsi_Buffer,Buffer,Var->Lsi_Size) == 0) return EFI_SUCCESS;
+	if(MemCmp(pVar->RaidVarBuffer,Buffer,pVar->RaidVarSize) == 0) return pVar;
 
-	MemCpy(Var->Lsi_Buffer,Buffer,Var->Lsi_Size);
+	MemCpy(pVar->RaidVarBuffer,Buffer,pVar->RaidVarSize);
 	//We may examine buffer ?
-	if(MemCmp(Var->Lsi_Buffer,Buffer,Var->Lsi_Size) == 0) return EFI_SUCCESS;
+	if(MemCmp(pVar->RaidVarBuffer,Buffer,pVar->RaidVarSize) == 0) return pVar;
 
-	return EFI_LOAD_ERROR;
+	return NULL;
 
 }
-UINT8*	GetLsiVarBuffer(SMC_LSI_RAID_VAR *Var){
+UINT8*	GetLsiVarBuffer(SMC_RAID_VAR *pVar){
 
-	if(Var == NULL) return NULL;
-	if(Var->Lsi_Buffer == NULL) return NULL;
+	if(pVar == NULL) return NULL;
+	if(pVar->RaidVarBuffer == NULL) return NULL;
 
-	return Var->Lsi_Buffer;
+	return pVar->RaidVarBuffer;
 }
 
 UINT16	VarHashByName(CHAR8*	Name){
@@ -240,15 +249,17 @@ UINT16	VarHashById(UINT16	VarId){
 VOID Debug_for_LsiVarTable(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 #if defined(DEBUG_MODE) && (DEBUG_MODE == 1)
 	UINTN	VarIndex = 0;
-	SMC_LSI_RAID_VAR	*pTemp = NULL;
+	SMC_RAID_VAR_HASH	*pTemp 	= NULL;
+	SMC_RAID_VAR		*pVar	= NULL;
 
 	DEBUG((-1,"LsiVarHashTableName :: \n"));
 	for(VarIndex = 0;VarIndex < VAR_HASH_NUM; ++VarIndex){
 		DEBUG((-1,"  Index[%02x] - \n",VarIndex));
 		pTemp = LsiVarHashTableName[VarIndex];
 		while(!!pTemp){
-			DEBUG((-1,"      Name[%a], Guid[%g], Vid[%x], Size[%x]\n",pTemp->Lsi_Name,pTemp->Lsi_Guid,pTemp->Lsi_VarId,pTemp->Lsi_Size));
-			pTemp = pTemp->Lsi_pNameNext;
+			pVar = &pTemp->RaidVar;
+			pTemp = pTemp->pRaidpNameNext;
+			DEBUG((-1,"      Name[%a], Guid[%g], Vid[%x], Size[%x]\n",pVar->RaidVarName,pVar->RaidVarGuid,pVar->RaidVarId,pVar->RaidVarSize));
 		}
 	}
 	DEBUG((-1,"LsiVarHashTableVarId :: \n"));
@@ -256,84 +267,129 @@ VOID Debug_for_LsiVarTable(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 		DEBUG((-1,"  Index[%02x] - \n",VarIndex));
 		pTemp = LsiVarHashTableVarId[VarIndex];
 		while(!!pTemp){
-			DEBUG((-1,"      Name[%a], Guid[%g], Vid[%x], Size[%x]\n",pTemp->Lsi_Name,pTemp->Lsi_Guid,pTemp->Lsi_VarId,pTemp->Lsi_Size));
-			pTemp = pTemp->Lsi_pIdNext;
+			pVar = &pTemp->RaidVar;
+			pTemp = pTemp->pRaidpIdNext;
+			DEBUG((-1,"      Name[%a], Guid[%g], Vid[%x], Size[%x]\n",pVar->RaidVarName,pVar->RaidVarGuid,pVar->RaidVarId,pVar->RaidVarSize));
 		}	
 	}
 #endif
 }
-SMC_LSI_RAID_VAR*	SearchLsiVarByName(CHAR8*	Name,EFI_GUID*	Guid){
-	SMC_LSI_RAID_VAR*	pTemp 		= NULL;
+
+SMC_RAID_VAR*	SearchLsiVarByName(CHAR8*	Name,EFI_GUID*	Guid){
+	SMC_RAID_VAR_HASH*	pTemp 		= NULL;
+	SMC_RAID_VAR*		pVar		= NULL;
+
 	UINTN				VarIndex 	= 0;
 	BOOLEAN				SearchFind  = FALSE;
 
 	VarIndex = VarHashByName(Name);
 	pTemp = LsiVarHashTableName[VarIndex];
+
 	while(!!pTemp){
-		if(Strcmp(pTemp->Lsi_Name,Name) == 0  && ( Guid == NULL || MemCmp(&pTemp->Lsi_Guid,Guid,sizeof(EFI_GUID)) == 0)){
+		pVar  = &pTemp->RaidVar;
+		pTemp = pTemp->pRaidpNameNext;
+		if(Strcmp(pVar->RaidVarName,Name) == 0  && ( Guid == NULL || MemCmp(&pVar->RaidVarGuid,Guid,sizeof(EFI_GUID)) == 0)){
 			SearchFind = TRUE;
 			break;
 		}
-		pTemp = pTemp->Lsi_pNameNext;
 	}
-	return (!!SearchFind) ? pTemp : NULL;
+
+	return (!!SearchFind) ? pVar : NULL;
 }
-SMC_LSI_RAID_VAR*	SearchLsiVarById(UINT16 VarId){
-	SMC_LSI_RAID_VAR*	pTemp 		= NULL;
+SMC_RAID_VAR*	SearchLsiVarById(UINT16 VarId){
+	SMC_RAID_VAR_HASH*	pTemp 		= NULL;
+	SMC_RAID_VAR*		pVar		= NULL;
+
 	UINTN				VarIndex 	= 0;
 	BOOLEAN				SearchFind  = FALSE;
 
 	VarIndex = VarHashById(VarId);
 	pTemp = LsiVarHashTableVarId[VarIndex];
 	while(!!pTemp){
-		if(pTemp->Lsi_VarId == VarId){
+		pVar  = &pTemp->RaidVar;
+		pTemp = pTemp->pRaidpIdNext;
+
+		if(pVar->RaidVarId == VarId){
 			SearchFind = TRUE;
 			break;
 		}
-		pTemp = pTemp->Lsi_pIdNext;
 	}
-	return (!!SearchFind) ? pTemp : NULL;
+	return (!!SearchFind) ? pVar : NULL;
 }
-//Must have 
-SMC_LSI_RAID_VAR*	AddLsiVarByBuffer(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol,CHAR8*	Name,EFI_GUID*	Guid,EFI_VARSTORE_ID VarId,UINT16 VarSize,UINT8* pBuffer){
 
-	SMC_LSI_RAID_VAR*	pTemp 		= NULL;
+VOID VarInitial(SMC_RAID_VAR_HASH* pTemp,CHAR8*	Name,EFI_GUID*	Guid,EFI_VARSTORE_ID VarId,UINT16 VarSize){
+
+	Strcpy(pTemp->RaidVar.RaidVarName,Name);
+	MemCpy(&pTemp->RaidVar.RaidVarGuid,Guid,sizeof(EFI_GUID));
+	pTemp->RaidVar.RaidVarSize		= VarSize;
+	pTemp->RaidVar.RaidVarId		= VarId;
+	pTemp->pRaidpNameNext			= NULL;
+	pTemp->pRaidpIdNext				= NULL;
+
+	return;
+}
+ 
+SMC_RAID_VAR*	AddLsiVarByBuffer(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol,CHAR8*	Name,EFI_GUID*	Guid,EFI_VARSTORE_ID VarId,UINT16 VarSize,UINT8* pBuffer){
+
+	SMC_RAID_VAR_HASH*	pTemp 		= NULL;
+	SMC_RAID_VAR*		pVar		= NULL;
 	EFI_STATUS			Status 		= EFI_SUCCESS;
 	UINTN				VarIndex	= 0;
 
-	pTemp = SearchLsiVarByName(Name,Guid);
+	pVar = SearchLsiVarByName(Name,Guid);
 	//Maybe we should overwride for memory reused?
-	if(pTemp == NULL){
-		Status = gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_LSI_RAID_VAR),(VOID**)(&pTemp));
+	if(pVar == NULL){
+		Status = gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_RAID_VAR_HASH),(VOID**)(&pVar));
 		if(EFI_ERROR(Status)) {
 			SettingErrorStatus(pProtocol,0x30,Status);
 			return NULL;
 		}
-		MemSet(pTemp,sizeof(SMC_LSI_RAID_VAR),0x00);
+		MemSet(pVar,sizeof(SMC_RAID_VAR_HASH),0x00);
 	}
+	pTemp = (SMC_RAID_VAR_HASH*)pVar;
 
-	Strcpy(pTemp->Lsi_Name,Name);
-	MemCpy(&pTemp->Lsi_Guid,Guid,sizeof(EFI_GUID));
-	pTemp->Lsi_Size 		= VarSize;
-	pTemp->Lsi_VarId 		= VarId;
-	pTemp->Lsi_pNameNext	= NULL;
-	pTemp->Lsi_pIdNext		= NULL;
-	pTemp->Lsi_DrvHandle	= pProtocol->SmcLsiCurrDriverHandle;
-	pTemp->BeUsed			= FALSE;
-	pTemp->SmcLsiVId		= 0;
+	VarInitial(pTemp,Name,Guid,VarId,VarSize);
 
-	if(EFI_ERROR(SetLsiVarBuffer(pTemp,pBuffer))) {
+	if(EFI_ERROR(SetLsiVarBuffer(&pTemp->RaidVar,pBuffer))) {
 		SettingErrorStatus(pProtocol,0x32,Status);
 		return NULL;
 	}
 	AddLsiVarToTable(pTemp);
+	
+	return &pTemp->RaidVar;
+}
 
-	return pTemp;
-}	
+SMC_RAID_VAR*	AddLsiVarByBuffer2(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol,CHAR8*	Name,EFI_GUID*	Guid,EFI_VARSTORE_ID VarId,UINT16 VarSize,UINT8* pBuffer){
 
-SMC_LSI_RAID_VAR*	AddLsiVar(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol,CHAR8*	Name,EFI_GUID*	Guid,EFI_VARSTORE_ID VarId,UINT16 VarSize){
+	SMC_RAID_VAR_HASH*	pTemp 		= NULL;
+	SMC_RAID_VAR*		pVar		= NULL;
+	EFI_STATUS			Status 		= EFI_SUCCESS;
+	UINTN				VarIndex	= 0;
 
-	SMC_LSI_RAID_VAR*	pTemp = NULL;
+	pVar = SearchLsiVarByName(Name,Guid);
+	//Maybe we should overwride for memory reused?
+	if(pVar == NULL){
+		Status = gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_RAID_VAR_HASH),(VOID**)(&pVar));
+		if(EFI_ERROR(Status)) {
+			SettingErrorStatus(pProtocol,0x30,Status);
+			return NULL;
+		}
+		MemSet(pVar,sizeof(SMC_RAID_VAR_HASH),0x00);
+	}
+	pTemp = (SMC_RAID_VAR_HASH*)pVar;
+
+	VarInitial(pTemp,Name,Guid,VarId,VarSize);
+	pTemp->RaidVar.RaidVarBuffer		= pBuffer;
+
+	AddLsiVarToTable(pTemp);
+
+	return &pTemp->RaidVar;
+}
+
+SMC_RAID_VAR*	AddLsiVar(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol,CHAR8*	Name,EFI_GUID*	Guid,EFI_VARSTORE_ID VarId,UINT16 VarSize){
+
+	SMC_RAID_VAR_HASH*	pTemp 		= NULL;
+	SMC_RAID_VAR*		pVar		= NULL;
 	EFI_STATUS			Status = EFI_SUCCESS;
   	EFI_STRING			ConfigHdrTemp = NULL;
   	EFI_STRING			ExTractConfigHdr = NULL;
@@ -341,42 +397,34 @@ SMC_LSI_RAID_VAR*	AddLsiVar(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol,CHAR8*	Na
   	EFI_STRING			TempProgress = NULL;
   	EFI_STRING			TempResult = NULL;
 	
-	UINTN				VarIndex			= 0;
-
 	static CHAR16		UVarName[NAME_LENGTH];
 
 	MemSet(UVarName,NAME_LENGTH * sizeof(CHAR16),0x00);
 	DEBUG((-1,"Name[%a], Guid[%g], VarId[%x], VarSize[%x] :: ",Name,*Guid,VarId,VarSize));
 
-	pTemp = SearchLsiVarByName(Name,Guid);
+	pVar = SearchLsiVarByName(Name,Guid);
 	//Maybe we should overwride for memory reused?
-	if(pTemp == NULL){
-		Status = gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_LSI_RAID_VAR),(VOID**)(&pTemp));
+	if(pVar == NULL){
+		Status = gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_RAID_VAR_HASH),(VOID**)(&pVar));
 		if(EFI_ERROR(Status)) {
 			SettingErrorStatus(pProtocol,0x30,Status);
 			return NULL;
 		}
-		MemSet(pTemp,sizeof(SMC_LSI_RAID_VAR),0x00);
+		MemSet(pVar,sizeof(SMC_RAID_VAR_HASH),0x00);
 	}
+	pTemp = (SMC_RAID_VAR_HASH*)pVar;
 
-	Strcpy(pTemp->Lsi_Name,Name);
-	MemCpy(&pTemp->Lsi_Guid,Guid,sizeof(EFI_GUID));
-	pTemp->Lsi_Size 		= VarSize;
-	pTemp->Lsi_VarId 		= VarId;
-	pTemp->Lsi_pNameNext	= NULL;
-	pTemp->Lsi_pIdNext		= NULL;
-	pTemp->Lsi_DrvHandle	= pProtocol->SmcLsiCurrDriverHandle;
-	pTemp->BeUsed			= FALSE;
-	pTemp->SmcLsiVId		= 0;
-
+	VarInitial(pTemp,Name,Guid,VarId,VarSize);
 	AsciiStrToUnicodeStr(Name,UVarName);
 	
-	ConfigHdrTemp = HiiConstructConfigHdr(Guid,UVarName,pTemp->Lsi_DrvHandle);
+	ConfigHdrTemp = HiiConstructConfigHdr(Guid,UVarName,GetSmcRaidCurrDriverHandle());
 	ExTractConfigHdr = AppendOffsetWidth(ConfigHdrTemp,0,VarSize);
 
 //	DEBUG((-1,"ExTractConfigHdr = %s\n",ExTractConfigHdr));
 
-	Status = pProtocol->SmcLsiCurrConfigAccess->ExtractConfig(pProtocol->SmcLsiCurrConfigAccess,ExTractConfigHdr,&TempProgress,&TempResult);
+	Status = pProtocol->SmcLsiCurrHiiHandleTable->SmcLsiCurrConfigAccess->ExtractConfig(
+			pProtocol->SmcLsiCurrHiiHandleTable->SmcLsiCurrConfigAccess,
+			ExTractConfigHdr,&TempProgress,&TempResult);
 
 	DEBUG((-1,"ExtractConfig Status[%r]\n",Status));
 	if(EFI_ERROR(Status)) {
@@ -385,51 +433,48 @@ SMC_LSI_RAID_VAR*	AddLsiVar(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol,CHAR8*	Na
 	}
 //	DEBUG((-1,"TempResult = %s\n",TempResult));
 
-	if(SetLsiVarBuffer_byString(pTemp,TempResult) == NULL) {
+	if(SetLsiVarBuffer_byString(pVar,TempResult) == NULL) {
 		SettingErrorStatus(pProtocol,0x32,Status);
 		return NULL;
 	}
 	AddLsiVarToTable(pTemp);
 
-	return pTemp;
-}	
+	return &pTemp->RaidVar;
+}
+
+SMC_RAID_VAR*	SearchInSmcSetupVarById(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol,UINT16 SmcVarId){
+
+	SMC_LSI_HII_HANDLE*		pSmcHiiHandle	= NULL;
+	SMC_RAID_VAR_HASH**		pOriVarIdTable  = NULL;
+	SMC_RAID_VAR*			pRaidVar		= NULL;
+
+	pOriVarIdTable = LsiVarHashTableVarId;
+
+	for(pSmcHiiHandle = pProtocol->SmcLsiHiiHandleTable;
+		pSmcHiiHandle != NULL && pSmcHiiHandle->RaidCardType != RAID_NULL;
+		pSmcHiiHandle = pSmcHiiHandle->pNext){
+	
+		LsiVarHashTableVarId = pSmcHiiHandle->RaidLsiVarHashTableVarId;
+		pRaidVar = SearchLsiVarById(SmcVarId);
+		if(!!pRaidVar) break;
+	}
+
+	LsiVarHashTableVarId = pOriVarIdTable;
+	return pRaidVar;
+}
+
 // ======== LSI VAR END   ========
 
 EFI_STATUS	RaidDownTheLastCleanFunc(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
-
-	UINTN					index = 0;
-	UINTN					DefaultIndex = 0;
-	SMC_LSI_RAID_FORM*		LocSmcLsiRaidFormRefSearchTable	= NULL;
-
-	LocSmcLsiRaidFormRefSearchTable = pProtocol->SmcLsiRaidFormRefSearchTable;
-	for(DefaultIndex=0;
-		LocSmcLsiRaidFormRefSearchTable[DefaultIndex].Lsi_RaidTypeIndex != RAID_NULL && 
-		LocSmcLsiRaidFormRefSearchTable[DefaultIndex].Lsi_OpCode != 0xFF;
-		DefaultIndex++);
-
-	for(index=0;
-		LocSmcLsiRaidFormRefSearchTable[index].Lsi_RaidTypeIndex != RAID_NULL && 
-		LocSmcLsiRaidFormRefSearchTable[index].Lsi_OpCode != 0xFF;
-		index++){
-		
-		if(pProtocol->SmcLsiCurrHiiHandleTable->RaidCardType == LocSmcLsiRaidFormRefSearchTable[index].Lsi_RaidTypeIndex){
-			LocSmcLsiRaidFormRefSearchTable[index].Lsi_FormId 	= LocSmcLsiRaidFormRefSearchTable[DefaultIndex].Lsi_FormId;
-			LocSmcLsiRaidFormRefSearchTable[index].Lsi_QId  	= LocSmcLsiRaidFormRefSearchTable[DefaultIndex].Lsi_QId;
-			LocSmcLsiRaidFormRefSearchTable[index].Lsi_VId  	= LocSmcLsiRaidFormRefSearchTable[DefaultIndex].Lsi_VId;
-			LocSmcLsiRaidFormRefSearchTable[index].Lsi_Voff 	= LocSmcLsiRaidFormRefSearchTable[DefaultIndex].Lsi_Voff;
-			LocSmcLsiRaidFormRefSearchTable[index].Lsi_Flags	= LocSmcLsiRaidFormRefSearchTable[DefaultIndex].Lsi_Flags;
-			LocSmcLsiRaidFormRefSearchTable[index].BeUsed		= LocSmcLsiRaidFormRefSearchTable[DefaultIndex].BeUsed;
-		}
-	}
 
 	return EFI_SUCCESS;
 }
 
 EFI_STATUS SetLsiRaidFormInformTable(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol,EFI_IFR_REF*	LsiIfrRef){
-	UINTN				index = 0;
-	EFI_STRING			FormString = NULL;
-	EFI_HII_HANDLE		LsiHiiHandle = NULL;
-	SMC_LSI_RAID_FORM*	LocSmcLsiRaidFormRefSearchTable = NULL;	
+	UINTN					index = 0;
+	EFI_STRING				FormString = NULL;
+	EFI_HII_HANDLE			LsiHiiHandle = NULL;
+	SMC_LSI_RAID_FORM_SET*	LocRefSearchTable = NULL;	
 
 	LsiHiiHandle = pProtocol->SmcLsiCurrHiiHandleTable->RaidCardHiiHandle;
 
@@ -438,27 +483,25 @@ EFI_STATUS SetLsiRaidFormInformTable(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol,
 		return EFI_OUT_OF_RESOURCES;
 	}
 
-	LocSmcLsiRaidFormRefSearchTable = pProtocol->SmcLsiRaidFormRefSearchTable;
+	for(LocRefSearchTable = pProtocol->SmcLsiCurrHiiHandleTable->RaidCardAccessForms;
+		LocRefSearchTable != NULL; 
+		LocRefSearchTable = LocRefSearchTable->pFormNext){
 
-	for(index=0;LocSmcLsiRaidFormRefSearchTable[index].Lsi_RaidTypeIndex != RAID_NULL; ++index){
+		if(StrCmp(FormString,LocRefSearchTable->FormHeader.Lsi_FormName) == 0 && !(!!LocRefSearchTable->FormBody.BeUsed)){	
+			DEBUG((-1,"  Update :: RaidCardType[%x], RaidCardIndex[%x], FormName[%s], FormId[%x], Qid[%x], Vid[%x], VOff[%x], Flags[%x]\n",
+									pProtocol->SmcLsiCurrHiiHandleTable->RaidCardType,
+									pProtocol->SmcLsiCurrHiiHandleTable->RaidCardIndex,
+									FormString,
+									LsiIfrRef->FormId,LsiIfrRef->Question.QuestionId,
+									LsiIfrRef->Question.VarStoreId,LsiIfrRef->Question.VarStoreInfo.VarOffset,
+									LsiIfrRef->Question.Flags));
 
-		if(pProtocol->SmcLsiCurrHiiHandleTable->RaidCardType == LocSmcLsiRaidFormRefSearchTable[index].Lsi_RaidTypeIndex &&
-		   StrCmp(FormString,LocSmcLsiRaidFormRefSearchTable[index].Lsi_Name) == 0 &&
-		   ! (!!LocSmcLsiRaidFormRefSearchTable[index].BeUsed)
-		  ){	
-			//if(LocSmcLsiRaidFormRefSearchTable[index].Lsi_FormId != 0xFFFF) break;
-			DEBUG((-1,"  Update :: RaidType[%x], FormName[%s], FormId[%x], Qid[%x], Vid[%x], VOff[%x], Flags[%x]\n",
-										LocSmcLsiRaidFormRefSearchTable[index].Lsi_RaidTypeIndex,FormString,
-										LsiIfrRef->FormId,LsiIfrRef->Question.QuestionId,
-										LsiIfrRef->Question.VarStoreId,LsiIfrRef->Question.VarStoreInfo.VarOffset,
-										LsiIfrRef->Question.Flags));
-
-			LocSmcLsiRaidFormRefSearchTable[index].Lsi_FormId 	= LsiIfrRef->FormId;
-			LocSmcLsiRaidFormRefSearchTable[index].Lsi_QId  	= LsiIfrRef->Question.QuestionId;
-			LocSmcLsiRaidFormRefSearchTable[index].Lsi_VId  	= LsiIfrRef->Question.VarStoreId;
-			LocSmcLsiRaidFormRefSearchTable[index].Lsi_Voff 	= LsiIfrRef->Question.VarStoreInfo.VarOffset;
-			LocSmcLsiRaidFormRefSearchTable[index].Lsi_Flags	= LsiIfrRef->Question.Flags;
-			LocSmcLsiRaidFormRefSearchTable[index].BeUsed		= TRUE;
+			LocRefSearchTable->FormBody.Lsi_FormId 	= LsiIfrRef->FormId;
+			LocRefSearchTable->FormBody.Lsi_QId  	= LsiIfrRef->Question.QuestionId;
+			LocRefSearchTable->FormBody.Lsi_VId  	= LsiIfrRef->Question.VarStoreId;
+			LocRefSearchTable->FormBody.Lsi_Voff 	= LsiIfrRef->Question.VarStoreInfo.VarOffset;
+			LocRefSearchTable->FormBody.Lsi_Flags	= LsiIfrRef->Question.Flags;
+			LocRefSearchTable->FormBody.BeUsed		= TRUE;
 		}
 	}
 	return EFI_SUCCESS;
@@ -476,15 +519,18 @@ EFI_STATUS SmcLsiRaidOOB_InitialFunc(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol)
 
 	if(LsiHiiHandle == NULL) return SettingErrorStatus(pProtocol,0x01,Status);
 
-	pProtocol->SmcLsiCurrDriverHandle = NULL;
-  	Status = GetHiiDataBase()->GetPackageListHandle(GetHiiDataBase(),LsiHiiHandle,&pProtocol->SmcLsiCurrDriverHandle);
+	pProtocol->SmcLsiCurrHiiHandleTable->RaidCardDriverHandle = NULL;
+  	Status = GetHiiDataBase()->GetPackageListHandle(GetHiiDataBase(),LsiHiiHandle,&pProtocol->SmcLsiCurrHiiHandleTable->RaidCardDriverHandle);
 	if(EFI_ERROR(Status)) return SettingErrorStatus(pProtocol,0x02,Status);
 
-	pProtocol->SmcLsiCurrConfigAccess = NULL;
-  	Status = gBS->HandleProtocol(pProtocol->SmcLsiCurrDriverHandle,&gEfiHiiConfigAccessProtocolGuid,&pProtocol->SmcLsiCurrConfigAccess);
+	pProtocol->SmcLsiCurrHiiHandleTable->SmcLsiCurrConfigAccess = NULL;
+  	Status = gBS->HandleProtocol(pProtocol->SmcLsiCurrHiiHandleTable->RaidCardDriverHandle,
+			                     &gEfiHiiConfigAccessProtocolGuid,
+								 &pProtocol->SmcLsiCurrHiiHandleTable->SmcLsiCurrConfigAccess);
+
 	if(EFI_ERROR(Status)) return SettingErrorStatus(pProtocol,0x03,Status);
 
-	pProtocol->HiiFlags	= 0;
+	pProtocol->SmcLsiCurrHiiHandleTable->HiiFlags = 0;
 
 	return EFI_SUCCESS;
 }
@@ -496,29 +542,31 @@ VOID SmcLsiRaidOOB_SendFormCallBack(){
 VOID Debug_for_RaidItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 
 #if defined(DEBUG_MODE) && (DEBUG_MODE == 1)
-	UINTN				ItemIndex = 0;
-	SMC_LSI_ITEMS*	   	LocSmcLsiRaidItemsTable	= NULL;
 
-	LocSmcLsiRaidItemsTable = pProtocol->SmcLsiRaidItemsTable;
+	SMC_RAID_ITEMS_SET*	pItemSet = pProtocol->SmcLsiCurrHiiHandleTable->RaidCardInfItems;
 
-	DEBUG((-1,"SmcLsiRaidItemsTable :: \n"));
-	for(ItemIndex = 0;LocSmcLsiRaidItemsTable[ItemIndex].LsiRaidTypeIndex != RAID_NULL; ++ItemIndex){
-		SMC_LSI_RAID_ITEM_SET*	pItemSet = NULL;
+	DEBUG((-1,"RaidCardInfItemsTable :: \n"));
+	DEBUG((-1,"  CardType[%x], CardIndex[%x] - \n",
+			  pProtocol->SmcLsiCurrHiiHandleTable->RaidCardType,
+			  pProtocol->SmcLsiCurrHiiHandleTable->RaidCardIndex));
 
-		DEBUG((-1,"  ItemIndex[%x]Type[%x]Form[%s]ItemName[%s]Find[%s] - \n",
-				   ItemIndex,
-				   LocSmcLsiRaidItemsTable[ItemIndex].LsiRaidTypeIndex,
-				   LocSmcLsiRaidItemsTable[ItemIndex].LsiItemForm,
-				   LocSmcLsiRaidItemsTable[ItemIndex].LsiItemName,
-				   LocSmcLsiRaidItemsTable[ItemIndex].pLsiItemSet != NULL ? L"TRUE" : L"FALSE"
-			 ));
+	for(;pItemSet != NULL;pItemSet = pItemSet->pItemsNext){
+		SMC_RAID_ITEMS_BODY*	pItemsBody	= NULL;
+		pItemsBody = pItemSet->ItemsBody;
 
-		for(pItemSet = LocSmcLsiRaidItemsTable[ItemIndex].pLsiItemSet;pItemSet != NULL;pItemSet = pItemSet->pNext){
-			DEBUG((-1,"    CardIndex[%x], VarId[%x], HII[%s]\n",
-				 	   pItemSet->LsiRaidCardIndex,
-					   pItemSet->SmcLsiVarId,
-					   pItemSet->pLsiItemOp != NULL ? L"HAVE" : L"NON"
-				 ));
+		DEBUG((-1,"    FormName[%s], ItemName[%s], ItemId[%x], FIND[%s]\n",
+				   pItemSet->ItemsHeader.LsiItemForm,
+				   pItemSet->ItemsHeader.LsiItemName,
+				   pItemSet->ItemsHeader.LsiItemId,
+				   pItemsBody != NULL ? L"YES" : L"NO"));
+
+		while(!!pItemsBody){
+			DEBUG((-1,"      SmcVarId[%x], HDDNum[%x], HII[%s]\n",
+				       pItemsBody->SmcLsiVarId,
+				       pItemsBody->HdNum,
+				       pItemsBody->pLsiItemOp != NULL ? L"HAVE" : L"NON"
+			 	 ));
+			pItemsBody = pItemsBody->pItemsBodyNext;
 		}
 	}
 #endif
@@ -527,21 +575,25 @@ VOID Debug_for_RaidItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 EFI_STATUS SmcLsiRaidOOB_CollectInformation_Form(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol,EFI_HII_PACKAGE_HEADER*	LsiIfrPackagePtr){
 #define TEMP_FORM_STRING	512
 
-	EFI_STATUS		   Status = EFI_SUCCESS;
-	EFI_IFR_OP_HEADER* LsipEFI_IFR_OP_HEADER 	= NULL;
-	UINT32			   ItemIndex			 	= 0;
-	SMC_LSI_ITEMS*	   LocSmcLsiRaidItemsTable	= NULL;
-	EFI_HII_HANDLE	   LsiHiiHandle				= NULL;
-	CHAR16			   CurrentFormString[TEMP_FORM_STRING];
+	EFI_STATUS		   		Status = EFI_SUCCESS;
+	EFI_IFR_OP_HEADER* 		LsipEFI_IFR_OP_HEADER 	= NULL;
+	UINT32			   		ItemIndex			 	= 0;
+	SMC_RAID_ITEMS_SET*	   	LocSmcLsiRaidItemsTable	= NULL;
+	SMC_RAID_ITEMS_SET*		pItemsSet				= NULL;
+	EFI_HII_HANDLE	   		LsiHiiHandle				= NULL;
+	CHAR16			   		CurrentFormString[TEMP_FORM_STRING];
+	UINT16			   		HddNum     	= 0;
+	UINT16			   		NonHddNum    = 0xFFFF;
+	UINT16*			   		pHddNum		= NULL;
 
 	LsiHiiHandle =	pProtocol->SmcLsiCurrHiiHandleTable->RaidCardHiiHandle;
-	LocSmcLsiRaidItemsTable = pProtocol->SmcLsiRaidItemsTable;
+	LocSmcLsiRaidItemsTable = pProtocol->SmcLsiCurrHiiHandleTable->RaidCardInfItems;
 		
 	for(LsipEFI_IFR_OP_HEADER = (EFI_IFR_OP_HEADER*)(LsiIfrPackagePtr+1);
 		LsipEFI_IFR_OP_HEADER < (EFI_IFR_OP_HEADER*)((UINT8*)LsiIfrPackagePtr + LsiIfrPackagePtr->Length);
 		LsipEFI_IFR_OP_HEADER = (EFI_IFR_OP_HEADER*)((UINT8*)LsipEFI_IFR_OP_HEADER + LsipEFI_IFR_OP_HEADER->Length)){
 	
-		if(pProtocol->HiiFlags == 0){
+		if(pProtocol->SmcLsiCurrHiiHandleTable->HiiFlags == 0){
 			switch(LsipEFI_IFR_OP_HEADER->OpCode){
 				case EFI_IFR_REF_OP:
 				{
@@ -552,7 +604,7 @@ EFI_STATUS SmcLsiRaidOOB_CollectInformation_Form(SMC_LSI_RAID_OOB_SETUP_PROTOCOL
 				case EFI_IFR_VARSTORE_OP:
 				{
 					EFI_IFR_VARSTORE*	LsiIfrVar = (EFI_IFR_VARSTORE*)LsipEFI_IFR_OP_HEADER;
-					SMC_LSI_RAID_VAR*	TempVar   = NULL;
+					SMC_RAID_VAR*		TempVar   = NULL;
 					TempVar = AddLsiVar(pProtocol,LsiIfrVar->Name,&LsiIfrVar->Guid,LsiIfrVar->VarStoreId,LsiIfrVar->Size);
 					if(TempVar == NULL) return SettingErrorStatus(pProtocol,0x20,Status);
 				}
@@ -595,41 +647,45 @@ EFI_STATUS SmcLsiRaidOOB_CollectInformation_Form(SMC_LSI_RAID_OOB_SETUP_PROTOCOL
 								IfrString,ItemsComnHead->Question.VarStoreId,LsipEFI_IFR_OP_HEADER->OpCode,
 								ItemsComnHead->Question.QuestionId));
 
-					for(ItemIndex=0;LocSmcLsiRaidItemsTable[ItemIndex].LsiRaidTypeIndex != RAID_NULL;++ItemIndex){
-						SMC_LSI_RAID_ITEM_SET*	pItemSet = NULL;
-					
-						if(LocSmcLsiRaidItemsTable[ItemIndex].LsiRaidTypeIndex != pProtocol->SmcLsiCurrHiiHandleTable->RaidCardType) continue;
-						if( !!StrCmp(LocSmcLsiRaidItemsTable[ItemIndex].LsiItemForm,CurrentFormString)) continue;
-						if( ItemsComnHead->Question.QuestionId < LocSmcLsiRaidItemsTable[ItemIndex].LsiItemId) continue;
-						if( !!StrCmp(LocSmcLsiRaidItemsTable[ItemIndex].LsiItemName,IfrString)){
-							//If RaidItemsTable not HDG items table, continue.
-							//If RaidItemsTable is HDG items table, it already pass the LsiItemId.
-							if(!!StrCmp(LocSmcLsiRaidItemsTable[ItemIndex].LsiItemName,pProtocol->SmcLsiGetHdgName(pProtocol))){
-								continue;
-							}
+					pHddNum = &NonHddNum;
+					for(pItemsSet = LocSmcLsiRaidItemsTable;pItemsSet != NULL;pItemsSet = pItemsSet->pItemsNext){
+						if( !!StrCmp(pItemsSet->ItemsHeader.LsiItemForm,CurrentFormString)) continue;
+						if( ItemsComnHead->Question.QuestionId < pItemsSet->ItemsHeader.LsiItemId) continue;
+						if( ! (!!StrCmp(pItemsSet->ItemsHeader.LsiItemName,IfrString))) break;
+
+						//If pItemsSet not HDG items table, continue.
+						//If pItemsSet is HDG items table, it already pass the LsiItemId.
+						if(! (!!StrCmp(pItemsSet->ItemsHeader.LsiItemName,pProtocol->SmcLsiGetHdgName(pProtocol)))){
+							//In Here, it means it's HDD items. 
+							pHddNum = &HddNum;
+							++HddNum;
+							break;
 						}
-						gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_LSI_RAID_ITEM_SET),&pItemSet);
-						MemSet(pItemSet,sizeof(SMC_LSI_RAID_ITEM_SET),0x00);
+					}
+					if(pItemsSet == NULL) break;
+					{
+						SMC_RAID_ITEMS_BODY*	pItemsBody = NULL;
+						gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_RAID_ITEMS_BODY),&pItemsBody);
+						MemSet(pItemsBody,sizeof(SMC_RAID_ITEMS_BODY),0x00);
 						
-						pItemSet->LsiRaidCardIndex = pProtocol->SmcLsiCurrHiiHandleTable->RaidCardIndex;
-						pItemSet->pLsiItemOp 	   = LsipEFI_IFR_OP_HEADER;
-						pItemSet->SmcLsiVarId	   = 0x0;
-						pItemSet->pNext		 	   = NULL;
-						
-						if(! (!!LocSmcLsiRaidItemsTable[ItemIndex].pLsiItemSet)){
-							LocSmcLsiRaidItemsTable[ItemIndex].pLsiItemSet = pItemSet;
+						pItemsBody->pLsiItemOp 		= LsipEFI_IFR_OP_HEADER;
+						pItemsBody->SmcLsiVarId 	= 0x0;
+						pItemsBody->HdNum			= *pHddNum;
+						pItemsBody->pItemsBodyNext	= NULL;
+
+						if(!(!!pItemsSet->ItemsBody)){
+							pItemsSet->ItemsBody = pItemsBody;
 						}else{
-							SMC_LSI_RAID_ITEM_SET*	pTempSet = NULL;
-							for(pTempSet = LocSmcLsiRaidItemsTable[ItemIndex].pLsiItemSet;
-								pTempSet->pNext != NULL;
-								pTempSet = pTempSet->pNext);
-							pTempSet->pNext = pItemSet;
+							SMC_RAID_ITEMS_BODY*	pTempItemsBody = NULL;
+							for(pTempItemsBody = pItemsSet->ItemsBody;
+								pTempItemsBody->pItemsBodyNext != NULL;
+								pTempItemsBody = pTempItemsBody->pItemsBodyNext);
+							pTempItemsBody->pItemsBodyNext = pItemsBody;
 						}
 					}
 					SMC_RAID_DETAIL_DEBUG((-1,"\n"));
 				}
 					break;
-
 				default:
 					break;
 			}
@@ -662,119 +718,104 @@ EFI_STATUS SmcLsiRaidOOB_CollectInformation(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pPr
 		}
   	}
 	
-	if(pProtocol->HiiFlags == 0){
+	if(pProtocol->SmcLsiCurrHiiHandleTable->HiiFlags == 0){
 		Debug_for_LsiVarTable(pProtocol);
 		//Below line may cause debug assert?
 		gBS->FreePool(LsiHiiPackageList);
-	}else if(pProtocol->HiiFlags == 1){
+	}else if(pProtocol->SmcLsiCurrHiiHandleTable->HiiFlags == 1){
 		Debug_for_RaidItems(pProtocol);	
 	}
-	pProtocol->HiiFlags++;
+	pProtocol->SmcLsiCurrHiiHandleTable->HiiFlags++;
 	return EFI_SUCCESS;
 }
 VOID Debug_for_SmcLsiVarTable(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 
 #if defined(DEBUG_MODE) && (DEBUG_MODE == 1)
-	UINTN						VarIndex			= 0;
-	SMC_LSI_VAR*				LocSmcLsiVarTable	= NULL;
 
-	LocSmcLsiVarTable = pProtocol->SmcLsiVarTable;
+	UINTN						VarIndex				= 0;
+	SMC_SETUP_RAID_VAR*			pSetupRaidVar			= NULL;
 
-	DEBUG((-1,"SmcLsiVarTable :: \n"));
-	for(VarIndex = 0;LocSmcLsiVarTable[VarIndex].LsiRaidTypeIndex != RAID_NULL; ++VarIndex){
-		SMC_LSI_VAR_SET* pVarSet = NULL;
-		DEBUG((-1,"  VarIndex[%x]Type[%x] - \n",VarIndex,LocSmcLsiVarTable[VarIndex].LsiRaidTypeIndex));
+	pSetupRaidVar = pProtocol->SmcLsiCurrHiiHandleTable->RaidSetupVarSet;
 
-		for(pVarSet = LocSmcLsiVarTable[VarIndex].pVarSet;pVarSet != NULL;pVarSet = pVarSet->pNext){
-			DEBUG((-1,"    CardIndex[%x], Name[%a], Guid[%g], VarId[%x], VarSize[%x]\n",
-					  pVarSet->LsiRaidCardIndex,
-					  pVarSet->SmcLsiVarName,
-					  pVarSet->SmcLsiVarGuid,
-					  pVarSet->SmcLsiVarId,
-					  pVarSet->SmcLsiVarSize
-				  ));
+	DEBUG((-1,"RaidSetupVarSet CardType[%x], CardIndex[%x] :: \n",
+				pProtocol->SmcLsiCurrHiiHandleTable->RaidCardType,
+				pProtocol->SmcLsiCurrHiiHandleTable->RaidCardIndex));
+
+	for(;pSetupRaidVar != NULL; pSetupRaidVar = pSetupRaidVar->pSetupRaidVarNext){
+		SMC_RAID_VAR*	pVar = NULL;
+		pVar = &pSetupRaidVar->SetupRaidVar;
+		DEBUG((-1,"  Name[%a], Guid[%g], VarId[%x], VarSize[%x]\n",
+					pVar->RaidVarName,pVar->RaidVarGuid,pVar->RaidVarId,pVar->RaidVarSize));
 		}
-	}
 #endif
 }
 
+
 EFI_STATUS	SmcLsiSetSmcLsiVariableTable(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
-	
-	EFI_STATUS						Status 					= EFI_SUCCESS;
-	SMC_LSI_VAR*					LocSmcLsiVarTable		= NULL;
-	SMC_LSI_ITEMS*					LocSmcLsiRaidItemsTable	= NULL;
-	UINTN							VarIndex				= 0;
-	UINTN							ItemIndex				= 0;
-	SMC_LSI_RAID_ITEM_SET*			pItemSet				= NULL;
-	SMC_LSI_RAID_VAR*				pVar					= NULL;
-	SMC_LSI_VAR_SET*				pVarSet					= NULL;
+
+	SMC_SETUP_RAID_VAR*				pSetupRaidVar			= NULL;
+	SMC_RAID_ITEMS_SET*				pItemsSet				= NULL;
 	SMC_LSI_ITEMS_COMMON_HEADER*	pCmnHeader				= NULL;
+	CHAR8							cVarName[NAME_LENGTH];
+	
+	pItemsSet 		= pProtocol->SmcLsiCurrHiiHandleTable->RaidCardInfItems;
+	pSetupRaidVar	= pProtocol->SmcLsiCurrHiiHandleTable->RaidSetupVarSet;
 
-	LocSmcLsiVarTable 		= pProtocol->SmcLsiVarTable;
-	LocSmcLsiRaidItemsTable	= pProtocol->SmcLsiRaidItemsTable;
+	for(;pItemsSet != NULL;pItemsSet = pItemsSet->pItemsNext){
+		SMC_RAID_ITEMS_BODY*	pItemsBody = NULL;
+		
+		for(pItemsBody = pItemsSet->ItemsBody;pItemsBody != NULL; pItemsBody = pItemsBody->pItemsBodyNext){
+			SMC_RAID_VAR*	rVar 		= NULL;
+			SMC_RAID_VAR*	cVar 		= NULL;
 
-	for(VarIndex=0;LocSmcLsiVarTable[VarIndex].LsiRaidTypeIndex != RAID_NULL;++VarIndex){
-		if(pProtocol->SmcLsiCurrHiiHandleTable->RaidCardType == LocSmcLsiVarTable[VarIndex].LsiRaidTypeIndex){
-			break;
-		}
-	}
-	if(LocSmcLsiVarTable[VarIndex].LsiRaidTypeIndex == RAID_NULL){
-		SMC_RAID_DETAIL_DEBUG((-1," Raid Type[%x] doesn't define in SmcLisVarTable!\n",pProtocol->SmcLsiCurrHiiHandleTable->RaidCardType));
-		return SettingErrorStatus(pProtocol,0x01,EFI_LOAD_ERROR);
-	}
+			pCmnHeader = (SMC_LSI_ITEMS_COMMON_HEADER*)pItemsBody->pLsiItemOp;
+			MemSet(cVarName,NAME_LENGTH * sizeof(CHAR8),0x00);
 
-	for(ItemIndex;LocSmcLsiRaidItemsTable[ItemIndex].LsiRaidTypeIndex != RAID_NULL; ++ItemIndex){
-		if(pProtocol->SmcLsiCurrHiiHandleTable->RaidCardType  != LocSmcLsiRaidItemsTable[ItemIndex].LsiRaidTypeIndex) continue;
-		for(pItemSet = LocSmcLsiRaidItemsTable[ItemIndex].pLsiItemSet;pItemSet != NULL;	pItemSet = pItemSet->pNext){
+			rVar = SearchLsiVarById(pCmnHeader->Question.VarStoreId);
+			if(rVar == NULL) return SettingErrorStatus(pProtocol,0x77,EFI_NOT_FOUND);
 
-			if(pProtocol->SmcLsiCurrHiiHandleTable->RaidCardIndex != pItemSet->LsiRaidCardIndex) continue;
+			Sprintf(cVarName,"SmcR_%s_%x_%x",
+					 rVar->RaidVarName,pProtocol->SmcLsiCurrHiiHandleTable->RaidCardType,
+					 pProtocol->SmcLsiCurrHiiHandleTable->RaidCardIndex);
+			
+			cVar = SearchLsiVarByName(cVarName,pProtocol->SmcLsiGetVarGuid(pProtocol));
 
-			pCmnHeader = (SMC_LSI_ITEMS_COMMON_HEADER*)pItemSet->pLsiItemOp;
-			pVar = SearchLsiVarById(pCmnHeader->Question.VarStoreId);
-			if(! (!!pVar->BeUsed)) {
-				Status = gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_LSI_VAR_SET),&pVarSet);
-				if(EFI_ERROR(Status)) return SettingErrorStatus(pProtocol,0x02,Status);
-				MemSet(pVarSet,sizeof(SMC_LSI_VAR_SET),0x00);
+			if(! (!!cVar)){
+				SMC_SETUP_RAID_VAR* pTempSetupRaidVar = NULL;
 
-				gBS->AllocatePool(EfiBootServicesData,pVar->Lsi_Size,&pVarSet->SmcLsiVarBuffer);
-				if(EFI_ERROR(Status)) return SettingErrorStatus(pProtocol,0x03,Status);
-				MemSet(pVarSet->SmcLsiVarBuffer,pVar->Lsi_Size,0x00);
-				MemCpy(pVarSet->SmcLsiVarBuffer,pVar->Lsi_Buffer,pVar->Lsi_Size);
-
-				MemCpy(&pVarSet->SmcLsiVarGuid,pProtocol->SmcLsiGetVarGuid(pProtocol),sizeof(EFI_GUID));
-				pVarSet->SmcLsiVarSize		= pVar->Lsi_Size;
-				pVarSet->LsiRaidCardIndex 	= pItemSet->LsiRaidCardIndex;
-				pVarSet->SmcLsiVarId	  	= pProtocol->SmcLsiGetVIdStart(pProtocol);
-				pVarSet->pNext				= NULL;
-				//Format VariableName_RaidType_RaidCardIndex
-				Sprintf(pVarSet->SmcLsiVarName,"SmcR_%s_%x_%x",
-						pVar->Lsi_Name,
-						LocSmcLsiVarTable[VarIndex].LsiRaidTypeIndex,
-						pVarSet->LsiRaidCardIndex 
+				cVar = AddLsiVarByBuffer2(
+						pProtocol,
+						cVarName,
+						pProtocol->SmcLsiGetVarGuid(pProtocol),
+						pProtocol->SmcLsiGetVIdStart(pProtocol),
+						rVar->RaidVarSize,
+						rVar->RaidVarBuffer
 						);
-				if(LocSmcLsiVarTable[VarIndex].pVarSet == NULL){
-					LocSmcLsiVarTable[VarIndex].pVarSet = pVarSet;
+
+				gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_SETUP_RAID_VAR),&pTempSetupRaidVar);
+				MemSet(pTempSetupRaidVar,sizeof(SMC_SETUP_RAID_VAR),0x00);
+				MemCpy(&pTempSetupRaidVar->SetupRaidVar,cVar,sizeof(SMC_RAID_VAR));
+
+				if(pSetupRaidVar == NULL){
+					pSetupRaidVar = pProtocol->SmcLsiCurrHiiHandleTable->RaidSetupVarSet = pTempSetupRaidVar;
 				}else{
-					SMC_LSI_VAR_SET* pTempVarSet = NULL;
-					for(pTempVarSet = LocSmcLsiVarTable[VarIndex].pVarSet;
-						pTempVarSet->pNext != NULL;
-						pTempVarSet = pTempVarSet->pNext);
-				
-					pTempVarSet->pNext = pVarSet;
+					pSetupRaidVar->pSetupRaidVarNext = pTempSetupRaidVar;
+					pSetupRaidVar = pSetupRaidVar->pSetupRaidVarNext;
 				}
-				pVar->BeUsed 	= TRUE;
-				pVar->SmcLsiVId	= pVarSet->SmcLsiVarId;
+
 				if(!!pProtocol->DetailedDebugMessage){
-					DEBUG((-1,"Smc Raid Var Name :: [%a]\n",pVarSet->SmcLsiVarName));
-					DEBUG_PRINT_BUFFER(pVarSet->SmcLsiVarBuffer,pVarSet->SmcLsiVarSize);
+					DEBUG((-1,"Smc Raid Var Name :: [%a]\n",pSetupRaidVar->SetupRaidVar.RaidVarName));
+					DEBUG_PRINT_BUFFER(pSetupRaidVar->SetupRaidVar.RaidVarBuffer,pSetupRaidVar->SetupRaidVar.RaidVarSize);
 				}
 			}
-			pItemSet->SmcLsiVarId		= pVar->SmcLsiVId;
+			pItemsBody->SmcLsiVarId	= cVar->RaidVarId;
 		}
 	}
 	Debug_for_SmcLsiVarTable(pProtocol);
+	Debug_for_LsiVarTable(pProtocol);
 	Debug_for_RaidItems(pProtocol);
 	return EFI_SUCCESS;
+
 }
 
 EFI_STATUS EFIAPI SmcLsiHookBrower2Callback(
@@ -788,7 +829,7 @@ EFI_STATUS EFIAPI SmcLsiHookBrower2Callback(
 	
 	static CHAR8				aVariableName[NAME_LENGTH];
 
-	SMC_LSI_RAID_VAR*	LsiVar 				= NULL;
+	SMC_RAID_VAR*		LsiVar 				= NULL;
 	EFI_STRING			ConfigHdrTemp 		= NULL;
 	EFI_STRING			ConfigBufferString	= NULL;
 	EFI_STRING			mConfig 			= NULL;
@@ -817,7 +858,7 @@ EFI_STATUS EFIAPI SmcLsiHookBrower2Callback(
 		return EFI_NOT_FOUND;
 	}
 	SMC_RAID_DETAIL_DEBUG((-1,"    Lsi_Name[%a], Lsi_VarId[%x], Lsi_Guid[%g], Lsi_Size[%x]\n",
-			   	LsiVar->Lsi_Name,LsiVar->Lsi_VarId,LsiVar->Lsi_Guid,LsiVar->Lsi_Size));
+			   	LsiVar->RaidVarName,LsiVar->RaidVarId,LsiVar->RaidVarGuid,LsiVar->RaidVarSize));
 
 /*
  * <ConfigResp> 	::= <ConfigHdr><ConfigBody>
@@ -828,7 +869,7 @@ EFI_STATUS EFIAPI SmcLsiHookBrower2Callback(
  * <RequestElement>	::= & OFFSET=xxxx & WIDTH=xxxx
 */
 	//<ConfigHdr>
-	ConfigHdrTemp = HiiConstructConfigHdr(&LsiVar->Lsi_Guid,VariableName,LsiVar->Lsi_DrvHandle);
+	ConfigHdrTemp = HiiConstructConfigHdr(&LsiVar->RaidVarGuid,VariableName,GetSmcRaidCurrDriverHandle());
 	if(! (!!ConfigHdrTemp)) return EFI_OUT_OF_RESOURCES;
 
 	if(RetrieveData == 0){
@@ -852,22 +893,20 @@ EFI_STATUS EFIAPI SmcLsiHookBrower2Callback(
 		EFI_STATUS	Status			= EFI_SUCCESS;
 		UINTN		TempSize		= 0;
 
-		
-
 		if( !!(*ResultsDataSize) && !!StrStr(ResultsData,L"OFFSET=")){
 			SMC_RAID_DETAIL_DEBUG((-1,"Got ResultsData = %s\n",ResultsData));
 		}
 
 		//<ConfigRequest>
-		ConfigHdrTemp = AppendOffsetWidth(ConfigHdrTemp,0,LsiVar->Lsi_Size);
+		ConfigHdrTemp = AppendOffsetWidth(ConfigHdrTemp,0,LsiVar->RaidVarSize);
 		if(ConfigHdrTemp == NULL) return EFI_OUT_OF_RESOURCES;
 
 		//<ConfigResp>
 		Status = GetHiiConfigRoutingProtocol()->BlockToConfig(
 							GetHiiConfigRoutingProtocol(),
 							ConfigHdrTemp,
-							LsiVar->Lsi_Buffer,
-							LsiVar->Lsi_Size,
+							LsiVar->RaidVarBuffer,
+							LsiVar->RaidVarSize,
 							&mConfig,
 							&mProgress
 						);
@@ -901,33 +940,31 @@ EFI_STATUS	SmcLsiCallbackAccessMenu(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 	EFI_BROWSER_ACTION_REQUEST	ActionReq 	= 0;
 	UINT8						IfrType		= 0;
 
-	SMC_LSI_RAID_FORM*			LocSmcLsiRaidFormRefSearchTable = NULL;
+	SMC_LSI_RAID_FORM_SET*			LocRefSearchTable = NULL;
 
-	LocSmcLsiRaidFormRefSearchTable = pProtocol->SmcLsiRaidFormRefSearchTable;
+	LocRefSearchTable = pProtocol->SmcLsiCurrHiiHandleTable->RaidCardAccessForms;
 
-	for(FormIndex = 0;LocSmcLsiRaidFormRefSearchTable[FormIndex].Lsi_RaidTypeIndex != RAID_NULL;++FormIndex){
+	for(;LocRefSearchTable != NULL;LocRefSearchTable = LocRefSearchTable->pFormNext){
 		
-		if(pProtocol->SmcLsiCurrHiiHandleTable->RaidCardType != LocSmcLsiRaidFormRefSearchTable[FormIndex].Lsi_RaidTypeIndex)
-			continue;
-
 		MemSet(&TypeValue,sizeof(EFI_IFR_TYPE_VALUE),0x00);
 		IfrType	= EFI_IFR_TYPE_REF;
 		
-		DEBUG((-1,"Request CallBack FormIndex[%x] :: RaidType[%x], Name[%s], OpCode[%x], FormId[%x], QId[%x], VId[%x], Voff[%x], Flags[%x]\n",
-					FormIndex, LocSmcLsiRaidFormRefSearchTable[FormIndex].Lsi_RaidTypeIndex,
-					LocSmcLsiRaidFormRefSearchTable[FormIndex].Lsi_Name,
-					LocSmcLsiRaidFormRefSearchTable[FormIndex].Lsi_OpCode,
-					LocSmcLsiRaidFormRefSearchTable[FormIndex].Lsi_FormId,
-					LocSmcLsiRaidFormRefSearchTable[FormIndex].Lsi_QId,
-					LocSmcLsiRaidFormRefSearchTable[FormIndex].Lsi_VId,
-					LocSmcLsiRaidFormRefSearchTable[FormIndex].Lsi_Voff,
-					LocSmcLsiRaidFormRefSearchTable[FormIndex].Lsi_Flags
+		DEBUG((-1,"Request CallBack RaidType[%x], RaidCardIndex[%x], Name[%s], OpCode[%x], FormId[%x], QId[%x], VId[%x], Voff[%x], Flags[%x]\n",
+					pProtocol->SmcLsiCurrHiiHandleTable->RaidCardType,
+					pProtocol->SmcLsiCurrHiiHandleTable->RaidCardIndex,
+					LocRefSearchTable->FormHeader.Lsi_FormName,
+					LocRefSearchTable->FormHeader.Lsi_OpCode,
+					LocRefSearchTable->FormBody.Lsi_FormId,
+					LocRefSearchTable->FormBody.Lsi_QId,
+					LocRefSearchTable->FormBody.Lsi_VId,
+					LocRefSearchTable->FormBody.Lsi_Voff,
+					LocRefSearchTable->FormBody.Lsi_Flags
 				));
 
-		Status = pProtocol->SmcLsiCurrConfigAccess->Callback(
-					pProtocol->SmcLsiCurrConfigAccess,
+		Status = pProtocol->SmcLsiCurrHiiHandleTable->SmcLsiCurrConfigAccess->Callback(
+					pProtocol->SmcLsiCurrHiiHandleTable->SmcLsiCurrConfigAccess,
 					EFI_BROWSER_ACTION_CHANGING,
-					LocSmcLsiRaidFormRefSearchTable[FormIndex].Lsi_QId,
+					LocRefSearchTable->FormBody.Lsi_QId,
 					IfrType,
 					&TypeValue,
 					&ActionReq
@@ -1177,11 +1214,9 @@ EFI_STATUS InsertRaidSetupHDGItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 	
 	EFI_IFR_GUID* 			GuidOp 					= NULL;
 	SMC_LSI_ITEMS_MEM*		HDGItemsBuffer			= NULL;
-	SMC_LSI_ITEMS*			RaidItemsTable			= NULL;
+	SMC_RAID_ITEMS_SET*		RaidItemsTable			= NULL;
 	EFI_HII_HANDLE			SmcLsiSetupHandle		= NULL;
-	UINTN					ItemIndex				= 0;
-	SMC_LSI_RAID_ITEM_SET*	pItemSet 				= NULL;
-	UINT8					HddCount				= 1;
+
 
 	if(pProtocol->SmcLsiCurrHiiHandleTable->SmcFormId 		== 0x0 ||
 	   pProtocol->SmcLsiCurrHiiHandleTable->SmcFormTitleId 	== 0x0){
@@ -1193,21 +1228,19 @@ EFI_STATUS InsertRaidSetupHDGItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 
 	InsertStart	= (UINT8*)((UINT8*)GuidOp + GuidOp->Header.Length);
 	SmcLsiSetupHandle 	= pProtocol->SmcLsiGetHiiHandle(pProtocol);
-	RaidItemsTable		= pProtocol->SmcLsiRaidItemsTable;
+	RaidItemsTable		= pProtocol->SmcLsiCurrHiiHandleTable->RaidCardInfItems;;
 	MACRO_CAULBUFFER_INITIAL(PACKAGE_BUFFER);
 
 	HDGItemsBuffer = CopyAndExtMem(NULL);
 
-	for(ItemIndex = 0;RaidItemsTable[ItemIndex].LsiRaidTypeIndex != RAID_NULL;++ItemIndex){
+	for(;RaidItemsTable != NULL;RaidItemsTable = RaidItemsTable->pItemsNext){
+		SMC_RAID_ITEMS_BODY*	pItemsBody = NULL;
+		if(!!StrCmp(RaidItemsTable->ItemsHeader.LsiItemName,pProtocol->SmcLsiGetHdgName(pProtocol))) continue;
 
-		if(RaidItemsTable[ItemIndex].LsiRaidTypeIndex != pProtocol->SmcLsiCurrHiiHandleTable->RaidCardType) continue;
-		if(!!StrCmp(RaidItemsTable[ItemIndex].LsiItemName,pProtocol->SmcLsiGetHdgName(pProtocol))) continue;
-
-		for(pItemSet = RaidItemsTable[ItemIndex].pLsiItemSet;pItemSet != NULL; pItemSet = pItemSet->pNext){
-
+		for(pItemsBody = RaidItemsTable->ItemsBody;pItemsBody != NULL; pItemsBody = pItemsBody->pItemsBodyNext){
 			EFI_IFR_OP_HEADER*	OpHeader = NULL;
-			if(pItemSet->LsiRaidCardIndex != pProtocol->SmcLsiCurrHiiHandleTable->RaidCardIndex) continue;
-			OpHeader = pItemSet->pLsiItemOp;
+
+			OpHeader = pItemsBody->pLsiItemOp;
 			switch(OpHeader->OpCode){
 				case EFI_IFR_CHECKBOX_OP:
 				{
@@ -1223,7 +1256,7 @@ EFI_STATUS InsertRaidSetupHDGItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 					CopyText.Header.Scope  = 0;
 
 					MemSet(HddString2,NAME_LENGTH * sizeof(CHAR16),0x00);
-					Swprintf(HddString2,L"Num[%d] :: %s",HddCount++,HddString);
+					Swprintf(HddString2,L"Num[%d] :: %s",pItemsBody->HdNum,HddString);
 					CopyText.Statement.Prompt = NewHiiString(SmcLsiSetupHandle,HddString2);
 
 					CopyText.Statement.Help	  = NewHiiString(SmcLsiSetupHandle,L"");
@@ -1283,10 +1316,10 @@ EFI_STATUS InsertRaidSetupFormItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 
 	UINTN				ItemIndex			= 0;
 
-	EFI_IFR_OP_HEADER*	pFormOp				= NULL;
-	SMC_LSI_ITEMS_MEM*	FormItemsBuffer		= NULL;
-	SMC_LSI_ITEMS*		RaidItemsTable		= NULL;
-	EFI_HII_HANDLE		SmcLsiSetupHandle	= NULL;
+	EFI_IFR_OP_HEADER*		pFormOp				= NULL;
+	SMC_LSI_ITEMS_MEM*		FormItemsBuffer		= NULL;
+	SMC_RAID_ITEMS_SET*		RaidItemsTable		= NULL;
+	EFI_HII_HANDLE			SmcLsiSetupHandle	= NULL;
 
 	EFI_IFR_FORM	FormOp;
 	EFI_IFR_END		EndOp;
@@ -1301,7 +1334,7 @@ EFI_STATUS InsertRaidSetupFormItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 	MACRO_CAULBUFFER_INITIAL(PACKAGE_BUFFER);
 
 	SmcLsiSetupHandle 	= pProtocol->SmcLsiGetHiiHandle(pProtocol);
-	RaidItemsTable		= pProtocol->SmcLsiRaidItemsTable;
+	RaidItemsTable		= pProtocol->SmcLsiCurrHiiHandleTable->RaidCardInfItems;;
 	FormItemsBuffer		= CopyAndExtMem(NULL);
 
 	if(pProtocol->SmcLsiCurrHiiHandleTable->SmcFormId 		== 0x0 ||
@@ -1320,17 +1353,15 @@ EFI_STATUS InsertRaidSetupFormItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 
 	MARCO_CTE_BUFFER(FormItemsBuffer,&FormOp);
 
-	for(ItemIndex = 0;RaidItemsTable[ItemIndex].LsiRaidTypeIndex != RAID_NULL;++ItemIndex){
+	for(;RaidItemsTable != NULL; RaidItemsTable = RaidItemsTable->pItemsNext){
 	
-		SMC_LSI_RAID_ITEM_SET*	pItemSet = NULL;
-		if(RaidItemsTable[ItemIndex].LsiRaidTypeIndex != pProtocol->SmcLsiCurrHiiHandleTable->RaidCardType) continue;
-		if(! (!!StrCmp(RaidItemsTable[ItemIndex].LsiItemName,pProtocol->SmcLsiGetHdgName(pProtocol)))) continue;
+		SMC_RAID_ITEMS_BODY*	pItemsBody = NULL;
+		if(! (!!StrCmp(RaidItemsTable->ItemsHeader.LsiItemName,pProtocol->SmcLsiGetHdgName(pProtocol)))) continue;
 
-		for(pItemSet = RaidItemsTable[ItemIndex].pLsiItemSet;pItemSet != NULL; pItemSet = pItemSet->pNext){
+		for(pItemsBody = RaidItemsTable->ItemsBody;pItemsBody != NULL; pItemsBody = pItemsBody->pItemsBodyNext){
 			
 			EFI_IFR_OP_HEADER*	OpHeader = NULL;
-			if(pItemSet->LsiRaidCardIndex != pProtocol->SmcLsiCurrHiiHandleTable->RaidCardIndex) continue;
-			OpHeader = pItemSet->pLsiItemOp;
+			OpHeader = pItemsBody->pLsiItemOp;
 
 			switch(OpHeader->OpCode){
 				case EFI_IFR_STRING_OP:
@@ -1348,12 +1379,12 @@ EFI_STATUS InsertRaidSetupFormItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 					CopyString.MinSize	= OriString->MinSize;
 
 					CopyString.Question.Flags = OriString->Question.Flags;
-					CopyString.Question.Header.Prompt = NewHiiString(SmcLsiSetupHandle,RaidItemsTable[ItemIndex].LsiItemName);
+					CopyString.Question.Header.Prompt = NewHiiString(SmcLsiSetupHandle,RaidItemsTable->ItemsHeader.LsiItemName);
 					//Temporary use this.
-					CopyString.Question.Header.Help   = NewHiiString(SmcLsiSetupHandle,RaidItemsTable[ItemIndex].LsiItemName);
+					CopyString.Question.Header.Help   = CopyString.Question.Header.Prompt;
 
 					CopyString.Question.QuestionId	  = pProtocol->SmcLsiGetQIdStart(pProtocol);
-					CopyString.Question.VarStoreId	  = pItemSet->SmcLsiVarId;
+					CopyString.Question.VarStoreId	  = pItemsBody->SmcLsiVarId;
 
 					CopyString.Question.VarStoreInfo.VarOffset = OriString->Question.VarStoreInfo.VarOffset;
 				
@@ -1374,11 +1405,11 @@ EFI_STATUS InsertRaidSetupFormItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 					CopyOneOf.Header.Length = sizeof(EFI_IFR_ONE_OF);
 					CopyOneOf.Header.Scope  = OriOneOf->Header.Scope;
 					
-					CopyOneOf.Question.Header.Prompt = NewHiiString(SmcLsiSetupHandle,RaidItemsTable[ItemIndex].LsiItemName);
-					CopyOneOf.Question.Header.Help   = NewHiiString(SmcLsiSetupHandle,RaidItemsTable[ItemIndex].LsiItemName);
+					CopyOneOf.Question.Header.Prompt = NewHiiString(SmcLsiSetupHandle,RaidItemsTable->ItemsHeader.LsiItemName);
+					CopyOneOf.Question.Header.Help   = CopyOneOf.Question.Header.Prompt;
 
 					CopyOneOf.Question.QuestionId	 = pProtocol->SmcLsiGetQIdStart(pProtocol);
-					CopyOneOf.Question.VarStoreId	 = pItemSet->SmcLsiVarId;
+					CopyOneOf.Question.VarStoreId	 = pItemsBody->SmcLsiVarId;
 					CopyOneOf.Question.VarStoreInfo.VarOffset	= OriOneOf->Question.VarStoreInfo.VarOffset;
 					CopyOneOf.Question.Flags		 = OriOneOf->Question.Flags;
 					CopyOneOf.Flags					 = OriOneOf->Flags;
@@ -1439,10 +1470,10 @@ EFI_STATUS InsertRaidSetupFormItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 
 					CopyNumer.Flags								= pNumer->Flags;
 					CopyNumer.Question.Flags					= pNumer->Question.Flags;
-					CopyNumer.Question.Header.Prompt 			= NewHiiString(SmcLsiSetupHandle,RaidItemsTable[ItemIndex].LsiItemName);
+					CopyNumer.Question.Header.Prompt 			= NewHiiString(SmcLsiSetupHandle,RaidItemsTable->ItemsHeader.LsiItemName);
 					CopyNumer.Question.Header.Help				= CopyNumer.Question.Header.Prompt;
 					CopyNumer.Question.QuestionId				= pProtocol->SmcLsiGetQIdStart(pProtocol);
-					CopyNumer.Question.VarStoreId				= pItemSet->SmcLsiVarId;
+					CopyNumer.Question.VarStoreId				= pItemsBody->SmcLsiVarId;
 					CopyNumer.Question.VarStoreInfo.VarOffset	= pNumer->Question.VarStoreInfo.VarOffset;
 
 					MemCpy(&CopyNumer.data,&pNumer->data,sizeof(MINMAXSTEP_DATA));
@@ -1582,10 +1613,8 @@ EFI_STATUS InsertRaidSetupFormGoto(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 	//How to pass this FormId to next create Form? Below variable now very good.
 	pProtocol->SmcLsiCurrHiiHandleTable->SmcFormId 			= FormGoto.FormId;
 	pProtocol->SmcLsiCurrHiiHandleTable->SmcFormTitleId		= FormGoto.Question.Header.Prompt;
-		
-	FormGoToBuffer->ItemsCopyBuffer		= (UINT8*)&FormGoto;
-	FormGoToBuffer->ItemsCopyBufferSize	= FormGoto.Header.Length;
-	FormGoToBuffer = CopyAndExtMem(FormGoToBuffer);
+	
+	MARCO_CTE_BUFFER(FormGoToBuffer,&FormGoto);
 
 	gBS->FreePool(FormGoToPromptHelp);
 
@@ -1601,22 +1630,22 @@ EFI_STATUS	InsertRaidSetupVariable(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 	
 	MACRO_CAULBUFFER_ARGU(PACKAGE_BUFFER);
 
-	static BOOLEAN		InsertDefStore		= TRUE;	//Temporary Set to TRUE that use VFR auto gen defaultstore.
-	EFI_STATUS			Status				= EFI_SUCCESS;
-	UINTN				VarIndex			= 0;
+	static BOOLEAN			InsertDefStore		= TRUE;	//Temporary Set to TRUE that use VFR auto gen defaultstore.
+	EFI_STATUS				Status				= EFI_SUCCESS;
+	UINTN					VarIndex			= 0;
 
-	EFI_IFR_FORM_SET*	FormSetOp			= NULL;
-	EFI_IFR_VARSTORE*	VarStore 			= NULL;
+	EFI_IFR_FORM_SET*		FormSetOp			= NULL;
+	EFI_IFR_VARSTORE*		VarStore 			= NULL;
 
-	SMC_LSI_ITEMS_MEM*	ItemsBuffer			= NULL;
+	SMC_LSI_ITEMS_MEM*		ItemsBuffer			= NULL;
 	
-	SMC_LSI_VAR*		LocSmcLsiVarTable	= NULL;
-	EFI_HII_HANDLE		SmcLsiSetupHandle	= NULL;
+	SMC_SETUP_RAID_VAR*		LocSmcLsiVarTable	= NULL;
+	EFI_HII_HANDLE			SmcLsiSetupHandle	= NULL;
 
 	FormSetOp = (EFI_IFR_FORM_SET*)SearchOpCodeInFormData(pProtocol,EFI_IFR_FORM_SET_OP,0);	
 	if(FormSetOp == NULL) return SettingErrorStatus(pProtocol,0x02,EFI_LOAD_ERROR);
 
-	LocSmcLsiVarTable = pProtocol->SmcLsiVarTable;
+	LocSmcLsiVarTable = pProtocol->SmcLsiCurrHiiHandleTable->RaidSetupVarSet;
 	SmcLsiSetupHandle = pProtocol->SmcLsiGetHiiHandle(pProtocol);
 
 	InsertStart 		= (UINT8*)((UINT8*)FormSetOp + FormSetOp->Header.Length);
@@ -1635,52 +1664,39 @@ EFI_STATUS	InsertRaidSetupVariable(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 		DefStore.DefaultName	= NewHiiString(SmcLsiSetupHandle,L"STANDARD");
 		DefStore.DefaultId		= EFI_HII_DEFAULT_CLASS_STANDARD;
 		
-		ItemsBuffer->ItemsCopyBuffer		= (UINT8*)&DefStore;
-		ItemsBuffer->ItemsCopyBufferSize	= DefStore.Header.Length;
-		ItemsBuffer = CopyAndExtMem(ItemsBuffer);
+		MARCO_CTE_BUFFER(ItemsBuffer,&DefStore);
 
 		DefStore.DefaultName	= NewHiiString(SmcLsiSetupHandle,L"MANUFACTURING");
 		DefStore.DefaultId		= EFI_HII_DEFAULT_CLASS_MANUFACTURING;
 
-		ItemsBuffer->ItemsCopyBuffer		= (UINT8*)&DefStore;
-		ItemsBuffer->ItemsCopyBufferSize	= DefStore.Header.Length;
-		ItemsBuffer = CopyAndExtMem(ItemsBuffer);
+		MARCO_CTE_BUFFER(ItemsBuffer,&DefStore);
+
 		InsertDefStore = TRUE;
 	}
 	
-	for(VarIndex = 0; LocSmcLsiVarTable[VarIndex].LsiRaidTypeIndex != RAID_NULL;VarIndex++){
-		
-		SMC_LSI_VAR_SET*	pVarSet = NULL;
-		if(pProtocol->SmcLsiCurrHiiHandleTable->RaidCardType != LocSmcLsiVarTable[VarIndex].LsiRaidTypeIndex) continue;
+	for(; LocSmcLsiVarTable != NULL;LocSmcLsiVarTable = LocSmcLsiVarTable->pSetupRaidVarNext){
+		UINT8	VarStoreLength = (UINT8)(sizeof(EFI_IFR_VARSTORE) + Strlen(LocSmcLsiVarTable->SetupRaidVar.RaidVarName));
 
-		for(pVarSet=LocSmcLsiVarTable[VarIndex].pVarSet;pVarSet != NULL; pVarSet = pVarSet->pNext){
+		VarStore = NULL;
+		Status = gBS->AllocatePool(EfiBootServicesData,VarStoreLength,&VarStore);
+		if(EFI_ERROR(Status)) return SettingErrorStatus(pProtocol,0x05,Status);
+		MemSet(VarStore,VarStoreLength,0x00);
 
-			if(pVarSet->LsiRaidCardIndex == pProtocol->SmcLsiCurrHiiHandleTable->RaidCardIndex){
-				UINT8	VarStoreLength = (UINT8)(sizeof(EFI_IFR_VARSTORE) + Strlen(pVarSet->SmcLsiVarName));
-
-				VarStore = NULL;
-				Status = gBS->AllocatePool(EfiBootServicesData,VarStoreLength,&VarStore);
-				if(EFI_ERROR(Status)) return SettingErrorStatus(pProtocol,0x05,Status);
-				MemSet(VarStore,VarStoreLength,0x00);
-
-				VarStore->Header.OpCode = EFI_IFR_VARSTORE_OP;
-				VarStore->Header.Length = VarStoreLength;
-				VarStore->Header.Scope  = 0;
+		VarStore->Header.OpCode = EFI_IFR_VARSTORE_OP;
+		VarStore->Header.Length = VarStoreLength;
+		VarStore->Header.Scope  = 0;
 			
-				MemCpy(&VarStore->Guid,&pVarSet->SmcLsiVarGuid,sizeof(EFI_GUID));
-				MemCpy(VarStore->Name,pVarSet->SmcLsiVarName,Strlen(pVarSet->SmcLsiVarName));
-				VarStore->Name[Strlen(pVarSet->SmcLsiVarName)] = '\0';
+		MemCpy(&VarStore->Guid,&LocSmcLsiVarTable->SetupRaidVar.RaidVarGuid,sizeof(EFI_GUID));
+		MemCpy(VarStore->Name,LocSmcLsiVarTable->SetupRaidVar.RaidVarName,Strlen(LocSmcLsiVarTable->SetupRaidVar.RaidVarName));
+		VarStore->Name[Strlen(LocSmcLsiVarTable->SetupRaidVar.RaidVarName)] = '\0';
 			
-				VarStore->Size = pVarSet->SmcLsiVarSize;
-				VarStore->VarStoreId = pVarSet->SmcLsiVarId;
-			
-				ItemsBuffer->ItemsCopyBuffer = (UINT8*)VarStore;
-				ItemsBuffer->ItemsCopyBufferSize = VarStoreLength;
-				ItemsBuffer = CopyAndExtMem(ItemsBuffer);
-				gBS->FreePool(VarStore);
-			}
-		}
+		VarStore->Size 		 = LocSmcLsiVarTable->SetupRaidVar.RaidVarSize;
+		VarStore->VarStoreId = LocSmcLsiVarTable->SetupRaidVar.RaidVarId;
+				
+		MARCO_CTE_BUFFER(ItemsBuffer,VarStore);
+		gBS->FreePool(VarStore);
 	}
+
 	//Combine Upper + VarBuffer + button
 	MACRO_CAULBUFFER_REPLACE(ItemsBuffer);
 	return EFI_SUCCESS;
@@ -1755,7 +1771,7 @@ VOID	DEBUG_ADDDYNAMICITEMS_PACKAGE(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 			case EFI_IFR_STRING_OP:
 			{
 				EFI_IFR_STRING*		pString 	= NULL;
-				SMC_LSI_RAID_VAR*	pVariable	= NULL;
+				SMC_RAID_VAR*		pVariable	= NULL;
 				UINT8*				pBuffer		= NULL;
 				
 				pString = (EFI_IFR_STRING*)IfrOpHeader;
@@ -1765,9 +1781,9 @@ VOID	DEBUG_ADDDYNAMICITEMS_PACKAGE(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 							pString->Question.VarStoreId,
 							pString->Question.VarStoreInfo.VarOffset));
 
-				pVariable = SearchLsiVarById(pString->Question.VarStoreId);
+				pVariable = SearchInSmcSetupVarById(pProtocol,pString->Question.VarStoreId);
 				if(pVariable != NULL){
-					pBuffer = pVariable->Lsi_Buffer;
+					pBuffer = pVariable->RaidVarBuffer;
 					DEBUG((-1,"%a Val:\"%s\"\n",ScopeBuff,(EFI_STRING)(&pBuffer[pString->Question.VarStoreInfo.VarOffset])));
 				}else{
 					DEBUG((-1,"Can't find Variable!\n"));
@@ -1804,7 +1820,7 @@ VOID	DEBUG_ADDDYNAMICITEMS_PACKAGE(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 			{
 				//These two have same structure.
 				EFI_IFR_NUMERIC*		pNumer			= NULL;
-				SMC_LSI_RAID_VAR*		pVariable		= NULL;
+				SMC_RAID_VAR*			pVariable		= NULL;
 				UINT8*					pBuffer			= NULL;
 				UINT64					DVal			= 0;
 				UINT64					MinValue		= 0;
@@ -1823,9 +1839,9 @@ VOID	DEBUG_ADDDYNAMICITEMS_PACKAGE(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 							pNumer->Question.VarStoreInfo.VarOffset,
 							NumSize[(pNumer->Flags & EFI_IFR_NUMERIC_SIZE)]));
 
-				pVariable = SearchLsiVarById(pNumer->Question.VarStoreId);
+				pVariable = SearchInSmcSetupVarById(pProtocol,pNumer->Question.VarStoreId);
 				if(pVariable != NULL){
-					pBuffer = pVariable->Lsi_Buffer;
+					pBuffer = pVariable->RaidVarBuffer;
 					switch((pNumer->Flags & EFI_IFR_NUMERIC_SIZE)){
 						case EFI_IFR_NUMERIC_SIZE_1:
 							MinValue = pNumer->data.u8.MinValue;
@@ -1899,13 +1915,10 @@ EFI_STATUS	InitialSmcRaidSetupPageData(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtoco
 
 	EFI_HII_HANDLE				 SmcLsiSetupHandle				= NULL;
 	EFI_STATUS					 Status						 	= EFI_SUCCESS;
-	UINTN						 VarIndex						= 0;
 	
 	EFI_HII_PACKAGE_HEADER 		*SmcLsiSetupIfrPackagePtr 		= NULL;
 	EFI_HII_PACKAGE_LIST_HEADER *SmcLsiSetupHiiPackageList 		= NULL;
-	SMC_LSI_VAR					*SmcRaidVarTable				= NULL;
 
-	SmcRaidVarTable	  = pProtocol->SmcLsiVarTable;
 	SmcLsiSetupHandle = pProtocol->SmcLsiGetHiiHandle(pProtocol);
 
 	if(! (!!SmcLsiSetupHandle)) return SettingErrorStatus(pProtocol,0x01,EFI_INVALID_PARAMETER);
@@ -1930,31 +1943,9 @@ EFI_STATUS	InitialSmcRaidSetupPageData(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtoco
 	MemCpy(pProtocol->SmcLsiCurrRAIDSetupData,SmcLsiSetupIfrPackagePtr,SmcLsiSetupIfrPackagePtr->Length);
 	pProtocol->SmcLsiCurrRAIDSetupDataAddedSize		= 0;
 
-	if(EFI_ERROR(InitialLsiVarHashTable(pProtocol))) return SettingErrorStatus(pProtocol,0x15,EFI_LOAD_ERROR);
-
-	for(VarIndex=0;SmcRaidVarTable[VarIndex].LsiRaidTypeIndex != RAID_NULL;++VarIndex){
-		SMC_LSI_VAR_SET* pVarSet = NULL;
-		for(pVarSet=SmcRaidVarTable[VarIndex].pVarSet;pVarSet != NULL;pVarSet = pVarSet->pNext){
-			if(AddLsiVarByBuffer(pProtocol,\
-								 pVarSet->SmcLsiVarName,\
-								 &pVarSet->SmcLsiVarGuid,\
-								 pVarSet->SmcLsiVarId,\
-								 pVarSet->SmcLsiVarSize,\
-								 pVarSet->SmcLsiVarBuffer) == NULL){
-				return SettingErrorStatus(pProtocol,0x19,EFI_OUT_OF_RESOURCES);
-			}
-			if(!!pProtocol->DetailedDebugMessage) {
-				DEBUG((-1,"Var %a :: \n",pVarSet->SmcLsiVarName));
-				DEBUG_PRINT_BUFFER(pVarSet->SmcLsiVarBuffer,pVarSet->SmcLsiVarSize);
-			}
-		}
-	}
-	Debug_for_LsiVarTable(pProtocol);
 	DEBUG_ADDDYNAMICITEMS_PACKAGE(pProtocol);
 	return EFI_SUCCESS;
 }
-
-
 
 EFI_STATUS	UpdateSmcRaidOOBSetupdata(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 
@@ -2083,56 +2074,54 @@ EFI_STATUS SmcLsiRaidLib_ParseNvData(
 		OUT UINT8**							 SmcRaidVarBuffer)
 {
 
-		static	BOOLEAN				ReNewVar			= TRUE;
-		static	INTN				VarIndex 			= -1;
-		static	SMC_LSI_VAR*		SmcLsiVarTable 		= NULL;
-		static	SMC_LSI_VAR_SET*	pVarSet				= NULL;
-		
-		EFI_STATUS					Status				= EFI_SUCCESS;
+		static	BOOLEAN					ReNewVar			= TRUE;
+		static	SMC_SETUP_RAID_VAR*		SmcLsiVarTable 		= NULL;
+		EFI_STATUS						Status				= EFI_SUCCESS;
 
 		if((!!ReNew)) ReNewVar = TRUE;
 
+		SMC_RAID_DETAIL_DEBUG((-1,"SmcLsiRaidLib_ParseNvData :: ReNewVar[%x], ",ReNewVar));
+
 		if(ReNewVar){
-			pVarSet 	= NULL;
-			VarIndex 	= -1;
-			SmcLsiVarTable = pProtocol->SmcLsiVarTable;
+			pProtocol->SmcLsiCurrHiiHandleTable = pProtocol->SmcLsiHiiHandleTable;
+			SmcLsiVarTable = NULL;
 		}
-		while(pVarSet == NULL && SmcLsiVarTable[++VarIndex].LsiRaidTypeIndex != RAID_NULL){
-			pVarSet = SmcLsiVarTable[VarIndex].pVarSet;
+		while(pProtocol->SmcLsiCurrHiiHandleTable != NULL && SmcLsiVarTable == NULL){
+			 SmcLsiVarTable = pProtocol->SmcLsiCurrHiiHandleTable->RaidSetupVarSet;
+			 pProtocol->SmcLsiCurrHiiHandleTable = pProtocol->SmcLsiCurrHiiHandleTable->pNext;
 		}
-		if(pVarSet == NULL){
+		if(SmcLsiVarTable == NULL){
 			SMC_RAID_DETAIL_DEBUG((-1,"SmcLsiRaidLib_ParseNvData :: Not Find\n"));
 			ReNewVar = TRUE;
 			return EFI_NO_MEDIA;
 		}
-		SMC_RAID_DETAIL_DEBUG((-1,"SmcLsiRaidLib_ParseNvData :: VarIndex[%d], ReNewVar[%x], ",VarIndex,ReNewVar));
 
 		*SmcRaidVarName = NULL; *SmcRaidVarGuid = NULL; *SmcRaidVarSize = NULL; *SmcRaidVarBuffer = NULL;
-		Status = gBS->AllocatePool(EfiBootServicesData,(Strlen(pVarSet->SmcLsiVarName) + 1) * sizeof(CHAR16),SmcRaidVarName);
+		Status = gBS->AllocatePool(EfiBootServicesData,(Strlen(SmcLsiVarTable->SetupRaidVar.RaidVarName) + 1) * sizeof(CHAR16),SmcRaidVarName);
 		RETURN_IFERROR();
-		MemSet(*SmcRaidVarName,(Strlen(pVarSet->SmcLsiVarName) + 1) * sizeof(CHAR16),0x00);
-		AsciiStrToUnicodeStr(pVarSet->SmcLsiVarName,*SmcRaidVarName);
+		MemSet(*SmcRaidVarName,(Strlen(SmcLsiVarTable->SetupRaidVar.RaidVarName) + 1) * sizeof(CHAR16),0x00);
+		AsciiStrToUnicodeStr(SmcLsiVarTable->SetupRaidVar.RaidVarName,*SmcRaidVarName);
 		SMC_RAID_DETAIL_DEBUG((-1,"SmcRaidVarName[%s], ",*SmcRaidVarName));
 
 		Status = gBS->AllocatePool(EfiBootServicesData,sizeof(EFI_GUID),SmcRaidVarGuid);
 		RETURN_IFERROR();
 		MemSet(*SmcRaidVarGuid,sizeof(EFI_GUID),0x00);
-		MemCpy(*SmcRaidVarGuid,&pVarSet->SmcLsiVarGuid,sizeof(EFI_GUID));
+		MemCpy(*SmcRaidVarGuid,&SmcLsiVarTable->SetupRaidVar.RaidVarGuid,sizeof(EFI_GUID));
 		SMC_RAID_DETAIL_DEBUG((-1,"SmcRaidVarGuid[%g], ",*SmcRaidVarGuid));
 
 		Status = gBS->AllocatePool(EfiBootServicesData,sizeof(UINTN),SmcRaidVarSize);
 		RETURN_IFERROR();
 		MemSet(*SmcRaidVarSize,sizeof(UINTN),0x00);
-		MemCpy(*SmcRaidVarSize,&pVarSet->SmcLsiVarSize,sizeof(UINT16));
+		MemCpy(*SmcRaidVarSize,&SmcLsiVarTable->SetupRaidVar.RaidVarSize,sizeof(UINT16));
 		SMC_RAID_DETAIL_DEBUG((-1,"SmcRaidVarSize[%x]\n",**SmcRaidVarSize));
 
-		Status = gBS->AllocatePool(EfiBootServicesData,pVarSet->SmcLsiVarSize,SmcRaidVarBuffer);
+		Status = gBS->AllocatePool(EfiBootServicesData,SmcLsiVarTable->SetupRaidVar.RaidVarSize,SmcRaidVarBuffer);
 		RETURN_IFERROR();
-		MemSet(*SmcRaidVarBuffer,pVarSet->SmcLsiVarSize,0x00);
-		MemCpy(*SmcRaidVarBuffer,pVarSet->SmcLsiVarBuffer,pVarSet->SmcLsiVarSize);
+		MemSet(*SmcRaidVarBuffer,SmcLsiVarTable->SetupRaidVar.RaidVarSize,0x00);
+		MemCpy(*SmcRaidVarBuffer,SmcLsiVarTable->SetupRaidVar.RaidVarBuffer,SmcLsiVarTable->SetupRaidVar.RaidVarSize);
 
-		pVarSet 	= pVarSet->pNext;
-		ReNewVar 	= FALSE;
+		SmcLsiVarTable 	= SmcLsiVarTable->pSetupRaidVarNext;
+		ReNewVar 		= FALSE;
 
 		return EFI_SUCCESS;
 }

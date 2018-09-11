@@ -32,6 +32,21 @@
 #include "SmcLsiRaidOOBSetupProtocol.h"
 #include "SmcLsiRaidOOBLib.h"
 
+SMC_LSI_RAID_OOB_SETUP_PROTOCOL*	GetSmcRaidOOBSetupProtocol(){
+	
+	static SMC_LSI_RAID_OOB_SETUP_PROTOCOL*	pProtocol = NULL;
+	if(!!pProtocol) return pProtocol;
+
+	gBS->LocateProtocol(&gSmcLsiRaidOobSetupProtocolGuid,NULL,&pProtocol);
+
+	return pProtocol;
+}
+
+EFI_HANDLE	GetSmcRaidCurrDriverHandle(){
+
+	return GetSmcRaidOOBSetupProtocol()->SmcLsiCurrHiiHandleTable->RaidCardDriverHandle;
+}
+
 EFI_HII_DATABASE_PROTOCOL*	GetHiiDataBase(){
 
 	static EFI_HII_DATABASE_PROTOCOL* HiiDatabase = NULL;

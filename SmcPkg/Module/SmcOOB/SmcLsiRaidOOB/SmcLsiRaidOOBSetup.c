@@ -171,8 +171,12 @@ UINT8	GetRaidIndex(SMC_LSI_RAID_TYPE	RaidType){
 }
 
 VOID	AddSmcLsiHiiHandle(SMC_LSI_RAID_TYPE RaidType,EFI_HII_HANDLE RaidHiiHandle){
-	static 	SMC_LSI_HII_HANDLE*			pLocal 	= NULL;
-	SMC_LSI_HII_HANDLE*					pTemp 	= NULL;
+	static 	SMC_LSI_HII_HANDLE*			pLocal 			= NULL;
+	SMC_LSI_RAID_FORM_SET* 				pLocalFromSet 	= NULL;
+	SMC_RAID_ITEMS_SET*					pLocalItemsSet	= NULL;
+	SMC_LSI_HII_HANDLE*					pTemp 			= NULL;
+	UINTN								FormIndex 		= 0;
+	UINTN								ItemsIndex		= 0;
 
 	gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_LSI_HII_HANDLE),&pTemp);
 	MemSet(pTemp,sizeof(SMC_LSI_HII_HANDLE),0x00);
@@ -180,8 +184,41 @@ VOID	AddSmcLsiHiiHandle(SMC_LSI_RAID_TYPE RaidType,EFI_HII_HANDLE RaidHiiHandle)
 	pTemp->RaidCardType			= RaidType;
 	pTemp->RaidCardIndex		= GetRaidIndex(RaidType);
 	pTemp->RaidCardHiiHandle	= RaidHiiHandle;
+	pTemp->RaidCardAccessForms	= NULL;
 	pTemp->pNext				= NULL;
-	
+
+	for(FormIndex=0;mSmcLsiRaidFormRefSearchTable[FormIndex].Lsi_RaidTypeIndex != RAID_NULL;++FormIndex){
+		if(pTemp->RaidCardType == mSmcLsiRaidFormRefSearchTable[FormIndex].Lsi_RaidTypeIndex){
+			SMC_LSI_RAID_FORM_SET*	pSmcLsiRaidFormSet = NULL;
+			gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_LSI_RAID_FORM_SET),&pSmcLsiRaidFormSet);
+			MemSet(pSmcLsiRaidFormSet,sizeof(SMC_LSI_RAID_FORM_SET),0x00);
+			MemCpy(&pSmcLsiRaidFormSet->FormHeader,&mSmcLsiRaidFormRefSearchTable[FormIndex],sizeof(SMC_LSI_RAID_FORM_HEADER));
+			pSmcLsiRaidFormSet->FormBody.BeUsed = FALSE;
+
+			if(! (!!pLocalFromSet)){
+				pLocalFromSet = pTemp->RaidCardAccessForms = pSmcLsiRaidFormSet;
+			}else{
+				pLocalFromSet->pFormNext = pSmcLsiRaidFormSet;
+				pLocalFromSet = pLocalFromSet->pFormNext;
+			}
+		}
+	}
+	for(ItemsIndex=0;mSmcLsiItemsTable[ItemsIndex].LsiRaidTypeIndex != RAID_NULL;++ItemsIndex){
+		if(pTemp->RaidCardType == mSmcLsiItemsTable[ItemsIndex].LsiRaidTypeIndex){
+			SMC_RAID_ITEMS_SET*		pSmcRaidItemsSet = NULL;
+			gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_RAID_ITEMS_SET),&pSmcRaidItemsSet);
+			MemSet(pSmcRaidItemsSet,sizeof(SMC_RAID_ITEMS_SET),0x00);
+			MemCpy(&pSmcRaidItemsSet->ItemsHeader,&mSmcLsiItemsTable[ItemsIndex],sizeof(SMC_RAID_ITEMS_HEADER));
+			
+			if(! (!!pLocalItemsSet)){
+				pLocalItemsSet = pTemp->RaidCardInfItems = pSmcRaidItemsSet;
+			}else{
+				pLocalItemsSet->pItemsNext = pSmcRaidItemsSet;
+				pLocalItemsSet = pLocalItemsSet->pItemsNext;
+			}
+		}
+	}
+
 	if(! (!!pLocal)){
 		pLocal = mSmcLsiHiiHandleTable = pTemp;
 	}else{
@@ -265,10 +302,7 @@ EFI_STATUS SmcLsiOOBSetupDriverStart(SMC_LSI_RAID_OOB_SETUP_DRIVER*	pDriver){
 	mSmcLsiRaidOOBSetupProtocol->DetailedDebugMessage			= SMC_RAID_DETAILED_DEBUG_MESSAGE;
 	mSmcLsiRaidOOBSetupProtocol->SmcSetupStatus					= EFI_NOT_READY; 
 	mSmcLsiRaidOOBSetupProtocol->SmcLsiRaidNameTable			= RaidName; 
-	mSmcLsiRaidOOBSetupProtocol->SmcLsiVarTable 		 		= mSmcLsiVarTable; 
 	mSmcLsiRaidOOBSetupProtocol->SmcLsiHiiHandleTable 			= mSmcLsiHiiHandleTable;
-	mSmcLsiRaidOOBSetupProtocol->SmcLsiRaidFormRefSearchTable	= mSmcLsiRaidFormRefSearchTable;
-	mSmcLsiRaidOOBSetupProtocol->SmcLsiRaidItemsTable			= mSmcLsiItemsTable;
 	mSmcLsiRaidOOBSetupProtocol->SmcLsiAfterDownFuncTable		= mSmcLsiAfterDwonFuncTable;
 	mSmcLsiRaidOOBSetupProtocol->SmcLsiAfterLoadFuncTable		= mSmcLsiAfterLoadFuncTable;
 
@@ -311,8 +345,6 @@ EFI_STATUS SmcLsiOOBSetupDriverStart(SMC_LSI_RAID_OOB_SETUP_DRIVER*	pDriver){
 	pPrivate->RaidSetupString				= NULL;
 
 	MemCpy(&pPrivate->SmcLsiRaidOOBSetupProtocol,mSmcLsiRaidOOBSetupProtocol,sizeof(SMC_LSI_RAID_OOB_SETUP_PROTOCOL));
-
-	DEBUG((-1,"SmcLsiRaidOOBSetupProtocol Location[%08x]\n",&pPrivate->SmcLsiRaidOOBSetupProtocol));
 
 	Status = gBS->InstallProtocolInterface(
 					&pPrivate->DriverHandle,
@@ -428,7 +460,6 @@ EFI_STATUS SmcLsiRaidOOBSetupEntry(
 	SmcLsiRaidPrivateData->HaveRaidResource				= FALSE;
 	
 	MemCpy(&SmcLsiRaidPrivateData->SmcLsiRaidOOBSetupDriver,SmcLsiRaidOobSetupDriver,sizeof(SMC_LSI_RAID_OOB_SETUP_DRIVER));
-	DEBUG((-1,"SmcLsiRaidOOBSetupDriver Location[%08x]\n",&SmcLsiRaidPrivateData->SmcLsiRaidOOBSetupDriver));
 
 	Status = gBS->InstallProtocolInterface(
 				&SmcLsiRaidPrivateData->DriverHandle,

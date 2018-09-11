@@ -25,6 +25,10 @@ EFI_HII_STRING_PROTOCOL*			GetHiiStringProtocol();
 EFI_STRING							GetHiiString(EFI_HII_HANDLE , EFI_STRING_ID );
 EFI_STRING_ID						NewHiiString(EFI_HII_HANDLE , EFI_STRING );
 
+EFI_HANDLE							GetSmcRaidCurrDriverHandle();
+SMC_LSI_RAID_OOB_SETUP_PROTOCOL*	GetSmcRaidOOBSetupProtocol();
+
+
 EFI_STATUS 							GetListPackageListsHandle(UINTN* , EFI_HII_HANDLE**);
 EFI_HII_HANDLE 						SearchForFormSet(EFI_GUID* , CHAR16* );
 EFI_HII_HANDLE 						SearchForLfiFormSetByHiiOrder(EFI_GUID* , CHAR16** , OUT UINT8* );

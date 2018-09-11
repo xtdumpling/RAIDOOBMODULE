@@ -28,6 +28,7 @@
 #define	ERROR_CODE_SIZE					32
 
 #define HARD_DRIVES_GROUP				L"HARD DRIVES GROUP"
+#define RAID_DRIVES_GROUP				L"RAID DRIVES GROUP"
 
 #define EFI_IFR_TIANO_GUID \
   { 0xf0b1735, 0x87a0, 0x4193, 0xb2, 0x66, 0x53, 0x8c, 0x38, 0xaf, 0x48, 0xce }
@@ -40,12 +41,20 @@
 typedef struct 	_SMC_LSI_RAID_OOB_SETUP_PROTOCOL_ 		SMC_LSI_RAID_OOB_SETUP_PROTOCOL;
 
 typedef struct  _SMC_LSI_RAID_NAME_					SMC_LSI_RAID_NANE;
-typedef struct 	_SMC_LSI_VAR_						SMC_LSI_VAR;
-typedef struct  _SMC_LSI_VAR_SET_					SMC_LSI_VAR_SET;
+typedef struct  _SMC_RAID_VAR_						SMC_RAID_VAR;
+typedef struct  _SMC_SETUP_RAID_VAR_				SMC_SETUP_RAID_VAR;
+typedef struct  _SMC_RAID_VAR_HASH_					SMC_RAID_VAR_HASH;
 typedef struct	_SMC_LSI_HII_HANDLE_				SMC_LSI_HII_HANDLE;
-typedef struct 	_SMC_LSI_RAID_FORM_ 				SMC_LSI_RAID_FORM;
-typedef struct  _SMC_LSI_RAID_ITEM_SET_				SMC_LSI_RAID_ITEM_SET;
-typedef struct 	_SMC_LSI_ITEMS_						SMC_LSI_ITEMS;
+
+typedef struct 	_SMC_LSI_RAID_FORM_HEADER_ 			SMC_LSI_RAID_FORM_HEADER;
+typedef struct 	_SMC_LSI_RAID_FORM_BODY_			SMC_LSI_RAID_FORM_BODY;
+typedef struct 	_SMC_LSI_RAID_FORM_SET_				SMC_LSI_RAID_FORM_SET;
+
+typedef struct  _SMC_RAID_ITEMS_HEADER_				SMC_RAID_ITEMS_HEADER;
+typedef struct 	_SMC_RAID_ITEMS_BODY_				SMC_RAID_ITEMS_BODY;
+typedef struct 	_SMC_RAID_ITEMS_SET_				SMC_RAID_ITEMS_SET;
+
+
 typedef struct	_SMC_LSI_AFTER_DOWN_FUNC_ 			SMC_LSI_AFTER_DOWN_FUNC;
 typedef struct	_SMC_LSI_AFTER_LOAD_FUNC_			SMC_LSI_AFTER_LOAD_FUNC;
 
@@ -57,48 +66,65 @@ struct _SMC_LSI_RAID_NAME_	{
 	CHAR16						FormRaidName[NAME_LENGTH];
 };
 
-struct _SMC_LSI_RAID_ITEM_SET_ {
-	SMC_LSI_RAID_CARD_INDEX		LsiRaidCardIndex;
-	UINT16						SmcLsiVarId;
-	EFI_IFR_OP_HEADER*			pLsiItemOp;
-	SMC_LSI_RAID_ITEM_SET*		pNext;
+struct _SMC_LSI_RAID_FORM_HEADER_ {
+	SMC_LSI_RAID_TYPE			Lsi_RaidTypeIndex;
+	CHAR16						Lsi_FormName[NAME_LENGTH];
+	UINT8						Lsi_OpCode;
 };
 
-struct _SMC_LSI_ITEMS_ {
+struct _SMC_LSI_RAID_FORM_BODY_ {
+	EFI_FORM_ID				Lsi_FormId;
+	EFI_QUESTION_ID			Lsi_QId;
+	EFI_VARSTORE_ID			Lsi_VId;
+	UINT16					Lsi_Voff;
+	UINT8					Lsi_Flags;
+	BOOLEAN					BeUsed;
+};
+
+struct _SMC_LSI_RAID_FORM_SET_ {
+	SMC_LSI_RAID_FORM_HEADER		FormHeader;		
+	SMC_LSI_RAID_FORM_BODY			FormBody;
+	SMC_LSI_RAID_FORM_SET*			pFormNext;
+};
+
+struct _SMC_RAID_ITEMS_HEADER_ {
 	SMC_LSI_RAID_TYPE			LsiRaidTypeIndex;
 	CHAR16						LsiItemForm[NAME_LENGTH];
 	CHAR16						LsiItemName[NAME_LENGTH];
 	UINT16						LsiItemId;					//Temporary use this method to identifier HDD QId.
-	SMC_LSI_RAID_ITEM_SET*		pLsiItemSet;
 };
 
-struct _SMC_LSI_RAID_FORM_ {
-	SMC_LSI_RAID_TYPE			Lsi_RaidTypeIndex;
-
-	CHAR16				Lsi_Name[NAME_LENGTH];
-	UINT8				Lsi_OpCode;
-	EFI_FORM_ID			Lsi_FormId;
-	EFI_QUESTION_ID		Lsi_QId;
-	EFI_VARSTORE_ID		Lsi_VId;
-	UINT16				Lsi_Voff;
-	UINT8				Lsi_Flags;
-	BOOLEAN				BeUsed;
-	BOOLEAN				HDDForm;
-};
-
-struct _SMC_LSI_VAR_SET_ {
-	SMC_LSI_RAID_CARD_INDEX		LsiRaidCardIndex;
-	CHAR8						SmcLsiVarName[NAME_LENGTH];
-	EFI_GUID					SmcLsiVarGuid;
+struct _SMC_RAID_ITEMS_BODY_ {
 	UINT16						SmcLsiVarId;
-	UINT16						SmcLsiVarSize;
-	UINT8*						SmcLsiVarBuffer;
-	SMC_LSI_VAR_SET*			pNext;
+	UINT16						HdNum;
+	EFI_IFR_OP_HEADER*			pLsiItemOp;
+	SMC_RAID_ITEMS_BODY*		pItemsBodyNext;
 };
 
-struct _SMC_LSI_VAR_ {
-	SMC_LSI_RAID_TYPE			LsiRaidTypeIndex;
-	SMC_LSI_VAR_SET*			pVarSet;
+struct _SMC_RAID_ITEMS_SET_ {
+	SMC_RAID_ITEMS_HEADER		ItemsHeader;
+	SMC_RAID_ITEMS_BODY*		ItemsBody;
+	SMC_RAID_ITEMS_SET*			pItemsNext;
+};
+
+//VarHashTable contain Original RAID VAR and SMC RAID VAR.
+struct _SMC_RAID_VAR_ {
+	CHAR8				RaidVarName[NAME_LENGTH];
+	EFI_GUID			RaidVarGuid;
+	EFI_VARSTORE_ID		RaidVarId;
+	UINT16				RaidVarSize;
+	UINT8*				RaidVarBuffer;
+};
+
+struct _SMC_SETUP_RAID_VAR_ {
+	SMC_RAID_VAR				SetupRaidVar;
+	SMC_SETUP_RAID_VAR*			pSetupRaidVarNext;
+};
+
+struct _SMC_RAID_VAR_HASH_ {
+	SMC_RAID_VAR		RaidVar;
+	SMC_RAID_VAR_HASH*	pRaidpNameNext;
+	SMC_RAID_VAR_HASH*	pRaidpIdNext;
 };
 
 struct _SMC_LSI_HII_HANDLE_ {
@@ -107,6 +133,18 @@ struct _SMC_LSI_HII_HANDLE_ {
 	SMC_LSI_RAID_CARD_INDEX		RaidCardIndex;
 	EFI_HII_HANDLE				RaidCardHiiHandle;
 	SMC_LSI_HII_HANDLE*			pNext;
+
+	SMC_LSI_RAID_FORM_SET*		RaidCardAccessForms;
+	SMC_RAID_ITEMS_SET*			RaidCardInfItems;
+
+	SMC_RAID_VAR_HASH*			RaidLsiVarHashTableName	[VAR_HASH_NUM];
+	SMC_RAID_VAR_HASH*			RaidLsiVarHashTableVarId[VAR_HASH_NUM];
+	SMC_SETUP_RAID_VAR*			RaidSetupVarSet;
+	
+	EFI_HANDLE					RaidCardDriverHandle;
+
+	EFI_HII_CONFIG_ACCESS_PROTOCOL*		SmcLsiCurrConfigAccess;
+	UINT8								HiiFlags;
 	
 	//When Create Form for this Handle, Initial Below data.
 	UINT16						SmcFormId;
@@ -159,10 +197,7 @@ struct _SMC_LSI_RAID_OOB_SETUP_PROTOCOL_ {
 	BOOLEAN						DetailedDebugMessage;
 
 	SMC_LSI_RAID_NANE*			SmcLsiRaidNameTable;
-	SMC_LSI_VAR*				SmcLsiVarTable;
 	SMC_LSI_HII_HANDLE*			SmcLsiHiiHandleTable;
-	SMC_LSI_RAID_FORM*			SmcLsiRaidFormRefSearchTable;
-	SMC_LSI_ITEMS*				SmcLsiRaidItemsTable;
 	SMC_LSI_AFTER_DOWN_FUNC*	SmcLsiAfterDownFuncTable;
 	SMC_LSI_AFTER_LOAD_FUNC*	SmcLsiAfterLoadFuncTable;
 
@@ -187,10 +222,6 @@ struct _SMC_LSI_RAID_OOB_SETUP_PROTOCOL_ {
 
 	//SMC LSI RAID OOB LIB Variables and functions
 	SMC_LSI_HII_HANDLE*					SmcLsiCurrHiiHandleTable;
-	EFI_HANDLE							SmcLsiCurrDriverHandle;	
-	EFI_HII_CONFIG_ACCESS_PROTOCOL*		SmcLsiCurrConfigAccess;
-	UINT8								HiiFlags;
-
 	UINT8*								SmcLsiCurrRAIDSetupData;
 	UINT32								SmcLsiCurrRAIDSetupDataAddedSize;
 	//If you need, please add in below.
