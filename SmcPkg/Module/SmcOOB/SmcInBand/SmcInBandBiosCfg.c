@@ -521,6 +521,17 @@ UpdateBiosCfgToSystem(
 		Status = mSmcOobLibraryProtocol->Smc_UpdatePlatformVariable(VariableName, &VariableGuid, VariableSize, &TotalDataBuffer[i]);
         Status = UpdateVariable(VariableName, &VariableGuid, VariableSize, &TotalDataBuffer[i]);
         DEBUG((-1, "[SMC_OOB] :: UpdateVariable Return - %r\n", Status));
+
+		if(EFI_ERROR(Status) && !!mSmcLsiRaidOOBSetupDriver){
+			Status = mSmcLsiRaidOOBSetupDriver->SmcLsiSetupDriverCollectData(
+												mSmcLsiRaidOOBSetupDriver,
+												VariableName,
+												&VariableGuid,
+												VariableSize,
+												&TotalDataBuffer[i]);
+			DEBUG((-1,"mSmcLsiRaidOOBSetupDriver SmcLsiSetupDriverCollectData Status[%r]\n",Status));
+		}
+
         i += (UINT16)VariableSize;
     }
 

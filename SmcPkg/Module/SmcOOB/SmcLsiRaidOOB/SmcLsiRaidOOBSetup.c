@@ -137,15 +137,33 @@ UINT8*	GetSetupString(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 	return pPrivate->RaidSetupString;
 }
 
-
 CHAR16*	GetHDGName(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 
-	SMC_LSI_RAID_OOB_SETUP_PRIVATE*	pPrivate = NULL;
-	pPrivate = STRUCT_START(SMC_LSI_RAID_OOB_SETUP_PRIVATE,SmcLsiRaidOOBSetupProtocol,pProtocol);
+	static	CHAR16 HardDrivesGroupName[] = HARD_DRIVES_GROUP;
 
-	return pPrivate->HardDriveGroupsName;
+	return HardDrivesGroupName;
 }
 
+CHAR16*	GetRDGName(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
+
+	static	CHAR16 RaidDrivesGroupName[] = RAID_DRIVES_GROUP;	
+
+	return RaidDrivesGroupName;
+}
+
+CHAR8* GetSmcItemsVarName(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
+
+	static	CHAR8 SmcItemsVarName[] = FOR_SMC_ITEMS_VAR_NAME;	
+
+	return SmcItemsVarName;
+}
+
+CHAR8* GetRaidVarName(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
+
+	static	CHAR8 RaidItemsVarName[] = FOR_RAID_ITEMS_VAR_NAME;	
+
+	return RaidItemsVarName;
+}
 
 EFI_STATUS SmcLsiSetupDownDummyFunc(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 	return EFI_SUCCESS;
@@ -324,6 +342,9 @@ EFI_STATUS SmcLsiOOBSetupDriverStart(SMC_LSI_RAID_OOB_SETUP_DRIVER*	pDriver){
 	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetSetupData				= GetSetupData;
 	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetSetupString			= GetSetupString;
 	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetHdgName				= GetHDGName;
+	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetRdgName				= GetRDGName;
+	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetSmcItemsVarName		= GetSmcItemsVarName;
+	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetRaidVarName			= GetRaidVarName;
 
 	pPrivate->HIIHandle 					= NULL;		//Will update after LoadResources
 	pPrivate->FormSetNameID					= STRING_TOKEN(STR_SMC_LSI_OOB_TITLE); 
@@ -337,9 +358,7 @@ EFI_STATUS SmcLsiOOBSetupDriverStart(SMC_LSI_RAID_OOB_SETUP_DRIVER*	pDriver){
 	pPrivate->FormSetGuid					= lFormSetGuid;
 	pPrivate->VarGuid						= lVarGuid;
 	pPrivate->HaveRaidResource				= TRUE;
-
-	MemSet(pPrivate->HardDriveGroupsName,NAME_LENGTH * sizeof(CHAR16), 0x00);
-	StrCpy(pPrivate->HardDriveGroupsName,HARD_DRIVES_GROUP);
+	pPrivate->Process						= DRIVER_INSTALL;
 
 	pPrivate->RaidSetupVfr					= NULL;
 	pPrivate->RaidSetupString				= NULL;
@@ -363,12 +382,12 @@ EFI_STATUS SmcLsiOOBSetupDriverDownload(SMC_LSI_RAID_OOB_SETUP_DRIVER*	pDriver){
 	EFI_STATUS								Status			= EFI_NOT_READY;
 	SMC_LSI_RAID_OOB_SETUP_PRIVATE*			pPrivate 		= NULL;
 
-	DEBUG((-1,"SmcLsiOOBSetupDriverDownload Entry\n"));
 	pPrivate = STRUCT_START(SMC_LSI_RAID_OOB_SETUP_PRIVATE,SmcLsiRaidOOBSetupDriver,pDriver);
 	
-	if(!!pPrivate->HaveRaidResource){
+	if(!!pPrivate->HaveRaidResource && pPrivate->Process >= DRIVER_INSTALL){
 		Status = SmcLsiRaidLib_DownLoad(&pPrivate->SmcLsiRaidOOBSetupProtocol);
 		DEBUG((-1,"SmcLsiOOBSetupDriverDownload Status[%r]\n",Status));
+		if(!EFI_ERROR(Status)) pPrivate->Process = DRIVER_DOWNLOAD;
 	}
 	return Status;
 }
@@ -377,12 +396,10 @@ EFI_STATUS SmcLsiOOBSetupDriverLoadResource(SMC_LSI_RAID_OOB_SETUP_DRIVER*	pDriv
 	EFI_STATUS								Status			= EFI_NOT_READY;
 	SMC_LSI_RAID_OOB_SETUP_PRIVATE*			pPrivate 		= NULL;
 
-	DEBUG((-1,"SmcLsiOOBSetupDriverLoadResource Entry\n"));
-
 	pPrivate = STRUCT_START(SMC_LSI_RAID_OOB_SETUP_PRIVATE,SmcLsiRaidOOBSetupDriver,pDriver);
 
 	//Temporary in here to check resoucre and Debug.
-	if(!!pPrivate->HaveRaidResource && !EFI_ERROR(pPrivate->SmcLsiRaidOOBSetupProtocol.SmcSetupStatus)){
+	if(pPrivate->Process == DRIVER_DOWNLOAD){
 		
     	Status = LoadResources( pPrivate->DriverHandle,
                             	sizeof(SmcLsiOOBSetupCallBack)/sizeof(CALLBACK_INFO), 
@@ -418,7 +435,7 @@ EFI_STATUS	SmcLsiOOBSetupDriverGetNvData(SMC_LSI_RAID_OOB_SETUP_DRIVER*  pDriver
 */
 	pPrivate = STRUCT_START(SMC_LSI_RAID_OOB_SETUP_PRIVATE,SmcLsiRaidOOBSetupDriver,pDriver);
 
-	if(!!pPrivate->HaveRaidResource && !EFI_ERROR(pPrivate->SmcLsiRaidOOBSetupProtocol.SmcSetupStatus)){
+	if(pPrivate->Process == DRIVER_DOWNLOAD){
 
 		Status = SmcLsiRaidLib_ParseNvData(&pPrivate->SmcLsiRaidOOBSetupProtocol,
 										   (!!ReNew),
@@ -432,6 +449,41 @@ EFI_STATUS	SmcLsiOOBSetupDriverGetNvData(SMC_LSI_RAID_OOB_SETUP_DRIVER*  pDriver
 	}
 	return Status;
 }
+
+EFI_STATUS	SmcLsiOOBSetupDriverCollectData(SMC_LSI_RAID_OOB_SETUP_DRIVER*  pDriver, CHAR16* VarName, EFI_GUID* VarGuid, UINTN VarSize, UINT8* VarBuffer){
+	
+	EFI_STATUS								Status 			= EFI_NOT_READY;
+	SMC_LSI_RAID_OOB_SETUP_PRIVATE*			pPrivate 		= NULL;
+
+	pPrivate = STRUCT_START(SMC_LSI_RAID_OOB_SETUP_PRIVATE,SmcLsiRaidOOBSetupDriver,pDriver);
+
+	if(pPrivate->Process == DRIVER_DOWNLOAD){
+
+		Status = SmcLsiRaidLib_CollectData(&pPrivate->SmcLsiRaidOOBSetupProtocol,VarName,VarGuid,VarSize,VarBuffer);
+
+//		DEBUG((-1,"SmcLsiRaidLib_CollectData Status[%r]\n",Status));
+		return Status;
+	}
+	return Status;
+}
+
+EFI_STATUS	SmcLsiOOBSetupDriverHandleDataStart(SMC_LSI_RAID_OOB_SETUP_DRIVER*  pDriver){
+	
+	EFI_STATUS								Status 			= EFI_NOT_READY;
+	SMC_LSI_RAID_OOB_SETUP_PRIVATE*			pPrivate 		= NULL;
+
+	pPrivate = STRUCT_START(SMC_LSI_RAID_OOB_SETUP_PRIVATE,SmcLsiRaidOOBSetupDriver,pDriver);
+
+	if(pPrivate->Process == DRIVER_DOWNLOAD){
+
+		Status = SmcLsiRaidLib_HandleData(&pPrivate->SmcLsiRaidOOBSetupProtocol);
+
+//		DEBUG((-1,"SmcLsiOOBSetupDriverHandleDataStart Status[%r]\n",Status));
+		return Status;
+	}
+	return Status;
+}
+
 
 EFI_STATUS SmcLsiRaidOOBSetupEntry(
 	IN EFI_HANDLE ImageHandle,
@@ -451,14 +503,17 @@ EFI_STATUS SmcLsiRaidOOBSetupEntry(
 
 	MemSet(SmcLsiRaidPrivateData,sizeof(SMC_LSI_RAID_OOB_SETUP_PRIVATE), 0x00);
 
-	SmcLsiRaidOobSetupDriver->SmcLsiSetupDriverStart 		= SmcLsiOOBSetupDriverStart;
-	SmcLsiRaidOobSetupDriver->SmcLsiSetupDriverDownload		= SmcLsiOOBSetupDriverDownload;
-	SmcLsiRaidOobSetupDriver->SmcLsiSetupDriverLoadR		= SmcLsiOOBSetupDriverLoadResource;
-	SmcLsiRaidOobSetupDriver->SmcLsiSetupDriverGetNvData	= SmcLsiOOBSetupDriverGetNvData;
+	SmcLsiRaidOobSetupDriver->SmcLsiSetupDriverStart 			= SmcLsiOOBSetupDriverStart;
+	SmcLsiRaidOobSetupDriver->SmcLsiSetupDriverDownload			= SmcLsiOOBSetupDriverDownload;
+	SmcLsiRaidOobSetupDriver->SmcLsiSetupDriverLoadR			= SmcLsiOOBSetupDriverLoadResource;
+	SmcLsiRaidOobSetupDriver->SmcLsiSetupDriverGetNvData		= SmcLsiOOBSetupDriverGetNvData;
+	SmcLsiRaidOobSetupDriver->SmcLsiSetupDriverCollectData		= SmcLsiOOBSetupDriverCollectData;
+	SmcLsiRaidOobSetupDriver->SmcLsiSetupDriverHandleDataStart	= SmcLsiOOBSetupDriverHandleDataStart;
 
 	SmcLsiRaidPrivateData->DriverHandle					= ImageHandle;
 	SmcLsiRaidPrivateData->HaveRaidResource				= FALSE;
-	
+	SmcLsiRaidPrivateData->Process						= DRIVER_INITIAL;
+
 	MemCpy(&SmcLsiRaidPrivateData->SmcLsiRaidOOBSetupDriver,SmcLsiRaidOobSetupDriver,sizeof(SMC_LSI_RAID_OOB_SETUP_DRIVER));
 
 	Status = gBS->InstallProtocolInterface(

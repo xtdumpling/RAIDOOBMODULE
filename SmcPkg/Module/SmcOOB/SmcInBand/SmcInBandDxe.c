@@ -193,6 +193,8 @@ SmcInBandCallback(
 	Status = pBS->LocateProtocol(&gSmcLsiRaidOobSetupDriverGuid,NULL,&mSmcLsiRaidOOBSetupDriver);
 	DEBUG((-1,"[SMC_OOB] :: LocateProtocol gSmcLsiRaidOobSetupDriver Status[%r]\n",Status));
 
+	if(EFI_ERROR(Status)) mSmcLsiRaidOOBSetupDriver = NULL;
+
 	if(!!mSmcLsiRaidOOBSetupDriver){
 		Status = mSmcLsiRaidOOBSetupDriver->SmcLsiSetupDriverStart(mSmcLsiRaidOOBSetupDriver);
 		DEBUG((-1,"[SMCOOB] :: mSmcLsiRaidOOBSetupDriver SmcLsiSetupDriverStart Status[%r]\n",Status));

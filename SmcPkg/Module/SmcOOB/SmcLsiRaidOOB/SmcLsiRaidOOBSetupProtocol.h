@@ -30,6 +30,12 @@
 #define HARD_DRIVES_GROUP				L"HARD DRIVES GROUP"
 #define RAID_DRIVES_GROUP				L"RAID DRIVES GROUP"
 
+//Format will be NAME_X_Y, X ::= CARD TYPE, Y ::= CARD INDEX
+#define FOR_SMC_ITEMS_VAR_NAME			"SMCW_ITEMS_VAR"
+
+//Format will be NAME_S_X_Y, S ::= RAID VAR Original Name, X ::= CARD TYPE, Y ::= CARD INDEX
+#define FOR_RAID_ITEMS_VAR_NAME			"SMCR"
+
 #define EFI_IFR_TIANO_GUID \
   { 0xf0b1735, 0x87a0, 0x4193, 0xb2, 0x66, 0x53, 0x8c, 0x38, 0xaf, 0x48, 0xce }
 
@@ -54,12 +60,17 @@ typedef struct  _SMC_RAID_ITEMS_HEADER_				SMC_RAID_ITEMS_HEADER;
 typedef struct 	_SMC_RAID_ITEMS_BODY_				SMC_RAID_ITEMS_BODY;
 typedef struct 	_SMC_RAID_ITEMS_SET_				SMC_RAID_ITEMS_SET;
 
+typedef struct  _SMC_CHANGED_VAR_HEADER_			SMC_CHANGED_VAR_HEADER;
+typedef struct  _SMC_CHANGED_VAR_BODY_				SMC_CHANGED_VAR_BODY;
+typedef struct 	_SMC_CHANGED_VAR_SET_				SMC_CHANGED_VAR_SET;
+
 
 typedef struct	_SMC_LSI_AFTER_DOWN_FUNC_ 			SMC_LSI_AFTER_DOWN_FUNC;
 typedef struct	_SMC_LSI_AFTER_LOAD_FUNC_			SMC_LSI_AFTER_LOAD_FUNC;
 
 typedef enum	_SMC_LSI_RAID_TYPE_					SMC_LSI_RAID_TYPE;
 typedef enum	_SMC_LSI_RAID_CARD_INDEX_			SMC_LSI_RAID_CARD_INDEX;
+typedef enum 	_SMC_CHANGED_VAR_TYPE_				SMC_CHANGED_VAR_TYPE;
 
 struct _SMC_LSI_RAID_NAME_	{
 	SMC_LSI_RAID_TYPE			LsiRaidTypeIndex;
@@ -92,6 +103,7 @@ struct _SMC_RAID_ITEMS_HEADER_ {
 	CHAR16						LsiItemForm[NAME_LENGTH];
 	CHAR16						LsiItemName[NAME_LENGTH];
 	UINT16						LsiItemId;					//Temporary use this method to identifier HDD QId.
+	BOOLEAN						Changedable;
 };
 
 struct _SMC_RAID_ITEMS_BODY_ {
@@ -127,6 +139,34 @@ struct _SMC_RAID_VAR_HASH_ {
 	SMC_RAID_VAR_HASH*	pRaidpIdNext;
 };
 
+struct _SMC_CHANGED_VAR_HEADER_ {
+	CHAR8					ChangedVarName[NAME_LENGTH];
+	EFI_GUID				ChangedVarGuid;
+	UINTN					ChangedVarLength;
+};
+
+struct _SMC_CHANGED_VAR_BODY_ {
+	SMC_CHANGED_VAR_TYPE	ChangedVarType;
+	CHAR8					ChangedVarOriName[NAME_LENGTH];
+};
+
+struct _SMC_CHANGED_VAR_SET_ {
+
+	SMC_CHANGED_VAR_HEADER	ChVarHeader;
+	SMC_CHANGED_VAR_BODY	ChVarBody;
+
+	UINT8*					ChangedVarBuffer;
+	SMC_CHANGED_VAR_SET*	pChangedVarNext;
+};
+
+#define SMC_ITEM_CMD_STRING_SIZE 255
+
+struct _SMC_ITEMS_VAR_DATA_ {
+	CHAR16	CMD1[SMC_ITEM_CMD_STRING_SIZE];
+	CHAR16	CMD2[SMC_ITEM_CMD_STRING_SIZE];
+	CHAR16	CMD3[SMC_ITEM_CMD_STRING_SIZE];
+};
+
 struct _SMC_LSI_HII_HANDLE_ {
 	//RaidOOBSetup Initial Below data.
 	SMC_LSI_RAID_TYPE			RaidCardType;
@@ -134,9 +174,11 @@ struct _SMC_LSI_HII_HANDLE_ {
 	EFI_HII_HANDLE				RaidCardHiiHandle;
 	SMC_LSI_HII_HANDLE*			pNext;
 
+	//RaidOOBSetup initial Header, RaidOOBLib initial Body.
 	SMC_LSI_RAID_FORM_SET*		RaidCardAccessForms;
 	SMC_RAID_ITEMS_SET*			RaidCardInfItems;
 
+	//RaidOOBLib initial below items.
 	SMC_RAID_VAR_HASH*			RaidLsiVarHashTableName	[VAR_HASH_NUM];
 	SMC_RAID_VAR_HASH*			RaidLsiVarHashTableVarId[VAR_HASH_NUM];
 	SMC_SETUP_RAID_VAR*			RaidSetupVarSet;
@@ -145,7 +187,8 @@ struct _SMC_LSI_HII_HANDLE_ {
 
 	EFI_HII_CONFIG_ACCESS_PROTOCOL*		SmcLsiCurrConfigAccess;
 	UINT8								HiiFlags;
-	
+
+	SMC_CHANGED_VAR_SET*		RaidChangedVarSet;
 	//When Create Form for this Handle, Initial Below data.
 	UINT16						SmcFormId;
 	EFI_STRING_ID				SmcFormTitleId;
@@ -173,6 +216,9 @@ typedef UINT8*			(*SMCLSI_GETSETUPSTRING)	(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
 
 typedef EFI_GUID*		(*SMCLSI_GETVARGUID)		(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
 typedef CHAR16*			(*SMCLSI_GETHDGNAME)		(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
+typedef CHAR16*			(*SMCLSI_GETRDGNAME)		(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
+typedef CHAR8*			(*SMCLSI_GETSMCITESMVARNAME)(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
+typedef CHAR8*			(*SMCLSI_GETRAIDVARNAME)	(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
 
 typedef EFI_STATUS		(*SMCLSI_AFTERDOWNFUNC)		(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
 typedef EFI_STATUS		(*SMCLSI_AFTERLOADFUNC)		(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
@@ -216,9 +262,15 @@ struct _SMC_LSI_RAID_OOB_SETUP_PROTOCOL_ {
 	SMCLSI_GETFORMLABEL			SmcLsiGetFormLabel;
 	SMCLSI_GETSETUPDATA			SmcLsiGetSetupData;
 	SMCLSI_GETSETUPSTRING		SmcLsiGetSetupString;
+
 	SMCLSI_GETHDGNAME			SmcLsiGetHdgName;
+	SMCLSI_GETRDGNAME			SmcLsiGetRdgName;
+	SMCLSI_GETSMCITESMVARNAME	SmcLsiGetSmcItemsVarName;
+	SMCLSI_GETRAIDVARNAME		SmcLsiGetRaidVarName;
+
 	SMCLSI_GETOLABSTART			SmcLsiGetOLabelStart;
 	SMCLSI_GETOLABNOW			SmcLsiGetOLabelNow;
+	
 
 	//SMC LSI RAID OOB LIB Variables and functions
 	SMC_LSI_HII_HANDLE*					SmcLsiCurrHiiHandleTable;
@@ -239,6 +291,13 @@ enum _SMC_LSI_RAID_CARD_INDEX_ {
 	RAIDCARD_SECOND	= 1,
 	RAIDCARD_THIRD	= 2,
 	RAIDCARD_NULL	= 0xFF
+};
+
+enum _SMC_CHANGED_VAR_TYPE_ {
+	VAR_NON_TYPE 	= 0,
+	VAR_RAID_TYPE	= 1,
+	VAR_SMC_TYPE	= 2,
+	VAR_NULLTYPE	= 0xFF
 };
 
 #pragma pack()

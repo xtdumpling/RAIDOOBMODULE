@@ -50,7 +50,12 @@ typedef struct _SMC_LSI_ITEMS_COMMON_HEADER_	SMC_LSI_ITEMS_COMMON_HEADER;
 typedef struct _SMC_LSI_ITEMS_MEM_ 				SMC_LSI_ITEMS_MEM;
 typedef struct _SMC_LSI_INSIDE_DOWN_FUNC_		SMC_LSI_INSIDE_DOWN_FUNC;
 typedef struct _SMC_LSI_INSIDE_LOAD_FUNC_		SMC_LSI_INSIDE_LOAD_FUNC;
+typedef struct _HII_PACKAGE_LIST_FORM_SET_		HII_PACKAGE_LIST_FROM_SET;
 
+struct _HII_PACKAGE_LIST_FORM_SET_ {
+	EFI_HII_PACKAGE_LIST_HEADER*	PackListHeader;
+	EFI_HII_PACKAGE_HEADER*			PackFormHeader;
+};
 
 
 struct _EFI_IFR_GUID_LABEL_ {
@@ -90,28 +95,31 @@ struct _SMC_LSI_INSIDE_LOAD_FUNC_ {
 #pragma pack()
 
 
-EFI_HII_CONFIG_ACCESS_PROTOCOL*		GetHiiConfigAccessProtocol	();
-SMC_RAID_VAR* 						SetLsiVarBuffer_byString	(SMC_RAID_VAR* ,EFI_STRING );
-UINT16								VarHashByName				(CHAR8*);
-UINT16								VarHashById					(UINT16	VarId);
-SMC_RAID_VAR*						SearchLsiVarByName			(CHAR8*	,EFI_GUID* );
-SMC_RAID_VAR*						SearchLsiVarById			(UINT16 );
-SMC_RAID_VAR*						SearchInSmcSetupVarById		(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* ,UINT16 );
+EFI_HII_CONFIG_ACCESS_PROTOCOL*		GetHiiConfigAccessProtocol			();
+SMC_RAID_VAR* 						SetLsiVarBuffer_byString			(SMC_RAID_VAR* ,EFI_STRING );
+UINT16								VarHashByName						(CHAR8*);
+UINT16								VarHashById							(UINT16	VarId);
+SMC_RAID_VAR*						SearchLsiVarByName					(CHAR8*	,EFI_GUID* );
+SMC_RAID_VAR*						SearchLsiVarById					(UINT16 );
+SMC_RAID_VAR*						SearchInSmcSetupVarById				(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* ,UINT16 );
+HII_PACKAGE_LIST_FROM_SET* 			SmcLsiRaidOOB_GetCurrentPackageForm	(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
 
 
-EFI_STATUS 							InitialLsiVarHashTable				(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
-EFI_STATUS 							SmcLsiRaidOOB_InitialFunc			(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
-EFI_STATUS 							SmcLsiRaidOOB_CollectInformation	(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
-EFI_STATUS							SmcLsiHookBrowser2Protocol			(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
-EFI_STATUS							SmcLsiCallbackAccessMenu			(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
-EFI_STATUS							SmcLsiSetSmcLsiVariableTable		(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
-EFI_STATUS 							FreeLsiVarHashTable					(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
+EFI_STATUS 							InitialLsiVarHashTable					(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
+EFI_STATUS 							SmcLsiRaidOOB_InitialFunc				(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
+EFI_STATUS 							SmcLsiRaidOOB_CollectInformation_Form	(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
+EFI_STATUS 							SmcLsiRaidOOB_CollectInformation_Items	(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
+EFI_STATUS							SmcLsiRaidOOB_CollectInformation_ChRec	(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
+EFI_STATUS							SmcLsiHookBrowser2Protocol				(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
+EFI_STATUS							SmcLsiCallbackAccessMenu				(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
+EFI_STATUS							SmcLsiSetSmcLsiVariableTable			(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
+EFI_STATUS 							FreeLsiVarHashTable						(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
 
-EFI_STATUS							InsertRaidSetupVariable				(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
-EFI_STATUS 							InsertRaidSetupFormGoto				(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
-EFI_STATUS 							InsertRaidSetupFormItems			(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
-EFI_STATUS 							InsertRaidSetupChangeItems			(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
-EFI_STATUS 							InsertRaidSetupHDGItems				(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
+EFI_STATUS							InsertRaidSetupVariable					(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
+EFI_STATUS 							InsertRaidSetupFormGoto					(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
+EFI_STATUS 							InsertRaidSetupFormItems				(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
+EFI_STATUS 							InsertRaidSetupChangeItems				(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
+EFI_STATUS 							InsertRaidSetupHDGItems					(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
 
 
 EFI_STATUS EFIAPI SmcLsiHookBrower2Callback(

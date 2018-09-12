@@ -39,20 +39,25 @@ SMC_LSI_RAID_FORM_HEADER		mSmcLsiRaidFormRefSearchTable[] = {
 
 SMC_RAID_ITEMS_HEADER	mSmcLsiItemsTable[] = {
 	// 3108
-	{RAID_3108, L"Controller Management"	, L"Product Name", 			0x0 },
-	{RAID_3108, L"Controller Management"	, L"Serial Number",			0x0 },
-	{RAID_3108, L"Controller Management"	, L"Controller Status",		0x0 },
-	{RAID_3108, L"Controller Management"	, L"PCI ID",				0x0 },
-	{RAID_3108, L"Controller Management"	, L"PCI Slot Number",		0x0 },
-	{RAID_3108, L"Controller Management"	, L"Package Version",		0x0 },
-	{RAID_3108, L"Controller Management"	, L"Firmware Version",		0x0 },
-	{RAID_3108, L"Controller Management"	, L"Connector Count",		0x0 },
-	{RAID_3108, L"Controller Management"	, L"Drive Count",			0x0 },
-	{RAID_3108, L"Controller Management"	, L"Virtual Drive Count",	0x0 },
-	{RAID_3108, L"Select Drives"			, HARD_DRIVES_GROUP,	 0xA700 },
-	{RAID_3108, L"Virtual Drive Management"	, RAID_DRIVES_GROUP,     0xFFFF },
+	{RAID_3108, L"Controller Management"	, L"Product Name", 			0x0 , FALSE},
+	{RAID_3108, L"Controller Management"	, L"Serial Number",			0x0 , FALSE},
+	{RAID_3108, L"Controller Management"	, L"Controller Status",		0x0 , FALSE},
+	{RAID_3108, L"Controller Management"	, L"PCI ID",				0x0 , FALSE},
+	{RAID_3108, L"Controller Management"	, L"PCI Slot Number",		0x0 , FALSE},
+	{RAID_3108, L"Controller Management"	, L"Package Version",		0x0 , FALSE},
+	{RAID_3108, L"Controller Management"	, L"Firmware Version",		0x0 , FALSE},
+	{RAID_3108, L"Controller Management"	, L"Connector Count",		0x0 , FALSE},
+	{RAID_3108, L"Controller Management"	, L"Drive Count",			0x0 , FALSE},
+	{RAID_3108, L"Controller Management"	, L"Virtual Drive Count",	0x0 , FALSE},
+	{RAID_3108, L"Select Drives"			, HARD_DRIVES_GROUP,	 0xA700 , FALSE},
+	{RAID_3108, L"Virtual Drive Management"	, RAID_DRIVES_GROUP,     0xFFFF , FALSE},
+
+	{RAID_3108, L"Advanced Controller Properties", L"Boot Mode",		0x0 , TRUE },
+	{RAID_3108, L"Advanced Controller Properties", L"JBOD Mode",		0x0	, TRUE },
+
 	{RAID_NULL, L"", L"", 0x0 }
 };
+
 
 SMC_LSI_AFTER_DOWN_FUNC		mSmcLsiAfterDwonFuncTable[] = {
 	{ L"SmcLsiSetupDownDummyFunc"	, SmcLsiSetupDownDummyFunc	},
