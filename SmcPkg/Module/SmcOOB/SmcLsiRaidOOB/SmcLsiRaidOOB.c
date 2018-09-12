@@ -635,7 +635,7 @@ HII_PACKAGE_LIST_FROM_SET* SmcLsiRaidOOB_GetCurrentPackageForm(SMC_LSI_RAID_OOB_
 		LsiIfrPackagePtr = (EFI_HII_PACKAGE_HEADER*)((UINT8*)LsiIfrPackagePtr + LsiIfrPackagePtr->Length);
 	}
 	
-	if((UINT32)LsiIfrPackagePtr < (UINT32)((UINT8*)LsiHiiPackageList + LsiHiiPackageList->PackageLength))
+	if((UINT32)LsiIfrPackagePtr >= (UINT32)((UINT8*)LsiHiiPackageList + LsiHiiPackageList->PackageLength))
 		LsiIfrPackagePtr = NULL;
 
 	sListFormSet.PackListHeader = LsiHiiPackageList;
