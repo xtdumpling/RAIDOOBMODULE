@@ -268,7 +268,7 @@ EFI_STRING AppendOffsetWidth(EFI_STRING AppString, UINTN AppOffset, UINTN AppWid
 	MemSet(ConfigRequest,Size,0x00);
 
 	UnicodeSPrint(ConfigRequest, Size, L"%s&OFFSET=0&WIDTH=%016LX",AppString, AppWidth);
-	gBS->FreePool(AppString);
+	//gBS->FreePool(AppString);
 
 	return ConfigRequest;
 }

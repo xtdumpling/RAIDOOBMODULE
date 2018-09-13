@@ -439,6 +439,7 @@ UpdateVariable(
     Status = gBS->AllocatePool(EfiBootServicesData, 0x2000, &TempBuffer);
 	if(EFI_ERROR(Status)) return Status;
 
+	Status = EFI_NOT_FOUND;
     for(i = 0; i < VarCount; i++) {
         if(!StrCmp(VarGUID[i].Var, VariableName) && MemCmp (&(VarGUID[i].Guid), VariableGuid, sizeof (EFI_GUID)) == 0) {
 
@@ -522,7 +523,7 @@ UpdateBiosCfgToSystem(
         Status = UpdateVariable(VariableName, &VariableGuid, VariableSize, &TotalDataBuffer[i]);
         DEBUG((-1, "[SMC_OOB] :: UpdateVariable Return - %r\n", Status));
 
-		if(EFI_ERROR(Status) && !!mSmcLsiRaidOOBSetupDriver){
+		if((Status == EFI_NOT_FOUND) && !!mSmcLsiRaidOOBSetupDriver){
 			Status = mSmcLsiRaidOOBSetupDriver->SmcLsiSetupDriverCollectData(
 												mSmcLsiRaidOOBSetupDriver,
 												VariableName,
@@ -535,6 +536,9 @@ UpdateBiosCfgToSystem(
         i += (UINT16)VariableSize;
     }
 
+	if(!!mSmcLsiRaidOOBSetupDriver){
+		Status = mSmcLsiRaidOOBSetupDriver->SmcLsiSetupDriverHandleDataStart(mSmcLsiRaidOOBSetupDriver);
+	}
     DEBUG((-1, "[SMC_OOB] :: UpdateBiosCfgToSystem end.\n"));
     return EFI_SUCCESS;
 }

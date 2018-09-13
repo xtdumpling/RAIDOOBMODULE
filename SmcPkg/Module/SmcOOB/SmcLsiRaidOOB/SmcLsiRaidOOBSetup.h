@@ -46,6 +46,10 @@
 #define STRUCT_OFFSET(Type,val) ((UINT32)(((UINT32)(&(((Type*)0)->val))) - ((UINT32)0)))
 #define STRUCT_START(Type,val,item) ((Type*)(((UINT32)item) - STRUCT_OFFSET(Type,val)))
 
+#if SMC_ITEM_CMD_STRING_SIZE != 255
+	#error SMC_ITEM_CMD_STRING_SIZE must define 255
+#endif
+
 #pragma pack(1)
 
 typedef struct _SMC_LSI_RAID_OOB_SETUP_PRIVATE_	 	SMC_LSI_RAID_OOB_SETUP_PRIVATE;

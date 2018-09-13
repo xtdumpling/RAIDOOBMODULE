@@ -165,6 +165,23 @@ CHAR8* GetRaidVarName(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 	return RaidItemsVarName;
 }
 
+UINT16 GetSmcRaidVarSize(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
+
+	return sizeof(SMC_ITEMS_VAR_DATA);
+}
+
+UINT32*	GetSmcRaidCmdOffset(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
+	
+	static UINT32	CmdOffset[] = { 
+		 STRUCT_OFFSET(SMC_ITEMS_VAR_DATA,CMD1),
+		 STRUCT_OFFSET(SMC_ITEMS_VAR_DATA,CMD2),
+		 STRUCT_OFFSET(SMC_ITEMS_VAR_DATA,CMD3),
+		 ((UINT32)-1)
+	};
+	
+	return CmdOffset;
+}
+
 EFI_STATUS SmcLsiSetupDownDummyFunc(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 	return EFI_SUCCESS;
 }
@@ -192,9 +209,11 @@ VOID	AddSmcLsiHiiHandle(SMC_LSI_RAID_TYPE RaidType,EFI_HII_HANDLE RaidHiiHandle)
 	static 	SMC_LSI_HII_HANDLE*			pLocal 			= NULL;
 	SMC_LSI_RAID_FORM_SET* 				pLocalFromSet 	= NULL;
 	SMC_RAID_ITEMS_SET*					pLocalItemsSet	= NULL;
+	SMC_RAID_CHRECORD_SET*				pLocalChRSet	= NULL;
 	SMC_LSI_HII_HANDLE*					pTemp 			= NULL;
 	UINTN								FormIndex 		= 0;
 	UINTN								ItemsIndex		= 0;
+	UINTN								ChRIndex		= 0;
 
 	gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_LSI_HII_HANDLE),&pTemp);
 	MemSet(pTemp,sizeof(SMC_LSI_HII_HANDLE),0x00);
@@ -204,6 +223,22 @@ VOID	AddSmcLsiHiiHandle(SMC_LSI_RAID_TYPE RaidType,EFI_HII_HANDLE RaidHiiHandle)
 	pTemp->RaidCardHiiHandle	= RaidHiiHandle;
 	pTemp->RaidCardAccessForms	= NULL;
 	pTemp->pNext				= NULL;
+
+	for(ChRIndex = 0;mSmcLsiChRecordsTable[ChRIndex].LsiRaidTypeIndex != RAID_NULL;++ChRIndex){
+		if(pTemp->RaidCardType == mSmcLsiChRecordsTable[ChRIndex].LsiRaidTypeIndex){
+			SMC_RAID_CHRECORD_SET*	pSmcRaidChRSet = NULL;
+			gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_RAID_CHRECORD_SET),&pSmcRaidChRSet);
+			MemSet(pSmcRaidChRSet,sizeof(SMC_RAID_CHRECORD_SET),0x00);
+			MemCpy(&pSmcRaidChRSet->ChRecordHeader,&mSmcLsiChRecordsTable[ChRIndex],sizeof(SMC_RAID_CHRECORD_HEADER));
+			
+			if(! (!!pLocalChRSet)){
+				pLocalChRSet = pTemp->RaidCardChRecordTable = pSmcRaidChRSet;
+			}else {
+				pLocalChRSet->ChRecordNext = pSmcRaidChRSet;
+				pLocalChRSet = pLocalChRSet->ChRecordNext;
+			}
+		}
+	}
 
 	for(FormIndex=0;mSmcLsiRaidFormRefSearchTable[FormIndex].Lsi_RaidTypeIndex != RAID_NULL;++FormIndex){
 		if(pTemp->RaidCardType == mSmcLsiRaidFormRefSearchTable[FormIndex].Lsi_RaidTypeIndex){
@@ -318,7 +353,8 @@ EFI_STATUS SmcLsiOOBSetupDriverStart(SMC_LSI_RAID_OOB_SETUP_DRIVER*	pDriver){
 
 	mSmcLsiRaidOOBSetupProtocol->SmcLsiDetailedStatus			= 0x0;
 	mSmcLsiRaidOOBSetupProtocol->DetailedDebugMessage			= SMC_RAID_DETAILED_DEBUG_MESSAGE;
-	mSmcLsiRaidOOBSetupProtocol->SmcSetupStatus					= EFI_NOT_READY; 
+	mSmcLsiRaidOOBSetupProtocol->SmcSetupStatus					= EFI_NOT_READY;
+	mSmcLsiRaidOOBSetupProtocol->SmcLsiHaveNvData				= FALSE;
 	mSmcLsiRaidOOBSetupProtocol->SmcLsiRaidNameTable			= RaidName; 
 	mSmcLsiRaidOOBSetupProtocol->SmcLsiHiiHandleTable 			= mSmcLsiHiiHandleTable;
 	mSmcLsiRaidOOBSetupProtocol->SmcLsiAfterDownFuncTable		= mSmcLsiAfterDwonFuncTable;
@@ -345,6 +381,8 @@ EFI_STATUS SmcLsiOOBSetupDriverStart(SMC_LSI_RAID_OOB_SETUP_DRIVER*	pDriver){
 	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetRdgName				= GetRDGName;
 	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetSmcItemsVarName		= GetSmcItemsVarName;
 	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetRaidVarName			= GetRaidVarName;
+	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetSmcRaidVarSize		= GetSmcRaidVarSize;
+	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetSmcRaidCmdOffset		= GetSmcRaidCmdOffset;
 
 	pPrivate->HIIHandle 					= NULL;		//Will update after LoadResources
 	pPrivate->FormSetNameID					= STRING_TOKEN(STR_SMC_LSI_OOB_TITLE); 
