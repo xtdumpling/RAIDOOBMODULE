@@ -77,6 +77,8 @@ typedef enum	_SMC_LSI_RAID_TYPE_					SMC_LSI_RAID_TYPE;
 typedef enum	_SMC_LSI_RAID_CARD_INDEX_			SMC_LSI_RAID_CARD_INDEX;
 typedef enum 	_SMC_CHANGED_VAR_TYPE_				SMC_CHANGED_VAR_TYPE;
 typedef enum	_SMC_RAID_ITEMS_TYPE_				SMC_RAID_ITEMS_TYPE;
+typedef enum 	_SMC_RAID_CMD_SPECIE_ENUM_			SMC_RAID_CMD_SPECIE_ENUM;
+typedef enum	_SMC_RAID_CMD_TYPE_ENUM_			SMC_RAID_CMD_TYPE_ENUM;
 
 struct _SMC_LSI_RAID_NAME_	{
 	SMC_LSI_RAID_TYPE			LsiRaidTypeIndex;
@@ -134,6 +136,8 @@ struct _SMC_RAID_ITEMS_HEADER_ {
 struct _SMC_RAID_ITEMS_BODY_ {
 	UINT16						SmcLsiVarId;
 	UINT16						HdNum;
+	CHAR16*						ItemsName;
+	CHAR16*						ItemsHelp;
 	EFI_IFR_OP_HEADER*			pLsiItemOp;
 	SMC_RAID_ITEMS_BODY*		pItemsBodyNext;
 };
@@ -185,6 +189,55 @@ struct _SMC_CHANGED_VAR_SET_ {
 	SMC_CHANGED_VAR_SET*	pChangedVarNext;
 };
 
+enum _RAID_SIZE_TYPE_ {
+	SIZE_TB_TYPE	= 0,
+	SIZE_GB_TYPE	= 1,
+
+	SIZE_NON_TYPE	= 0xFF
+};
+
+typedef struct 	_SMC_RAID_CMD_GROUP_ 		SMC_RAID_CMD_GROUP;
+typedef struct 	_SMC_RAID_CMD_RAIDTYPE_ 	SMC_RAID_CMD_RAIDTYPE;
+typedef struct 	_SMC_RAID_CMD_RAIDSIZE_ 	SMC_RAID_CMD_RAIDSIZE;
+typedef struct 	_SMC_RAID_CMD_SECTION_ 		SMC_RAID_CMD_SECTION;
+typedef struct 	_SMC_RAID_CMD_SET_ 			SMC_RAID_CMD_SET;
+typedef struct  _SMC_RAID_CMD_SPECIE_		SMC_RAID_CMD_SPECIE;
+typedef struct	_SMC_RAID_CMD_SPECIE_MAP_	SMC_RAID_CMD_SPECIE_MAP;
+
+struct _SMC_RAID_CMD_SPECIE_ {
+	SMC_RAID_CMD_SPECIE_ENUM	RaidCmdSpecie;
+};
+
+struct _SMC_RAID_CMD_SPECIE_MAP_ {
+	CHAR8						SpecieCode;
+	SMC_RAID_CMD_SPECIE_ENUM	SpecieType;
+};
+
+struct _SMC_RAID_CMD_GROUP_ {
+	UINT8						RaidHddNum[128];
+};
+
+struct _SMC_RAID_CMD_RAIDTYPE_ {
+	UINT8				RaidType;
+};
+
+strucr _SMC_RAID_CMD_RAIDSIZE_ {
+	RAID_SIZE_TYPE		RaidSizeType;
+	CHAR16				RaidSizeContext[80];
+};
+
+struct _SMC_RAID_CMD_SECTION_ {
+	SMC_RAID_CMD_TYPE_ENUM		RaidCmdType;
+	VOID*						RaidCmdBody;
+	SMC_RAID_CMD_SECTION*		pRaidCmdSectionNext;
+};
+
+struct _SMC_RAID_CMD_SET_ {
+	SMC_RAID_CMD_SECTION*	RaidCmdSection;
+
+	SMC_RAID_CMD_SET*		pRaidCmdSetNext;
+};
+
 #define SMC_ITEM_CMD_STRING_SIZE 255
 
 struct _SMC_ITEMS_VAR_DATA_ {
@@ -218,6 +271,7 @@ struct _SMC_LSI_HII_HANDLE_ {
 	
 	SMC_CHANGED_VAR_SET*			RaidChangedVarSet;
 	
+	SMC_RAID_CMD_SET*				RaidCmdSet;
 	//When Create Form for this Handle, Initial Below data.
 	UINT16						SmcFormId;
 	EFI_STRING_ID				SmcFormTitleId;
@@ -342,6 +396,21 @@ enum _SMC_RAID_ITEMS_TYPE_ {
 	RAID_RDG_TYPE			= 3,
 	RAID_JBOD_TYPE			= 4,
 	RAID_SMCCMD_TYPE		= 5
+};
+
+enum _SMC_RAID_CMD_TYPE_ENUM_ {
+	SMC_CMD_RAID_GROUP 		= 0,
+	SMC_CMD_RAID_RAIDTYPE 	= 1,
+	SMC_CMD_RAID_SIZE 		= 2,
+	SMC_CMD_RAID_COMMAND	= 3,	
+	SMC_CMD_RAID_NON 		= 0xFF
+};
+
+enum _SMC_RAID_CMD_SPECIE_ENUM_ {
+	SMC_CMD_SPECIE_BUILD	= 0,
+	SMC_CMD_SPECIE_DELETE 	= 1,
+	SMC_CMD_SPECIE_OTHER	= 2,
+	SMC_CMD_RAID_NON 		= 0xFF
 };
 
 #pragma pack()

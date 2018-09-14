@@ -42,6 +42,7 @@
 #define SMC_LSI_THROUGH_FUNC_EXEC				0x112357
 
 #define SMC_RAID_CMD_FORM_STRING				L"CMDFORM"
+#define SMC_RAID_CMD_NAME_STRING				L"CMDXXX";
 
 #pragma pack(1)
 
@@ -133,9 +134,13 @@ EFI_STATUS 							InsertRaidSetupFormGoto					(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* 
 EFI_STATUS 							InsertRaidSetupFormItems				(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
 EFI_STATUS 							InsertRaidSetupChangeItems				(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
 EFI_STATUS 							InsertRaidSetupHDGItems					(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
+EFI_STATUS 							InsertRaidSetupSmcCmdsAndItems			(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
 
 EFI_STATUS							CheckChangeableItemsInChangedVar		(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
-EFI_STATUS							ChangeVarBufferandAccessRecord			(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
+EFI_STATUS							SyncChangedVarToOOBVarBuffer			(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
+EFI_STATUS							AccessRAIDRecordtoChangeSetting			(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
+EFI_STATUS							ParseRaidCfgCmdString					(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
+
 
 EFI_STATUS EFIAPI SmcLsiHookBrower2Callback(
   IN CONST  EFI_FORM_BROWSER2_PROTOCOL*,
