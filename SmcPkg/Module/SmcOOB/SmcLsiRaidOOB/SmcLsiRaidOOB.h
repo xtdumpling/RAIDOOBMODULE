@@ -42,7 +42,7 @@
 #define SMC_LSI_THROUGH_FUNC_EXEC				0x112357
 
 #define SMC_RAID_CMD_FORM_STRING				L"CMDFORM"
-#define SMC_RAID_CMD_NAME_STRING				L"CMDXXX";
+#define SMC_RAID_CMD_NAME_STRING				L"CMDXXX"
 
 #pragma pack(1)
 
@@ -104,9 +104,13 @@ struct _SMC_LSI_INSIDE_CHANGE_FUNC_ {
 
 #pragma pack()
 
+EFI_STATUS							SettingErrorStatus					(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* ,UINT8 	,EFI_STATUS );
+EFI_STATUS 							THROUGH_DEBUG_MESSAGE				(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* ,CHAR16*	,EFI_STATUS );
+
 
 EFI_HII_CONFIG_ACCESS_PROTOCOL*		GetHiiConfigAccessProtocol			();
 SMC_RAID_VAR* 						SetLsiVarBuffer_byString			(SMC_RAID_VAR* ,EFI_STRING );
+SMC_RAID_VAR*						SetLsiVarBuffer						(SMC_RAID_VAR* ,UINT8* );
 UINT16								VarHashByName						(CHAR8*);
 UINT16								VarHashById							(UINT16	VarId);
 SMC_RAID_VAR*						SearchLsiVarByName					(CHAR8*	,EFI_GUID* );
@@ -114,6 +118,10 @@ SMC_RAID_VAR*						SearchLsiVarById					(UINT16 );
 SMC_RAID_VAR*						SearchInSmcSetupVarById				(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* ,UINT16 );
 SMC_RAID_VAR*						SearchInSmcSetupVarByName			(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* ,CHAR8* , EFI_GUID* );
 SMC_LSI_HII_HANDLE*					SearchHiiHandleTableByVarName		(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* ,CHAR8* , EFI_GUID* );
+
+VOID 								Debug_for_RaidChRecords				(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
+
+
 
 HII_PACKAGE_LIST_FROM_SET* 			SmcLsiRaidOOB_GetCurrentPackageForm	(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
 
@@ -137,9 +145,9 @@ EFI_STATUS 							InsertRaidSetupHDGItems					(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* 
 EFI_STATUS 							InsertRaidSetupSmcCmdsAndItems			(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
 
 EFI_STATUS							CheckChangeableItemsInChangedVar		(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
-EFI_STATUS							SyncChangedVarToOOBVarBuffer			(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
 EFI_STATUS							AccessRAIDRecordtoChangeSetting			(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
 EFI_STATUS							ParseRaidCfgCmdString					(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
+EFI_STATUS 							ChangedVarToOOBVarBuffer				(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
 
 
 EFI_STATUS EFIAPI SmcLsiHookBrower2Callback(

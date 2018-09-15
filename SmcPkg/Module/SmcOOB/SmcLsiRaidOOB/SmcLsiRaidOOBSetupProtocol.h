@@ -189,12 +189,15 @@ struct _SMC_CHANGED_VAR_SET_ {
 	SMC_CHANGED_VAR_SET*	pChangedVarNext;
 };
 
+typedef enum  _RAID_SIZE_TYPE_ 		RAID_SIZE_TYPE;
 enum _RAID_SIZE_TYPE_ {
 	SIZE_TB_TYPE	= 0,
 	SIZE_GB_TYPE	= 1,
 
 	SIZE_NON_TYPE	= 0xFF
 };
+
+typedef struct  _SMC_RAID_SIZE_TYPE_MAP_	SMC_RAID_SIZE_TYPE_MAP;
 
 typedef struct 	_SMC_RAID_CMD_GROUP_ 		SMC_RAID_CMD_GROUP;
 typedef struct 	_SMC_RAID_CMD_RAIDTYPE_ 	SMC_RAID_CMD_RAIDTYPE;
@@ -203,6 +206,11 @@ typedef struct 	_SMC_RAID_CMD_SECTION_ 		SMC_RAID_CMD_SECTION;
 typedef struct 	_SMC_RAID_CMD_SET_ 			SMC_RAID_CMD_SET;
 typedef struct  _SMC_RAID_CMD_SPECIE_		SMC_RAID_CMD_SPECIE;
 typedef struct	_SMC_RAID_CMD_SPECIE_MAP_	SMC_RAID_CMD_SPECIE_MAP;
+
+struct _SMC_RAID_SIZE_TYPE_MAP_ {
+	RAID_SIZE_TYPE		RaidSizeType;
+	CHAR8				RaidSizeStr[5];
+};
 
 struct _SMC_RAID_CMD_SPECIE_ {
 	SMC_RAID_CMD_SPECIE_ENUM	RaidCmdSpecie;
@@ -213,6 +221,8 @@ struct _SMC_RAID_CMD_SPECIE_MAP_ {
 	SMC_RAID_CMD_SPECIE_ENUM	SpecieType;
 };
 
+#define SMC_RAID_CMD_GROUP_TYPE_END	0xFF
+
 struct _SMC_RAID_CMD_GROUP_ {
 	UINT8						RaidHddNum[128];
 };
@@ -221,7 +231,7 @@ struct _SMC_RAID_CMD_RAIDTYPE_ {
 	UINT8				RaidType;
 };
 
-strucr _SMC_RAID_CMD_RAIDSIZE_ {
+struct _SMC_RAID_CMD_RAIDSIZE_ {
 	RAID_SIZE_TYPE		RaidSizeType;
 	CHAR16				RaidSizeContext[80];
 };
@@ -410,7 +420,7 @@ enum _SMC_RAID_CMD_SPECIE_ENUM_ {
 	SMC_CMD_SPECIE_BUILD	= 0,
 	SMC_CMD_SPECIE_DELETE 	= 1,
 	SMC_CMD_SPECIE_OTHER	= 2,
-	SMC_CMD_RAID_NON 		= 0xFF
+	SMC_CMD_SPECIE_NON 		= 0xFF
 };
 
 #pragma pack()
