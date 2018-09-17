@@ -1715,6 +1715,59 @@ EFI_STATUS InsertRaidSetupSmcCmdsAndItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProt
 	return EFI_SUCCESS;
 }
 
+EFI_STATUS CreateRaid_Hdg_Rdg_Jbod_TypeItems(
+		SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol,
+		SMC_RAID_ITEMS_SET* pRaidItems,
+		SMC_LSI_ITEMS_MEM*	pItemsBuffer,
+		SMC_RAID_ITEMS_TYPE ItemsType){
+
+	EFI_STATUS	Status = EFI_SUCCESS;
+
+	for(;pRaidItems != NULL; pRaidItems = pRaidItems->pItemsNext){
+		SMC_RAID_ITEMS_BODY*	pItemsBody = NULL;
+		
+		if(pRaidItems->ItemsHeader.RaidItemsType != ItemsType) continue;
+
+		for(pItemsBody = pRaidItems->ItemsBody;pItemsBody != NULL; pItemsBody = pItemsBody->pItemsBodyNext){
+			EFI_IFR_OP_HEADER*	OpHeader = NULL;
+
+			OpHeader = pItemsBody->pLsiItemOp;
+			switch(OpHeader->OpCode){
+				case EFI_IFR_CHECKBOX_OP:
+				{
+					if(ItemsType == RAID_HDG_TYPE){
+						EFI_IFR_CHECKBOX*	OriCBox;
+						EFI_IFR_TEXT		CopyText;
+						CHAR16*				HddString = NULL;
+						CHAR16				HddString2[NAME_LENGTH];
+
+						OriCBox = (EFI_IFR_CHECKBOX*)OpHeader;
+						HddString = GetHiiString(pProtocol->SmcLsiCurrHiiHandleTable->RaidCardHiiHandle,OriCBox->Question.Header.Prompt);
+						CopyText.Header.OpCode = EFI_IFR_TEXT_OP;
+						CopyText.Header.Length = sizeof(EFI_IFR_TEXT);
+						CopyText.Header.Scope  = 0;
+
+						MemSet(HddString2,NAME_LENGTH * sizeof(CHAR16),0x00);
+						Swprintf(HddString2,L"Num[%d] :: %s",pItemsBody->HdNum,HddString);
+						CopyText.Statement.Prompt = NewHiiString(pProtocol->SmcLsiGetHiiHandle(pProtocol),HddString2);
+
+						CopyText.Statement.Help	  = NewHiiString(pProtocol->SmcLsiGetHiiHandle(pProtocol),L"");
+						CopyText.TextTwo		  =	CopyText.Statement.Help;
+
+						Cte_Buffer(pItemsBuffer,&CopyText);
+					}
+				}
+					break;
+				default:
+					break;
+			}
+		}
+	}
+
+	return Status;
+}
+
+
 EFI_STATUS InsertRaidSetupHDGItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 
 	MACRO_CAULBUFFER_ARGU(PACKAGE_BUFFER);
@@ -1722,9 +1775,10 @@ EFI_STATUS InsertRaidSetupHDGItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 	EFI_IFR_GUID* 			GuidOp 					= NULL;
 	SMC_LSI_ITEMS_MEM*		HDGItemsBuffer			= NULL;
 	SMC_RAID_ITEMS_SET*		RaidItemsTable			= NULL;
-	EFI_HII_HANDLE			SmcLsiSetupHandle		= NULL;
 	EFI_IFR_GUID_LABEL*		GuidLabel				= NULL;
 
+	SMC_RAID_ITEMS_TYPE		BuildOrder[] 	= {RAID_JBOD_TYPE, RAID_HDG_TYPE, RAID_RDG_TYPE, RAID_NULL_TYPE};
+	UINT8					BuildOrdIndex	= 0;
 
 	if(pProtocol->SmcLsiCurrHiiHandleTable->SmcFormId 		== 0x0 ||
 	   pProtocol->SmcLsiCurrHiiHandleTable->SmcFormTitleId 	== 0x0){
@@ -1735,51 +1789,19 @@ EFI_STATUS InsertRaidSetupHDGItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 	if(GuidOp == NULL) return SettingErrorStatus(pProtocol,0x12,EFI_NOT_FOUND);
 
 	InsertStart	= (UINT8*)((UINT8*)GuidOp + GuidOp->Header.Length);
-	SmcLsiSetupHandle 	= pProtocol->SmcLsiGetHiiHandle(pProtocol);
-	RaidItemsTable		= pProtocol->SmcLsiCurrHiiHandleTable->RaidCardInfItems;;
 	MACRO_CAULBUFFER_INITIAL(PACKAGE_BUFFER);
 
 	HDGItemsBuffer = CopyAndExtMem(NULL);
 
 	Cte_Buffer(HDGItemsBuffer,CreateSubTitle(pProtocol,L" ==== RAID CARD Hard Drives Information ==== "));
 
-	for(;RaidItemsTable != NULL;RaidItemsTable = RaidItemsTable->pItemsNext){
-		SMC_RAID_ITEMS_BODY*	pItemsBody = NULL;
-		if(!!StrCmp(RaidItemsTable->ItemsHeader.LsiItemName,pProtocol->SmcLsiGetHdgName(pProtocol))) continue;
-		if(RaidItemsTable->ItemsHeader.RaidItemsType != RAID_HDG_TYPE) continue;
+	BuildOrdIndex = 0;
+	while(BuildOrder[BuildOrdIndex] != RAID_NULL_TYPE){
+		RaidItemsTable		= pProtocol->SmcLsiCurrHiiHandleTable->RaidCardInfItems;;
+		SMC_RAID_DETAIL_DEBUG((-1,"Create Hard Drive Type[%x]\n",BuildOrder[BuildOrdIndex]));
+		if(EFI_ERROR(CreateRaid_Hdg_Rdg_Jbod_TypeItems(pProtocol,RaidItemsTable,HDGItemsBuffer,BuildOrder[BuildOrdIndex++])))
+			return SettingErrorStatus(pProtocol,0x33,EFI_NOT_FOUND);
 
-		for(pItemsBody = RaidItemsTable->ItemsBody;pItemsBody != NULL; pItemsBody = pItemsBody->pItemsBodyNext){
-			EFI_IFR_OP_HEADER*	OpHeader = NULL;
-
-			OpHeader = pItemsBody->pLsiItemOp;
-			switch(OpHeader->OpCode){
-				case EFI_IFR_CHECKBOX_OP:
-				{
-					EFI_IFR_CHECKBOX*	OriCBox;
-					EFI_IFR_TEXT		CopyText;
-					CHAR16*				HddString = NULL;
-					CHAR16				HddString2[NAME_LENGTH];
-
-					OriCBox = (EFI_IFR_CHECKBOX*)OpHeader;
-					HddString = GetHiiString(pProtocol->SmcLsiCurrHiiHandleTable->RaidCardHiiHandle,OriCBox->Question.Header.Prompt);
-					CopyText.Header.OpCode = EFI_IFR_TEXT_OP;
-					CopyText.Header.Length = sizeof(EFI_IFR_TEXT);
-					CopyText.Header.Scope  = 0;
-
-					MemSet(HddString2,NAME_LENGTH * sizeof(CHAR16),0x00);
-					Swprintf(HddString2,L"Num[%d] :: %s",pItemsBody->HdNum,HddString);
-					CopyText.Statement.Prompt = NewHiiString(SmcLsiSetupHandle,HddString2);
-
-					CopyText.Statement.Help	  = NewHiiString(SmcLsiSetupHandle,L"");
-					CopyText.TextTwo		  =	CopyText.Statement.Help;
-
-					Cte_Buffer(HDGItemsBuffer,&CopyText);
-				}
-					break;
-				default:
-					break;
-			}
-		}
 	}
 
 	GuidLabel = CreateGuidLabel(pProtocol->SmcLsiGetOLabelStart(pProtocol));

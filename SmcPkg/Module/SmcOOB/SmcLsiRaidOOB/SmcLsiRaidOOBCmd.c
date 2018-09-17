@@ -12,6 +12,7 @@ SMC_LSI_INSIDE_CHANGE_FUNC		mSmcLsiInsideChangeFunc[]	= {
 	{ L"SmcLsiHookBrowser2Protocol"			, SmcLsiHookBrowser2Protocol			},
 
 	{ L"ParseRaidCfgCmdString"				, ParseRaidCfgCmdString					},
+	{ L"CollectCfgCmdData"					, CollectCfgCmdData						},
 	{ L""									, NULL									}
 };
 
@@ -31,8 +32,10 @@ static	SMC_RAID_CMD_SPECIE_MAP	SpecieMap[] = {
 extern	BOOLEAN						mDetailedDebugMessage;
 
 VOID debug_for_Cmd_Set(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
+#if defined(DEBUG_MODE) && (DEBUG_MODE == 1)
 
 	SMC_RAID_CMD_SET*		pSmcRaidCmdSet	= NULL;
+	UINTN					CmdIndex		= 1;
 
 	DEBUG((-1,"SmcRaidCmdSet :: \n"));
 	DEBUG((-1,"  CardType[%x], CardIndex[%x] - \n",
@@ -43,19 +46,25 @@ VOID debug_for_Cmd_Set(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 
 	for(;!!pSmcRaidCmdSet;pSmcRaidCmdSet = pSmcRaidCmdSet->pRaidCmdSetNext){
 		SMC_RAID_CMD_SECTION*	pPSection	= NULL;
+		DEBUG((-1,"     CMD[%d] :: \n",CmdIndex++));
 		for(pPSection = pSmcRaidCmdSet->RaidCmdSection;!!pPSection;pPSection = pPSection->pRaidCmdSectionNext){
 			switch(pPSection->RaidCmdType){
 				case SMC_CMD_RAID_GROUP:
 				{
-					SMC_RAID_CMD_GROUP* pGroup = NULL;
-					UINTN				index  = 0;
+					SMC_RAID_CMD_GROUP* 	pGroup 		= NULL;
+					SMC_RAID_CMD_GROUP_HDD*	pGroupHdd	= NULL;
 
 					pGroup = pPSection->RaidCmdBody;
-					DEBUG((-1,"RAID CMD Group RaidHddNum["));
-					for(index=0;pGroup->RaidHddNum[index] != SMC_RAID_CMD_GROUP_TYPE_END;++index){
-						DEBUG((-1," %02d",pGroup->RaidHddNum[index]));
+					pGroupHdd = pGroup->GroupHddSet;
+
+					DEBUG((-1,"      Group :: \n"));
+					for(;!!pGroupHdd;pGroupHdd = pGroupHdd->pHddNext){
+						DEBUG((-1,"        Num[%02d], Name",pGroupHdd->HdNum));
+						if(!!pGroupHdd->HdHame){
+							DEBUG((-1,"[%s]",pGroupHdd->HdHame));
+						}
+						DEBUG((-1,"\n"));
 					}
-					DEBUG((-1,"]\n"));
 				}
 					break;
 				case SMC_CMD_RAID_RAIDTYPE:
@@ -63,7 +72,7 @@ VOID debug_for_Cmd_Set(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 					SMC_RAID_CMD_RAIDTYPE* pRaidType = NULL;
 
 					pRaidType = pPSection->RaidCmdBody;
-					DEBUG((-1,"RAID CMD RaidType[%02d]\n",pRaidType->RaidType));
+					DEBUG((-1,"      Type[%02d]\n",pRaidType->RaidType));
 				}
 					break;
 				case SMC_CMD_RAID_SIZE:
@@ -76,7 +85,7 @@ VOID debug_for_Cmd_Set(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 						SmcRaidSizeTypeMap[index].RaidSizeType != pRaidSize->RaidSizeType;
 						++index);
 						
-					DEBUG((-1,"RAID CMD RaidSize Size[%s], Type[%a]\n",pRaidSize->RaidSizeContext,SmcRaidSizeTypeMap[index].RaidSizeStr));
+					DEBUG((-1,"      Size[%s], Type[%a]\n",pRaidSize->RaidSizeContext,SmcRaidSizeTypeMap[index].RaidSizeStr));
 				}
 					break;
 				case SMC_CMD_RAID_COMMAND:
@@ -89,7 +98,7 @@ VOID debug_for_Cmd_Set(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 						SpecieMap[index].SpecieType != pSpecie->RaidCmdSpecie;
 						++index);
 
-					DEBUG((-1,"RAID CMD Specie[%c]\n",SpecieMap[index].SpecieCode));
+					DEBUG((-1,"      Specie[%c]\n",SpecieMap[index].SpecieCode));
 				}
 					break;
 				default:
@@ -98,6 +107,7 @@ VOID debug_for_Cmd_Set(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 			}
 		}
 	}
+#endif
 }
 VOID Debug_for_RaidChangedVar(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 
@@ -267,7 +277,12 @@ EFI_STATUS	CheckChangeableItemsInChangedVar(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pPr
 		for(;!!pItemsBody;pItemsBody = pItemsBody->pItemsBodyNext){
 			SMC_RAID_VAR*			pRaidVar 		= NULL;
 			SMC_CHANGED_VAR_SET*	pRaidChangedVar	= NULL;
-		
+	
+			if(RaidItemsSet->ItemsHeader.RaidItemsType != RAID_CHANGEABLE_TYPE &&
+			   RaidItemsSet->ItemsHeader.RaidItemsType != RAID_SMCCMD_TYPE){
+				continue;
+			}
+
 			SMC_RAID_DETAIL_DEBUG((-1,"Check for item :: From[%s], Name[%s], RaidItemsType[%x], SmcLsiVarId[%x]\n",
 							RaidItemsSet->ItemsHeader.LsiItemForm,
 							RaidItemsSet->ItemsHeader.LsiItemName,
@@ -277,11 +292,8 @@ EFI_STATUS	CheckChangeableItemsInChangedVar(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pPr
 			
 			pRaidVar = SearchLsiVarById(pItemsBody->SmcLsiVarId);
 			if(!(!!pRaidVar)) continue;
-			
-			if(RaidItemsSet->ItemsHeader.RaidItemsType == RAID_CHANGEABLE_TYPE ||
-			   RaidItemsSet->ItemsHeader.RaidItemsType == RAID_SMCCMD_TYPE){
-				pRaidChangedVar = SearchSmcRaidVarInChangedVar(pProtocol,pRaidVar);
-			}
+
+			pRaidChangedVar = SearchSmcRaidVarInChangedVar(pProtocol,pRaidVar);	
 			SMC_RAID_DETAIL_DEBUG((-1,"  -- [%s] Search Raid Var in Changed Var\n",(pRaidChangedVar == NULL) ? L"NOT FIND" : L"FIND"));
 			if(!(!!pRaidChangedVar)) continue;
 			
@@ -310,6 +322,7 @@ CHAR8*	UpperAsciiString(CHAR8*	UpperString){
 		if((*UpperString) >= 'a' && (*UpperString) <= 'z'){
 			*UpperString = (CHAR8)((UINT8)(*UpperString) - 0x20);
 		}
+		++UpperString;
 	}
 	return UpperString;
 }
@@ -352,7 +365,8 @@ SMC_RAID_CMD_SECTION*	ParseCmdRaidSize(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtoco
 		}
 	}
 	if(SmcRaidSizeTypeMap[SizeTypeIndex].RaidSizeType == SIZE_NON_TYPE) return NULL;
-	if(*(++paCmdCfgPos)) return NULL;
+	paCmdCfgPos += Strlen(SmcRaidSizeTypeMap[SizeTypeIndex].RaidSizeStr);
+	if(*(paCmdCfgPos) != ']') return NULL;
 	
 
 	gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_RAID_CMD_RAIDSIZE),&pRaidType);
@@ -391,14 +405,15 @@ SMC_RAID_CMD_SECTION*	ParseCmdRaidType(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtoco
 
 	if(TempVal != 0xFFFF) RaidType = (UINT8)TempVal;
 
-	gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_RAID_CMD_RAIDTYPE),&pRaidType);
-	pRaidType->RaidType	= RaidType;
+	if(RaidType != SMC_RAID_CMD_GROUP_TYPE_END){
+		gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_RAID_CMD_RAIDTYPE),&pRaidType);
+		pRaidType->RaidType	= RaidType;
 
-	gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_RAID_CMD_SECTION),&pSection);
-	pSection->RaidCmdType = SMC_CMD_RAID_GROUP;
-	pSection->RaidCmdBody = pRaidType;
-	pSection->pRaidCmdSectionNext = NULL;
-
+		gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_RAID_CMD_SECTION),&pSection);
+		pSection->RaidCmdType = SMC_CMD_RAID_RAIDTYPE;
+		pSection->RaidCmdBody = pRaidType;
+		pSection->pRaidCmdSectionNext = NULL;
+	}
 	return pSection;
 }
 
@@ -408,20 +423,20 @@ SMC_RAID_CMD_SECTION*	ParseCmdGroup(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol, 
 
 	SMC_RAID_CMD_GROUP* 	pGroup 			= NULL;
 	SMC_RAID_CMD_SECTION*	pSection		= NULL;
-	UINT8					RaidHddNum[128];
+	UINT16					RaidHddNum[128];
 	UINT8					RaidHddIndex	= 0;
-	UINT16					TempVal			= 0;
+	UINT8					TempIndex		= 0;
 
 	if(!(!!paCmdCfgPos) || !(*paCmdCfgPos)) return NULL;
 
-	MemSet(RaidHddNum,sizeof(UINT8) * 128, SMC_RAID_CMD_GROUP_TYPE_END);
+	MemSet(RaidHddNum,sizeof(UINT16) * 128, SMC_RAID_CMD_GROUP_TYPE_END);
 
 	paCmdCfgPos = Strstr(paCmdCfgPos,"G:[");
 	if(!(*paCmdCfgPos)) return NULL;
 	paCmdCfgPos += 3;
 
 	do {
-		TempVal = 0xFFFF; 
+		UINT16 	TempVal	= 0xFFFF;
 		
 		while(*paCmdCfgPos >= '0' && *paCmdCfgPos <= '9'){
 			if(TempVal == 0xFFFF) TempVal = 0x0;
@@ -438,12 +453,29 @@ SMC_RAID_CMD_SECTION*	ParseCmdGroup(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol, 
 			default:
 				return NULL;
 		}
-		if(TempVal != 0xFFFF) RaidHddNum[RaidHddIndex++] = (UINT8)TempVal;
+		if(TempVal != 0xFFFF) RaidHddNum[RaidHddIndex++] = TempVal;
 	}while(*paCmdCfgPos != ']');
 
 	if(RaidHddIndex > 0){
+		SMC_RAID_CMD_GROUP_HDD*		pGroupHddSet = NULL;
+
 		gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_RAID_CMD_GROUP),&pGroup);
-		MemCpy(pGroup->RaidHddNum,RaidHddNum,sizeof(UINT8) * 128);
+		MemSet(pGroup,sizeof(SMC_RAID_CMD_GROUP),0x00);
+
+		for(TempIndex=0;TempIndex < RaidHddIndex;++TempIndex){
+			SMC_RAID_CMD_GROUP_HDD*	pTempGroupHdd	= NULL;
+			gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_RAID_CMD_GROUP_HDD),&pTempGroupHdd);
+			pTempGroupHdd->HdNum 	= RaidHddNum[TempIndex];
+			pTempGroupHdd->HdHame 	= NULL;
+			pTempGroupHdd->pHddNext	= NULL;
+
+			if(! (!!pGroupHddSet)){
+				pGroupHddSet = pGroup->GroupHddSet = pTempGroupHdd;
+			}else{
+				pGroupHddSet->pHddNext = pTempGroupHdd;
+				pGroupHddSet = pGroupHddSet->pHddNext;
+			}
+		}
 
 		gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_RAID_CMD_SECTION),&pSection);
 		pSection->RaidCmdType = SMC_CMD_RAID_GROUP;
@@ -492,6 +524,7 @@ CHAR8*	DeleteUselessChar(CHAR8* aCmdString){
 
 	CHAR8		aTempString[SMC_ITEM_CMD_STRING_SIZE];
 	CHAR8*		apTemp		= NULL;
+	CHAR8*		apTempCmd	= NULL;
 	BOOLEAN		LeftPar		= FALSE;
 	BOOLEAN		RightPar	= FALSE;
 
@@ -500,8 +533,9 @@ CHAR8*	DeleteUselessChar(CHAR8* aCmdString){
 	MemSet(aTempString,SMC_ITEM_CMD_STRING_SIZE * sizeof(CHAR8),0x00);
 	MemCpy(aTempString,aCmdString,SMC_ITEM_CMD_STRING_SIZE * sizeof(CHAR8));
 	MemSet(aCmdString,SMC_ITEM_CMD_STRING_SIZE * sizeof(CHAR8),0x00);
-	
-	apTemp = aTempString;
+
+	apTemp 		= aTempString;
+	apTempCmd 	=  aCmdString;
 
 	while(!!(*apTemp) && !(!!RightPar)){
 		switch(*apTemp){
@@ -512,12 +546,12 @@ CHAR8*	DeleteUselessChar(CHAR8* aCmdString){
 			case '{':
 				if(!!LeftPar) return NULL;
 				LeftPar = TRUE;
-				*aCmdString++ = *apTemp++;
+				*apTempCmd++ = *apTemp++;
 				break;
 			case '}':
 				if(!(!!LeftPar)) return NULL;
 				RightPar = TRUE;
-				*aCmdString++ = *apTemp++;
+				*apTempCmd++ = *apTemp++;
 				break;
 			default:
 				if(!!LeftPar){
@@ -531,7 +565,9 @@ CHAR8*	DeleteUselessChar(CHAR8* aCmdString){
 							LeftBra = FALSE;
 							break;
 					}
-					*aCmdString++ = *apTemp++;
+					*apTempCmd++ = *apTemp++;
+				}else{
+					++apTemp;
 				}
 				break;
 		}
@@ -554,6 +590,7 @@ CHAR8*	ReConstructTheCmdLine(CHAR16*	pOriCmdCfg){
 
 	UnicodeStrToAsciiStr(pOriCmdCfg,aCmdString);
 	UpperAsciiString(aCmdString);
+	SMC_RAID_DETAIL_DEBUG((-1,"After Upper Str [%a]\n",aCmdString));
 	aCmdString = DeleteUselessChar(aCmdString);
 	
 	return aCmdString;
@@ -588,16 +625,23 @@ SMC_RAID_CMD_SET* AnalysisAndParseCmdString(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pPr
 	pNextSection = pSmcRaidCmdSet->RaidCmdSection = pTempSection;
 	pTempSection = NULL;
 
-	//3. Parse G:[_1,_2,_3, ... ]
+	// 3. Parse G:[_1,_2,_3, ... ]
 	pTempSection = ParseCmdGroup(pProtocol,aCmdCfgString);
 	SMC_RAID_DETAIL_DEBUG((-1,"ParseCmdGroup :: [%s]\n",(!!pTempSection) ? L"Got Cmd Group" : L"Not Cmd Group"));
 	if(!!pTempSection){
 		pNextSection->pRaidCmdSectionNext = pTempSection;
 		pNextSection = pNextSection->pRaidCmdSectionNext;
 	}
-	//4. Parse R:[_1]
+	// 4. Parse S:[_1 TB|GB]
 	pTempSection = ParseCmdRaidSize(pProtocol,aCmdCfgString);
 	SMC_RAID_DETAIL_DEBUG((-1,"ParseCmdRaidSize :: [%s]\n",(!!pTempSection) ? L"Got Cmd Raid Size" : L"Not Cmd Raid Size"));
+	if(!!pTempSection){
+		pNextSection->pRaidCmdSectionNext = pTempSection;
+		pNextSection = pNextSection->pRaidCmdSectionNext;
+	}
+	// 5. Parse R:[_1]
+	pTempSection = ParseCmdRaidType(pProtocol,aCmdCfgString);
+	SMC_RAID_DETAIL_DEBUG((-1,"ParseCmdRaidType :: [%s]\n",(!!pTempSection) ? L"Got Cmd Raid Type" : L"Not Cmd Raid Type"));
 	if(!!pTempSection){
 		pNextSection->pRaidCmdSectionNext = pTempSection;
 		pNextSection = pNextSection->pRaidCmdSectionNext;
@@ -605,6 +649,105 @@ SMC_RAID_CMD_SET* AnalysisAndParseCmdString(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pPr
 
 	return pSmcRaidCmdSet;
 }
+
+EFI_STATUS	CollectCfgCmdData(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
+
+	/*
+	 *	Collect HDD Name into HDD Group.
+	 */
+
+	SMC_RAID_ITEMS_SET*			pItemsSet		= NULL;
+	SMC_RAID_CMD_SET*			pCmdSet			= NULL;
+	SMC_RAID_CMD_GROUP_HDD*		GroupHddTable[64];
+	UINTN						GroupHddIndex	= 0;
+
+	MemSet(GroupHddTable,sizeof(SMC_RAID_CMD_GROUP_HDD*) * 64, 0x00);
+
+	pItemsSet = pProtocol->SmcLsiCurrHiiHandleTable->RaidCardInfItems;
+	pCmdSet = pProtocol->SmcLsiCurrHiiHandleTable->RaidCmdSet;
+
+	//No Cmd;
+	if(!(!!pCmdSet)) return SettingErrorStatus(pProtocol,0xA0,EFI_SUCCESS);
+
+	for(;!!pItemsSet;pItemsSet = pItemsSet->pItemsNext){
+		SMC_RAID_ITEMS_BODY	*pItemsBody	= NULL;
+
+		if(pItemsSet->ItemsHeader.RaidItemsType != RAID_HDG_TYPE) continue;
+
+		pItemsBody = pItemsSet->ItemsBody;
+		if(! (!!pItemsBody)) continue;
+		do {
+			EFI_IFR_OP_HEADER*	pOpHeader = NULL;
+
+			pOpHeader = pItemsBody->pLsiItemOp;
+			
+			switch(pOpHeader->OpCode){
+				case EFI_IFR_CHECKBOX_OP: 
+				{
+					EFI_IFR_CHECKBOX*			OriCBox	  		= (EFI_IFR_CHECKBOX*)pOpHeader;
+					CHAR16*						HddString 		= NULL;
+					CHAR16*						CopyHddString	= NULL;
+					SMC_RAID_CMD_GROUP_HDD*		pGroupHdd		= NULL;	
+						
+					gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_RAID_CMD_GROUP_HDD),&pGroupHdd);
+					HddString = GetHiiString(pProtocol->SmcLsiCurrHiiHandleTable->RaidCardHiiHandle,OriCBox->Question.Header.Prompt);
+					gBS->AllocatePool(EfiBootServicesData,StrSize(HddString),&CopyHddString);
+					StrCpy(CopyHddString,HddString);
+						
+					pGroupHdd->HdNum 	= pItemsBody->HdNum;
+					pGroupHdd->HdHame	= CopyHddString;
+					pGroupHdd->pHddNext	= NULL;
+
+					GroupHddTable[GroupHddIndex++] = pGroupHdd;
+				}
+					break;
+				default:
+					break;
+			}
+		}while(!!(pItemsBody = pItemsBody->pItemsBodyNext));
+	}
+
+	pCmdSet = pProtocol->SmcLsiCurrHiiHandleTable->RaidCmdSet;
+	// List all Cmd Cfgs.
+	for(;!!pCmdSet;pCmdSet = pCmdSet->pRaidCmdSetNext){
+		SMC_RAID_CMD_SECTION*	pCmdSection	= NULL;
+
+		pCmdSection = pCmdSet->RaidCmdSection;
+		if(!(!!pCmdSection)) continue;
+		
+		// List all GROUPs in one Cmd Cfg.
+		do{
+			if(pCmdSection->RaidCmdType == SMC_CMD_RAID_GROUP){
+				SMC_RAID_CMD_GROUP*			pCmdGroup 		= NULL;
+				SMC_RAID_CMD_GROUP_HDD*		pCmdGroupHdd	= NULL;
+
+				pCmdGroup 		= pCmdSection->RaidCmdBody;
+				pCmdGroupHdd 	= pCmdGroup->GroupHddSet;
+				if(!(!!pCmdGroupHdd)) continue;
+				//List all Hdds in one GROUP.
+				do {
+					UINTN	TempIndex = 0;
+					for(TempIndex=0;TempIndex < GroupHddIndex && GroupHddTable[TempIndex]->HdNum != pCmdGroupHdd->HdNum;++TempIndex);
+					//If find target HDD num, record the HDD Name.
+					if(TempIndex < GroupHddIndex){
+						pCmdGroupHdd->HdHame = GroupHddTable[TempIndex]->HdHame;
+					}
+				}while(!!(pCmdGroupHdd = pCmdGroupHdd->pHddNext));
+			}
+		}while(!!(pCmdSection = pCmdSection->pRaidCmdSectionNext));
+	}
+	
+	{
+		UINTN	TempIndex = 0;
+		for(;TempIndex < GroupHddIndex;++TempIndex){
+			gBS->FreePool(GroupHddTable[TempIndex]);
+		}
+	}
+
+	debug_for_Cmd_Set(pProtocol);
+	return EFI_SUCCESS;
+}
+
 
 	/*
 	 *

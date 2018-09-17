@@ -147,6 +147,7 @@ EFI_STATUS 							InsertRaidSetupSmcCmdsAndItems			(SMC_LSI_RAID_OOB_SETUP_PROTO
 EFI_STATUS							CheckChangeableItemsInChangedVar		(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
 EFI_STATUS							AccessRAIDRecordtoChangeSetting			(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
 EFI_STATUS							ParseRaidCfgCmdString					(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
+EFI_STATUS							CollectCfgCmdData						(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
 EFI_STATUS 							ChangedVarToOOBVarBuffer				(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
 
 

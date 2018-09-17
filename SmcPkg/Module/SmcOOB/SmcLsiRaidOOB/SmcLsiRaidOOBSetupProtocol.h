@@ -223,8 +223,16 @@ struct _SMC_RAID_CMD_SPECIE_MAP_ {
 
 #define SMC_RAID_CMD_GROUP_TYPE_END	0xFF
 
+typedef struct _SMC_RAID_CMD_GROUP_HDD_ 	SMC_RAID_CMD_GROUP_HDD;
+
+struct _SMC_RAID_CMD_GROUP_HDD_ {
+	UINT16						HdNum;
+	CHAR16*						HdHame;
+	SMC_RAID_CMD_GROUP_HDD*		pHddNext;
+};
+
 struct _SMC_RAID_CMD_GROUP_ {
-	UINT8						RaidHddNum[128];
+	SMC_RAID_CMD_GROUP_HDD*		GroupHddSet;
 };
 
 struct _SMC_RAID_CMD_RAIDTYPE_ {
@@ -405,7 +413,8 @@ enum _SMC_RAID_ITEMS_TYPE_ {
 	RAID_HDG_TYPE			= 2,
 	RAID_RDG_TYPE			= 3,
 	RAID_JBOD_TYPE			= 4,
-	RAID_SMCCMD_TYPE		= 5
+	RAID_SMCCMD_TYPE		= 5,
+	RAID_NULL_TYPE			= 0xFF
 };
 
 enum _SMC_RAID_CMD_TYPE_ENUM_ {
