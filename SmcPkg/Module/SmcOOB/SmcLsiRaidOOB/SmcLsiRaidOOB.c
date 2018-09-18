@@ -688,7 +688,6 @@ HII_PACKAGE_LIST_FROM_SET* SmcLsiRaidOOB_GetCurrentPackageForm(SMC_LSI_RAID_OOB_
 	return &sListFormSet;
 }
 
-#define TEMP_FORM_STRING	512
 EFI_STATUS SmcLsiRaidOOB_CollectInformation_Form(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 
 	EFI_STATUS		   			Status 					= EFI_SUCCESS;

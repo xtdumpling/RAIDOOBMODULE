@@ -43,6 +43,7 @@
 
 #define SMC_RAID_CMD_FORM_STRING				L"CMDFORM"
 #define SMC_RAID_CMD_NAME_STRING				L"CMDXXX"
+#define TEMP_FORM_STRING	512
 
 #pragma pack(1)
 
@@ -120,7 +121,7 @@ SMC_RAID_VAR*						SearchInSmcSetupVarByName			(SMC_LSI_RAID_OOB_SETUP_PROTOCOL*
 SMC_LSI_HII_HANDLE*					SearchHiiHandleTableByVarName		(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* ,CHAR8* , EFI_GUID* );
 
 VOID 								Debug_for_RaidChRecords				(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
-
+EFI_STATUS							CallbackForTargetProcessing			(EFI_HII_CONFIG_ACCESS_PROTOCOL* ,EFI_BROWSER_ACTION ,EFI_QUESTION_ID ,UINT8 ,VOID*);
 
 
 HII_PACKAGE_LIST_FROM_SET* 			SmcLsiRaidOOB_GetCurrentPackageForm	(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
@@ -149,6 +150,8 @@ EFI_STATUS							AccessRAIDRecordtoChangeSetting			(SMC_LSI_RAID_OOB_SETUP_PROTO
 EFI_STATUS							ParseRaidCfgCmdString					(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
 EFI_STATUS							CollectCfgCmdData						(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
 EFI_STATUS 							ChangedVarToOOBVarBuffer				(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
+EFI_STATUS 							ExamineBasicForCmdRequire				(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
+EFI_STATUS							HandleRaidCfgCmdString					(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
 
 
 EFI_STATUS EFIAPI SmcLsiHookBrower2Callback(
@@ -159,6 +162,35 @@ EFI_STATUS EFIAPI SmcLsiHookBrower2Callback(
   IN CONST  EFI_GUID*, 
   IN CONST  CHAR16* 
 );
+
+
+typedef struct 	_RAID_CMD_PROCESSING_ITEM_		RAID_CMD_PROCESSING_ITEM;
+typedef struct 	_RAID_CMD_PROCESSING_MAP_		RAID_CMD_PROCESSING_MAP;
+
+typedef enum 	_RAID_CMD_PROCESSING_			RAID_CMD_PROCESSING;
+
+enum _RAID_CMD_PROCESSING_ {
+	P_RAID_ENTER_FORM 			= 0,
+	P_RAID_CHOICE_HDD			= 1,
+	P_RAID_CHANGE_SETTING		= 2,
+	P_RAID_CONFIRM				= 3,
+	P_RAID_PRESS_ACTION			= 4,
+	P_RAID_NON_ACTION			= 0xFF
+};
+
+struct _RAID_CMD_PROCESSING_ITEM_ {
+	EFI_IFR_OP_HEADER*			ItemOpHeader;
+	RAID_CMD_PROCESSING_ITEM*	pItemNext;
+};
+
+struct _RAID_CMD_PROCESSING_MAP_ {
+	RAID_CMD_PROCESSING			CmdProcess;
+	CHAR16						CmdProcessLastForm[NAME_LENGTH];
+	CHAR16						CmdProcessTargetName[NAME_LENGTH];
+	EFI_QUESTION_ID				CmdProcessLimitQId;
+	UINT8						CmdProcessTargetOpCode;
+	RAID_CMD_PROCESSING_ITEM*	CmdProcessTargetOpSet;
+};
 
 #if defined(DEBUG_MODE) && (DEBUG_MODE == 1)
 	#define SMC_RAID_DETAIL_DEBUG(x)\

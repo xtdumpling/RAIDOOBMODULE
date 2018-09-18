@@ -233,15 +233,18 @@ struct _SMC_RAID_CMD_GROUP_HDD_ {
 
 struct _SMC_RAID_CMD_GROUP_ {
 	SMC_RAID_CMD_GROUP_HDD*		GroupHddSet;
+	BOOLEAN						bEnabled;
 };
 
 struct _SMC_RAID_CMD_RAIDTYPE_ {
 	UINT8				RaidType;
+	BOOLEAN				bEnabled;
 };
 
 struct _SMC_RAID_CMD_RAIDSIZE_ {
 	RAID_SIZE_TYPE		RaidSizeType;
 	CHAR16				RaidSizeContext[80];
+	BOOLEAN				bEnabled;
 };
 
 struct _SMC_RAID_CMD_SECTION_ {
@@ -252,7 +255,7 @@ struct _SMC_RAID_CMD_SECTION_ {
 
 struct _SMC_RAID_CMD_SET_ {
 	SMC_RAID_CMD_SECTION*	RaidCmdSection;
-
+	BOOLEAN					CmdEnable;
 	SMC_RAID_CMD_SET*		pRaidCmdSetNext;
 };
 
