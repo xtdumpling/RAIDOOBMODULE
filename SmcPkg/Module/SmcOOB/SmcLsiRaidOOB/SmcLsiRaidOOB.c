@@ -15,41 +15,7 @@
 
 #include "SmcLsiRaidOOB.h"
 #include "SmcOobVersion.h"
-
-const CHAR8	CopyRightString[] = "SuperMicro RAID OOB Module, Durant.Lin";
-
-SMC_RAID_VAR_HASH**			LsiVarHashTableName  = NULL;
-SMC_RAID_VAR_HASH**			LsiVarHashTableVarId = NULL;
-
-//Now for Debug use, MayBe will be used in other place.
-SMC_RAID_VAR_HASH*			LsiVarHashTableForSmcVar[VAR_HASH_NUM];
-
-BOOLEAN						mDetailedDebugMessage = FALSE;
-
-SMC_LSI_INSIDE_DOWN_FUNC		mSmcLsiInsideDownFunc[]		= {
-	{ L"InitialLsiVarHashTable"					, InitialLsiVarHashTable 					},
-	{ L"FreeLsiVarHashTable"					, FreeLsiVarHashTable						},
-	{ L"SmcLsiRaidOOB_InitialFunc"				, SmcLsiRaidOOB_InitialFunc					},
-	{ L"SmcLsiRaidOOB_CollectInformation_Form"	, SmcLsiRaidOOB_CollectInformation_Form		},
-	{ L"SmcLsiHookBrowser2Protocol"				, SmcLsiHookBrowser2Protocol				},
-	{ L"SmcLsiCallbackAccessMenu"				, SmcLsiCallbackAccessMenu					},
-	{ L"SmcLsiRaidOOB_CollectInformation_Items"	, SmcLsiRaidOOB_CollectInformation_Items	},
-	{ L"SmcLsiRaidOOB_CollectInformation_ChRec" , SmcLsiRaidOOB_CollectInformation_ChRec	},
-	{ L"SmcLsiSetSmcLsiVariableTable"			, SmcLsiSetSmcLsiVariableTable				},
-	{ L"SmcLsiCreateSmcRaidVarAndItems"			, SmcLsiCreateSmcRaidVarAndItems			},
-	{ L"SmcLsiHookBrowser2Protocol"				, SmcLsiHookBrowser2Protocol				},
-	{ L""										, NULL										}
-};
-
-SMC_LSI_INSIDE_LOAD_FUNC		mSmcLsiInsideLoadFunc[]		= {
-	{ L"InsertRaidSetupVariable"			, InsertRaidSetupVariable				},
-	{ L"InsertRaidSetupFormGoto"			, InsertRaidSetupFormGoto				},
-	{ L"InsertRaidSetupFormItems"			, InsertRaidSetupFormItems				},
-	{ L"InsertRaidSetupChangeItems"			, InsertRaidSetupChangeItems			},
-	{ L"InsertRaidSetupHDGItems"			, InsertRaidSetupHDGItems				},
-	{ L"InsertRaidSetupSmcCmdsAndItems"		, InsertRaidSetupSmcCmdsAndItems		},
-	{ L""									, NULL									}
-};
+#include "SmcLsiRaidOOBGlbTable.h"
 
 
 EFI_STATUS	SettingErrorStatus(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol, UINT8	ErrorStatus,EFI_STATUS Status){
@@ -1157,7 +1123,7 @@ EFI_STATUS EFIAPI SmcLsiHookBrower2Callback(
 	EFI_STRING			mConfig 			= NULL;
 	EFI_STRING			mProgress			= NULL;
 
-	SMC_RAID_DETAIL_DEBUG((-1,"SmcLsiHookBrower2Callback :: \n"));
+	SMC_RAID_DETAIL_DEBUG((-1,"    SmcLsiHookBrower2Callback :: \n"));
 	SMC_RAID_DETAIL_DEBUG((-1,"    VariableName[%s], VariableGuid[%g], RetrieveData[%x]\n",
 				VariableName,*VariableGuid,RetrieveData));
 	if(ResultsDataSize != NULL)
@@ -1216,7 +1182,7 @@ EFI_STATUS EFIAPI SmcLsiHookBrower2Callback(
 		UINTN		TempSize		= 0;
 
 		if( !!(*ResultsDataSize) && !!StrStr(ResultsData,L"OFFSET=")){
-			SMC_RAID_DETAIL_DEBUG((-1,"Got ResultsData = %s\n",ResultsData));
+			SMC_RAID_DETAIL_DEBUG((-1,"    Got ResultsData = %s\n",ResultsData));
 		}
 
 		//<ConfigRequest>
@@ -1232,19 +1198,21 @@ EFI_STATUS EFIAPI SmcLsiHookBrower2Callback(
 							&mConfig,
 							&mProgress
 						);
-		SMC_RAID_DETAIL_DEBUG((-1,"HookBrowserCallback BlockToConfig Status[%r]\n",Status));
+		SMC_RAID_DETAIL_DEBUG((-1,"    HookBrowserCallback BlockToConfig Status[%r]\n",Status));
 		if(EFI_ERROR(Status)){
-			DEBUG((-1,"mProgress = %s\n",mProgress));
+			DEBUG((-1,"    mProgress = %s\n",mProgress));
 			return Status;
 		}
 		// <ConfigBody> without &
 		mTempData = mConfig + (StrLen(ConfigHdrTemp) + 1);
 		TempSize = (StrLen(mTempData) + 1) * sizeof(CHAR16);
 
-		SMC_RAID_DETAIL_DEBUG((-1,"    ConfigHdrTemp      %s\n",ConfigHdrTemp));
-		SMC_RAID_DETAIL_DEBUG((-1,"    ConfigRequestTemp  %s\n",ConfigRequestTemp));
-		SMC_RAID_DETAIL_DEBUG((-1,"    mConfig            %s\n",mConfig));
-		SMC_RAID_DETAIL_DEBUG((-1,"    mTempData          %s\n",mTempData));
+//		SMC_RAID_DETAIL_DEBUG((-1,"    ConfigHdrTemp      %s\n",ConfigHdrTemp));
+//		SMC_RAID_DETAIL_DEBUG((-1,"    ConfigRequestTemp  %s\n",ConfigRequestTemp));
+//		SMC_RAID_DETAIL_DEBUG((-1,"    mConfig            %s\n",mConfig));
+//		SMC_RAID_DETAIL_DEBUG((-1,"    mTempData          %s\n",mTempData));
+
+//		DEBUG_PRINT_CONFIG(mTempData);
 
 		SMC_RAID_DETAIL_DEBUG((-1,"    TempSize[%x]\n",TempSize));
 
@@ -1254,7 +1222,7 @@ EFI_STATUS EFIAPI SmcLsiHookBrower2Callback(
 		}
 
 		StrCpy(ResultsData,mTempData);
-		SMC_RAID_DETAIL_DEBUG((-1,"    ResultsData        %s\n",ResultsData));
+//		SMC_RAID_DETAIL_DEBUG((-1,"    ResultsData        %s\n",ResultsData));
 		gBS->FreePool(ConfigHdrTemp);
 		gBS->FreePool(ConfigRequestTemp);
 		gBS->FreePool(mConfig);

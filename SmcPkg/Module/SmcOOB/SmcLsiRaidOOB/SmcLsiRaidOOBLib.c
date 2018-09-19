@@ -286,3 +286,22 @@ VOID	DEBUG_PRINT_BUFFER(VOID* pBuffer,UINTN BufferSize){
 	DEBUG((-1,"\n"));
 #endif
 }
+
+VOID 	DEBUG_PRINT_CONFIG(CHAR16* Target){
+	CHAR16*		OriS = NULL;
+	CHAR16		TempS[101];
+	UINTN		LenSize = StrLen(Target);
+
+	OriS = Target;
+	do {
+		MemSet(TempS,101 * sizeof(CHAR16),0x00);
+		if((UINTN)(Target + 100) > (UINTN)(OriS + StrLen(OriS))){
+			MemCpy(TempS,Target,StrLen(Target) * sizeof(CHAR16));
+			Target += StrLen(Target);
+		}else{
+			MemCpy(TempS,Target,100 * sizeof(CHAR16));
+			Target += 100;
+		}
+		DEBUG((-1,"%s\n",TempS));		
+	}while((UINTN)Target < (UINTN)(OriS + StrLen(OriS)));
+}
