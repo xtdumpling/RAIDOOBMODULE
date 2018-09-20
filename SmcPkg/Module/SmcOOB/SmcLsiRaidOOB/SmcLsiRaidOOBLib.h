@@ -34,6 +34,7 @@ EFI_STATUS 							GetListPackageListsHandle(UINTN* , EFI_HII_HANDLE**);
 EFI_HII_HANDLE 						SearchForFormSet(EFI_GUID* , CHAR16* );
 EFI_HII_HANDLE 						SearchForLfiFormSetByHiiOrder(EFI_GUID* , CHAR16** , OUT UINT8* );
 EFI_HII_PACKAGE_LIST_HEADER*		GetHiiPackageList(EFI_HII_HANDLE );
+CHAR8*								UpperAsciiString(CHAR8*	);
 
 EFI_STRING 							AppendOffsetWidth(EFI_STRING , UINTN , UINTN );
 

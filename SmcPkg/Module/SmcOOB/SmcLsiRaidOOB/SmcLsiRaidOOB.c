@@ -163,7 +163,7 @@ SMC_RAID_VAR* 	SetLsiVarBuffer_byString(SMC_RAID_VAR* pVar,EFI_STRING DataString
 					&VarDataSize,
 					&TempProgress			
 				);
-	SMC_RAID_DETAIL_DEBUG((-1,"SetLsiVarBuffer_byString ConfigToBlock Status[%r]\n",Status));
+	SMC_RAID_DETAIL_DEBUG((-1,"    SetLsiVarBuffer_byString ConfigToBlock Status[%r]\n",Status));
 	if(EFI_ERROR(Status)){
 		SMC_RAID_DETAIL_DEBUG((-1,"    TempProgress = \n"));
 		SMC_RAID_DETAIL_DEBUG((-1,"        %s\n",TempProgress));
@@ -745,6 +745,7 @@ EFI_STATUS SmcLsiRaidOOB_CollectInformation_Items(SMC_LSI_RAID_OOB_SETUP_PROTOCO
 			case EFI_IFR_ONE_OF_OP:
 			case EFI_IFR_NUMERIC_OP:
 			case EFI_IFR_CHECKBOX_OP:
+			case EFI_IFR_REF_OP:
 			{
 				CHAR16*	IfrString = NULL;
 				SMC_LSI_ITEMS_COMMON_HEADER*	ItemsComnHead = NULL;
@@ -765,15 +766,17 @@ EFI_STATUS SmcLsiRaidOOB_CollectInformation_Items(SMC_LSI_RAID_OOB_SETUP_PROTOCO
 				pHddNum = &NonHddNum;
 				for(pItemsSet = LocSmcLsiRaidItemsTable;pItemsSet != NULL;pItemsSet = pItemsSet->pItemsNext){
 					if( !!StrCmp(pItemsSet->ItemsHeader.LsiItemForm,CurrentFormString)) continue;
-					if( ItemsComnHead->Question.QuestionId < pItemsSet->ItemsHeader.LsiItemId) continue;
-					if( ! (!!StrCmp(pItemsSet->ItemsHeader.LsiItemName,IfrString))) break;
-
-					//If pItemsSet not HDG items table, continue.
-					//If pItemsSet is HDG items table, it already pass the LsiItemId.
-					if(! (!!StrCmp(pItemsSet->ItemsHeader.LsiItemName,pProtocol->SmcLsiGetHdgName(pProtocol)))){
-						//In Here, it means it's HDD items. 
-						pHddNum = &HddNum;
-						++HddNum;
+					if( ItemsComnHead->Question.QuestionId >= pItemsSet->ItemsHeader.LsiItemId ||  
+						!(!!StrCmp(pItemsSet->ItemsHeader.LsiItemName,IfrString))){
+						//If pItemsSet not HDG items table, continue.
+						//If pItemsSet is HDG items table, it already pass the LsiItemId.
+						if(!(!!StrCmp(pItemsSet->ItemsHeader.LsiItemName,pProtocol->SmcLsiGetHdgName(pProtocol))) || 
+						   !(!!StrCmp(pItemsSet->ItemsHeader.LsiItemName,pProtocol->SmcLsiGetRdgName(pProtocol)))
+						  ){
+							//In Here, it means it's HDD items. 
+							pHddNum = &HddNum;
+							++HddNum;
+						}
 						break;
 					}
 				}
@@ -935,6 +938,8 @@ EFI_STATUS	SmcLsiSetSmcLsiVariableTable(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtoc
 			SMC_RAID_VAR*	cVar 		= NULL;
 
 			pCmnHeader = (SMC_LSI_ITEMS_COMMON_HEADER*)pItemsBody->pLsiItemOp;
+			if(pCmnHeader->Header.OpCode == EFI_IFR_REF_OP) continue;
+
 			MemSet(cVarName,NAME_LENGTH * sizeof(CHAR8),0x00);
 
 			rVar = SearchLsiVarById(pCmnHeader->Question.VarStoreId);
@@ -1686,30 +1691,37 @@ EFI_STATUS CreateRaid_Hdg_Rdg_Jbod_TypeItems(
 		SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol,
 		SMC_RAID_ITEMS_SET* pRaidItems,
 		SMC_LSI_ITEMS_MEM*	pItemsBuffer,
-		SMC_RAID_ITEMS_TYPE ItemsType){
+		SMC_RAID_ITEMS_TYPE ItemsType,
+		CHAR16*				SubName){
 
 	EFI_STATUS	Status = EFI_SUCCESS;
 
-	for(;pRaidItems != NULL; pRaidItems = pRaidItems->pItemsNext){
+	for(;!!pRaidItems; pRaidItems = pRaidItems->pItemsNext){
 		SMC_RAID_ITEMS_BODY*	pItemsBody = NULL;
-		
-		if(pRaidItems->ItemsHeader.RaidItemsType != ItemsType) continue;
+		CHAR16					SubNameBuf[NAME_LENGTH];
 
-		for(pItemsBody = pRaidItems->ItemsBody;pItemsBody != NULL; pItemsBody = pItemsBody->pItemsBodyNext){
+		if(pRaidItems->ItemsHeader.RaidItemsType != ItemsType) continue;
+	
+		MemSet(SubNameBuf,NAME_LENGTH * sizeof(CHAR16),0x00);
+		Swprintf(SubNameBuf,L" ---- %s Groups :: ",SubName);
+		Cte_Buffer(pItemsBuffer,CreateSubTitle(pProtocol,SubNameBuf));
+
+		for(pItemsBody = pRaidItems->ItemsBody;!!pItemsBody; pItemsBody = pItemsBody->pItemsBodyNext){
 			EFI_IFR_OP_HEADER*	OpHeader = NULL;
 
 			OpHeader = pItemsBody->pLsiItemOp;
 			switch(OpHeader->OpCode){
 				case EFI_IFR_CHECKBOX_OP:
+				case EFI_IFR_REF_OP:
 				{
-					if(ItemsType == RAID_HDG_TYPE){
-						EFI_IFR_CHECKBOX*	OriCBox;
-						EFI_IFR_TEXT		CopyText;
-						CHAR16*				HddString = NULL;
-						CHAR16				HddString2[NAME_LENGTH];
+					if(ItemsType == RAID_HDG_TYPE || ItemsType == RAID_RDG_TYPE){
+						SMC_LSI_ITEMS_COMMON_HEADER*	OriOpCmnH = NULL;
+						EFI_IFR_TEXT					CopyText;
+						CHAR16*							HddString = NULL;
+						CHAR16							HddString2[NAME_LENGTH];
 
-						OriCBox = (EFI_IFR_CHECKBOX*)OpHeader;
-						HddString = GetHiiString(pProtocol->SmcLsiCurrHiiHandleTable->RaidCardHiiHandle,OriCBox->Question.Header.Prompt);
+						OriOpCmnH = (SMC_LSI_ITEMS_COMMON_HEADER*)OpHeader;
+						HddString = GetHiiString(pProtocol->SmcLsiCurrHiiHandleTable->RaidCardHiiHandle,OriOpCmnH->Question.Header.Prompt);
 						CopyText.Header.OpCode = EFI_IFR_TEXT_OP;
 						CopyText.Header.Length = sizeof(EFI_IFR_TEXT);
 						CopyText.Header.Scope  = 0;
@@ -1744,7 +1756,8 @@ EFI_STATUS InsertRaidSetupHDGItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 	SMC_RAID_ITEMS_SET*		RaidItemsTable			= NULL;
 	EFI_IFR_GUID_LABEL*		GuidLabel				= NULL;
 
-	SMC_RAID_ITEMS_TYPE		BuildOrder[] 	= {RAID_JBOD_TYPE, RAID_HDG_TYPE, RAID_RDG_TYPE, RAID_NULL_TYPE};
+	SMC_RAID_ITEMS_TYPE		BuildOrder[] 		= {RAID_JBOD_TYPE, RAID_HDG_TYPE, RAID_RDG_TYPE, RAID_NULL_TYPE};
+	CHAR16*					BuildOrderSub[]		= {L"JBOD Drives", L"HDD Drives", L"RAID Drives", NULL };
 	UINT8					BuildOrdIndex	= 0;
 
 	if(pProtocol->SmcLsiCurrHiiHandleTable->SmcFormId 		== 0x0 ||
@@ -1766,7 +1779,7 @@ EFI_STATUS InsertRaidSetupHDGItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 	while(BuildOrder[BuildOrdIndex] != RAID_NULL_TYPE){
 		RaidItemsTable		= pProtocol->SmcLsiCurrHiiHandleTable->RaidCardInfItems;;
 		SMC_RAID_DETAIL_DEBUG((-1,"Create Hard Drive Type[%x]\n",BuildOrder[BuildOrdIndex]));
-		if(EFI_ERROR(CreateRaid_Hdg_Rdg_Jbod_TypeItems(pProtocol,RaidItemsTable,HDGItemsBuffer,BuildOrder[BuildOrdIndex++])))
+		if(EFI_ERROR(CreateRaid_Hdg_Rdg_Jbod_TypeItems(pProtocol,RaidItemsTable,HDGItemsBuffer,BuildOrder[BuildOrdIndex],BuildOrderSub[BuildOrdIndex++])))
 			return SettingErrorStatus(pProtocol,0x33,EFI_NOT_FOUND);
 
 	}

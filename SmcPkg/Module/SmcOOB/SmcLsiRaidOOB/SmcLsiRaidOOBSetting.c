@@ -39,23 +39,31 @@ SMC_LSI_RAID_FORM_HEADER		mSmcLsiRaidFormRefSearchTable[] = {
 
 SMC_RAID_ITEMS_HEADER	mSmcLsiItemsTable[] = {
 	// 3108
-	{RAID_3108, L"Controller Management"	, L"Product Name", 			0x0 , RAID_INFORMATION_TYPE},
-	{RAID_3108, L"Controller Management"	, L"Serial Number",			0x0 , RAID_INFORMATION_TYPE},
-	{RAID_3108, L"Controller Management"	, L"Controller Status",		0x0 , RAID_INFORMATION_TYPE},
-	{RAID_3108, L"Controller Management"	, L"PCI ID",				0x0 , RAID_INFORMATION_TYPE},
-	{RAID_3108, L"Controller Management"	, L"PCI Slot Number",		0x0 , RAID_INFORMATION_TYPE},
-	{RAID_3108, L"Controller Management"	, L"Package Version",		0x0 , RAID_INFORMATION_TYPE},
-	{RAID_3108, L"Controller Management"	, L"Firmware Version",		0x0 , RAID_INFORMATION_TYPE},
-	{RAID_3108, L"Controller Management"	, L"Connector Count",		0x0 , RAID_INFORMATION_TYPE},
-	{RAID_3108, L"Controller Management"	, L"Drive Count",			0x0 , RAID_INFORMATION_TYPE},
-	{RAID_3108, L"Controller Management"	, L"Virtual Drive Count",	0x0 , RAID_INFORMATION_TYPE},
+	{RAID_3108, L"Controller Management"	, L"Product Name", 		 0xFFFF , RAID_INFORMATION_TYPE},
+	{RAID_3108, L"Controller Management"	, L"Serial Number",		 0xFFFF , RAID_INFORMATION_TYPE},
+	{RAID_3108, L"Controller Management"	, L"Controller Status",	 0xFFFF , RAID_INFORMATION_TYPE},
+	{RAID_3108, L"Controller Management"	, L"PCI ID",			 0xFFFF , RAID_INFORMATION_TYPE},
+	{RAID_3108, L"Controller Management"	, L"PCI Slot Number",	 0xFFFF , RAID_INFORMATION_TYPE},
+	{RAID_3108, L"Controller Management"	, L"Package Version",	 0xFFFF , RAID_INFORMATION_TYPE},
+	{RAID_3108, L"Controller Management"	, L"Firmware Version",	 0xFFFF , RAID_INFORMATION_TYPE},
+	{RAID_3108, L"Controller Management"	, L"Connector Count",	 0xFFFF , RAID_INFORMATION_TYPE},
+	{RAID_3108, L"Controller Management"	, L"Drive Count",		 0xFFFF , RAID_INFORMATION_TYPE},
+	{RAID_3108, L"Controller Management"	, L"Virtual Drive Count",0xFFFF , RAID_INFORMATION_TYPE},
 	{RAID_3108, L"Select Drives"			, HARD_DRIVES_GROUP,	 0xA700 , RAID_HDG_TYPE},
-	{RAID_3108, L"Virtual Drive Management"	, RAID_DRIVES_GROUP,     0xFFFF , RAID_RDG_TYPE},
+	{RAID_3108, L"Virtual Drive Management"	, RAID_DRIVES_GROUP,     0xA000 , RAID_RDG_TYPE},
 
-	{RAID_3108, L"Advanced Controller Properties", L"Boot Mode",		0x0 , RAID_CHANGEABLE_TYPE },
-	{RAID_3108, L"Advanced Controller Properties", L"JBOD Mode",		0x0	, RAID_CHANGEABLE_TYPE },
+	{RAID_3108, L"Advanced Controller Properties", L"Boot Mode",	 0xFFFF , RAID_CHANGEABLE_TYPE },
+	{RAID_3108, L"Advanced Controller Properties", L"JBOD Mode",	 0xFFFF	, RAID_CHANGEABLE_TYPE },
 
 	{RAID_NULL, L"", L"", 0x0 }
+};
+
+SMC_RAID_CMD_RAIDTYPE_TO_VALUE_MAP	mSmcRaidTypeToValueMapTable[] = {
+	{RAID_3108, { { 0, 0}, { 1, 1}, { 5, 5}, { 6, 6}, {100, 0x64}, {10, 0x0A}, {50, 0x32}, {60, 0x3C}, {T_SHORT_END, T_SHORT_END} ,{T_SHORT_END, T_SHORT_END} } },
+
+
+
+	{RAID_NULL, { { 0, 0}, { 1, 1}, { 5, 5}, { 6, 6}, {100, 0x64}, {10, 0x0A}, {50, 0x32}, {60, 0x3C}, {T_SHORT_END, T_SHORT_END} ,{T_SHORT_END, T_SHORT_END} } }
 };
 
 /*

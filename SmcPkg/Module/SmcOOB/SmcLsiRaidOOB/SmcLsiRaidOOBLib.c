@@ -305,3 +305,14 @@ VOID 	DEBUG_PRINT_CONFIG(CHAR16* Target){
 		DEBUG((-1,"%s\n",TempS));		
 	}while((UINTN)Target < (UINTN)(OriS + StrLen(OriS)));
 }
+
+CHAR8*	UpperAsciiString(CHAR8*	UpperString){
+
+	while(!!UpperString && !!(*UpperString)){
+		if((*UpperString) >= 'a' && (*UpperString) <= 'z'){
+			*UpperString = (CHAR8)((UINT8)(*UpperString) - 0x20);
+		}
+		++UpperString;
+	}
+	return UpperString;
+}

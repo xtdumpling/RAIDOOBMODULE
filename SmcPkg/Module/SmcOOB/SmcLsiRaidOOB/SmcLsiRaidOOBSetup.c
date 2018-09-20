@@ -182,6 +182,12 @@ UINT32*	GetSmcRaidCmdOffset(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 	return CmdOffset;
 }
 
+SMC_RAID_CMD_RAIDTYPE_TO_VALUE_MAP* GetSmcRaidTypeToValueMap(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
+
+	return mSmcRaidTypeToValueMapTable;
+}
+
+
 EFI_STATUS SmcLsiSetupDownDummyFunc(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 	return EFI_SUCCESS;
 }
@@ -383,6 +389,8 @@ EFI_STATUS SmcLsiOOBSetupDriverStart(SMC_LSI_RAID_OOB_SETUP_DRIVER*	pDriver){
 	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetRaidVarName			= GetRaidVarName;
 	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetSmcRaidVarSize		= GetSmcRaidVarSize;
 	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetSmcRaidCmdOffset		= GetSmcRaidCmdOffset;
+	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetSmcRaidTypeToValueMap	= GetSmcRaidTypeToValueMap;
+
 
 	pPrivate->HIIHandle 					= NULL;		//Will update after LoadResources
 	pPrivate->FormSetNameID					= STRING_TOKEN(STR_SMC_LSI_OOB_TITLE); 

@@ -287,21 +287,21 @@ EFI_STATUS	CheckChangeableItemsInChangedVar(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pPr
 	return EFI_SUCCESS;
 }
 
-CHAR8*	UpperAsciiString(CHAR8*	UpperString){
-
-	while(!!UpperString && !!(*UpperString)){
-		if((*UpperString) >= 'a' && (*UpperString) <= 'z'){
-			*UpperString = (CHAR8)((UINT8)(*UpperString) - 0x20);
-		}
-		++UpperString;
-	}
-	return UpperString;
-}
-
 VOID*	SearchForCmdSectionBody(SMC_RAID_CMD_SECTION* pCmdSection, SMC_RAID_CMD_TYPE_ENUM CmdTypeEnum){
 	
 	for(;!!pCmdSection && pCmdSection->RaidCmdType != CmdTypeEnum;pCmdSection = pCmdSection->pRaidCmdSectionNext);
 	return (!!pCmdSection) ? pCmdSection->RaidCmdBody : NULL;
+}
+
+UINTN SearchRaidSizeType(CHAR8* OriSizeTypeS){
+
+	UINTN				SizeTypeIndex	= 0;
+	
+	for(SizeTypeIndex=0;SmcRaidSizeTypeMap[SizeTypeIndex].RaidSizeType != SIZE_NON_TYPE; ++SizeTypeIndex){
+		if( !!(*Strstr(OriSizeTypeS,SmcRaidSizeTypeMap[SizeTypeIndex].RaidSizeStr)))
+			break;
+	}
+	return SizeTypeIndex;
 }
 
 SMC_RAID_CMD_SECTION*	ParseCmdRaidSize(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol, CHAR8* aCmdString){
@@ -310,9 +310,9 @@ SMC_RAID_CMD_SECTION*	ParseCmdRaidSize(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtoco
 	CHAR16				RaidSizeContext[80];
 	CHAR16*				pRaidSizeContext;
 	BOOLEAN				aPoint			= FALSE;
-	UINTN				SizeTypeIndex	= 0;
+	UINTN				SizeUnitIndex	= 0;
 	
-	SMC_RAID_CMD_RAIDSIZE*	pRaidType	= NULL;
+	SMC_RAID_CMD_RAIDSIZE*	pRaidSize	= NULL;
 	SMC_RAID_CMD_SECTION*	pSection	= NULL;
 
 	if(!(!!paCmdCfgPos) || !(*paCmdCfgPos)) return NULL;
@@ -336,23 +336,23 @@ SMC_RAID_CMD_SECTION*	ParseCmdRaidSize(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtoco
 		*pRaidSizeContext++ = (CHAR16)(*paCmdCfgPos++);
 	}
 	// 3. Check The Size Type.
-	for(SizeTypeIndex=0;SmcRaidSizeTypeMap[SizeTypeIndex].RaidSizeType != SIZE_NON_TYPE; ++SizeTypeIndex){
-		if(!(!!MemCmp(paCmdCfgPos,SmcRaidSizeTypeMap[SizeTypeIndex].RaidSizeStr,Strlen(SmcRaidSizeTypeMap[SizeTypeIndex].RaidSizeStr)*sizeof(CHAR8)))){
-			break;
-		}
-	}
-	if(SmcRaidSizeTypeMap[SizeTypeIndex].RaidSizeType == SIZE_NON_TYPE) return NULL;
-	paCmdCfgPos += Strlen(SmcRaidSizeTypeMap[SizeTypeIndex].RaidSizeStr);
+	SizeUnitIndex = SearchRaidSizeType(paCmdCfgPos);
+	
+	if(SmcRaidSizeTypeMap[SizeUnitIndex].RaidSizeType == SIZE_NON_TYPE) return NULL;
+	paCmdCfgPos += Strlen(SmcRaidSizeTypeMap[SizeUnitIndex].RaidSizeStr);
 	if(*(paCmdCfgPos) != ']') return NULL;
 	
 
-	gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_RAID_CMD_RAIDSIZE),&pRaidType);
-	pRaidType->RaidSizeType = SmcRaidSizeTypeMap[SizeTypeIndex].RaidSizeType;
-	MemCpy(pRaidType->RaidSizeContext,RaidSizeContext,80 * sizeof(CHAR16));
+	gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_RAID_CMD_RAIDSIZE),&pRaidSize);
+	MemSet(pRaidSize,sizeof(SMC_RAID_CMD_RAIDSIZE),0x00);
+	pRaidSize->RaidSizeType = SmcRaidSizeTypeMap[SizeUnitIndex].RaidSizeType;
+	MemCpy(pRaidSize->RaidSizeContext,RaidSizeContext,80 * sizeof(CHAR16));
+	pRaidSize->ChangeSequence = CHANGE_RAIDSIZE_UNIT;
 
 	gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_RAID_CMD_SECTION),&pSection);
+	MemSet(pSection,sizeof(SMC_RAID_CMD_SECTION),0x00);
 	pSection->RaidCmdType			= SMC_CMD_RAID_SIZE;
-	pSection->RaidCmdBody			= pRaidType;
+	pSection->RaidCmdBody			= pRaidSize;
 	pSection->pRaidCmdSectionNext	= NULL;
 
 	return pSection;
@@ -384,9 +384,11 @@ SMC_RAID_CMD_SECTION*	ParseCmdRaidType(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtoco
 
 	if(RaidType != SMC_RAID_CMD_GROUP_TYPE_END){
 		gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_RAID_CMD_RAIDTYPE),&pRaidType);
+		MemSet(pRaidType,sizeof(SMC_RAID_CMD_RAIDTYPE),0x00);
 		pRaidType->RaidType	= RaidType;
 
 		gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_RAID_CMD_SECTION),&pSection);
+		MemSet(pSection,sizeof(SMC_RAID_CMD_SECTION),0x00);
 		pSection->RaidCmdType = SMC_CMD_RAID_RAIDTYPE;
 		pSection->RaidCmdBody = pRaidType;
 		pSection->pRaidCmdSectionNext = NULL;
@@ -442,6 +444,7 @@ SMC_RAID_CMD_SECTION*	ParseCmdGroup(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol, 
 		for(TempIndex=0;TempIndex < RaidHddIndex;++TempIndex){
 			SMC_RAID_CMD_GROUP_HDD*	pTempGroupHdd	= NULL;
 			gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_RAID_CMD_GROUP_HDD),&pTempGroupHdd);
+			MemSet(pTempGroupHdd,sizeof(SMC_RAID_CMD_GROUP_HDD),0x00);
 			pTempGroupHdd->HdNum 	= RaidHddNum[TempIndex];
 			pTempGroupHdd->HdHame 	= NULL;
 			pTempGroupHdd->pHddNext	= NULL;
@@ -455,6 +458,7 @@ SMC_RAID_CMD_SECTION*	ParseCmdGroup(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol, 
 		}
 
 		gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_RAID_CMD_SECTION),&pSection);
+		MemSet(pSection,sizeof(SMC_RAID_CMD_SECTION),0x00);
 		pSection->RaidCmdType = SMC_CMD_RAID_GROUP;
 		pSection->RaidCmdBody = pGroup;
 		pSection->pRaidCmdSectionNext = NULL;
@@ -487,9 +491,11 @@ SMC_RAID_CMD_SECTION*	ParseCmdSpecie(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol,
 	if((*(++paCmdCfgPos)) != ']') return NULL;
 	
 	gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_RAID_CMD_SPECIE),&pSpecie);
+	MemSet(pSpecie,sizeof(SMC_RAID_CMD_SPECIE),0x00);
 	pSpecie->RaidCmdSpecie = SpecieMap[SpecieIndex].SpecieType;
 	
 	gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_RAID_CMD_SECTION),&pSection);
+	MemSet(pSection,sizeof(SMC_RAID_CMD_SECTION),0x00);
 	pSection->RaidCmdType 			= SMC_CMD_RAID_COMMAND;
 	pSection->RaidCmdBody 			= pSpecie;
 	pSection->pRaidCmdSectionNext	= NULL;
@@ -760,11 +766,61 @@ EFI_IFR_OP_HEADER*	SearchHddNameInCmdProcessingItem(EFI_HII_HANDLE LsiHiiHandle,
 	return NULL;
 }
 
+UINT8	LoopToFindRaidTypeToValue(SMC_RAID_CMD_RAIDTYPE_TO_VALUE* RaidTypeToValue, UINT8 RaidType,UINT8	tIndex){
+	
+	if(RaidTypeToValue[tIndex].RaidType == SMC_RAID_CMD_GROUP_TYPE_END) return SMC_RAID_CMD_GROUP_TYPE_END;
+	if(RaidTypeToValue[tIndex].RaidType == RaidType) return RaidTypeToValue[tIndex].RaidValue;
+
+	return LoopToFindRaidTypeToValue(RaidTypeToValue,RaidType,tIndex+1);
+}
+
+UINT8 	SearchCmdRaidTypeToValue(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol, UINT8	RaidType){
+
+	SMC_RAID_CMD_RAIDTYPE_TO_VALUE_MAP*		RaidTypeToValueMap = NULL;
+	UINT8									TypeIndex		   = 0;
+
+	RaidTypeToValueMap = pProtocol->SmcLsiGetSmcRaidTypeToValueMap(pProtocol);
+
+	for(TypeIndex = 0;RaidTypeToValueMap[TypeIndex].RaidCardType != RAID_NULL;++TypeIndex){
+		if(RaidTypeToValueMap[TypeIndex].RaidCardType == pProtocol->SmcLsiCurrHiiHandleTable->RaidCardType){
+
+			UINT8 RaidValue = SMC_RAID_CMD_GROUP_TYPE_END;
+			RaidValue = LoopToFindRaidTypeToValue(RaidTypeToValueMap[TypeIndex].RaidTypeValueTable,RaidType,0);
+			if(RaidValue != SMC_RAID_CMD_GROUP_TYPE_END) return RaidValue;
+
+		}
+	}
+	return SMC_RAID_CMD_GROUP_TYPE_END;
+
+}
+
+
+
 EFI_STATUS	HandleBuildRaidCmd_B(
 		SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol, 
 		SMC_RAID_CMD_SET* pCmdSet, 
 		RAID_CMD_PROCESSING_MAP* RaidCmdProcessMapTable
 ){
+
+#define GET_pLsiVar_MARCO(_x,_y,_z)\
+	if(!(!!(_x = SearchLsiVarById(_y->Question.VarStoreId)))){\
+		Status = EFI_NOT_FOUND;\
+		DEBUG((-1," %a Cannot Find the Lsi Var VarId! ::  TableIndex[%d], Status[%r], VarId[%x]\n",_z,TableIndex,Status,_y->Question.VarStoreId));\
+	}\
+	if(EFI_ERROR(Status)) break
+
+#define Callback_Macro(_Action,_QId,_IfrType,_Value,_DStr)\
+	do {\
+		Status = CallbackForTargetProcessing(pConfigAccess,_Action,_QId->Question.QuestionId,_IfrType,_Value);\
+		DEBUG((-1," %a :: TableIndex[%d], Status[%r], ACTION[%x]\n",_DStr,TableIndex,Status,_Action));\
+	}while(FALSE)	
+
+#define Callback_Macro_Changing(_QId,_IfrType,_Value,_DStr)\
+	Callback_Macro(EFI_BROWSER_ACTION_CHANGING,_QId,_IfrType,_Value,_DStr)
+
+#define Callback_Macro_Changed(_QId,_IfrType,_Value,_DStr)\
+	Callback_Macro(EFI_BROWSER_ACTION_CHANGED,_QId,_IfrType,_Value,_DStr)
+
 
 	EFI_STATUS							Status				= EFI_SUCCESS;
 	
@@ -793,16 +849,149 @@ EFI_STATUS	HandleBuildRaidCmd_B(
 				break;
 			}
 
-			switch(pExecuteCmdProcessingMap[TableIndex++].CmdProcess){
+			switch(pExecuteCmdProcessingMap[TableIndex].CmdProcess){
+				case P_RAID_CHANGE_SETTING:
+				{
+					if(pExecuteCmdProcessingMap[TableIndex].CmdProcessTypeEnum == SMC_CMD_RAID_SIZE){
+
+						SMC_RAID_CMD_RAIDSIZE* 	pCmdRaidSize 	= NULL;
+
+						pCmdRaidSize = SearchForCmdSectionBody(pCmdSet->RaidCmdSection,SMC_CMD_RAID_SIZE);
+						if(!(!!pCmdRaidSize)){
+							SMC_RAID_DETAIL_DEBUG((-1," P_RAID_CHANGE_SETTING :: Not find RAIDSIZE command\n"));
+							break;
+						}
+						
+						if(pCmdRaidSize->ChangeSequence == CHANGE_RAIDSIZE_UNIT){
+							EFI_IFR_ONE_OF* 		pOneOf 			= NULL;
+							EFI_IFR_ONE_OF_OPTION* 	pOneOfOption 	= NULL;
+							SMC_RAID_VAR*			pLsiVar			= NULL;
+							RAID_SIZE_TYPE			RaidSizeType	= pCmdRaidSize->RaidSizeType;
+							UINT8					SizeUnitValue	= 0;
+							CHAR8					aOptionS[20];
+	
+							pOneOf = (EFI_IFR_ONE_OF*)pCmdProcessingItem->ItemOpHeader;
+
+							pOneOfOption = (EFI_IFR_ONE_OF_OPTION*)((UINT8*)pOneOf + pOneOf->Header.Length);
+							
+							for(;pOneOfOption->Header.OpCode == EFI_IFR_ONE_OF_OPTION_OP;
+						 		 pOneOfOption = (EFI_IFR_ONE_OF_OPTION*)((UINT8*)pOneOfOption + pOneOfOption->Header.Length)){
+
+								UINTN		SizeUnit	 = 0;
+								CHAR16* 	OptionString = GetHiiString(LsiHiiHandle,pOneOfOption->Option);
+								
+								MemSet(aOptionS,20 * sizeof(CHAR8),0x00);
+								UnicodeStrToAsciiStr(OptionString,aOptionS);
+
+								SizeUnit = SearchRaidSizeType(aOptionS);
+								if(SmcRaidSizeTypeMap[SizeUnit].RaidSizeType == SIZE_NON_TYPE)
+									continue;
+								if(SmcRaidSizeTypeMap[SizeUnit].RaidSizeType == RaidSizeType)
+									break;
+							}
+							if(pOneOfOption->Header.OpCode != EFI_IFR_ONE_OF_OPTION_OP){
+								DEBUG((-1," P_RAID_CHANGE_SETTING CHANGE_RAIDSIZE_UNIT :: Cannot Find The Size Unit!\n"));
+								Status = EFI_NOT_FOUND;
+								break;
+							}
+							SizeUnitValue = pOneOfOption->Value.u8;
+							GET_pLsiVar_MARCO(pLsiVar,pOneOf,"P_RAID_CHANGE_SETTING CHANGE_RAIDSIZE_UNIT");
+							
+							if(pLsiVar->RaidVarBuffer[pOneOf->Question.VarStoreInfo.VarOffset] == SizeUnitValue){
+								DEBUG((-1," P_RAID_CHANGE_SETTING CHANGE_RAIDSIZE_UNIT :: SizeUnitValue == RaidVarBuffer\n"));
+								pCmdRaidSize->ChangeSequence = CHANGE_RAIDSIZE_SIZE;
+								break;
+							}
+
+							Callback_Macro_Changing(
+								pOneOf,EFI_IFR_TYPE_NUM_SIZE_8,&SizeUnitValue,"1. P_RAID_CHANGE_RAIDTYPE CHANGE_RAIDSIZE_UNIT"
+							);
+
+							if(!EFI_ERROR(Status)){
+								pLsiVar->RaidVarBuffer[pOneOf->Question.VarStoreInfo.VarOffset] = SizeUnitValue;
+								SizeUnitValue = pOneOfOption->Value.u8;
+								Callback_Macro_Changed(
+									pOneOf,EFI_IFR_TYPE_NUM_SIZE_8,&SizeUnitValue," 2. P_RAID_CHANGE_RAIDTYPE CHANGE_RAIDSIZE_UNIT"
+								);
+								if(!EFI_ERROR(Status)) pCmdRaidSize->ChangeSequence = CHANGE_RAIDSIZE_SIZE;
+							}
+						}
+					}	
+				}
+					break;
+				case P_RAID_CHANGE_RAIDTYPE:
+				{
+					EFI_IFR_ONE_OF* 			pOneOf			= NULL;
+					EFI_IFR_ONE_OF_OPTION*		pOneOfOption	= NULL;
+					SMC_RAID_CMD_RAIDTYPE*		pCmdRaidType 	= NULL;
+					SMC_RAID_VAR*				pLsiVar			= NULL;
+					UINT8						RaidValue		= SMC_RAID_CMD_GROUP_TYPE_END;
+					UINT8						Val				= 0;
+
+						
+					pCmdRaidType = SearchForCmdSectionBody(pCmdSet->RaidCmdSection,SMC_CMD_RAID_RAIDTYPE);
+					
+					//If Cmd Raid Type doesn't exist, pass it.
+					if(!(!!pCmdRaidType)) {
+						SMC_RAID_DETAIL_DEBUG((-1," P_RAID_CHANGE_RAIDTYPE :: Not find RAIDTYPE command\n"));
+						break;
+					}
+					
+					//Follow LSI 3108 Hii layout, the real Change RAID type is the second item.
+					pCmdProcessingItem = pCmdProcessingItem->pItemNext;
+					if(!(!!pCmdProcessingItem)) {
+						DEBUG((-1," P_RAID_CHANGE_RAIDTYPE :: Doesn't Find The real Select Raid Level item\n"));
+						Status	= EFI_NOT_FOUND;
+						break;
+					}
+
+					RaidValue = SearchCmdRaidTypeToValue(pProtocol,pCmdRaidType->RaidType);
+					DEBUG((-1," P_RAID_CHANGE_RAIDTYPE :: RaidType[%x], RaidValue[%x]\n",pCmdRaidType->RaidType,RaidValue)); 
+					if(RaidValue == SMC_RAID_CMD_GROUP_TYPE_END){
+						DEBUG((-1," P_RAID_CHANGE_RAIDTYPE :: Doesn't Find the match RaidValue in Setting!\n"));
+						Status = EFI_NOT_FOUND;
+						break;
+					}
+
+					pOneOf 		= (EFI_IFR_ONE_OF*)pCmdProcessingItem->ItemOpHeader;
+					SMC_RAID_DETAIL_DEBUG((-1," P_RAID_CHANGE_RAIDTYPE :: Target QId[%x], VarId[%x] >>\n",pOneOf->Question.QuestionId,pOneOf->Question.VarStoreId));
+
+					GET_pLsiVar_MARCO(pLsiVar,pOneOf,"P_RAID_CHANGE_RAIDTYPE");
+
+					if(pLsiVar->RaidVarBuffer[pOneOf->Question.VarStoreInfo.VarOffset] == RaidValue){
+						DEBUG((-1," P_RAID_CHANGE_RAIDTYPE :: RaidValue == RaidVarBuffer\n"));
+						break;
+					}	
+				
+					pOneOfOption = (EFI_IFR_ONE_OF_OPTION*)((UINT8*)pOneOf + pOneOf->Header.Length);
+					
+					for(;pOneOfOption->Header.OpCode == EFI_IFR_ONE_OF_OPTION_OP && pOneOfOption->Value.u8 != RaidValue;
+						 pOneOfOption = (EFI_IFR_ONE_OF_OPTION*)((UINT8*)pOneOfOption + pOneOfOption->Header.Length));
+
+					if(pOneOfOption->Header.OpCode != EFI_IFR_ONE_OF_OPTION_OP){
+						DEBUG((-1," P_RAID_CHANGE_RAIDTYPE :: Cannot Find the Raid Value in RAID card Raid Level Setting!\n"));
+						Status = EFI_NOT_FOUND;
+						break;
+					}
+
+					Val = RaidValue;
+					Callback_Macro_Changing(pOneOf,EFI_IFR_TYPE_NUM_SIZE_8,&Val,"1. P_RAID_CHANGE_RAIDTYPE");
+
+					if(!EFI_ERROR(Status)){
+						//LSI Raid is EFI_IFR_NUMERIC_SIZE_1, UINT8
+						pLsiVar->RaidVarBuffer[pOneOf->Question.VarStoreInfo.VarOffset] = RaidValue;
+						Val = RaidValue;
+						Callback_Macro_Changed(pOneOf,EFI_IFR_TYPE_NUM_SIZE_8,&Val,"2. P_RAID_CHANGE_RAIDTYPE");
+					}
+					if(!EFI_ERROR(Status)) pCmdRaidType->bEnabled = TRUE;
+				}
+					break;
 				case P_RAID_ENTER_FORM:
 				{
 					EFI_IFR_REF*	pOpRef	= NULL;
 					pOpRef = (EFI_IFR_REF*)pCmdProcessingItem->ItemOpHeader;
 
-					Status = CallbackForTargetProcessing(
-								pConfigAccess,EFI_BROWSER_ACTION_CHANGING,pOpRef->Question.QuestionId,EFI_IFR_TYPE_REF,NULL
-							 );
-					DEBUG((-1," P_RAID_ENTER_FORM Status[%r]\n",Status));
+					Callback_Macro_Changing(pOpRef,EFI_IFR_TYPE_REF,NULL,"P_RAID_ENTER_FORM");
 				}
 					break;
 				case P_RAID_PRESS_ACTION:
@@ -813,15 +1002,10 @@ EFI_STATUS	HandleBuildRaidCmd_B(
 					pOpAction = (EFI_IFR_ACTION*)pCmdProcessingItem->ItemOpHeader;
 					ActionId = pOpAction->QuestionConfig;
 
-					Status = CallbackForTargetProcessing(
-								pConfigAccess,EFI_BROWSER_ACTION_CHANGING,pOpAction->Question.QuestionId,EFI_IFR_TYPE_ACTION,&ActionId
-							 );
-					DEBUG((-1," 1. P_RAID_PRESS_ACTION Status[%r]\n",Status));
+					Callback_Macro_Changing(pOpAction,EFI_IFR_TYPE_ACTION,&ActionId,"1. P_RAID_PRESS_ACTION");
+
 					if(!EFI_ERROR(Status)){
-						Status = CallbackForTargetProcessing(
-									pConfigAccess,EFI_BROWSER_ACTION_CHANGED,pOpAction->Question.QuestionId,EFI_IFR_TYPE_ACTION,&ActionId
-							 	 );
-						DEBUG((-1," 2. P_RAID_PRESS_ACTION Status[%r]\n",Status));
+						Callback_Macro_Changed(pOpAction,EFI_IFR_TYPE_ACTION,&ActionId,"2. P_RAID_PRESS_ACTION");
 					}
 				}
 					break;
@@ -830,17 +1014,10 @@ EFI_STATUS	HandleBuildRaidCmd_B(
 					EFI_IFR_CHECKBOX*	pOpCheckBox	= NULL;
 					SMC_RAID_VAR*		pLsiVar		= NULL;
 					pOpCheckBox = (EFI_IFR_CHECKBOX*)pCmdProcessingItem->ItemOpHeader;
-					if(!!(pLsiVar = SearchLsiVarById(pOpCheckBox->Question.VarStoreId))){
 
-						SMC_RAID_DETAIL_DEBUG((-1," Target Var Name[%a], Guid[%g], VarId[%x], VarSize[%x]\n",
-													pLsiVar->RaidVarName,pLsiVar->RaidVarGuid,pLsiVar->RaidVarId,pLsiVar->RaidVarSize));	
-
-						pLsiVar->RaidVarBuffer[pOpCheckBox->Question.VarStoreInfo.VarOffset] = 0x01;
-
-					}else{
-						Status = EFI_NOT_FOUND;
-					}
-					DEBUG((-1," P_RAID_CONFIRM Status[%r]\n",Status));
+					GET_pLsiVar_MARCO(pLsiVar,pOpCheckBox,"P_RAID_CONFIRM");
+					pLsiVar->RaidVarBuffer[pOpCheckBox->Question.VarStoreInfo.VarOffset] = 0x01;
+					DEBUG((-1," P_RAID_CONFIRM :: TableIndex[%d], Status[%r]\n",TableIndex,Status));
 				}
 					break;
 				case P_RAID_CHOICE_HDD:
@@ -867,30 +1044,23 @@ EFI_STATUS	HandleBuildRaidCmd_B(
 							Status = EFI_NOT_FOUND;
 							break;
 						}
-						Status = CallbackForTargetProcessing(
-									pConfigAccess,EFI_BROWSER_ACTION_CHANGING,pOpCheckBox->Question.QuestionId,EFI_IFR_TYPE_BOOLEAN,&Val
-								 );
-						DEBUG((-1," 1. P_RAID_CHOICE_HDD Status[%r] ACTION[%x]\n",Status,EFI_BROWSER_ACTION_CHANGING));
-						if(!EFI_ERROR(Status)){
-							
-							pLsiVar = SearchLsiVarById(pOpCheckBox->Question.VarStoreId);
-							
-							DEBUG((-1," Target Var Name[%a], Guid[%g], VarId[%x], VarSize[%x]\n",
-										pLsiVar->RaidVarName,pLsiVar->RaidVarGuid,pLsiVar->RaidVarId,pLsiVar->RaidVarSize));	
-						
+						GET_pLsiVar_MARCO(pLsiVar,pOpCheckBox,"P_RAID_CHOICE_HDD"); 
+
+						Callback_Macro_Changing(pOpCheckBox,EFI_IFR_TYPE_BOOLEAN,&Val,"1. P_RAID_CHOICE_HDD");
+
+						if(!EFI_ERROR(Status)){	
 							pLsiVar->RaidVarBuffer[pOpCheckBox->Question.VarStoreInfo.VarOffset] = 0x1;
 							Val = TRUE;
-							Status = CallbackForTargetProcessing(
-										pConfigAccess,EFI_BROWSER_ACTION_CHANGED,pOpCheckBox->Question.QuestionId,EFI_IFR_TYPE_BOOLEAN,&Val
-								 	 );
-							DEBUG((-1," 2. P_RAID_CHOICE_HDD Status[%r] ACTION[%x]\n",Status,EFI_BROWSER_ACTION_CHANGED));
+							Callback_Macro_Changed(pOpCheckBox,EFI_IFR_TYPE_BOOLEAN,&Val,"2. P_RAID_CHOICE_HDD");
 						}	
-					}	
+					}
+					if(!EFI_ERROR(Status)) pCmdGroup->bEnabled = TRUE;
 				}
 					break;
 				default:
 					break;
 			}
+			TableIndex++;
 		}while(!(EFI_ERROR(Status)));	
 	}
 
@@ -940,13 +1110,14 @@ EFI_STATUS	CollectCfgCmdData(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 	/*
 	 *	Collect HDD Name into HDD Group.
 	 */
-
+#define	GROUP_HDD_NUMBER	128
+	
 	SMC_RAID_ITEMS_SET*			pItemsSet		= NULL;
 	SMC_RAID_CMD_SET*			pCmdSet			= NULL;
-	SMC_RAID_CMD_GROUP_HDD*		GroupHddTable[64];
+	SMC_RAID_CMD_GROUP_HDD*		GroupHddTable[GROUP_HDD_NUMBER];
 	UINTN						GroupHddIndex	= 0;
 
-	MemSet(GroupHddTable,sizeof(SMC_RAID_CMD_GROUP_HDD*) * 64, 0x00);
+	MemSet(GroupHddTable,sizeof(SMC_RAID_CMD_GROUP_HDD*) * GROUP_HDD_NUMBER, 0x00);
 
 	pItemsSet = pProtocol->SmcLsiCurrHiiHandleTable->RaidCardInfItems;
 	pCmdSet = pProtocol->SmcLsiCurrHiiHandleTable->RaidCmdSet;
@@ -957,8 +1128,6 @@ EFI_STATUS	CollectCfgCmdData(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 	for(;!!pItemsSet;pItemsSet = pItemsSet->pItemsNext){
 		SMC_RAID_ITEMS_BODY	*pItemsBody	= NULL;
 
-		if(pItemsSet->ItemsHeader.RaidItemsType != RAID_HDG_TYPE) continue;
-
 		pItemsBody = pItemsSet->ItemsBody;
 		if(! (!!pItemsBody)) continue;
 		do {
@@ -967,24 +1136,27 @@ EFI_STATUS	CollectCfgCmdData(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 			pOpHeader = pItemsBody->pLsiItemOp;
 			
 			switch(pOpHeader->OpCode){
+				case EFI_IFR_REF_OP:
 				case EFI_IFR_CHECKBOX_OP: 
-				{
-					EFI_IFR_CHECKBOX*			OriCBox	  		= (EFI_IFR_CHECKBOX*)pOpHeader;
-					CHAR16*						HddString 		= NULL;
-					CHAR16*						CopyHddString	= NULL;
-					SMC_RAID_CMD_GROUP_HDD*		pGroupHdd		= NULL;	
+					if(pItemsSet->ItemsHeader.RaidItemsType == RAID_HDG_TYPE || 
+		   			   pItemsSet->ItemsHeader.RaidItemsType == RAID_RDG_TYPE){
 						
-					gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_RAID_CMD_GROUP_HDD),&pGroupHdd);
-					HddString = GetHiiString(pProtocol->SmcLsiCurrHiiHandleTable->RaidCardHiiHandle,OriCBox->Question.Header.Prompt);
-					gBS->AllocatePool(EfiBootServicesData,StrSize(HddString),&CopyHddString);
-					StrCpy(CopyHddString,HddString);
+						SMC_LSI_ITEMS_COMMON_HEADER* pItemCmn 		= (SMC_LSI_ITEMS_COMMON_HEADER*)pOpHeader;
+						CHAR16*						 HddString 		= NULL;
+						CHAR16*						 CopyHddString	= NULL;
+						SMC_RAID_CMD_GROUP_HDD*		 pGroupHdd		= NULL;	
 						
-					pGroupHdd->HdNum 	= pItemsBody->HdNum;
-					pGroupHdd->HdHame	= CopyHddString;
-					pGroupHdd->pHddNext	= NULL;
+						gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_RAID_CMD_GROUP_HDD),&pGroupHdd);
+						HddString = GetHiiString(pProtocol->SmcLsiCurrHiiHandleTable->RaidCardHiiHandle,pItemCmn->Question.Header.Prompt);
+						gBS->AllocatePool(EfiBootServicesData,StrSize(HddString),&CopyHddString);
+						StrCpy(CopyHddString,HddString);
+						
+						pGroupHdd->HdNum 	= pItemsBody->HdNum;
+						pGroupHdd->HdHame	= CopyHddString;
+						pGroupHdd->pHddNext	= NULL;
 
-					GroupHddTable[GroupHddIndex++] = pGroupHdd;
-				}
+						GroupHddTable[GroupHddIndex++] = pGroupHdd;
+					}
 					break;
 				default:
 					break;
@@ -1149,6 +1321,9 @@ EFI_STATUS	CallbackForTargetProcessing(
 					break;
 				case EFI_IFR_TYPE_ACTION:
 					TypeValue.string = *((EFI_STRING_ID*)pTypeValue);
+					break;
+				case EFI_IFR_TYPE_NUM_SIZE_8:
+					TypeValue.u8	 = *((UINT8*)pTypeValue);
 					break;
 				default:
 					break;
