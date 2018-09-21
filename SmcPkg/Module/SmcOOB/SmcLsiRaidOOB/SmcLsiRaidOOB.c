@@ -759,9 +759,6 @@ EFI_STATUS SmcLsiRaidOOB_CollectInformation_Items(SMC_LSI_RAID_OOB_SETUP_PROTOCO
 												ItemsComnHead->Question.QuestionId));
 					break;
 				}
-				SMC_RAID_DETAIL_DEBUG((-1,"IfrString[%s], VarStoreId[%x] OP[%x] QId[%x] >> \n",
-							IfrString,ItemsComnHead->Question.VarStoreId,LsipEFI_IFR_OP_HEADER->OpCode,
-							ItemsComnHead->Question.QuestionId));
 
 				pHddNum = &NonHddNum;
 				for(pItemsSet = LocSmcLsiRaidItemsTable;pItemsSet != NULL;pItemsSet = pItemsSet->pItemsNext){
@@ -781,6 +778,11 @@ EFI_STATUS SmcLsiRaidOOB_CollectInformation_Items(SMC_LSI_RAID_OOB_SETUP_PROTOCO
 					}
 				}
 				if(pItemsSet == NULL) break;
+
+				SMC_RAID_DETAIL_DEBUG((-1,"IfrString[%s], VarStoreId[%x] OP[%x] QId[%x] >> \n",
+							IfrString,ItemsComnHead->Question.VarStoreId,LsipEFI_IFR_OP_HEADER->OpCode,
+							ItemsComnHead->Question.QuestionId));
+
 				{
 					SMC_RAID_ITEMS_BODY*	pItemsBody = NULL;
 					gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_RAID_ITEMS_BODY),&pItemsBody);

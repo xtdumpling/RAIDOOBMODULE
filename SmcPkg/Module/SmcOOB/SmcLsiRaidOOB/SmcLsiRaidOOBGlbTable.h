@@ -12,10 +12,14 @@ extern SMC_LSI_INSIDE_CHANGE_FUNC	mSmcLsiInsideChangeFunc[];
 extern SMC_RAID_SIZE_TYPE_MAP	SmcRaidSizeTypeMap[];
 extern SMC_RAID_CMD_SPECIE_MAP	SpecieMap[];
 
-extern RAID_CMD_PROCESSING_MAP		RaidCmdProcessMapTable[];
-
-extern RAID_CMD_PROCESSING_MAP 	RaidCmdProcessClearMapTable[];
-
 extern SMCLSI_RAIDCMDFUNCTION_MAP	SmcLsiRaidFunctionMapBuildRaidTable[];
+extern SMCLSI_RAIDCMDFUNCTION_MAP	SmcLsiRaidFunctionMapDeleteRaidTable[];
+
+#define D_3108_RAIDREF_RAIDDRIVE_NAME	0x0
+#define D_3108_RAIDREF_OPERATION		0x1
+#define D_3108_RAIDREF_GO				0x2
+#define D_3108_RAIDREF_GO_QID			0x15C
+
+extern RAID_CMD_PROCESSING_MAP 		RaidCmdProcessMapTable_D_3108_RaidRef[];
 
 #endif

@@ -65,7 +65,29 @@ SMC_RAID_CMD_SPECIE_MAP	SpecieMap[] = {
 		{ 'X' , SMC_CMD_SPECIE_NON		}
 };
 
-RAID_CMD_PROCESSING_MAP		RaidCmdProcessMapTable[] = {
+RAID_CMD_PROCESSING_MAP		RaidCmdProcessMapTable_D_3108[] = {
+	{P_RAID_ENTER_FORM		, L"Main Menu" 					, L"Virtual Drive Management" 	, 0xFFFF 	, EFI_IFR_REF_OP 	  ,	 SMC_CMD_RAID_NON		},
+	//Choice RaidDrive it will handle last sequence by below table RaidCmdProcessMapTable_D_3108_RaidRef.
+	{P_RAID_CHOICE_HDD		, L"Virtual Drive Management"	, L"Choice Raid Drive"	  		, 0xA000 	, EFI_IFR_REF_OP 	  ,	 SMC_CMD_RAID_COMMAND_D },
+	{P_RAID_NON_ACTION		, L""							, L""					  		, 0xFFFF	, 0xFF				  ,  SMC_CMD_RAID_NON		}
+
+};
+//Since there are many GO REFs, we may use QId to ensure. 
+RAID_CMD_PROCESSING_MAP 	RaidCmdProcessMapTable_D_3108_RaidRef[] = {
+ 	{P_RAID_ENTER_FORM		, L"Virtual Drive Management"	, L"Raid Drive Form Name" 		, 0xFFFF 	, EFI_IFR_REF_OP 	  ,	 SMC_CMD_RAID_NON		},
+	{P_RAID_CHANGE_SETTING	, L"Raid Drive Form Name" 		, L"Operation" 					, 0xFFFF 	, EFI_IFR_ONE_OF_OP   ,	 SMC_CMD_RAID_COMMAND_D	},
+	{P_RAID_ENTER_FORM		, L"Raid Drive Form Name" 		, L"Use QId find Go Form"		, 0xFFFF 	, EFI_IFR_REF_OP   	  ,	 SMC_CMD_RAID_COMMAND_D	},
+	{P_RAID_CONFIRM	  		, L"Warning"	   			    , L"Confirm"	 		  		, 0xFFFF	, EFI_IFR_CHECKBOX_OP ,	 SMC_CMD_RAID_NON		},
+	{P_RAID_PRESS_ACTION	, L"Warning"	   			    , L"Yes"	 			  		, 0xFFFF	, EFI_IFR_ACTION_OP	  ,	 SMC_CMD_RAID_NON		},
+	{P_RAID_NON_ACTION		, L""							, L""					  		, 0xFFFF	, 0xFF				  ,  SMC_CMD_RAID_NON		}
+};
+
+RAID_CMD_PROCESSING_MAP 	RaidCmdProcessClearMapTable_D_3108[] = {
+	{P_RAID_ENTER_FORM		, L"Main Menu"					, L"Virtual Drive Management" , 0xFFFF	, EFI_IFR_REF_OP	  ,  SMC_CMD_RAID_NON	},
+	{P_RAID_NON_ACTION		, L""							, L""						  , 0xFFFF	, 0xFF				  ,  SMC_CMD_RAID_NON	}
+};
+
+RAID_CMD_PROCESSING_MAP		RaidCmdProcessMapTable_B_3108[] = {
 	{P_RAID_ENTER_FORM		, L"Configuration Management" 	, L"Create Virtual Drive" 		, 0xFFFF 	, EFI_IFR_REF_OP 	  ,	 SMC_CMD_RAID_NON		},
 	{P_RAID_CHANGE_RAIDTYPE	, L"Create Virtual Drive"		, L"Select RAID Level"	  		, 0xFFFF	, EFI_IFR_ONE_OF_OP	  ,	 SMC_CMD_RAID_RAIDTYPE	},
 	{P_RAID_ENTER_FORM		, L"Create Virtual Drive"	   	, L"Select Drives"		  		, 0xFFFF 	, EFI_IFR_REF_OP 	  ,	 SMC_CMD_RAID_NON		},
@@ -80,13 +102,24 @@ RAID_CMD_PROCESSING_MAP		RaidCmdProcessMapTable[] = {
 
 };
 
-RAID_CMD_PROCESSING_MAP 	RaidCmdProcessClearMapTable[] = {
+RAID_CMD_PROCESSING_MAP 	RaidCmdProcessClearMapTable_B_3108[] = {
+	{P_RAID_ENTER_FORM		, L"Configuration Management"	, L"Create Virtual Drive" , 0xFFFF	, EFI_IFR_REF_OP	  ,  SMC_CMD_RAID_NON	},
+	{P_RAID_NON_ACTION		, L""							, L""					  , 0xFFFF	, 0xFF				  ,  SMC_CMD_RAID_NON	}
+};
+
+RAID_CMD_PROCESSING_MAP 	RaidCmdProcessDynamicMap[] = {
 	{P_RAID_ENTER_FORM		, L"Configuration Management"	, L"Create Virtual Drive" , 0xFFFF	, EFI_IFR_REF_OP	  ,  SMC_CMD_RAID_NON	},
 	{P_RAID_NON_ACTION		, L""							, L""					  , 0xFFFF	, 0xFF				  ,  SMC_CMD_RAID_NON	}
 };
 
 SMCLSI_RAIDCMDFUNCTION_MAP	SmcLsiRaidFunctionMapBuildRaidTable[] = {
-	{RAID_3108 , HandleBuildRaidCmd_B , RaidCmdProcessMapTable 		},
-	{RAID_3108 , HandleBuildRaidCmd_B , RaidCmdProcessClearMapTable },
-	{RAID_NULL , NULL				  , NULL						}
+	{RAID_3108 , HandleBuildRaidCmd , RaidCmdProcessMapTable_B_3108 		},
+	{RAID_3108 , HandleBuildRaidCmd , RaidCmdProcessClearMapTable_B_3108 	},
+	{RAID_NULL , NULL				  , NULL								}
+};
+
+SMCLSI_RAIDCMDFUNCTION_MAP	SmcLsiRaidFunctionMapDeleteRaidTable[] = {
+	{RAID_3108 , HandleBuildRaidCmd_D , RaidCmdProcessMapTable_D_3108 		},
+	{RAID_3108 , HandleBuildRaidCmd_D , RaidCmdProcessClearMapTable_D_3108 	},
+	{RAID_NULL , NULL				  , NULL								}
 };
