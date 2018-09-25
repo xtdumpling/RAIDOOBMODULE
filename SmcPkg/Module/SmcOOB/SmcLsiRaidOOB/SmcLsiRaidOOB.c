@@ -768,7 +768,8 @@ EFI_STATUS SmcLsiRaidOOB_CollectInformation_Items(SMC_LSI_RAID_OOB_SETUP_PROTOCO
 						//If pItemsSet not HDG items table, continue.
 						//If pItemsSet is HDG items table, it already pass the LsiItemId.
 						if(!(!!StrCmp(pItemsSet->ItemsHeader.LsiItemName,pProtocol->SmcLsiGetHdgName(pProtocol))) || 
-						   !(!!StrCmp(pItemsSet->ItemsHeader.LsiItemName,pProtocol->SmcLsiGetRdgName(pProtocol)))
+						   !(!!StrCmp(pItemsSet->ItemsHeader.LsiItemName,pProtocol->SmcLsiGetRdgName(pProtocol))) ||
+						   !(!!StrCmp(pItemsSet->ItemsHeader.LsiItemName,pProtocol->SmcLsiGetJBODName(pProtocol)))
 						  ){
 							//In Here, it means it's HDD items. 
 							pHddNum = &HddNum;
@@ -1716,7 +1717,7 @@ EFI_STATUS CreateRaid_Hdg_Rdg_Jbod_TypeItems(
 				case EFI_IFR_CHECKBOX_OP:
 				case EFI_IFR_REF_OP:
 				{
-					if(ItemsType == RAID_HDG_TYPE || ItemsType == RAID_RDG_TYPE){
+					if(ItemsType == RAID_HDG_TYPE || ItemsType == RAID_RDG_TYPE || ItemsType == RAID_JBOD_TYPE){
 						SMC_LSI_ITEMS_COMMON_HEADER*	OriOpCmnH = NULL;
 						EFI_IFR_TEXT					CopyText;
 						CHAR16*							HddString = NULL;
@@ -1758,8 +1759,8 @@ EFI_STATUS InsertRaidSetupHDGItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 	SMC_RAID_ITEMS_SET*		RaidItemsTable			= NULL;
 	EFI_IFR_GUID_LABEL*		GuidLabel				= NULL;
 
-	SMC_RAID_ITEMS_TYPE		BuildOrder[] 		= {RAID_JBOD_TYPE, RAID_HDG_TYPE, RAID_RDG_TYPE, RAID_NULL_TYPE};
-	CHAR16*					BuildOrderSub[]		= {L"JBOD Drives", L"HDD Drives", L"RAID Drives", NULL };
+	SMC_RAID_ITEMS_TYPE		BuildOrder[] 		= {RAID_HDG_TYPE, RAID_JBOD_TYPE, RAID_RDG_TYPE, RAID_NULL_TYPE};
+	CHAR16*					BuildOrderSub[]		= {L"HDD Drives", L"JBOD Drives", L"RAID Drives", NULL };
 	UINT8					BuildOrdIndex	= 0;
 
 	if(pProtocol->SmcLsiCurrHiiHandleTable->SmcFormId 		== 0x0 ||

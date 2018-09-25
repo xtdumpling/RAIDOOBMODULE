@@ -29,6 +29,8 @@ SMC_LSI_RAID_FORM_HEADER		mSmcLsiRaidFormRefSearchTable[] = {
 	{RAID_3108, L"Configuration Management"			, EFI_IFR_REF_OP },
 	{RAID_3108, L"Create Virtual Drive"				, EFI_IFR_REF_OP },
 	{RAID_3108, L"Select Drives"					, EFI_IFR_REF_OP },
+	{RAID_3108, L"Make JBOD"						, EFI_IFR_REF_OP },
+	{RAID_3108, L"Make Unconfigured Good"			, EFI_IFR_REF_OP },
 	{RAID_3108, L"Controller Management"			, EFI_IFR_REF_OP },
 	{RAID_3108, L"Advanced Controller Properties"	, EFI_IFR_REF_OP },
 	{RAID_3108, L"Virtual Drive Management"			, EFI_IFR_REF_OP },
@@ -51,6 +53,7 @@ SMC_RAID_ITEMS_HEADER	mSmcLsiItemsTable[] = {
 	{RAID_3108, L"Controller Management"	, L"Virtual Drive Count",0xFFFF , RAID_INFORMATION_TYPE},
 	{RAID_3108, L"Select Drives"			, HARD_DRIVES_GROUP,	 0xA700 , RAID_HDG_TYPE},
 	{RAID_3108, L"Virtual Drive Management"	, RAID_DRIVES_GROUP,     0xA000 , RAID_RDG_TYPE},
+	{RAID_3108, L"Make Unconfigured Good"	, JBOD_DRIVES_GROUP,     0xAB00 , RAID_JBOD_TYPE},
 
 	{RAID_3108, L"Advanced Controller Properties", L"Boot Mode",	 0xFFFF , RAID_CHANGEABLE_TYPE },
 	{RAID_3108, L"Advanced Controller Properties", L"JBOD Mode",	 0xFFFF	, RAID_CHANGEABLE_TYPE },

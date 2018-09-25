@@ -20,6 +20,20 @@ VOID debug_for_Cmd_Set(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 		DEBUG((-1,"     CMD[%d] - CmdEnable[%x] :: \n",CmdIndex++,pSmcRaidCmdSet->CmdEnable));
 		for(pPSection = pSmcRaidCmdSet->RaidCmdSection;!!pPSection;pPSection = pPSection->pRaidCmdSectionNext){
 			switch(pPSection->RaidCmdType){
+				case SMC_CMD_RAID_JBOD:
+				{
+					SMC_RAID_CMD_JBOD* pJbod = NULL;
+					UINTN			   index = 0;
+
+					DEBUG((-1,"      JBOD :: \n"));
+					pJbod = pPSection->RaidCmdBody;
+					for(index=0;
+						JbodMap[index].JBODEnum != pJbod->RaidCmdJbodEnum;
+						++index);
+
+					DEBUG((-1,"      JbodEnum[%c]\n",JbodMap[index].JBODCode));				
+				}
+					break;
 				case SMC_CMD_RAID_GROUP:
 				{
 					SMC_RAID_CMD_GROUP* 	pGroup 		= NULL;
@@ -60,6 +74,7 @@ VOID debug_for_Cmd_Set(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 				}
 					break;
 				case SMC_CMD_RAID_COMMAND:
+				case SMC_CMD_RAID_COMMAND_D:
 				{
 					SMC_RAID_CMD_SPECIE* pSpecie = NULL;
 					UINTN				 index	 = 0;
@@ -304,6 +319,47 @@ UINTN SearchRaidSizeType(CHAR8* OriSizeTypeS){
 	return SizeTypeIndex;
 }
 
+#define CREATE_SMC_RAID_CMD_SECTION(TYPE_ENUM,pBody)\
+	do{\
+		SMC_RAID_CMD_SECTION*	pSection;\
+		gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_RAID_CMD_SECTION),&pSection);\
+		MemSet(pSection,sizeof(SMC_RAID_CMD_SECTION),0x00);\
+		pSection->RaidCmdType			= TYPE_ENUM;\
+		pSection->RaidCmdBody			= pBody;\
+		pSection->pRaidCmdSectionNext	= NULL;\
+		return pSection;\
+	}while(FALSE)
+
+SMC_RAID_CMD_SECTION*	ParseCmdRaidJbod(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol, CHAR8* aCmdString){
+
+
+	CHAR8*				paCmdCfgPos		= aCmdString;
+	UINTN				JbodIndex		= 0;
+	SMC_RAID_CMD_JBOD*	pJbod			= NULL;
+
+	if(!(!!paCmdCfgPos) || !(*paCmdCfgPos)) return NULL;
+
+	paCmdCfgPos = Strstr(paCmdCfgPos,"J:[");
+	if(!(*paCmdCfgPos)) return NULL;
+	paCmdCfgPos += 3;
+
+	for(JbodIndex = 0;JbodMap[JbodIndex].JBODEnum != SMC_CMD_JBOD_NON;++JbodIndex){
+		if(*paCmdCfgPos == JbodMap[JbodIndex].JBODCode){
+			break;
+		}
+	}
+	if(JbodMap[JbodIndex].JBODEnum == SMC_CMD_JBOD_NON) return NULL;
+
+	if((*(++paCmdCfgPos)) != ']') return NULL;
+	
+	gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_RAID_CMD_JBOD),&pJbod);
+	MemSet(pJbod,sizeof(SMC_RAID_CMD_JBOD),0x00);
+	pJbod->RaidCmdJbodEnum = JbodMap[JbodIndex].JBODEnum;
+	
+	CREATE_SMC_RAID_CMD_SECTION(SMC_CMD_RAID_JBOD,pJbod);
+
+}
+
 SMC_RAID_CMD_SECTION*	ParseCmdRaidSize(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol, CHAR8* aCmdString){
 
 	CHAR8*				paCmdCfgPos		= aCmdString;
@@ -358,7 +414,7 @@ SMC_RAID_CMD_SECTION*	ParseCmdRaidSize(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtoco
 	return pSection;
 }
 
-SMC_RAID_CMD_SECTION*	ParseCmdRaidType(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol, CHAR8* aCmdString){
+SMC_RAID_CMD_SECTION*	ParseCmdRaidType(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol, CHAR8* aCmdString, CHAR8 BigerThan, CHAR8 SmallThan,UINT8 SpecialExamine){
 
 	CHAR8*				paCmdCfgPos		= aCmdString;
 
@@ -373,12 +429,13 @@ SMC_RAID_CMD_SECTION*	ParseCmdRaidType(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtoco
 	if(!(*paCmdCfgPos)) return NULL;
 	paCmdCfgPos += 3;
 		
-	while(*paCmdCfgPos >= '0' && *paCmdCfgPos <= '9'){
+	while(*paCmdCfgPos >= BigerThan && *paCmdCfgPos <= SmallThan){
 		if(TempVal == 0xFFFF) TempVal = 0x0;
 		TempVal = (TempVal * 10) + ((UINT8)*paCmdCfgPos++ - (UINT8)'0');
 		if(TempVal >= 0x0FF) return NULL;
 	}
 	if((*paCmdCfgPos) != ']') return NULL;
+	if(SpecialExamine != 0x0FF && TempVal != SpecialExamine) return NULL;
 
 	if(TempVal != 0xFFFF) RaidType = (UINT8)TempVal;
 
@@ -465,7 +522,6 @@ SMC_RAID_CMD_SECTION*	ParseCmdGroup(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol, 
 	}
 	return pSection;
 }
-
 
 SMC_RAID_CMD_SECTION*	ParseCmdSpecie(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol, CHAR8* aCmdString){
 
@@ -623,13 +679,19 @@ SMC_RAID_CMD_SET* AnalysisAndParseCmdString(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pPr
 		pNextSection = pNextSection->pRaidCmdSectionNext;
 	}
 	// 5. Parse R:[_1]
-	pTempSection = ParseCmdRaidType(pProtocol,aCmdCfgString);
+	pTempSection = ParseCmdRaidType(pProtocol,aCmdCfgString,'0','9',SMC_RAID_CMD_GROUP_TYPE_END);
 	SMC_RAID_DETAIL_DEBUG((-1,"ParseCmdRaidType :: [%s]\n",(!!pTempSection) ? L"Got Cmd Raid Type" : L"Not Cmd Raid Type"));
 	if(!!pTempSection){
 		pNextSection->pRaidCmdSectionNext = pTempSection;
 		pNextSection = pNextSection->pRaidCmdSectionNext;
 	}
-
+	// 6. Parse J:[U|M]
+	pTempSection = ParseCmdRaidJbod(pProtocol,aCmdCfgString);
+	SMC_RAID_DETAIL_DEBUG((-1,"ParseCmdRaidJbod :: [%s]\n",(!!pTempSection) ? L"Got Cmd Raid Type" : L"Not Cmd Raid Type"));
+	if(!!pTempSection){
+		pNextSection->pRaidCmdSectionNext = pTempSection;
+		pNextSection = pNextSection->pRaidCmdSectionNext;
+	}
 	return pSmcRaidCmdSet;
 }
 	/*
@@ -813,6 +875,30 @@ UINT8 	SearchCmdRaidTypeToValue(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol, UINT
 #define Callback_Macro_Changed(_QId,_IfrType,_Value,_DStr)\
 	Callback_Macro(EFI_BROWSER_ACTION_CHANGED,_QId,_IfrType,_Value,_DStr)
 
+EFI_STATUS	HandleOtherRaidCmd(
+		SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol, 
+		SMC_RAID_CMD_SET* pCmdSet, 
+		RAID_CMD_PROCESSING_MAP* RaidCmdProcessMapTable
+){
+	SMC_RAID_CMD_JBOD*			pCmdJbod 				   = NULL;
+	RAID_CMD_PROCESSING_MAP*	pCmdProcessingMapRaidTable = NULL;
+	EFI_STATUS					Status					   = EFI_SUCCESS;
+
+	//Handle For JBOD Make and unconfig.
+	pCmdJbod = SearchForCmdSectionBody(pCmdSet->RaidCmdSection,SMC_CMD_RAID_JBOD);
+	if(!!pCmdJbod){
+		if(pCmdJbod->RaidCmdJbodEnum == SMC_CMD_JBOD_MAKE) 
+			pCmdProcessingMapRaidTable = RaidCmdProcessMapTable_MakeJbod;
+		else if(pCmdJbod->RaidCmdJbodEnum == SMC_CMD_JBOD_UNCONFIG)
+			pCmdProcessingMapRaidTable = RaidCmdProcessMapTable_UnConfigJbod;
+		
+		Status = HandleBuildRaidCmd(pProtocol,pCmdSet,pCmdProcessingMapRaidTable);
+		DEBUG((-1,"HandleOtherRaidCmd JBOD[%x] Status[%r]\n",pCmdJbod->RaidCmdJbodEnum,Status));
+	}
+
+	return EFI_SUCCESS;
+}
+
 EFI_STATUS	HandleBuildRaidCmd_D(
 		SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol, 
 		SMC_RAID_CMD_SET* pCmdSet, 
@@ -895,7 +981,7 @@ EFI_STATUS	HandleBuildRaidCmd_D(
 						}
 
 						Status = HandleBuildRaidCmd(pProtocol,pCmdSet,pLoopDeleteRaidTable);
-						DEBUG((-1," P_RAID_CHOICE_HDD HandleBuildRaidCmd Status[%r]\n",Status));
+						DEBUG((-1," P_RAID_CHOICE_HDD HandleBuildRaidCmd_D HandleBuildRaidCmd Status[%r]\n",Status));
 					}
 					break;
 				}
@@ -1258,6 +1344,7 @@ EFI_STATUS	HandleRaidCfgCmdString(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 	SMCLSI_RAIDCMDFUNCTION_MAP*		SmcLsiRaidCmdFunctionMapTable[] = {
 		SmcLsiRaidFunctionMapBuildRaidTable,
 		SmcLsiRaidFunctionMapDeleteRaidTable,
+		SmcLsiRaidFunctionMapOtherRaidTable,
 		NULL
 	};
 
@@ -1267,14 +1354,15 @@ EFI_STATUS	HandleRaidCfgCmdString(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 		if(!!pRaidCmdSet->CmdEnable){
 			SMC_RAID_CMD_SPECIE*	pCmdSpecie = NULL;
 			pCmdSpecie = SearchForCmdSectionBody(pRaidCmdSet->RaidCmdSection,SMC_CMD_RAID_COMMAND);
-			if(!(!!pCmdSpecie)) continue;	
+			if(!(!!pCmdSpecie)) continue;
 			if(!(!!SmcLsiRaidCmdFunctionMapTable[pCmdSpecie->RaidCmdSpecie])) continue;
 
 #if defined(DEBUG_MODE) && (DEBUG_MODE == 1)
 			{
 				CHAR16				DoingCmdS[][20] = {
 					L"Build Raid",
-					L"Delete Raid"
+					L"Delete Raid",
+					L"Other Raid Cmd"
 				};
 				DEBUG((-1,"HandleRaidCfgCmdString ::  CardType[%x], CardIndex[%x] [%s] >>>\n",
 							pProtocol->SmcLsiCurrHiiHandleTable->RaidCardType,
@@ -1333,7 +1421,8 @@ EFI_STATUS	CollectCfgCmdData(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 				case EFI_IFR_REF_OP:
 				case EFI_IFR_CHECKBOX_OP: 
 					if(pItemsSet->ItemsHeader.RaidItemsType == RAID_HDG_TYPE || 
-		   			   pItemsSet->ItemsHeader.RaidItemsType == RAID_RDG_TYPE){
+		   			   pItemsSet->ItemsHeader.RaidItemsType == RAID_RDG_TYPE ||
+					   pItemsSet->ItemsHeader.RaidItemsType == RAID_JBOD_TYPE){
 						
 						SMC_LSI_ITEMS_COMMON_HEADER* pItemCmn 		= (SMC_LSI_ITEMS_COMMON_HEADER*)pOpHeader;
 						CHAR16*						 HddString 		= NULL;
@@ -1428,6 +1517,17 @@ EFI_STATUS ExamineBasicForCmdRequire(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol)
 					}
 				}
 					break;
+				case SMC_CMD_SPECIE_OTHER:
+				{
+					SMC_RAID_CMD_JBOD* 	pCmdJbod = NULL;
+					if(!!(pCmdJbod = SearchForCmdSectionBody(pRaidCmdSet->RaidCmdSection,SMC_CMD_RAID_JBOD))){
+						SMC_RAID_CMD_GROUP*	pCmdGroup = NULL;
+						if(!(!!(pCmdGroup = SearchForCmdSectionBody(pRaidCmdSet->RaidCmdSection,SMC_CMD_RAID_GROUP)))){
+							pRaidCmdSet->CmdEnable = FALSE;
+						}
+					}
+				}
+					break;
 				default:
 					break;
 			}
@@ -1450,6 +1550,7 @@ EFI_STATUS ExamineBasicForCmdRequire(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol)
 	 *    B ::= Must have <G>, Optional <R,S>
 	 *    D ::= Must have <G>
 	 *    O ::= Undefined.
+	 *        C:[[O] G:[_1,_2,_3, ... ] J:[U|M]
 	 */
 
 

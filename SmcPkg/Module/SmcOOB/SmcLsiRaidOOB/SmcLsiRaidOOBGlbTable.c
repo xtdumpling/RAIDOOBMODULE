@@ -65,6 +65,32 @@ SMC_RAID_CMD_SPECIE_MAP	SpecieMap[] = {
 		{ 'X' , SMC_CMD_SPECIE_NON		}
 };
 
+SMC_RAID_CMD_JBOD_MAP JbodMap[] = {
+		{'M' , SMC_CMD_JBOD_MAKE	 },
+		{'U' , SMC_CMD_JBOD_UNCONFIG },
+		{'X' , SMC_CMD_JBOD_NON		 }
+};
+
+RAID_CMD_PROCESSING_MAP		RaidCmdProcessMapTable_UnConfigJbod[] = {
+	{P_RAID_ENTER_FORM		, L"Configuration Management" 	, L"Make Unconfigured Good" 	, 0xFFFF 	, EFI_IFR_REF_OP 	  ,	 SMC_CMD_RAID_NON		},
+	{P_RAID_CHOICE_HDD		, L"Make Unconfigured Good"		, L"Choice Hdd"	  				, 0xAB00 	, EFI_IFR_CHECKBOX_OP ,	 SMC_CMD_RAID_NON 		},
+	{P_RAID_ENTER_FORM		, L"Make Unconfigured Good" 	, L"OK" 						, 0xFFFF 	, EFI_IFR_REF_OP 	  ,	 SMC_CMD_RAID_NON		},
+	{P_RAID_CONFIRM	  		, L"Warning"	   			    , L"Confirm"	 		  		, 0xFFFF	, EFI_IFR_CHECKBOX_OP ,	 SMC_CMD_RAID_NON		},
+	{P_RAID_PRESS_ACTION	, L"Warning"	   			    , L"Yes"	 			  		, 0xFFFF	, EFI_IFR_ACTION_OP	  ,	 SMC_CMD_RAID_NON		},
+	{P_RAID_NON_ACTION		, L""							, L""					  		, 0xFFFF	, 0xFF				  ,  SMC_CMD_RAID_NON		}
+
+};
+
+RAID_CMD_PROCESSING_MAP		RaidCmdProcessMapTable_MakeJbod[] = {
+	{P_RAID_ENTER_FORM		, L"Configuration Management" 	, L"Make JBOD" 					, 0xFFFF 	, EFI_IFR_REF_OP 	  ,	 SMC_CMD_RAID_NON		},
+	{P_RAID_CHOICE_HDD		, L"Make JBOD"					, L"Choice Hdd"	  				, 0xAD00 	, EFI_IFR_CHECKBOX_OP ,	 SMC_CMD_RAID_NON 		},
+	{P_RAID_ENTER_FORM		, L"Make JBOD" 					, L"OK" 						, 0xFFFF 	, EFI_IFR_REF_OP 	  ,	 SMC_CMD_RAID_NON		},
+	{P_RAID_CONFIRM	  		, L"Warning"	   			    , L"Confirm"	 		  		, 0xFFFF	, EFI_IFR_CHECKBOX_OP ,	 SMC_CMD_RAID_NON		},
+	{P_RAID_PRESS_ACTION	, L"Warning"	   			    , L"Yes"	 			  		, 0xFFFF	, EFI_IFR_ACTION_OP	  ,	 SMC_CMD_RAID_NON		},
+	{P_RAID_NON_ACTION		, L""							, L""					  		, 0xFFFF	, 0xFF				  ,  SMC_CMD_RAID_NON		}
+
+};
+
 RAID_CMD_PROCESSING_MAP		RaidCmdProcessMapTable_D_3108[] = {
 	{P_RAID_ENTER_FORM		, L"Main Menu" 					, L"Virtual Drive Management" 	, 0xFFFF 	, EFI_IFR_REF_OP 	  ,	 SMC_CMD_RAID_NON		},
 	//Choice RaidDrive it will handle last sequence by below table RaidCmdProcessMapTable_D_3108_RaidRef.
@@ -122,4 +148,10 @@ SMCLSI_RAIDCMDFUNCTION_MAP	SmcLsiRaidFunctionMapDeleteRaidTable[] = {
 	{RAID_3108 , HandleBuildRaidCmd_D , RaidCmdProcessMapTable_D_3108 		},
 	{RAID_3108 , HandleBuildRaidCmd_D , RaidCmdProcessClearMapTable_D_3108 	},
 	{RAID_NULL , NULL				  , NULL								}
+};
+
+SMCLSI_RAIDCMDFUNCTION_MAP	SmcLsiRaidFunctionMapOtherRaidTable[] = {
+	{RAID_3108 , HandleOtherRaidCmd , NULL	},
+	{RAID_NULL , NULL				, NULL	}
+
 };

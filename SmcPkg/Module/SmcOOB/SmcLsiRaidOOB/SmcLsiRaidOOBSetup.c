@@ -151,6 +151,13 @@ CHAR16*	GetRDGName(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 	return RaidDrivesGroupName;
 }
 
+CHAR16*	GetJBODName(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
+
+	static	CHAR16 JBODsGroupName[] = JBOD_DRIVES_GROUP;	
+
+	return JBODsGroupName;
+}
+
 CHAR8* GetSmcItemsVarName(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 
 	static	CHAR8 SmcItemsVarName[] = FOR_SMC_ITEMS_VAR_NAME;	
@@ -385,6 +392,7 @@ EFI_STATUS SmcLsiOOBSetupDriverStart(SMC_LSI_RAID_OOB_SETUP_DRIVER*	pDriver){
 	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetSetupString			= GetSetupString;
 	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetHdgName				= GetHDGName;
 	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetRdgName				= GetRDGName;
+	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetJBODName				= GetJBODName;
 	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetSmcItemsVarName		= GetSmcItemsVarName;
 	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetRaidVarName			= GetRaidVarName;
 	mSmcLsiRaidOOBSetupProtocol->SmcLsiGetSmcRaidVarSize		= GetSmcRaidVarSize;
