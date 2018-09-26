@@ -41,6 +41,7 @@ SMC_LSI_RAID_FORM_HEADER		mSmcLsiRaidFormRefSearchTable[] = {
 
 SMC_RAID_ITEMS_HEADER	mSmcLsiItemsTable[] = {
 	// 3108
+	{RAID_3108, L"Dashboard View"			, L"Status", 		 	 0xFFFF , RAID_INFORMATION_TYPE},
 	{RAID_3108, L"Controller Management"	, L"Product Name", 		 0xFFFF , RAID_INFORMATION_TYPE},
 	{RAID_3108, L"Controller Management"	, L"Serial Number",		 0xFFFF , RAID_INFORMATION_TYPE},
 	{RAID_3108, L"Controller Management"	, L"Controller Status",	 0xFFFF , RAID_INFORMATION_TYPE},
@@ -51,12 +52,16 @@ SMC_RAID_ITEMS_HEADER	mSmcLsiItemsTable[] = {
 	{RAID_3108, L"Controller Management"	, L"Connector Count",	 0xFFFF , RAID_INFORMATION_TYPE},
 	{RAID_3108, L"Controller Management"	, L"Drive Count",		 0xFFFF , RAID_INFORMATION_TYPE},
 	{RAID_3108, L"Controller Management"	, L"Virtual Drive Count",0xFFFF , RAID_INFORMATION_TYPE},
+	{RAID_3108, L"Dashboard View"			, L"MegaRAID RAID6"		,0xFFFF , RAID_INFORMATION_TYPE},
+	{RAID_3108, L"Dashboard View"			, L"MegaRAID RAID5"		,0xFFFF , RAID_INFORMATION_TYPE},
 	{RAID_3108, L"Select Drives"			, HARD_DRIVES_GROUP,	 0xA700 , RAID_HDG_TYPE},
 	{RAID_3108, L"Virtual Drive Management"	, RAID_DRIVES_GROUP,     0xA000 , RAID_RDG_TYPE},
 	{RAID_3108, L"Make Unconfigured Good"	, JBOD_DRIVES_GROUP,     0xAB00 , RAID_JBOD_TYPE},
 
-	{RAID_3108, L"Advanced Controller Properties", L"Boot Mode",	 0xFFFF , RAID_CHANGEABLE_TYPE },
-	{RAID_3108, L"Advanced Controller Properties", L"JBOD Mode",	 0xFFFF	, RAID_CHANGEABLE_TYPE },
+	{RAID_3108, L"Advanced Controller Properties", L"Boot Mode",	 	0xFFFF  , RAID_CHANGEABLE_TYPE },
+	{RAID_3108, L"Advanced Controller Properties", L"JBOD Mode",	 	0xFFFF	, RAID_CHANGEABLE_TYPE },
+	{RAID_3108, L"Advanced Controller Properties", L"Write Verify",	 	0xFFFF	, RAID_CHANGEABLE_TYPE },
+	{RAID_3108, L"Advanced Controller Properties", L"Large IO Support",	0xFFFF	, RAID_CHANGEABLE_TYPE },
 
 	{RAID_NULL, L"", L"", 0x0 }
 };

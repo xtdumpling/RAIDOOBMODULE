@@ -69,6 +69,8 @@ typedef struct 	_SMC_RAID_CHRECORD_HEADER_			SMC_RAID_CHRECORD_HEADER;
 typedef struct 	_SMC_RAID_CHRECORD_BODY_			SMC_RAID_CHRECORD_BODY;
 typedef struct 	_SMC_RAID_CHRECORD_SET_				SMC_RAID_CHRECORD_SET;
 
+typedef struct	_TABLE_COMMON_HEADER_  				TABLE_COMMON_HEADER;
+
 typedef struct  _SMC_ITEMS_VAR_DATA_ 				SMC_ITEMS_VAR_DATA;
 
 typedef struct	_SMC_LSI_AFTER_DOWN_FUNC_ 			SMC_LSI_AFTER_DOWN_FUNC;
@@ -88,7 +90,7 @@ struct _SMC_LSI_RAID_NAME_	{
 };
 
 struct _SMC_LSI_RAID_FORM_HEADER_ {
-	SMC_LSI_RAID_TYPE			Lsi_RaidTypeIndex;
+	SMC_LSI_RAID_TYPE			LsiRaidTypeIndex;
 	CHAR16						Lsi_FormName[NAME_LENGTH];
 	UINT8						Lsi_OpCode;
 };
@@ -148,6 +150,10 @@ struct _SMC_RAID_ITEMS_SET_ {
 	SMC_RAID_ITEMS_HEADER		ItemsHeader;
 	SMC_RAID_ITEMS_BODY*		ItemsBody;
 	SMC_RAID_ITEMS_SET*			pItemsNext;
+};
+
+struct	_TABLE_COMMON_HEADER_ {
+	SMC_LSI_RAID_TYPE			LsiRaidTypeIndex;
 };
 
 //VarHashTable contain Original RAID VAR and SMC RAID VAR.
