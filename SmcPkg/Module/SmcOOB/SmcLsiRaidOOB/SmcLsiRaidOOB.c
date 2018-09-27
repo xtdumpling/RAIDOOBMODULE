@@ -1627,7 +1627,7 @@ VOID RecurseOneOfOption(
 	UINT8 OneOfScope){
 
 	if(!(!!OneOfScope)) return ;
-	{
+	do {
 		EFI_IFR_OP_HEADER*	OpHeader = pOpHeader;
 		OpHeader =  (EFI_IFR_OP_HEADER*)((UINT8*)OpHeader + OpHeader->Length);
 		switch(OpHeader->OpCode){
@@ -1645,7 +1645,7 @@ VOID RecurseOneOfOption(
 				break;
 		}
 		RecurseOneOfOption(pProtocol,ItemsBuffer,RaidItemsTable,OpHeader,defaultFlag,OneOfScope);
-	}
+	}while(FALSE);
 }
 
 EFI_STATUS InsertRaidSetupSmcCmdsAndItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
