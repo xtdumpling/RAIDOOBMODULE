@@ -6,6 +6,12 @@
 //***************************************************************************
 //  File History
 //
+//  Rev. 1.09
+//    Bug Fix : N/A
+//    Reason  : Add Support SMC LSI OOB Module.
+//    Auditor : Durant Lin
+//    Date    : Sep/28/2018
+//
 //  Rev. 1.08
 //    Bug Fix : N/A
 //    Reason  : Move Variable_GUID to PlatformPolicy.

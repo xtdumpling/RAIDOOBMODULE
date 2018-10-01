@@ -1,6 +1,6 @@
 //****************************************************************************
 //****************************************************************************
-//**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+//**            (C)Copyright 1993-2018 Supermicro Computer, Inc.            **
 //****************************************************************************
 //****************************************************************************
 //  File History
@@ -9,7 +9,7 @@
 //    Bug Fix:  Initial revision.
 //    Reason:
 //    Auditor:  Durant Lin
-//    Date:     Aug/13/2018
+//    Date:     Sep/28/2018
 //
 //****************************************************************************
 #include "SmcLsiRaidOOBSetupProtocol.h"
@@ -20,7 +20,7 @@
 
 SMC_LSI_RAID_NANE	RaidName[] = {
 	{ RAID_3108, L"AVAGO MegaRAID <AVAGO 3108 MegaRAID>" },
-	{ RAID_9260, L"AVAGO MegaRAID <AVAGO 9260 MegaRAID>" },
+//	{ RAID_9260, L"AVAGO MegaRAID <AVAGO 9260 MegaRAID>" },
 	{ RAID_NULL, L"" }
 };
 //Use the last line to restore FormId, QId, VId, VOff, Flag default. 

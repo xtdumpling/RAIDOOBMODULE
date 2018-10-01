@@ -1,6 +1,6 @@
 //****************************************************************************
 //****************************************************************************
-//**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+//**            (C)Copyright 1993-2018 Supermicro Computer, Inc.            **
 //****************************************************************************
 //****************************************************************************
 //  File History
@@ -9,7 +9,7 @@
 //    Bug Fix:  Initial revision.
 //    Reason:
 //    Auditor:  Durant Lin
-//    Date:     Aug/13/2018
+//    Date:     Sep/28/2018
 //
 //****************************************************************************
 
@@ -798,9 +798,7 @@ EFI_STATUS SmcLsiRaidOOB_CollectInformation_Items(SMC_LSI_RAID_OOB_SETUP_PROTOCO
 						pItemsSet->ItemsBody = pItemsBody;
 					}else{
 						SMC_RAID_ITEMS_BODY*	pTempItemsBody = NULL;
-						for(pTempItemsBody = pItemsSet->ItemsBody;
-							pTempItemsBody->pItemsBodyNext != NULL;
-							pTempItemsBody = pTempItemsBody->pItemsBodyNext);
+						pTempItemsBody = GetPNextStartAddr(pItemsSet->ItemsBody,STRUCT_OFFSET(SMC_RAID_ITEMS_BODY,pItemsBodyNext));
 						pTempItemsBody->pItemsBodyNext = pItemsBody;
 					}
 				}
@@ -816,6 +814,7 @@ EFI_STATUS SmcLsiRaidOOB_CollectInformation_Items(SMC_LSI_RAID_OOB_SETUP_PROTOCO
 	return Status;
 
 }
+
 EFI_STATUS SmcLsiRaidOOB_CollectInformation_ChRec(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 
 	EFI_STATUS		   			Status 					= EFI_SUCCESS;
@@ -1180,7 +1179,9 @@ EFI_STATUS EFIAPI SmcLsiHookBrower2Callback(
 
 //		DEBUG((-1,"Set Data to Var Buffer = \n %s\n",ConfigBufferString));
 
-		SetLsiVarBuffer_byString(LsiVar,ConfigBufferString);
+		if(!(!!SetLsiVarBuffer_byString(LsiVar,ConfigBufferString))){
+			DEBUG((-1,"	    SmcLsiHookBrower2Callback Get data from LSI to set into LSI VAR Buffer Error!\n"));
+		}
 		gBS->FreePool(ConfigHdrTemp);
 		gBS->FreePool(ConfigBufferString);
 
@@ -1208,7 +1209,8 @@ EFI_STATUS EFIAPI SmcLsiHookBrower2Callback(
 						);
 		SMC_RAID_DETAIL_DEBUG((-1,"    HookBrowserCallback BlockToConfig Status[%r]\n",Status));
 		if(EFI_ERROR(Status)){
-			DEBUG((-1,"    mProgress = %s\n",mProgress));
+			DEBUG((-1,"	   SmcLsiHookBrower2Callback BlockToConfig Error! Status[%r]\n",Status));
+//			DEBUG((-1,"    mProgress = %s\n",mProgress));
 			return Status;
 		}
 		// <ConfigBody> without &

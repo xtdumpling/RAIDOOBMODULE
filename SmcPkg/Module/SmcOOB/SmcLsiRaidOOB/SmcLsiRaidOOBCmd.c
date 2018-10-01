@@ -1,3 +1,17 @@
+//****************************************************************************
+//****************************************************************************
+//**            (C)Copyright 1993-2018 Supermicro Computer, Inc.            **
+//****************************************************************************
+//****************************************************************************
+//  File History
+//
+//  Rev. 1.00
+//    Bug Fix:  Initial revision.
+//    Reason:
+//    Auditor:  Durant Lin
+//    Date:     Sep/28/2018
+//
+//****************************************************************************
 #include "SmcLsiRaidOOB.h"
 #include "SmcOobVersion.h"
 #include "SmcLsiRaidOOBGlbTable.h"
@@ -48,6 +62,7 @@ VOID debug_for_Cmd_Set(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 						if(!!pGroupHdd->HdHame){
 							DEBUG((-1,"[%s]",pGroupHdd->HdHame));
 						}
+						DEBUG((-1," HddType[%x]",pGroupHdd->HddType));
 						DEBUG((-1,"\n"));
 					}
 				}
@@ -307,6 +322,31 @@ SMC_RAID_CMD_SECTION*	SearchForCmdSection(SMC_RAID_CMD_SECTION* pCmdSection, SMC
 	return (!!pCmdSection) ? pCmdSection : NULL;
 }
 
+SMC_RAID_CMD_SECTION*	SearchForCmdSectionList(SMC_RAID_CMD_SECTION* pCmdSection, SMC_RAID_CMD_TYPE_ENUM CmdTypeEnum){
+	
+	SMC_RAID_CMD_SECTION*   pLocTempList		= NULL;
+	SMC_RAID_CMD_SECTION*   pLocTempListNext	= NULL;
+
+	while(!!pCmdSection){
+		if(pCmdSection->RaidCmdType == CmdTypeEnum){
+				SMC_RAID_CMD_SECTION*	pTempList 		= NULL;
+				gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_RAID_CMD_SECTION),&pTempList);
+				pTempList->RaidCmdType = pCmdSection->RaidCmdType;
+				pTempList->RaidCmdBody = pCmdSection->RaidCmdBody;
+				pTempList->pRaidCmdSectionNext = NULL;
+			if(!(!!pLocTempList)){
+				pLocTempListNext = pLocTempList = pTempList;
+			}else {
+				pLocTempListNext->pRaidCmdSectionNext = pTempList;
+				pLocTempListNext = pLocTempListNext->pRaidCmdSectionNext;
+			}
+		}
+		pCmdSection = pCmdSection->pRaidCmdSectionNext;
+	}
+	return pLocTempList;
+}
+
+//Return First match Body.
 VOID*	SearchForCmdSectionBody(SMC_RAID_CMD_SECTION* pCmdSection, SMC_RAID_CMD_TYPE_ENUM CmdTypeEnum){
 	
 	for(;!!pCmdSection && pCmdSection->RaidCmdType != CmdTypeEnum;pCmdSection = pCmdSection->pRaidCmdSectionNext);
@@ -854,7 +894,7 @@ EFI_IFR_OP_HEADER*	SearchHddNameInCmdProcessingItem(EFI_HII_HANDLE LsiHiiHandle,
 		pCmnHeader = (SMC_LSI_ITEMS_COMMON_HEADER*)pCmdProcessingItem->ItemOpHeader;
 		HddName = GetHiiString(LsiHiiHandle,pCmnHeader->Question.Header.Prompt);
 
-		SMC_RAID_DETAIL_DEBUG((-1," HddName[%s], pHddName[%s]\n",HddName,pHddName));
+		SMC_RAID_DETAIL_DEBUG((-1," HddName[%s], BeSearched HddName[%s]\n",HddName,pHddName));
 		
 		if(!(!!StrCmp(pHddName,HddName))) return pCmdProcessingItem->ItemOpHeader;
 	}
@@ -895,14 +935,14 @@ UINT8 	SearchCmdRaidTypeToValue(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol, SMC_
 #define GET_pLsiVar_MARCO(_x,_y,_z)\
 	if(!(!!(_x = SearchLsiVarById(_y->Question.VarStoreId)))){\
 		Status = EFI_NOT_FOUND;\
-		DEBUG((-1," %a Cannot Find the Lsi Var VarId! :: Status[%r], VarId[%x]\n",_z,Status,_y->Question.VarStoreId));\
+		SMC_RAID_DETAIL_DEBUG((-1," %a Cannot Find the Lsi Var VarId! :: Status[%r], VarId[%x]\n",_z,Status,_y->Question.VarStoreId));\
 	}\
 	if(EFI_ERROR(Status)) return Status
 
 #define Callback_Macro(_Action,_QId,_IfrType,_Value,_DStr)\
 	do {\
 		Status = CallbackForTargetProcessing(pConfigAccess,_Action,_QId->Question.QuestionId,_IfrType,_Value);\
-		DEBUG((-1," %a :: Callback_Macro Status[%r], ACTION[%x], QId[%x]\n",_DStr,Status,_Action,_QId->Question.QuestionId));\
+		SMC_RAID_DETAIL_DEBUG((-1," %a :: Callback_Macro Status[%r], ACTION[%x], QId[%x]\n",_DStr,Status,_Action,_QId->Question.QuestionId));\
 	}while(FALSE)	
 
 #define Callback_Macro_Changing(_QId,_IfrType,_Value,_DStr)\
@@ -951,14 +991,6 @@ EFI_STATUS	HandleBuildRaidCmd_D(
 	return Status;
 }
 
-/*
-RAID_CMD_PROCESSING_MAP		RaidCmdProcessMapTable_B_Span_3108[] = {
-	{P_RAID_ENTER_FORM		, L"Configuration Management" 	, L"Create Virtual Drive" 		, 0xFFFF 	, EFI_IFR_REF_OP 	  ,	 SMC_CMD_RAID_NON		},
-	{P_RAID_CHANGE_RAIDTYPE	, L"Create Virtual Drive"		, L"Select RAID Level"	  		, 0xFFFF	, EFI_IFR_ONE_OF_OP	  ,	 SMC_CMD_RAID_RAIDTYPE	},
-	{P_RAID_NON_ACTION		, L""							, L""					  		, 0xFFFF	, 0xFF				  ,  SMC_CMD_RAID_NON		}
-};
-*/
-
 EFI_STATUS	HandleBuildRaidCmd(
 		SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol, 
 		SMC_RAID_CMD_SET* pCmdSet 
@@ -991,44 +1023,42 @@ EFI_STATUS	HandleBuildRaidCmd(
 
 			//First Select Raid Level.
 			Status = HandleRaidCmdSub(pProtocol,pCmdSet,RaidCmdProcessMapTable_B_Span_3108_First,NULL);
-			DEBUG((-1,"    First Select Raid Level Status[%r]\n",Status));
+			SMC_RAID_DETAIL_DEBUG((-1,"    First Select Raid Level Status[%r]\n",Status));
 			if(EFI_ERROR(Status)) break;
 
 			//Second Add Spans. Third Enter Select Drives. Forth Choice HDDs.
-			pGroupSection = SearchForCmdSection(pCmdSet->RaidCmdSection,SMC_CMD_RAID_GROUP);
+			pGroupSection = SearchForCmdSectionList(pCmdSet->RaidCmdSection,SMC_CMD_RAID_GROUP);
 
 			do {
-				if(pGroupSection->RaidCmdType == SMC_CMD_RAID_GROUP){
-					//Add Spans.
-					Status = HandleRaidCmdSub(pProtocol,pCmdSet,RaidCmdProcessMapTable_B_Span_3108_Second,NULL);
-					DEBUG((-1,"    Second Add Spans Num[%x], Status[%r]\n",Spans,Status));
-					if(EFI_ERROR(Status)) break;
-					//Enter Select Drives Form.
-					RaidCmdProcessMapTable_B_Span_3108_Third[0].TableItemIndex = Spans;
-					Status = HandleRaidCmdSub(pProtocol,pCmdSet,RaidCmdProcessMapTable_B_Span_3108_Third,NULL);
-					DEBUG((-1,"    Third Enter Select Drives Form, Status[%r]\n",Status));
-					if(EFI_ERROR(Status)) break;
-					//Choice HDDs.
-					pCmdGroup = pGroupSection->RaidCmdBody;
-					Status = HandleRaidCmdSub(pProtocol,pCmdSet,RaidCmdProcessMapTable_B_Span_3108_Forth,pCmdGroup);
-					DEBUG((-1,"    Forth Choice HDDs, Status[%r]\n",Status));
-					if(EFI_ERROR(Status)) break;
-					++Spans;
-				}
+				//Add Spans.
+				Status = HandleRaidCmdSub(pProtocol,pCmdSet,RaidCmdProcessMapTable_B_Span_3108_Second,NULL);
+				SMC_RAID_DETAIL_DEBUG((-1,"    Second Add Spans Num[%x], Status[%r]\n",Spans,Status));
+				if(EFI_ERROR(Status)) break;
+				//Enter Select Drives Form.
+				RaidCmdProcessMapTable_B_Span_3108_Third[0].TableItemIndex = Spans;
+				Status = HandleRaidCmdSub(pProtocol,pCmdSet,RaidCmdProcessMapTable_B_Span_3108_Third,NULL);
+				SMC_RAID_DETAIL_DEBUG((-1,"    Third Enter Select Drives Form, Status[%r]\n",Status));
+				if(EFI_ERROR(Status)) break;
+				//Choice HDDs.
+				pCmdGroup = pGroupSection->RaidCmdBody;
+				Status = HandleRaidCmdSub(pProtocol,pCmdSet,RaidCmdProcessMapTable_B_Span_3108_Forth,pCmdGroup);
+				SMC_RAID_DETAIL_DEBUG((-1,"    Forth Choice HDDs, Status[%r]\n",Status));
+				if(EFI_ERROR(Status)) break;
+				++Spans;
+
 				pGroupSection = pGroupSection->pRaidCmdSectionNext;
 			}while(!EFI_ERROR(Status) && !!pGroupSection);
-			DEBUG((-1,"   After Select Drives For RaidTypeEnum[%x], Status[%r]\n",RaidTypeEnum,Status));
+			SMC_RAID_DETAIL_DEBUG((-1,"   After Select Drives For RaidTypeEnum[%x], Status[%r]\n",RaidTypeEnum,Status));
 			if(EFI_ERROR(Status)) break;
 
 			// Create Raid Drive.
 			Status = HandleRaidCmdSub(pProtocol,pCmdSet,RaidCmdProcessMapTable_B_Span_3108_Fifth,NULL);
-			DEBUG((-1,"   Create Raid Drive For RaidTypeEnum[%x], Status[%r]\n",RaidTypeEnum,Status));
 			if(EFI_ERROR(Status)) break;
 		}while(FALSE);
 	}
-
-	HandleRaidCmdSub(pProtocol,pCmdSet,RaidCmdProcessClearMapTable_B_3108,NULL);
 	DEBUG((-1,"    HandleBuildRaidCmd RaidTypeEnum[%x] Status[%r]\n",RaidTypeEnum,Status));
+	HandleRaidCmdSub(pProtocol,pCmdSet,RaidCmdProcessClearMapTable_B_3108,NULL);
+
 	return Status;
 }
 
@@ -1054,7 +1084,7 @@ EFI_STATUS 	HandleRaidCmdSub_ChangeRaidType(
 
 	if(!(!!pCmdProcessingItem) || !(!!pCmdProcessSet)) return EFI_INVALID_PARAMETER;
 
-	DEBUG((-1," HandleRaidCmdSub_ChangeRaidType -- Start :: \n"));
+	SMC_RAID_DETAIL_DEBUG((-1," HandleRaidCmdSub_ChangeRaidType -- Start :: \n"));
 	pCmdRaidType = SearchForCmdSectionBody(pCmdSet->RaidCmdSection,SMC_CMD_RAID_RAIDTYPE);
 					
 	//If Cmd Raid Type doesn't exist, pass it.
@@ -1064,7 +1094,7 @@ EFI_STATUS 	HandleRaidCmdSub_ChangeRaidType(
 	}				
 
 	RaidValue = SearchCmdRaidTypeToValue(pProtocol,pCmdRaidType->RaidType);
-	DEBUG((-1," HandleRaidCmdSub_ChangeRaidType :: RaidType[%x], RaidValue[%x]\n",pCmdRaidType->RaidType,RaidValue)); 
+	SMC_RAID_DETAIL_DEBUG((-1," HandleRaidCmdSub_ChangeRaidType :: RaidType[%x], RaidValue[%x]\n",pCmdRaidType->RaidType,RaidValue)); 
 
 	if(RaidValue == SMC_RAID_CMD_GROUP_TYPE_END){
 		DEBUG((-1," HandleRaidCmdSub_ChangeRaidType :: Doesn't Find the match RaidValue in Setting!\n"));
@@ -1114,7 +1144,7 @@ EFI_STATUS	HandleRaidCmdSub_ChangeSetting(
 	RAID_CMD_SUB_PARAMETER();
 
 	if(!(!!pCmdProcessingItem) || !(!!pCmdProcessSet)) return EFI_INVALID_PARAMETER;
-	DEBUG((-1," HandleRaidCmdSub_ChangeSetting Start :: \n"));
+	SMC_RAID_DETAIL_DEBUG((-1," HandleRaidCmdSub_ChangeSetting Start :: \n"));
 
 	if(pCmdProcessSet->TypeEnum == SMC_CMD_RAID_SIZE){
 		SMC_RAID_CMD_RAIDSIZE* 	pCmdRaidSize 	= NULL;
@@ -1284,7 +1314,7 @@ EFI_STATUS 	HandleRaidCmdSub_EnterForm(
 	if(!(!!pCmdProcessingItem) || !(!!pCmdProcessSet)) return EFI_INVALID_PARAMETER;	
 	pOpRef = (EFI_IFR_REF*)pCmdProcessingItem->ItemOpHeader;
 
-	DEBUG((-1," HandleRaidCmdSub_EnterForm -- [%s] QId[%x] \n",GetHiiString(LsiHiiHandle,pOpRef->Question.Header.Prompt),pOpRef->Question.QuestionId));	
+	SMC_RAID_DETAIL_DEBUG((-1," HandleRaidCmdSub_EnterForm -- [%s] QId[%x] \n",GetHiiString(LsiHiiHandle,pOpRef->Question.Header.Prompt),pOpRef->Question.QuestionId));	
 					
 	Callback_Macro_Changing(pOpRef,EFI_IFR_TYPE_REF,NULL,"HandleRaidCmdSub_EnterForm");
 
@@ -1303,14 +1333,14 @@ EFI_STATUS 	HandleRaidCmdSub_Confirm(
 	SMC_RAID_VAR*		pLsiVar		= NULL;
 
 	if(!(!!pCmdProcessingItem) || !(!!pCmdProcessSet)) return EFI_INVALID_PARAMETER;
-	DEBUG((-1," HandleRaidCmdSub_Confirm -- Start :: \n"));
+	SMC_RAID_DETAIL_DEBUG((-1," HandleRaidCmdSub_Confirm -- Start :: \n"));
 
 	pOpCheckBox = (EFI_IFR_CHECKBOX*)pCmdProcessingItem->ItemOpHeader;
 
 	GET_pLsiVar_MARCO(pLsiVar,pOpCheckBox,"HandleRaidCmdSub_Confirm");
 
 	pLsiVar->RaidVarBuffer[pOpCheckBox->Question.VarStoreInfo.VarOffset] = 0x01;
-	DEBUG((-1," HandleRaidCmdSub_Confirm :: Status[%r]\n",Status));
+	SMC_RAID_DETAIL_DEBUG((-1," HandleRaidCmdSub_Confirm :: Status[%r]\n",Status));
 
 	return Status;
 }
@@ -1326,7 +1356,7 @@ EFI_STATUS 	HandleRaidCmdSub_PressAction(
 	EFI_IFR_ACTION	*pOpAction 	= NULL;
 	EFI_STRING_ID	ActionId	= 0;
 
-	DEBUG((-1," HandleRaidCmdSub_PressAction -- Start :: \n"));	
+	SMC_RAID_DETAIL_DEBUG((-1," HandleRaidCmdSub_PressAction -- Start :: \n"));	
 	pOpAction = (EFI_IFR_ACTION*)pCmdProcessingItem->ItemOpHeader;
 	ActionId = pOpAction->QuestionConfig;
 
@@ -1350,8 +1380,9 @@ EFI_STATUS 	HandleRaidCmdSub_ChoiceHdds(
 	SMC_RAID_CMD_GROUP*			pSubGroup		= pGroup;
 	SMC_RAID_CMD_GROUP_HDD* 	pCmdGroupHdd	= NULL;
 	SMC_RAID_VAR*				pLsiVar			= NULL;
+	BOOLEAN						HddBeChoiced	= FALSE;
 
-	DEBUG((-1," HandleRaidCmdSub_ChoiceHdds -- Start :: \n"));
+	SMC_RAID_DETAIL_DEBUG((-1," HandleRaidCmdSub_ChoiceHdds -- Start :: \n"));
 
 	if(!(!!pSubGroup)){
 		pSubGroup = SearchForCmdSectionBody(pCmdSet->RaidCmdSection,SMC_CMD_RAID_GROUP);
@@ -1362,7 +1393,6 @@ EFI_STATUS 	HandleRaidCmdSub_ChoiceHdds(
 	}
 	pCmdGroupHdd = pSubGroup->GroupHddSet;
 	
-	Status = EFI_NOT_FOUND;
 	for(;!EFI_ERROR(Status) && !!pCmdGroupHdd; pCmdGroupHdd = pCmdGroupHdd->pHddNext){
 		SMC_RAID_VAR*					pLsiVar		= NULL;
 		BOOLEAN							Val			= TRUE;
@@ -1381,7 +1411,9 @@ EFI_STATUS 	HandleRaidCmdSub_ChoiceHdds(
 			}
 			continue;
 		}
-		Status = EFI_SUCCESS;
+		
+		HddBeChoiced = TRUE;
+
 		if(pCmdProcessSet->TypeEnumSub == TES_DELETE_RAID_DRIVE){
 			RAID_CMD_PROCESSING_MAP*	pLoopDeleteRaidTable	= RaidCmdProcessMapTable_D_3108_RaidRef;
 
@@ -1411,6 +1443,9 @@ EFI_STATUS 	HandleRaidCmdSub_ChoiceHdds(
 			}
 		}
 	}
+	
+	if(!(!!HddBeChoiced)) Status = EFI_UNSUPPORTED;
+
 	return Status;
 }
 
@@ -1445,16 +1480,16 @@ EFI_STATUS	HandleRaidCmdSub(
 									pExecuteCmdProcessingMap[TableIndex].CmdProcessTargetOpCode);
 			
 			if(!(!!pCmdProcessingItem)){
-				DEBUG((-1,"HandleRaidCmdSub Cannot Find the item! TableIndex[%x]\n",TableIndex));
+				SMC_RAID_DETAIL_DEBUG((-1,"HandleRaidCmdSub Cannot Find the item! TableIndex[%x]\n",TableIndex));
 				if(pExecuteCmdProcessingMap[TableIndex].CmdProcessSet.CmdProcess != P_RAID_NON_ACTION)
 					Status = EFI_NOT_FOUND;
 
 				break;
 			}
-			DEBUG((-1," HandleRaidCmdSub TableIndex[%x] CmdProcessLastForm[%s], CmdProcessTargetName[%s]\n",
-						TableIndex,
-						pExecuteCmdProcessingMap[TableIndex].CmdProcessLastForm,
-						pExecuteCmdProcessingMap[TableIndex].CmdProcessTargetName));
+			SMC_RAID_DETAIL_DEBUG((-1," HandleRaidCmdSub TableIndex[%x] CmdProcessLastForm[%s], CmdProcessTargetName[%s]\n",
+										TableIndex,
+										pExecuteCmdProcessingMap[TableIndex].CmdProcessLastForm,
+										pExecuteCmdProcessingMap[TableIndex].CmdProcessTargetName));
 
 			for(TempIndex = 0;
 				!!pCmdProcessingItem && TempIndex < pExecuteCmdProcessingMap[TableIndex].TableItemIndex; 
@@ -1481,7 +1516,7 @@ EFI_STATUS	HandleRaidCmdSub(
 				default:
 					break;
 			}
-			DEBUG((-1,"\n\n HandleRaidCmdSub TableIndex [%x] CmdProcess [%x] Status [%r]\n",TableIndex,pExecuteCmdProcessingMap[TableIndex].CmdProcessSet.CmdProcess,Status));
+			SMC_RAID_DETAIL_DEBUG((-1,"\n\n HandleRaidCmdSub TableIndex [%x] CmdProcess [%x] Status [%r]\n",TableIndex,pExecuteCmdProcessingMap[TableIndex].CmdProcessSet.CmdProcess,Status));
 			TableIndex++;
 		}while(!(EFI_ERROR(Status)));	
 	}
@@ -1541,6 +1576,34 @@ EFI_STATUS	HandleRaidCfgCmdString(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 		}
 	}
 	return EFI_SUCCESS;
+}
+
+SMC_RAID_ITEMS_TYPE	GetHddTypeByCmd(SMC_RAID_CMD_SECTION*	pCmdSection){
+
+	SMC_RAID_CMD_SPECIE*	pCmdSpecie  		= NULL;
+	SMC_RAID_ITEMS_TYPE		HddType				= RAID_NULL_TYPE;
+
+	pCmdSpecie = SearchForCmdSectionBody(pCmdSection,SMC_CMD_RAID_COMMAND);
+	if(!(!!pCmdSpecie)) return RAID_NULL_TYPE;
+
+	switch(pCmdSpecie->RaidCmdSpecie){
+		case SMC_CMD_SPECIE_BUILD:
+			HddType = RAID_HDG_TYPE;
+			break;
+		case SMC_CMD_SPECIE_DELETE:
+			HddType = RAID_RDG_TYPE;
+			break;
+		case SMC_CMD_SPECIE_OTHER:
+			{
+				SMC_RAID_CMD_JBOD*	pCmdJbod = NULL;
+				pCmdJbod = SearchForCmdSectionBody(pCmdSection,SMC_CMD_RAID_JBOD);
+				HddType = (!!pCmdJbod) ? RAID_JBOD_TYPE : RAID_NULL_TYPE;
+			}
+			break;
+		default:
+			break;
+	}
+	return HddType;
 }
 
 EFI_STATUS	CollectCfgCmdData(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
@@ -1607,40 +1670,43 @@ EFI_STATUS	CollectCfgCmdData(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 	pCmdSet = pProtocol->SmcLsiCurrHiiHandleTable->RaidCmdSet;
 	// List all Cmd Cfgs.
 	for(;!!pCmdSet;pCmdSet = pCmdSet->pRaidCmdSetNext){
-		SMC_RAID_CMD_SECTION*	pCmdSection	= NULL;
+		SMC_RAID_CMD_SECTION*	pCmdGroupSection	= NULL;
+		SMC_RAID_ITEMS_TYPE		HddType				= RAID_NULL_TYPE;
 
-		pCmdSection = pCmdSet->RaidCmdSection;
-		if(!(!!pCmdSection)) continue;
-		
+		pCmdGroupSection = SearchForCmdSectionList(pCmdSet->RaidCmdSection,SMC_CMD_RAID_GROUP);
+		if(!(!!pCmdGroupSection)) continue;
+
+		HddType = GetHddTypeByCmd(pCmdSet->RaidCmdSection);
+
 		// List all GROUPs in one Cmd Cfg.
 		do{
-			if(pCmdSection->RaidCmdType == SMC_CMD_RAID_GROUP){
-				SMC_RAID_CMD_GROUP*			pCmdGroup 		= NULL;
-				SMC_RAID_CMD_GROUP_HDD*		pCmdGroupHdd	= NULL;
+			SMC_RAID_CMD_GROUP*			pCmdGroup 		= NULL;
+			SMC_RAID_CMD_GROUP_HDD*		pCmdGroupHdd	= NULL;
 
-				pCmdGroup 		= pCmdSection->RaidCmdBody;
-				pCmdGroupHdd 	= pCmdGroup->GroupHddSet;
-				if(!(!!pCmdGroupHdd)) continue;
-				//List all Hdds in one GROUP.
-				do {
-					UINTN	TempIndex = 0;
-					for(TempIndex=0;TempIndex < GroupHddIndex && GroupHddTable[TempIndex]->HdNum != pCmdGroupHdd->HdNum;++TempIndex);
-					//If find target HDD num, record the HDD Name.
-					if(TempIndex < GroupHddIndex){
-						pCmdGroupHdd->HdHame 	= GroupHddTable[TempIndex]->HdHame;
-						pCmdGroupHdd->HddType 	= GroupHddTable[TempIndex]->HddType;
-					}
-				}while(!!(pCmdGroupHdd = pCmdGroupHdd->pHddNext));
-			}
-		}while(!!(pCmdSection = pCmdSection->pRaidCmdSectionNext));
+			pCmdGroup 		= pCmdGroupSection->RaidCmdBody;
+			pCmdGroupHdd 	= pCmdGroup->GroupHddSet;
+			if(!(!!pCmdGroupHdd)) continue;
+			//List all Hdds in one GROUP.
+			do {
+				UINTN	TempIndex = 0;
+				pCmdGroupHdd->HddType = RAID_NULL_TYPE;
+				for(TempIndex=0;TempIndex < GroupHddIndex && GroupHddTable[TempIndex]->HdNum != pCmdGroupHdd->HdNum;++TempIndex);
+				//If find target HDD num, make sure the HDD type with CMD Specie needed HDD type, record the HDD Name.
+				if(TempIndex < GroupHddIndex){
+					pCmdGroupHdd->HdHame 	= GroupHddTable[TempIndex]->HdHame;
+					pCmdGroupHdd->HddType 	= (HddType == GroupHddTable[TempIndex]->HddType) ? HddType : RAID_NULL_TYPE;
+				}
+			}while(!!(pCmdGroupHdd = pCmdGroupHdd->pHddNext));
+
+		}while(!!(pCmdGroupSection = pCmdGroupSection->pRaidCmdSectionNext));
 	}
 	
-	{
+	do{
 		UINTN	TempIndex = 0;
 		for(;TempIndex < GroupHddIndex;++TempIndex){
 			gBS->FreePool(GroupHddTable[TempIndex]);
 		}
-	}
+	}while(FALSE);
 
 	debug_for_Cmd_Set(pProtocol);
 	return EFI_SUCCESS;

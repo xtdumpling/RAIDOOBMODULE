@@ -5,6 +5,12 @@
 //****************************************************************************
 //  File History
 //
+//  Rev. 1.22
+//    Bug Fix : N/A
+//    Reason  : Add Support SMC LSI OOB Module.
+//    Auditor : Durant Lin
+//    Date    : Sep/28/2018
+//
 //  Rev. 1.21
 //    Bug Fix:  
 //    Reason: Change free metho in one way.

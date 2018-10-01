@@ -1,6 +1,6 @@
 //****************************************************************************
 //****************************************************************************
-//**            (C)Copyright 1993-2016 Supermicro Computer, Inc.            **
+//**            (C)Copyright 1993-2018 Supermicro Computer, Inc.            **
 //****************************************************************************
 //****************************************************************************
 //  File History
@@ -9,7 +9,7 @@
 //    Bug Fix:  Initial revision.
 //    Reason:
 //    Auditor:  Durant Lin
-//    Date:     Aug/13/2018
+//    Date:     Sep/28/2018
 //
 //****************************************************************************
 
@@ -42,9 +42,6 @@
 
 #include "SmcLsiRaidOOBLib.h"
 #include "SmcLsiRaidOOBSetting.h"
-
-#define STRUCT_OFFSET(Type,val) ((UINT32)(((UINT32)(&(((Type*)0)->val))) - ((UINT32)0)))
-#define STRUCT_START(Type,val,item) ((Type*)(((UINT32)item) - STRUCT_OFFSET(Type,val)))
 
 #if SMC_ITEM_CMD_STRING_SIZE != 255
 	#error SMC_ITEM_CMD_STRING_SIZE must define 255

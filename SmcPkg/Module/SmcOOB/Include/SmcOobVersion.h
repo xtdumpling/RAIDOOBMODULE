@@ -18,10 +18,13 @@
 
 // Below string will insert into all EFI files.
 // Modify this string have no effect, only for check use.
-static const CHAR8	OOBVersion[] = "_SMCOOBV1.00.13SP_";
+static const CHAR8	OOBVersion[] = "_SMCOOBV1.01.00_";
 
 
 /*
+ Rev 1.01.00
+ 1. Add Support SMC LSI OOB Module.
+ 
  Rev 1.00.13
  1. Move Variable_GUID to PlatformPolicy.
  2. Add a protocol gSmcOobDataUploadBmcDoneGuid to inform OOB upload BMC done.

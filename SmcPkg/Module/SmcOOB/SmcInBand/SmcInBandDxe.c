@@ -5,18 +5,11 @@
 //****************************************************************************
 //  File History
 //
-//  Rev. 1.18
-//    Bug Fix : N/A
-//    Reason  : Remove guid that inform InBand prepare collect data, since the time sequence cannot immediately. 
-//			  : Add SMC LSI Setup protocol to inform SMC LSI setup driver start. 
-//    Auditor : Durant Lin
-//    Date    : Aug/27/2018
-//
 //  Rev. 1.17
 //    Bug Fix : N/A
-//    Reason  : Add a guid to inform InBand prepare collect data.
+//    Reason  : Add Support SMC LSI OOB Module.
 //    Auditor : Durant Lin
-//    Date    : Aug/14/2018
+//    Date    : Sep/28/2018
 //
 //  Rev. 1.16
 //    Bug Fix:  
@@ -228,11 +221,9 @@ SmcInBandReadyToBoot (
     EFI_HANDLE Handle = NULL;
     UINT32 Data32;
 
-
     pBS->CloseEvent(Event);
 
     DEBUG((-1, "[SMC_OOB] :: SmcInBandReadyToBoot entry.\n"));
-
 
     //
     // Combine BiosCfg data.

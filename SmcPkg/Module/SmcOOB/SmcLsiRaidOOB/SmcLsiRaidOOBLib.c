@@ -1,18 +1,23 @@
 //****************************************************************************
 //****************************************************************************
-//**            (C)Copyright 1993-2017 Supermicro Computer, Inc.            **
+//**            (C)Copyright 1993-2018 Supermicro Computer, Inc.            **
 //****************************************************************************
 //****************************************************************************
 //  File History
+//
+//  Rev. 1.01
+//    Bug Fix:  Add a function to common get pNext in Struct.
+//    Reason:
+//    Auditor:  Durant Lin
+//    Date:     Oct/01/2018
 //
 //  Rev. 1.00
 //    Bug Fix:  Initial revision.
 //    Reason:
 //    Auditor:  Durant Lin
-//    Date:     Aug/13/2018
+//    Date:     Sep/28/2018
 //
 //****************************************************************************
-
 #include "Token.h"
 #include <AmiLib.h>
 #include <AmiDxeLib.h>
@@ -315,4 +320,15 @@ CHAR8*	UpperAsciiString(CHAR8*	UpperString){
 		++UpperString;
 	}
 	return UpperString;
+}
+
+VOID* GetPNextStartAddr(VOID* Start, UINT32 Offset){
+
+	UINT8*	pTempStart = NULL;
+
+	for(pTempStart = Start;
+		(UINT8*)(*(UINT32*)(pTempStart + Offset)) != NULL;
+		pTempStart = (UINT8*)(*(UINT32*)(pTempStart + Offset)));
+
+	return pTempStart;
 }

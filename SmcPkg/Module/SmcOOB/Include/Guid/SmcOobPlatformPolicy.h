@@ -8,12 +8,6 @@
 //
 //  File History
 //
-//  Rev. 1.03
-//    Bug Fix : N/A
-//    Reason  : Add a guid to inform InBand prepare collect data.
-//    Auditor : Durant Lin
-//    Date    : Aug/14/2018
-//
 //  Rev. 1.02
 //    Bug Fix : N/A
 //    Reason  : Move Variable_GUID to PlatformPolicy.
@@ -168,7 +162,6 @@ typedef struct _SMC_OOB_PLATFORM_POLICY {
 
 extern EFI_GUID gSmcOobPlatformPolicyGuid;
 extern EFI_GUID gSmcOobPlatformPolicyCallbackGuid;
-extern EFI_GUID gSmcOobInBandCombineDataNotify;
 
 #endif
 

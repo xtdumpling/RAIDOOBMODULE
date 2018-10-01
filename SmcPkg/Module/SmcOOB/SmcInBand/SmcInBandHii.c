@@ -5,6 +5,12 @@
 //****************************************************************************
 //  File History
 //
+//  Rev. 1.20
+//    Bug Fix : N/A
+//    Reason  : Add Support SMC LSI OOB Module.
+//    Auditor : Durant Lin
+//    Date    : Sep/28/2018
+//
 //  Rev. 1.19
 //    Bug Fix : Correct a wrong status that make system cannot export HII.
 //    Reason  : 
