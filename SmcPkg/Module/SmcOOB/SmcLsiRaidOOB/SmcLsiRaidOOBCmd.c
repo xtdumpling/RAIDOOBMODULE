@@ -6,6 +6,12 @@
 //  File History
 //
 //  Rev. 1.00
+//    Bug Fix:  
+//    Reason:   Support more tables for different Raid Cards.
+//    Auditor:  Durant Lin
+//    Date:     Oct/02/2018
+//
+//  Rev. 1.00
 //    Bug Fix:  Initial revision.
 //    Reason:
 //    Auditor:  Durant Lin
@@ -786,11 +792,143 @@ SMC_RAID_CMD_SET* AnalysisAndParseCmdString(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pPr
 	 */
 
 
+RAID_CMD_PROCESSING_MAP*	GetBuildRaidProcessingMap(
+		SMC_LSI_RAID_OOB_SETUP_PROTOCOL* 		pProtocol
+){
+	switch(pProtocol->SmcLsiCurrHiiHandleTable->RaidCardType){
+		case RAID_3108:
+			return RaidCmdProcessMapTable_B_3108;
+		case RAID_2208:
+			return RaidCmdProcessMapTable_B_2208;
+	}
+	return NULL;
+}
+
+RAID_CMD_PROCESSING_MAP*	GetBuildRaidProcessingMapSpansFirst(
+		SMC_LSI_RAID_OOB_SETUP_PROTOCOL* 		pProtocol
+){
+	switch(pProtocol->SmcLsiCurrHiiHandleTable->RaidCardType){
+		case RAID_3108:
+		case RAID_2208:
+			return RaidCmdProcessMapTable_B_Span_3108_First;
+	}
+	return NULL;
+}
+
+RAID_CMD_PROCESSING_MAP*	GetBuildRaidProcessingMapSpansSecond(
+		SMC_LSI_RAID_OOB_SETUP_PROTOCOL* 		pProtocol
+){
+	switch(pProtocol->SmcLsiCurrHiiHandleTable->RaidCardType){
+		case RAID_3108:
+		case RAID_2208:
+			return RaidCmdProcessMapTable_B_Span_3108_Second;
+	}
+	return NULL;
+}
+
+RAID_CMD_PROCESSING_MAP*	GetBuildRaidProcessingMapSpansThird(
+		SMC_LSI_RAID_OOB_SETUP_PROTOCOL* 		pProtocol
+){
+	switch(pProtocol->SmcLsiCurrHiiHandleTable->RaidCardType){
+		case RAID_3108:
+		case RAID_2208:
+			return RaidCmdProcessMapTable_B_Span_3108_Third;
+	}
+	return NULL;
+}
+
+RAID_CMD_PROCESSING_MAP*	GetBuildRaidProcessingMapSpansForth(
+		SMC_LSI_RAID_OOB_SETUP_PROTOCOL* 		pProtocol
+){
+	switch(pProtocol->SmcLsiCurrHiiHandleTable->RaidCardType){
+		case RAID_3108:
+		case RAID_2208:
+			return RaidCmdProcessMapTable_B_Span_3108_Forth;
+	}
+	return NULL;
+}
+
+RAID_CMD_PROCESSING_MAP*	GetBuildRaidProcessingMapSpansFifth(
+		SMC_LSI_RAID_OOB_SETUP_PROTOCOL* 		pProtocol
+){
+	switch(pProtocol->SmcLsiCurrHiiHandleTable->RaidCardType){
+		case RAID_3108:
+			return RaidCmdProcessMapTable_B_Span_3108_Fifth;
+		case RAID_2208:
+			return RaidCmdProcessMapTable_B_Span_2208_Fifth;
+	}
+	return NULL;
+}
+
+RAID_CMD_PROCESSING_MAP*	GetDeleteRaidProcessingMap(
+		SMC_LSI_RAID_OOB_SETUP_PROTOCOL* 		pProtocol
+){
+	switch(pProtocol->SmcLsiCurrHiiHandleTable->RaidCardType){
+		case RAID_3108:
+			return RaidCmdProcessMapTable_D_3108_RaidRef;
+		case RAID_2208:
+			return RaidCmdProcessMapTable_D_2208_RaidRef;
+	}
+	return NULL;
+}
+
+RAID_CMD_PROCESSING_MAP*	GetMakeJbodProcessinMap(
+		SMC_LSI_RAID_OOB_SETUP_PROTOCOL* 		pProtocol
+){
+	switch(pProtocol->SmcLsiCurrHiiHandleTable->RaidCardType){
+		case RAID_3108:
+			return RaidCmdProcessMapTable_MakeJbod;
+		case RAID_2208:
+			return RaidCmdProcessMapTable_2208_MakeJbod;
+	}
+	return NULL;
+}
+
+RAID_CMD_PROCESSING_MAP*	GetUnconfiguredJbodProcessinMap(
+		SMC_LSI_RAID_OOB_SETUP_PROTOCOL* 		pProtocol
+){
+	switch(pProtocol->SmcLsiCurrHiiHandleTable->RaidCardType){
+		case RAID_3108:
+			return RaidCmdProcessMapTable_UnConfigJbod;
+		case RAID_2208:
+			return RaidCmdProcessMapTable_2208_UnConfigJbod;
+	}
+	return NULL;
+}
+
+RAID_CMD_PROCESSING_MAP*	GetRaidProcessingMap(
+		SMC_LSI_RAID_OOB_SETUP_PROTOCOL* 		pProtocol,
+		RAID_TYPE_CMD_PROCESSING_SPECIE_MAP 	RaidTypeSpecieMap
+){
+	switch(RaidTypeSpecieMap){
+		case SINGLE_BUILDRAID_MAP_TABLE:
+			return GetBuildRaidProcessingMap(pProtocol);
+		case SPANS_BUILDRAID_MAP_TABLE_FIRST:
+			return GetBuildRaidProcessingMapSpansFirst(pProtocol);
+		case SPANS_BUILDRAID_MAP_TABLE_SECOND:
+			return GetBuildRaidProcessingMapSpansSecond(pProtocol);
+		case SPANS_BUILDRAID_MAP_TABLE_THIRD:
+			return GetBuildRaidProcessingMapSpansThird(pProtocol);
+		case SPANS_BUILDRAID_MAP_TABLE_Forth:
+			return GetBuildRaidProcessingMapSpansForth(pProtocol);
+		case SPANS_BUILDRAID_MAP_TABLE_Fifth:
+			return GetBuildRaidProcessingMapSpansFifth(pProtocol);
+		case DELETERAID_MAP_TABLE_RAIDREF:
+			return GetDeleteRaidProcessingMap(pProtocol);
+		case MAKEJBOD_MAP_TABLE:
+			return GetMakeJbodProcessinMap(pProtocol);
+		case UNCONFIGUREDJBOD_MAP_TABLE:
+			return GetUnconfiguredJbodProcessinMap(pProtocol);
+	}
+
+	return NULL;
+}
 
 RAID_CMD_PROCESSING_ITEM* SmcLsiRaidOOB_GetTargetItemOpHeader(
 	SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol,
 	RAID_CMD_PROCESSING_ENUM		 CmdProcessingEnum,
 	CHAR16*							 InTheFormName,
+	UINT16							 InTheFormId,
 	CHAR16*							 TargetItemName,
 	EFI_QUESTION_ID					 LimitQuestionId,
 	UINT8							 TargetOpCode
@@ -806,7 +944,7 @@ RAID_CMD_PROCESSING_ITEM* SmcLsiRaidOOB_GetTargetItemOpHeader(
 	RAID_CMD_PROCESSING_ITEM*	CmdProcessingItemsNext	= NULL;
 
 	CHAR16			   			CurrentFormString[TEMP_FORM_STRING];
-
+	UINT16						CurrentFormId = 0x0;
 	LsiHiiHandle 			=	pProtocol->SmcLsiCurrHiiHandleTable->RaidCardHiiHandle;
 
 	if(!!sListFormSet){
@@ -835,7 +973,8 @@ RAID_CMD_PROCESSING_ITEM* SmcLsiRaidOOB_GetTargetItemOpHeader(
 			MemSet(CurrentFormString,TEMP_FORM_STRING * sizeof(CHAR16),0x00);
 			TempString = GetHiiString(LsiHiiHandle,pFormOp->FormTitle);
 			StrCpy(CurrentFormString,TempString);
-			SMC_RAID_DETAIL_DEBUG((-1,"Current Form :: [%s]\n",CurrentFormString));	
+			CurrentFormId = pFormOp->FormId;
+			SMC_RAID_DETAIL_DEBUG((-1,"Current Form :: [%s], FormId[%x]\n",CurrentFormString,CurrentFormId));	
 		}
 		if(IfrOpHeader->OpCode == TargetOpCode){
 			CHAR16*	IfrString = NULL;
@@ -844,7 +983,7 @@ RAID_CMD_PROCESSING_ITEM* SmcLsiRaidOOB_GetTargetItemOpHeader(
 			ItemsComnHead = (SMC_LSI_ITEMS_COMMON_HEADER*)IfrOpHeader;
 			IfrString = GetHiiString(LsiHiiHandle,ItemsComnHead->Question.Header.Prompt);
 
-			if( !!StrCmp(InTheFormName,CurrentFormString)) continue;
+			if( !!StrCmp(InTheFormName,CurrentFormString) && CurrentFormId != InTheFormId) continue;
 
 			if(! (!!IfrString)){
 				SMC_RAID_DETAIL_DEBUG((-1,"StringId[%x], OP[%x], QId[%x] cannot get string\n",
@@ -963,9 +1102,9 @@ EFI_STATUS	HandleOtherRaidCmd(
 	pCmdJbod = SearchForCmdSectionBody(pCmdSet->RaidCmdSection,SMC_CMD_RAID_JBOD);
 	if(!!pCmdJbod){
 		if(pCmdJbod->RaidCmdJbodEnum == SMC_CMD_JBOD_MAKE) 
-			pCmdProcessingMapRaidTable = RaidCmdProcessMapTable_MakeJbod;
+			pCmdProcessingMapRaidTable = GetRaidProcessingMap(pProtocol,MAKEJBOD_MAP_TABLE);
 		else if(pCmdJbod->RaidCmdJbodEnum == SMC_CMD_JBOD_UNCONFIG)
-			pCmdProcessingMapRaidTable = RaidCmdProcessMapTable_UnConfigJbod;
+			pCmdProcessingMapRaidTable = GetRaidProcessingMap(pProtocol,UNCONFIGUREDJBOD_MAP_TABLE);
 		
 		Status = HandleRaidCmdSub(pProtocol,pCmdSet,pCmdProcessingMapRaidTable,NULL);
 		DEBUG((-1,"HandleOtherRaidCmd JBOD[%x] Status[%r]\n",pCmdJbod->RaidCmdJbodEnum,Status));
@@ -991,6 +1130,8 @@ EFI_STATUS	HandleBuildRaidCmd_D(
 	return Status;
 }
 
+
+		
 EFI_STATUS	HandleBuildRaidCmd(
 		SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol, 
 		SMC_RAID_CMD_SET* pCmdSet 
@@ -1013,7 +1154,7 @@ EFI_STATUS	HandleBuildRaidCmd(
 	DEBUG((-1,"HandleBuildRaidCmd HandleRaidCmdSub :: For Raid Level[%x]\n",RaidTypeEnum));
 
 	if(RaidTypeEnum < SMC_CMD_RAIDTYPE_R10){
-		Status = HandleRaidCmdSub(pProtocol,pCmdSet,RaidCmdProcessMapTable_B_3108,NULL);	
+		Status = HandleRaidCmdSub(pProtocol,pCmdSet,GetRaidProcessingMap(pProtocol,SINGLE_BUILDRAID_MAP_TABLE),NULL);	
 	}else{
 		do {
 			// Spans set to one since build raid span start with second Select Drives form. (QId A500).
@@ -1022,7 +1163,7 @@ EFI_STATUS	HandleBuildRaidCmd(
 			SMC_RAID_CMD_SECTION*				pGroupSection 		= NULL;
 
 			//First Select Raid Level.
-			Status = HandleRaidCmdSub(pProtocol,pCmdSet,RaidCmdProcessMapTable_B_Span_3108_First,NULL);
+			Status = HandleRaidCmdSub(pProtocol,pCmdSet,GetRaidProcessingMap(pProtocol,SPANS_BUILDRAID_MAP_TABLE_FIRST),NULL);
 			SMC_RAID_DETAIL_DEBUG((-1,"    First Select Raid Level Status[%r]\n",Status));
 			if(EFI_ERROR(Status)) break;
 
@@ -1031,17 +1172,17 @@ EFI_STATUS	HandleBuildRaidCmd(
 
 			do {
 				//Add Spans.
-				Status = HandleRaidCmdSub(pProtocol,pCmdSet,RaidCmdProcessMapTable_B_Span_3108_Second,NULL);
+				Status = HandleRaidCmdSub(pProtocol,pCmdSet,GetRaidProcessingMap(pProtocol,SPANS_BUILDRAID_MAP_TABLE_SECOND),NULL);
 				SMC_RAID_DETAIL_DEBUG((-1,"    Second Add Spans Num[%x], Status[%r]\n",Spans,Status));
 				if(EFI_ERROR(Status)) break;
 				//Enter Select Drives Form.
 				RaidCmdProcessMapTable_B_Span_3108_Third[0].TableItemIndex = Spans;
-				Status = HandleRaidCmdSub(pProtocol,pCmdSet,RaidCmdProcessMapTable_B_Span_3108_Third,NULL);
+				Status = HandleRaidCmdSub(pProtocol,pCmdSet,GetRaidProcessingMap(pProtocol,SPANS_BUILDRAID_MAP_TABLE_THIRD),NULL);
 				SMC_RAID_DETAIL_DEBUG((-1,"    Third Enter Select Drives Form, Status[%r]\n",Status));
 				if(EFI_ERROR(Status)) break;
 				//Choice HDDs.
 				pCmdGroup = pGroupSection->RaidCmdBody;
-				Status = HandleRaidCmdSub(pProtocol,pCmdSet,RaidCmdProcessMapTable_B_Span_3108_Forth,pCmdGroup);
+				Status = HandleRaidCmdSub(pProtocol,pCmdSet,GetRaidProcessingMap(pProtocol,SPANS_BUILDRAID_MAP_TABLE_Forth),pCmdGroup);
 				SMC_RAID_DETAIL_DEBUG((-1,"    Forth Choice HDDs, Status[%r]\n",Status));
 				if(EFI_ERROR(Status)) break;
 				++Spans;
@@ -1052,7 +1193,7 @@ EFI_STATUS	HandleBuildRaidCmd(
 			if(EFI_ERROR(Status)) break;
 
 			// Create Raid Drive.
-			Status = HandleRaidCmdSub(pProtocol,pCmdSet,RaidCmdProcessMapTable_B_Span_3108_Fifth,NULL);
+			Status = HandleRaidCmdSub(pProtocol,pCmdSet,GetRaidProcessingMap(pProtocol,SPANS_BUILDRAID_MAP_TABLE_Fifth),NULL);
 			if(EFI_ERROR(Status)) break;
 		}while(FALSE);
 	}
@@ -1415,7 +1556,7 @@ EFI_STATUS 	HandleRaidCmdSub_ChoiceHdds(
 		HddBeChoiced = TRUE;
 
 		if(pCmdProcessSet->TypeEnumSub == TES_DELETE_RAID_DRIVE){
-			RAID_CMD_PROCESSING_MAP*	pLoopDeleteRaidTable	= RaidCmdProcessMapTable_D_3108_RaidRef;
+			RAID_CMD_PROCESSING_MAP*	pLoopDeleteRaidTable	= GetRaidProcessingMap(pProtocol,DELETERAID_MAP_TABLE_RAIDREF);
 
 			// 1. Enter Target Raid Form.	
 			MemSet(pLoopDeleteRaidTable[D_3108_RAIDREF_RAIDDRIVE_NAME].CmdProcessTargetName,NAME_LENGTH * sizeof(CHAR16),0x00);
@@ -1475,21 +1616,24 @@ EFI_STATUS	HandleRaidCmdSub(
 									pProtocol,
 									pExecuteCmdProcessingMap[TableIndex].CmdProcessSet.CmdProcess,
 									pExecuteCmdProcessingMap[TableIndex].CmdProcessLastForm,
+									pExecuteCmdProcessingMap[TableIndex].LastFormId,
 									pExecuteCmdProcessingMap[TableIndex].CmdProcessTargetName,
 									pExecuteCmdProcessingMap[TableIndex].CmdProcessLimitQId,
 									pExecuteCmdProcessingMap[TableIndex].CmdProcessTargetOpCode);
-			
+
+			SMC_RAID_DETAIL_DEBUG((-1," HandleRaidCmdSub TableIndex[%x] CmdProcessLastForm[%s], LastFormId[%x], CmdProcessTargetName[%s],\n",
+										TableIndex,
+										pExecuteCmdProcessingMap[TableIndex].CmdProcessLastForm,
+										pExecuteCmdProcessingMap[TableIndex].LastFormId,
+										pExecuteCmdProcessingMap[TableIndex].CmdProcessTargetName));
+
 			if(!(!!pCmdProcessingItem)){
-				SMC_RAID_DETAIL_DEBUG((-1,"HandleRaidCmdSub Cannot Find the item! TableIndex[%x]\n",TableIndex));
+				SMC_RAID_DETAIL_DEBUG((-1,"HandleRaidCmdSub Cannot Find the item!\n",TableIndex));
 				if(pExecuteCmdProcessingMap[TableIndex].CmdProcessSet.CmdProcess != P_RAID_NON_ACTION)
 					Status = EFI_NOT_FOUND;
 
 				break;
 			}
-			SMC_RAID_DETAIL_DEBUG((-1," HandleRaidCmdSub TableIndex[%x] CmdProcessLastForm[%s], CmdProcessTargetName[%s]\n",
-										TableIndex,
-										pExecuteCmdProcessingMap[TableIndex].CmdProcessLastForm,
-										pExecuteCmdProcessingMap[TableIndex].CmdProcessTargetName));
 
 			for(TempIndex = 0;
 				!!pCmdProcessingItem && TempIndex < pExecuteCmdProcessingMap[TableIndex].TableItemIndex; 

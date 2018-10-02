@@ -5,6 +5,12 @@
 //****************************************************************************
 //  File History
 //
+//  Rev. 1.01
+//    Bug Fix:  
+//    Reason:   Add RAID 2208 settings.
+//    Auditor:  Durant Lin
+//    Date:     Oct/02/2018
+//
 //  Rev. 1.00
 //    Bug Fix:  Initial revision.
 //    Reason:
@@ -213,10 +219,11 @@ EFI_STATUS SmcLsiSetupDownDummyFunc(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 }
 
 UINT8	GetRaidIndex(SMC_LSI_RAID_TYPE	RaidType){
-	static	SMC_LSI_RAID_CARD_INDEX	Raid3108Index = 0;
-	static	SMC_LSI_RAID_CARD_INDEX	Raid9260Index = 0;
+	static	UINT8	Raid3108Index = 0;
+	static	UINT8	Raid9260Index = 0;
+	static  UINT8	Raid2208Index = 0;
 
-	SMC_LSI_RAID_CARD_INDEX	ReturnIndex = 0;
+	UINT8	ReturnIndex = 0;
 
 	switch(RaidType){
 		case RAID_3108:
@@ -224,6 +231,9 @@ UINT8	GetRaidIndex(SMC_LSI_RAID_TYPE	RaidType){
 			break;
 		case RAID_9260:
 			ReturnIndex = Raid9260Index++;
+			break;
+		case RAID_2208:
+			ReturnIndex = Raid2208Index++;
 			break;
 		default:
 			break;

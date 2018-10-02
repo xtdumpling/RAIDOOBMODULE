@@ -5,6 +5,12 @@
 //****************************************************************************
 //  File History
 //
+//  Rev. 1.01
+//    Bug Fix:  
+//    Reason:   Add RAID 2208 settings.
+//    Auditor:  Durant Lin
+//    Date:     Oct/02/2018
+//
 //  Rev. 1.00
 //    Bug Fix:  Initial revision.
 //    Reason:
@@ -439,7 +445,8 @@ struct _SMC_LSI_RAID_OOB_SETUP_PROTOCOL_ {
 enum _SMC_LSI_RAID_TYPE_ {
 	RAID_3108 	= 0,
 	RAID_9260 	= 1,
-	RAID_INTEL	= 2,
+	RAID_2208	= 2,
+	RAID_INTEL	= 3,
 	RAID_NULL = 0xFF
 };
 

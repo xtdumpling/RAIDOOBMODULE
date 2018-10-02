@@ -1029,9 +1029,7 @@ EFI_STATUS	SmcLsiCreateSmcRaidVarAndItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL*	pProt
 	if(!(!!cVar)) return SettingErrorStatus(pProtocol,0x69,EFI_SUCCESS);
 	SMC_RAID_DETAIL_DEBUG((-1,"  SMC RAID VAR Name[%a], Guid[%g], VarId[%x], VarSize[%x]\n",cVar->RaidVarName,cVar->RaidVarGuid,cVar->RaidVarId,cVar->RaidVarSize));
 
-	for(pSetupRaidVar = pProtocol->SmcLsiCurrHiiHandleTable->RaidSetupVarSet;
-		pSetupRaidVar->pSetupRaidVarNext != NULL;
-		pSetupRaidVar = pSetupRaidVar->pSetupRaidVarNext);
+	pSetupRaidVar = GetPNextStartAddr(pProtocol->SmcLsiCurrHiiHandleTable->RaidSetupVarSet,STRUCT_OFFSET(SMC_SETUP_RAID_VAR,pSetupRaidVarNext));
 
 	gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_SETUP_RAID_VAR),&(pSetupRaidVar->pSetupRaidVarNext));
 	MemSet(pSetupRaidVar->pSetupRaidVarNext,sizeof(SMC_SETUP_RAID_VAR),0x00);
@@ -2083,7 +2081,7 @@ EFI_STATUS InsertRaidSetupFormGoto(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 		RaidNameTable[FormIndex].LsiRaidTypeIndex != pProtocol->SmcLsiCurrHiiHandleTable->RaidCardType;
 		++FormIndex);
 
-	{
+	do {
 		UINTN		FormName_Length_Byte = 0;
 		CHAR16		UnKnownRaidName[] 	= L"UNKNOWN RAID CARD";
 		CHAR16*		RaidNameString		= NULL;
@@ -2097,7 +2095,7 @@ EFI_STATUS InsertRaidSetupFormGoto(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 		gBS->AllocatePool(EfiBootServicesData,FormName_Length_Byte,&FormGoToPromptHelp);
 		MemSet(FormGoToPromptHelp,FormName_Length_Byte,0x00);
 		Swprintf(FormGoToPromptHelp,L"%d. %s",pProtocol->SmcLsiCurrHiiHandleTable->RaidCardIndex,RaidNameString);
-	}
+	}while(FALSE);
 
 	MemSet(&FormGoto,sizeof(EFI_IFR_REF),0x0);
 
