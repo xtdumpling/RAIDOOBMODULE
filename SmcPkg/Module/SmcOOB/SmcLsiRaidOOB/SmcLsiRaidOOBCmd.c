@@ -1076,7 +1076,6 @@ UINT8 	SearchCmdRaidTypeToValue(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol, SMC_
 
 }
 
-
 #define GET_pLsiVar_MARCO(_x,_y,_z)\
 	if(!(!!(_x = SearchLsiVarById(_y->Question.VarStoreId)))){\
 		Status = EFI_NOT_FOUND;\
@@ -1139,8 +1138,6 @@ EFI_STATUS	HandleBuildRaidCmd_D(
 	HandleRaidCmdSub(pProtocol,pCmdSet,RaidCmdProcessClearMapTable_D_3108,NULL);
 	return Status;
 }
-
-
 		
 EFI_STATUS	HandleBuildRaidCmd(
 		SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol, 

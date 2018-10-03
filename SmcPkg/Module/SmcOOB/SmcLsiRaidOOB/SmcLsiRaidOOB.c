@@ -5,6 +5,12 @@
 //****************************************************************************
 //  File History
 //
+//  Rev. 1.01
+//    Bug Fix:  
+//    Reason:	Add a serial functions to collect Question Items.
+//    Auditor:  Durant Lin
+//    Date:     Oct/03/2018
+//
 //  Rev. 1.00
 //    Bug Fix:  Initial revision.
 //    Reason:
@@ -493,7 +499,145 @@ SMC_LSI_HII_HANDLE*	SearchHiiHandleTableByVarName(SMC_LSI_RAID_OOB_SETUP_PROTOCO
 }
 
 // ======== LSI VAR END   ========
+// ======== Record Items START ========
 
+
+UINT16	ItemsQIdHashByQId(UINT16	QId){
+
+	return (QId % ITEMS_QID_HASH_NUM);
+}
+
+ITEMS_QID_VAL*	SearchItemsQIdValByQId(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol, UINT16 QId){
+
+	ITEMS_QID_HASH** 				CurrentItemsQIdTable 	= NULL;
+	ITEMS_QID_HASH*					pTempq					= NULL;
+	ITEMS_QID_VAL*					pVal					= NULL;
+	UINT16							QIdIndex				= 0;
+	BOOLEAN							SearchFind				= FALSE;
+
+	CurrentItemsQIdTable = pProtocol->SmcLsiCurrHiiHandleTable->RaidLsiItemsQidTable;
+
+	QIdIndex = ItemsQIdHashByQId(QId);
+	pTempq = CurrentItemsQIdTable[QIdIndex];
+
+	while(!(!!SearchFind) && !!pTempq){
+		pVal  		= &pTempq->ItemsQIdBody;
+		SearchFind 	= !!(pVal->IQVQId == QId);
+		pTempq 		= pTempq->ItemsQIdNext;
+	}
+	return (!!SearchFind) ? pVal : NULL;
+}
+
+ITEMS_QID_VAL*	AddItemsQId(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol, EFI_IFR_OP_HEADER* OpHeader){
+
+	ITEMS_QID_HASH** 				CurrentItemsQIdTable 	= NULL;
+	SMC_LSI_ITEMS_COMMON_HEADER*	pComnHeader				= NULL;
+	ITEMS_QID_HASH* 				pTempQIdHash 			= NULL;
+	UINT16							QIdIndex				= 0;
+	EFI_STATUS						Status					= EFI_SUCCESS;
+
+	if(!(!!pProtocol) || !(!!OpHeader)) return NULL;
+
+	pComnHeader = (SMC_LSI_ITEMS_COMMON_HEADER*)OpHeader;
+	CurrentItemsQIdTable = pProtocol->SmcLsiCurrHiiHandleTable->RaidLsiItemsQidTable;
+	QIdIndex = ItemsQIdHashByQId(pComnHeader->Question.QuestionId);
+	
+	Status = gBS->AllocatePool(EfiBootServicesData,sizeof(ITEMS_QID_HASH),&pTempQIdHash);
+	if(EFI_ERROR(Status)) return NULL;
+
+	MemSet(pTempQIdHash,sizeof(ITEMS_QID_HASH),0x00);
+	pTempQIdHash->ItemsQIdBody.IQVOpCode = pComnHeader->Header.OpCode;
+	pTempQIdHash->ItemsQIdBody.IQVQId	 = pComnHeader->Question.QuestionId;
+	pTempQIdHash->ItemsQIdBody.IQVVId	 = pComnHeader->Question.VarStoreId;
+	pTempQIdHash->ItemsQIdBody.IQVVOff	 = pComnHeader->Question.VarStoreInfo.VarOffset;
+	pTempQIdHash->ItemsQIdBody.IQVFlags  = *((UINT8*)((UINT8*)OpHeader + sizeof(SMC_LSI_ITEMS_COMMON_HEADER)));
+	pTempQIdHash->ItemsQIdNext			 = NULL;
+
+	if(!(!!CurrentItemsQIdTable[QIdIndex])){
+		CurrentItemsQIdTable[QIdIndex] = pTempQIdHash;
+	}else {
+		ITEMS_QID_HASH*					TempItemsQIdHash		= NULL;
+		TempItemsQIdHash = GetPNextStartAddr(CurrentItemsQIdTable[QIdIndex],STRUCT_OFFSET(ITEMS_QID_HASH,ItemsQIdNext));
+		TempItemsQIdHash->ItemsQIdNext = pTempQIdHash;
+	}
+	return &pTempQIdHash->ItemsQIdBody;
+}
+EFI_STATUS	CleanItemsQIdTable(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
+
+	ITEMS_QID_HASH** 			CurrentItemsQIdTable 	= NULL;
+	ITEMS_QID_HASH* 			pTempQIdHash 			= NULL;
+	ITEMS_QID_HASH* 			pNext		 			= NULL;
+	UINT16						QIdIndex				= 0;
+
+	CurrentItemsQIdTable = pProtocol->SmcLsiCurrHiiHandleTable->RaidLsiItemsQidTable;
+	
+	for(QIdIndex = 0; QIdIndex < ITEMS_QID_HASH_NUM;++QIdIndex){
+		pTempQIdHash = CurrentItemsQIdTable[QIdIndex];
+		while(!!pTempQIdHash){
+			pNext = pTempQIdHash->ItemsQIdNext;
+			gBS->FreePool(pTempQIdHash);	
+			pTempQIdHash = pNext;
+		}
+		CurrentItemsQIdTable[QIdIndex] = NULL;
+	}
+	return EFI_SUCCESS;
+}
+
+EFI_STATUS	InitialItemsQIdTable(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
+	
+
+	EFI_STATUS		   			Status 					= EFI_SUCCESS;
+	EFI_HII_PACKAGE_HEADER*		PackagePtr				= NULL;
+	EFI_IFR_OP_HEADER* 			OpHeader 				= NULL;
+
+	HII_PACKAGE_LIST_FROM_SET*	sListFormSet			= NULL;
+
+	CleanItemsQIdTable(pProtocol);
+	sListFormSet = SmcLsiRaidOOB_GetCurrentPackageForm(pProtocol);
+	if(! (!!sListFormSet)) return SettingErrorStatus(pProtocol,0xAE,EFI_NOT_FOUND);
+
+	PackagePtr = sListFormSet->PackFormHeader;
+	if(! (!!PackagePtr)) return SettingErrorStatus(pProtocol,0x47,EFI_NOT_FOUND);
+
+	OpHeader = (EFI_IFR_OP_HEADER*)(PackagePtr + 1);
+
+
+	while((UINT32)OpHeader < ((UINT32)PackagePtr + PackagePtr->Length)){
+		switch(OpHeader->OpCode){
+			case EFI_IFR_ONE_OF_OP:
+			case EFI_IFR_NUMERIC_OP:
+			case EFI_IFR_CHECKBOX_OP:
+				if(!(!!AddItemsQId(pProtocol,OpHeader))) return SettingErrorStatus(pProtocol,0x33,EFI_ABORTED);
+				break;
+			default:
+				break;
+		}
+		OpHeader = (EFI_IFR_OP_HEADER*)((UINT8*)OpHeader + OpHeader->Length);
+	}
+	
+	return Status;
+}
+
+VOID*	GetQIdValue(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol, UINT16 QId){
+	
+	SMC_RAID_VAR*			TempVar 		= NULL;
+	ITEMS_QID_VAL*			TempItemsQId 	= NULL;
+	SMC_RAID_VAR_HASH**		pOriVarIdTable  = NULL;
+	VOID*					pBuffer			= NULL;
+
+	pOriVarIdTable = LsiVarHashTableVarId;
+
+	TempItemsQId = SearchItemsQIdValByQId(pProtocol,QId);
+	if(!(!!TempItemsQId)) return NULL;
+
+	TempVar = SearchLsiVarById(TempItemsQId->IQVVId);
+	if(!(!!TempVar)) return NULL;
+
+	pBuffer = &TempVar->RaidVarBuffer[TempItemsQId->IQVVOff];
+	return pBuffer;
+}
+
+// ======== Record Items END ========
 EFI_STATUS	RaidDownTheLastCleanFunc(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 
 	return EFI_SUCCESS;

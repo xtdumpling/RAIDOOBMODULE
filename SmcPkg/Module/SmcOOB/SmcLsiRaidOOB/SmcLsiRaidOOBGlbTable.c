@@ -35,6 +35,7 @@ SMC_LSI_INSIDE_DOWN_FUNC		mSmcLsiInsideDownFunc[]		= {
 	{ L"SmcLsiRaidOOB_CollectInformation_Form"	, SmcLsiRaidOOB_CollectInformation_Form		},
 	{ L"SmcLsiHookBrowser2Protocol"				, SmcLsiHookBrowser2Protocol				},
 	{ L"SmcLsiCallbackAccessMenu"				, SmcLsiCallbackAccessMenu					},
+	{ L"InitialItemsQIdTable"					, InitialItemsQIdTable						},
 	{ L"SmcLsiRaidOOB_CollectInformation_Items"	, SmcLsiRaidOOB_CollectInformation_Items	},
 	{ L"SmcLsiRaidOOB_CollectInformation_ChRec" , SmcLsiRaidOOB_CollectInformation_ChRec	},
 	{ L"SmcLsiSetSmcLsiVariableTable"			, SmcLsiSetSmcLsiVariableTable				},
@@ -44,6 +45,7 @@ SMC_LSI_INSIDE_DOWN_FUNC		mSmcLsiInsideDownFunc[]		= {
 };
 
 SMC_LSI_INSIDE_LOAD_FUNC		mSmcLsiInsideLoadFunc[]		= {
+	{ L"InitialLsiVarHashTable"				, InitialLsiVarHashTable 				},
 	{ L"InsertRaidSetupVariable"			, InsertRaidSetupVariable				},
 	{ L"InsertRaidSetupFormGoto"			, InsertRaidSetupFormGoto				},
 	{ L"InsertRaidSetupFormItems"			, InsertRaidSetupFormItems				},

@@ -27,6 +27,7 @@
 SMC_LSI_RAID_NANE	RaidName[] = {
 	{ RAID_3108, L"AVAGO MegaRAID <AVAGO 3108 MegaRAID>" },
 	{ RAID_2208, L"AVAGO MegaRAID <LSI 2208 MegaRAID>" },
+	{ RAID_RSTE, L"Intel RSTe SATA Controller" },
 //	{ RAID_9260, L"AVAGO MegaRAID <AVAGO 9260 MegaRAID>" },
 	{ RAID_NULL, L"" }
 };
@@ -54,7 +55,8 @@ SMC_LSI_RAID_FORM_HEADER		mSmcLsiRaidFormRefSearchTable[] = {
 	{RAID_2208, L"Advanced Controller Properties"	, EFI_IFR_REF_OP },
 	{RAID_2208, L"Virtual Drive Management"			, EFI_IFR_REF_OP },
 	{RAID_2208, L"Drive Management"					, EFI_IFR_REF_OP },
-
+	// RSTE
+	{RAID_RSTE, L"Create RAID Volume"				, EFI_IFR_REF_OP }, 
 	{RAID_NULL, L"SMC_LSI_RAID_END"					,			0xFF }
 };
 
@@ -105,6 +107,8 @@ SMC_RAID_ITEMS_HEADER	mSmcLsiItemsTable[] = {
 	{RAID_2208, L"Advanced Controller Properties", L"Write Verify",	 	0xFFFF	, RAID_CHANGEABLE_TYPE },
 	{RAID_2208, L"Advanced Controller Properties", L"Large IO Support",	0xFFFF	, RAID_CHANGEABLE_TYPE },
 
+	// RSTE
+	{RAID_RSTE, L"Intel(R) RSTe"			, HARD_DRIVES_GROUP, 	 0xFFFF , RAID_HDG_TYPE},
 	{RAID_NULL, L"", L"", 0x0 }
 };
 

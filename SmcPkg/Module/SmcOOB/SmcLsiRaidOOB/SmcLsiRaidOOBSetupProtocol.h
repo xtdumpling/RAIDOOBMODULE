@@ -30,6 +30,7 @@
 #define NAME_LENGTH	      				0x80
 #define VAR_UNUSED_SPACE  				0x100
 #define VAR_HASH_NUM	  				0x1F
+#define ITEMS_QID_HASH_NUM	  			0x2F
 #define EFI_IFR_EXTEND_OP_LABEL       	0x0
 #define	ERROR_CODE_SIZE					32
 
@@ -78,6 +79,8 @@ typedef struct 	_SMC_RAID_CHRECORD_SET_				SMC_RAID_CHRECORD_SET;
 typedef struct	_TABLE_COMMON_HEADER_  				TABLE_COMMON_HEADER;
 
 typedef struct  _SMC_ITEMS_VAR_DATA_ 				SMC_ITEMS_VAR_DATA;
+typedef struct 	_ITEMS_QID_HASH_ 					ITEMS_QID_HASH;
+typedef struct  _ITEMS_QID_VAL_						ITEMS_QID_VAL;
 
 typedef struct	_SMC_LSI_AFTER_DOWN_FUNC_ 			SMC_LSI_AFTER_DOWN_FUNC;
 typedef struct	_SMC_LSI_AFTER_LOAD_FUNC_			SMC_LSI_AFTER_LOAD_FUNC;
@@ -316,6 +319,21 @@ struct _SMC_ITEMS_VAR_DATA_ {
 	UINT8	Reserve[128];
 };
 
+struct _ITEMS_QID_VAL_ {
+	CHAR16*				IQVName;
+	UINT8				IQVOpCode;
+	EFI_QUESTION_ID		IQVQId;
+	EFI_VARSTORE_ID		IQVVId;
+	UINT16				IQVVOff;
+	UINT8				IQVFlags;
+
+};
+
+struct _ITEMS_QID_HASH_ {
+	ITEMS_QID_VAL		ItemsQIdBody;
+	ITEMS_QID_HASH*		ItemsQIdNext;
+};
+
 struct _SMC_LSI_HII_HANDLE_ {
 	//RaidOOBSetup Initial Below data.
 	SMC_LSI_RAID_TYPE			RaidCardType;
@@ -335,11 +353,15 @@ struct _SMC_LSI_HII_HANDLE_ {
 
 	SMC_RAID_VAR_HASH*				RaidLsiVarHashTableName	[VAR_HASH_NUM];
 	SMC_RAID_VAR_HASH*				RaidLsiVarHashTableVarId[VAR_HASH_NUM];
+	ITEMS_QID_HASH*					RaidLsiItemsQidTable	[ITEMS_QID_HASH_NUM];
+
 	SMC_SETUP_RAID_VAR*				RaidSetupVarSet;
 	
 	SMC_CHANGED_VAR_SET*			RaidChangedVarSet;
 	
 	SMC_RAID_CMD_SET*				RaidCmdSet;
+
+
 	//When Create Form for this Handle, Initial Below data.
 	UINT16						SmcFormId;
 	EFI_STRING_ID				SmcFormTitleId;
@@ -446,7 +468,7 @@ enum _SMC_LSI_RAID_TYPE_ {
 	RAID_3108 	= 0,
 	RAID_9260 	= 1,
 	RAID_2208	= 2,
-	RAID_INTEL	= 3,
+	RAID_RSTE	= 3,
 	RAID_NULL = 0xFF
 };
 

@@ -145,6 +145,8 @@ EFI_STATUS							SmcLsiCallbackAccessMenu				(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* )
 EFI_STATUS							SmcLsiSetSmcLsiVariableTable			(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
 EFI_STATUS 							FreeLsiVarHashTable						(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
 EFI_STATUS							SmcLsiCreateSmcRaidVarAndItems			(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
+EFI_STATUS							InitialItemsQIdTable					(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
+
 
 EFI_STATUS							InsertRaidSetupVariable					(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
 EFI_STATUS 							InsertRaidSetupFormGoto					(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );

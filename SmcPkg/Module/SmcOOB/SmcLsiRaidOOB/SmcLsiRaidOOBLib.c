@@ -327,7 +327,7 @@ VOID* GetPNextStartAddr(VOID* Start, UINT32 Offset){
 	UINT8*	pTempStart = NULL;
 
 	for(pTempStart = Start;
-		(UINT8*)(*(UINT32*)(pTempStart + Offset)) != NULL;
+		(!!Start) && (UINT8*)(*(UINT32*)(pTempStart + Offset)) != NULL;
 		pTempStart = (UINT8*)(*(UINT32*)(pTempStart + Offset)));
 
 	return pTempStart;
