@@ -5,6 +5,12 @@
 //****************************************************************************
 //  File History
 //
+//  Rev. 1.01
+//    Bug Fix:  
+//    Reason:   Improve choice hdds type is correct method.
+//    Auditor:  Durant Lin
+//    Date:     Oct/03/2018
+//
 //  Rev. 1.00
 //    Bug Fix:  
 //    Reason:   Support more tables for different Raid Cards.
@@ -1098,6 +1104,9 @@ EFI_STATUS	HandleOtherRaidCmd(
 	RAID_CMD_PROCESSING_MAP*	pCmdProcessingMapRaidTable = NULL;
 	EFI_STATUS					Status					   = EFI_SUCCESS;
 
+	DEBUG((-1,"HandleOtherRaidCmd :: RaidType[%x] RaidIndex[%x]\n",
+				pProtocol->SmcLsiCurrHiiHandleTable->RaidCardType,
+				pProtocol->SmcLsiCurrHiiHandleTable->RaidCardIndex));
 	//Handle For JBOD Make and unconfig.
 	pCmdJbod = SearchForCmdSectionBody(pCmdSet->RaidCmdSection,SMC_CMD_RAID_JBOD);
 	if(!!pCmdJbod){
@@ -1118,11 +1127,12 @@ EFI_STATUS	HandleBuildRaidCmd_D(
 		SMC_RAID_CMD_SET* pCmdSet
 ){
 	EFI_STATUS			Status = EFI_SUCCESS;
-	if(!(!!pProtocol) || !(!!pCmdSet)) return EFI_INVALID_PARAMETER;
-
+	
 	DEBUG((-1,"HandleBuildRaidCmd_D :: RaidType[%x] RaidIndex[%x]\n",
 				pProtocol->SmcLsiCurrHiiHandleTable->RaidCardType,
 				pProtocol->SmcLsiCurrHiiHandleTable->RaidCardIndex));
+
+	if(!(!!pProtocol) || !(!!pCmdSet)) return EFI_INVALID_PARAMETER;
 
 	Status = HandleRaidCmdSub(pProtocol,pCmdSet,RaidCmdProcessMapTable_D_3108,NULL);
 	DEBUG((-1,"    HandleBuildRaidCmd_D HandleRaidCmdSub Status[%r]\n",Status));
@@ -1140,11 +1150,11 @@ EFI_STATUS	HandleBuildRaidCmd(
 	SMC_RAID_CMD_RAIDTYPE*		pCmdRaidType  = NULL;
 	SMC_RAID_CMD_RAIDTYPE_ENUM	RaidTypeEnum  = SMC_CMD_RAIDTYPE_R0;
 
-	if(!(!!pProtocol) || !(!!pCmdSet)) return EFI_INVALID_PARAMETER;
-
 	DEBUG((-1,"HandleBuildRaidCmd :: RaidCardType[%x] RaidIndex[%x]\n",
 				pProtocol->SmcLsiCurrHiiHandleTable->RaidCardType,
 				pProtocol->SmcLsiCurrHiiHandleTable->RaidCardIndex));
+
+	if(!(!!pProtocol) || !(!!pCmdSet)) return EFI_INVALID_PARAMETER;
 
 	pCmdRaidType  = SearchForCmdSectionBody(pCmdSet->RaidCmdSection,SMC_CMD_RAID_RAIDTYPE);
 	
@@ -1223,9 +1233,9 @@ EFI_STATUS 	HandleRaidCmdSub_ChangeRaidType(
 	UINT8						RaidValue		= SMC_RAID_CMD_GROUP_TYPE_END;
 	UINT8						Val				= 0;
 
+	SMC_RAID_DETAIL_DEBUG((-1," HandleRaidCmdSub_ChangeRaidType -- Start :: \n"));
 	if(!(!!pCmdProcessingItem) || !(!!pCmdProcessSet)) return EFI_INVALID_PARAMETER;
 
-	SMC_RAID_DETAIL_DEBUG((-1," HandleRaidCmdSub_ChangeRaidType -- Start :: \n"));
 	pCmdRaidType = SearchForCmdSectionBody(pCmdSet->RaidCmdSection,SMC_CMD_RAID_RAIDTYPE);
 					
 	//If Cmd Raid Type doesn't exist, pass it.
@@ -1284,8 +1294,8 @@ EFI_STATUS	HandleRaidCmdSub_ChangeSetting(
 {
 	RAID_CMD_SUB_PARAMETER();
 
-	if(!(!!pCmdProcessingItem) || !(!!pCmdProcessSet)) return EFI_INVALID_PARAMETER;
 	SMC_RAID_DETAIL_DEBUG((-1," HandleRaidCmdSub_ChangeSetting Start :: \n"));
+	if(!(!!pCmdProcessingItem) || !(!!pCmdProcessSet)) return EFI_INVALID_PARAMETER;
 
 	if(pCmdProcessSet->TypeEnum == SMC_CMD_RAID_SIZE){
 		SMC_RAID_CMD_RAIDSIZE* 	pCmdRaidSize 	= NULL;
@@ -1539,20 +1549,21 @@ EFI_STATUS 	HandleRaidCmdSub_ChoiceHdds(
 		BOOLEAN							Val			= TRUE;
 		SMC_LSI_ITEMS_COMMON_HEADER*	pOpCmnH		= NULL;
 
-		if(!(!!pCmdGroupHdd->HdHame)){
-			continue;
-		}
-
 		pOpCmnH = (SMC_LSI_ITEMS_COMMON_HEADER*)SearchHddNameInCmdProcessingItem(LsiHiiHandle,pCmdProcessingItem,pCmdGroupHdd->HdHame);
 
 		if(!(!!pOpCmnH)){
-			if(pCmdGroupHdd->HddType == RAID_HDG_TYPE){
+			if(((SMC_RAID_CMD_SPECIE*)SearchForCmdSectionBody(pCmdSet->RaidCmdSection,SMC_CMD_RAID_COMMAND))->RaidCmdSpecie == SMC_CMD_SPECIE_BUILD){
 				Status = EFI_NOT_FOUND;
 				break;
 			}
 			continue;
 		}
-		
+
+		if(GetHddTypeByCmd(pCmdSet->RaidCmdSection) == RAID_HDG_TYPE && pCmdGroupHdd->HddType != RAID_HDG_TYPE){
+			Status = EFI_NOT_FOUND;
+			break;
+		}
+
 		HddBeChoiced = TRUE;
 
 		if(pCmdProcessSet->TypeEnumSub == TES_DELETE_RAID_DRIVE){
@@ -1628,7 +1639,7 @@ EFI_STATUS	HandleRaidCmdSub(
 										pExecuteCmdProcessingMap[TableIndex].CmdProcessTargetName));
 
 			if(!(!!pCmdProcessingItem)){
-				SMC_RAID_DETAIL_DEBUG((-1,"HandleRaidCmdSub Cannot Find the item!\n",TableIndex));
+				SMC_RAID_DETAIL_DEBUG((-1," HandleRaidCmdSub Cannot Find the item!\n",TableIndex));
 				if(pExecuteCmdProcessingMap[TableIndex].CmdProcessSet.CmdProcess != P_RAID_NON_ACTION)
 					Status = EFI_NOT_FOUND;
 
