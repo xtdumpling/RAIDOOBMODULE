@@ -535,22 +535,51 @@ ITEMS_QID_VAL*	AddItemsQId(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol, EFI_IFR_O
 	ITEMS_QID_HASH* 				pTempQIdHash 			= NULL;
 	UINT16							QIdIndex				= 0;
 	EFI_STATUS						Status					= EFI_SUCCESS;
-
+	EFI_HII_HANDLE					LsiHiiHandle			= NULL;
+	EFI_STRING						ItemName				= NULL;
+	EFI_STRING						CopyItemName			= NULL;
+	
 	if(!(!!pProtocol) || !(!!OpHeader)) return NULL;
 
 	pComnHeader = (SMC_LSI_ITEMS_COMMON_HEADER*)OpHeader;
+	LsiHiiHandle = pProtocol->SmcLsiCurrHiiHandleTable->RaidCardHiiHandle;
 	CurrentItemsQIdTable = pProtocol->SmcLsiCurrHiiHandleTable->RaidLsiItemsQidTable;
 	QIdIndex = ItemsQIdHashByQId(pComnHeader->Question.QuestionId);
 	
 	Status = gBS->AllocatePool(EfiBootServicesData,sizeof(ITEMS_QID_HASH),&pTempQIdHash);
 	if(EFI_ERROR(Status)) return NULL;
 
+	ItemName = GetHiiString(LsiHiiHandle,pComnHeader->Question.Header.Prompt);
+	Status = gBS->AllocatePool(EfiBootServicesData,StrSize(ItemName),&CopyItemName);
+	if(!EFI_ERROR(Status)){
+		StrCpy(CopyItemName,ItemName);
+	}else {
+		CopyItemName = NULL;
+	}
+
 	MemSet(pTempQIdHash,sizeof(ITEMS_QID_HASH),0x00);
+	pTempQIdHash->ItemsQIdBody.IQVName	 = CopyItemName;
 	pTempQIdHash->ItemsQIdBody.IQVOpCode = pComnHeader->Header.OpCode;
 	pTempQIdHash->ItemsQIdBody.IQVQId	 = pComnHeader->Question.QuestionId;
 	pTempQIdHash->ItemsQIdBody.IQVVId	 = pComnHeader->Question.VarStoreId;
 	pTempQIdHash->ItemsQIdBody.IQVVOff	 = pComnHeader->Question.VarStoreInfo.VarOffset;
-	pTempQIdHash->ItemsQIdBody.IQVFlags  = *((UINT8*)((UINT8*)OpHeader + sizeof(SMC_LSI_ITEMS_COMMON_HEADER)));
+
+	switch(OpHeader->OpCode){
+		case EFI_IFR_NUMERIC_OP:
+		case EFI_IFR_ONE_OF_OP:
+			pTempQIdHash->ItemsQIdBody.IQVFlags = ((*((UINT8*)((UINT8*)OpHeader + sizeof(SMC_LSI_ITEMS_COMMON_HEADER)))) & EFI_IFR_NUMERIC_SIZE);
+			break;
+		case EFI_IFR_CHECKBOX_OP:
+			pTempQIdHash->ItemsQIdBody.IQVFlags = EFI_IFR_TYPE_NUM_SIZE_8;
+			break;
+		case EFI_IFR_STRING_OP:
+			pTempQIdHash->ItemsQIdBody.IQVFlags = EFI_IFR_TYPE_STRING;
+			break;
+		default:
+			pTempQIdHash->ItemsQIdBody.IQVFlags = EFI_IFR_TYPE_UNDEFINED;
+			break;
+	}
+
 	pTempQIdHash->ItemsQIdNext			 = NULL;
 
 	if(!(!!CurrentItemsQIdTable[QIdIndex])){
@@ -575,6 +604,7 @@ EFI_STATUS	CleanItemsQIdTable(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 		pTempQIdHash = CurrentItemsQIdTable[QIdIndex];
 		while(!!pTempQIdHash){
 			pNext = pTempQIdHash->ItemsQIdNext;
+			gBS->FreePool(pTempQIdHash->ItemsQIdBody.IQVName);
 			gBS->FreePool(pTempQIdHash);	
 			pTempQIdHash = pNext;
 		}
@@ -583,9 +613,33 @@ EFI_STATUS	CleanItemsQIdTable(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 	return EFI_SUCCESS;
 }
 
+EFI_STATUS	Debug_for_ItemsQIdTable(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
+#if defined(DEBUG_MODE) && (DEBUG_MODE == 1)
+	ITEMS_QID_HASH** 			CurrentItemsQIdTable 	= NULL;
+	ITEMS_QID_HASH*				pTempQIdHash			= NULL;
+	ITEMS_QID_VAL*				QIdVal					= NULL;
+	UINT16						QIdIndex				= 0;
+
+	CurrentItemsQIdTable = pProtocol->SmcLsiCurrHiiHandleTable->RaidLsiItemsQidTable;
+
+	DEBUG((-1,"CurrentItemsQIdTable :: \n"));
+	for(QIdIndex = 0;QIdIndex < ITEMS_QID_HASH_NUM;++QIdIndex){
+		DEBUG((-1,"  QIdIndex[%02x] - \n",QIdIndex));
+		pTempQIdHash = CurrentItemsQIdTable[QIdIndex];
+		while(!!pTempQIdHash){
+			QIdVal = &pTempQIdHash->ItemsQIdBody;
+			pTempQIdHash = pTempQIdHash->ItemsQIdNext;
+
+			DEBUG((-1,"      Name[%s], OpCode[%x], QId[%x], VId[%x], VOff[%x], Flags[%x]\n",
+						(!!QIdVal->IQVName) ? QIdVal->IQVName : L"NO_NAME",QIdVal->IQVOpCode,QIdVal->IQVQId,QIdVal->IQVVId,QIdVal->IQVVOff,QIdVal->IQVFlags));
+		}
+	}
+#endif
+	return EFI_SUCCESS;
+}
+
 EFI_STATUS	InitialItemsQIdTable(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 	
-
 	EFI_STATUS		   			Status 					= EFI_SUCCESS;
 	EFI_HII_PACKAGE_HEADER*		PackagePtr				= NULL;
 	EFI_IFR_OP_HEADER* 			OpHeader 				= NULL;
@@ -614,7 +668,7 @@ EFI_STATUS	InitialItemsQIdTable(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* pProtocol){
 		}
 		OpHeader = (EFI_IFR_OP_HEADER*)((UINT8*)OpHeader + OpHeader->Length);
 	}
-	
+
 	return Status;
 }
 

@@ -15,15 +15,22 @@
 #ifndef	_H_SmcLsiStack_
 #define	_H_SmcLsiStack_
 
-typedef struct _SMC_RAID_STACK_ SMC_RAID_STACK;
+typedef struct _SMC_RAID_STACK_ 			SMC_RAID_STACK;
+typedef struct _SMC_RAID_STACK_BODY_		SMC_RAID_STACK_BODY;
+typedef struct _SMC_RAID_STACK_SET_			SMC_RAID_STACK_SET;
 
-struct _SMC_RAID_STACK_ {
-	UINT64			data;
-
-	SMC_RAID_STACK* pNext;
+struct _SMC_RAID_STACK_BODY_ {
+	UINT64				data;
+	UINT8				dataType;
 };
 
-EFI_STATUS	SmcStackPush(UINT64	);
-EFI_STATUS	SmcStackPop(UINT64* );
+struct _SMC_RAID_STACK_SET_ {
+	SMC_RAID_STACK_BODY		StackBody;
+	SMC_RAID_STACK_SET* 	pNext;
+};
+
+struct _SMC_RAID_STACK_ {
+	SMC_RAID_STACK_SET*	SmcStackPoint;
+};
 
 #endif

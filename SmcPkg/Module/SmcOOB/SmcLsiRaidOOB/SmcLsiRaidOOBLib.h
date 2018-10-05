@@ -15,6 +15,8 @@
 #ifndef	_H_SmcLsiRaidOOB_LIB_
 #define	_H_SmcLsiRaidOOB_LIB_
 
+#include "SmcLsiStack.h"
+
 #define MAX_HPK_LIST_SIZE 				0x100000
 
 #define STRUCT_OFFSET(Type,val) ((UINT32)(((UINT32)(&(((Type*)0)->val))) - ((UINT32)0)))
@@ -41,7 +43,6 @@ VOID* 								GetPNextStartAddr(VOID* , UINT32 );
 
 EFI_STRING 							AppendOffsetWidth(EFI_STRING , UINTN , UINTN );
 
-
 EFI_STATUS							SmcLsiRaidLib_DownLoad(SMC_LSI_RAID_OOB_SETUP_PROTOCOL*);
 EFI_STATUS							SmcLsiRaidLib_AddDynamicItems(SMC_LSI_RAID_OOB_SETUP_PROTOCOL*);
 EFI_STATUS 							SmcLsiRaidLib_ParseNvData(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* ,BOOLEAN ,CHAR16** ,EFI_GUID** ,UINTN** ,UINT8**	);
@@ -50,8 +51,9 @@ EFI_STATUS 							SmcLsiRaidLib_HandleData(SMC_LSI_RAID_OOB_SETUP_PROTOCOL* );
 
 VOID								DEBUG_PRINT_BUFFER(VOID* ,UINTN );
 
-
-
+EFI_STATUS							SmcStackPush(SMC_RAID_STACK* , UINT64 , UINT8 );
+EFI_STATUS							SmcStackPop(SMC_RAID_STACK* , SMC_RAID_STACK_BODY* );
+EFI_STATUS 							InitialSmcStack(SMC_RAID_STACK* );
 
 
 #endif

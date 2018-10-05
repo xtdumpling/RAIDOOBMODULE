@@ -34,6 +34,7 @@
 #include <Library/HiiLib.h>
 #include <Library/PrintLib.h>
 
+#include "SmcLsiRaidOOB.h"
 #include "SmcLsiRaidOOBSetupProtocol.h"
 #include "SmcLsiRaidOOBLib.h"
 

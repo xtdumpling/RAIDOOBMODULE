@@ -20,36 +20,57 @@
 #include <Uefi.h>
 #include <Library/UefiLib.h>
 
-static SMC_RAID_STACK*	SmcStackPoint = NULL;
 
-EFI_STATUS	SmcStackPush(UINT64	Input){
+EFI_STATUS	SmcStackPush(SMC_RAID_STACK* pSmcStack, UINT64	Input, UINT8 InDataType){
 
-	EFI_STATUS		Status = EFI_SUCCESS;
-	SMC_RAID_STACK*	NewPush = NULL;
+	EFI_STATUS			Status = EFI_SUCCESS;
+	SMC_RAID_STACK_SET*	NewPush = NULL;
 
-	Status = gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_RAID_STACK),&NewPush);
-	
+	if(!(!!pSmcStack)) return EFI_INVALID_PARAMETER;
+	Status = gBS->AllocatePool(EfiBootServicesData,sizeof(SMC_RAID_STACK_SET),&NewPush);
+	MemSet(NewPush,sizeof(SMC_RAID_STACK_SET),0x00);
+
 	if(!EFI_ERROR(Status)){
-		NewPush->data = Input;
-		NewPush->pNext = SmcStackPoint;
-		SmcStackPoint  = NewPush;
+		NewPush->StackBody.data		= Input;
+		NewPush->StackBody.dataType	= InDataType;
+		NewPush->pNext 				= pSmcStack->SmcStackPoint;
+		pSmcStack->SmcStackPoint 	= NewPush;
 	}
 
 	return Status;
 }
 
-EFI_STATUS	SmcStackPop(UINT64* OutPut){
+EFI_STATUS	SmcStackPop(SMC_RAID_STACK* pSmcStack, SMC_RAID_STACK_BODY* OutPut){
 
-	EFI_STATUS		Status = EFI_SUCCESS;
-	SMC_RAID_STACK*	OldPop = NULL;
+	EFI_STATUS			Status = EFI_SUCCESS;
+	SMC_RAID_STACK_SET*	OldPop = NULL;
 	
 	if(!(!!OutPut)) return EFI_INVALID_PARAMETER;
+	if(!(!!pSmcStack)) return EFI_INVALID_PARAMETER;
 
-	OldPop = SmcStackPoint;
-	SmcStackPoint = SmcStackPoint->pNext;
+	if(!(!!pSmcStack->SmcStackPoint)) return EFI_OUT_OF_RESOURCES;
 
-	*OutPut = OldPop->data;
+	OldPop 						= pSmcStack->SmcStackPoint;
+	pSmcStack->SmcStackPoint 	= OldPop->pNext;
+
+	MemCpy(OutPut,&OldPop->StackBody,sizeof(SMC_RAID_STACK_BODY));
 	Status = gBS->FreePool(OldPop);
 
 	return Status;
+}
+
+EFI_STATUS InitialSmcStack(SMC_RAID_STACK* pSmcStack){
+
+	SMC_RAID_STACK_SET*	OldPop = NULL;
+
+	if(!(!!pSmcStack)) return EFI_INVALID_PARAMETER;
+
+	while(!!pSmcStack->SmcStackPoint){
+		OldPop = pSmcStack->SmcStackPoint->pNext;
+		gBS->FreePool(pSmcStack->SmcStackPoint);
+		pSmcStack->SmcStackPoint = OldPop;
+	}
+	pSmcStack->SmcStackPoint = NULL;
+
+	return EFI_SUCCESS;
 }

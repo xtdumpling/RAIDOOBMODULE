@@ -36,6 +36,7 @@ SMC_LSI_INSIDE_DOWN_FUNC		mSmcLsiInsideDownFunc[]		= {
 	{ L"SmcLsiHookBrowser2Protocol"				, SmcLsiHookBrowser2Protocol				},
 	{ L"SmcLsiCallbackAccessMenu"				, SmcLsiCallbackAccessMenu					},
 	{ L"InitialItemsQIdTable"					, InitialItemsQIdTable						},
+	{ L"Debug_for_ItemsQIdTable"				, Debug_for_ItemsQIdTable					},
 	{ L"SmcLsiRaidOOB_CollectInformation_Items"	, SmcLsiRaidOOB_CollectInformation_Items	},
 	{ L"SmcLsiRaidOOB_CollectInformation_ChRec" , SmcLsiRaidOOB_CollectInformation_ChRec	},
 	{ L"SmcLsiSetSmcLsiVariableTable"			, SmcLsiSetSmcLsiVariableTable				},
